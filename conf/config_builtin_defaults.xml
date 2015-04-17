@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<configuration>
+  <archiveFolder>Archive</archiveFolder>
+  <deliveryFolder>Delivery</deliveryFolder>
+  <errorsFolder>Errors</errorsFolder>
+  <failFile>errorLog.log</failFile>
+  <filingsFolder>Filings</filingsFolder>
+  <processingFolder>Processing</processingFolder>
+  <reportsFolder>Reports</reportsFolder>
+  <resourcesFolder>..\\resources</resourcesFolder>
+  <excelXslt>InstanceReport_XmlWorkbook.xslt</excelXslt>
+  <reportXslt>InstanceReport.xslt</reportXslt>
+  <summaryXslt>Summarize.xslt</summaryXslt>
+  <abortOnMajorError>True</abortOnMajorError>
+  <auxMetadata>False</auxMetadata>
+  <deleteProcessedFilings>True</deleteProcessedFilings>
+  <debugMode>False</debugMode>
+  <htmlReportFormat>Complete</htmlReportFormat>
+  <internetConnectivity>offline</internetConnectivity>
+  <noEquity>False</noEquity>
+  <processingFrequency>10</processingFrequency>
+  <renderingService>Instance</renderingService>
+  <reportFormat>Html</reportFormat>
+  <totalClean>False</totalClean>
+  <utrValidate>False</utrValidate>
+  <validate>False</validate>
+  <validateEFM>False</validateEFM>
+  <zipOutputFile />
+</configuration>

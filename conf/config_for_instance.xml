@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<configuration>
+  <!-- resourcesFolder: absolute, or relative to pythonpath folders. -->
+  <resourcesFolder>..\resources</resourcesFolder>
+  <!-- reportsFolder: Default value: .\Reports; location of all generated rendering artifacts. -->
+  <reportsFolder>Reports</reportsFolder>
+  <!--optional string with the name of a file to write if the rendering failed. -->
+  <failFile>errorLog.log</failFile>
+  <!-- These locations are relative to the ResourcesFolder. -->
+  <!-- reportXslt: transform r.xml into r.htm, may only be empty if reportFormat is just Xml -->
+  <reportXslt>InstanceReport.xslt</reportXslt>
+  <!-- reportXslt: transform FilingSummary.xml into FilingSummary.htm, or empty if no FilingSummary.htm desired. -->
+  <summaryXslt>Summarize.xslt</summaryXslt>
+  <!-- excelXslt: transform r.xml into Excel 2007 xlsx output, or empty if no Excel output desired -->
+  <excelXslt />
+  <!-- The following are various application settings that are used by RE to manage the processing of XBBRL filings: -->
+  <!-- renderingService: Multiple options...{Instance: one time rendering || Daemon: background processing} -->
+  <renderingService>Instance</renderingService>
+  <!-- validate: perform XBRL 2.1 validation; the default is True -->
+  <validate>False</validate>
+  <!-- deleteProcessedFilings: Boolean to indicate if unzipped processed filings should be deleted or not; default to False -->
+  <deleteProcessedFilings>True</deleteProcessedFilings>
+  <!-- reportFormat: Multiple options...{Xml: only Xml outout || Html: only Html output || HtmlAndXml: both Xml and Html output} -->
+  <reportFormat>HtmlAndXml</reportFormat>
+  <!-- htmlReportFormat: Multiple options...{Complete: asPage rendering = True || Fragment: asPage rendering = False} -->
+  <htmlReportFormat>Complete</htmlReportFormat>
+  <!-- totalClean: Boolean to indicate if RE3 clobbers the contents of the <reportsFolder>; default to False -->
+  <totalClean>True</totalClean>
+</configuration>
