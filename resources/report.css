@@ -114,7 +114,12 @@
 }
 
 .report .reu td {
-	border-bottom: 1px solid black;
+	border-top: 1px solid black;
+}
+
+/* prevent row headers and footnotes from having total top borders */
+.report .reu td.pl, .report .reu td.fn {
+	border-top: 0px;
 }
 
 /* Odd rows... */
@@ -123,11 +128,16 @@
 }
 
 .report .rou td {
-	border-bottom: 1px solid black;
+	border-top: 1px solid black;
+}
+
+/* prevent row headers and footnotes from having total top borders */
+.report .rou td.pl, .report .rou td.fn {
+	border-top: 0px;
 }
 
 .report .rou table td, .report .reu table td {
-	border-bottom: 0px solid black;
+	border-top: 0px solid black;
 }
 
 /* styles for footnote marker */
