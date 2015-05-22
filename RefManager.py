@@ -9,9 +9,10 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 
 import os.path, re, lxml
 import arelle.ModelDocument
+from arelle.FileSource import openFileSource
 from arelle import PythonUtil # define 2.x or 3.x string types
 PythonUtil.noop(0) # Get rid of warning on PythonUtil import
-import ErrorMgr
+from . import ErrorMgr
 
 taxonomyManagerFile = 'TaxonomyAddonManager.xml'
 
@@ -50,10 +51,13 @@ class RefManager(object):
     def loadAddedUrls(self,modelXbrl,controller):
         mustClear = False
         urls = self.getUrls(modelXbrl)
+        # load without SEC/EFM validation (doc file would not be acceptable)
+        priorValidateDisclosureSystem = modelXbrl.modelManager.validateDisclosureSystem
+        modelXbrl.modelManager.validateDisclosureSystem = False
         for url in urls:
             doc = None
             try: # isDiscovered is needed here to force the load.
-                doc = arelle.ModelDocument.load(modelXbrl,url,isDiscovered=True) 
+                doc = arelle.ModelDocument.load(modelXbrl, url, isDiscovered=True) 
             except (arelle.ModelDocument.LoadingException):
                 pass
             if doc is None:
@@ -61,6 +65,7 @@ class RefManager(object):
                 controller.logWarn(message.format(url))
             else:
                 mustClear = True
+        modelXbrl.modelManager.validateDisclosureSystem = priorValidateDisclosureSystem
         if mustClear:
             # Code comment in Arelle's own loader says this is necessary but I don't think it is.
             # modelXbrl.relationshipSets.clear() 

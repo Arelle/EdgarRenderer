@@ -11,7 +11,8 @@ from os import getpid, remove, makedirs, getenv, listdir
 from os.path import basename, isfile, abspath, isdir, dirname, exists, join, splitext, normpath
 import json, re, shutil, sys, datetime, os, zipfile
 import arelle.XbrlConst
-import RootElement, Utils, ErrorMgr
+from lxml.etree import tostring as treeToString
+from . import RootElement, Utils, ErrorMgr
 
 jsonIndent = 0  # None for most compact, 0 for left aligned
   
@@ -35,17 +36,24 @@ def absPathOnPythonPath(cntlr, filename):  # if filename is relative, find it on
     if filename is None: return None
     if os.path.isabs(filename): return filename
     pathdirs = [p for p in sys.path if os.path.isdir(p)]
+    pathdirs.append(os.path.dirname(__file__))
     for path in pathdirs:
         result = os.path.join(path, filename)
         if exists(result): return os.path.abspath(result)
     cntlr.logDebug("No such location {} found in sys path dirs {}.".format(filename, pathdirs))
     return None
     
-def writeXmlDoc(etree, path):  
-    etree.getroottree().write(path, method='xml', with_tail=False, pretty_print=True, encoding='utf-8', xml_declaration=True)   
+def writeXmlDoc(etree, reportZip, reportFolder, filename):  
+    if not reportZip:
+        etree.getroottree().write(os.path.join(reportFolder, filename), method='xml', with_tail=False, pretty_print=True, encoding='utf-8', xml_declaration=True)   
+    else:
+        reportZip.writestr(filename, treeToString(etree.getroottree(), method='xml', with_tail=False, pretty_print=True, encoding='utf-8', xml_declaration=True))  
     
-def writeHtmlDoc(root, path):      
-    root.write(path, method='html', with_tail=False, pretty_print=True, encoding='utf-8')
+def writeHtmlDoc(root, reportZip, reportFolder, filename):  
+    if not reportZip:
+        root.write(os.path.join(reportFolder, filename), method='html', with_tail=False, pretty_print=True, encoding='utf-8')
+    else:
+        reportZip.writestr(filename, treeToString(root, method='html', with_tail=False, pretty_print=True, encoding='utf-8'))  
     
 def writeJsonDoc(lines, path):
     with open(path, mode='w') as f:
@@ -117,7 +125,7 @@ def isFileHidden(p):
     return False
 
     
-def unpackInput(cntlr, options):  # success
+def unpackInput(cntlr, options, filesource):  # success
     # with side effect on cntlr entrypointFolder, processingFolder, instanceList,otherXbrlList,inlineList,supplementList
     # Process options, setting self.entrypointFolder and figuring out whether it is:
     # 1. a zip file that may contain multiple instances
@@ -130,16 +138,24 @@ def unpackInput(cntlr, options):  # success
     cntlr.inlineList = []
     cntlr.otherXbrlList = []
     cntlr.supplementList = []
-    if not cntlr.entrypointFolder: cntlr.entrypointFolder = abspath(options.entrypoint)
-    if not isdir(cntlr.entrypointFolder): cntlr.entrypointFolder = dirname(cntlr.entrypointFolder)
+    #if not cntlr.entrypointFolder: cntlr.entrypointFolder = abspath(options.entrypoint)
+    #if not isdir(cntlr.entrypointFolder): cntlr.entrypointFolder = dirname(cntlr.entrypointFolder)
     # an absolute path for processing folder root can be specified in the configuration file.
-    cntlr.originalProcessingFolder = join(getenv("TEMP"), cntlr.processingFolder)    
-    cntlr.processingFolder = createNewFolder(cntlr,cntlr.originalProcessingFolder, options.entrypoint)
+    #cntlr.originalProcessingFolder = join(getenv("TEMP"), cntlr.processingFolder)    
+    #cntlr.processingFolder = createNewFolder(cntlr,cntlr.originalProcessingFolder, options.entrypoint)
     knownSingleInput = None                
     try:
-        handleFolder(cntlr, cntlr.processingFolder, True, True)    
+        #handleFolder(cntlr, cntlr.processingFolder, True, True)    
         # Case 1: entry point is a zip file.
-        if zipfile.is_zipfile(options.entrypoint):
+        #if zipfile.is_zipfile(options.entrypoint):
+        if cntlr.processInZip:
+            for base in filesource.dir:
+                if not base.startswith('.'):
+                    fileStream, _encoding = filesource.file(filesource.baseurl + "/" + base)
+                    if isSurvivor(cntlr, "zip", base, None, fileStream):
+                        unpacked += 1
+                    fileStream.close()
+        elif filesource.isZip:
             cntlr.logInfo(_("Extracting from zip file. "), file=basename(__file__))
             zf = zipfile.ZipFile(options.entrypoint, 'r')
             for base in zf.namelist():
@@ -163,12 +179,13 @@ def unpackInput(cntlr, options):  # success
             # Case 1: Entry point is a folder.  Copy everything except unknown instances and inlines
             cntlr.logInfo(_("Copying from Input folder {}").format(cntlr.entrypointFolder), file=basename(__file__))
             for base in listdir(cntlr.entrypointFolder):
-                source = join(cntlr.entrypointFolder, base)
-                if isFileHidden(source) or isdir(source): continue
-                target = join(cntlr.processingFolder, base)
-                shutil.copy(source, target)
-                if isSurvivor(cntlr, "folder", base, knownSingleInput, target):
-                    unpacked += 1         
+                if not base.startswith("."):
+                    source = join(cntlr.entrypointFolder, base)
+                    if isFileHidden(source) or isdir(source): continue
+                    target = join(cntlr.processingFolder, base)
+                    shutil.copy(source, target)
+                    if isSurvivor(cntlr, "folder", base, knownSingleInput, target):
+                        unpacked += 1         
                                    
     except Exception as e:
         unpacked = 0
@@ -183,18 +200,19 @@ def unpackInput(cntlr, options):  # success
 
 
 
-def isSurvivor(cntlr, original, base, entry, target):  # return boolean
+def isSurvivor(cntlr, original, base, entry, targetOrStream):  # return boolean
     oktocopy = Utils.isImageFilename(base) or Utils.isXmlFilename(base) or Utils.isInlineFilename(base)
     if not oktocopy:  # Found a file that doesn't fit
         message = _(ErrorMgr.getError('IGNORE_OTHER_FILE')).format(base)
         cntlr.logWarn(message, file=basename(__file__))
-        remove(target)
+        if isinstance(target, str): # file name, not filesource
+            remove(target)
         return False
     if Utils.isImageFilename(base):
         cntlr.logDebug("Found Image in {0}: {1}".format(original, base), file=basename(__file__))
         cntlr.supplementList += [base]
         return True
-    result = RootElement.RootElement().getQName(cntlr, target)
+    result = RootElement.RootElement().getQName(cntlr, targetOrStream)
     ns = ln = ixns = None
     if result is not None:
         ns, ln, ixns = result
@@ -222,7 +240,8 @@ def isSurvivor(cntlr, original, base, entry, target):  # return boolean
         cntlr.otherXbrlList += [base]
     else:
         cntlr.logDebug("Ignoring unknown file {} in {}".format(original, base), file=basename(__file__))
-        remove(target)
+        if isinstance(target, str): # file name, not filesource
+            remove(target)
         return False
     return True  # you made it
 

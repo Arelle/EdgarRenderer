@@ -10,10 +10,14 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 import re
 from collections import defaultdict
 import arelle.ModelObject
-import Filing, ErrorMgr, Utils
+from . import ErrorMgr, Utils
+Filing = None
 
 class Cube(object):
     def __init__(self, filing, linkroleUri):
+        global Filing
+        if Filing is None:
+            from . import Filing
         self.filing = filing
         self.noFactsOrAllFactsSuppressed = False
         self.excludeFromNumbering = False

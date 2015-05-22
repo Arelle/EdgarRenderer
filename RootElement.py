@@ -8,7 +8,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
 import xml.sax.handler, sys
-import ErrorMgr
+from . import ErrorMgr
 import arelle.XbrlConst
 
 class RootElement(object):

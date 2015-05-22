@@ -4,7 +4,7 @@
   <!-- The following are various sub-folders that are created and used during the processing of XBRL filings for organizational purposes: -->
   <!-- These folders, if not absolute, are relative to the current working directory. -->
   <!-- resourcesFolder: Default value: ..\resources, relative to folders on the pythonpath. -->
-  <resourcesFolder>..\resources</resourcesFolder>
+  <resourcesFolder>resources</resourcesFolder>
   <!-- reportsFolder: Default value: Reports -->
   <!-- This is the location of all generated rendering artifacts, relative to the processing folder. -->
   <reportsFolder>Reports</reportsFolder>

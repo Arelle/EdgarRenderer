@@ -9,15 +9,19 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 
 import os, re, datetime, decimal
 from collections import defaultdict
-from lxml.etree import Element, SubElement, XSLT
+from lxml.etree import Element, SubElement, XSLT, tostring as treeToString
 import arelle.XbrlConst
-import ErrorMgr, Utils, Filing
+from . import ErrorMgr, Utils
+Filing = None
 
 
 xlinkRole = '{' + arelle.XbrlConst.xlink + '}role' # constant belongs in XbrlConsts`headingList
 
 class Report(object):
     def __init__(self, filing, cube, embedding):
+        global Filing
+        if Filing is None:
+            from . import Filing
         self.filing = filing
         filing.numReports += 1
 
@@ -1034,19 +1038,26 @@ class Report(object):
         baseName = baseNameBeforeExtension + '.xml'
         reportSummary.xmlFileName = baseName
 
-        fileName = os.path.join(self.filing.fileNameBase, baseName)
-        tree.write(fileName, xml_declaration=True, encoding='utf-8', pretty_print=True)
-
+        if self.filing.fileNameBase:
+            fileName = os.path.join(self.filing.fileNameBase, baseName)
+            tree.write(fileName, xml_declaration=True, encoding='utf-8', pretty_print=True)
+        elif self.filing.reportZip:
+            self.filing.reportZip.writestr(baseName, 
+                treeToString(tree, xml_declaration=True, encoding='utf-8', pretty_print=True));
 
     def writeHtmlFile(self, baseNameBeforeExtension, tree, reportSummary):
         baseName = baseNameBeforeExtension + '.htm'
         reportSummary.htmlFileName = baseName     
 
         self.addToLog('Starting XSLT transform on {}.'.format(baseNameBeforeExtension + '.xml'), messageCode='debug')              
-        fileName = os.path.join(self.filing.fileNameBase, baseName)
         result = self.filing.transform(tree, asPage=XSLT.strparam('true'))
         self.addToLog('Finished XSLT transform.', messageCode='debug')
-        result.write(fileName,method='html',with_tail=False,pretty_print=True,encoding='us-ascii')
+        if self.filing.fileNameBase:
+            fileName = os.path.join(self.filing.fileNameBase, baseName)
+            result.write(fileName,method='html',with_tail=False,pretty_print=True,encoding='us-ascii')
+        elif self.filing.reportZip:
+            self.filing.reportZip.writestr(baseName, 
+                treeToString(result,method='html',with_tail=False,pretty_print=True,encoding='us-ascii'));
 
 
     def generateBarChart(self):
@@ -1709,8 +1720,16 @@ class Cell(object):
 
                 self.addToLog('Writing Figures= ' + pngname, messageCode='info')
 
-                fileName = os.path.join(self.filing.fileNameBase, pngname)
-                fig.savefig(fileName, bbox_inches='tight', dpi=150)
+                if self.filing.fileNameBase:
+                    file = os.path.join(self.filing.fileNameBase, pngname)
+                elif self.filing.reportZip:
+                    file = io.BytesIO()
+                fig.savefig(file, bbox_inches='tight', dpi=150)
+                if self.filing.reportZip:
+                    file.seek(0)
+                    self.filing.reportZip.writestr(pngname, file.read())
+                    file.close()
+                    del file  # dereference
                 from matplotlib import pyplot
                 pyplot.close(fig)
                 self.addToLog('Barchart {} inserted into {} Generated Figures={}'.format(embedding.cube.linkroleUri, report.cube.linkroleUri, report.filing.numBarcharts), messageCode='info')

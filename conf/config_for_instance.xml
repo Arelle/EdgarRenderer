@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <configuration>
   <!-- resourcesFolder: absolute, or relative to pythonpath folders. -->
-  <resourcesFolder>..\resources</resourcesFolder>
+  <resourcesFolder>resources</resourcesFolder>
   <!-- reportsFolder: Default value: .\Reports; location of all generated rendering artifacts. -->
   <reportsFolder>Reports</reportsFolder>
   <!--optional string with the name of a file to write if the rendering failed. -->

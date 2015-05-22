@@ -10,8 +10,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 Convert Html Tables into Excel tables
 """
 
-import os.path, re, datetime, lxml, decimal, collections, openpyxl.cell, openpyxl.styles, openpyxl.worksheet.dimensions
-import ErrorMgr
+import io, os.path, re, datetime, lxml, decimal, collections, openpyxl.cell, openpyxl.styles, openpyxl.worksheet.dimensions
+from . import ErrorMgr
 
 # note that number pattern allows word before number like shares (1,234,567) (but would misfire on same in text block!)
 numberPattern = re.compile(r"\s*[_A-Za-z\xC0-\xD6\xD8-\xF6\xF8-\xFF\u0100-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]*"
@@ -54,7 +54,16 @@ class XlWriter(object):
     def save(self):
         if len(self.wb.worksheets)>1:
             self.wb.remove_sheet(self.wb.worksheets[0])
-        self.wb.save(os.path.join(self.outputFolderName, "Financial_Report.xlsx"))
+        if self.controller.reportZip:
+            file = io.BytesIO()
+        else:
+            file = os.path.join(self.outputFolderName, "Financial_Report.xlsx")
+        self.wb.save(file)
+        if self.controller.reportZip:
+            file.seek(0)
+            self.controller.reportZip.writestr("Financial_Report.xlsx", file.read())
+            file.close()
+            del file  # dereference
         self.controller.logDebug('Excel output saved {}'.format(self.controller.entrypoint),file=os.path.basename(__file__))
 
 
@@ -100,7 +109,7 @@ class XlWriter(object):
                         colLetter = openpyxl.cell.get_column_letter(col)
                         if colLetter not in colsWithCustomDimensions:
                             colsWithCustomDimensions.add(colLetter)
-                            ws.column_dimensions[colLetter] = openpyxl.worksheet.dimensions.ColumnDimension(ws, customWidth=True)
+                            ws.column_dimensions[colLetter] = openpyxl.worksheet.dimensions.ColumnDimension(colLetter, customWidth=True)
                         cell = ws.cell(row=row,column=col)
                         # default style fields (so we can set the all at once)
                         wrapText = False
@@ -217,7 +226,8 @@ class XlWriter(object):
         except (lxml.etree.LxmlError, lxml.etree.XSLTError) as err:
             self.controller.logError(str(err.args),file='Xlout.py')
         except (Exception) as err:
-            self.controller.logError(err.message,file='Xlout.py')
+            self.controller.logError(str(err),file='Xlout.py')
+            raise
 
 
 def tryExtractingTextNodes(text):

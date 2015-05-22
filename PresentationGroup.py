@@ -8,7 +8,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
 from collections import defaultdict
-import ErrorMgr, Utils
+from . import ErrorMgr, Utils
 import arelle.XbrlConst
 
 

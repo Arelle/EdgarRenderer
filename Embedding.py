@@ -9,7 +9,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 
 from collections import defaultdict
 import arelle.ModelValue
-import Utils, ErrorMgr
+from . import Utils, ErrorMgr
 
 class FactAxisMemberGroup(object):
     def __init__(self, fact, preferredLabel = None):

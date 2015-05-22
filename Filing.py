@@ -11,10 +11,10 @@ from gettext import gettext as _
 from collections import defaultdict
 import os, re, math, datetime, dateutil.relativedelta, lxml
 import arelle.ModelValue, arelle.XbrlConst
-import Cube, Embedding, Report, PresentationGroup, Summary, ErrorMgr, Utils, Xlout
+from . import Cube, Embedding, Report, PresentationGroup, Summary, ErrorMgr, Utils, Xlout
 
-def mainFun(controller, modelXbrl, outputFolderName):
-    filing = Filing(controller, modelXbrl, outputFolderName)
+def mainFun(controller, modelXbrl):
+    filing = Filing(controller, modelXbrl)
     filing.populateAndLinkClasses()
 
     sortedCubeList = sorted(filing.cubeDict.values(), key=lambda cube : cube.definitionText)
@@ -55,7 +55,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
     elif controller.excelXslt:
         xlWriter = controller.xlWriter
         if not xlWriter:
-            controller.xlWriter = xlWriter = Xlout.XlWriter(controller, outputFolderName)
+            controller.xlWriter = xlWriter = Xlout.XlWriter(controller, controller.reportsFolder)
 
     #import win32process
     #print('memory '  + str(int(win32process.GetProcessMemoryInfo(win32process.GetCurrentProcess())['WorkingSetSize'] / (1024*1024))))
@@ -66,7 +66,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
         skippedFactsList += list(cube.skippedFactMembershipSet)
     
     # handle the steps after flow through and then emit all of the XML and write the files
-    filing.addToLog(_('Generating rendered reports in {}').format(outputFolderName), messageCode='info')
+    filing.addToLog(_('Generating rendered reports in {}').format(controller.reportsFolder), messageCode='info')
     for cube in sortedCubeList:
         if cube.noFactsOrAllFactsSuppressed:
             for embedding in cube.embeddingList:
@@ -97,7 +97,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
 
 
 class Filing(object):
-    def __init__(self, controller, modelXbrl, outputFolderName):
+    def __init__(self, controller, modelXbrl):
         self.modelXbrl = modelXbrl
 
         self.cubeDict = {}
@@ -150,9 +150,14 @@ class Filing(object):
         self.reportXmlFormat = 'xml' in controller.reportFormat.casefold()
         self.reportHtmlFormat = 'html' in controller.reportFormat.casefold()
         self.fileNamePrefix = 'R'
-        self.fileNameBase = os.path.normpath(os.path.join(os.path.dirname(controller.webCache.normalizeUrl(modelXbrl.fileSource.url)) ,outputFolderName))
-        if not os.path.exists(self.fileNameBase):  # This is usually the Reports subfolder.
-            os.mkdir(self.fileNameBase)
+        if controller.reportZip:
+            self.fileNameBase = None
+            self.reportZip = controller.reportZip
+        else:
+            self.fileNameBase = os.path.normpath(os.path.join(os.path.dirname(controller.webCache.normalizeUrl(modelXbrl.fileSource.url)) ,self.reportsFolder))
+            if not os.path.exists(self.fileNameBase):  # This is usually the Reports subfolder.
+                os.mkdir(self.fileNameBase)
+            self.reportZip = None
 
         if controller.reportXslt:
             self.transform = lxml.etree.XSLT(lxml.etree.parse(controller.reportXslt))

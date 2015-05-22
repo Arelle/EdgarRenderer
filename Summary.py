@@ -10,7 +10,7 @@ import sys, traceback, os.path, re, math
 from collections import defaultdict
 from lxml.etree import Element, SubElement
 import arelle.ModelDtsObject, arelle.XbrlConst
-import IoManager, Utils
+from . import IoManager, Utils
 
 metaversion = "1.0"
 ERoot = 'MetaLinks'
@@ -229,7 +229,16 @@ class Summary(object):
             axml = makeXml(aroot, None)
             # IoManager.writeXmlDoc(axml, os.path.join(str(self.controller.reportsFolder), AXml))
             ajson = makeJson(axml)
-            IoManager.writeJsonDoc(ajson,os.path.join(str(self.controller.reportsFolder), AJson))
+            if self.controller.reportZip:
+                file = io.BytesIO()
+            else:
+                file = os.path.join(self.controller.reportsFolder, AJson)
+            IoManager.writeJsonDoc(ajson,file)
+            if self.controller.reportZip:
+                file.seek(0)
+                self.controller.reportZip.writestr(AJson, file.read())
+                file.close()
+                del file  # dereference
      
             roots = [ERoot_list, ('version', metaversion)]
             for s in self.summaryList:
@@ -296,7 +305,16 @@ class Summary(object):
             exml = makeXml(roots, None)
             #IoManager.writeXmlDoc(exml, os.path.join(str(self.controller.reportsFolder), EXml))
             ejson = makeJson(exml)
-            IoManager.writeJsonDoc(ejson, os.path.join(str(self.controller.reportsFolder), EJson))
+            if self.controller.reportZip:
+                file = io.BytesIO()
+            else:
+                file = os.path.join(self.controller.reportsFolder, EJson)
+            IoManager.writeJsonDoc(ejson,file)
+            if self.controller.reportZip:
+                file.seek(0)
+                self.controller.reportZip.writestr(EJson, file.read())
+                file.close()
+                del file  # dereference
         if self.controller.debugMode: innerWriteMetaFiles()
         else:
             try: innerWriteMetaFiles()
