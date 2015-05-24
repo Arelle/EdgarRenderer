@@ -15,11 +15,11 @@ from . import ErrorMgr
 
 # note that number pattern allows word before number like shares (1,234,567) (but would misfire on same in text block!)
 numberPattern = re.compile(r"\s*[_A-Za-z\xC0-\xD6\xD8-\xF6\xF8-\xFF\u0100-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]*"
-                           r"\s*([$�������]\s*)?[(]?\s*[+-]?[0-9,]+([.][0-9]*)?[)-]?\s*$")
+                           r"\s*([$€¥£]\s*)?[(]?\s*[+-]?[0-9,]+([.][0-9]*)?[)-]?\s*$")
 # word in num only allows non-numeric unicode character in first group
 # we could change to allow number after first alpha character (like in XmlValidate.py) but not sure it is necessary net
 wordInNumPattern = re.compile(r"\s*([_A-Za-z\xC0-\xD6\xD8-\xF6\xF8-\xFF\u0100-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]*)"
-                              r"\s*([$�������]\s*)?[(]?\s*[+-]?[0-9,]+([.][0-9]*)?[)-]?\s*$")
+                              r"\s*([$€¥£]\s*)?[(]?\s*[+-]?[0-9,]+([.][0-9]*)?[)-]?\s*$")
 dateTimePattern = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-2][0-9]:[0-6][0-9]:[0-6][0-9]$")
 datePattern = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 forbiddenChars = re.compile('[\\*?:/\[\]]')
@@ -135,7 +135,7 @@ class XlWriter(object):
                                     unitSymbol = mWordInNum.group(1) + ' '
                                     text = text.replace(unitSymbol, '').strip()
                                 else:
-                                    for c in '$�������':
+                                    for c in '$€¥£':
                                         if c in text:
                                             text = text.replace(c, '').strip()
                                             unitSymbol = c + ' '

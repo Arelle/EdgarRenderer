@@ -187,7 +187,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['deliveryFolder'] = 'Delivery'
         self.defaultValueDict['debugMode'] = str(False)
         self.defaultValueDict['errorsFolder'] = 'Errors'
-        self.defaultValueDict['excelXslt'] = None # HF BUG XLout crashes 'InstanceReport_XmlWorkbook.xslt'
+        self.defaultValueDict['excelXslt'] = 'InstanceReport_XmlWorkbook.xslt'
         self.defaultValueDict['failFile'] = 'errorLog.log'
         self.defaultValueDict['filingsFolder'] = 'Filings'
         self.defaultValueDict['htmlReportFormat'] = 'Complete'
