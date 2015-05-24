@@ -15,7 +15,54 @@ kernel access within the operating system to access insider information within p
 memory of a running instance.)
 
 Modifications to the original EdgarRenderer source code are done under the Arelle(r) 
-license and protected by the Arelle copyright.
+license and protected by usual Arelle copyright and license.  GitHub allows one to
+inspect the changes log of the plugin branch from the SEC contributed branch to identify
+modifications to the original.
+
+This code is in gitHub/arelle/EdgarRenderer the plugin branch.
+
+To debug under eclipse from a normal eclipse project of Arelle it is suggested to provide
+a soft link from the eclipse project's plugin directory to the directory containing a local
+copy of the EdgarRenderer plugin project.  Then the debugger can inspect and modify EdgarRenderer
+source code when debugging and inspecting Arelle.  On a Mac or Linux the command would be:
+
+   ln -s ...EdgarRenderer (parent of this file) ...arelle/plugin (the eclipse project directory of plugin)
+   add ...arelle/plugin/EdgarRenderer to your .gitignore file
+
+To run under in a server mode, with a single input zip (all in memory, not unpacked to
+the file system) and a single output zip (all in memory, not on the file system):
+
+a) when invoking via arelleCmdLine.py:
+
+   python3.4 arelleCmdLine.py 
+   -f "/mydir/test/amd.zip" 
+   -o "/mydir/test/out.zip" 
+   --plugins "/mydir/myplugins/EdgarRenderer" 
+   --disclosureSystem efm-pragmatic 
+   --debugMode
+   
+    Adding debugMode allows uncaught exceptions to provide a trace-back to eclipse, remove that
+    for production.  Internet connectivity is by default offline at SEC, so override in this case.
+    
+    If in a closed environment with all taxonomies in Taxonomy Packages or preloaded to cache, add
+       --internetConnectivity offline 
+
+
+b) when invoking via REST interface (built in server or cgi-bin server):
+
+    1) simple curl request or equivalent in code:
+    
+    curl -X POST "-HContent-type: application/zip" 
+        -T amd.zip 
+        -o out.zip 
+        --logFile log.xml  # specifies name of log file to return in zip and whether .txt or .xml
+        "http://localhost:8080/rest/xbrl/validation?efm-pragmatic&media=zip&plugins=EdgarRenderer"
+        
+    2) to not load EdgarRenderer dynamically, it must be active in plugins.json (as set up by GUI)
+    (sibling to the caches directoryexcept Mac where it's under ~/Library/Application Support/Arelle)
+    
+    then omit &plugins=EdgarRenderer
+        
 """
 
 from collections import defaultdict
@@ -144,7 +191,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['failFile'] = 'errorLog.log'
         self.defaultValueDict['filingsFolder'] = 'Filings'
         self.defaultValueDict['htmlReportFormat'] = 'Complete'
-        self.defaultValueDict['internetConnectivity'] = 'offline' 
+        self.defaultValueDict['internetConnectivity'] = 'online' # HF change to online default 'offline' 
         self.defaultValueDict['noEquity'] = str(False)
         self.defaultValueDict['processingFolder'] = 'Processing'
         self.defaultValueDict['processingFrequency'] = str(10)
@@ -614,7 +661,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         filesource = FileSource.openFileSource(options.entrypoint, self.cntlr, sourceZipStream)
             
         if responseZipStream:
-            self.reportZip = zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED, True)
+            self.reportZip = zipfile.ZipFile(responseZipStream, 'w', zipfile.ZIP_DEFLATED, True)
         elif options.zipOutputFile:
             self.reportZip = zipfile.ZipFile(options.zipOutputFile, 'w', zipfile.ZIP_DEFLATED, True)
         else:
@@ -638,12 +685,12 @@ class EdgarRenderer(Cntlr.Cntlr):
                 if self.errorsFolder is not None:  # You might not have an errors folder.
                     IoManager.handleFolder(self, self.errorsFolder, False, self.totalClean)             
                 self.dequeueInputZip(options)
-            if options.entrypoint is None:
+            if options.entrypoint is None and not sourceZipStream:
                 self.logInfo("No filing specified. Exiting renderer.")
                 return False
             print(options.entrypoint) # write filename to stdout so user can see what is processed; not needed in the log.
             if not IoManager.unpackInput(self, options, filesource): return False
-            if filesource.isZip and self.zipOutputFile is None: 
+            if filesource.isZip and self.zipOutputFile is None and not self.reportZip: 
                 # Output zip name same as input by default
                 self.zipOutputFile = basename(options.entrypoint)            
             modelXbrl = None        
@@ -694,6 +741,14 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.logInfo("Filing processing complete")
             
         if self.reportZip:
+            if responseZipStream:
+                if options.logFile:
+                    if options.logFile.endswith(".xml"):
+                        self.reportZip.writestr(options.logFile, self.cntlr.logHandler.getXml())
+                    else:
+                        self.reportZip.writestr(options.logFile, self.cntlr.logHandler.getText())
+                else:
+                    self.reportZip.writestr("log.txt", self.cntlr.logHandler.getText())
             self.reportZip.close()
         return success
     
@@ -825,7 +880,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.modelManager.modelXbrl.logger.messageLevelFilter = None
             self.modelManager.modelXbrl.log(messageLevel, messageCode, message, *messageArgs)
         else:
-            super().addToLog(message, messageArgs=messageArgs, messageCode=messageCode, file=file, level=messageLevel)
+            self.cntlr.addToLog(message, messageArgs=messageArgs, messageCode=messageCode, file=file, level=messageLevel)
             
     # Lowercase tokens apparently write to standard output??
             
