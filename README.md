@@ -10,3 +10,7 @@ domestic copyright protection. 17 U.S.C. 105.
 End user support is by e-mail direct to SEC at: Ask-OID@sec.gov
 
 Developer issue management is by the Jira Edgar Renderer project: https://arelle.atlassian.net/projects/ER
+
+This is the master branch, as contributed by SEC.  The plugin branch, https://github.com/Arelle/EdgarRenderer/tree/plugin, 
+reconfigures SEC's EdgarRenderer as a dynamically installable Arelle plugin.  The plugin provides EdgarRenderer features to existing integrated usage of Arelle by a command 
+line interface, by java and c# interface and by RESTful server interface.
