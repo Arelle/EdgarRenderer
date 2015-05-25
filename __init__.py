@@ -21,10 +21,12 @@ modifications to the original.
 
 This code is in gitHub/arelle/EdgarRenderer the plugin branch.
 
-To debug under eclipse from a normal eclipse project of Arelle it is suggested to provide
-a soft link from the eclipse project's plugin directory to the directory containing a local
-copy of the EdgarRenderer plugin project.  Then the debugger can inspect and modify EdgarRenderer
-source code when debugging and inspecting Arelle.  On a Mac or Linux the command would be:
+To debug under eclipse from a normal eclipse project of Arelle it is suggested to check out
+EdgarRenderer from GitHub under the arelle plugin directory, EdgarGenderer is entered to 
+.gitignore in the top level Arelle checkout.  Alternatively on a Mac or linux system one may
+soft link to the eclipse project's plugin directory from a different directory containing a local
+copy of the EdgarRenderer plugin project.  Either way eclipse can debug and modify EdgarRenderer
+source code when debugging and inspecting Arelle.  On a Mac or Linux the soft link command would be:
 
    ln -s ...EdgarRenderer (parent of this file) ...arelle/plugin (the eclipse project directory of plugin)
    add ...arelle/plugin/EdgarRenderer to your .gitignore file
@@ -41,14 +43,14 @@ a) when invoking via arelleCmdLine.py:
    --disclosureSystem efm-pragmatic 
    --debugMode
    
-    Adding debugMode allows uncaught exceptions to provide a trace-back to eclipse, remove that
+    Adding --debugMode allows uncaught exceptions to provide a trace-back to eclipse, remove that
     for production.  Internet connectivity is by default offline at SEC, so override in this case.
     
     If in a closed environment with all taxonomies in Taxonomy Packages or preloaded to cache, add
        --internetConnectivity offline 
 
 
-b) when invoking via REST interface (built in server or cgi-bin server):
+b) when invoking via REST interface (built in webserver or cgi-bin server):
 
     1) simple curl request or equivalent in code:
     
@@ -62,6 +64,11 @@ b) when invoking via REST interface (built in server or cgi-bin server):
     (sibling to the caches directoryexcept Mac where it's under ~/Library/Application Support/Arelle)
     
     then omit &plugins=EdgarRenderer
+    
+To build an installable cx_Freeze binary, (tested on Ubuntu), uncomment the entries in Arelle's
+setup.py that are marked for EdgarRenderer.
+    
+At this moment, Xlout.py requires openpyxl 2.1.4, it does not work right on openpyxl 2.2.x
         
 """
 

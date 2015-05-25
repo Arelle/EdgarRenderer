@@ -1720,10 +1720,10 @@ class Cell(object):
 
                 self.addToLog('Writing Figures= ' + pngname, messageCode='info')
 
-                if self.filing.fileNameBase:
-                    file = os.path.join(self.filing.fileNameBase, pngname)
-                elif self.filing.reportZip:
+                if self.filing.reportZip:
                     file = io.BytesIO()
+                elif self.filing.fileNameBase:
+                    file = os.path.join(self.filing.fileNameBase, pngname)
                 fig.savefig(file, bbox_inches='tight', dpi=150)
                 if self.filing.reportZip:
                     file.seek(0)

@@ -8,6 +8,9 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 """
 Convert Html Tables into Excel tables
+
+At this moment, Xlout.py requires openpyxl 2.1.4, it does not work with openpyxl 2.2.x
+
 """
 
 import io, os.path, re, datetime, lxml, decimal, collections, openpyxl.cell, openpyxl.styles, openpyxl.worksheet.dimensions
