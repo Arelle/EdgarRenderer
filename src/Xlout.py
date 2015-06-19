@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`re.Xlout`
+:mod:`EdgarRenderer.Xlout`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
 Data and content created by government employees within the scope of their employment 
@@ -11,7 +11,6 @@ Convert Html Tables into Excel tables
 """
 
 import os.path, re, datetime, lxml, decimal, collections, openpyxl.cell, openpyxl.styles, openpyxl.worksheet.dimensions
-import ErrorMgr
 
 # note that number pattern allows word before number like shares (1,234,567) (but would misfire on same in text block!)
 numberPattern = re.compile(r"\s*[_A-Za-z\xC0-\xD6\xD8-\xF6\xF8-\xFF\u0100-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]*"
@@ -37,8 +36,8 @@ class XlWriter(object):
         self.simplified_transform = lxml.etree.XSLT(lxml.etree.parse(controller.excelXslt))
         self.wb = openpyxl.Workbook(encoding='utf-8')
         self.sheetNames = set() # prevent duplicates
-        self.controller.logDebug(_('Excel writer initialized {}'.format(self.controller.entrypoint)),file=os.path.basename(__file__))
         self.workSheet = None
+        controller.logDebug(_('Excel writer initialized {}'.format(controller.entrypoint)),file=os.path.basename(__file__))
 
 
     def __repr__(self):
@@ -66,8 +65,10 @@ class XlWriter(object):
             sheetName = re.sub(forbiddenChars, '_', sheetName) # some characters not allowed in Sheet Names, we replace them with '_'
         except Exception:
             sheetName = 'nonAsciiName_' + str(reportNum)
-            message = ErrorMgr.getError('CANNOT_CREATE_SHEET_NAME').format(reportShortName, sheetName)
-            self.controller.logError(message,file=os.path.basename(__file__))
+            #message = ErrorMgr.getError('CANNOT_CREATE_SHEET_NAME').format(reportShortName, sheetName)
+            self.controller.logWarn(("Cannot convert {} to ASCII. The Excel work sheet will instead " \
+                                     "be labeled {}.").format(reportShortName, sheetName),
+                                     file=os.path.basename(__file__))
 
         # if there are duplicate names, disambiguate them.  we use casefold() because excel's sheet names aren't case sensitive, so
         # it thinks 'Dog' and 'dog' are the same sheet.
@@ -109,9 +110,11 @@ class XlWriter(object):
                         fmt = "General"
                         unitSymbol = ''
                         if dateTimePattern.match(text):
-                            cell.value = datetime.datetime(text)
+                            try: cell.value = datetime.datetime(text)
+                            except: cell.value = text
                         elif datePattern.match(text):
-                            cell.value = datetime.date(text)
+                            try: cell.value = datetime.date(text)
+                            except: cell.value = text
                         elif numberPattern.match(text):
                             if ',' in text:
                                 text = text.replace(',', '')
@@ -173,15 +176,15 @@ class XlWriter(object):
                             newWidth = min(int(w) * widthPerCharacter,maxWidth)
                             ws.column_dimensions[colLetter].width = newWidth if currentWidth is None else max(currentWidth,newWidth)                                   
                         except Exception as ex:
-                            message = ErrorMgr.getError('CANNOT_ADJUST_WIDTH').format(cell,colLetter, ex)
-                            self.controller.logError(self, message,file='Xlout.py')
-                            pass
+                            #message = ErrorMgr.getError('CANNOT_ADJUST_WIDTH').format(cell,colLetter, ex)
+                            self.controller.logError(("{} could not adjust width on column {}: {}").format(
+                                                      cell, colLetter, ex), file='Xlout.py')
                         return cell
                         
                     mergedAreas = {}  # colNumber: (colspan,lastrow)
                     for rowNum, trElt in enumerate(tableElt.iterchildren(tag="tr")):
                         # remove passed mergedAreas
-                        for mergeCol in [col
+                        for mergeCol in [col 
                                          for col, mergedArea in mergedAreas.items()
                                          if rowNum >= mergedArea[1]]:  # rowNum is 0-based, row is 1-based
                             del mergedAreas[mergeCol]
@@ -217,7 +220,9 @@ class XlWriter(object):
         except (lxml.etree.LxmlError, lxml.etree.XSLTError) as err:
             self.controller.logError(str(err.args),file='Xlout.py')
         except (Exception) as err:
-            self.controller.logError(err.message,file='Xlout.py')
+            try: message = err.message
+            except: message = str(getattr(err,'args',err))
+            self.controller.logError(message,file='Xlout.py')
 
 
 def tryExtractingTextNodes(text):

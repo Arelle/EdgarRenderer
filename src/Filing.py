@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`re.Filing`
+:mod:`EdgarRenderer.Filing`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
 Data and content created by government employees within the scope of their employment 
@@ -11,7 +11,7 @@ from gettext import gettext as _
 from collections import defaultdict
 import os, re, math, datetime, dateutil.relativedelta, lxml
 import arelle.ModelValue, arelle.XbrlConst
-import Cube, Embedding, Report, PresentationGroup, Summary, ErrorMgr, Utils, Xlout
+import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
 
 def mainFun(controller, modelXbrl, outputFolderName):
     filing = Filing(controller, modelXbrl, outputFolderName)
@@ -20,75 +20,98 @@ def mainFun(controller, modelXbrl, outputFolderName):
     sortedCubeList = sorted(filing.cubeDict.values(), key=lambda cube : cube.definitionText)
 
     for cube in sortedCubeList:
-        filing.mainFunDriverBeforeFlowThroughSuppression(cube)
+        filing.cubeDriverBeforeFlowThroughSuppression(cube)
+        if not cube.isEmbedded and not cube.noFactsOrAllFactsSuppressed:
+            embedding = Embedding.Embedding(filing, cube, [])
+            cube.embeddingList = [embedding]
+            filing.embeddingDriverBeforeFlowThroughSuppression(embedding)
 
     if not filing.hasEmbeddings:
-        filing.filterOutColumnsWhereAllElementsAreInOtherReports(sortedCubeList)
-        #filing.handleFlowThroughSuppression(sortedCubeList)
+        filing.filterOutColumnsWhereAllElementsAreInOtherReports(sortedCubeList) # otherwise known as flow through suppression
 
-    # WARNING -- right now, the only place that excludes from numbering is called before flow through, so we can do here
-    # might need to do later in the future though.
-    # i think flow through can also exclude from numbering?  so do this after flow through for now.
-    # number the cubes
-    nextFile = controller.nextFile
+    # this complicated way to number files is all about maintaining re2 compatibility
+    nextFileNum = controller.nextFileNum
     for cube in sortedCubeList:
         if not cube.excludeFromNumbering and len(cube.factMemberships) > 0:
             # even though there is embedding, and cubes might have more than one embedding and thus more than one report,
             # we still keep the fileNumber attribute on the cube and not the report, because if there are multiple embeddings
             # they all print in one file.
-            cube.fileNumber = nextFile
-            nextFile += 1
-            filing.addToLog(_('File R{!s} is {} {}')
-                              .format(cube.fileNumber, cube.linkroleUri, cube.definitionText)
-                              , messageCode='info')
-    
+            cube.fileNumber = nextFileNum
+            nextFileNum += 1
+            controller.logDebug(_('File R{!s} is {} {}').format(cube.fileNumber, cube.linkroleUri, cube.definitionText))
 
+            # we keep track of embedded cubes so that we know later if for some cubes, no embeddings were actually embedded.
+            if cube.isEmbedded:
+                filing.embeddedCubeSet.add(cube)
+
+    # handle excel writing
     xlWriter = None
-    if filing.hasEmbeddings:
-        # sort is a stable sort, so since this is already sorted by definition text, it will now be sorted first by
-        # whether it is embedded or not and then by definition text.  Cubes that are embedded will be at the beginning
-        # so that their reports will be there when it's time to embed them into cells of reports that are not embedded.
-        sortedCubeList = sorted(sortedCubeList, key=lambda cube : cube.isEmbedded, reverse = True)
-        if controller.excelXslt:
-            filing.addToLog(_("Excel XSLT is not applied to instance {} having embedded commands."
-                              ).format(filing.fileNameBase),messageCode='info')
-    elif controller.excelXslt:
-        xlWriter = controller.xlWriter
-        if not xlWriter:
-            controller.xlWriter = xlWriter = Xlout.XlWriter(controller, outputFolderName)
+    if controller.excelXslt:
+        if filing.hasEmbeddings:
+            controller.logDebug(_("Excel XSLT is not applied to instance {} having embedded commands.").format(
+                                filing.fileNameBase))
+        else:
+            xlWriter = controller.xlWriter
+            if not xlWriter:
+                controller.xlWriter = xlWriter = Xlout.XlWriter(controller, outputFolderName)
 
     #import win32process
     #print('memory '  + str(int(win32process.GetProcessMemoryInfo(win32process.GetCurrentProcess())['WorkingSetSize'] / (1024*1024))))
 
-    # hang onto a list of skipped facts before cube properties all get dereferenced.
-    skippedFactsList = []
-    for cube in sortedCubeList:
-        skippedFactsList += list(cube.skippedFactMembershipSet)
-    
     # handle the steps after flow through and then emit all of the XML and write the files
-    filing.addToLog(_('Generating rendered reports in {}').format(outputFolderName), messageCode='info')
+    controller.logDebug(_("Generating rendered reports in {}").format(outputFolderName))
     for cube in sortedCubeList:
         if cube.noFactsOrAllFactsSuppressed:
             for embedding in cube.embeddingList:
-                Utils.releaseUnneededMemory(embedding)
+                Utils.embeddingGarbageCollect(embedding)
+        elif cube.isEmbedded:
+            continue # unless cube.noFactsOrAllFactsSuppressed we want to save it for later when we embed it
         else:
-            for embedding in cube.embeddingList:
-                if embedding.isEmbeddingOrReportBroken:
-                    Utils.releaseUnneededMemory(embedding)
-                else:
-                    filing.mainFunDriverAfterFlowThroughSuppressionAndReleaseMemory(cube, embedding, xlWriter)
-    
-    controller.nextFile = filing.nextFile()
+            embedding = cube.embeddingList[0]
+            if not embedding.isEmbeddingOrReportBroken:
+                filing.reportDriverAfterFlowThroughSuppression(embedding, xlWriter)
+                filing.finishOffReportIfNotEmbedded(embedding)
+            Utils.embeddingGarbageCollect(embedding)
+        Utils.cubeGarbageCollect(cube)
+
+    # now we make sure that every cube referenced by embedded command facts actually gets embedded.  this might not happen
+    # if for example, the embedded command facts were all filtered out.  In that case, we make a generic embedding and
+    # write it to a file, just like we would any other cube that isn't embedded anywhere by an embedding command fact.
+    filing.disallowEmbeddings = True # this stops any more embeddings from happening
+
+    for cube in filing.embeddedCubeSet:
+        try:
+            if cube.noFactsOrAllFactsSuppressed:
+                continue
+        except AttributeError: # may happen if it has been garbage collected above because cube.noFactsOrAllFactsSuppressed
+            continue
+
+        embedding = Embedding.Embedding(filing, cube, []) # make a generic embedding
+        cube.embeddingList += [embedding]
+        cube.isEmbedded = False
+        filing.embeddingDriverBeforeFlowThroughSuppression(embedding)
+        if not embedding.isEmbeddingOrReportBroken:
+            # the second arg is None because we don't generate excel files for filings with embeddings.
+            filing.reportDriverAfterFlowThroughSuppression(embedding, None)
+            filing.finishOffReportIfNotEmbedded(embedding)
+
+        # it might have other embeddings, but they didn't get embedded and we don't need them anymore.
+        for embedding in cube.embeddingList:
+            Utils.embeddingGarbageCollect(embedding)
+        Utils.cubeGarbageCollect(cube)
+
+    if len(filing.reportSummaryList) > 0:
+        controller.nextFileNum = filing.reportSummaryList[-1].fileNumber + 1
+
     filing.unusedFactSet = set(modelXbrl.facts) - filing.usedOrBrokenFactSet
-    
-    for args in skippedFactsList:
-        (fact,role,cube,ignore,shortName) = args
+
+    for fact, role, cube, ignore, shortName in filing.skippedFactsList:
         if fact in filing.unusedFactSet:
-            controller.logWarn(cube.strExplainSkippedFact(fact,role,shortName))
-    
+            filing.strExplainSkippedFact(fact, role, shortName)
+
     if len(filing.unusedFactSet) > 0:
         filing.handleUncategorizedCube(xlWriter)
-        controller.nextUncategorizedFile -= 1
+        controller.nextUncategorizedFileNum -= 1
         
     controller.instanceSummaryList += [Summary.InstanceSummary(filing, modelXbrl)]  
     return True
@@ -108,11 +131,14 @@ class Filing(object):
         self.symbolLookupDict = {}
         self.presentationUnitToConceptDict = {}
 
+        self.embeddedCubeSet = set()
         self.usedOrBrokenFactSet = set()
         self.unusedFactSet = set()
+        self.skippedFactsList = []
 
         self.isRR = False
         self.hasEmbeddings = False
+        self.disallowEmbeddings = True
         self.isInvestTaxonomyInDTS = False
         for namespace in self.modelXbrl.namespaceDocs:
             if re.compile('http://xbrl.(sec.gov|us)/rr/20.*').match(namespace):
@@ -144,7 +170,6 @@ class Filing(object):
         self.startEndContextDict = {}
 
         self.numReports = 0
-        self.numBarcharts = 0
 
         self.controller = controller
         self.reportXmlFormat = 'xml' in controller.reportFormat.casefold()
@@ -165,9 +190,9 @@ class Filing(object):
         self.verboseHeadingsForDebugging = False
         self.ignoredPreferredLabels = [] # locations where the preferred label role was incompatible with the concept type.
         self.entrypoint = modelXbrl.modelDocument.basename
-        
+
     def __str__(self):
-        return "[Filing "+str(self.entrypoint)+"]"
+        return "[Filing {!s}]".format(self.entrypoint)
 
 
 
@@ -192,6 +217,37 @@ class Filing(object):
                 cube = Cube.Cube(self, linkroleUri)
                 self.cubeDict[linkroleUri] = cube
                 cube.presentationGroup = PresentationGroup.PresentationGroup(self, cube)
+
+            # handle axes across all cubes where defaults are missing in the definition or presentation linkbases
+            # presentation linkbase
+            parentChildRelationshipSet = self.modelXbrl.relationshipSet(arelle.XbrlConst.parentChild)
+            parentChildRelationshipSet.loadModelRelationshipsTo()
+            parentChildRelationshipSet.loadModelRelationshipsFrom()
+            # Find the axes in presentation groups
+            toDimensions = {c for c in parentChildRelationshipSet.modelRelationshipsTo.keys() if c.isDimensionItem}
+            fromDimensions = {c for c in parentChildRelationshipSet.modelRelationshipsFrom.keys() if c.isDimensionItem}
+            # definition linkbase
+            dimensionDefaultRelationshipSet = self.modelXbrl.relationshipSet(arelle.XbrlConst.dimensionDefault)
+            dimensionDefaultRelationshipSet.loadModelRelationshipsFrom()
+            for concept in set.union(fromDimensions,toDimensions):
+                defaultSet = {ddrel.toModelObject for ddrel in dimensionDefaultRelationshipSet.modelRelationshipsFrom[concept]}
+                for linkroleUri in {pcrel.linkrole for pcrel in parentChildRelationshipSet.modelRelationshipsFrom[concept]}:
+                    # although valid XBRL has at most one default, we don't assume it; instead we act like it's a set of defaults.
+                    # check to see whether the defaults are all children of the axis in this presentation group.
+                    defaultChildSet = {pcrel.toModelObject 
+                                       for pcrel in Utils.modelRelationshipsTransitiveFrom(parentChildRelationshipSet, concept, linkroleUri)
+                                       if pcrel.toModelObject in defaultSet}
+                    if (len(defaultSet)==0  # axis had no default at all
+                            or defaultSet != defaultChildSet):
+                        cube = self.cubeDict[linkroleUri]
+                        cube.defaultFilteredOutAxisSet.add(concept.qname)             
+
+            # print warnings of missing defaults for each cube
+            for cube in self.cubeDict.values():
+                if len(cube.defaultFilteredOutAxisSet) > 0:
+                    self.controller.logDebug("In ''{}'', the children of axes {} do not include their defaults."
+                                     .format(cube.shortName, cube.defaultFilteredOutAxisSet))
+
 
             # initialize elements
             for qname, factSet in self.modelXbrl.factsByQname.items():
@@ -240,21 +296,26 @@ class Filing(object):
                             qnameContextIDUnitStr = 'qname {!s}, context {}'.format(firstFact.qname, firstFact.contextID)
                             if firstFact.unit is not None:
                                 qnameContextIDUnitStr += ', unit ' + firstFact.unitID
-                            message = ErrorMgr.getError('DUPLICATE_FACT_SUPPRESSION').format(qnameContextIDUnitStr, lineNumOfFactWeAreKeeping, ', '.join(discardedLineNumberList))
-                            self.addToLog(message, messageCode='warn')
+                            #message = ErrorMgr.getError('DUPLICATE_FACT_SUPPRESSION').format(qnameContextIDUnitStr, lineNumOfFactWeAreKeeping, ', '.join(discardedLineNumberList))
+                            self.controller.logWarn("There are multiple facts with {}. The fact on line {} of the instance " \
+                                                    "document will be rendered, and the rest at line(s) {} will not.".format(
+                                                    qnameContextIDUnitStr, lineNumOfFactWeAreKeeping,
+                                                    ', '.join(discardedLineNumberList)))
 
                 for fact in factSet: # we only want one thing, but we don't want to pop from the set so we "loop" and then break right away
 
                     elementBroken = False
 
                     if fact.concept is None:
-                        conceptErrStr = ErrorMgr.getError('FACT_DECLARATION_BROKEN').format(qname)
-                        self.addToLog(conceptErrStr, messageCode='warn')
+                        #conceptErrStr = ErrorMgr.getError('FACT_DECLARATION_BROKEN').format(qname)
+                        self.controller.logWarn("The element declaration for {}, or one of its facts, is broken. They will all be " \
+                                                "ignored.".format(qname))
                         elementBroken = True
 
                     elif fact.concept.type is None:
-                        typeErrStr = ErrorMgr.getError('TYPE_DECLARATION_BROKEN').format(qname)
-                        self.addToLog(typeErrStr, messageCode='warn')
+                        #typeErrStr = ErrorMgr.getError('The Type declaration for Element {} is either broken or missing. The Element will be ignored.').format(qname)
+                        self.controller.logWarn("The Type declaration for Element {} is either broken or missing. The " \
+                                                "Element will be ignored.".format(qname))
                         elementBroken = True
 
                     if fact.context is None or elementBroken: # we will print the error if firstContext is broken later
@@ -287,20 +348,25 @@ class Filing(object):
 
         for fact in facts:
             if fact.isTuple:
-                tupleErrStr = ErrorMgr.getError('UNSUPPORTED_TUPLE_FOUND').format(fact.qname)
-                self.addToLog(tupleErrStr, messageCode='warn')
+                #tupleErrStr = ErrorMgr.getError('UNSUPPORTED_TUPLE_FOUND').format(fact.qname)
+                self.controller.logWarn("A Fact with Qname {} is a Tuple and Tuples are forbidden by the EDGAR Filer " \
+                                        "Manual. The Fact will be ignored.".format(fact.qname))
                 self.usedOrBrokenFactSet.add(fact) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue
 
             if fact.context is None:
-                contextErrStr1 = ErrorMgr.getError('CONTEXT_BROKEN').format(fact.qname, fact.value)
-                self.addToLog(contextErrStr1, messageCode='warn')
+                #contextErrStr1 = ErrorMgr.getError('CONTEXT_BROKEN').format(fact.qname, fact.value)
+                self.controller.logWarn("Either the Context of a Fact with Qname {}, or the reference to the Context " \
+                                        "in the Fact is broken. The Fact will be ignored. The value of this Fact " \
+                                        "is {}.".format(fact.qname, fact.value))
                 self.usedOrBrokenFactSet.add(fact) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue
 
             if fact.context.scenario is not None:
-                scenarioErrStr = ErrorMgr.getError('IMPROPER_CONTEXT_FOUND').format(fact.context.id)
-                self.addToLog(scenarioErrStr, messageCode='warn')
+                #scenarioErrStr = ErrorMgr.getError('IMPROPER_CONTEXT_FOUND').format(fact.context.id)
+                self.controller.logWarn("The Context {} has a scenario attribute. Such attributes are forbidden by " \
+                                        "the EDGAR Filer Manual. This filing will not validate, but this should not " \
+                                        "interfere with rendering".format(fact.contextID))
             try:
                 element = self.elementDict[fact.qname]
             except KeyError:
@@ -354,12 +420,16 @@ class Filing(object):
                 dimensionConcept = arelleDimension.dimension
                 memberConcept = arelleDimension.member
                 if dimensionConcept is None:
-                    errStr1 = ErrorMgr.getError('XBRL_DIMENSIONS_INVALID_AXIS_BROKEN').format(fact.context.id, fact.qname)
-                    self.addToLog(errStr1, messageCode='warn')
+                    #errStr1 = ErrorMgr.getError('XBRL_DIMENSIONS_INVALID_AXIS_BROKEN').format(fact.context.id, fact.qname)
+                    self.controller.logWarn("One of the Axes referenced by the Context {} of Fact {}, or the reference " \
+                                            "itself, is broken. The Axis will be ignored for this Fact.".format(
+                                            fact.contextID, fact.qname))
 
                 elif memberConcept is None:
-                    errStr2 = ErrorMgr.getError('XBRL_DIMENSIONS_INVALID_AXIS_MEMBER_BROKEN').format(dimensionConcept.qname, fact.qname, fact.context.id)
-                    self.addToLog(errStr2, messageCode='warn')
+                    #errStr2 = ErrorMgr.getError('XBRL_DIMENSIONS_INVALID_AXIS_MEMBER_BROKEN').format(dimensionConcept.qname, fact.qname, fact.context.id)
+                    self.controller.logWarn("The Member of Axis {} is broken as referenced by the Fact {} with Context {}. " \
+                                            "The Axis and Member will be ignored for this Fact.".format(dimensionConcept.qname,
+                                            fact.qname, fact.contextID))
 
                 else:
                     try:
@@ -431,9 +501,11 @@ class Filing(object):
             if token0Lower in {'row', 'column'}:
                 listToAddToOutput += [token0Lower]
             else:
-                errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(fact)
-                message = ErrorMgr.getError('EMBEDDED_COMMAND_TOKEN_NOT_ROW_OR_COLUMN_ERROR').format(token0, tokenCounter, errorStr)
-                self.addToLog(message, messageCode='error')
+                errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
+                #message = ErrorMgr.getError('EMBEDDED_COMMAND_TOKEN_NOT_ROW_OR_COLUMN_ERROR').format(token0, tokenCounter, errorStr)
+                self.controller.logError("The token {}, at position{} in the list of tokens in {}, is malformed. " \
+                                         "An individual command can only start with row or column. These embedded " \
+                                         "commands will not be rendered.".format(token0, tokenCounter, errorStr))
                 return False
 
 
@@ -451,15 +523,19 @@ class Filing(object):
                     commandTextList.pop(0)
                     tokenCounter += 1
                 tokenCounter += 1
-                errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(fact)
-                message = ErrorMgr.getError('EMBEDDED_COMMAND_SEPARATOR_USED_WARNING').format(token1, tokenCounter, errorStr)
-                self.addToLog(message, messageCode='warn')
+                errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
+                #message = ErrorMgr.getError('EMBEDDED_COMMAND_SEPARATOR_USED_WARNING').format(token1, tokenCounter, errorStr)
+                self.controller.logInfo("The token at position {} in the list of tokens in {}, is separator. " \
+                                        "Currently, this keyword is not supported and was ignored.".format(
+                                        tokenCounter, errorStr))
                 continue
 
             else:
-                errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(fact)
-                message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_FIRST_TOKEN_ERROR').format(token1, tokenCounter, errorStr)
-                self.addToLog(message, messageCode='error')
+                errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
+                #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_FIRST_TOKEN_ERROR').format(token1, tokenCounter, errorStr)
+                self.controller.logError("The token at position {} in the list of tokens in {}, is malformed. " \
+                                         "The axis name can only be period, unit, primary or have an underscore. " \
+                                         "These embedded commands will not be rendered.".format(tokenCounter, errorStr))
                 return False
 
             token2 = commandTextList.pop(0)
@@ -469,18 +545,24 @@ class Filing(object):
                 listToAddToOutput += [token2Lower]
             elif token2Lower == 'grouped':
                 listToAddToOutput += ['compact']
-                errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(fact)
-                message = ErrorMgr.getError('EMBEDDED_COMMAND_GROUPED_USED_WARNING').format(token2, tokenCounter, errorStr)
-                self.addToLog(message, messageCode='warn')
+                errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
+                #message = ErrorMgr.getError('EMBEDDED_COMMAND_GROUPED_USED_WARNING').format(token2, tokenCounter, errorStr)
+                self.controller.logInfo("The token at position {} in the list of tokens in {}, is grouped. " \
+                                        "Currently, this keyword is not supported and was replaced with compact.".format(
+                                        tokenCounter, errorStr))
             elif token2Lower == 'unitcell':
                 listToAddToOutput += ['compact']
-                errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(fact)
-                message = ErrorMgr.getError('EMBEDDED_COMMAND_UNITCELL_USED_WARNING').format(token2, tokenCounter, errorStr)
-                self.addToLog(message, messageCode='warn')
+                errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
+                #message = ErrorMgr.getError('EMBEDDED_COMMAND_UNITCELL_USED_WARNING').format(token2, tokenCounter, errorStr)
+                self.controller.logInfo("The token at position {} in the list of tokens in {}, is unitcell. " \
+                                        "Currently, this keyword is not supported and was replaced with compact.".format(
+                                        tokenCounter, errorStr))
             else:
-                errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(fact)
-                message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_SECOND_TOKEN_ERROR').format(token2, tokenCounter, errorStr)
-                self.addToLog(message, messageCode='error')
+                errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
+                #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_SECOND_TOKEN_ERROR').format(token2, tokenCounter, errorStr)
+                self.controller.logError("The token {}, at position {} in the list of tokens in {}, is malformed. The second token " \
+                                         "of an embedded command can only be compact, grouped, nodisplay or unitcell. These " \
+                                         "embedded commands will not be rendered.".format(token2, tokenCounter, errorStr))
                 return False
 
             # there could be multiple members, so grab them all here
@@ -495,15 +577,20 @@ class Filing(object):
                 elif tokenMember == '*' and len(tempList) == 1:
                     listToAddToOutput += [tokenMember]
                 else:
-                    errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(fact)
-                    message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_MEMBER_NAME_ERROR').format(tokenMember, tokenCounter, errorStr)
-                    self.addToLog(message, messageCode='error')
+                    errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
+                    #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_MEMBER_NAME_ERROR').format(tokenMember, tokenCounter, errorStr)
+                    self.controller.logError("The token {}, at position {} in the list of tokens in {}, is malformed. " \
+                                             "The member name must either be * or have an underscore, and if there is " \
+                                             "a list of members for this axis, they all must contain an underscore. " \
+                                             "These embedded commands will not be rendered.".format(
+                                             tokenMember, tokenCounter, errorStr))
                     return False
 
             outputList += [listToAddToOutput]
 
         cube.isEmbedded = True
         self.hasEmbeddings = True
+        self.disallowEmbeddings = False
         
         embedding = Embedding.Embedding(self, cube, outputList, factThatContainsEmbeddedCommand = fact)
         cube.embeddingList += [embedding]
@@ -542,8 +629,8 @@ class Filing(object):
         self.startEndContextDict = {}
 
         uncategorizedCube = Cube.Cube(self, 'http://xbrl.sec.gov/role/uncategorizedFacts')
-        uncategorizedCube.fileNumber = self.controller.nextUncategorizedFile
-        uncategorizedCube.shortName = uncategorizedCube.definitionText = 'Uncategorized Items - '+self.entrypoint
+        uncategorizedCube.fileNumber = self.controller.nextUncategorizedFileNum
+        uncategorizedCube.shortName = uncategorizedCube.definitionText = 'Uncategorized Items - ' + self.entrypoint
         uncategorizedCube.isElements = True
         
         # now run populateAndLinkClasses() again and let it re-populate and re-link everything from scratch but let it do so
@@ -551,17 +638,19 @@ class Filing(object):
         self.cubeDict[uncategorizedCube.linkroleUri] = uncategorizedCube
         self.populateAndLinkClasses(uncategorizedCube = uncategorizedCube)
 
-        self.mainFunDriverBeforeFlowThroughSuppression(uncategorizedCube)
+        self.cubeDriverBeforeFlowThroughSuppression(uncategorizedCube)
+        embedding = Embedding.Embedding(self, uncategorizedCube, [])
+        uncategorizedCube.embeddingList = [embedding]
+        self.embeddingDriverBeforeFlowThroughSuppression(embedding)
+        self.reportDriverAfterFlowThroughSuppression(embedding, xlWriter)
+        self.finishOffReportIfNotEmbedded(embedding)
+        Utils.embeddingGarbageCollect(embedding)
+        Utils.cubeGarbageCollect(uncategorizedCube)
 
-        embedding = uncategorizedCube.embeddingList[0]
-
-        self.mainFunDriverAfterFlowThroughSuppressionAndReleaseMemory(uncategorizedCube, embedding, xlWriter)
 
 
 
-
-
-    def mainFunDriverBeforeFlowThroughSuppression(self, cube):
+    def cubeDriverBeforeFlowThroughSuppression(self, cube):
         if cube.isUncategorizedFacts:
             cube.presentationGroup.generateUncategorizedFactsPresentationGroup()
         else:
@@ -571,64 +660,79 @@ class Filing(object):
             cube.presentationGroup.startPreorderTraversal()
             if cube.noFactsOrAllFactsSuppressed:
                 return
+            cube.areTherePhantomAxesInPGWithNoDefault()
+            if cube.noFactsOrAllFactsSuppressed:
+                return
+
             cube.checkForTransposedUnlabeledAndElements()
             if len(cube.periodStartEndLabelDict) > 0:
                 cube.handlePeriodStartEndLabel() # needs preferred labels from the presentationGroup
-            cube.DetermineAxesWhereDefaultFilteredOut()
 
         cube.populateUnitPseudoaxis()
         cube.populatePeriodPseudoaxis()
-        
+
         if self.controller.debugMode:
             cube.printCube()
 
-        if len(cube.embeddingList) == 0: # add the non-embedded cube to the end, the rest will plug into this one.
-            cube.embeddingList = [Embedding.Embedding(self, cube, [])]
 
-        for embedding in cube.embeddingList:
-            embedding.generateStandardEmbeddedCommandsFromPresentationGroup()
-            if cube.isTransposed:
-                embedding.handleTransposedByModifyingCommandText()
-            embedding.buildAndProcessCommands()
-            if embedding.isEmbeddingOrReportBroken:
-                continue
+    def embeddingDriverBeforeFlowThroughSuppression(self, embedding):
+        cube = embedding.cube
 
-            embedding.processOrFilterFacts()
-            if embedding.isEmbeddingOrReportBroken:
-                continue
+        embedding.generateStandardEmbeddedCommandsFromPresentationGroup()
+        if cube.isTransposed:
+            embedding.handleTransposedByModifyingCommandText()
+        embedding.buildAndProcessCommands()
+        if embedding.isEmbeddingOrReportBroken:
+            return
 
-            embedding.possiblyReorderUnitsAfterTheFactAccordingToPresentationGroup()
+        embedding.processOrFilterFacts()
+        if embedding.isEmbeddingOrReportBroken:
+            return
 
-            if self.controller.debugMode:
-                embedding.printEmbedding()
+        embedding.possiblyReorderUnitsAfterTheFactAccordingToPresentationGroup()
 
-            report = embedding.report = Report.Report(self, cube, embedding)
-            report.generateRowsOrCols('col', sorted(embedding.factAxisMemberGroupList, key=lambda thing: thing.axisMemberPositionTupleColList))
+        if self.controller.debugMode:
+            embedding.printEmbedding()
 
-            # this is because if the {Elements} view is used, then you might have lots of facts right next to each other with the same qname
-            # this is fine, but each time you render, they might appear in a different order.  so this will sort the facts by value
-            # so that each run the same facts don't appear in different orders.
-            if cube.isElements:
-                sortedFAMGL = sorted(embedding.factAxisMemberGroupList, key=lambda thing: (thing.axisMemberPositionTupleRowList, thing.fact.value))
-            else:
-                sortedFAMGL = sorted(embedding.factAxisMemberGroupList, key=lambda thing: thing.axisMemberPositionTupleRowList)
-            report.generateRowsOrCols('row', sortedFAMGL)
+        report = embedding.report = Report.Report(self, cube, embedding)
+        report.generateRowsOrCols('col', sorted(embedding.factAxisMemberGroupList, key=lambda thing: thing.axisMemberPositionTupleColList))
 
-            if not cube.isElements:
+        # this is because if the {Elements} view is used, then you might have lots of facts right next to each other with the same qname
+        # this is fine, but each time you render, they might appear in a different order.  so this will sort the facts by value
+        # so that each run the same facts don't appear in different orders.
+        if cube.isElements:
+            sortedFAMGL = sorted(embedding.factAxisMemberGroupList, key=lambda thing: (thing.axisMemberPositionTupleRowList, thing.fact.value))
+        else:
+            sortedFAMGL = sorted(embedding.factAxisMemberGroupList, key=lambda thing: thing.axisMemberPositionTupleRowList)
+        report.generateRowsOrCols('row', sortedFAMGL)
+
+        if not cube.isElements:
+            if self.hasEmbeddings:
+                report.decideWhetherToRepressPeriodHeadings()
+            if not cube.isUnlabeled:
                 report.promoteAxes()
 
-                if report.isUnitsAxisOnRowsOrColumns == 'row':
-                    report.mergeRowsOrColsIfUnitsCompatible('row', report.rowList)
-                elif report.isUnitsAxisOnRowsOrColumns == 'col':
-                    report.mergeRowsOrColsIfUnitsCompatible('col', report.colList)
-                if report.isPeriodAxisOnRowsOrColumns == 'row':
-                    report.mergeRowsOrColsInstantsIntoDurationsIfUnitsCompatible('row', report.rowList)
-                elif report.isPeriodAxisOnRowsOrColumns == 'col':
-                    report.mergeRowsOrColsInstantsIntoDurationsIfUnitsCompatible('col', report.colList)
-                report.hideRedundantColumns()
+            if embedding.rowUnitPosition != -1:
+                report.mergeRowsOrColsIfUnitsCompatible('row', report.rowList)
+            elif embedding.columnUnitPosition != -1:
+                report.mergeRowsOrColsIfUnitsCompatible('col', report.colList)
 
-    def mainFunDriverAfterFlowThroughSuppressionAndReleaseMemory(self, cube, embedding, xlWriter):
+            if embedding.rowPeriodPosition != -1:
+                report.mergeRowsOrColsInstantsIntoDurationsIfUnitsCompatible('row', report.rowList)
+            elif embedding.columnPeriodPosition != -1:
+                report.mergeRowsOrColsInstantsIntoDurationsIfUnitsCompatible('col', report.colList)
+
+            report.hideRedundantColumns()
+
+
+    def reportDriverAfterFlowThroughSuppression(self, embedding, xlWriter):
         report = embedding.report
+        cube = embedding.cube
+
+        if embedding.rowPeriodPosition != -1:
+            report.HideAdjacentInstantRows()
+        elif cube.isStatementOfCashFlows:
+            self.RemoveStuntedCashFlowColumns(report,cube)
 
         report.scaleUnitGlobally()
 
@@ -643,21 +747,19 @@ class Filing(object):
         #if len(embedding.groupedAxisQnameSet) > 0:
         #    report.handleGrouped()
 
-        if cube.isElements or not cube.isEmbedded:            
-            if      (report.isPeriodAxisOnRowsOrColumns == 'col' or
+        if cube.isElements or not cube.isEmbedded:
+            if      (embedding.columnPeriodPosition != -1 or
                      {command.pseudoAxis for command in embedding.rowCommands}.isdisjoint(self.segmentHeadingStopList)):
                 report.makeSegmentTitleRows()
 
-            # if report.rowPrimaryPosition != -1, then primary elements aren't on the rows, so no abstracts to add
-            if report.rowPrimaryPosition != -1 and not cube.isUnlabeled:
+            # if embedding.rowPrimaryPosition != -1, then primary elements aren't on the rows, so no abstracts to add
+            if embedding.rowPrimaryPosition != -1 and not cube.isUnlabeled:
                 report.addAbstracts()
-                
-        if report.isPeriodAxisOnRowsOrColumns=='row':
-            report.HideAdjacentInstantRows()
-        elif cube.isStatementOfCashFlows:
-            self.RemoveStuntedCashFlowColumns(report,cube)
 
-        report.generateRowAndOrColHeadings()
+        if cube.isElements:
+            report.generateRowAndOrColHeadingsForElements()
+        else:
+            report.generateRowAndOrColHeadingsGeneralCase()
 
         report.emitRFile()
 
@@ -666,16 +768,12 @@ class Filing(object):
             xlWriter.createWorkSheet(cube.fileNumber, cube.shortName)
             xlWriter.buildWorkSheet(report)
 
-        if not cube.isEmbedded:
-            reportSummary = ReportSummary()
-            report.createReportSummary(reportSummary)
-            report.writeHtmlAndOrXmlFiles(reportSummary)
-            self.reportSummaryList += [reportSummary]
 
-            # if the cube is embedded, we need to hold on to it, since we might not have embedded it yet.
-            # but once we embed it, we garbage collect it in the cell function insertEmbeddingOrBarChartEmbedding()
-            Utils.releaseUnneededMemory(embedding)
-
+    def finishOffReportIfNotEmbedded(self, embedding):
+        reportSummary = ReportSummary()
+        embedding.report.createReportSummary(reportSummary)
+        embedding.report.writeHtmlAndOrXmlFiles(reportSummary)
+        self.reportSummaryList += [reportSummary]
 
 
 
@@ -691,13 +789,12 @@ class Filing(object):
             minFacts = min(len(col.factList) for col in visibleColumns if col.startEndContext.numMonths==maxMonths)
             minToKeep = math.floor(.25*minFacts)
             for col in visibleColumns:
-                if (col.startEndContext.numMonths < maxMonths
-                    and len(col.factList) < minToKeep):
-                    self.controller.logInfo(("Columns in cash flow ''{}'' have maximum duration {} months and at least {} values. "+
-                                  "Shorter duration columns must have at least one fourth ({}) as many values. "+
+                if col.startEndContext.numMonths < maxMonths and len(col.factList) < minToKeep:
+                    self.controller.logInfo(("Columns in cash flow ''{}'' have maximum duration {} months and at least {} " \
+                                  "values. Shorter duration columns must have at least one fourth ({}) as many values. " \
                                   "Column '{}' is shorter ({} months) and has only {} values, so it is being removed.")
-                                  .format(cube.shortName,maxMonths,minFacts,minToKeep,col.startEndContext,col.startEndContext.numMonths,len(col.factList))
-                                  )   
+                                  .format(cube.shortName, maxMonths, minFacts, minToKeep, col.startEndContext,
+                                  col.startEndContext.numMonths,len(col.factList)))
                     col.isHidden = True
                     didWeHideAnyCols = True
                     remainingVisibleColumns.remove(col)
@@ -777,21 +874,34 @@ class Filing(object):
                 cube.embeddingList[0].hasElements = elementQnamesThatWillBeKeptProvidingThatWeHideTheseCols # update hasElements, might have less now
                 for col in columnsToKill:
                     col.isHidden = True
-                    self.addToLog('{} column {!s} was just killed'.format(cube.linkroleUri, col.index))
 
+                self.controller.logInfo("In ''{}'', column(s) {!s} are contained in other reports, so were removed by flow through suppression.".format(
+                                            cube.shortName, ', '.join([str(col.index + 1) for col in columnsToKill])))
                 Utils.hideEmptyRows(report.rowList)
 
 
+    def strExplainSkippedFact(self, fact, role, shortName):
+        # we skipped over this fact because it could not be placed
+        # Produce a string explaining for this instant fact why it could not be presented 
+        # with a periodStart or periodEnd label in this presentation group.
+        qname = fact.qname
+        value = Utils.strFactValue(fact, preferredLabel=role)
+        endTime = fact.context.period.stringValue.strip()
+        word = 'Starting or Ending'
+        if role is not None:
+            role = role.rsplit('/')[-1]
+            if 'Start' in role:
+                word = 'starting'
+            elif 'End' in role:
+                word = 'ending'
+        #message = ErrorMgr.getError('SKIPPED_FACT_WARNING').format(shortName,qname,value,role,word,endTime)
+        self.controller.logWarn("In ''{}'', fact {} with value {} and preferred label {}, was not shown because there are " \
+                                "no facts in a duration {} at {}. Change the preferred label role or add facts.".format(
+                                shortName, qname, value, role, word, endTime))
 
 
 
-    def addToLog(self,message,messageCode='debug',messageArgs=(),file='Filing.py'):
-        self.controller.addToLog(message, messageCode=messageCode, messageArgs=messageArgs, file=file)
 
-
-    def nextFile(self):
-        if len(self.reportSummaryList)==0: return 1
-        return self.reportSummaryList[-1].fileNumber + 1
 
 class ReportSummary(object):
     def __init__(self):
@@ -871,97 +981,3 @@ class Element(object):
         self.arelleConcept = arelleConcept
     def linkCube(self, cube):
         self.inCubes[cube.linkroleUri] = cube
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#===============================================================================
-#     # to do, take out linkrole uri's and prints.  only for testing.
-#     def handleFlowThroughSuppression(self, sortedCubeList):
-#         reportList = []
-#         for cube in sortedCubeList:
-#             if not cube.noFactsOrAllFactsSuppressed and not cube.isElements:
-#                 for embedding in cube.embeddingList:
-#                     if not embedding.isEmbeddingOrReportBroken:
-#                         report = embedding.report
-#                         reportList += [(report, cube.linkroleUri)]
-# 
-#                         # this is just for speed.  better to convert lists to sets only once, rather than each time.
-#                         for row in report.rowList:
-#                             row.factSet = set(row.factList)
-#                         for col in report.colList:
-#                             col.factSet = set(col.factList)
-# 
-#         reversedReportList = reportList.copy()
-#         reversedReportList.reverse()
-#         for reportToTest, reportToTestLinkroleUri in reportList:
-#             if not reportToTest.cube.isStatementOfEquity:
-#                 self.testEachRowAndCol(reversedReportList, reportToTest, reportToTestLinkroleUri, reportToTest.rowList, 'row')
-#             self.testEachRowAndCol(reversedReportList, reportToTest, reportToTestLinkroleUri, reportToTest.colList, 'column')
-# 
-#             if len(reportToTest.factSetForFlowThroughSuppression) == 0:
-#                 message = ErrorMgr.getError('FLOWTHROUGH_SUPPRESSION').format(reportToTest.cube.linkroleUri)
-#                 self.addToLog(message, messageCode='Info')
-#                 reportToTest.embedding.isEmbeddingOrReportBroken = True
-# 
-# 
-#     def testEachRowAndCol(self, reversedReportList, reportToTest, reportToTestLinkroleUri, rowOrColList, rowOrColStr):
-#         for rowOrColToTest in rowOrColList:
-#             if not rowOrColToTest.isHidden:
-#                 for reportToTestAgainst, reportToTestAgainstLinkroleUri in reversedReportList:
-# 
-#                     # < tests proper subset
-#                     # here we are checking a row or col against an entire report.  If the row or col is not in the entire report, stop
-#                     if (reportToTest != reportToTestAgainst and
-#                         rowOrColToTest.factSet < reportToTestAgainst.factSetForFlowThroughSuppression):
-# 
-#                         # since rowOrColToTest is contained in the report, we check to see if it is a proper subset of
-#                         # any of the rows or cols of the report.  it might not be.  if it is, we stop.
-#                         returnValueRows = self.findContainingRowOrCol(rowOrColToTest, reportToTest, reportToTestLinkroleUri, rowOrColStr,
-#                                                                       reportToTestAgainstLinkroleUri, 'row', reportToTestAgainst.rowList)
-#                         if returnValueRows:
-#                             break
-# 
-#                         returnValueCols = self.findContainingRowOrCol(rowOrColToTest, reportToTest, reportToTestLinkroleUri, rowOrColStr,
-#                                                                       reportToTestAgainstLinkroleUri, 'col', reportToTestAgainst.colList)
-#                         if returnValueCols:
-#                             break
-# 
-# 
-#     def findContainingRowOrCol(self, rowOrColToTest, reportToTest, reportToTestLinkroleUri, rowOrColToTestStr, 
-#                                reportToTestAgainstLinkroleUri, rowOrColToTestAgainstStr, reportToTestAgainstRowOrColList):
-#         for rowOrColToTestAgainst in reportToTestAgainstRowOrColList:
-#             if not rowOrColToTestAgainst.isHidden and rowOrColToTest.factSet < rowOrColToTestAgainst.factSet:
-# 
-#                 self.addToLog('{} {} {}'.format(rowOrColToTestStr, rowOrColToTest.index, reportToTestLinkroleUri))
-#                 for fact in sorted(rowOrColToTest.factList,        key=lambda fact : fact.value):
-#                     if fact.value:
-#                         self.addToLog(fact.value)
-# 
-#                 self.addToLog('{} {} {}'.format(rowOrColToTestAgainstStr, rowOrColToTestAgainst.index, reportToTestAgainstLinkroleUri))
-#                 for fact in sorted(rowOrColToTestAgainst.factList, key=lambda fact : fact.value):
-#                     if fact.value:
-#                         self.addToLog(fact.value)
-# 
-#                 self.addToLog('\n\n')
-# 
-#                 rowOrColToTest.isHidden = True
-#                 reportToTest.factSetForFlowThroughSuppression -= rowOrColToTest.factSet
-#                 reportToTest.logList += ['Process Flow-Through: Removing ' + rowOrColToTestStr + ' ' + ' | '.join(rowOrColToTest.headingList)]
-#                 return True
-#===============================================================================

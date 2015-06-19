@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`re.Embedding`
+:mod:`EdgarRenderer.Embedding`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
 Data and content created by government employees within the scope of their employment 
@@ -9,7 +9,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 
 from collections import defaultdict
 import arelle.ModelValue
-import Utils, ErrorMgr
+import Utils
 
 class FactAxisMemberGroup(object):
     def __init__(self, fact, preferredLabel = None):
@@ -37,6 +37,7 @@ class FactAxisMember(object):
 class Embedding(object):
     def __init__(self, filing, cube, commandTextListOfLists, factThatContainsEmbeddedCommand=None):
         self.filing = filing
+        self.controller = filing.controller
         self.cube = cube
         self.commandTextListOfLists = commandTextListOfLists
         self.setOfGivenAxes = set()
@@ -48,11 +49,18 @@ class Embedding(object):
         self.unitsWeAreKeepingSet = set()
         self.rowCommands = []
         self.colCommands = []
-        self.groupedAxisQnameSet = set()
+        #self.groupedAxisQnameSet = set()
         self.factAxisMemberGroupList = []
         self.hasElementsAndElementMemberPairs = set()
         self.isEmbeddingOrReportBroken = False
         self.hasDiscoveredDurations = False
+
+        self.rowPrimaryPosition = None
+        self.columnPrimaryPosition = None
+        self.rowUnitPosition = None
+        self.columnUnitPosition = None
+        self.rowPeriodPosition = None
+        self.columnPeriodPosition = None
 
 
     def handleTransposedByModifyingCommandText(self):
@@ -65,7 +73,8 @@ class Embedding(object):
 
     def generateStandardEmbeddedCommandsFromPresentationGroup(self):
         axes = set()
-        # we make this orderedListOfOrderAxisQnameTuples, instead of sorting the dict, just to remove period, unit and primary which order = None.
+        # we make this orderedListOfOrderAxisQnameTuples, instead of sorting the dict, just to remove period, unit and primary
+        # which order = None.
         orderedListOfOrderAxisQnameTuples = []
         for pseudoaxisQname, (ignore, presentationGroupOrderForAxis) in self.cube.axisAndMemberOrderDict.items():
             axes.add(pseudoaxisQname)
@@ -103,11 +112,11 @@ class Embedding(object):
             if len(self.cube.unitAxis) > 0:
                 self.commandTextListOfLists += [['column', 'unit', 'compact', '*']]
 
-            if self.filing.controller.debugMode:  # when in debug mode elevate this to the Filing Summary log.
-                self.filing.controller.logInfo("''{}'' moved {} to Columns and {} to rows."
-                                               .format(self.cube.shortName, self.localnamesMovedToColumns, self.localnamesMovedToRows))
+            if self.controller.debugMode:  # when in debug mode elevate this to the Filing Summary log.
+                self.controller.logDebug("In''{}'', moved {} to Columns and {} to rows.".format(self.cube.shortName, 
+                                        self.localnamesMovedToColumns, self.localnamesMovedToRows))
 
-            self.filing.controller.logInfo("Equity Command List {}".format(self.commandTextListOfLists))
+            self.controller.logDebug("Equity Command List {}".format(self.commandTextListOfLists))
 
         elif self.cube.cubeType == 'statement' or self.filing.hasEmbeddings or self.cube.isElements:
             generatedCommandTextListOfLists = []
@@ -134,8 +143,10 @@ class Embedding(object):
                         printThisTextIfTrue = ''
                         if self.cube.isEmbedded:
                             printThisTextIfTrue = ' or by an embedded command'
-                        message = ErrorMgr.getError('DIMENSION_AXIS_ORDER_WARNING').format(self.cube.shortName, errorStr, str(axisQname), printThisTextIfTrue)
-                        self.addToLog(message, messageCode='warn')
+                        #message = ErrorMgr.getError('DIMENSION_AXIS_ORDER_WARNING').format(self.cube.shortName, errorStr, str(axisQname), printThisTextIfTrue)
+                        self.controller.logWarn("In ''{}''{}, the axis {!s} was not given an order in the presentation linkbase{}. " \
+                                                "We arbitrarily chose an order by sorting on its label.".format(self.cube.shortName, 
+                                                errorStr, axisQname, printThisTextIfTrue))
 
                 # simply append the generated axes that were not in the embedded command onto the end of the given commands.
                 for commandsTextList in generatedCommandTextListOfLists:
@@ -184,19 +195,57 @@ class Embedding(object):
             if command.processCommandBuildgetMemberPositionsOnAxisDictOfDicts() != 'broken':
                 if command.rowOrColumn == 'row':
                     self.rowCommands += [command]
+                    if command.pseudoAxis == 'primary':
+                        self.rowPrimaryPosition = len(self.rowCommands) - 1
+                        self.columnPrimaryPosition = -1
+                    elif command.pseudoAxis == 'period':
+                        self.rowPeriodPosition = len(self.rowCommands) - 1
+                        self.columnPeriodPosition = -1
+                    elif command.pseudoAxis == 'unit':
+                        self.rowUnitPosition = len(self.rowCommands) - 1
+                        self.columnUnitPosition = -1
                 else:
                     self.colCommands += [command]
+                    if command.pseudoAxis == 'primary':
+                        self.rowPrimaryPosition = -1
+                        self.columnPrimaryPosition = len(self.colCommands) - 1
+                    elif command.pseudoAxis == 'period':
+                        self.rowPeriodPosition = -1
+                        self.columnPeriodPosition = len(self.colCommands) - 1
+                    elif command.pseudoAxis == 'unit':
+                        self.rowUnitPosition = -1
+                        self.columnUnitPosition = len(self.colCommands) - 1
 
         # make sure there are some row commands and column commands, else kill embedding.
-        errorStr1 = None
+        missingRowOrColStr = None
+        presentRowOrColStr = None
         if len(self.rowCommands) == 0:
-            errorStr1 = 'row'
+            if len(self.colCommands) == 0:
+                self.isEmbeddingOrReportBroken = True
+                return
+            missingRowOrColStr = 'row'
+            presentRowOrColStr = 'column'
+            commandsToPrint = self.colCommands
         elif len(self.colCommands) == 0:
-            errorStr1 = 'column'
-        if errorStr1 is not None:
-            errorStr2 = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.factThatContainsEmbeddedCommand)
-            beginMessage = ErrorMgr.getError('EMBEDDED_COMMANDS_ALL_ROWS_OR_ALL_COLUMNS_ERROR').format(self.cube.shortName, errorStr2, errorStr1)
-            self.addToLog(beginMessage, messageCode='error')
+            missingRowOrColStr = 'column'
+            presentRowOrColStr = 'row'
+            commandsToPrint = self.rowCommands
+
+        if missingRowOrColStr is not None:
+            errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.factThatContainsEmbeddedCommand)
+            #beginMessage = ErrorMgr.getError('EMBEDDED_COMMANDS_ALL_ROWS_OR_ALL_COLUMNS_ERROR').format(self.cube.shortName, errorStr, missingRowOrColStr)
+            if self.cube.isTransposed:
+                self.controller.logError("In ''{}''{}, the group of embedded commands after the transpose, has no valid {} command. " \
+                                         "At least one of the valid {} commands: {}, (after the transpose) must be given as a {} in " \
+                                         "the embedding textblock fact. This group of embedded commands will not be rendered.".format(
+                                         self.cube.shortName, errorStr, missingRowOrColStr, presentRowOrColStr, 
+                                         ', '.join([str(command.pseudoAxis) for command in commandsToPrint]), presentRowOrColStr))
+            else:
+                self.controller.logError("In ''{}''{}, the group of embedded commands has no valid {} command. At least one of the valid " \
+                                         "{} commands: {}, must be given as a {} in the embedding textblock fact. This group of embedded " \
+                                         "commands will not be rendered.".format(self.cube.shortName, errorStr, missingRowOrColStr,
+                                         presentRowOrColStr, ', '.join([str(command.pseudoAxis) for command in commandsToPrint]),
+                                         missingRowOrColStr))
             self.isEmbeddingOrReportBroken = True
 
 
@@ -207,18 +256,21 @@ class Embedding(object):
         pseudoAxisRowColStrTuples = [(command.pseudoAxis, command.rowOrColumn) for command in self.rowCommands + self.colCommands]
         pseudoAxisSet = {pseudoAxisRowColStrTuple[0] for pseudoAxisRowColStrTuple in pseudoAxisRowColStrTuples}
 
-        # simply get the index of the primary axis and whether it's on the rows or cols
-        for axisIndex, (pseudoAxisName, rowOrColStr) in enumerate(pseudoAxisRowColStrTuples):
-            if pseudoAxisName == 'primary':  # there is always a primary
-                primaryIndex = axisIndex
-                primaryRowOrColStr = rowOrColStr
-                break
+        if self.rowPrimaryPosition != -1:
+            primaryRowOrColStr = 'row'
+            primaryIndex = self.rowPrimaryPosition
+        else:
+            primaryRowOrColStr = 'col'
+            primaryIndex = len(self.rowCommands) + self.columnPrimaryPosition
 
         for fact, getMemberOnAxisForFactDict, periodStartEndLabel in self.cube.factMemberships:
-            factAxisMemberGroupList = self.buildFactAxisMemberGroupsForFactOrFilter(pseudoAxisRowColStrTuples, pseudoAxisSet, fact, getMemberOnAxisForFactDict, periodStartEndLabel, primaryIndex, primaryRowOrColStr)
+            factAxisMemberGroupList = self.buildFactAxisMemberGroupsForFactOrFilter(pseudoAxisRowColStrTuples, pseudoAxisSet, fact, getMemberOnAxisForFactDict,
+                                                                                    periodStartEndLabel, primaryIndex, primaryRowOrColStr)
 
             if len(factAxisMemberGroupList) == 0:
-                self.addToLog('Filtered fact {} in {}'.format(fact, self.cube.shortName), messageCode='debug')
+                if fact in self.filing.factToEmbeddingDict:
+                    self.controller.logDebug(("In ''{}'', the fact {!s} with context {}, which contains an embedded command, " \
+                                             "was filtered out.").format(self.cube.shortName, fact.qname, fact.contextID))
                 continue  # we are filtering fact
 
             self.factAxisMemberGroupList += factAxisMemberGroupList
@@ -234,8 +286,9 @@ class Embedding(object):
         # if all facts were all filtered out, we don't bother making a report
         if len(self.factAxisMemberGroupList) == 0:
             errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.factThatContainsEmbeddedCommand)
-            message = ErrorMgr.getError('LINKROLE_HAS_NO_FACTS').format(self.cube.shortName, errorStr)
-            self.addToLog(message, messageCode='debug')
+            #message = ErrorMgr.getError('LINKROLE_HAS_NO_FACTS').format(self.cube.shortName, errorStr)
+            self.controller.logDebug(("In ''{}'', all of the facts have been filtered out. Therefore, it will " \
+                                      "not be rendered.").format(self.cube.shortName, errorStr))
             self.isEmbeddingOrReportBroken = True
             self.cube.excludeFromNumbering = True
             return
@@ -251,15 +304,21 @@ class Embedding(object):
                 if not rootNodeConceptSet.isdisjoint(usedConceptsSet):
                     numUsedRootNodes += 1
                     if numUsedRootNodes == 2:  # we've used two different root nodes, so we issue the multiple root node warning
-                        message = ErrorMgr.getError('PRESENTATION_GROUP_MULTIPLE_ROOT_NODES_WARNING').format(self.cube.shortName)
-                        self.addToLog(message, messageCode='warn')
+                        #message = ErrorMgr.getError('PRESENTATION_GROUP_MULTIPLE_ROOT_NODES_WARNING').format(self.cube.shortName)
+
+                        self.controller.logWarn("Presentation group ''{}'', has multiple root nodes. XBRL allows unordered root nodes, "\
+                                                "but rendering requires ordering.  They will instead be ordered by their labels.  To "\
+                                                "avoid undesirable ordering of axes and primary items across multiple root nodes, "\
+                                                "rearrange the presentation group to have only a single root node.".format(
+                                                self.cube.shortName))
                         break
 
 
 
 
 
-    def buildFactAxisMemberGroupsForFactOrFilter(self, pseudoAxisRowColStrTuples, pseudoAxisSet, fact, getMemberOnAxisForFactDict, periodStartEndLabel, primaryIndex, primaryRowOrColStr):
+    def buildFactAxisMemberGroupsForFactOrFilter(self, pseudoAxisRowColStrTuples, pseudoAxisSet, fact, getMemberOnAxisForFactDict,
+                                                 periodStartEndLabel, primaryIndex, primaryRowOrColStr):
         # if fact has an axis that's filtered out or that isn't associated with any facts, filter fact
         if len(set(getMemberOnAxisForFactDict) - pseudoAxisSet) > 0:
             return []
@@ -304,9 +363,11 @@ class Embedding(object):
     # this builds a factAxisMember and sets the memberLabel and axisMemberPositionTuple attributes.
     # it also decides whether to filter the fact.
     def generateFactAxisMemberLabelListForPrimary(self, fact, axisIndex, periodStartEndLabel):
-        # getMemberPositionsOnAxisDict is a defaultdict(list) for primary, for the other axes it's not.  so we get a list of tuples with
-        # a lookup. this is all because periodStartLabel and periodEndLabel can have facts that expand into multiple facts, hence the list.
-        getMemberPositionsOnAxisDict = self.getMemberPositionsOnAxisDictOfDicts['primary']  # this lookup has to work, dict entry only made if it's a command
+        # getMemberPositionsOnAxisDict is a defaultdict(list) for primary, for the other axes it's not.
+        # since this function is only for primary,  we get a list of tuples with a lookup. this is all
+        # because periodStartLabel and periodEndLabel can have facts that expand into multiple facts, hence
+        # the list.  this lookup has to work.
+        getMemberPositionsOnAxisDict = self.getMemberPositionsOnAxisDictOfDicts['primary']
         factAxisMemberLabelList = []
         for positionOnPrimaryAxis, labelRole in getMemberPositionsOnAxisDict[fact.qname]:
             if (labelRole not in Utils.startEndRoles or periodStartEndLabel == labelRole):
@@ -316,15 +377,17 @@ class Embedding(object):
                 if labelRole in Utils.durationStartEndRoles:
                     labelStr = fact.qname.localName
                     # Issue warnings on every fact, because it applies to all the facts.
-                    errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.factThatContainsEmbeddedCommand)
-                    message = ErrorMgr.getError('INSTANT_DURATION_CONFLICT_WARNING')
                     for linkroleUri, qname, originalLabelRole, shortName in self.filing.ignoredPreferredLabels:
                         if      (self.cube.linkroleUri == linkroleUri and
                                  fact.concept.qname == qname and
                                  Utils.matchedDurationRoles(originalLabelRole,labelRole)):
-                            message = message.format(shortName, errorStr, str(qname), Utils.strFactValue(fact))            
-                            self.addToLog(message, messageCode='warn')                                           
-
+                            errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.factThatContainsEmbeddedCommand)
+                            #message = ErrorMgr.getError('INSTANT_DURATION_CONFLICT_WARNING').format(shortName, errorStr, str(qname), Utils.strFactValue(fact))
+                            self.controller.logWarn(("In ''{}''{}, ".format(shortName, errorStr)
+                                                      +"element {!s} with value {} ".format(qname, Utils.strFactValue(fact))
+                                                      +"has label {}, but the context is a duration, not an instant. "
+                                                        .format(originalLabelRole.split("/")[-1])
+                                                      +"It will be treated as if it had no label."))
                 else:
                     labelStr = fact.concept.label(preferredLabel=labelRole, fallbackToQname=True)
 
@@ -337,40 +400,41 @@ class Embedding(object):
     # it also decides whether to filter the fact.
     def generateFactAxisMemberForNonPrimary(self, fact, axisIndex, periodStartEndLabel, pseudoAxisName, getMemberOnAxisForFactDict):
         getMemberPositionsOnAxisDict = self.getMemberPositionsOnAxisDictOfDicts[pseudoAxisName]
-
+        memberLabel = None
         memberQname = getMemberOnAxisForFactDict.get(pseudoAxisName)
+
         if pseudoAxisName == 'period' and self.cube.hasDiscoveredDurations:
             substituteInstant = memberQname.endTime
             memberQname = self.filing.startEndContextDict[(None, substituteInstant)]
 
-        memberLabel = None
-        memberPositionOnAxis = None
-        memberIsDefault = False
-
-        if memberQname is None:
+        if memberQname is None: # member is a default
             if pseudoAxisName in {'unit', 'period'}:
                 memberPositionOnAxis = Utils.minNumber  # has no order from PG, so put at beginning
             else:
+                if pseudoAxisName in self.cube.defaultFilteredOutAxisSet:
+                    return None # this fact is on a real axis with the default filtered out, so it's filtered too
                 axis = self.cube.hasAxes[pseudoAxisName]
-                axisDefaultQname = None
                 try:
                     axisDefaultQname = axis.defaultArelleConcept.qname
                 except AttributeError:
+                    axisDefaultQname = None
                     # we dont want to filter uncategorized facts.  it is possible that fact is defaulted on an axis with no default
                     # in which case we don't want to filter it if it's an uncategorized fact, we want to print it to show the filer
                     # that it wasn't in any other report.  so, in this case, we manufacture a label.
                     if not self.cube.isUncategorizedFacts:
                         errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.factThatContainsEmbeddedCommand)
-                        message = ErrorMgr.getError('AXIS_HAS_NO_DEFAULT').format(axis.arelleConcept.qname, fact.qname, fact.contextID, errorStr)
-                        self.addToLog(message, messageCode='warn')
+                        #message = ErrorMgr.getError('AXIS_HAS_NO_DEFAULT').format(self.cube.shortName, errorStr, fact.qname, fact.contextID, axis.arelleConcept.qname)
+                        self.controller.logWarn(("In ''{}''{}, the fact {!s} with context {} was filtered because the " \
+                                                 "axis {!s} has no default.").format(self.cube.shortName, errorStr, fact.qname,
+                                                 fact.contextID, axis.arelleConcept.qname))
                         return None
                 if pseudoAxisName in self.cube.defaultFilteredOutAxisSet:  # this isn't checked earlier to give the above warning a chance to be issued
                     return None
 
-                if axisDefaultQname is None:
-                    memberLabel = '{!s} has no default member'.format(pseudoAxisName)
-                else:
+                try:
                     memberLabel = self.cube.labelDict[axisDefaultQname]
+                except KeyError: # this can happen when the axis default did not appear in the presentation group.
+                    memberLabel = axisDefaultQname
 
                 try:
                     # if this lookup fails, domain was filtered out by command, but is in presentationGroup
@@ -385,7 +449,7 @@ class Embedding(object):
                         return None
             memberIsDefault = True
 
-        else:
+        else: # member is not a default
             try:
                 memberPositionOnAxis = getMemberPositionsOnAxisDict[memberQname]  # look up memberQname order
             except KeyError:
@@ -404,6 +468,7 @@ class Embedding(object):
                         memberLabel, ignore = Utils.getUnitStr(fact)
                     else:
                         memberLabel = Utils.prettyPrintQname(memberQname.localName)
+            memberIsDefault = False
 
         return FactAxisMember(pseudoAxisName, memberQname, axisMemberPositionTuple = (axisIndex, memberPositionOnAxis),
                               memberLabel = memberLabel, memberIsDefault = memberIsDefault)
@@ -433,38 +498,29 @@ class Embedding(object):
         if len(unitOrderDict) < len(self.unitsWeAreKeepingSet):
             unitOrderingsFromPGStr = ', '.join(list(unitOrderDict))
             missingUnitOrderingsStr = ', '.join(list(set(self.unitsWeAreKeepingSet) - set(unitOrderDict)))
-            message = ErrorMgr.getError('PRESENTATION_LINKBASE_UNIT_ORDERING_INCOMPLETE_WARNING').format(self.cube.shortName, unitOrderingsFromPGStr, missingUnitOrderingsStr)
-            self.addToLog(message, messageCode='warn')
+            #message = ErrorMgr.getError('PRESENTATION_LINKBASE_UNIT_ORDERING_INCOMPLETE_WARNING').format(self.cube.shortName, unitOrderingsFromPGStr, missingUnitOrderingsStr)
+            self.controller.logWarn(("In ''{}'', the unit ordering {} was detected in the presentation group. " \
+                                     "However, the ordering is incomplete since it does not order these " \
+                                     "units as well: {}. Therefore, this partial ordering will be ignored " \
+                                     "and the default unit ordering will be used, which is the order the " \
+                                     "units are given in the instance document.").format(self.cube.shortName,
+                                     unitOrderingsFromPGStr, missingUnitOrderingsStr))
             return
 
-        # ok, now we're going to reorder the unit axis fact by fact.
-        # first find the unit axis, is it on the rows or the cols, and what index is it?
-        tempFactAxisMemberGroup = self.factAxisMemberGroupList[0]
-        unitAxisOnColsOrRows = ''
-        unitAxisIndex = 0
-        for i, factAxisMember in enumerate(tempFactAxisMemberGroup.factAxisMemberColList):
-            if factAxisMember.pseudoAxisName == 'unit':
-                unitAxisIndex = i
-                unitAxisOnColsOrRows = 'cols'
-                break
-        if unitAxisOnColsOrRows == '':  # look on the rows now for unit.
-            for i, factAxisMember in enumerate(tempFactAxisMemberGroup.factAxisMemberRowList):
-                if factAxisMember.pseudoAxisName == 'unit':
-                    unitAxisIndex = i
-                    unitAxisOnColsOrRows = 'rows'
-                    break
+        rowUnitPosition = self.rowUnitPosition
+        columnUnitPosition = self.columnUnitPosition
 
         # go through each fact and change the order of the unit axis.
         # we have to change FactAxisMember's axisMemberPositionTuple attribute, but this attribute is also copied to FactAxisMemberGroups's
         # axisMemberPositionTupleRowOrColList attribute, so we have to change them both together.
-        if unitAxisOnColsOrRows == 'rows':
+        if rowUnitPosition != -1:
             for factAxisMemberGroup in self.factAxisMemberGroupList:
                 if factAxisMemberGroup.fact.unit is not None:
-                    self.reorderUnitHelper(factAxisMemberGroup.factAxisMemberRowList[unitAxisIndex], factAxisMemberGroup.axisMemberPositionTupleRowList, unitAxisIndex, unitOrderDict)
+                    self.reorderUnitHelper(factAxisMemberGroup.factAxisMemberRowList[rowUnitPosition], factAxisMemberGroup.axisMemberPositionTupleRowList, rowUnitPosition, unitOrderDict)
         else:
             for factAxisMemberGroup in self.factAxisMemberGroupList:
                 if factAxisMemberGroup.fact.unit is not None:
-                    self.reorderUnitHelper(factAxisMemberGroup.factAxisMemberColList[unitAxisIndex], factAxisMemberGroup.axisMemberPositionTupleColList, unitAxisIndex, unitOrderDict)
+                    self.reorderUnitHelper(factAxisMemberGroup.factAxisMemberColList[columnUnitPosition], factAxisMemberGroup.axisMemberPositionTupleColList, columnUnitPosition, unitOrderDict)
 
     def reorderUnitHelper(self, factAxisMember, axisMemberPositionTupleRowOrColList, unitAxisIndex, unitOrderDict):
         axisOrderFromTuple = factAxisMember.axisMemberPositionTuple[0]
@@ -474,33 +530,30 @@ class Embedding(object):
 
 
     def printEmbedding(self):
-        self.addToLog('\n\n\n****************************************************************')
-        self.addToLog('getMemberPositionsOnAxisDictOfDicts:')
+        self.controller.logTrace('\n\n\n****************************************************************')
+        self.controller.logTrace('getMemberPositionsOnAxisDictOfDicts:')
         for c in self.getMemberPositionsOnAxisDictOfDicts.items():
-            self.addToLog('\t{}'.format(c))
+            self.controller.logTrace('\t{}'.format(c))
 
-        self.addToLog('isEmbedded: {}'.format(self.cube.isEmbedded))
+        self.controller.logTrace('isEmbedded: {}'.format(self.cube.isEmbedded))
         try:
             embeddedCommandText = self.factThatContainsEmbeddedCommand.value
         except AttributeError:
             embeddedCommandText = ''
-        self.addToLog('embedding command textblock: ' + embeddedCommandText)
+        self.controller.logTrace('embedding command textblock: ' + embeddedCommandText)
 
-        self.addToLog('rowCommands:')
+        self.controller.logTrace('rowCommands:')
         for c in self.rowCommands:
-            self.addToLog('\t{}'.format(c.commandTextList))
+            self.controller.logTrace('\t{}'.format(c.commandTextList))
 
-        self.addToLog('columnCommands:')
+        self.controller.logTrace('columnCommands:')
         for c in self.colCommands:
-            self.addToLog('\t{}'.format(c.commandTextList))
+            self.controller.logTrace('\t{}'.format(c.commandTextList))
 
-        self.addToLog('noDisplayAxesSet')
-        self.addToLog('\t{}'.format(self.noDisplayAxesSet))
+        self.controller.logTrace('noDisplayAxesSet')
+        self.controller.logTrace('\t{}'.format(self.noDisplayAxesSet))
 
-        self.addToLog('****************************************************************\n\n\n')
-
-    def addToLog(self, message, messageCode='debug', messageArgs=(), file='Embedding.py'):
-        self.filing.controller.addToLog(message, messageCode=messageCode, messageArgs=messageArgs, file=file)
+        self.controller.logTrace('****************************************************************\n\n\n')
 
 
 
@@ -508,6 +561,7 @@ class Command(object):
     def __init__(self, filing, cube, embedding, commandTextList):
         self.filing = filing
         self.cube = cube
+        self.controller = filing.controller
         self.embedding = embedding
         self.commandTextList = commandTextList
         self.rowOrColumn = commandTextList[0]
@@ -519,8 +573,11 @@ class Command(object):
         if self.cube.isElements and self.pseudoAxis == 'primary' and self.rowOrColumn == 'column':
             self.rowOrColumn = 'row' # we will fix it for them
             errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.embedding.factThatContainsEmbeddedCommand)
-            message = ErrorMgr.getError('ELEMENTS_USED_PRIMARY_ON_COLUMNS_WARNING').format(self.cube.shortName, errorStr)
-            self.addToLog(message, messageCode='warn')
+            #message = ErrorMgr.getError('ELEMENTS_USED_PRIMARY_ON_COLUMNS_WARNING').format(self.cube.shortName, errorStr)
+            self.controller.logWarn(("In ''{}''{}, an embedded command places the primary pseudo axis on the columns, " \
+                                      "even though the definition text contains the {{Elements}} qualifier. This " \
+                                      "command has been changed so that primary is on the rows.").format(
+                                      self.cube.shortName, errorStr))
 
         if self.formattingType == 'nodisplay':
             self.embedding.noDisplayAxesSet.add(self.pseudoAxis)
@@ -556,8 +613,10 @@ class Command(object):
                     filteredGiveMemGetPositionDict[mem] = giveMemGetPositionDict[mem]
                 except KeyError:
                     errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.embedding.factThatContainsEmbeddedCommand)
-                    message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_MEMBER_NAME_ERROR').format(self.cube.shortName, errorStr, str(mem))
-                    self.addToLog(message,  messageCode='error')
+                    #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_MEMBER_NAME_ERROR').format(self.cube.shortName, errorStr, str(mem))
+                    self.controller.logError(("In ''{}''{}, the keyword {!s} is not a valid member qname. Therefore, " \
+                                              "this group of embedded commands will not be rendered.").format(
+                                              self.cube.shortName, errorStr, mem))
                     self.embedding.isEmbeddingOrReportBroken = True
                     return
 
@@ -565,7 +624,3 @@ class Command(object):
 
         if len(giveMemGetPositionDict) > 0:
             self.embedding.getMemberPositionsOnAxisDictOfDicts[self.pseudoAxis] = giveMemGetPositionDict
-
-
-    def addToLog(self,message,messageCode='debug',messageArgs=(),file='Embedding.py -- Command'):
-        self.filing.controller.addToLog(message, messageCode=messageCode, messageArgs=messageArgs, file=file)

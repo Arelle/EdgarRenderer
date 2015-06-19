@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`re.Cube`
+:mod:`EdgarRenderer.Cube`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
 Data and content created by government employees within the scope of their employment 
@@ -10,11 +10,12 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 import re
 from collections import defaultdict
 import arelle.ModelObject
-import Filing, ErrorMgr, Utils
+import Filing, Utils
 
 class Cube(object):
     def __init__(self, filing, linkroleUri):
         self.filing = filing
+        self.controller = filing.controller
         self.noFactsOrAllFactsSuppressed = False
         self.excludeFromNumbering = False
         self.linkroleUri = linkroleUri
@@ -45,10 +46,8 @@ class Cube(object):
             self.definitionText = linkroleUri
         self.shortName = self.getShortName()
         self.cubeType = self.getCubeType()
-        self.numGarbageCollectedEmbeddigns = 0
         self.hasDiscoveredDurations = False
         self.rootNodeToConceptSetDict = {}
-        self.skippedFactMembershipSet = set() # set of instants with periodStart or periodEnd that could not be matched to a duration.
         
         # TO DO problem 2: searching from statement and equity, dumb
         if self.definitionText is None or self.definitionText.strip(' ') == '':
@@ -62,7 +61,7 @@ class Cube(object):
             and '(table' not in dt
             and '(detail' not in dt
             and '(polic' not in dt
-            and self.filing.stmNamespace is not None):
+            and filing.stmNamespace is not None):
             if   ('148600' in dt or
                   '148610' in dt or
                 (('stockholder' in dt or 'shareholder' in dt or 'changes' in dt) and ('equity' in dt or 'deficit' in dt)) or
@@ -70,18 +69,30 @@ class Cube(object):
                  #('statement' in dt and 'capitalization' in dt) or # TODO: do we want this for case WEC?
                  ('statement' in dt and 'equity' in dt)):
                 self.isStatementOfEquity = True
-                self.addToLog('The Linkrole {} is a Statement of Equity.'.format(linkroleUri), messageCode='info')
-                if self.filing.controller.noEquity:
+                filing.controller.logDebug('The Linkrole {} is a Statement of Equity.'.format(self.shortName))
+                if filing.controller.noEquity:
                     self.isStatementOfEquity = False
-                    self.addToLog('But noEquity is True so it will not be treated specially.',messageCode='info')
+                    filing.controller.logDebug('But noEquity is True so it will not be treated specially.')
             if (('cash' in dt and 'flow' in dt[dt.index('cash'):] and not 'supplement' in dt)):
                 self.isStatementOfCashFlows = True
-                self.addToLog('The Linkrole {} is a Statement of Cash Flows'.format(linkroleUri),messageCode='info')
+                filing.controller.logDebug('The Linkrole {} is a Statement of Cash Flows'.format(self.shortName))
                 
 
     def __str__(self):
         return "[Cube R{!s} {} {}]".format(self.fileNumber, self.cubeType, self.shortName)
 
+
+    def areTherePhantomAxesInPGWithNoDefault(self):
+        axesWithoutDefaultsThatAllFactsAreDefaultedOn = self.defaultFilteredOutAxisSet - set(self.axisAndMemberOrderDict)
+        if len(axesWithoutDefaultsThatAllFactsAreDefaultedOn) > 0:
+            # there were axes without defaults in the PG that weren't mentioned by the facts.  since they weren't mentioned by the facts,
+            # they weren't found in our intelligent graph traversal, traverseToRootOrRoots(). since they weren't mentioned by the facts,
+            # we know that all of the facts are defaulted on them. BUT, they have no defaults, so all the facts are filtered out.
+            self.noFactsOrAllFactsSuppressed = True
+            axesStr = ', '.join([str(axisQname) for axisQname in sorted(axesWithoutDefaultsThatAllFactsAreDefaultedOn)])
+            self.controller.logWarn(("The presentation group ''{}'' contains {}, which either has (have) no default member in the " \
+                                     "presentation group and/or the definition linkbase. Since every fact is defaulted on this (these) axe(s), " \
+                                     "all facts have been filtered out.").format(self.shortName, axesStr))
 
 
     def handlePeriodStartEndLabel(self,discoveredDurations=[]):
@@ -126,6 +137,9 @@ class Cube(object):
         initialSize = len(self.factMemberships)
         i = initialSize - 1
 
+        # set of instants with periodStart or periodEnd that could not be matched to a duration.
+        skippedFactMembershipSet = set() # TODO: this could could probably be a list, rather than a set, BC
+        
         while i >= 0:
             factMembership = self.factMemberships[i]
             fact, axisMemberLookupDict, role = factMembership
@@ -143,7 +157,7 @@ class Cube(object):
                 setOfMatches = startTupleSet.union(endTupleSet)
                 if len(setOfMatches)==0:
                     for role in startEndPreferredLabelList:
-                        self.skippedFactMembershipSet.add((fact,role,self,self.linkroleUri,self.shortName))
+                        skippedFactMembershipSet.add((fact,role,self,self.linkroleUri,self.shortName))
                    
                 for startEndTuple, preferredLabel in setOfMatches:
                     try: # if startEndContext exists, find it
@@ -157,46 +171,24 @@ class Cube(object):
                     #  append to the fact memberships list that we were counting down from the end of.
                     self.factMemberships += [(fact, tempAxisMemberLookupDict, preferredLabel)]
             i -= 1
-        skippedFactSet = {x[0] for x in self.skippedFactMembershipSet}
+        skippedFactSet = {x[0] for x in skippedFactMembershipSet}
         if (len(skippedFactSet) == initialSize
             and len(discoveredDurations)==0):
             # if we skipped all the facts it means there were no durations.
             # go 'discover' the durations by comparing start and end instants.
             moments = sorted(list({fxm[1]['period'].endTime for fxm in self.factMemberships}))
             if len(moments) > 1:
-                self.addToLog(("No matching durations in ''{}'' for {} instant facts presented with start or end preferred labels. "
-                               +"Now inferring durations to form columns.  "
-                               +"Simplify the presentation to get a more compact layout."
-                              ).format(self.shortName,len(skippedFactSet))
-                              ,messageCode='Info')
+                self.controller.logInfo(("In ''{}'', no matching durations for {} instant facts presented with start or end " \
+                                         "preferred labels. Now inferring durations to form columns. Simplify the presentation " \
+                                         "to get a more compact layout.").format(self.shortName, len(skippedFactSet)))
                 intervals = []                
                 for i,endTime in enumerate(moments[1:]):
                     startTime = moments[i]
                     intervals += [Filing.StartEndContext(None,(startTime,endTime))]
                 self.hasDiscoveredDurations = True
                 self.handlePeriodStartEndLabel(discoveredDurations=intervals)
-        return
-    
-    
-    def strExplainSkippedFact(self,fact,role,shortName):
-        # we skipped over this fact because it could not be placed
-        # Produce a string explaining for this instant fact why it could not be presented 
-        # with a periodStart or periodEnd label in this presentation group.
-        qname = fact.qname
-        value = Utils.strFactValue(fact, preferredLabel=role)
-        context = fact.context.id
-        endTime = fact.context.period.stringValue.strip()
-        word = 'Starting or Ending'
-        if role is not None:
-            role = role.rsplit('/')[-1]
-            if 'Start' in role:
-                word = 'starting'
-            elif 'End' in role:
-                word = 'ending'
-        message = ErrorMgr.getError('SKIPPED_FACT_WARNING').format(shortName,qname,value,context,role,word,endTime)
-        return message       
-                       
 
+        self.filing.skippedFactsList += list(skippedFactMembershipSet)
 
 
     def getShortName(self):
@@ -211,6 +203,7 @@ class Cube(object):
             if ' - ' in shortname:
                 shortname = shortname[shortname.index(' - ')+3:].strip()
         return shortname
+
 
     def getCubeType(self):
         ignore, hyphen, rightOfHyphen = self.definitionText.partition('-')
@@ -228,6 +221,7 @@ class Cube(object):
             giveMemGetPositionDict[unit.id] = i
         self.axisAndMemberOrderDict['unit'] = (giveMemGetPositionDict, None)
 
+
     def populatePeriodPseudoaxis(self):
         giveMemGetPositionDict = {}
         # here we sort this list by numMonths and then by reversed endTime.  python sorts are stable,
@@ -243,8 +237,9 @@ class Cube(object):
             sortedList.sort(key = lambda startEndContext : startEndContext.startOrInstantTime())
             sortedList = self.SurvivorsOfMovementAnalysis(sortedList)
             if len(sortedList)==0:
-                message = ErrorMgr.getError('STATEMENT_OF_EQUITY_NO_COMPLETE_MOVEMENTS_WARNING').format(self.shortName)
-                self.addToLog(message, messageCode='warn')
+                #message = ErrorMgr.getError('STATEMENT_OF_EQUITY_NO_COMPLETE_MOVEMENTS_WARNING').format(self.shortName)
+                self.controller.logWarn("The statement of equity, ''{}'', has no durations with matching beginning and " \
+                                        "ending instants.".format(self.shortName))
                 self.isStatementOfEquity = False # no movements, warn the user it is probably not what they wanted                
                 sortedList = list(self.timeAxis) # start over
 
@@ -258,8 +253,8 @@ class Cube(object):
             giveMemGetPositionDict[startEndContext] = i
         self.axisAndMemberOrderDict['period'] = (giveMemGetPositionDict, None)
         return # from populatePeriodPseudoaxis
-    
-        
+
+
     def SurvivorsOfMovementAnalysis(self,sortedList):
         # The statement of equity always has periods as the outermost row command, and never
         # shows facts except within a Movement.  A complete movement needs a beginning instant,
@@ -285,26 +280,15 @@ class Cube(object):
         giveContextGetMovementsDict = defaultdict(list)
         for c in sortedList: # this dictionary could probably be dispensed with.
             giveContextGetMovementsDict[c] += [m for m in movementList if c in m]
-        self.addToLog('Statement {} has {} Movements.'.format(self.shortName,len(movementList)))
-        for context,movements in giveContextGetMovementsDict.items():
+        self.controller.logDebug("Statement {} has {} Movements.".format(self.shortName, len(movementList)))
+        for contextID, movements in giveContextGetMovementsDict.items():
             if len(movements)==0:
                 # Contexts that aren't in a complete movement are removed (do not survive).
-                sortedList.remove(context)
-                self.addToLog('Context {} was not part of a complete Movement'.format(context),messageCode='debug')
+                sortedList.remove(contextID)
+                self.controller.logDebug("Context {} was not part of a complete Movement".format(contextID))
         return sortedList # from SurvivorsOfMovementAnalysis
 
 
-
-
-
-    def DetermineAxesWhereDefaultFilteredOut(self):
-        for pseudoaxisQname, (orderDict, ignore) in self.axisAndMemberOrderDict.items():
-            try:
-                axis = self.hasAxes[pseudoaxisQname] # this means we ignore primary, unit and period
-                if axis.defaultArelleConcept is None or axis.defaultArelleConcept.qname not in orderDict:
-                    self.defaultFilteredOutAxisSet.add(pseudoaxisQname)
-            except KeyError:
-                pass
 
     def checkForTransposedUnlabeledAndElements(self):
         lowercaseDefTextWithNoWhitespace = ''.join(self.definitionText.casefold().split())
@@ -346,41 +330,37 @@ class Cube(object):
         builtinAxisOrder = next((s for s in builtinAxisOrders if axisQname==s[0]),None)
         if builtinAxisOrder is not None:
             (axis,members,lastmembers) = builtinAxisOrder
-            self.addToLog("Special sort of {} {} needed".format(axisQname,giveMemGetPositionDict), messageCode='debug')
+            self.controller.logDebug("Special sort of {} {} needed".format(axisQname,giveMemGetPositionDict))
             prefix = axis.prefix
             nsuri = axis.namespaceURI
             ordering = [arelle.ModelObject.QName(prefix,nsuri,name) for name in members]   
             overrideordering = [arelle.ModelObject.QName(prefix,nsuri,name) for name in lastmembers]                        
             memberList = Utils.heapsort(memberList,(lambda x,y: Utils.compareInOrdering(x,y,ordering,overrideordering)))
             giveMemGetPositionDict = dict([(x,i) for i,x in enumerate(memberList)])
-            self.addToLog("Resulted in {}".format(giveMemGetPositionDict), messageCode='debug')                                                        
+            self.controller.logDebug("Resulted in {}".format(giveMemGetPositionDict))
         return giveMemGetPositionDict
        
 
     def printCube(self):
-        self.addToLog('\n\n**************** '+self.linkroleUri)
-        self.addToLog(self.definitionText)
+        self.controller.logTrace('\n\n**************** '+self.linkroleUri)
+        self.controller.logTrace(self.definitionText)
 
         text = '\n\n\naxes and members from contexts:\n'
         for axisQname, axis in self.hasAxes.items():
-            text += 'Axis: ' + str(axisQname) + '\n'
+            text += 'Axis: {!s}\n'.format(axisQname)
             for memberQname in axis.hasMembers:
                 if memberQname in self.hasMembers:
-                    text += '\tmember: ' + str(memberQname) + '\n'
-        self.addToLog(text)
+                    text += '\tmember: {!s}\n'.format(memberQname)
+        self.controller.logTrace(text)
   
         text = '\naxisAndMemberOrderDict:\n'
         for pseudoaxisQname in self.axisAndMemberOrderDict:
             text += '\t{!s}\n'.format(pseudoaxisQname)
-        self.addToLog(text)
+        self.controller.logTrace(text)
   
-        self.addToLog('\ndefaultFilteredOutAxisSet\n')
+        self.controller.logTrace('\ndefaultFilteredOutAxisSet\n')
         for c in self.defaultFilteredOutAxisSet:
-            self.addToLog('\t{}\n'.format(str(c)))
+            self.controller.logTrace('\t{!s}\n'.format(c))
  
-        self.addToLog('\n\npresentationGroup:')
+        self.controller.logTrace('\n\npresentationGroup:')
         self.presentationGroup.printPresentationGroup()
-
-
-    def addToLog(self,message,messageCode='debug',messageArgs=(),file='Cube.py'):
-        self.filing.controller.addToLog(message, messageCode=messageCode, messageArgs=messageArgs, file=file)

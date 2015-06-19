@@ -124,7 +124,9 @@
           }
           li.accordion a{
             display:block;
-          }</style>
+          }
+          li.octave {border-top: 1px solid black;}
+        </style>
         <script type="text/javascript">
           <xsl:text>var InstanceReportXslt = "</xsl:text>
           <xsl:value-of select="$xslt"/>
@@ -334,6 +336,16 @@
    } 
   
    window.onload = function () {
+         if (window.location.href.substring(0,5)=='file:') {
+          ableToOpenReportFiles = 0;
+          try {$.ajax({type: "GET",url: reports[1],dataType: "text",async:false,
+              success: function (data) { if (data != 0) ableToOpenReportFiles = 1; }});
+          } catch (err) {}
+          if (ableToOpenReportFiles == 0) {
+            alert("In this browser environment, opening the url\n"
+            +window.location.href
+            +"\nprevents individual report files such as "
+            +reports[1]+" from opening.");}}
       loadReport(1);
    }
 ]]></xsl:text>
@@ -346,7 +358,7 @@
         <div>
           <table>
             <tr>
-              <td colspan="2"><a class="xbrlviewer" style="color: black; font-weight: bold;" href="javascript:window.print();">Print Document</a>&#160;<a class="xbrlviewer" href="Financial_Report.xlsx">View Excel Document</a></td>
+              <td colspan="2"><a class="xbrlviewer" style="color: black; font-weight: bold;" href="javascript:window.print();">Print Document</a><xsl:if test="not($isrr)">&#160;<a class="xbrlviewer" href="Financial_Report.xlsx">View Excel Document</a></xsl:if></td>
             </tr>
             <tr>
               <td style="vertical-align: top;">
@@ -440,7 +452,10 @@
             <xsl:with-param name="pos" select="(1 + $position)"/>
           </xsl:call-template>
         </xsl:variable>
-        <li class="accordion">
+        <xsl:variable name="octave_divider">
+          <xsl:if test="$menucat = 0"> octave</xsl:if>
+        </xsl:variable>
+        <li class="accordion{$octave_divider}">
           <a id="menu_cat{$menucat}" href="#">
             <xsl:value-of select="$this_cat"/>
           </a>
