@@ -143,7 +143,6 @@ def unpackInput(controller, options, filesource):  # success
     # HF: controller.processingFolder = createNewFolder(controller,controller.originalProcessingFolder, options.entrypoint)
     knownSingleInput = None                
     try:
-        handleFolder(controller, controller.processingFolder, True, True)    
         # Case 1: entry point is a zip file.
         if controller.processInZip:
             for base in filesource.dir:
@@ -153,6 +152,7 @@ def unpackInput(controller, options, filesource):  # success
                         unpacked += 1
                     fileStream.close()
         elif filesource.isZip:
+            handleFolder(controller, controller.processingFolder, True, True)    
             controller.logDebug(_("Extracting from zip file."), file=basename(__file__))
             zf = zipfile.ZipFile(options.entrypoint, 'r')
             for base in zf.namelist():
@@ -165,6 +165,7 @@ def unpackInput(controller, options, filesource):  # success
                     unpacked += 1
         
         else:  # Not a zip file.
+            handleFolder(controller, controller.processingFolder, True, True)    
             if not controller.entrypointFolder: controller.entrypointFolder = abspath(options.entrypoint)
             if not isdir(controller.entrypointFolder): controller.entrypointFolder = dirname(controller.entrypointFolder)
             # Case 2: Entry point is a single file.
