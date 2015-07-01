@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`re.Utils`
+:mod:`EdgarRenderer.Utils`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
 Data and content created by government employees within the scope of their employment 
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
-
-import re, sys, math
+import re, sys, math, logging
 import arelle.XbrlConst
 
 startRoles = ['http://www.xbrl.org/2003/role/periodStartLabel', 'http://www.xbrl.org/2009/role/negatedPeriodStartLabel']
@@ -20,6 +19,13 @@ durationStartEndRoles = [durationStartRole, durationEndRole]
 minNumber = -sys.maxsize - 1
 efmStandardAuthorities = ["sec.gov", "fasb.org", "xbrl.org", "xbrl.us", "w3.org"]
 
+
+def isRate(fact, filing):
+    return   (isFactTypeEqualToOrDerivedFrom(fact, isPercentItemTypeQname) or
+             (isFactTypeEqualToOrDerivedFrom(fact, isPureItemTypeQname) and
+                (isEfmInvestNamespace(fact.qname.namespaceURI) or filing.isRR)) or
+             (fact.unit.isSingleMeasure and any(utrEntry.unitId == 'Rate' for utrEntry in fact.utrEntries.copy())))
+
 def isRoleOrSuffix(s,roles):
     return ((s in roles
             or next((True for role in roles if s == role[(role.rfind("/") + 1):]), False))
@@ -29,7 +35,14 @@ def isRoleOrSuffix(s,roles):
 def printErrorStringToDisambiguateEmbeddedOrNot(embeddedCommandFact):
     if embeddedCommandFact is None:
         return ''
-    return 'the embedding textBlock fact {!s} and the context {!s}'.format(embeddedCommandFact.qname, embeddedCommandFact.contextID)
+    return ', in the embedded report created by the embedding textBlock fact {!s}, with the context {!s}'.format(
+                                                    embeddedCommandFact.qname, embeddedCommandFact.contextID)
+
+def printErrorStringToDiscribeEmbeddedTextBlockFact(embeddedCommandFact):
+    if embeddedCommandFact is None:
+        return ''
+    return 'the embedded commands of the textBlock fact {!s}, with the context {!s}'.format(
+                                                    embeddedCommandFact.qname, embeddedCommandFact.contextID)
 
 
 def hideEmptyRows(rowList):
@@ -98,7 +111,11 @@ def hasCustomNamespace(thing):
     return False
 
 def xbrlErrors(modelXbrl):
-    return [s for s in modelXbrl.errors if ':error-' in s]
+    """Returns the list of messages in modelXbrl whose levelno is at least ERROR, assuming there is a buffer handler present."""
+    try:
+        handler =  modelXbrl.logger.handlers[-1]
+        return [r for r in handler.logRecordBuffer if r.levelno >= logging.ERROR]
+    except: return []
 
 def getUnitStr(fact):
     if fact.unit is None:
@@ -129,8 +146,12 @@ def getSymbolStr(fact):
         if 'pure' not in symbolStr:
             return symbolStr
 
-def handleDurationItemType(valueStr):
+def handleDurationItemType(fact):
+    # we are assuming that this value is xml valid, if it's not, there will be a validation error.
+    if fact.isNil:
+        return ''
     outStr = ''
+    valueStr = fact.value.strip() # TODO, if we use fact.xValue, we probably don't need to strip it?
     if valueStr[0] == '-':
         valueStr = valueStr[1:]  # get rid of leading -
         outStr = 'minus '
@@ -161,7 +182,11 @@ def handleDurationItemTypeHelper(valueStr, outStr, separator, printStr):
             return (remainder, outStr)
     return (valueStr, outStr)  # the string didn't contain the separator.
 
+
 def strFactValue(fact, preferredLabel=None):
+    if fact.isNil:
+        return ''
+
     valueStr = fact.value
     if fact.isNumeric:
         if preferredLabel is not None and 'negated' in preferredLabel:
@@ -174,7 +199,7 @@ def strFactValue(fact, preferredLabel=None):
         else:
             return valueStr
     elif fact.concept.typeQname.localName == 'durationItemType':
-        return handleDurationItemType(valueStr)
+        return handleDurationItemType(fact)
     else:  # don't try to handle qnames here.
         return valueStr
 
@@ -196,55 +221,36 @@ def isTypeQnameDerivedFrom(modelXbrl, typeQname, predicate):
 def isFactTypeEqualToOrDerivedFrom(fact, predicate):
     if fact is None or fact.concept is None: return False
     conceptTypeQname = fact.concept.typeQname
-    return (predicate(conceptTypeQname)
-            or isTypeQnameDerivedFrom(fact.modelXbrl
-                                      , conceptTypeQname
-                                      , predicate))
+    return (predicate(conceptTypeQname) or isTypeQnameDerivedFrom(fact.modelXbrl, conceptTypeQname, predicate))
+
 
 def isPerShareItemTypeQname(typeQname):
     """(bool) -- True if the type qname is {standard namespace}perShareItemType"""
     return typeQname.localName == 'perShareItemType' and isEfmStandardNamespace(typeQname.namespaceURI)
 
-def isFactPerShareItemType(fact):
-    """(bool) -- True if fact type is derived from {standard namespace}perShareItemType"""   
-    return isFactTypeEqualToOrDerivedFrom(fact, isPerShareItemTypeQname) 
-    
 def isPercentItemTypeQname(typeQname):
     """(bool) -- True if the type qname is {standard namespace}percentItemType"""
     return typeQname.localName == 'percentItemType' and isEfmStandardNamespace(typeQname.namespaceURI)
 
-def isFactPercentItemType(fact):
-    """(bool) -- True if fact type is derived from {standard namespace}percentItemType"""   
-    return isFactTypeEqualToOrDerivedFrom(fact, isPercentItemTypeQname) 
- 
+def isDurationStringItemTypeQname(typeQname):
+    """(bool) -- True if the type qname is xbrli:durationStringItemType"""
+    return typeQname.localName == 'durationStringItemType' and isEfmStandardNamespace(typeQname.namespaceURI)
+
 def isPureItemTypeQname(typeQname):
     """(bool) -- True if the type qname is xbrli:perShareItemType"""
     return typeQname.localName == 'pureItemType' and typeQname.namespaceURI == arelle.XbrlConst.xbrli
 
-def isFactPureAndInInvestNamespace(fact):
-    """(bool) -- True if the concept namespace is Invest, and the fact type is derived from xbrli:pureItemType""" 
-    return (isEfmInvestNamespace(fact.qname.namespaceURI)
-            and isFactTypeEqualToOrDerivedFrom(fact, isPureItemTypeQname))
-    
-    
-    
-def isMonetaryItemTypeQname(typeQname):
-    """(bool) -- True if the type qname is xbrli:monetaryItemType"""
-    return typeQname.localName == 'monetaryItemType' and typeQname.namespaceURI == arelle.XbrlConst.xbrli
-
-def isFactMonetary(fact):
-    """(bool) -- True if fact type is derived from xbrli:monetaryItemType""" 
-    return isFactTypeEqualToOrDerivedFrom(fact, isMonetaryItemTypeQname) 
-    
 def isDurationItemTypeQname(typeQname):
     """(bool) -- True if the type qname is xbrli:durationItemType"""
     return typeQname.localName == 'durationItemType' and typeQname.namespaceURI == arelle.XbrlConst.xbrli
 
-def isFactDurationItemType(fact):
-    """(bool) -- True if fact type is derived from xbrli:durationItemType""" 
-    return isFactTypeEqualToOrDerivedFrom(fact, isDurationItemTypeQname) 
-    
-
+def modelRelationshipsTransitiveFrom(relationshipSet, concept, linkroleUri, result=set()):
+    """Return the subset of a relationship set in the transitive closure starting from concept, limited to linkroleUri."""
+    for r in relationshipSet.modelRelationshipsFrom[concept]:
+        if r.linkrole == linkroleUri and r not in result:
+            result.add(r)
+            modelRelationshipsTransitiveFrom(relationshipSet,r.toModelObject,linkroleUri,result)
+    return result
 
 
 def heapsort(l, cmp):  # l is a list, cmp is a two-argument fn
@@ -300,15 +306,17 @@ def commonPrefix(str1, str2):  # count characters that form the prefix of both s
             break
     return i
 
-def releaseUnneededMemory(embedding):
-    cube = embedding.cube
-    cube.numGarbageCollectedEmbeddigns += 1
-    if cube.numGarbageCollectedEmbeddigns == len(cube.embeddingList):
-        # all of the cube's embeddings are gone already, so we can kill the cube and presentationGroup.
-        cube.presentationGroup.__dict__.clear()
-        cube.__dict__.clear()
+def cubeGarbageCollect(cube):
+    # all of the cube's embeddings are gone already, so we can kill the cube and presentationGroup.
+    cube.presentationGroup.__dict__.clear()
+    cube.__dict__.clear()
 
-    report = embedding.report
+
+def embeddingGarbageCollect(embedding):
+    try:
+        report = embedding.report
+    except AttributeError:
+        return # it's already been garbage collected.
     if report is not None:  # could be if broken
         for row in report.rowList:
             for cell in row.cellList:
@@ -319,5 +327,3 @@ def releaseUnneededMemory(embedding):
             col.__dict__.clear()
         report.__dict__.clear()
     embedding.__dict__.clear()
-
-    # print('end outside loop ' + str(osPrcs.GetProcessMemoryInfo(osPrcs.GetCurrentProcess())['WorkingSetSize'] / 1024))

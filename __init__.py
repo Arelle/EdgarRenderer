@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`re.EdgarRenderer`
+:mod:`EdgarRenderer.EdgarRenderer`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
 Data and content created by government employees within the scope of their employment 
@@ -39,7 +39,7 @@ a) when invoking via arelleCmdLine.py:
    python3.4 arelleCmdLine.py 
    -f "/mydir/test/amd.zip" 
    -o "/mydir/test/out.zip" 
-   --plugins "/mydir/myplugins/EdgarRenderer" 
+   --plugins "EdgarRenderer" # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
    --disclosureSystem efm-pragmatic 
    --debugMode
    
@@ -71,6 +71,7 @@ setup.py that are marked for EdgarRenderer.
 At this moment, Xlout.py requires openpyxl 2.1.4, it does not work right on openpyxl 2.2.x
         
 """
+VERSION = '3.2.0.727'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -78,7 +79,7 @@ PythonUtil.noop(0)  # Get rid of warning on PythonUtil import
 from arelle import (Cntlr, FileSource, ModelDocument, XmlUtil, Version, ModelValue, Locale, PluginManager, WebCache, ModelFormulaObject,
                     ViewFileFactList, ViewFileFactTable, ViewFileConcepts, ViewFileFormulae,
                     ViewFileRelationshipSet, ViewFileTests, ViewFileRssFeed, ViewFileRoleTypes)
-from . import ErrorMgr, Utils, IoManager, RefManager, Summary, Report, Filing, Cube
+from . import RefManager, IoManager, Utils, Filing, Summary
 import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os
 from lxml import etree
 from os import getcwd, remove, removedirs
@@ -144,6 +145,7 @@ def edgarRendererCmdLineOptionExtender(parser):
     parser.add_option("--debugMode", action="store_true", dest="debugMode", help=_("Let the debugger handle exceptions."))
 
 
+
 class EdgarRenderer(Cntlr.Cntlr):
     """
     .. class:: EdgarRenderer()
@@ -152,14 +154,16 @@ class EdgarRenderer(Cntlr.Cntlr):
     """
     
     def __init__(self, cntlr):
+        self.VERSION = VERSION
         self.cntlr = cntlr
         self.webCache = cntlr.webCache
         self.preloadedPlugins = {}
         self.ErrorMsgs = []
         self.entrypoint = None  # Contains the absolute path of the instance, inline, zip, or folder.
         self.entrypointFolder = None  # Contains absolute folder of instance, inline, or zip; equal to entrypoint if a folder.
-        self.nextFile = 1
-        self.nextUncategorizedFile = 9999
+        self.nextFileNum = 1 # important for naming file numbers for multi-instance filings
+        self.nextUncategorizedFileNum = 9999
+        self.nextBarChartFileNum = 0
         self.xlWriter = None
         self.excelXslt = None
         self.createdFolders = []
@@ -181,7 +185,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             IoManager.logConfigFile(self, options, messageCode='info')
     
     
-    
+   
     
     def retrieveDefaultREConfigParams(self, options):        
         # defaultValueDict contains the default strings for
@@ -201,7 +205,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['internetConnectivity'] = 'online' # HF change to online default 'offline' 
         self.defaultValueDict['noEquity'] = str(False)
         self.defaultValueDict['processingFolder'] = 'Processing'
-        self.defaultValueDict['processingFrequency'] = str(10)
+        self.defaultValueDict['processingFrequency'] = '10'
         self.defaultValueDict['renderingService'] = 'Instance'
         self.defaultValueDict['reportFormat'] = 'Html'
         self.defaultValueDict['reportsFolder'] = 'Reports'
@@ -230,9 +234,9 @@ class EdgarRenderer(Cntlr.Cntlr):
                         if value == '': value = None
                         self.configDict[child.tag] = value
                     elif len(child.text.strip()) > 0: # Extra tags with no content are ignored
-                        message = ErrorMgr.getError('UNSUPPORTED_CONFIG_TAG').format(child.text, child.tag)
-                        self.addToLog(message, messageCode="warn") 
-    
+                        #message = ErrorMgr.getError('UNSUPPORTED_CONFIG_TAG').format(child.text, child.tag)
+                        self.logWarn("Found value {} for unsupported configuration tag {}".format(child.text, child.tag)) 
+
     def initializeReOptions(self, options):
         self.logDebug("General options:")
         
@@ -248,10 +252,10 @@ class EdgarRenderer(Cntlr.Cntlr):
             return value
         
         # options applicable to rendering in either mode: 
-        setProp('renderingService', options.renderingService, rangeList=['Instance','Daemon'])        
-        setProp('reportFormat', options.reportFormat, rangeList=['Html', 'Xml', 'HtmlAndXml'])               
-        setProp('htmlReportFormat', options.htmlReportFormat, rangeList=['Complete','Fragment'])
-        setProp('zipOutputFile', options.zipOutputFile)        
+        options.renderingService = setProp('renderingService', options.renderingService, rangeList=['Instance','Daemon'])        
+        options.reportFormat = setProp('reportFormat', options.reportFormat, rangeList=['Html', 'Xml', 'HtmlAndXml'])               
+        options.htmlReportFormat = setProp('htmlReportFormat', options.htmlReportFormat, rangeList=['Complete','Fragment'])
+        options.zipOutputFile = setProp('zipOutputFile', options.zipOutputFile)        
         # These options have to be passed back to arelle via the options object
         options.internetConnectivity = setProp('internetConnectivity',options.internetConnectivity, rangeList=['online','offline'])
         
@@ -263,17 +267,17 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.logDebug("{}=\t{}".format(flag, getattr(self, flag)))
             return getattr(self, flag)
             
-        setFlag('abortOnMajorError', options.abortOnMajorError)
-        setFlag('totalClean', options.totalClean)
-        setFlag('noEquity', options.noEquity)
-        setFlag('auxMetadata', options.auxMetadata)
+        options.abortOnMajorError = setFlag('abortOnMajorError', options.abortOnMajorError)
+        options.totalClean = setFlag('totalClean', options.totalClean)
+        options.noEquity = setFlag('noEquity', options.noEquity)
+        options.auxMetadata = setFlag('auxMetadata', options.auxMetadata)
         # note that delete processed filings is only relevant when the input had to be unzipped.
-        setFlag('deleteProcessedFilings', options.deleteProcessedFilings)
-        setFlag('debugMode', options.debugMode)        
+        options.deleteProcessedFilings = setFlag('deleteProcessedFilings', options.deleteProcessedFilings)
+        options.debugMode = setFlag('debugMode', options.debugMode)        
         # These flags have to be passed back to arelle via the options object.
         options.validate = setFlag('validate', options.validate)
         options.utrValidate = setFlag('utrValidate', options.utrValidate)
-        options.validateEFM = setFlag('validate', options.validateEFM)
+        options.validateEFM = setFlag('validateEFM', options.validateEFM)
     
         
         def setFolder(folder, init, searchPythonPath=False):
@@ -289,12 +293,13 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.logDebug("{}=\t{}".format(folder, getattr(self, folder)))
             return getattr(self, folder)
         
-        setFolder('processingFolder', options.processingFolder)
+        options.processingFolder = setFolder('processingFolder', options.processingFolder)
         self.processInZip = True # bool(options.processingFolder)
-        setFolder('reportsFolder', options.reportsFolder)
+        options.reportsFolder = setFolder('reportsFolder', options.reportsFolder)
         self.reportInZip = True # bool(options.reportsFolder)
-        setFolder('resourcesFolder', options.resourcesFolder,searchPythonPath=True)
-    
+        options.resourcesFolder = setFolder('resourcesFolder', options.resourcesFolder,searchPythonPath=True)
+
+
         def setResourceFile(file, init, errstr):
             setattr(self, file, None)
             value = next((x
@@ -308,20 +313,23 @@ class EdgarRenderer(Cntlr.Cntlr):
                 value = os.path.join(self.resourcesFolder,value)
                 setattr(self, file, value)
                 if getattr(self, file) is not None and not isfile(getattr(self, file)):
-                    raise Exception(_(ErrorMgr.getError(errstr).format(self.reportXslt)))
+                    raise Exception(_(errstr).format(self.reportXslt))
             self.logDebug("{}=\t{}".format(file, value))            
             return value
        
-        setResourceFile('reportXslt', options.reportXslt, 'INVALID_CONFIG_REPORTXSLT')
+        #setResourceFile('reportXslt', options.reportXslt, 'INVALID_CONFIG_REPORTXSLT')
+        setResourceFile('reportXslt', options.reportXslt, "Cannot find report xslt {}")
         # Report XSLT is required when reportFormat contains 'Html'.     
         if self.reportXslt is None and 'html' in self.reportFormat.casefold():
             raise Exception('No {} specified when {}={} requires it.'.format('reportXslt', 'reportFormat', self.reportFormat))
-        
+
         # Summary XSLT is optional, but do report if you can't find it.
-        setResourceFile('summaryXslt', options.summaryXslt, 'INVALID_CONFIG_SUMMARYXSLT')
+        #setResourceFile('summaryXslt', options.summaryXslt, 'INVALID_CONFIG_SUMMARYXSLT')
+        setResourceFile('summaryXslt', options.summaryXslt, "Cannot find summary xslt {}")
+
         # Excel XSLT is optional, but do report if you can't find it.
-        setResourceFile('excelXslt', options.excelXslt, 'INVALID_CONFIG_EXCELXSLT')  
-    
+        #setResourceFile('excelXslt', options.excelXslt, 'INVALID_CONFIG_EXCELXSLT')  
+        setResourceFile('excelXslt', options.excelXslt, "Cannot find excel xslt {}")
         
     def initializeReSinglesOptions(self, options):
         # At the moment there are not any options relevant only for single-instance mode.
@@ -440,7 +448,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # check for next filing in input folder
         # as usual, self.{some}Folder is absolute, while options.{some}Folder is what was specified in the input.
         self.originalProcessingFolder = os.path.join(getcwd(), self.processingFolder)    
-        self.logInfo(_("Checking for the oldest zip file in {}").format(self.filingsFolder))            
+        self.logDebug(_("Checking for the oldest zip file in {}").format(self.filingsFolder))            
         while not zipfound:
             for file in sorted(os.listdir(self.filingsFolder), key=lambda file: os.stat(join(self.filingsFolder, file)).st_mtime):
                 if not zipfound and Utils.isZipFilename(file):
@@ -449,14 +457,15 @@ class EdgarRenderer(Cntlr.Cntlr):
                     # reportsFolder = normpath(join(self.processingFolder,options.reportsFolder)) 
                     processingFileSource = join(self.processingFolder, file)
                     if not exists(inputFileSource): continue  # it got deleted before we could process it.
-                    self.logInfo(_("Found a new zip file to process; moving {} to Processing folder ").format(inputFileSource))                   
+                    self.logDebug(_("Found a new zip file to process; moving {} to Processing folder ").format(inputFileSource))                   
                     try:
                         IoManager.move_clobbering_file(inputFileSource, processingFileSource)
                         options.entrypoint = processingFileSource
                         zipfound = True              
                     except IOError as err: 
                         self.logError(str(err))
-                        self.logError(_(ErrorMgr.getError('FILING_MOVE_ERROR').format(self.processingFolder)))              
+                        #self.logError(_(ErrorMgr.getError('FILING_MOVE_ERROR').format(self.processingFolder)))              
+                        self.logError(_("Could not remove {}").format(self.processingFolder))              
                         try: removedirs(self.processingFolder)
                         except IOError: continue
                     self.zipOutputFile = file
@@ -485,21 +494,18 @@ class EdgarRenderer(Cntlr.Cntlr):
                 success = True
                 
         except ModelDocument.LoadingException as err:
-            self.logInfo(_("Loading exception: " + str(err)))
-            if self.modelManager.abortOnMajorError == True:
-                self.logError(_(ErrorMgr.getError('SCHEMA_LOADING_ERROR')))
-                success = False
+            self.logInfo(_("Loading exception: {!s}".format(err)))
+            success = not self.modelManager.abortOnMajorError
     
         except Exception as err:
-            message = ErrorMgr.getError('DTS_LOADING_ERROR').format(err, traceback.format_tb(sys.exc_info()[2]))
-            self.logError(_(message))
+            self.logError(_('[Exception] Failed to complete request: {} {}'.format(err, traceback.format_tb(sys.exc_info()[2]))))
             success = False  # loading errors, don't attempt to utilize loaded DTS
     
         if success and modelXbrl and modelXbrl.modelDocument:
             self.logDebug("Loading modelXBRL profileStat: ")
             loadTime = time.time() - startedAt
             modelXbrl.profileStat(_("load"), loadTime)
-            self.logInfo(Locale.format_string(self.modelManager.locale,
+            self.logDebug(Locale.format_string(self.modelManager.locale,
                                         _("DTS loaded in %.2f secs at %s"),
                                         (loadTime, timeNow)))
             if options.importFiles:
@@ -515,14 +521,14 @@ class EdgarRenderer(Cntlr.Cntlr):
                                             (loadTime, timeNow)))
                     modelXbrl.profileStat(_("import"), loadTime)
                 if modelXbrl.errors:
-                    message = ErrorMgr.getError('DTS_LOADING_IMPORT_ERROR').format(err, traceback.format_tb(sys.exc_info()[2]))
-                    self.addToLog(_(message))
+                    #message = ErrorMgr.getError('DTS_LOADING_IMPORT_ERROR').format(err, traceback.format_tb(sys.exc_info()[2]))
+                    self.logDebug(_("Model import errors found: {} {}".format(err, traceback.format_tb(sys.exc_info()[2]))))
                     success = False  # loading errors, don't attempt to utilize loaded DTS
             self.logDebug("Loading {}".format(inputFileSource))
             for pluginXbrlMethod in PluginManager.pluginClassMethods("CntlrCmdLine.Xbrl.Loaded"):
                 pluginXbrlMethod(self, options, modelXbrl)
         else:
-            self.addToLog("No modelXBRL profileStat ", messageCode="info", file=inputFileSource)
+            self.logDebug("No modelXBRL profileStat ", file=inputFileSource)
             success = False
     
         return success, modelXbrl, firstStartedAt, formulaOptions
@@ -535,6 +541,9 @@ class EdgarRenderer(Cntlr.Cntlr):
             modelXbrl = self.modelManager.modelXbrl
             hasFormulae = modelXbrl.hasFormulae
             if self.validate:
+                from arelle.Cntlr import LogToBufferHandler
+                xbrlErrorLogger = LogToBufferHandler()
+                modelXbrl.logger.addHandler(xbrlErrorLogger)
                 startedAt = time.time()
                 if options.formulaAction:  # don't automatically run formulas
                     modelXbrl.hasFormulae = False
@@ -543,15 +552,22 @@ class EdgarRenderer(Cntlr.Cntlr):
                 errorCountAfterValidation = len(Utils.xbrlErrors(modelXbrl))
                 errorCountDuringValidation = errorCountAfterValidation - errorCountBeforeValidation
                 if errorCountDuringValidation > 0:
-                    for s in Utils.xbrlErrors(modelXbrl):
-                        message = ErrorMgr.getError('XBRL_VALIDATION_ERROR').format(s)
-                        self.logError(_(message) + options.entrypoint)    
+                    for record in xbrlErrorLogger.logRecordBuffer.copy(): # copy the list so that errors here do not append to it.
+                        try: href = record.refs[0]['href']
+                        except: href = ''
+                        try: sourceLine = record.refs[0]['sourceLine']
+                        except: sourceLine = ''
+                        if record.levelno >= logging.ERROR:
+                            self.logError(_("[{}] {} - {} {}".format(record.messageCode
+                                                                         ,record.getMessage()
+                                                                         ,href.split('#')[0]
+                                                                         ,sourceLine)))
                     if self.modelManager.abortOnMajorError:
                         success = False
-                        message = ErrorMgr.getError('VALIDATION_ERRORS_EXCEEDED').format(errorCountDuringValidation)
-                        self.logFatal(_(message) + options.entrypoint)
+                        self.logFatal(_("Not attempting to render after {} validation errors").format(
+                                        errorCountDuringValidation))
                     else:
-                        self.logInfo(_("Ignoring Validation errors in {} due to config parameter.").format(options.entrypoint))
+                        self.logInfo(_("Ignoring {} Validation errors because abortOnMajorError is not set.").format(errorCountDuringValidation))
     
                 if options.formulaAction:  # restore setting
                     modelXbrl.hasFormulae = hasFormulae
@@ -606,7 +622,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                     pluginXbrlMethod(self, options, modelXbrl)
     
         except (IOError, EnvironmentError) as err:
-            self.logError(ErrorMgr.getError('SAVE_OUTPUT_ERROR').format(err))
+            #self.logError(ErrorMgr.getError('SAVE_OUTPUT_ERROR').format(err))
+            self.logError("Failed to save output: {}".format(err))
             success = False
         except Exception as err:
             success = False
@@ -646,7 +663,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                     text += "\n\t{0}\n".format(line)
                 except:
                     text += "(UNPRINTABLE STACK FRAME)\n"
-            self.logError(_(ErrorMgr.getError('RE3_STACK_FRAME_ERROR')).format(err, text))
+            #self.logError(_(ErrorMgr.getError('RE3_STACK_FRAME_ERROR')).format(err, text))
+            self.logError(_('[Exception] Failed to complete request: {} {}').format(err, text))
         return success, modelXbrl 
     
     
@@ -659,8 +677,8 @@ class EdgarRenderer(Cntlr.Cntlr):
         :param options: OptionParser options from parse_args of main argv arguments (when called from command line) or corresponding arguments from web service (REST) request.
         :type options: optparse.Values
         """    
-        self.logInfo("Starting the Edgar Rendering Engine controller.")
-        self.logInfo("Command line arguments: " + str(sys.argv))
+        self.logDebug("Starting.")
+        self.logDebug("Command line arguments: {!s}".format(sys.argv))
         # Process command line options
         self.processShowOptions(options)
     
@@ -708,13 +726,13 @@ class EdgarRenderer(Cntlr.Cntlr):
                 IoManager.handleFolder(self, self.reportsFolder, True, self.totalClean)
             loopnum = 0
             success = True
-            self.logInfo(_("Pre-rendering stats: NumInstance: {}; NumInline: {}; NumSupplemental: {} "
-                           ).format(str(len(self.instanceList)), str(len(self.inlineList)), str(len(self.supplementList))))
-            for inputFileBase in self.instanceList + self.inlineList:
+            self.logDebug(_("Pre-rendering stats: NumInstance: {!s}; NumInline: {!s}; NumSupplemental: {!s} "
+                           ).format(len(self.instanceList), len(self.inlineList), len(self.supplementList)))
+            for inputFileSource in self.instanceList + self.inlineList:
                 if success: 
                     loopnum += 1
                     if filesource.isZip:
-                        filesource.select(inputFileBase)
+                        filesource.select(inputFileSource)
                         inputFileSource = filesource
                     else:
                         inputFileSource = join(self.processingFolder, inputFileSource)
@@ -726,13 +744,13 @@ class EdgarRenderer(Cntlr.Cntlr):
                         (success, modelXbrl) = self.validateInstance(options, modelXbrl, fo)     
                     if success and modelXbrl: 
                         RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
-                        self.logInfo(_("Start the rendering process on {}, filing loop {}. ").format(inputFileBase, str(loopnum)))
-                        success = Filing.mainFun(self, modelXbrl)
-                        self.logInfo(_("End of rendering on {}. ").format(inputFileBase))
+                        self.logDebug(_("Start the rendering process on {}, filing loop {!s}.").format(inputFileSource, loopnum))
+                        success = Filing.mainFun(self, modelXbrl, self.reportsFolder)
+                        self.logDebug(_("End of rendering on {}.").format(inputFileSource))
             
             if success and modelXbrl:                
                 self.postprocessInstance(options, modelXbrl)
-                self.logInfo("Post-processing complete")
+                self.logDebug("Post-processing complete")
             return success # from innerRunRenderer
                 
         if self.debugMode:
@@ -745,7 +763,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 success = False
         if not success:
             self.postprocessFailure(options) 
-            self.logInfo("Filing processing complete")
+            self.logDebug("Filing processing complete")
             
         if self.reportZip:
             if responseZipStream:
@@ -766,7 +784,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             xlWriter.save()
             xlWriter.close()
             del self.xlWriter 
-            self.logInfo("Excel rendering complete")
+            self.logDebug("Excel rendering complete")
         modelXbrl.profileStat(_("total"), time.time() - self.firstStartedAt)
         if options.collectProfileStats and modelXbrl:
             modelXbrl.logProfileStats() 
@@ -795,7 +813,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             else:
                 self.reportZip.write(source, filename)
         self.modelManager.close(modelXbrl)
-        self.logInfo("Instance post-processing complete")
+        self.logDebug("Instance post-processing complete")
         
         summary = Summary.Summary(self)    
         rootETree = summary.buildSummaryETree()
@@ -812,9 +830,9 @@ class EdgarRenderer(Cntlr.Cntlr):
             zipdir = self.reportsFolder      
             self.zipOutputFile = join(zipdir, self.zipOutputFile)    
             if self.entrypoint == self.zipOutputFile:  # Check absolute path destinations
-                message = ErrorMgr.getError('INPUT_OUTPUT_SAME').format(self.zipOutputFile)
-                self.logWarn(message)
-            self.logInfo(_("Creating output {} containing rendering results and other input files."
+                #message = ErrorMgr.getError('INPUT_OUTPUT_SAME').format(self.zipOutputFile)
+                self.logWarn("Input and output files are the same: {}".format(self.zipOutputFile))
+            self.logDebug(_("Creating output {} containing rendering results and other input files."
                            ).format(self.zipOutputFile))
             try:
                 zf = zipfile.ZipFile(self.zipOutputFile, 'w', allowZip64=False)                                             
@@ -824,35 +842,36 @@ class EdgarRenderer(Cntlr.Cntlr):
                 # shutil.rmtree(self.reportsFolder)
             finally:
                 zf.close()
-            self.logInfo(_("Rendering results zip file {} populated").format(self.zipOutputFile))
+            self.logDebug(_("Rendering results zip file {} populated").format(self.zipOutputFile))
             if self.isDaemon:
                 try:
                     result = IoManager.move_clobbering_file(self.zipOutputFile, self.deliveryFolder) 
                     IoManager.move_clobbering_file(options.entrypoint, self.doneFile)
-                    self.logInfo(_("Successfully post-processed to {}.").format(result))
+                    self.logDebug(_("Successfully post-processed to {}.").format(result))
                 except OSError as err:
-                    self.logError(_(ErrorMgr.getError('POST_PROCESSING_ERROR').format(err)))
-    
+                    #self.logError(_(ErrorMgr.getError('POST_PROCESSING_ERROR').format(err)))
+                    self.logError(_("Failure: Post-processing I/O or OS error: {}").format(err))
         if self.deleteProcessedFilings:
             for folder in self.createdFolders: shutil.rmtree(folder,ignore_errors=True) 
             
     
     def postprocessFailure(self, options):
         if self.isSingles:
-            message = ErrorMgr.getError('CANNOT_PROCESS_INPUT_FILE').format(self.entrypoint)
-            self.logError(message, file=__file__ + ' postprocessFailure')
+            #message = ErrorMgr.getError('CANNOT_PROCESS_INPUT_FILE').format(self.entrypoint)
+            self.logError("Cannot process input file {}.".format(self.entrypoint), file=__file__ + ' postprocessFailure')
         else:
             # In daemon mode, write an error log file looking somewhat like the one from RE2 and named the same.
             # Separately, create a zero-length "fail file" for the sole purpose of signaling status.
             if self.failFile is not None: 
                 open(self.failFile, 'w').close()
             if self.entrypoint is None:
-                message = _(ErrorMgr.getError('CANNOT_PROCESS_INPUT_FILE')).format(self.entrypoint)
-                self.logError(message)
+                #message = _(ErrorMgr.getError('CANNOT_PROCESS_INPUT_FILE')).format(self.entrypoint)
+                self.logError(_("Cannot process input file {}.").format(self.entrypoint))
             else:
-                errlogpath = join(self.deliveryFolder, os.path.splitext(self.entrypoint)[0] + '_errorLog.txt')
+                errlogpath = join(self.deliveryFolder, os.path.splitext(self.zipOutputFile)[0] + '_errorLog.txt')
                 if isfile(errlogpath): os.remove(errlogpath)
-                self.logError(_(ErrorMgr.getError('CANNOT_PROCESS_ZIP_FILE')).format(options.entrypoint))
+                #self.logError(_(ErrorMgr.getError('CANNOT_PROCESS_ZIP_FILE')).format(options.entrypoint))
+                self.logError(_("Cannot process zip file {}; moving to fail folder.").format(options.entrypoint))
                 IoManager.move_clobbering_file(options.entrypoint, self.errorsFolder)
                 print(self.deliveryFolder + " " + errlogpath)
                 with open(errlogpath, 'w', encoding='utf-8') as f:
@@ -877,12 +896,9 @@ class EdgarRenderer(Cntlr.Cntlr):
         # if both level and code were given, err on the side of more logging:
         messageLevel = max(level, messageLevel) 
         message = message.encode('utf-8', 'replace').decode('utf-8')
-        if messageLevel >= logging.WARN:
-            errmsg = Errmsg()
-            errmsg.msgCode = messageCode
-            errmsg.msg = message
-            self.ErrorMsgs.append(errmsg)
-    
+        if messageLevel >= logging.INFO:
+            self.ErrorMsgs.append(Errmsg(messageCode, message))
+
         if (self.modelManager and getattr(self.modelManager, 'modelXbrl', None)):
             self.modelManager.modelXbrl.logger.messageLevelFilter = None
             self.modelManager.modelXbrl.log(messageLevel, messageCode, message, *messageArgs)
@@ -890,19 +906,22 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.cntlr.addToLog(message, messageArgs=messageArgs, messageCode=messageCode, file=file, level=messageLevel)
             
     # Lowercase tokens apparently write to standard output??
-            
+    
+    def logTrace(self, message, messageArgs=(), file=basename(__file__)):
+        self.addToLog(str(message), messageArgs=messageArgs, file=file, level=logging.NOTSET, messageCode='trace')
+
     def logDebug(self, message, messageArgs=(), file=basename(__file__)):
         self.addToLog(str(message), messageArgs=messageArgs, file=file, level=logging.DEBUG, messageCode='debug')
-        
-    def logWarn(self, message, messageArgs=(), file=None):
-        self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.WARN, messageCode='warn')
-    
+
     def logInfo(self, message, messageArgs=(), file=None):
         self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.INFO, messageCode='info')
-    
+
+    def logWarn(self, message, messageArgs=(), file=None):
+        self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.WARN, messageCode='warn')
+
     def logError(self, message, messageArgs=(), file=None):
         self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.ERROR, messageCode='error')
-        
+
     def logFatal(self, message, messageArgs=(), file=None):
         self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.FATAL, messageCode='fatal')
 
@@ -920,10 +939,9 @@ Errors and Logging
 '''
     
 class Errmsg(object):
-    
-    def __init__(self):
-        self.msgCode = 0
-        self.msg = ""
+    def __init__(self, messageCode, message):
+        self.msgCode = messageCode
+        self.msg = message
 
 
 __pluginInfo__ = {

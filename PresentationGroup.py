@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`re.PresentationGroup`
+:mod:`EdgarRenderer.PresentationGroup`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
 Data and content created by government employees within the scope of their employment 
@@ -8,7 +8,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
 from collections import defaultdict
-from . import ErrorMgr, Utils
+from . import Utils
 import arelle.XbrlConst
 
 
@@ -96,8 +96,9 @@ class PresentationGroup(object):
             # twice.  however, if it goes over the same relationship twice on it's way to the root, then there is a cycle.
             # in fact, this will catch every possible cycle in our subgraph, we don't care about cycles outside of our subgraph.
             if relationship in localRelationshipSet:
-                message = ErrorMgr.getError('PRESENTATION_GROUP_DIRECTED_CYCLE_ERROR').format(self.cube.shortName)
-                self.addToLog(message, messageCode='error')
+                #message = ErrorMgr.getError('PRESENTATION_GROUP_DIRECTED_CYCLE_ERROR').format(self.cube.shortName)
+                self.filing.controller.logFatal(("The presentation group ''{}'' contains a directed cycle, which is a "
+                                                 "violation of XBRL 2.1 section 5.2.4.2.").format(self.cube.shortName))
                 import sys
                 sys.exit()
             localRelationshipSet.add(relationship)
@@ -214,7 +215,7 @@ class PresentationGroup(object):
             try:
                 if preferredLabel in Utils.startEndRoles:
                     if concept.periodType == 'duration':
-                        self.filing.ignoredPreferredLabels += [(relationship.linkrole,concept.qname,preferredLabel,self.shortName)]
+                        self.filing.ignoredPreferredLabels += [(relationship.linkrole,concept.qname,preferredLabel,self.cube.shortName)]
                         if preferredLabel in Utils.startRoles:
                             preferredLabel = Utils.durationStartRole # not a role.
                         else:
@@ -260,8 +261,9 @@ class PresentationGroup(object):
                 self.cube.axisAndMemberOrderDict[concept.qname] = (giveMemGetPositionDictAxis, axisOrder)
             else:
                 # every member on this axis is filtered out, this kills the whole cube.
-                message = ErrorMgr.getError('PRESENTATION_GROUP_CHILDLESS_AXIS_FILTERS_OUT_ALL_FACTS_WARNING').format(self.cube.shortName)
-                self.addToLog(message, messageCode='warn')
+                #message = ErrorMgr.getError('PRESENTATION_GROUP_CHILDLESS_AXIS_FILTERS_OUT_ALL_FACTS_WARNING').format(self.cube.shortName)
+                self.filing.controller.logWarn(("The presentation group ''{}'' contains an axis with no children, " \
+                                                "which effectively filters out every fact.").format(self.cube.shortName))
                 self.cube.noFactsOrAllFactsSuppressed = True
 
 
@@ -279,21 +281,17 @@ class PresentationGroup(object):
 
     def printPresentationGroup(self):
         for rn in self.rootNodeList:
-            self.addToLog(str(rn.arelleConcept.qname))
+            self.filing.controller.logTrace(str(rn.arelleConcept.qname))
             self.recursivePrint(rn, '\t')
-        self.addToLog('\n\n')
+        self.filing.controller.logTrace('\n\n')
 
     def recursivePrint(self, presentationGroupNode, tabString):
         for kid in presentationGroupNode.childrenList:
             if kid.arelleRelationship is not None:
-                self.addToLog('{}{}    order: {}    preferred label: {}'.format(tabString,
-                                                                                str(kid.arelleConcept.qname),
-                                                                                str(kid.arelleRelationship.order),
-                                                                                str(kid.arelleRelationship.preferredLabel)))
+                self.filing.controller.logTrace('{}{!s}    order: {!s}    preferred label: {!s}'.format(tabString,
+                                                                                kid.arelleConcept.qname,
+                                                                                kid.arelleRelationship.order,
+                                                                                kid.arelleRelationship.preferredLabel))
             else: # it's a Member or default
-                self.addToLog(tabString + str(kid.arelleConcept.qname))
-
+                self.filing.controller.logTrace(tabString + str(kid.arelleConcept.qname))
             self.recursivePrint(kid, tabString + '\t')
-
-    def addToLog(self,message,messageCode='debug',messageArgs=(),file='PresentationGroup.py'):
-        self.filing.controller.addToLog(message, messageCode=messageCode, messageArgs=messageArgs, file=file)

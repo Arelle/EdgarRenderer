@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`re.Summary`
+:mod:`EdgarRenderer.Summary`
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
 Data and content created by government employees within the scope of their employment 
 are not subject to domestic copyright protection. 17 U.S.C. 105.
@@ -44,7 +44,7 @@ class Summary(object):
         self.instanceSummaryList = controller.instanceSummaryList
         self.reportsFolder = str(controller.reportsFolder)
         self.summaryList = controller.instanceSummaryList
-        self.entrypoint = self.controller.entrypoint
+        self.entrypoint = controller.entrypoint
         summaries = self.instanceSummaryList                
         self.contextCount = sum(s.contextCount for s in summaries)
         self.entityCount = sum(s.entityCount for s in summaries)
@@ -68,12 +68,9 @@ class Summary(object):
         self.dtsroots = dtsroots
         qnameSet = set()
         refSet = set()  # all references, with key being the tuple itself.
-        qnameReferenceDict = defaultdict(set)
         for s in summaries:  # Uniquify the references across all instances
             qnameSet = qnameSet.union(s.qnameInUseSet)
             refSet = refSet.union(s.refSet)
-            for qname in s.qnameInUseSet:
-                qnameReferenceDict[qname].update(s.qnameReferenceDict[qname])
         self.elementCount = self.keyStandard+self.keyCustom
         self.qnameSet = qnameSet
         self.refSet = refSet
@@ -88,10 +85,7 @@ class Summary(object):
        
     def __str__(self):
         return "[Summary {} {}]".format(self.menuStyle, self.controller.entrypoint)
-    
-    def addToLog(self, message, messageArgs=(), messageCode='debug', file='Summary.py'):
-        self.controller.addToLog(message, messageCode=messageCode, messageArgs=messageArgs, file=file)    
-        
+
     def buildSummaryETree(self):
         try:
             nsmap = {}  # {'xsi' : 'http://www.w3.org/2001/XMLSchema-instance'}
@@ -106,11 +100,11 @@ class Summary(object):
             self.appendSummaryFooter()
             return self.rootETree
         except Exception as err:
-            self.addToLog(str(err), messageCode='error')
+            self.controller.logError(str(err))
     
     def appendSummaryHeader(self):
         rootETree = self.rootETree
-        SubElement(rootETree, 'Version').text = '3.0.612' 
+        SubElement(rootETree, 'Version').text = self.controller.VERSION 
         SubElement(rootETree, 'ProcessingTime') 
         SubElement(rootETree, 'ReportFormat').text = self.controller.reportFormat
         SubElement(rootETree, 'ContextCount').text = str(self.contextCount)        
@@ -132,12 +126,12 @@ class Summary(object):
         SubElement(reportETree, 'ReportType').text = 'Book'
         SubElement(reportETree, 'ShortName').text = 'All Reports'
 
-        logs = SubElement(self.rootETree, 'Logs')
-
         # only output 100 warnings or errors max, after that it's not helpful.
         for i, errmsg in enumerate(self.controller.ErrorMsgs):
+            if i == 0:
+                logs = SubElement(self.rootETree, 'Logs')
             if i == 100:
-                SubElement(logs, 'Log', type=errmsg.msgCode.title()).text = "There are more than 100 warnings or errors, only 100 will be displayed."
+                SubElement(logs, 'Log', type='Info').text = "There are more than 100 warnings or errors, only 100 will be displayed."
                 break
             SubElement(logs, 'Log', type=errmsg.msgCode.title()).text = errmsg.msg
 
@@ -398,7 +392,7 @@ class InstanceSummary(object):
         for qname, facts in modelXbrl.factsByQname.items():
             primaryInUseSet.add(qname)
             for fact in facts:
-                conceptInUseSet.add(fact.concept)
+                if fact.concept is not None: conceptInUseSet.add(fact.concept)
                 if fact.context is not None: contextsInUseSet.add(fact.context)
                 if fact.unit is not None: unitsInUseSet.add(fact.unit)
                 if arelle.XbrlConst.qnIXbrl11Hidden in fact.ancestorQnames: 
@@ -461,8 +455,8 @@ class InstanceSummary(object):
         
         # Assume for the moment that every concept in the presentation link base connects eventually to some fact  
         # TODO: use graph traversal instead.    
-        conceptInUseSet = conceptInUseSet.union({concept for concept in parentChildRelationshipSet.modelRelationshipsFrom.keys()})
-        conceptInUseSet = conceptInUseSet.union({concept for concept in parentChildRelationshipSet.modelRelationshipsTo.keys()})
+        conceptInUseSet = conceptInUseSet.union({concept for concept in parentChildRelationshipSet.modelRelationshipsFrom.keys() if concept is not None})
+        conceptInUseSet = conceptInUseSet.union({concept for concept in parentChildRelationshipSet.modelRelationshipsTo.keys() if concept is not None})
 
         # Do not add a concept just because it has a label or a reference.
         conceptLabelRelationshipSet = modelXbrl.relationshipSet(arelle.XbrlConst.conceptLabel)
@@ -483,7 +477,7 @@ class InstanceSummary(object):
                         for elt in toReference.iter():
                             s = elt.text
                             if s is not None: # empty elts appear in us-gaap 2008 and 2011 refs
-                                s = s.strip().replace('&', '&amp;')
+                                #s = s.strip().replace('&', '&amp;')
                                 if len(s)>0:
                                     r += [(elt.localName,s)]
                         r = tuple(r)  # make it immutable and suitable as a key                      
@@ -496,7 +490,7 @@ class InstanceSummary(object):
         for concept in conceptInUseSet:
             tag = ['tag']
             tag += [('id', concept.attrib['id'])]
-            tag += [('xbrltype', concept.baseXbrliType)]            
+            tag += [('xbrltype', concept.typeQname)]
             tag += [('nsuri', concept.qname.namespaceURI)]
             tag += [('localname', concept.qname.localName)]
             if concept.balance is not None:

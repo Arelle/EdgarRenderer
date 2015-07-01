@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:mod:`re.RefManager`
+:mod:`EdgarRenderer.RefManager`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
 Data and content created by government employees within the scope of their employment 
@@ -12,7 +12,6 @@ import arelle.ModelDocument
 from arelle.FileSource import openFileSource
 from arelle import PythonUtil # define 2.x or 3.x string types
 PythonUtil.noop(0) # Get rid of warning on PythonUtil import
-from . import ErrorMgr
 
 taxonomyManagerFile = 'TaxonomyAddonManager.xml'
 
@@ -61,8 +60,8 @@ class RefManager(object):
             except (arelle.ModelDocument.LoadingException):
                 pass
             if doc is None:
-                message = ErrorMgr.getError('UNABLE_TO_LOAD_ADDON_LINKBASE')
-                controller.logWarn(message.format(url))
+                #message = ErrorMgr.getError('UNABLE_TO_LOAD_ADDON_LINKBASE')
+                controller.logWarn("Unable to load add-on linkbase {}.".format(url))
             else:
                 mustClear = True
         modelXbrl.modelManager.validateDisclosureSystem = priorValidateDisclosureSystem

@@ -1,15 +1,15 @@
-# EdgarRenderer Plugin
-EDGAR Renderer enables investors to view the interactive data filings submitted under the US Security and Exchange Commission (SEC) rules that require the use of XBRL via the SEC website. 
+# EdgarRenderer
+EDGAR Renderer enables investors to view the interactive data filings submitted under the US Security and Exchange Commission 
+(SEC) rules that require the use of XBRL via the SEC website. 
 
-EDGAR Renderer was created by staff of the U.S. Securities and Exchange Commission.
+EDGAR Renderer was created by staff of the U.S. Securities and Exchange Commission. 
 
-Data and content created by government employees within the scope of their employment are not subject to domestic copyright protection. 17 U.S.C. 105.
+Data and content created by government employees within the scope of their employment are not subject to 
+domestic copyright protection. 17 U.S.C. 105.
 
 End user support is by e-mail direct to SEC at: Ask-OID@sec.gov
 
 Developer issue management is by the Jira Edgar Renderer project: https://arelle.atlassian.net/projects/ER
-
-====
 
 This plugin branch was branched from the SEC-contributed master by Mark V Systems, and can be loaded as a plugin to Arelle in the normal manner.  E.g., if running from command line, --plugins  {path to here}/EdgarRenderer
 
@@ -23,7 +23,5 @@ To use this plugin securely without leaving any xbrl files on a server (such as 
          -o outresults.zip 
          "http://localhost:8080/rest/xbrl/validation?efm-pragmatic&media=zip&plugins=EdgarRenderer"
 
-
-====
 
 Further notes on usage are in the __init__.py module comments.
