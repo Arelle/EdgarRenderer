@@ -61,7 +61,9 @@ class RefManager(object):
                 pass
             if doc is None:
                 #message = ErrorMgr.getError('UNABLE_TO_LOAD_ADDON_LINKBASE')
-                controller.logWarn("Unable to load add-on linkbase {}.".format(url))
+                modelXbrl.warning("er3:unableToAddOnLinkbase",
+                                  _("Unable to load add-on linkbase %(linkbase)s."),
+                                  modelObject=modelXbrl.modelDocument, linkbase=url)
             else:
                 mustClear = True
         modelXbrl.modelManager.validateDisclosureSystem = priorValidateDisclosureSystem

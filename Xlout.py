@@ -26,6 +26,8 @@ dateTimePattern = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-2][0-9]:[0-6][0-9]
 datePattern = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 forbiddenChars = re.compile('[\\*?:/\[\]]')
 
+OUTPUT_FILE_NAME = "Financial_Report.xlsx"
+
 def intCol(elt, attrName, default=None):
     try:
         return int(elt.get(attrName, default))
@@ -60,13 +62,14 @@ class XlWriter(object):
             import io
             file = io.BytesIO()
         else:
-            file = os.path.join(self.outputFolderName, "Financial_Report.xlsx")
+            file = os.path.join(self.outputFolderName, OUTPUT_FILE_NAME)
         self.wb.save(file)
         if self.controller.reportZip:
             file.seek(0)
-            self.controller.reportZip.writestr("Financial_Report.xlsx", file.read())
+            self.controller.reportZip.writestr(OUTPUT_FILE_NAME, file.read())
             file.close()
             del file  # dereference
+        self.controller.renderedFiles.add(OUTPUT_FILE_NAME)
         self.controller.logDebug('Excel output saved {}'.format(self.controller.entrypoint),file=os.path.basename(__file__))
 
 
@@ -114,7 +117,7 @@ class XlWriter(object):
                         colLetter = openpyxl.cell.get_column_letter(col)
                         if colLetter not in colsWithCustomDimensions:
                             colsWithCustomDimensions.add(colLetter)
-                            ws.column_dimensions[colLetter] = openpyxl.worksheet.dimensions.ColumnDimension(colLetter, customWidth=True)
+                            ws.column_dimensions[colLetter] = openpyxl.worksheet.dimensions.ColumnDimension(ws, customWidth=True)
                         cell = ws.cell(row=row,column=col)
                         # default style fields (so we can set the all at once)
                         wrapText = False

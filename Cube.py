@@ -94,9 +94,11 @@ class Cube(object):
             # we know that all of the facts are defaulted on them. BUT, they have no defaults, so all the facts are filtered out.
             self.noFactsOrAllFactsSuppressed = True
             axesStr = ', '.join([str(axisQname) for axisQname in sorted(axesWithoutDefaultsThatAllFactsAreDefaultedOn)])
-            self.controller.logWarn(("The presentation group ''{}'' contains {}, which either has (have) no default member in the " \
-                                     "presentation group and/or the definition linkbase. Since every fact is defaulted on this (these) axe(s), " \
-                                     "all facts have been filtered out.").format(self.shortName, axesStr))
+            self.modelXbrl.warning("er3:allFactsFiltered",
+                                   _("The presentation group ''%(presentationGroup)s'' contains %(axes)s, which either has (have) no default member in the "
+                                    "presentation group and/or the definition linkbase. Since every fact is defaulted on this (these) axe(s),"
+                                    "all facts have been filtered out."),
+                                    modelObject=self.modelXbrl.modelDocument, presentationGroup=self.shortName, axes=axesStr)
 
 
     def handlePeriodStartEndLabel(self,discoveredDurations=[]):
@@ -182,9 +184,11 @@ class Cube(object):
             # go 'discover' the durations by comparing start and end instants.
             moments = sorted(list({fxm[1]['period'].endTime for fxm in self.factMemberships}))
             if len(moments) > 1:
-                self.controller.logInfo(("In ''{}'', no matching durations for {} instant facts presented with start or end " \
-                                         "preferred labels. Now inferring durations to form columns. Simplify the presentation " \
-                                         "to get a more compact layout.").format(self.shortName, len(skippedFactSet)))
+                self.modelXbrl.info("er3:inferringDurations",
+                                    _("In ''%(presentationGroup)s'', no matching durations for %(numFacts)s instant facts presented with start or end " 
+                                      "preferred labels. Now inferring durations to form columns. Simplify the presentation " 
+                                      "to get a more compact layout."),
+                                    modelObject=self.modelXbrl.modelDocument, presentationGroup=self.shortName, numFacts=len(skippedFactSet))
                 intervals = []                
                 for i,endTime in enumerate(moments[1:]):
                     startTime = moments[i]

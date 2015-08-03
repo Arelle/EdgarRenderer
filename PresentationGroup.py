@@ -97,8 +97,10 @@ class PresentationGroup(object):
             # in fact, this will catch every possible cycle in our subgraph, we don't care about cycles outside of our subgraph.
             if relationship in localRelationshipSet:
                 #message = ErrorMgr.getError('PRESENTATION_GROUP_DIRECTED_CYCLE_ERROR').format(self.cube.shortName)
-                self.filing.controller.logFatal(("The presentation group ''{}'' contains a directed cycle, which is a "
-                                                 "violation of XBRL 2.1 section 5.2.4.2.").format(self.cube.shortName))
+                self.filing.modelXbrl.exception("er3:presentationGroupCycle",
+                                                _("The presentation group ''%(presentationGroup)s'' contains a directed cycle, which is a "
+                                                 "violation of XBRL 2.1 section 5.2.4.2."),
+                                                modelObject=relationship, presentationGroup=self.cube.shortName)
                 import sys
                 sys.exit()
             localRelationshipSet.add(relationship)
@@ -262,8 +264,10 @@ class PresentationGroup(object):
             else:
                 # every member on this axis is filtered out, this kills the whole cube.
                 #message = ErrorMgr.getError('PRESENTATION_GROUP_CHILDLESS_AXIS_FILTERS_OUT_ALL_FACTS_WARNING').format(self.cube.shortName)
-                self.filing.controller.logWarn(("The presentation group ''{}'' contains an axis with no children, " \
-                                                "which effectively filters out every fact.").format(self.cube.shortName))
+                self.filing.modelXbrl.warning("er3:childlessAxis",
+                                              ("The presentation group ''%(presentationGroup)s'' contains an axis with no children, "
+                                                "which effectively filters out every fact."),
+                                              modelObject=concept, presentationGroup=self.cube.shortName)
                 self.cube.noFactsOrAllFactsSuppressed = True
 
 
@@ -275,7 +279,6 @@ class PresentationGroup(object):
         # if preferredLabel is None, it outputs the standard labelStr
         labelStr = concept.label(preferredLabel=preferredLabel, fallbackToQname=False)
         if labelStr is None: # if no labelStr, labelStr function with fallbackToQname=False returns None
-            # below, \g<1> will match to the char that matched ([a-z]) and similarly for \g<1>.
             labelStr = Utils.prettyPrintQname(concept.qname.localName)
         self.cube.labelDict[concept.qname] = labelStr
 
@@ -288,10 +291,11 @@ class PresentationGroup(object):
     def recursivePrint(self, presentationGroupNode, tabString):
         for kid in presentationGroupNode.childrenList:
             if kid.arelleRelationship is not None:
-                self.filing.controller.logTrace('{}{!s}    order: {!s}    preferred label: {!s}'.format(tabString,
-                                                                                kid.arelleConcept.qname,
-                                                                                kid.arelleRelationship.order,
-                                                                                kid.arelleRelationship.preferredLabel))
+                self.filing.modelXbrl.log("NOTSET",
+                                          "er3:trace",
+                                          _('%(tabs)s%(concept)s    order: %(order)s    preferred label: %(label)s'),
+                                          modelObject=kid.arelleConcept, tabs=tabString, 
+                                          concept=kid.arelleConcept.qname, order=kid.arelleRelationship.order, label=kid.arelleRelationship.preferredLabel)
             else: # it's a Member or default
                 self.filing.controller.logTrace(tabString + str(kid.arelleConcept.qname))
             self.recursivePrint(kid, tabString + '\t')

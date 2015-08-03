@@ -55,10 +55,12 @@ def writeHtmlDoc(root, reportZip, reportFolder, filename):
     else:
         reportZip.writestr(filename, treeToString(root, method='html', with_tail=False, pretty_print=True, encoding='utf-8'))  
     
-def writeJsonDoc(lines, path):
-    with open(path, mode='w') as f:
-        json.dump(lines, f, sort_keys=True, indent=jsonIndent)
-
+def writeJsonDoc(lines, pathOrStream):
+    if isinstance(pathOrStream, str):
+        with open(pathOrStream, mode='w') as f:
+            json.dump(lines, f, sort_keys=True, indent=jsonIndent)
+    else: # path is an open file
+        json.dump(lines, pathOrStream, sort_keys=True, indent=jsonIndent)
 
 def moveToZip(zf, abspath, zippath):                        
     if isfile(abspath) and not isFileHidden(abspath):
@@ -152,7 +154,6 @@ def unpackInput(controller, options, filesource):  # success
                         unpacked += 1
                     fileStream.close()
         elif filesource.isZip:
-            handleFolder(controller, controller.processingFolder, True, True)    
             controller.logDebug(_("Extracting from zip file."), file=basename(__file__))
             zf = zipfile.ZipFile(options.entrypoint, 'r')
             for base in zf.namelist():
@@ -165,9 +166,7 @@ def unpackInput(controller, options, filesource):  # success
                     unpacked += 1
         
         else:  # Not a zip file.
-            handleFolder(controller, controller.processingFolder, True, True)    
-            if not controller.entrypointFolder: controller.entrypointFolder = abspath(options.entrypoint)
-            if not isdir(controller.entrypointFolder): controller.entrypointFolder = dirname(controller.entrypointFolder)
+
             # Case 2: Entry point is a single file.
             # Treat it as if the entrypoint were its parent folder.
             # This does create a problem if there are multiple instances, because it

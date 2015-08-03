@@ -1,0 +1,51 @@
+#menu {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 11px;
+}
+
+ul#menu {
+  list-style-type:none;
+  margin: 0;
+  padding: 0;
+  width: 15em;
+  border: 1px solid #333;
+}
+
+ul#menu ul {
+list-style-type:none;
+margin:0;
+padding:0;
+width:15em;
+background-color:#F5F5EB; 
+}
+
+ul#menu a {
+  display: block;
+  text-decoration: none;	
+}
+
+ul#menu li {
+  margin-top: 1px;
+}
+
+ul#menu li a {
+  background: #F3D673;
+  color: black;	
+  padding: 0.5em;
+}
+
+ul#menu li a:hover {
+  background: #aaa;
+}
+
+ul#menu li ul li a {
+  background: #F5F5EB;
+  color: #BF0023;
+  padding-left: 20px;
+}
+
+ul#menu li ul li a:hover {
+  background: #aaa;
+  border-left: 5px #000 solid;
+  padding-left: 15px;
+}

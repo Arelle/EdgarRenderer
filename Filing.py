@@ -38,7 +38,10 @@ def mainFun(controller, modelXbrl, outputFolderName):
             # they all print in one file.
             cube.fileNumber = nextFileNum
             nextFileNum += 1
-            controller.logDebug(_('File R{!s} is {} {}').format(cube.fileNumber, cube.linkroleUri, cube.definitionText))
+            modelXbrl.debug("er3:cubeFile",
+                            _('File R%(cubeFileNumber)s is %(cubeFile)s %(cubeDefinition)s'),
+                            modelObject=modelXbrl.modelDocument,
+                            cubeFileNumber=cube.fileNumber, cubeFile=cube.linkroleUri, cubeDefinition=cube.definitionText)
 
             # we keep track of embedded cubes so that we know later if for some cubes, no embeddings were actually embedded.
             if cube.isEmbedded:
@@ -48,8 +51,9 @@ def mainFun(controller, modelXbrl, outputFolderName):
     xlWriter = None
     if controller.excelXslt:
         if filing.hasEmbeddings:
-            controller.logDebug(_("Excel XSLT is not applied to instance {} having embedded commands.").format(
-                                filing.fileNameBase))
+            modelXbrl.debug("ex3:skippedExcelWithEmbeddedCommands",
+                            _("Excel XSLT is not applied to instance %(instance)s having embedded commands."),
+                            modelObject=modelXbrl.modelDocument, instance=filing.fileNameBase)
         else:
             xlWriter = controller.xlWriter
             if not xlWriter:
@@ -59,7 +63,9 @@ def mainFun(controller, modelXbrl, outputFolderName):
     #print('memory '  + str(int(win32process.GetProcessMemoryInfo(win32process.GetCurrentProcess())['WorkingSetSize'] / (1024*1024))))
 
     # handle the steps after flow through and then emit all of the XML and write the files
-    controller.logDebug(_("Generating rendered reports in {}").format(outputFolderName))
+    modelXbrl.debug("ex3:generatingReports",
+                    _("Generating rendered reports in %(folder)s"),
+                    modelObject=modelXbrl.modelDocument, folder=outputFolderName)
     for cube in sortedCubeList:
         if cube.noFactsOrAllFactsSuppressed:
             for embedding in cube.embeddingList:
@@ -103,7 +109,11 @@ def mainFun(controller, modelXbrl, outputFolderName):
     if len(filing.reportSummaryList) > 0:
         controller.nextFileNum = filing.reportSummaryList[-1].fileNumber + 1
 
-    filing.unusedFactSet = set(modelXbrl.facts) - filing.usedOrBrokenFactSet
+    # have to do some massaging of filing.usedOrBrokenFactDefDict.  can't just do set(filing.usedOrBrokenFactDefDict).
+    # that's because when you remove if you remove every thing in the set for one of the keys, the key still stays.
+    # so we need to make sure they key has a nonempty set associated with it.
+    filing.unusedFactSet = \
+            set(modelXbrl.facts) - {fact for fact, embeddingSet in filing.usedOrBrokenFactDefDict.items() if len(embeddingSet) > 0}
 
     for fact, role, cube, ignore, shortName in filing.skippedFactsList:
         if fact in filing.unusedFactSet:
@@ -132,7 +142,7 @@ class Filing(object):
         self.presentationUnitToConceptDict = {}
 
         self.embeddedCubeSet = set()
-        self.usedOrBrokenFactSet = set()
+        self.usedOrBrokenFactDefDict = defaultdict(set)
         self.unusedFactSet = set()
         self.skippedFactsList = []
 
@@ -202,7 +212,7 @@ class Filing(object):
 
 
     def populateAndLinkClasses(self, uncategorizedCube = None):
-        duplicateFacts = set()
+        duplicateFacts = self.modelXbrl.duplicateFactSet = set()
 
         if uncategorizedCube is not None:
             for fact in self.unusedFactSet:
@@ -250,62 +260,53 @@ class Filing(object):
             # print warnings of missing defaults for each cube
             for cube in self.cubeDict.values():
                 if len(cube.defaultFilteredOutAxisSet) > 0:
-                    self.controller.logDebug("In ''{}'', the children of axes {} do not include their defaults."
-                                     .format(cube.shortName, cube.defaultFilteredOutAxisSet))
+                    self.modelXbrl.debug("er3:noDefaults",
+                                         _("In ''%(presentationGroup)s'', the children of axes %(axes)s do not include their defaults."),
+                                         modelObject=self.modelXbrl.modelDocument, presentationGroup=cube.shortName, 
+                                         axes=cube.defaultFilteredOutAxisSet)
 
 
             # initialize elements
             for qname, factSet in self.modelXbrl.factsByQname.items():
 
                 # we are looking to see if we have "duplicate" facts.  a duplicate fact is one with the same qname, context and unit
-                # as another fact.  in this case, we keep the first fact with an 'en-US' language, or if there is none, keep the first fact.
+                # as another fact.  Also, keep the first fact with an 'en-US' language, or if there is none, keep the first fact.
                 # the others need to be proactively added to the set of unused facts.
                 if len(factSet) > 1:
-                    sortedFactList = sorted(factSet, key = lambda thing : (thing.contextID, thing.unitID, thing.sourceline))
+                    def factSortKey (thing):
+                        if thing.isNil: discriminator = float("INF") # Null values always last
+                        elif thing.isNumeric:  discriminator = 0 - float(thing.decimals) # Larger decimal values come first
+                        elif thing.xmlLang == 'en-US': discriminator = 'aa-AA' # en-US comes first
+                        elif thing.xmlLang is None: discriminator = 'aa-AA' # no lang means en-US
+                        else: discriminator = thing.xmlLang # followed by all others
+                        return (thing.contextID,discriminator,thing.sourceline) # sourceLine is the tiebreaker              
+                    sortedFactList = sorted(factSet, key = factSortKey)
                     while len(sortedFactList) > 0:
-
                         firstFact = sortedFactList.pop(0)
-                        if firstFact.xmlLang == 'en-US':
-                            firstEnUsLangFact = firstFact
-                        else:
-                            firstEnUsLangFact = None
-
+                        lineNumOfFactWeAreKeeping = firstFact.sourceline
                         discardedLineNumberList = []
-                        counter = 0
-
+                        discardedCounter = 0
                         # finds facts with same qname, context and unit as firstFact
                         while (len(sortedFactList) > 0 and
                                sortedFactList[0].qname == firstFact.qname and
                                sortedFactList[0].context == firstFact.context and
                                sortedFactList[0].unitID == firstFact.unitID):
-                            counter += 1
+                            discardedCounter += 1
                             fact = sortedFactList.pop(0)
-                            if firstEnUsLangFact is None and fact.xmlLang == 'en-US':
-                                firstEnUsLangFact = fact # keeping this fact
-                            else:
-                                duplicateFacts.add(fact) # not keeping this fact
-                                discardedLineNumberList += [str(fact.sourceline)] # these are added in sorted order by sourceline
+                            duplicateFacts.add(fact) # not keeping this fact
+                            discardedLineNumberList += [str(fact.sourceline)] # these are added in sorted order by sourceline
 
-                        if counter > 0:
-                            if firstEnUsLangFact is None:
-                                lineNumOfFactWeAreKeeping = firstFact.sourceline # there is no en-US fact, keep the first fact we found
-                            else:
-                                lineNumOfFactWeAreKeeping = firstEnUsLangFact.sourceline # we did find an en-US fact, keep it.
-                                if firstFact != firstEnUsLangFact:
-                                    duplicateFacts.add(firstFact)
-                                    discardedLineNumberList = [str(firstFact.sourceline)] + discardedLineNumberList # prepend to maintain sorted order
-
+                        if discardedCounter > 0:
                             # start it off because we can assume that these facts have a qname and a context
-                            # note that even if we are keeping firstEnUsLangFact, we are only printing qname, contextID and unitID,
-                            # which are the same for both firstFact and firstEnUsLangFact.
                             qnameContextIDUnitStr = 'qname {!s}, context {}'.format(firstFact.qname, firstFact.contextID)
                             if firstFact.unit is not None:
                                 qnameContextIDUnitStr += ', unit ' + firstFact.unitID
-                            #message = ErrorMgr.getError('DUPLICATE_FACT_SUPPRESSION').format(qnameContextIDUnitStr, lineNumOfFactWeAreKeeping, ', '.join(discardedLineNumberList))
-                            self.controller.logWarn("There are multiple facts with {}. The fact on line {} of the instance " \
-                                                    "document will be rendered, and the rest at line(s) {} will not.".format(
-                                                    qnameContextIDUnitStr, lineNumOfFactWeAreKeeping,
-                                                    ', '.join(discardedLineNumberList)))
+                            self.modelXbrl.info("er3:multipleFacts",
+                                                _("There are multiple facts with %(contextUnitIds)s. The fact on line %(lineNumOfFactWeAreKeeping)s of the instance " 
+                                                  "document will be rendered, and the rest at line(s) %(linesDiscarded)s will not."),
+                                                modelObject=duplicateFacts, contextUnitIds=qnameContextIDUnitStr, 
+                                                lineNumOfFactWeAreKeeping=lineNumOfFactWeAreKeeping,
+                                                linesDiscarded=', '.join(discardedLineNumberList))
 
                 for fact in factSet: # we only want one thing, but we don't want to pop from the set so we "loop" and then break right away
 
@@ -313,14 +314,18 @@ class Filing(object):
 
                     if fact.concept is None:
                         #conceptErrStr = ErrorMgr.getError('FACT_DECLARATION_BROKEN').format(qname)
-                        self.controller.logWarn("The element declaration for {}, or one of its facts, is broken. They will all be " \
-                                                "ignored.".format(qname))
+                        self.modelXbrl.warning("er3:factConceptUndeclared",
+                                               _("The element declaration for %(fact)s, or one of its facts, is broken. They will all be " 
+                                                "ignored."),
+                                               modelObject=fact, fact=qname)
                         elementBroken = True
 
                     elif fact.concept.type is None:
                         #typeErrStr = ErrorMgr.getError('The Type declaration for Element {} is either broken or missing. The Element will be ignored.').format(qname)
-                        self.controller.logWarn("The Type declaration for Element {} is either broken or missing. The " \
-                                                "Element will be ignored.".format(qname))
+                        self.modelXbrl.warning("er3:factTypeUndeclared",
+                                               _("The Type declaration for Element %(fact)s is either broken or missing. The " 
+                                                "Element will be ignored."),
+                                               modelObject=fact, fact=qname)
                         elementBroken = True
 
                     if fact.context is None or elementBroken: # we will print the error if firstContext is broken later
@@ -354,33 +359,41 @@ class Filing(object):
         for fact in facts:
             if fact.isTuple:
                 #tupleErrStr = ErrorMgr.getError('UNSUPPORTED_TUPLE_FOUND').format(fact.qname)
-                self.controller.logWarn("A Fact with Qname {} is a Tuple and Tuples are forbidden by the EDGAR Filer " \
-                                        "Manual. The Fact will be ignored.".format(fact.qname))
-                self.usedOrBrokenFactSet.add(fact) #now bad fact won't come back to bite us when processing isUncategorizedFacts
+                self.modelXbrl.warning("er3:tupleIgnored",
+                                       _("A Fact with Qname %(fact)s is a Tuple and Tuples are forbidden by the EDGAR Filer " 
+                                        "Manual. The Fact will be ignored."),
+                                       modelObject=fact, fact=fact.qname)
+                self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue
 
             if fact.context is None:
                 #contextErrStr1 = ErrorMgr.getError('CONTEXT_BROKEN').format(fact.qname, fact.value)
-                self.controller.logWarn("Either the Context of a Fact with Qname {}, or the reference to the Context " \
-                                        "in the Fact is broken. The Fact will be ignored. The value of this Fact " \
-                                        "is {}.".format(fact.qname, fact.value))
-                self.usedOrBrokenFactSet.add(fact) #now bad fact won't come back to bite us when processing isUncategorizedFacts
+                self.modelXbrl.warning("er3:contextMissing",
+                                       _("Either the Context of a Fact with Qname %(fact)s, or the reference to the Context " 
+                                         "in the Fact is broken. The Fact will be ignored. The value of this Fact " 
+                                         "is %(value)s."),
+                                        modelObject=fact, fact=fact.qname, value=fact.value)
+                self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue
 
             if fact.context.scenario is not None:
                 #scenarioErrStr = ErrorMgr.getError('IMPROPER_CONTEXT_FOUND').format(fact.context.id)
-                self.controller.logWarn("The Context {} has a scenario attribute. Such attributes are forbidden by " \
-                                        "the EDGAR Filer Manual. This filing will not validate, but this should not " \
-                                        "interfere with rendering".format(fact.contextID))
+                self.modelXbrl.warning("er3:scenarioDisallowed",
+                                       _("The Context %(context)s has a scenario element. Such elements are forbidden by the EDGAR " 
+                                        "Filer Manual. This filing is not EDGAR valid, but this should not interfere with "
+                                        "rendering."),
+                                       modelObject=fact, context=fact.contextID)
             try:
                 element = self.elementDict[fact.qname]
             except KeyError:
-                self.usedOrBrokenFactSet.add(fact) #now bad fact won't come back to bite us when processing isUncategorizedFacts
+                self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue # fact was rejected in first loop of this function because of problem with the Element
 
-            # this is after we check for the bad stuff so that we make sure not to put those into usedOrBrokenFactSet
+            # this is after we check for the bad stuff so that we make sure not to put those into usedOrBrokenFactDefDict
             # so that they don't break when processing isUncategorizedFacts
             if fact in duplicateFacts:
+                # actually, the duplication of a fact does not mean it is unused.
+                self.usedOrBrokenFactDefDict[fact].add(None)
                 continue
 
             # first see if fact's value is an embedded command, then check if it's a qlabel fact.
@@ -426,15 +439,17 @@ class Filing(object):
                 memberConcept = arelleDimension.member
                 if dimensionConcept is None:
                     #errStr1 = ErrorMgr.getError('XBRL_DIMENSIONS_INVALID_AXIS_BROKEN').format(fact.context.id, fact.qname)
-                    self.controller.logWarn("One of the Axes referenced by the Context {} of Fact {}, or the reference " \
-                                            "itself, is broken. The Axis will be ignored for this Fact.".format(
-                                            fact.contextID, fact.qname))
+                    self.modelXbrl.warning("er3:undeclaredDimension",
+                                           _("One of the Axes referenced by the Context %(context)s of Fact %(fact)s, or the reference "
+                                            "itself, is broken. The Axis will be ignored for this Fact."),
+                                            modelObject=fact, context=fact.contextID, fact=fact.qname)
 
                 elif memberConcept is None:
                     #errStr2 = ErrorMgr.getError('XBRL_DIMENSIONS_INVALID_AXIS_MEMBER_BROKEN').format(dimensionConcept.qname, fact.qname, fact.context.id)
-                    self.controller.logWarn("The Member of Axis {} is broken as referenced by the Fact {} with Context {}. " \
-                                            "The Axis and Member will be ignored for this Fact.".format(dimensionConcept.qname,
-                                            fact.qname, fact.contextID))
+                    self.modelXbrl.warning("er3:undeclaredMember",
+                                           _("The Member of Axis %(axis) is broken as referenced by the Fact %(fact)S with Context %(context)s. " 
+                                            "The Axis and Member will be ignored for this Fact."),
+                                            modelObject=fct, fact=fact.qname, context=fact.contextID)
 
                 else:
                     try:
@@ -508,9 +523,11 @@ class Filing(object):
             else:
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_TOKEN_NOT_ROW_OR_COLUMN_ERROR').format(token0, tokenCounter, errorStr)
-                self.controller.logError("The token {}, at position{} in the list of tokens in {}, is malformed. " \
-                                         "An individual command can only start with row or column. These embedded " \
-                                         "commands will not be rendered.".format(token0, tokenCounter, errorStr))
+                self.modelXbrl.error("er3:malformedToken",
+                                     _("The token %(token)s, at position %(position) in the list of tokens in %(list)s, is malformed. "
+                                         "An individual command can only start with row or column. These embedded "
+                                         "commands will not be rendered."),
+                                     modelObject=fact, token=token0, position=tokenCounter, list=errorStr)
                 return False
 
 
@@ -530,17 +547,20 @@ class Filing(object):
                 tokenCounter += 1
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_SEPARATOR_USED_WARNING').format(token1, tokenCounter, errorStr)
-                self.controller.logInfo("The token at position {} in the list of tokens in {}, is separator. " \
-                                        "Currently, this keyword is not supported and was ignored.".format(
-                                        tokenCounter, errorStr))
+                self.modelXbrl.info("er3:tokenNotSupported",
+                                    _("The token at position %(position)s in the list of tokens in %(list)s, is separator. "
+                                        "Currently, this keyword is not supported and was ignored."),
+                                    modelObject=fact, position=tokenCounter, list=errorStr)
                 continue
 
             else:
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_FIRST_TOKEN_ERROR').format(token1, tokenCounter, errorStr)
-                self.controller.logError("The token at position {} in the list of tokens in {}, is malformed. " \
-                                         "The axis name can only be period, unit, primary or have an underscore. " \
-                                         "These embedded commands will not be rendered.".format(tokenCounter, errorStr))
+                self.modelXbrl.error("er3:malformedTokenAxis",
+                                     _("The token at position %(position)s in the list of tokens in %(list)s, is malformed. "
+                                         "The axis name can only be period, unit, primary or have an underscore. "
+                                         "These embedded commands will not be rendered."),
+                                         modelObject=fact, postion=tokenCounter, list=errorStr)
                 return False
 
             token2 = commandTextList.pop(0)
@@ -552,22 +572,26 @@ class Filing(object):
                 listToAddToOutput += ['compact']
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_GROUPED_USED_WARNING').format(token2, tokenCounter, errorStr)
-                self.controller.logInfo("The token at position {} in the list of tokens in {}, is grouped. " \
-                                        "Currently, this keyword is not supported and was replaced with compact.".format(
-                                        tokenCounter, errorStr))
+                self.modelXbrl.info("er3:groupedToken",
+                                    _("The token at position %(position)s in the list of tokens in %(list)s, is grouped. "
+                                        "Currently, this keyword is not supported and was replaced with compact."),
+                                    modelObject=fact, position=tokenCounter, list=errorStr)
             elif token2Lower == 'unitcell':
                 listToAddToOutput += ['compact']
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_UNITCELL_USED_WARNING').format(token2, tokenCounter, errorStr)
-                self.controller.logInfo("The token at position {} in the list of tokens in {}, is unitcell. " \
-                                        "Currently, this keyword is not supported and was replaced with compact.".format(
-                                        tokenCounter, errorStr))
+                self.modelXbrl.info("er3:unitcellToken",
+                                    _("The token at position %(position)s in the list of tokens in %(list)s, is unitcell. " 
+                                        "Currently, this keyword is not supported and was replaced with compact."),
+                                    modelObject=fact, position=tokenCounter, list=errorStr)
             else:
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_SECOND_TOKEN_ERROR').format(token2, tokenCounter, errorStr)
-                self.controller.logError("The token {}, at position {} in the list of tokens in {}, is malformed. The second token " \
-                                         "of an embedded command can only be compact, grouped, nodisplay or unitcell. These " \
-                                         "embedded commands will not be rendered.".format(token2, tokenCounter, errorStr))
+                self.modelXbrl.error("er3:malformedSecondToken",
+                                     _("The token %(token)s, at position %(position)s in the list of tokens in %(list)s, is malformed. The second token "
+                                         "of an embedded command can only be compact, grouped, nodisplay or unitcell. These "
+                                         "embedded commands will not be rendered."),
+                                     modelObject=fact, token=token2, position=tokenCounter, list=errorStr)
                 return False
 
             # there could be multiple members, so grab them all here
@@ -584,11 +608,12 @@ class Filing(object):
                 else:
                     errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                     #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_MEMBER_NAME_ERROR').format(tokenMember, tokenCounter, errorStr)
-                    self.controller.logError("The token {}, at position {} in the list of tokens in {}, is malformed. " \
-                                             "The member name must either be * or have an underscore, and if there is " \
-                                             "a list of members for this axis, they all must contain an underscore. " \
-                                             "These embedded commands will not be rendered.".format(
-                                             tokenMember, tokenCounter, errorStr))
+                    self.modelXbrl.error("er3:malformedMemberToken",
+                                         _("The token %(token)s, at position %(position)s in the list of tokens in %(tokenList)s, is malformed. " 
+                                           "The member name must either be * or have an underscore, and if there is " 
+                                           "a list of members for this axis, they all must contain an underscore. " 
+                                           "These embedded commands will not be rendered."),
+                                         modelObject=fact, token=tokenMember, position=tokenCounter, tokenList=errorStr)
                     return False
 
             outputList += [listToAddToOutput]
@@ -703,10 +728,10 @@ class Filing(object):
         report.generateRowsOrCols('col', sorted(embedding.factAxisMemberGroupList, key=lambda thing: thing.axisMemberPositionTupleColList))
 
         # this is because if the {Elements} view is used, then you might have lots of facts right next to each other with the same qname
-        # this is fine, but each time you render, they might appear in a different order.  so this will sort the facts by value
+        # this is fine, but each time you render, they might appear in a different order.  so this will sort the facts by source line
         # so that each run the same facts don't appear in different orders.
         if cube.isElements:
-            sortedFAMGL = sorted(embedding.factAxisMemberGroupList, key=lambda thing: (thing.axisMemberPositionTupleRowList, thing.fact.value))
+            sortedFAMGL = sorted(embedding.factAxisMemberGroupList, key=lambda thing: (thing.axisMemberPositionTupleRowList, thing.fact.sourceline))
         else:
             sortedFAMGL = sorted(embedding.factAxisMemberGroupList, key=lambda thing: thing.axisMemberPositionTupleRowList)
         report.generateRowsOrCols('row', sortedFAMGL)
@@ -737,7 +762,7 @@ class Filing(object):
         if embedding.rowPeriodPosition != -1:
             report.HideAdjacentInstantRows()
         elif cube.isStatementOfCashFlows:
-            self.RemoveStuntedCashFlowColumns(report,cube)
+            self.RemoveStuntedCashFlowColumns(report)
 
         report.scaleUnitGlobally()
 
@@ -785,7 +810,7 @@ class Filing(object):
 
 
 
-    def RemoveStuntedCashFlowColumns(self,report,cube):
+    def RemoveStuntedCashFlowColumns(self,report):
         visibleColumns = [col for col in report.colList if not col.isHidden]
         didWeHideAnyCols = False
         if len(visibleColumns)>0:
@@ -795,11 +820,13 @@ class Filing(object):
             minToKeep = math.floor(.25*minFacts)
             for col in visibleColumns:
                 if col.startEndContext.numMonths < maxMonths and len(col.factList) < minToKeep:
-                    self.controller.logInfo(("Columns in cash flow ''{}'' have maximum duration {} months and at least {} " \
-                                  "values. Shorter duration columns must have at least one fourth ({}) as many values. " \
-                                  "Column '{}' is shorter ({} months) and has only {} values, so it is being removed.")
-                                  .format(cube.shortName, maxMonths, minFacts, minToKeep, col.startEndContext,
-                                  col.startEndContext.numMonths,len(col.factList)))
+                    self.modelXbrl.info("er3:shorterColumnsRemoved",
+                                        _("Columns in cash flow ''%(presentationGroup)s'' have maximum duration %(maxDuration)s months and at least %(minNumValues)s " 
+                                          "values. Shorter duration columns must have at least one fourth (%(minToKeep)s) as many values. " 
+                                          "Column '%(startEndContext)s' is shorter (%(months)s months) and has only %(numValues)s values, so it is being removed."),
+                                        modelObject=self.modelXbrl.modelDocument, presentationGroup=report.shortName, 
+                                        maxDuration=maxMonths, minNumValues=minFacts, minToKeep=minToKeep, startEndContext=col.startEndContext,
+                                        months=col.startEndContext.numMonths, numValues=len(col.factList))
                     col.isHidden = True
                     didWeHideAnyCols = True
                     remainingVisibleColumns.remove(col)
@@ -810,22 +837,10 @@ class Filing(object):
                                 appearsInOtherColumn = True
                                 break
                         if not appearsInOtherColumn:
-                            cube.factMemberships = [fm for fm in cube.factMemberships if not fact is fm[0]] # local removal
-                            # Go look whether the fact is now completely uncategorized
-                            if fact in self.usedOrBrokenFactSet:
-                                element = self.elementDict[fact.elementQname]
-                                appearsInOtherCube = False
-                                for c in element.inCubes.values():
-                                    if hasattr(c,'factMemberships'): # Some Cube objects seem uninitialized, not sure why.
-                                        for fm in c.factMemberships:
-                                            if fm[0] is fact: # Assumes that factMemberships is an accurate list of facts presented.
-                                                appearsInOtherCube = True
-                                                break # Only need to find one other place the fact appears
-                                        if appearsInOtherCube is True:
-                                            break
-                                if appearsInOtherCube is False:
-                                    # This was the only place the fact was presented, and now it's hidden.
-                                    self.usedOrBrokenFactSet.remove(fact)             
+                            # first kick this fact out of report.embedding.factAxisMemberGroupList, our defacto list of facts 
+                            report.embedding.factAxisMemberGroupList = \
+                                    [FAMG for FAMG in report.embedding.factAxisMemberGroupList if FAMG.fact != fact] 
+                            self.usedOrBrokenFactDefDict[fact].remove(report.embedding)
 
         if didWeHideAnyCols:
             Utils.hideEmptyRows(report.rowList)
@@ -880,8 +895,10 @@ class Filing(object):
                 for col in columnsToKill:
                     col.isHidden = True
 
-                self.controller.logInfo("In ''{}'', column(s) {!s} are contained in other reports, so were removed by flow through suppression.".format(
-                                            cube.shortName, ', '.join([str(col.index + 1) for col in columnsToKill])))
+                self.modelXbrl.info("er3:columnsSuppresed",
+                                    _("In ''%(presentationGroup)s'', column(s) %(columns)s are contained in other reports, so were removed by flow through suppression."),
+                                    modelObject=self.modelXbrl.modelDocument, presentationGroup=cube.shortName, 
+                                    columns=', '.join([str(col.index + 1) for col in columnsToKill]))
                 Utils.hideEmptyRows(report.rowList)
 
 
@@ -900,9 +917,11 @@ class Filing(object):
             elif 'End' in role:
                 word = 'ending'
         #message = ErrorMgr.getError('SKIPPED_FACT_WARNING').format(shortName,qname,value,role,word,endTime)
-        self.controller.logWarn("In ''{}'', fact {} with value {} and preferred label {}, was not shown because there are " \
-                                "no facts in a duration {} at {}. Change the preferred label role or add facts.".format(
-                                shortName, qname, value, role, word, endTime))
+        self.modelXbrl.warning("er3:factNotShown",
+                               _("In ''%(presentationGroup)s'', fact %(fact)S with value %(value)s and preferred label %(preferredLabel)s, was not shown because there are " 
+                               "no facts in a duration %(duration)s at %(time)s. Change the preferred label role or add facts."),
+                                modelObject=fact, presentationGroup=shortName, fact=qname, value=value, 
+                                preferredLabel=role, duration=word, time=endTime)
 
 
 

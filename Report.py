@@ -7,7 +7,11 @@ Data and content created by government employees within the scope of their emplo
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
-import os, re, datetime, decimal
+from matplotlib import use as matplotlib_use
+# must initialize matplotlib to not use tkinter or $DISPLAY (before other imports)
+matplotlib_use("Agg")
+
+import os, re, datetime, decimal, io
 from collections import defaultdict
 from lxml.etree import Element, SubElement, XSLT, tostring as treeToString
 import arelle.XbrlConst
@@ -1067,7 +1071,9 @@ class Report(object):
         reportSummary.role = self.cube.linkroleUri
         reportSummary.logList = self.logList
         reportSummary.isUncategorized = (self.cube.linkroleUri == 'http://xbrl.sec.gov/role/uncategorizedFacts')
-
+        reportSummary.factXpointers = \
+            {factAxisMemberGroup.fact.xpointer # Assumes that only rendered facts are appearing here.
+             for factAxisMemberGroup in self.embedding.factAxisMemberGroupList}
 
     def writeHtmlAndOrXmlFiles(self, reportSummary):
         baseNameBeforeExtension = self.filing.fileNamePrefix + str(self.cube.fileNumber)
@@ -1085,6 +1091,7 @@ class Report(object):
         elif self.filing.reportZip:
             self.filing.reportZip.writestr(baseName, 
                 treeToString(tree, xml_declaration=True, encoding='utf-8', pretty_print=True));
+        self.controller.renderedFiles.add(baseName)
 
     def writeHtmlFile(self, baseNameBeforeExtension, tree, reportSummary):
         baseName = baseNameBeforeExtension + '.htm'
@@ -1099,6 +1106,7 @@ class Report(object):
         elif self.filing.reportZip:
             self.filing.reportZip.writestr(baseName, 
                 treeToString(result,method='html',with_tail=False,pretty_print=True,encoding='us-ascii'));
+        self.controller.renderedFiles.add(baseName)
 
 
     def generateBarChart(self):
@@ -1121,6 +1129,8 @@ class Report(object):
                         if yMin > factValue:
                             yMin = factValue
                     factList += [(year, factValue)]
+                else:
+                    self.filing.usedOrBrokenFactDefDict[fact].remove(self.embedding)
         if len(factList) == 0:
             return None
         factList = sorted(factList, key=lambda thing: thing[0]) # sorts by year
@@ -1587,7 +1597,7 @@ class Cell(object):
         IsNumeric = fact.isNumeric
         IsRatio = False
         NumericAmount = ''
-        valueStr = self.handleFactValue()
+        valueStr = Utils.strFactValue(fact, preferredLabel=self.preferredLabel, filing=self.filing)
         if IsNumeric:
             IsRatio = Utils.isRate(fact, self.filing) # Rename to DisplayAsPercent
             NumericAmount = valueStr
@@ -1692,44 +1702,6 @@ class Cell(object):
             return (0, 0) # re2 compatibility
 
 
-
-
-
-
-    def handleFactValue(self):
-        fact = self.fact
-        if fact.isNil:
-            return ''
-
-        valueStr = fact.value
-
-        if fact.isNumeric:
-            if len(valueStr) > 0 and valueStr[-1] == '.':
-                valueStr = valueStr[:-1]
-            if self.preferredLabel is not None and 'negated' in self.preferredLabel:
-                if valueStr[0] == '-': # we're making it a negative
-                    return valueStr[1:] # already a negative, make it positive
-                elif valueStr != '0': # we don't want a negative zero.
-                    return '-' + valueStr # positive, make it negative
-        else:
-            try:
-                qnameToGetTheLabelOf = self.filing.factToQlabelDict[fact]
-                return self.filing.modelXbrl.qnameConcepts[qnameToGetTheLabelOf].label(self.preferredLabel)
-            except KeyError:
-                if Utils.isFactTypeEqualToOrDerivedFrom(fact, Utils.isDurationItemTypeQname):
-                    return Utils.handleDurationItemType(fact)
-                elif Utils.isFactTypeEqualToOrDerivedFrom(fact, Utils.isDurationStringItemTypeQname):
-                    # if value "P10Y" it will output "10 years".
-                    # if value "For P10Y we have been building a factory" the below function will throw an exception
-                    # and it will just wind up printing the value of the fact, without any magic at the last line of this
-                    # function. 
-                    try:
-                        return Utils.handleDurationItemType(fact)
-                    except Exception:
-                        pass
-
-        return valueStr
-
     def insertEmbeddingOrBarChartEmbeddingIntoETree(self, embedding, cellETree):
         report = self.row.report
         report.hasEmbeddedReports = True
@@ -1757,6 +1729,7 @@ class Cell(object):
                     file = io.BytesIO()
                 elif self.filing.fileNameBase:
                     file = os.path.join(self.filing.fileNameBase, pngname)
+                self.filing.controller.renderedFiles.add(pngname)
                 fig.savefig(file, bbox_inches='tight', dpi=150)
                 if self.filing.reportZip:
                     file.seek(0)

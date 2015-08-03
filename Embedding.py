@@ -279,7 +279,7 @@ class Embedding(object):
             if fact.unitID is not None:
                 self.unitsWeAreKeepingSet.add(fact.unitID)
             self.hasElementsAndElementMemberPairs.add(fact.qname)
-            self.filing.usedOrBrokenFactSet.add(fact)
+            self.filing.usedOrBrokenFactDefDict[fact].add(self)
             if fact.concept.isMonetary or fact.concept.isShares or fact.unitSymbol() != '':
                 self.unitsToScaleGloballySet[fact.unitID].add(fact)  # default dict
 

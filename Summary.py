@@ -6,7 +6,7 @@ Data and content created by government employees within the scope of their emplo
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
-import sys, traceback, os.path, re, math
+import sys, traceback, os.path, re, math, io
 from collections import defaultdict
 from lxml.etree import Element, SubElement
 import arelle.ModelDtsObject, arelle.XbrlConst
@@ -100,7 +100,7 @@ class Summary(object):
             self.appendSummaryFooter()
             return self.rootETree
         except Exception as err:
-            self.controller.logError(str(err))
+            self.controller.logError(str(err) + str(traceback.format_tb(sys.exc_info()[2])))
     
     def appendSummaryHeader(self):
         rootETree = self.rootETree
@@ -127,6 +127,7 @@ class Summary(object):
         SubElement(reportETree, 'ShortName').text = 'All Reports'
 
         # only output 100 warnings or errors max, after that it's not helpful.
+        ''' Replace with cntlr log buffer
         for i, errmsg in enumerate(self.controller.ErrorMsgs):
             if i == 0:
                 logs = SubElement(self.rootETree, 'Logs')
@@ -134,11 +135,31 @@ class Summary(object):
                 SubElement(logs, 'Log', type='Info').text = "There are more than 100 warnings or errors, only 100 will be displayed."
                 break
             SubElement(logs, 'Log', type=errmsg.msgCode.title()).text = errmsg.msg
+        '''
+        logHandler = self.controller.cntlr.logHandler
+        for i, logRec in enumerate(logHandler.logRecordBuffer):
+            if i == 0:
+                logs = SubElement(self.rootETree, 'Logs')
+            if i == 100:
+                SubElement(logs, 'Log', type='Info').text = "There are more than 100 warnings or errors, only 100 will be displayed."
+                break
+            fileLines = defaultdict(set)
+            for ref in logRec.refs:
+                href = ref.get("href")
+                if href:
+                    fileLines[href.partition("#")[0]].add(ref.get("sourceLine", 0))
+            SubElement(logs, 'Log', type=logRec.messageCode.title()).text = logHandler.format(logRec).rpartition("] ")[2]
 
         inputFilesEtree = SubElement(self.rootETree, 'InputFiles')
+        sourceDict = self.controller.sourceDict
         for l in [self.controller.instanceList, self.controller.inlineList, self.controller.otherXbrlList]:
             for file in l:
-                SubElement(inputFilesEtree, 'File').text = str(os.path.basename(file))
+                s = SubElement(inputFilesEtree, 'File')
+                if file in sourceDict: 
+                    (doctype, original) = sourceDict[file]
+                    s.set('doctype', doctype)
+                    s.set('original', original)
+                s.text = str(os.path.basename(file))
         supplementalFilesEtree = SubElement(self.rootETree, 'SupplementalFiles')
         for file in self.controller.supplementalFileList:
             SubElement(supplementalFilesEtree, 'File').text = str(file)
@@ -224,13 +245,14 @@ class Summary(object):
             # IoManager.writeXmlDoc(axml, os.path.join(str(self.controller.reportsFolder), AXml))
             ajson = makeJson(axml)
             if self.controller.reportZip:
-                file = io.BytesIO()
+                file = io.StringIO()
             else:
                 file = os.path.join(self.controller.reportsFolder, AJson)
             IoManager.writeJsonDoc(ajson,file)
+            self.controller.renderedFiles.add(AJson)
             if self.controller.reportZip:
                 file.seek(0)
-                self.controller.reportZip.writestr(AJson, file.read())
+                self.controller.reportZip.writestr(AJson, file.read().encode("utf-8"))
                 file.close()
                 del file  # dereference
      
@@ -278,6 +300,8 @@ class Summary(object):
                     elif isDetail(r.longName): subGroupType = 'Details'
                     elif isUncategorized(r.longName): subGroupType = 'Uncategorized'
                     report += [['SubGroupType',subGroupType]]
+                    for xpointer in getattr(r,'factXpointers',set()):
+                        report += [['FactLocation',xpointer]]
                     reportList += [report]
                 root += reportList
                 for tag in s.tagList[1:]:
@@ -300,13 +324,14 @@ class Summary(object):
             #IoManager.writeXmlDoc(exml, os.path.join(str(self.controller.reportsFolder), EXml))
             ejson = makeJson(exml)
             if self.controller.reportZip:
-                file = io.BytesIO()
+                file = io.StringIO()
             else:
                 file = os.path.join(self.controller.reportsFolder, EJson)
             IoManager.writeJsonDoc(ejson,file)
+            self.controller.renderedFiles.add(EJson)
             if self.controller.reportZip:
                 file.seek(0)
-                self.controller.reportZip.writestr(EJson, file.read())
+                self.controller.reportZip.writestr(EJson, file.read().encode("utf-8"))
                 file.close()
                 del file  # dereference
         if self.controller.debugMode: innerWriteMetaFiles()
@@ -561,6 +586,7 @@ class InstanceSummary(object):
                 state = self.classifyReportFiniteStateMachine(state, reportSummary.longName)
                 parentRole = self.getReportParentIfExists(reportSummary, state)
             reportETree = SubElement(myReportsEtree, 'Report')
+            reportETree.set('instance',(self.instanceFiles+self.inlineFiles)[0])
             SubElement(reportETree, 'IsDefault').text = str(isFirstInstance and i == 1).casefold()         
             SubElement(reportETree, 'HasEmbeddedReports').text = str(reportSummary.hasEmbeddedReports).casefold()
             if reportSummary.htmlFileName is not None:

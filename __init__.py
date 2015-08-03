@@ -39,7 +39,7 @@ a) when invoking via arelleCmdLine.py:
    python3.4 arelleCmdLine.py 
    -f "/mydir/test/amd.zip" 
    -o "/mydir/test/out.zip" 
-   --plugins "EdgarRenderer" # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
+   --plugins 'EdgarRenderer|validate/EFM|transforms/SEC' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
    --disclosureSystem efm-pragmatic 
    --debugMode
    
@@ -58,12 +58,21 @@ b) when invoking via REST interface (built in webserver or cgi-bin server):
         -T amd.zip 
         -o out.zip 
         --logFile log.xml  # specifies name of log file to return in zip and whether .txt or .xml
-        "http://localhost:8080/rest/xbrl/validation?efm-pragmatic&media=zip&plugins=EdgarRenderer"
+        "http://localhost:8080/rest/xbrl/validation?efm-pragmatic&media=zip&plugins=EdgarRenderer|validate/EFM|transforms/SEC"
         
     2) to not load EdgarRenderer dynamically, it must be active in plugins.json (as set up by GUI)
     (sibling to the caches directoryexcept Mac where it's under ~/Library/Application Support/Arelle)
     
     then omit &plugins=EdgarRenderer
+    
+To run (as in EDGAR) with output report files added to the submission directory
+
+   python3.4 arelleCmdLine.py 
+   -f "/mydir/test/amd.zip" 
+   -r "/mydir/test"  <<- the submission + output reports directory 
+   --logFile logToBuffer or an specify an xml log file <<- required to save log messages into filing summary
+   --plugins 'EdgarRenderer|validate/EFM|transforms/SEC' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
+   --disclosureSystem efm-pragmatic 
     
 To build an installable cx_Freeze binary, (tested on Ubuntu), uncomment the entries in Arelle's
 setup.py that are marked for EdgarRenderer.
@@ -71,7 +80,7 @@ setup.py that are marked for EdgarRenderer.
 At this moment, Xlout.py requires openpyxl 2.1.4, it does not work right on openpyxl 2.2.x
         
 """
-VERSION = '3.2.0.727'
+VERSION = '3.2.0.737'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -79,7 +88,7 @@ PythonUtil.noop(0)  # Get rid of warning on PythonUtil import
 from arelle import (Cntlr, FileSource, ModelDocument, XmlUtil, Version, ModelValue, Locale, PluginManager, WebCache, ModelFormulaObject,
                     ViewFileFactList, ViewFileFactTable, ViewFileConcepts, ViewFileFormulae,
                     ViewFileRelationshipSet, ViewFileTests, ViewFileRssFeed, ViewFileRoleTypes)
-from . import RefManager, IoManager, Utils, Filing, Summary
+from . import RefManager, IoManager, Inline, Utils, Filing, Summary
 import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os
 from lxml import etree
 from os import getcwd, remove, removedirs
@@ -104,7 +113,7 @@ def edgarRendererCmdLineOptionExtender(parser):
                       default=os.path.join(os.path.dirname(__file__), 'conf', 'config_for_instance.xml'),
                       help=_("Path of location of Edgar Renderer configuration file relative to CWD. Default is EdgarRenderer.xml."))
     parser.add_option("-r", "--reports", dest="reportsFolder",
-                     help=_("Relative path and name of the reports folder."))
+                     help=_("Relative or absolute path and name of the reports folder."))
     parser.add_option("--resources", dest="resourcesFolder",
                      help=_("Relative path and name of the resources folder, which includes static xslt, css and js support files."))
     parser.add_option("--filings", dest="filingsFolder",
@@ -137,7 +146,8 @@ def edgarRendererCmdLineOptionExtender(parser):
     parser.add_option("--summaryXslt", dest="summaryXslt", help=_("Path and name of Stylesheet, if any, for producing filing summary html."))
     parser.add_option("--excelXslt", dest="excelXslt", help=_("Path and name of Stylesheet, if any, for producing Excel 2007 xlsx output."))
     parser.add_option("--auxMetadata", action="store_true", dest="auxMetadata", help=_("Set flag to generate inline xbrl auxiliary files"))
-    
+    Inline.saveTargetDocumentCommandLineOptionExtender(parser)
+    parser.add_option("--sourceList", action="store", dest="sourceList", help=_("Comma-separated triples of instance file, doc type and source file."))
     parser.add_option("--noEquity", action="store_true", dest="noEquity", help=_("Set flag to suppress special treatment of Equity Statements. "))
         
     parser.add_option("--showErrors", action="store_true", dest="showErrors",
@@ -193,7 +203,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict = defaultdict(lambda:None)
         self.defaultValueDict['abortOnMajorError'] = str(True)
         self.defaultValueDict['archiveFolder'] = 'Archive'
-        self.defaultValueDict['auxMetadata'] = str(False)
+        self.defaultValueDict['auxMetadata'] = str(True) # HF change to true default str(False)
         self.defaultValueDict['deleteProcessedFilings'] = str(True)
         self.defaultValueDict['deliveryFolder'] = 'Delivery'
         self.defaultValueDict['debugMode'] = str(False)
@@ -211,6 +221,9 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['reportsFolder'] = 'Reports'
         self.defaultValueDict['reportXslt'] = 'InstanceReport.xslt'
         self.defaultValueDict['resourcesFolder'] = os.path.normpath(os.path.join(os.path.dirname(__file__), "resources"))
+        self.defaultValueDict['saveTargetInstance'] = str(True)
+        self.defaultValueDict['saveTargetFiling'] = str(True)
+        self.defaultValueDict['sourceList'] = ''
         self.defaultValueDict['summaryXslt'] = None
         self.defaultValueDict['totalClean'] = str(False)
         self.defaultValueDict['utrValidate'] = str(False)
@@ -240,11 +253,11 @@ class EdgarRenderer(Cntlr.Cntlr):
     def initializeReOptions(self, options):
         self.logDebug("General options:")
         
-        def setProp(prop, init, rangeList=None):
+        def setProp(prop, init, rangeList=None, cs=False):
             value = next((x
                          for x in [init, self.configDict[prop], self.defaultValueDict[prop]]
                          if x is not None), None)
-            if type(value)==str: value = value.casefold()
+            if type(value)==str and not cs: value = value.casefold()
             setattr(self, prop, value)
             if rangeList is not None and value not in [x.casefold() for x in rangeList]:
                 raise Exception("Unknown {} '{}' not in {} (case insensitive) on command line or config file.".format(prop,value,rangeList))
@@ -255,9 +268,22 @@ class EdgarRenderer(Cntlr.Cntlr):
         options.renderingService = setProp('renderingService', options.renderingService, rangeList=['Instance','Daemon'])        
         options.reportFormat = setProp('reportFormat', options.reportFormat, rangeList=['Html', 'Xml', 'HtmlAndXml'])               
         options.htmlReportFormat = setProp('htmlReportFormat', options.htmlReportFormat, rangeList=['Complete','Fragment'])
-        options.zipOutputFile = setProp('zipOutputFile', options.zipOutputFile)        
+        options.zipOutputFile = setProp('zipOutputFile', options.zipOutputFile,cs=True)    
+        options.sourceList = setProp('sourceList', options.sourceList,cs=True).split(',')
+        self.sourceDict={}
+        # Parse comma and colon separated list a:b b:c, d:e:f into a dictionary {'a': ('b b','c'), 'd': ('e','f') }:
+        for source in options.sourceList:
+            s = source.split(':') # we must accomodate spaces in tokens separated by colons
+            if (len(s) != 3):
+                self.logWarn("Ignoring bad token {} in {}".format(s,options.sourceList))
+            else: # we do not accomodate general URL's in the 'original' field.
+                instance = " ".join(s[0].split())
+                doctype = " ".join(s[1].split())
+                original = " ".join(s[2].split())
+                self.sourceDict[instance]=(doctype,original)
+                
         # These options have to be passed back to arelle via the options object
-        options.internetConnectivity = setProp('internetConnectivity',options.internetConnectivity, rangeList=['online','offline'])
+        # HF, removed:     options.internetConnectivity = setProp('internetConnectivity',options.internetConnectivity, rangeList=['online','offline'])
         
         def setFlag(flag, init):
             setattr(self, flag, next((Utils.booleanFromString(x) 
@@ -267,17 +293,19 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.logDebug("{}=\t{}".format(flag, getattr(self, flag)))
             return getattr(self, flag)
             
-        options.abortOnMajorError = setFlag('abortOnMajorError', options.abortOnMajorError)
+        # inherited flag: options.abortOnMajorError = setFlag('abortOnMajorError', options.abortOnMajorError)
         options.totalClean = setFlag('totalClean', options.totalClean)
         options.noEquity = setFlag('noEquity', options.noEquity)
         options.auxMetadata = setFlag('auxMetadata', options.auxMetadata)
+        options.saveTargetInstance = setFlag('saveTargetInstance',options.saveTargetInstance)
+        options.saveTargetFiling = setFlag('saveTargetFiling',options.saveTargetFiling)      
         # note that delete processed filings is only relevant when the input had to be unzipped.
         options.deleteProcessedFilings = setFlag('deleteProcessedFilings', options.deleteProcessedFilings)
         options.debugMode = setFlag('debugMode', options.debugMode)        
         # These flags have to be passed back to arelle via the options object.
-        options.validate = setFlag('validate', options.validate)
-        options.utrValidate = setFlag('utrValidate', options.utrValidate)
-        options.validateEFM = setFlag('validateEFM', options.validateEFM)
+        # inherited flag: options.validate = setFlag('validate', options.validate)
+        # inherited flag: options.utrValidate = setFlag('utrValidate', options.utrValidate)
+        # inherited flag: options.validateEFM = setFlag('validateEFM', options.validateEFM)
     
         
         def setFolder(folder, init, searchPythonPath=False):
@@ -349,189 +377,6 @@ class EdgarRenderer(Cntlr.Cntlr):
     def isDaemon(self):
         return self.renderingService.casefold() == 'daemon'
     
-    
-      
-    def initializeModelManager(self, options):
-        if options.validateEFM:
-            if options.disclosureSystemName:
-                self.logInfo(_("both --efm and --disclosureSystem validation are requested, proceeding with --efm only"))
-            self.modelManager.validateDisclosureSystem = True
-            self.modelManager.disclosureSystem.select("efm")
-        elif options.disclosureSystemName:
-            self.modelManager.validateDisclosureSystem = True
-            self.modelManager.disclosureSystem.select(options.disclosureSystemName)
-        else:
-            self.modelManager.disclosureSystem.select(None)  # just load ordinary mappings
-            self.modelManager.validateDisclosureSystem = False
-        if options.utrUrl:  # override disclosureSystem utrUrl
-            self.modelManager.disclosureSystem.utrUrl = options.utrUrl
-        # can be set now because the utr is first loaded at validation time 
-    
-        # disclosure system sets logging filters, override disclosure filters, if specified by command line
-        if options.logLevelFilter:
-            self.setLogLevelFilter(options.logLevelFilter)
-        if options.logCodeFilter:
-            self.setLogCodeFilter(options.logCodeFilter)
-        if options.calcDecimals:
-            if options.calcPrecision:
-                self.logInfo(_("both --calcDecimals and --calcPrecision validation are requested, proceeding with --calcDecimals only"))
-            self.modelManager.validateInferDecimals = True
-            self.modelManager.validateCalcLB = True
-        elif options.calcPrecision:
-            self.modelManager.validateInferDecimals = False
-            self.modelManager.validateCalcLB = True
-        if options.utrValidate:
-            self.modelManager.validateUtr = True
-        if options.infosetValidate:
-            self.modelManager.validateInfoset = True
-        if  options.abortOnMajorError:
-            self.modelManager.abortOnMajorError = True
-        if options.collectProfileStats:
-            self.modelManager.collectProfileStats = True
-        if (options.internetConnectivity or "").casefold() == "offline":
-            self.webCache.workOffline = True
-        elif (options.internetConnectivity or "").casefold() == "online":
-            self.webCache.workOffline = False
-        if options.internetTimeout is not None:
-            self.webCache.timeout = (options.internetTimeout or None)  # use None if zero specified to disable timeout
-        fo = ModelFormulaObject.FormulaOptions()
-        if options.parameters:
-            parameterSeparator = (options.parameterSeparator or ',')
-            fo.parameterValues = dict(((ModelValue.qname(key, noPrefixIsNoNamespace=True), (None, value)) 
-                                   for param in options.parameters.split(parameterSeparator) 
-                                   for key, sep, value in (param.partition('='),)))   
-        if options.formulaParamExprResult:
-            fo.traceParameterExpressionResult = True
-        if options.formulaParamInputValue:
-            fo.traceParameterInputValue = True
-        if options.formulaCallExprSource:
-            fo.traceCallExpressionSource = True
-        if options.formulaCallExprCode:
-            fo.traceCallExpressionCode = True
-        if options.formulaCallExprEval:
-            fo.traceCallExpressionEvaluation = True
-        if options.formulaCallExprResult:
-            fo.traceCallExpressionResult = True
-        if options.formulaVarSetExprEval:
-            fo.traceVariableSetExpressionEvaluation = True
-        if options.formulaVarSetExprResult:
-            fo.traceVariableSetExpressionResult = True
-        if options.formulaAsserResultCounts:
-            fo.traceAssertionResultCounts = True
-        if options.formulaFormulaRules:
-            fo.traceFormulaRules = True
-        if options.formulaVarsOrder:
-            fo.traceVariablesOrder = True
-        if options.formulaVarExpressionSource:
-            fo.traceVariableExpressionSource = True
-        if options.formulaVarExpressionCode:
-            fo.traceVariableExpressionCode = True
-        if options.formulaVarExpressionEvaluation:
-            fo.traceVariableExpressionEvaluation = True
-        if options.formulaVarExpressionResult:
-            fo.traceVariableExpressionResult = True
-        if options.timeVariableSetEvaluation:
-            fo.timeVariableSetEvaluation = True
-        if options.formulaVarFilterWinnowing:
-            fo.traceVariableFilterWinnowing = True
-        if options.formulaVarFiltersResult:
-            fo.traceVariableFiltersResult = True
-        if options.formulaVarFiltersResult:
-            fo.traceVariableFiltersResult = True
-        return fo
-    
-    def dequeueInputZip(self, options):  # returns the location of zip ready to unpack
-        # upon exit, options.entrypoint is set to absolute location of the zip file after the move,
-        # and self.processingFolder is set to absolute location of where it should be processed.
-        inputFileSource = None
-        zipfound = False  
-        # check for next filing in input folder
-        # as usual, self.{some}Folder is absolute, while options.{some}Folder is what was specified in the input.
-        self.originalProcessingFolder = os.path.join(getcwd(), self.processingFolder)    
-        self.logDebug(_("Checking for the oldest zip file in {}").format(self.filingsFolder))            
-        while not zipfound:
-            for file in sorted(os.listdir(self.filingsFolder), key=lambda file: os.stat(join(self.filingsFolder, file)).st_mtime):
-                if not zipfound and Utils.isZipFilename(file):
-                    inputFileSource = join(self.filingsFolder, file)      
-                    self.processingFolder = IoManager.createNewFolder(self,self.originalProcessingFolder,file)
-                    # reportsFolder = normpath(join(self.processingFolder,options.reportsFolder)) 
-                    processingFileSource = join(self.processingFolder, file)
-                    if not exists(inputFileSource): continue  # it got deleted before we could process it.
-                    self.logDebug(_("Found a new zip file to process; moving {} to Processing folder ").format(inputFileSource))                   
-                    try:
-                        IoManager.move_clobbering_file(inputFileSource, processingFileSource)
-                        options.entrypoint = processingFileSource
-                        zipfound = True              
-                    except IOError as err: 
-                        self.logError(str(err))
-                        #self.logError(_(ErrorMgr.getError('FILING_MOVE_ERROR').format(self.processingFolder)))              
-                        self.logError(_("Could not remove {}").format(self.processingFolder))              
-                        try: removedirs(self.processingFolder)
-                        except IOError: continue
-                    self.zipOutputFile = file
-                    self.doneFile = join(self.archiveFolder, file)
-                    # self.failFile = join(self.errorsFolder,file)
-                    break
-            # no more files.
-            if not zipfound:
-                sleep = self.processingFrequency
-                self.logDebug(_("Sleeping for " + sleep + " seconds. "))
-                time.sleep(float(sleep))    
-        return
-    
-    
-    def loadModel(self, options, inputFileSource):  # success, modelXbrl, firstStartedAt, modelDiffReport, formulaOptions
-                
-        formulaOptions = self.initializeModelManager(options)
-        self.modelManager.formulaOptions = formulaOptions
-        timeNow = XmlUtil.dateunionValue(datetime.datetime.now())
-        firstStartedAt = startedAt = time.time()
-        modelXbrl = None
-        try:
-            if inputFileSource:
-                self.logDebug(_("Initializing modelXbrl: "))
-                modelXbrl = self.modelManager.load(inputFileSource, _("views loading"))
-                success = True
-                
-        except ModelDocument.LoadingException as err:
-            self.logInfo(_("Loading exception: {!s}".format(err)))
-            success = not self.modelManager.abortOnMajorError
-    
-        except Exception as err:
-            self.logError(_('[Exception] Failed to complete request: {} {}'.format(err, traceback.format_tb(sys.exc_info()[2]))))
-            success = False  # loading errors, don't attempt to utilize loaded DTS
-    
-        if success and modelXbrl and modelXbrl.modelDocument:
-            self.logDebug("Loading modelXBRL profileStat: ")
-            loadTime = time.time() - startedAt
-            modelXbrl.profileStat(_("load"), loadTime)
-            self.logDebug(Locale.format_string(self.modelManager.locale,
-                                        _("DTS loaded in %.2f secs at %s"),
-                                        (loadTime, timeNow)))
-            if options.importFiles:
-                self.logDebug(_("Handling import files "))
-                for importFile in options.importFiles.split("|"):
-                    fileName = importFile.strip()
-                    if not (Utils.isHttpFilename(fileName) or os.path.isabs(fileName)): 
-                        fileName = dirname(modelXbrl.uri) + os.sep + fileName 
-                    ModelDocument.load(modelXbrl, fileName)
-                    loadTime = time.time() - startedAt
-                    self.logInfo(Locale.format_string(self.modelManager.locale,
-                                            _("Additional DTS imported in %.2f secs at %s"),
-                                            (loadTime, timeNow)))
-                    modelXbrl.profileStat(_("import"), loadTime)
-                if modelXbrl.errors:
-                    #message = ErrorMgr.getError('DTS_LOADING_IMPORT_ERROR').format(err, traceback.format_tb(sys.exc_info()[2]))
-                    self.logDebug(_("Model import errors found: {} {}".format(err, traceback.format_tb(sys.exc_info()[2]))))
-                    success = False  # loading errors, don't attempt to utilize loaded DTS
-            self.logDebug("Loading {}".format(inputFileSource))
-            for pluginXbrlMethod in PluginManager.pluginClassMethods("CntlrCmdLine.Xbrl.Loaded"):
-                pluginXbrlMethod(self, options, modelXbrl)
-        else:
-            self.logDebug("No modelXBRL profileStat ", file=inputFileSource)
-            success = False
-    
-        return success, modelXbrl, firstStartedAt, formulaOptions
     
     
     def validateInstance(self, options, modelXbrl, formulaOptions):
@@ -677,14 +522,14 @@ class EdgarRenderer(Cntlr.Cntlr):
         :param options: OptionParser options from parse_args of main argv arguments (when called from command line) or corresponding arguments from web service (REST) request.
         :type options: optparse.Values
         """    
-        self.logDebug("Starting.")
+        self.logDebug("Starting "+VERSION)
         self.logDebug("Command line arguments: {!s}".format(sys.argv))
         # Process command line options
         self.processShowOptions(options)
     
         # set the filesource (input zip file if any)
         filesource = FileSource.openFileSource(options.entrypoint, self.cntlr, sourceZipStream)
-            
+        
         if responseZipStream:
             self.reportZip = zipfile.ZipFile(responseZipStream, 'w', zipfile.ZIP_DEFLATED, True)
         elif options.zipOutputFile:
@@ -721,14 +566,17 @@ class EdgarRenderer(Cntlr.Cntlr):
             modelXbrl = None        
             self.supplementalFileList = [basename(f) for f in self.supplementList]
             self.instanceSummaryList = []
-            if self.entrypointFolder and self.reportsFolder:
+            if self.reportsFolder and os.path.isabs(self.reportsFolder):
+                self.reportsFolder = join(self.entrypointFolder, self.reportsFolder)
+                IoManager.handleFolder(self, self.reportsFolder, True, self.totalClean)
+            elif self.entrypointFolder and self.reportsFolder:
                 self.reportsFolder = join(self.entrypointFolder, self.reportsFolder)
                 IoManager.handleFolder(self, self.reportsFolder, True, self.totalClean)
             loopnum = 0
             success = True
             self.logDebug(_("Pre-rendering stats: NumInstance: {!s}; NumInline: {!s}; NumSupplemental: {!s} "
                            ).format(len(self.instanceList), len(self.inlineList), len(self.supplementList)))
-            for inputFileSource in self.instanceList + self.inlineList:
+            for inputFileSource in sorted(self.instanceList + self.inlineList):
                 if success: 
                     loopnum += 1
                     if filesource.isZip:
@@ -745,6 +593,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                     if success and modelXbrl: 
                         RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
                         self.logDebug(_("Start the rendering process on {}, filing loop {!s}.").format(inputFileSource, loopnum))
+                        Inline.markFactLocations(modelXbrl)
                         success = Filing.mainFun(self, modelXbrl, self.reportsFolder)
                         self.logDebug(_("End of rendering on {}.").format(inputFileSource))
             
@@ -779,6 +628,8 @@ class EdgarRenderer(Cntlr.Cntlr):
     
     
     def postprocessInstance(self, options, modelXbrl):
+        Inline.saveTargetDocumentIfNeeded(self,options,modelXbrl)
+        del modelXbrl.duplicateFactSet
         xlWriter = self.xlWriter           
         if xlWriter:
             xlWriter.save()
@@ -797,7 +648,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                     shutil.copyfile(source, target)                
             else:
                 self.reportZip.write(source, filename)
-        if 'html' in (self.reportFormat or "").casefold():
+        if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:
             copyResourceToReportFolder("Show.js")
             copyResourceToReportFolder("report.css")
         if self.summaryXslt is not None:
@@ -895,6 +746,8 @@ class EdgarRenderer(Cntlr.Cntlr):
         else:  messageLevel = messageDict[messageCode.casefold()]
         # if both level and code were given, err on the side of more logging:
         messageLevel = max(level, messageLevel) 
+        if self.entrypoint is not None and len(self.instanceList + self.inlineList) > 1:
+            message += ' --' + (self.entrypoint.url if isinstance(self.entrypoint,FileSource.FileSource) else self.entrypoint)
         message = message.encode('utf-8', 'replace').decode('utf-8')
         if messageLevel >= logging.INFO:
             self.ErrorMsgs.append(Errmsg(messageCode, message))
@@ -933,6 +786,91 @@ def edgarRendererCmdLineRun(cntlr, options, sourceZipStream=None, responseZipStr
     
     EdgarRenderer(cntlr).runRenderer(options, sourceZipStream, responseZipStream)
     
+    
+# Arelle plugin integrations for validate/EFM
+    
+def edgarRendererFilingStart(cntlr, options, entrypointFiles, filing):
+    filing.edgarRenderer = edgarRenderer = EdgarRenderer(cntlr)
+    edgarRenderer.reportZip = filing.reportZip
+    # Set default config params; overwrite with command line args if necessary
+    edgarRenderer.retrieveDefaultREConfigParams(options)
+    # Initialize the folders and objects required in both modes.
+    edgarRenderer.initializeReOptions(options)
+    edgarRenderer.instanceSummaryList = []
+    edgarRenderer.instanceList = []
+    edgarRenderer.inlineList = []
+    edgarRenderer.otherXbrlList = []
+    edgarRenderer.supplementList = []
+    edgarRenderer.supplementalFileList = []
+    edgarRenderer.renderedFiles = filing.renderedFiles # filing-level rendered files
+
+def edgarRendererXbrlRun(cntlr, options, modelXbrl, filing, report):
+    edgarRenderer = filing.edgarRenderer
+    edgarRenderer.renderedFiles = report.renderedFiles # report-level rendered files
+    if report.basename.endswith(".xml"):
+        edgarRenderer.instanceList.append(report.basename)
+    elif report.basename.endswith(".htm"):
+        edgarRenderer.inlineList.append(report.basename)
+    edgarRenderer.supplementalFileList += sorted(report.reportedFiles)
+    RefManager.RefManager(edgarRenderer.resourcesFolder).loadAddedUrls(modelXbrl, edgarRenderer)  # do this after validation.
+    edgarRenderer.loopnum = getattr(edgarRenderer, "loopnum", 0) + 1
+    edgarRenderer.logDebug(_("Start the rendering process on {}, filing loop {!s}.").format(modelXbrl.modelDocument.basename, edgarRenderer.loopnum))
+    Inline.markFactLocations(modelXbrl)
+    Inline.saveTargetDocumentIfNeeded(edgarRenderer,options,modelXbrl)
+    success = Filing.mainFun(edgarRenderer, modelXbrl, edgarRenderer.reportsFolder)
+    edgarRenderer.renderedFiles = filing.renderedFiles # filing-level rendered files
+
+def edgarRendererFilingEnd(cntlr, options, filing):
+    edgarRenderer = filing.edgarRenderer
+    if edgarRenderer.xlWriter:
+        edgarRenderer.xlWriter.save()
+        edgarRenderer.xlWriter.close()
+        del edgarRenderer.xlWriter 
+        edgarRenderer.logDebug("Excel rendering complete")
+    if options.collectProfileStats and modelXbrl:
+        modelXbrl.logProfileStats() 
+    def copyResourceToReportFolder(filename):
+        source = join(edgarRenderer.resourcesFolder, filename)
+        if not edgarRenderer.reportZip:
+            target = join(edgarRenderer.reportsFolder, filename)
+            if not exists(target):
+                os.makedirs(edgarRenderer.reportsFolder, exist_ok=True)
+                shutil.copyfile(source, target)
+                edgarRenderer.renderedFiles.add(filename)             
+        else:
+            edgarRenderer.reportZip.write(source, filename)
+    if 'html' in (edgarRenderer.reportFormat or "").casefold() or edgarRenderer.summaryXslt is not None:
+        copyResourceToReportFolder("Show.js")
+        copyResourceToReportFolder("report.css")
+    if edgarRenderer.summaryXslt is not None:
+        copyResourceToReportFolder("RenderingLogs.xslt")  # TODO: This will go away
+        edgarRenderer.renderedFiles.add("RenderingLogs.xslt")
+    # TODO: At this point would be nice to call out any files not loaded in any instance DTS
+    inputsToCopyToOutputList = edgarRenderer.supplementList
+    for filename in inputsToCopyToOutputList:
+        source = join(edgarRenderer.processingFolder, filename)
+        if not edgarRenderer.reportZip:
+            target = join(edgarRenderer.reportsFolder, filename)
+            if exists(target): remove(target)
+            shutil.copyfile(source, target)                
+        else:
+            self.reportZip.write(source, filename)
+    edgarRenderer.logDebug("Instance post-processing complete")
+    
+    
+    
+    summary = Summary.Summary(edgarRenderer)  
+    rootETree = summary.buildSummaryETree()
+    IoManager.writeXmlDoc(rootETree, edgarRenderer.reportZip, edgarRenderer.reportsFolder, 'FilingSummary.xml')
+    edgarRenderer.renderedFiles.add("FilingSummary.xml")
+    if edgarRenderer.summaryXslt and len(edgarRenderer.summaryXslt) > 0 :
+        summary_transform = etree.XSLT(etree.parse(edgarRenderer.summaryXslt))
+        result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'))
+        IoManager.writeHtmlDoc(result, edgarRenderer.reportZip, edgarRenderer.reportsFolder, 'FilingSummary.htm')
+        edgarRenderer.renderedFiles.add("FilingSummary.htm")
+    if edgarRenderer.auxMetadata: 
+        summary.writeMetaFiles()
+    
 
 '''
 Errors and Logging
@@ -946,12 +884,15 @@ class Errmsg(object):
 
 __pluginInfo__ = {
     'name': 'Edgar Renderer',
-    'version': '3.0.0.2',
+    'version': '3.2.0.737',
     'description': "This plug-in implements U.S. SEC Edgar Renderer.  ",
     'license': 'Apache-2',
     'author': 'U.S. SEC Employees and Mark V Systems Limited',
     'copyright': '(c) Portions by SEC Employees not subject to domestic copyright, otherwise (c) Copyright 2015 Mark V Systems Limited, All rights reserved.',
     # classes of mount points (required)
     'CntlrCmdLine.Options': edgarRendererCmdLineOptionExtender,
-    'CntlrCmdLine.Utility.Run': edgarRendererCmdLineRun,
+    #'CntlrCmdLine.Utility.Run': edgarRendererCmdLineRun,
+    'EdgarRenderer.Filing.Start': edgarRendererFilingStart,
+    'EdgarRenderer.Xbrl.Run': edgarRendererXbrlRun,
+    'EdgarRenderer.Filing.End': edgarRendererFilingEnd
 }
