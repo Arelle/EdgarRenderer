@@ -137,7 +137,7 @@ class Summary(object):
             SubElement(logs, 'Log', type=errmsg.msgCode.title()).text = errmsg.msg
         '''
         logHandler = self.controller.cntlr.logHandler
-        for i, logRec in enumerate(logHandler.logRecordBuffer):
+        for i, logRec in enumerate(getattr(logHandler, "logRecordBuffer", ())): # non buffered handlers don't keep log records (e.g., lot to print handler)
             if i == 0:
                 logs = SubElement(self.rootETree, 'Logs')
             if i == 100:

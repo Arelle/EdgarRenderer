@@ -95,8 +95,6 @@ from os import getcwd, remove, removedirs
 from os.path import join, isfile, exists, dirname, basename, isdir
 from optparse import OptionParser, SUPPRESS_HELP
 
-
-
 # Helper functions
 
 # def linenum():
@@ -790,6 +788,7 @@ def edgarRendererCmdLineRun(cntlr, options, sourceZipStream=None, responseZipStr
 # Arelle plugin integrations for validate/EFM
     
 def edgarRendererFilingStart(cntlr, options, entrypointFiles, filing):
+    # cntlr.addToLog("TRACE EDGAR filing start")
     filing.edgarRenderer = edgarRenderer = EdgarRenderer(cntlr)
     edgarRenderer.reportZip = filing.reportZip
     # Set default config params; overwrite with command line args if necessary
@@ -803,6 +802,7 @@ def edgarRendererFilingStart(cntlr, options, entrypointFiles, filing):
     edgarRenderer.supplementList = []
     edgarRenderer.supplementalFileList = []
     edgarRenderer.renderedFiles = filing.renderedFiles # filing-level rendered files
+    # cntlr.addToLog("TRACE EDGAR filing start-end")
 
 def edgarRendererXbrlRun(cntlr, options, modelXbrl, filing, report):
     edgarRenderer = filing.edgarRenderer
@@ -827,8 +827,6 @@ def edgarRendererFilingEnd(cntlr, options, filing):
         edgarRenderer.xlWriter.close()
         del edgarRenderer.xlWriter 
         edgarRenderer.logDebug("Excel rendering complete")
-    if options.collectProfileStats and modelXbrl:
-        modelXbrl.logProfileStats() 
     def copyResourceToReportFolder(filename):
         source = join(edgarRenderer.resourcesFolder, filename)
         if not edgarRenderer.reportZip:
@@ -868,8 +866,10 @@ def edgarRendererFilingEnd(cntlr, options, filing):
         result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'))
         IoManager.writeHtmlDoc(result, edgarRenderer.reportZip, edgarRenderer.reportsFolder, 'FilingSummary.htm')
         edgarRenderer.renderedFiles.add("FilingSummary.htm")
+    edgarRenderer.logDebug("Write filing summary complete")
     if edgarRenderer.auxMetadata: 
         summary.writeMetaFiles()
+    edgarRenderer.logDebug("Write meta files complete")
     
 
 '''

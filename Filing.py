@@ -9,8 +9,9 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 
 from gettext import gettext as _
 from collections import defaultdict
-import os, re, math, datetime, dateutil.relativedelta, lxml
+import os, re, math, datetime, dateutil.relativedelta, lxml, sys
 import arelle.ModelValue, arelle.XbrlConst
+
 from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
 
 def mainFun(controller, modelXbrl, outputFolderName):

@@ -7,6 +7,8 @@ Data and content created by government employees within the scope of their emplo
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
+# must prevent EDGAR from writing into system directories, use environment variable:
+# MPLCONFIGDIR= ... arelle's xdgConfigHome value
 from matplotlib import use as matplotlib_use
 # must initialize matplotlib to not use tkinter or $DISPLAY (before other imports)
 matplotlib_use("Agg")
