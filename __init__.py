@@ -78,6 +78,12 @@ To build an installable cx_Freeze binary, (tested on Ubuntu), uncomment the entr
 setup.py that are marked for EdgarRenderer.
     
 At this moment, Xlout.py requires openpyxl 2.1.4, it does not work right on openpyxl 2.2.x
+
+Required if running under Java (using runtime.exec) on Windows, suggested always:
+
+    if xdgConfigHome or environment variable XDG_CONFIG_HOME are set:
+    please set environment variable MPLCONFIGDIR to same location as xdgConfigHome/XDG_CONFIG_HOME
+    (to prevent matlib crash under runtime.exe with Java)
         
 """
 VERSION = '3.2.0.737'

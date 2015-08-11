@@ -21,7 +21,7 @@
   <!-- deleteProcessedFilings: Boolean to indicate if unzipped processed filings should be deleted or not; default to False -->
   <deleteProcessedFilings>True</deleteProcessedFilings>
   <!-- reportFormat: Multiple options...{Xml: only Xml outout || Html: only Html output || HtmlAndXml: both Xml and Html output} -->
-  <reportFormat>HtmlAndXml</reportFormat>
+  <reportFormat>Html</reportFormat>
   <!-- htmlReportFormat: Multiple options...{Complete: asPage rendering = True || Fragment: asPage rendering = False} -->
   <htmlReportFormat>Complete</htmlReportFormat>
   <!-- totalClean: Boolean to indicate if RE3 clobbers the contents of the <reportsFolder>; default to False -->
