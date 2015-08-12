@@ -262,7 +262,7 @@ class Filing(object):
             for cube in self.cubeDict.values():
                 if len(cube.defaultFilteredOutAxisSet) > 0:
                     self.modelXbrl.debug("er3:noDefaults",
-                                         _("In ''%(presentationGroup)s'', the children of axes %(axes)s do not include their defaults."),
+                                         _("In \"%(presentationGroup)s\", the children of axes %(axes)s do not include their defaults."),
                                          modelObject=self.modelXbrl.modelDocument, presentationGroup=cube.shortName, 
                                          axes=cube.defaultFilteredOutAxisSet)
 
@@ -310,27 +310,28 @@ class Filing(object):
                                                 linesDiscarded=', '.join(discardedLineNumberList))
 
                 for fact in factSet: # we only want one thing, but we don't want to pop from the set so we "loop" and then break right away
-
-                    elementBroken = False
-
                     if fact.concept is None:
                         #conceptErrStr = ErrorMgr.getError('FACT_DECLARATION_BROKEN').format(qname)
                         self.modelXbrl.warning("er3:factConceptUndeclared",
                                                _("The element declaration for %(fact)s, or one of its facts, is broken. They will all be " 
                                                 "ignored."),
                                                modelObject=fact, fact=qname)
-                        elementBroken = True
-
+                        break
+                    elif fact.isTuple:
+                        self.controller.logWarn("er3:tupleIsForbidden",
+                                               _("The element declaration %(fact)s is a Tuple, which is forbidden by the " 
+                                                 "EDGAR Filer Manual. The element will be ignored."),
+                                               modelObject=fact, fact=qname)
+                        break
                     elif fact.concept.type is None:
                         #typeErrStr = ErrorMgr.getError('The Type declaration for Element {} is either broken or missing. The Element will be ignored.').format(qname)
                         self.modelXbrl.warning("er3:factTypeUndeclared",
                                                _("The Type declaration for Element %(fact)s is either broken or missing. The " 
                                                 "Element will be ignored."),
                                                modelObject=fact, fact=qname)
-                        elementBroken = True
-
-                    if fact.context is None or elementBroken: # we will print the error if firstContext is broken later
-                        continue # see if there are other facts for this concept with good contexts before we break from the loop, we still might make the Element yet
+                        break
+                    elif fact.context is None:
+                        continue # don't break, still might be good facts. we print the error if a context is broken later 
 
                     self.elementDict[qname] = Element(fact.concept)
                     break # we don't need to look at more facts from the fact set, we're just trying to make elements.
@@ -357,42 +358,40 @@ class Filing(object):
 
             facts = self.modelXbrl.facts
 
-        for fact in facts:
-            if fact.isTuple:
-                #tupleErrStr = ErrorMgr.getError('UNSUPPORTED_TUPLE_FOUND').format(fact.qname)
-                self.modelXbrl.warning("er3:tupleIgnored",
-                                       _("A Fact with Qname %(fact)s is a Tuple and Tuples are forbidden by the EDGAR Filer " 
-                                        "Manual. The Fact will be ignored."),
-                                       modelObject=fact, fact=fact.qname)
-                self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
-                continue
-
-            if fact.context is None:
-                #contextErrStr1 = ErrorMgr.getError('CONTEXT_BROKEN').format(fact.qname, fact.value)
-                self.modelXbrl.warning("er3:contextMissing",
-                                       _("Either the Context of a Fact with Qname %(fact)s, or the reference to the Context " 
-                                         "in the Fact is broken. The Fact will be ignored. The value of this Fact " 
-                                         "is %(value)s."),
-                                        modelObject=fact, fact=fact.qname, value=fact.value)
-                self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
-                continue
-
-            if fact.context.scenario is not None:
-                #scenarioErrStr = ErrorMgr.getError('IMPROPER_CONTEXT_FOUND').format(fact.context.id)
-                self.modelXbrl.warning("er3:scenarioDisallowed",
-                                       _("The Context %(context)s has a scenario element. Such elements are forbidden by the EDGAR " 
-                                        "Filer Manual. This filing is not EDGAR valid, but this should not interfere with "
+        for context in self.modelXbrl.contexts.values():
+            if context.scenario is not None:
+                self.controller.logWarn("er3:scenarioForbidden",
+                                        _("The Context %(contextId)s has a scenario element, which is forbidden by the EDGAR Filer " 
+                                        "Manual. This filing is not EDGAR valid, but this should not interfere with " 
                                         "rendering."),
-                                       modelObject=fact, context=fact.contextID)
+                                         modelObject=context, contextId=context.id)
+
+        for fact in facts:
             try:
                 element = self.elementDict[fact.qname]
             except KeyError:
                 self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue # fact was rejected in first loop of this function because of problem with the Element
 
+            if fact.unit is None and fact.unitID is not None: # to do a unitref that isn't a unit should be found by arelle, but isn't.
+                self.modelXbrl.warning("er3:brokenUnitRef",
+                                       _("The fact %(fact)s has a broken unitRef. The fact will be " 
+                                        "ignored."),
+                                       modelObject=fact)
+                self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
+                continue
+
+            elif fact.context is None:
+                self.modelXbrl.warning("er3:contextMissing",
+                                       _("The fact %(fact)s either has a broken context or context reference " 
+                                        "The fact will be ignored."),
+                                        modelObject=fact, fact=fact.qname)
+                self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
+                continue
+
             # this is after we check for the bad stuff so that we make sure not to put those into usedOrBrokenFactDefDict
             # so that they don't break when processing isUncategorizedFacts
-            if fact in duplicateFacts:
+            elif fact in duplicateFacts:
                 # actually, the duplication of a fact does not mean it is unused.
                 self.usedOrBrokenFactDefDict[fact].add(None)
                 continue
@@ -695,7 +694,6 @@ class Filing(object):
             if cube.noFactsOrAllFactsSuppressed:
                 return
 
-            cube.checkForTransposedUnlabeledAndElements()
             if len(cube.periodStartEndLabelDict) > 0:
                 cube.handlePeriodStartEndLabel() # needs preferred labels from the presentationGroup
 
@@ -741,8 +739,8 @@ class Filing(object):
             if self.hasEmbeddings:
                 report.decideWhetherToRepressPeriodHeadings()
             if not cube.isUnlabeled:
-                report.promoteAxes()
-
+                report.proposeAxisPromotions('col', report.colList, [command.pseudoAxis for command in embedding.colCommands])
+                report.proposeAxisPromotions('row', report.rowList, [command.pseudoAxis for command in embedding.rowCommands])
             if embedding.rowUnitPosition != -1:
                 report.mergeRowsOrColsIfUnitsCompatible('row', report.rowList)
             elif embedding.columnUnitPosition != -1:
@@ -754,6 +752,8 @@ class Filing(object):
                 report.mergeRowsOrColsInstantsIntoDurationsIfUnitsCompatible('col', report.colList)
 
             report.hideRedundantColumns()
+
+            report.finalizeProposedPromotions()
 
 
     def reportDriverAfterFlowThroughSuppression(self, embedding, xlWriter):
@@ -822,9 +822,9 @@ class Filing(object):
             for col in visibleColumns:
                 if col.startEndContext.numMonths < maxMonths and len(col.factList) < minToKeep:
                     self.modelXbrl.info("er3:shorterColumnsRemoved",
-                                        _("Columns in cash flow ''%(presentationGroup)s'' have maximum duration %(maxDuration)s months and at least %(minNumValues)s " 
+                                        _("Columns in cash flow \"%(presentationGroup)s\" have maximum duration %(maxDuration)s months and at least %(minNumValues)s " 
                                           "values. Shorter duration columns must have at least one fourth (%(minToKeep)s) as many values. " 
-                                          "Column '%(startEndContext)s' is shorter (%(months)s months) and has only %(numValues)s values, so it is being removed."),
+                                          "Column \"%(startEndContext)s\" is shorter (%(months)s months) and has only %(numValues)s values, so it is being removed."),
                                         modelObject=self.modelXbrl.modelDocument, presentationGroup=report.shortName, 
                                         maxDuration=maxMonths, minNumValues=minFacts, minToKeep=minToKeep, startEndContext=col.startEndContext,
                                         months=col.startEndContext.numMonths, numValues=len(col.factList))
@@ -841,7 +841,10 @@ class Filing(object):
                             # first kick this fact out of report.embedding.factAxisMemberGroupList, our defacto list of facts 
                             report.embedding.factAxisMemberGroupList = \
                                     [FAMG for FAMG in report.embedding.factAxisMemberGroupList if FAMG.fact != fact] 
-                            self.usedOrBrokenFactDefDict[fact].remove(report.embedding)
+                            try:
+                                self.usedOrBrokenFactDefDict[fact].remove(report.embedding)
+                            except KeyError:
+                                pass
 
         if didWeHideAnyCols:
             Utils.hideEmptyRows(report.rowList)
@@ -897,7 +900,7 @@ class Filing(object):
                     col.isHidden = True
 
                 self.modelXbrl.info("er3:columnsSuppresed",
-                                    _("In ''%(presentationGroup)s'', column(s) %(columns)s are contained in other reports, so were removed by flow through suppression."),
+                                    _("In \"%(presentationGroup)s\", column(s) %(columns)s are contained in other reports, so were removed by flow through suppression."),
                                     modelObject=self.modelXbrl.modelDocument, presentationGroup=cube.shortName, 
                                     columns=', '.join([str(col.index + 1) for col in columnsToKill]))
                 Utils.hideEmptyRows(report.rowList)

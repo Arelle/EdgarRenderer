@@ -14,7 +14,7 @@ import arelle.XbrlConst
 from lxml.etree import tostring as treeToString
 from . import Utils
 
-jsonIndent = 0  # None for most compact, 0 for left aligned
+jsonIndent = 1  # None for most compact, 0 for left aligned
   
 def genpath(filename):
     if filename == '.':
@@ -36,7 +36,6 @@ def absPathOnPythonPath(controller, filename):  # if filename is relative, find 
     if filename is None: return None
     if os.path.isabs(filename): return filename
     pathdirs = [p for p in sys.path if os.path.isdir(p)]
-    pathdirs.append(os.path.dirname(__file__))
     for path in pathdirs:
         result = os.path.join(path, filename)
         if exists(result): return os.path.abspath(result)

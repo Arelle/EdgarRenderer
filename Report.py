@@ -38,7 +38,7 @@ class Report(object):
         self.cube = cube
         self.embedding = embedding
 
-        self.promotedAxes = set()
+        self.promotedAxes = []
         self.rowList = []
         self.colList = []
 
@@ -211,47 +211,26 @@ class Report(object):
         self.repressPeriodHeadings = True # there's only one period, don't show it.
 
 
-
-    def promoteAxes(self):
-        # unitStrCol and unitStrRow is just to put units at the end wrapped in parens, rather than with all the others
-        unitStrCol = self.promoteAxesHelper('col', self.colList, [command.pseudoAxis for command in self.embedding.colCommands])
-        unitStrRow = self.promoteAxesHelper('row', self.rowList, [command.pseudoAxis for command in self.embedding.rowCommands])
-
-        if unitStrCol is not None:
-            self.shortName += self.filing.titleSeparatorStr + unitStrCol
-        if unitStrRow is not None:
-            self.shortName += self.filing.titleSeparatorStr + unitStrRow
-
-
-
-    def promoteAxesHelper(self, rowOrColStr, rowOrColList, pseudoAxisNameList):
-        # don't promote axes if there's only one row or col
-        numVisibleRowOrCols = 0
-        for rowOrCol in rowOrColList:
-            if not rowOrCol.isHidden:
-                numVisibleRowOrCols += 1
-                if numVisibleRowOrCols > 1:
-                    break
-        if numVisibleRowOrCols == 1:
+    def proposeAxisPromotions(self, rowOrColStr, rowOrColList, pseudoAxisNameList):
+        # don't promote axes if there's only one row or col. true, some might be hidden, but we don't want to check
+        # that hard yet because in the future more rows and cols may be hidden, so this is quick and dirty. we'll check
+        #for real after all that is done.
+        if len(rowOrColList) == 1:
             return
-
-        # this needs to be appended to end and wrapped in parens so we do some special stuff
-        unitAndMaybeSymbolStr = None
 
         # loop through each axis and if len(memberSet) == 1 promote axis because all rows or cols have the same label,
         # no use repeating it for every row or col.   if memberSet bigger, don't promote.
         for i, pseudoAxisName in enumerate(pseudoAxisNameList):
-            if pseudoAxisName == 'primary':
-                continue
             if pseudoAxisName == 'unit':
-                unitAndMaybeSymbolStr = self.promoteUnits(rowOrColList)
+                unitAndMaybeSymbolStr = self.proposeUnitAxisPromotion(rowOrColList)
+                if unitAndMaybeSymbolStr is not None:
+                    self.promotedAxes += [('unit', rowOrColStr, unitAndMaybeSymbolStr)]
                 continue
-            if self.repressPeriodHeadings and pseudoAxisName == 'period':
+            if pseudoAxisName == 'primary' or (self.repressPeriodHeadings and pseudoAxisName == 'period'):
                 continue
 
             memberLabel = None
-            promoteThisAxis = True
-            numMonthsSet = set()
+            startEndContextDuration = None
 
             for rowOrCol in rowOrColList:
                 if rowOrColStr == 'row':
@@ -259,38 +238,33 @@ class Report(object):
                 else:
                     factAxisMember = rowOrCol.factAxisMemberGroup.factAxisMemberColList[i]
 
-                tempMemberLabel = factAxisMember.memberLabel
-
-                if tempMemberLabel is None:
-                    promoteThisAxis = False
-                    break
-                elif memberLabel is None:
-                    memberLabel = tempMemberLabel
-                elif memberLabel != tempMemberLabel:
-                    promoteThisAxis = False
+                if memberLabel is None:
+                    memberLabel = factAxisMember.memberLabel
+                #second case if factAxisMember.memberLabel was None
+                if memberLabel != factAxisMember.memberLabel or memberLabel == None or factAxisMember.memberIsDefault:
+                    memberLabel = None
                     break # there's more than one different member so can't promote axis
 
-                if pseudoAxisName == 'period':
-                    numMonthsSet.add(factAxisMember.member.numMonths)
+                if pseudoAxisName == 'period' and factAxisMember.member.periodTypeStr == 'duration':
+                    if startEndContextDuration is not None:
+                        if startEndContextDuration != factAxisMember.member:
+                            memberLabel = None # there is more than one duration, don't promote
+                            break
+                    else:
+                        startEndContextDuration = factAxisMember.member
 
-            if promoteThisAxis and memberLabel is not None:
-                self.promotedAxes.add(pseudoAxisName)
-
+            if memberLabel is not None:
                 # we do this because we want to promote the period if there's an instant and duration ending at the same time.
                 # for the sake of promotion, we consider these two one member, even though they are different.  if we tack on the months
                 # before we get to this stage, these two will seem different, even though for our purposes, they are the same.
-                if len(numMonthsSet) == 1:
-                    numMonths = numMonthsSet.pop()
-                    if numMonths > 0:
-                        memberLabel = '{!s} months ended {}'.format(numMonths, tempMemberLabel)
-                self.shortName += self.filing.titleSeparatorStr + memberLabel
-
-        return unitAndMaybeSymbolStr
+                if startEndContextDuration is not None and startEndContextDuration.numMonths > 0:
+                    memberLabel = '{!s} months ended {}'.format(startEndContextDuration.numMonths, memberLabel)
+                self.promotedAxes += [(pseudoAxisName, rowOrColStr, memberLabel)]
 
     # this is complicated because we still might promote units even if there are multiple units.  for instance, if there are
     # USD, USD/Share and shares as the units, we still promote USD.  same for any pair of two from those three.  however, we won't promote
     # if we have ounces and barrels of oil for instance, or USD, JPY/Share and Share.
-    def promoteUnits(self, rowOrColList):
+    def proposeUnitAxisPromotion(self, rowOrColList):
         monetaryFact = perShareMonetaryFact = sharesFact = anotherKindOfFact = None
 
         for rowOrCol in rowOrColList:
@@ -330,8 +304,6 @@ class Report(object):
         elif allTypes > 1:
             return # makes sure we don't have Ounces and Shares
 
-        self.promotedAxes.add('unit')
-
         if anotherKindOfFact is not None:
             return Utils.getUnitAndSymbolStr(anotherKindOfFact)
         elif monetaryFact is not None:
@@ -340,7 +312,38 @@ class Report(object):
             return Utils.getUnitAndSymbolStr(perShareMonetaryFact)
         elif sharesFact is not None:
             return Utils.getUnitAndSymbolStr(sharesFact)
-        
+
+
+    # now we know what rows and cols will be hidden, so we can now finalize the promotions.
+    def finalizeProposedPromotions(self):
+        if len(self.promotedAxes) == 0:
+            return
+
+        def dontPromoteUnlessMultipleNonHiddenRowsOrCols(rowOrColList, rowOrColStr):
+            numNonHiddenRowsOrCols = 0
+            for rowOrCol in rowOrColList:
+                if not rowOrCol.isHidden:
+                    numNonHiddenRowsOrCols += 1
+                    if numNonHiddenRowsOrCols > 1:
+                        return
+            # if there's only one non-hidden row or col at this point, don't promote anything for it.
+            self.promotedAxes = [axisTriple for axisTriple in self.promotedAxes if axisTriple[1] != rowOrColStr]
+
+        rowOrColStrs = [axisTriple[1] for axisTriple in self.promotedAxes]
+        if 'row' in rowOrColStrs:
+            dontPromoteUnlessMultipleNonHiddenRowsOrCols(self.rowList, 'row')
+        if 'col' in rowOrColStrs:
+            dontPromoteUnlessMultipleNonHiddenRowsOrCols(self.colList, 'col')
+
+        unitStrToAppendToEnd = None
+        for axis, ignore, s in self.promotedAxes:
+            if axis == 'unit':
+                unitStrToAppendToEnd = s
+            else:
+                self.shortName += self.filing.titleSeparatorStr + s
+        if unitStrToAppendToEnd is not None:
+            self.shortName += self.filing.titleSeparatorStr + unitStrToAppendToEnd
+
 
     def mergeRowsOrColsIfUnitsCompatible(self, rowOrColStr, rowOrColList):
         i = 0
@@ -361,6 +364,11 @@ class Report(object):
                 else:
                     nonMonetarySet.add(rowOrCol)
                 i += 1
+
+            # non-monetary rows or cols might overlap, in which case, call the whole thing off, don't merge this group.
+            # the other sets can't overlap.
+            if len(nonMonetarySet) > 1 and self.doVectorsOverlap(nonMonetarySet, rowOrColStr):
+                continue
 
             # in these two cases below, we mangle these three sets, and if either of these two conditions are satisfied,
             # in the below for loop, monetary might not be monetary anymore, and nonmonetary might not be nonmonetary either.
@@ -425,21 +433,21 @@ class Report(object):
 
                 else:
                     # if we're doing the rows and units isn't on the rows (and vice versa), we don't check unit compatibility,
-                    # otherwise we need the units to be compatible.
-                    if not unitsAxisOnRowsOrCols or self.areFactsCompatableByUnits(instantRowOrCol, durationRowOrCol):
-                        # test to make sure both rows or cols don't overlap -- unless the overlap is the same
-                        flag = True
-                        instantRowOrColCellVector = self.generateCellVector(rowOrColStr, instantRowOrCol.index)[1]
-                        durationRowOrColCellVector = self.generateCellVector(rowOrColStr, durationRowOrCol.index)[1]
-                        for i in range(len(instantRowOrColCellVector)): # both vectors are the same length
-                            instantCell = instantRowOrColCellVector[i]
-                            durationCell = durationRowOrColCellVector[i]
-                            if instantCell is not None and durationCell is not None and instantCell.fact != durationCell.fact:
-                                flag = False
-                                break # vectors overlap, can't be combined
-                        if flag:
-                            self.deepCopyRowsOrCols(rowOrColStr, durationRowOrCol, instantRowOrCol)
+                    # otherwise we need the units to be compatible. Also make sure the vectors don't overlap.
+                    if      ((not unitsAxisOnRowsOrCols or self.areFactsCompatableByUnits(instantRowOrCol, durationRowOrCol)) and
+                             not self.doVectorsOverlap([instantRowOrCol, durationRowOrCol], rowOrColStr)):
+                        self.deepCopyRowsOrCols(rowOrColStr, durationRowOrCol, instantRowOrCol)
                     del durationRowOrColList[0]
+
+
+    def doVectorsOverlap(self, rowsOrCols, rowOrColStr):
+        # zip takes multiple lists and zips them together and gives you tuples. the star character basically takes a list or 
+        # set of lists and makes each one an argument for zip(). The lists here are basically lists of true/false values,
+        # where true means that the cell is occupied and false means it's empty. then i do some boolean math and since True == 1, 
+        # and false == 0, you can sum the tuple that zip provides and if the sum is greater than 1, you know that you that 
+        # for some position the vectors overlap, so you can't combine them.
+        z = zip(*[[cell is not None for cell in self.generateCellVector(rowOrColStr, rowOrCol.index)[1]] for rowOrCol in rowsOrCols])
+        return any(sum(trueFalseTuple) > 1 for trueFalseTuple in z)
 
 
     def areFactsCompatableByUnits(self, colOrRowToBeMerged, colOrRowToBeMergedInto):
@@ -678,7 +686,7 @@ class Report(object):
     def makeSegmentTitleRows(self):
         counter = 0
         prevRow = None
-        forbiddenAxisSet = {'primary', 'unit', 'period'}.union(self.promotedAxes)
+        forbiddenAxisSet = {'primary', 'unit', 'period'}.union({axisTriple[0] for axisTriple in self.promotedAxes})
 
         while counter < len(self.rowList):
 
@@ -765,7 +773,8 @@ class Report(object):
 
     def generateRowAndOrColHeadingsGeneralCase(self):
         # axes to not generate headings for, cheaper to build this set only once and pass it in.
-        noHeadingsForTheseAxesSet = self.promotedAxes.union(self.embedding.noDisplayAxesSet) #.union(self.embedding.groupedAxisQnameSet)
+        promotedAxesSet = {axisTriple[0] for axisTriple in self.promotedAxes}
+        noHeadingsForTheseAxesSet = promotedAxesSet.union(self.embedding.noDisplayAxesSet) #.union(self.embedding.groupedAxisQnameSet)
         if self.repressPeriodHeadings:
             noHeadingsForTheseAxesSet.add('period')
 
@@ -786,7 +795,7 @@ class Report(object):
                 elif not row.IsAbstractGroupTitle and row.headingList == []:
                     self.generateRowOrColHeading('row', row, row.factAxisMemberGroup.factAxisMemberRowList, noHeadingsForTheseAxesSet, mostRecentSegmentTitleRow)
 
-                    if self.embedding.columnUnitPosition != -1 and 'unit' not in self.promotedAxes and len(row.unitTypeToFactSetDefaultDict) == 1:
+                    if self.embedding.columnUnitPosition != -1 and 'unit' not in promotedAxesSet and len(row.unitTypeToFactSetDefaultDict) == 1:
                         unitHeading = self.appendUnitsToRowsIfUnitsOnColsAndRowHasOnlyOneUnit(row)
                         if unitHeading is not None:
                             rowUnitHeadingDefaultDict[unitHeading].append(row)
@@ -1132,7 +1141,11 @@ class Report(object):
                             yMin = factValue
                     factList += [(year, factValue)]
                 else:
-                    self.filing.usedOrBrokenFactDefDict[fact].remove(self.embedding)
+                    try:
+                        self.filing.usedOrBrokenFactDefDict[fact].remove(self.embedding)
+                    except KeyError:
+                        pass
+
         if len(factList) == 0:
             return None
         factList = sorted(factList, key=lambda thing: thing[0]) # sorts by year

@@ -86,7 +86,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.2.0.737'
+VERSION = '3.2.0.781'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -152,6 +152,7 @@ def edgarRendererCmdLineOptionExtender(parser):
     parser.add_option("--auxMetadata", action="store_true", dest="auxMetadata", help=_("Set flag to generate inline xbrl auxiliary files"))
     Inline.saveTargetDocumentCommandLineOptionExtender(parser)
     parser.add_option("--sourceList", action="store", dest="sourceList", help=_("Comma-separated triples of instance file, doc type and source file."))
+    parser.add_option("--copyInlineFilesToOutput", action="store_true", dest="copyInlineFilesToOutput", help=_("Set flag to copy all inline files to the output folder or zip."))
     parser.add_option("--noEquity", action="store_true", dest="noEquity", help=_("Set flag to suppress special treatment of Equity Statements. "))
         
     parser.add_option("--showErrors", action="store_true", dest="showErrors",
@@ -208,6 +209,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['abortOnMajorError'] = str(True)
         self.defaultValueDict['archiveFolder'] = 'Archive'
         self.defaultValueDict['auxMetadata'] = str(True) # HF change to true default str(False)
+        self.defaultValueDict['copyInlineFilesToOutput'] = str(False)
         self.defaultValueDict['deleteProcessedFilings'] = str(True)
         self.defaultValueDict['deliveryFolder'] = 'Delivery'
         self.defaultValueDict['debugMode'] = str(False)
@@ -273,18 +275,19 @@ class EdgarRenderer(Cntlr.Cntlr):
         options.reportFormat = setProp('reportFormat', options.reportFormat, rangeList=['Html', 'Xml', 'HtmlAndXml'])               
         options.htmlReportFormat = setProp('htmlReportFormat', options.htmlReportFormat, rangeList=['Complete','Fragment'])
         options.zipOutputFile = setProp('zipOutputFile', options.zipOutputFile,cs=True)    
-        options.sourceList = setProp('sourceList', options.sourceList,cs=True).split(',')
+        options.sourceList = " ".join(setProp('sourceList', options.sourceList,cs=True).split()).split(',')
         self.sourceDict={}
         # Parse comma and colon separated list a:b b:c, d:e:f into a dictionary {'a': ('b b','c'), 'd': ('e','f') }:
         for source in options.sourceList:
-            s = source.split(':') # we must accomodate spaces in tokens separated by colons
-            if (len(s) != 3):
-                self.logWarn("Ignoring bad token {} in {}".format(s,options.sourceList))
-            else: # we do not accomodate general URL's in the 'original' field.
-                instance = " ".join(s[0].split())
-                doctype = " ".join(s[1].split())
-                original = " ".join(s[2].split())
-                self.sourceDict[instance]=(doctype,original)
+            if (len(source) > 0):
+                s = source.split(':') # we must accomodate spaces in tokens separated by colons
+                if (len(s) != 3):
+                    self.logWarn("Ignoring bad token {} in {}".format(s,options.sourceList))
+                else: # we do not accomodate general URL's in the 'original' field.
+                    instance = " ".join(s[0].split())
+                    doctype = " ".join(s[1].split())
+                    original = " ".join(s[2].split())
+                    self.sourceDict[instance]=(doctype,original)
                 
         # These options have to be passed back to arelle via the options object
         # HF, removed:     options.internetConnectivity = setProp('internetConnectivity',options.internetConnectivity, rangeList=['online','offline'])
@@ -301,6 +304,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         options.totalClean = setFlag('totalClean', options.totalClean)
         options.noEquity = setFlag('noEquity', options.noEquity)
         options.auxMetadata = setFlag('auxMetadata', options.auxMetadata)
+        options.copyInlineFilesToOutput = setFlag('copyInlineFilesToOutput', options.copyInlineFilesToOutput)
         options.saveTargetInstance = setFlag('saveTargetInstance',options.saveTargetInstance)
         options.saveTargetFiling = setFlag('saveTargetFiling',options.saveTargetFiling)      
         # note that delete processed filings is only relevant when the input had to be unzipped.
@@ -321,6 +325,9 @@ class EdgarRenderer(Cntlr.Cntlr):
                 value = next((x
                                  for x in [init, self.configDict[folder], self.defaultValueDict[folder]]
                                  if x is not None), None)
+            # HF PATCH???
+            if value is None and self.defaultValueDict[folder]:
+                value = self.defaultValueDict[folder]
             setattr(self, folder, value)
             self.logDebug("{}=\t{}".format(folder, getattr(self, folder)))
             return getattr(self, folder)
@@ -890,7 +897,7 @@ class Errmsg(object):
 
 __pluginInfo__ = {
     'name': 'Edgar Renderer',
-    'version': '3.2.0.737',
+    'version': '3.2.0.781',
     'description': "This plug-in implements U.S. SEC Edgar Renderer.  ",
     'license': 'Apache-2',
     'author': 'U.S. SEC Employees and Mark V Systems Limited',

@@ -12,7 +12,7 @@ from lxml.etree import Element, SubElement
 import arelle.ModelDtsObject, arelle.XbrlConst
 from . import IoManager, Utils
 
-metaversion = "1.0"
+metaversion = "2.0"
 ERoot = 'MetaLinks'
 ERoot_list = ERoot + '_list'
 ARoot = "std_ref_list"
@@ -159,6 +159,9 @@ class Summary(object):
                     (doctype, original) = sourceDict[file]
                     s.set('doctype', doctype)
                     s.set('original', original)
+                elif file in self.controller.inlineList:
+                    s.set('doctype','(Source)')
+                    s.set('original', file)
                 s.text = str(os.path.basename(file))
         supplementalFilesEtree = SubElement(self.rootETree, 'SupplementalFiles')
         for file in self.controller.supplementalFileList:
@@ -174,166 +177,71 @@ class Summary(object):
 
     def writeMetaFiles(self):
         def innerWriteMetaFiles():
-            nsmap = {}  # {'xsi' : 'http://www.w3.org/2001/XMLSchema-instance'}
-            def makeXml(thing, node):
-                if type(thing) == list:
-                    elt = thing[0]
-                    if node is None:
-                        node = Element(elt, nsmap)
-                    elif type(elt)==list:
-                        raise Exception("Internal error: malformed template.")
-                    else:
-                        node = SubElement(node, elt)
-                    if len(thing) > 1:
-                        for child in thing[1:]:
-                            if type(child) == tuple:
-                                (att, val) = child
-                                node.set(att, str(val))
-                    if len(thing) > 1:
-                        for child in thing[1:]:
-                            if not type(child) == tuple:
-                                makeXml(child, node)
-                elif node is not None:
-                    node.text = str(thing)
-                return node
-                    
-            def makeJson(elt):
-                # convert the xml object into json style object
-                childcount = defaultdict(int)
-                children = dict() 
-                for e in elt.iterchildren():
-                    childcount[e.tag]+=1
-                for e in elt.iterchildren():
-                    if e.tag not in children:
-                        children[e.tag]=[]
-                    child = makeJson(e)
-                    if type(child)==dict and len(child)==1:
-                        for k,v in child.items():
-                            if childcount[k] > 1:
-                                child = v
-                    children[e.tag] += [child]
-                for k,v in children.items():
-                    if type(v)==list and len(v)==1: 
-                        children[k]=v[0][k] 
-                for k,v in elt.items(): 
-                    children[jsonAttrMarker+k] = str(v)
-                text = elt.text
-                if text is not None:
-                    if len(children)==0:
-                        children = text
-                    else:
-                        children[jsonTextKey] = text
-                result = dict()
-                result[elt.tag] = children
-                return result
-               
-                        
-            aroot = [ARoot]
-            aroot += [('dts', ' '.join(self.dtsroots))]
-            aroot += [('version', metaversion)]
+#             aroot = {}
+#             aroot['dts']=' '.join(self.dtsroots)
+#             aroot['version'] = metaversion
+            roots = {'version' : metaversion}
+            
+            refs = roots['std_ref'] = {}
             pairs = [(i, ref) for ref, i in self.referencePositionDict.items()]  
             pairs.sort(key=lambda x: x[0]) 
-            for pair in pairs:
+            for pair in pairs:                
                 i, ref = pair
-                elt = 'std_ref'
-                relt = [elt, ('id', 'r' + str(i))]
-                for (att, val) in ref:
-                    relt += [[att, val]]
-                aroot += [relt]
-            
-            axml = makeXml(aroot, None)
-            # IoManager.writeXmlDoc(axml, os.path.join(str(self.controller.reportsFolder), AXml))
-            ajson = makeJson(axml)
-            if self.controller.reportZip:
-                file = io.StringIO()
-            else:
-                file = os.path.join(self.controller.reportsFolder, AJson)
-            IoManager.writeJsonDoc(ajson,file)
-            self.controller.renderedFiles.add(AJson)
-            if self.controller.reportZip:
-                file.seek(0)
-                self.controller.reportZip.writestr(AJson, file.read().encode("utf-8"))
-                file.close()
-                del file  # dereference
-     
-            roots = [ERoot_list, ('version', metaversion)]
+                rDict = refs['r'+str(i)] = {}
+                for (att, val) in ref:  rDict[att] = val        
+#             IoManager.writeJsonDoc(aroot,os.path.join(str(self.controller.reportsFolder), AJson))
+
+            roots['instance'] = {}
             for s in self.summaryList:
-                root = [ERoot]
-                if s.customPrefix is not None: root += [('nsprefix', s.customPrefix)]
-                if s.customNamespace is not None: root += [('nsuri', s.customNamespace)]
-                root += [('dts', ' '.join(s.dtsroots))]                    
-                statCount = ['statCount']
-                statCount += [['KeyStandard', s.primaryCountDict[False]]]
-                statCount += [['KeyCustom', s.primaryCountDict[True]]]
-                statCount += [['AxisStandard', s.axisInUseCountDict[False]]]
-                statCount += [['AxisCustom', s.axisInUseCountDict[True]]]
-                statCount += [['MemberStandard', s.memberCountDict[False]]]
-                statCount += [['MemberCustom', s.memberCountDict[True]]]
-                statCount += [['Hidden', sum(s.hiddenCountDict.values())]]                    
-                for ns, n in s.hiddenCountDict.items():
-                    hiddenCount = ['Hidden', ('nsuri', ns), n]
-                    statCount += [hiddenCount]
-                statCount += [['ContextCount', s.contextCount]]
-                statCount += [['EntityCount', s.entityCount]]
-                statCount += [['SegmentCount', s.segmentCount]]
-                statCount += [['ElementCount', len(s.conceptInUseSet)]]
-                statCount += [['UnitCount', sum(s.unitCountDict.values())]]
-                root += [statCount] 
-                reportList = [] # ['Report_list']
+                root = roots['instance'][' '.join(s.dtsroots)] = {}                
+                if s.customPrefix is not None: root['nsprefix'] = s.customPrefix
+                if s.customNamespace is not None: root['nsuri'] = s.customNamespace
+                root['dts'] = s.dts
+                root['keyStandard'] = s.primaryCountDict[False]
+                root['keyCustom'] = s.primaryCountDict[True]
+                root['axisStandard'] =s.axisInUseCountDict[False]
+                root['axisCustom'] =s.axisInUseCountDict[True]
+                root['memberStandard'] =s.memberCountDict[False]
+                root['memberCustom'] =s.memberCountDict[True]
+                root['hidden'] = {'total' : sum(s.hiddenCountDict.values())}                            
+                for ns, n in s.hiddenCountDict.items(): root['hidden'][ns] = n
+                root['contextCount'] = s.contextCount
+                root['entityCount'] = s.entityCount
+                root['segmentCount'] = s.segmentCount
+                root['elementCount'] = len(s.conceptInUseSet)
+                root['unitCount'] = sum(s.unitCountDict.values())                
+                reportDict = root['report'] = {}
                 isDefault = True
-                for r in s.reportSummaryList:
-                    report = ['Report']
-                    report += [['Role',r.role]]
-                    report += [['longName',r.longName]]
-                    report += [['ShortName',r.shortName]]
-                    report += [['IsDefault',str(isDefault).casefold()]]
+                for i,r in enumerate(s.reportSummaryList):
+                    report = reportDict[r.htmlFileName[:-4]] = {}                    
+                    report['role']=r.role
+                    report['longName'] = r.longName
+                    report['shortName'] = r.shortName
+                    report['isDefault'] = str(isDefault).casefold()
                     isDefault = False
                     groupType = ''
-                    if isDisclosure(r.longName): groupType = 'Disclosure'
-                    elif isStatement(r.longName): groupType = 'Statement'
-                    elif isDocument(r.longName): groupType = 'Document'
-                    report += [['GroupType',groupType]]
+                    if isDisclosure(r.longName): groupType = 'disclosure'
+                    elif isStatement(r.longName): groupType = 'statement'
+                    elif isDocument(r.longName): groupType = 'document'
+                    report['groupType'] = groupType
                     subGroupType = ''
-                    if isParenthetical(r.longName): subGroupType = 'Parenthetical'
-                    elif isPolicy(r.longName): subGroupType = 'Policies'
-                    elif isTable(r.longName): subGroupType = 'Tables'
-                    elif isDetail(r.longName): subGroupType = 'Details'
+                    if isParenthetical(r.longName): subGroupType = 'parenthetical'
+                    elif isPolicy(r.longName): subGroupType = 'policies'
+                    elif isTable(r.longName): subGroupType = 'tables'
+                    elif isDetail(r.longName): subGroupType = 'details'
                     elif isUncategorized(r.longName): subGroupType = 'Uncategorized'
-                    report += [['SubGroupType',subGroupType]]
-                    for xpointer in getattr(r,'factXpointers',set()):
-                        report += [['FactLocation',xpointer]]
-                    reportList += [report]
-                root += reportList
-                for tag in s.tagList[1:]:
-                    for pair in tag[1:]:
-                        if not type(pair) == tuple: pass
-                        elif pair[0] == 'nsuri': nsuri = pair[1]
-                        elif pair[0] == 'localname': localname = pair[1]
-                    qname = '{' + nsuri + '}' + localname 
+                    report['subGroupType'] = subGroupType
+                    report['factLocation'] = list(getattr(r,'factXpointers',set()))
+                        
+                for tagAa in s.tagDict.values():
+                    qname = '{' + tagAa['nsuri'] + '}' + tagAa['localname']
                     numList = []
                     for r in (s.qnameReferenceDict.get(qname) or []):
                         numList += [self.referencePositionDict[r]]
                     numList.sort()
-                    refList = [] #['auth_refs']
-                    refList += [['auth_ref', 'r' + str(num)] for num in numList]
-                    tag += refList # [refList]
-                root += [s.tagList]
-                roots += [root]
-
-            exml = makeXml(roots, None)
-            #IoManager.writeXmlDoc(exml, os.path.join(str(self.controller.reportsFolder), EXml))
-            ejson = makeJson(exml)
-            if self.controller.reportZip:
-                file = io.StringIO()
-            else:
-                file = os.path.join(self.controller.reportsFolder, EJson)
-            IoManager.writeJsonDoc(ejson,file)
-            self.controller.renderedFiles.add(EJson)
-            if self.controller.reportZip:
-                file.seek(0)
-                self.controller.reportZip.writestr(EJson, file.read().encode("utf-8"))
-                file.close()
-                del file  # dereference
+                    tagAa['auth_ref'] = ['r'+str(num) for num in numList]
+                root['tag'] = s.tagDict           
+            IoManager.writeJsonDoc(roots, os.path.join(str(self.controller.reportsFolder), EJson))
         if self.controller.debugMode: innerWriteMetaFiles()
         else:
             try: innerWriteMetaFiles()
@@ -387,32 +295,76 @@ class InstanceSummary(object):
         self.customPrefix = None
         self.customNamespace = None
         self.roleDefinitionDict = dict()
-        
-        # do not hang on to filing or modelXbrl, just collect the statistics.
-        self.hasRR = next((True for n in modelXbrl.namespaceDocs.keys() 
-                           if 'http://xbrl.sec.gov/rr/' in n), False)
-        for fileUri, doc in sorted(modelXbrl.urlDocs.items()):
-            if not matchHttp.match(fileUri):
-                if matchPre.match(fileUri):
-                    self.hasPresentationLinkbase = True
-                elif matchCal.match(fileUri):
-                    self.hasCalculationLinkbase = True
-                f = os.path.basename(fileUri)
-                if next((i for i in filing.controller.instanceList if os.path.basename(i) == f), False):
-                    self.instanceFiles += [f]
-                elif next((i for i in filing.controller.inlineList if os.path.basename(i) == f), False):
-                    self.inlineFiles += [f]
-                else:
-                    self.otherXbrlFiles += [f]      
+
+        # do not hang on to filing or modelXbrl, just collect the statistics.        
+        self.dts = defaultdict(lambda: defaultdict(list)) # self.dts['instance']['local'] returns a list
+        self.hasRR = False
+        for uri,doc in sorted(modelXbrl.urlDocs.items()):
+            isLocal = uri.startswith(filing.controller.processingFolder)
+            (f,rl) = (uri,'remote')
+            if isLocal: (f,rl) = (os.path.basename(uri),'local')
+            doctype = 'supplemental'
+            if doc.xmlRootElement.localName == 'xbrl':
+                doctype = 'instance'
+                self.instanceFiles += [f]
+            elif doc.xmlRootElement.localName == 'html':
+                doctype = 'inline'
+                self.inlineFiles += [f]
+            elif doc.xmlRootElement.localName == 'schema':
+                doctype = 'schema'
+                self.otherXbrlFiles += [f]   
                 ns = doc.targetNamespace
+                if 'http://xbrl.sec.gov/rr/' in ns: 
+                    self.hasRR = True
                 if (self.customPrefix is None 
                     and ns is not None 
                     and not Utils.isEfmStandardNamespace(ns)):
                     self.customNamespace = ns
                     for (prefix, namespace) in doc.xmlRootElement.nsmap.items():
                         if namespace == ns:
-                            self.customPrefix = prefix       
+                            self.customPrefix = prefix
+            elif doc.xmlRootElement.localName == 'linkbase':
+                self.otherXbrlFiles += [f]   
+                doctype = 'linkbase'
+                for child in doc.xmlRootElement.iterchildren():
+                    if child.localName.endswith('Link'):
+                        doctype = child.localName
+                        if (isLocal):
+                            if (doctype == 'presentationLink'):
+                                self.hasPresentationLinkbase = True
+                            elif (doctype == 'calculationLink'):
+                                self.hasCalculationLinkbase = True
+                        break # currently in EDGAR each file can have only kind of link. 
+            else:
+                filing.controller.logWarn("Unknown XML doctype {} in DTS file {}".format(doc.xmlRootElement.localName,uri))
+            self.dts[doctype][rl] += [f]
         self.dtsroots = self.instanceFiles + self.inlineFiles
+        
+
+#         self.hasRR = next((True for n in modelXbrl.namespaceDocs.keys()
+#                            if 'http://xbrl.sec.gov/rr/' in n), False)
+#         for fileUri, doc in sorted(modelXbrl.urlDocs.items()):
+#             if not matchHttp.match(fileUri):
+#                 if matchPre.match(fileUri):
+#                     self.hasPresentationLinkbase = True
+#                 elif matchCal.match(fileUri):
+#                     self.hasCalculationLinkbase = True
+#                 f = os.path.basename(fileUri)
+#                 if next((i for i in filing.controller.instanceList if os.path.basename(i) == f), False):
+#                     self.instanceFiles += [f]
+#                 elif next((i for i in filing.controller.inlineList if os.path.basename(i) == f), False):
+#                     self.inlineFiles += [f]
+#                 else:
+#                     self.otherXbrlFiles += [f]      
+#                 ns = doc.targetNamespace
+#                 if (self.customPrefix is None 
+#                     and ns is not None 
+#                     and not Utils.isEfmStandardNamespace(ns)):
+#                     self.customNamespace = ns
+#                     for (prefix, namespace) in doc.xmlRootElement.nsmap.items():
+#                         if namespace == ns:
+#                             self.customPrefix = prefix       
+#         self.dtsroots = self.instanceFiles + self.inlineFiles
         
         for qname, facts in modelXbrl.factsByQname.items():
             primaryInUseSet.add(qname)
@@ -499,7 +451,7 @@ class InstanceSummary(object):
                     toReference = rel.toModelObject
                     if isinstance(toReference, arelle.ModelDtsObject.ModelResource):
                         r = []
-                        for elt in toReference.iter():
+                        for elt in toReference.iterchildren():
                             s = elt.text
                             if s is not None: # empty elts appear in us-gaap 2008 and 2011 refs
                                 #s = s.strip().replace('&', '&amp;')
@@ -509,66 +461,63 @@ class InstanceSummary(object):
                         self.refSet.add(r)
                         self.qnameReferenceDict[fromConcept.qname.clarkNotation].add(r)
                 
-        # build a list-and-tuple analogue of the eventual XML output, easier to inspect in debugger.
-        # [element (att val) (att val)  [element (att val) text] [element text] text]
-        self.tagList = ['elements']
+        # build a dictionary tree of the eventual JSON output.
+        self.tagDict = {}
         for concept in conceptInUseSet:
-            tag = ['tag']
-            tag += [('id', concept.attrib['id'])]
-            tag += [('xbrltype', concept.typeQname)]
-            tag += [('nsuri', concept.qname.namespaceURI)]
-            tag += [('localname', concept.qname.localName)]
-            if concept.balance is not None:
-                tag += [('crdr', concept.balance)]
+            self.tagDict[concept.attrib['id']] = {'xbrltype' : (concept.typeQname).localName
+                                                  ,'nsuri': concept.qname.namespaceURI
+                                                  ,'localname': concept.qname.localName}
+            tag = self.tagDict[concept.attrib['id']]
+            if concept.balance is not None: tag['crdr'] = concept.balance
             calculations = summationItemRelationshipSet.modelRelationshipsTo[concept]
             if calculations is not None and len(calculations) > 0:
-                rellist = [] # ['calculations']
+                roleDict = tag['calculation'] = {}
                 for calculation in calculations:
-                    r = ['calculation']
-                    r += [('role', calculation.linkrole.split('/')[-1:][0])]
-                    r += [('parentTag', calculation.fromModelObject.attrib['id'])]
-                    r += [('weight', calculation.weight)]
+                    role = calculation.linkrole
+                    parentTag =  calculation.fromModelObject.attrib['id']
+                    weight = calculation.weight
                     order = calculation.order
-                    if order is None:
-                        order = 1
-                    r += [('order', order)]
-                    rellist += [r]
-                tag += rellist
+                    if order is None: order = 1
+                    # here we assume that in a given role only one calc parent is allowed.
+                    roleDict[role] = {'parentTag' : parentTag
+                                        ,'weight' : weight
+                                        ,'order' : order}                
             presentations = parentChildRelationshipSet.modelRelationshipsTo[concept]
             if presentations is not None and len(presentations) > 0:
-                rellist = [] # ['presentations']
-                for presentation in presentations:  # note there is no use in sorting on incoming arc order.                     
-                    r = ['presentation']
-                    r += [('role', presentation.linkrole.split('/')[-1:][0])]
-                    r += [('parentTag', presentation.fromModelObject.attrib['id'])]
-                    plabelrole = presentation.preferredLabel
-                    if plabelrole is None:
-                        plabelrole = 'label'
-                    else:
-                        plabelrole = plabelrole.split('/')[-1:][0]
-                    r += [('plabel', plabelrole)]
-                    order = presentation.order
-                    if order is None:
-                        order = 1
-                    r += [('order', order)]
-                    rellist += [r] # r
-                tag += rellist
+                
+                roleList = tag['presentation'] = []
+                for presentation in presentations:                    
+                    role =  presentation.linkrole #.split('/')[-1:][0]
+                    if (role not in roleList): roleList += [role]
+                
+#                 roleDict = tag['presentation'] = {}
+#                 for presentation in presentations:  # note there is no use in sorting on incoming arc order.                     
+#                     role =  presentation.linkrole.split('/')[-1:][0]
+#                     parentTag =  presentation.fromModelObject.attrib['id']
+#                     plabelrole = presentation.preferredLabel
+#                     if plabelrole is None: plabelrole = 'label'
+#                     else: plabelrole = plabelrole.split('/')[-1:][0]
+#                     order = presentation.order
+#                     if order is None:  order = 1
+#                     if (role not in roleDict): roleDict[role] = {'parentTag' : {}}
+#                     if (parentTag not in roleDict[role]['parentTag']): roleDict[role]['parentTag'][parentTag] = {'plabelrole':{}}
+#                     roleDict[role]['parentTag'][parentTag]['plabelrole'][plabelrole] = order
+                    
+                
             labels = conceptLabelRelationshipSet.modelRelationshipsFrom[concept]
             if labels is not None and len(labels) > 0:
-                langSet = {rel.toModelObject.xmlLang for rel in labels}
-                for lang in langSet:               
-                    langlist = ['labels', ('lang', lang)]
-                    for rel in labels:                            
-                        label = rel.toModelObject
-                        if label is not None and label.xmlLang == lang:
-                            r = ['label', ('role', label.role.split('/')[-1:][0])]                 
-                            labeltext = ''
-                            if label.text is not None:
-                                labeltext = label.text.strip().replace("&", "&amp;").replace("<", "&lt;")
-                            r += [labeltext]
-                            langlist += [r]
-                    tag += [langlist]
-            self.tagList += [tag]    
+                langDict = tag['lang'] = {}
+                for rel in labels:
+                    lang = rel.toModelObject.xmlLang 
+                    label = rel.toModelObject
+                    if label is not None:
+                        labelrole = label.role.split('/')[-1:][0]
+                        labeltext = ''
+                        if label.text is not None:
+                            labeltext = label.text.strip().replace("&", "&amp;").replace("<", "&lt;")
+                        if (lang not in langDict): langDict[lang] = {'role': {}}
+                        langDict[lang]['role'][labelrole] = labeltext
+        print()
         
         self.qnameInUseSet = {concept.qname.clarkNotation for concept in conceptInUseSet}
         self.conceptInUseSet = {concept.qname for concept in conceptInUseSet}
