@@ -90,13 +90,17 @@
     </element>      
   </template>
   <template match="*[namespace-uri()=$ix0]" mode="relationships">
-    <variable name="this" select="generate-id()"/>
-    <variable name="ns" select="if (namespace-uri()=$ix0) then $ix1 else namespace-uri()"/>
-        <for-each select="tokenize(@footnoteRefs,' ')">            
+    <variable name="this" select="if (empty(@id)) then generate-id() else @id" />
+    <variable name="nsselect="if (namespace-uri()=$ix0) then $ix1 else namespace-uri() "/>
+    <element name="relationship" namespace="{$ix1}">
+      <attribute name="fromRefs" select="$this"/>
+      <attribute name="toRefs" select="@footnoteRefs"/>
+    </element>
+    <!--        <for-each select="tokenize(@footnoteRefs,' ')">            
           <element name="relationship" namespace="{$ix1}">
             <attribute name="fromRefs" select="$this"/>
             <attribute name="toRefs" select="."/>
           </element>
-        </for-each>
+        </for-each>-->
   </template>
 </stylesheet>
