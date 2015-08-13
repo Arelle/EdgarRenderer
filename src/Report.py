@@ -13,8 +13,6 @@ from lxml.etree import Element, SubElement, XSLT
 import arelle.XbrlConst
 import Utils, Filing, EdgarRenderer
 
-substituteForEmptyEquityColumnHeading = ['Total']
-
 xlinkRole = '{' + arelle.XbrlConst.xlink + '}role' # constant belongs in XbrlConsts`headingList
 
 class Report(object):
@@ -28,12 +26,14 @@ class Report(object):
         self.cube = cube
         self.embedding = embedding
 
-        self.promotedAxes = set()
+        self.promotedAxes = []
         self.rowList = []
         self.colList = []
 
         self.numColumns = 0
+        self.numVisibleColumns = 0
         self.numRows = 0
+        self.numVisibleRows = 0
         self.footnoteTextList = []
 
         self.RoundingOption = None
@@ -54,19 +54,11 @@ class Report(object):
 
 
     def generateCellVector(self, rowOrColStr, index):
-        cellVector = []
         if rowOrColStr == 'col':
-            for row in self.rowList:
-                if not row.isHidden:
-                    cellVector += [row.cellList[index]]
-            return (self.colList[index], cellVector)
+            return (self.colList[index], [row.cellList[index] for row in self.rowList if not row.isHidden])
         else:
             row = self.rowList[index]
-            for i, cell in enumerate(row.cellList):
-                if not self.colList[i].isHidden:
-                    cellVector += [cell]
-            return (row, cellVector)
-
+            return (row, [cell for i, cell in enumerate(row.cellList) if not self.colList[i].isHidden])
 
 
     def generateRowsOrCols(self, rowOrColStr, sortedFactAxisMemberGroupList):
@@ -201,47 +193,26 @@ class Report(object):
         self.repressPeriodHeadings = True # there's only one period, don't show it.
 
 
-
-    def promoteAxes(self):
-        # unitStrCol and unitStrRow is just to put units at the end wrapped in parens, rather than with all the others
-        unitStrCol = self.promoteAxesHelper('col', self.colList, [command.pseudoAxis for command in self.embedding.colCommands])
-        unitStrRow = self.promoteAxesHelper('row', self.rowList, [command.pseudoAxis for command in self.embedding.rowCommands])
-
-        if unitStrCol is not None:
-            self.shortName += self.filing.titleSeparatorStr + unitStrCol
-        if unitStrRow is not None:
-            self.shortName += self.filing.titleSeparatorStr + unitStrRow
-
-
-
-    def promoteAxesHelper(self, rowOrColStr, rowOrColList, pseudoAxisNameList):
-        # don't promote axes if there's only one row or col
-        numVisibleRowOrCols = 0
-        for rowOrCol in rowOrColList:
-            if not rowOrCol.isHidden:
-                numVisibleRowOrCols += 1
-                if numVisibleRowOrCols > 1:
-                    break
-        if numVisibleRowOrCols == 1:
+    def proposeAxisPromotions(self, rowOrColStr, rowOrColList, pseudoAxisNameList):
+        # don't promote axes if there's only one row or col. true, some might be hidden, but we don't want to check
+        # that hard yet because in the future more rows and cols may be hidden, so this is quick and dirty. we'll check
+        #for real after all that is done.
+        if len(rowOrColList) == 1:
             return
-
-        # this needs to be appended to end and wrapped in parens so we do some special stuff
-        unitAndMaybeSymbolStr = None
 
         # loop through each axis and if len(memberSet) == 1 promote axis because all rows or cols have the same label,
         # no use repeating it for every row or col.   if memberSet bigger, don't promote.
         for i, pseudoAxisName in enumerate(pseudoAxisNameList):
-            if pseudoAxisName == 'primary':
-                continue
             if pseudoAxisName == 'unit':
-                unitAndMaybeSymbolStr = self.promoteUnits(rowOrColList)
+                unitAndMaybeSymbolStr = self.proposeUnitAxisPromotion(rowOrColList)
+                if unitAndMaybeSymbolStr is not None:
+                    self.promotedAxes += [('unit', rowOrColStr, unitAndMaybeSymbolStr)]
                 continue
-            if self.repressPeriodHeadings and pseudoAxisName == 'period':
+            if pseudoAxisName == 'primary' or (self.repressPeriodHeadings and pseudoAxisName == 'period'):
                 continue
 
             memberLabel = None
-            promoteThisAxis = True
-            numMonthsSet = set()
+            startEndContextDuration = None
 
             for rowOrCol in rowOrColList:
                 if rowOrColStr == 'row':
@@ -249,38 +220,34 @@ class Report(object):
                 else:
                     factAxisMember = rowOrCol.factAxisMemberGroup.factAxisMemberColList[i]
 
-                tempMemberLabel = factAxisMember.memberLabel
-
-                if tempMemberLabel is None:
-                    promoteThisAxis = False
-                    break
-                elif memberLabel is None:
-                    memberLabel = tempMemberLabel
-                elif memberLabel != tempMemberLabel:
-                    promoteThisAxis = False
+                if memberLabel is None:
+                    memberLabel = factAxisMember.memberLabel
+                #second case if factAxisMember.memberLabel was None
+                if memberLabel != factAxisMember.memberLabel or memberLabel == None or factAxisMember.memberIsDefault:
+                    memberLabel = None
                     break # there's more than one different member so can't promote axis
 
-                if pseudoAxisName == 'period':
-                    numMonthsSet.add(factAxisMember.member.numMonths)
+                if pseudoAxisName == 'period' and factAxisMember.member.periodTypeStr == 'duration':
+                    if startEndContextDuration is not None:
+                        if startEndContextDuration != factAxisMember.member:
+                            memberLabel = None # there is more than one duration, don't promote
+                            break
+                    else:
+                        startEndContextDuration = factAxisMember.member
 
-            if promoteThisAxis and memberLabel is not None:
-                self.promotedAxes.add(pseudoAxisName)
-
+            if memberLabel is not None:
                 # we do this because we want to promote the period if there's an instant and duration ending at the same time.
                 # for the sake of promotion, we consider these two one member, even though they are different.  if we tack on the months
                 # before we get to this stage, these two will seem different, even though for our purposes, they are the same.
-                if len(numMonthsSet) == 1:
-                    numMonths = numMonthsSet.pop()
-                    if numMonths > 0:
-                        memberLabel = '{!s} months ended {}'.format(numMonths, tempMemberLabel)
-                self.shortName += self.filing.titleSeparatorStr + memberLabel
+                if startEndContextDuration is not None and startEndContextDuration.numMonths > 0:
+                    memberLabel = '{!s} months ended {}'.format(startEndContextDuration.numMonths, memberLabel)
+                self.promotedAxes += [(pseudoAxisName, rowOrColStr, memberLabel)]
 
-        return unitAndMaybeSymbolStr
 
     # this is complicated because we still might promote units even if there are multiple units.  for instance, if there are
     # USD, USD/Share and shares as the units, we still promote USD.  same for any pair of two from those three.  however, we won't promote
     # if we have ounces and barrels of oil for instance, or USD, JPY/Share and Share.
-    def promoteUnits(self, rowOrColList):
+    def proposeUnitAxisPromotion(self, rowOrColList):
         monetaryFact = perShareMonetaryFact = sharesFact = anotherKindOfFact = None
 
         for rowOrCol in rowOrColList:
@@ -320,8 +287,6 @@ class Report(object):
         elif allTypes > 1:
             return # makes sure we don't have Ounces and Shares
 
-        self.promotedAxes.add('unit')
-
         if anotherKindOfFact is not None:
             return Utils.getUnitAndSymbolStr(anotherKindOfFact)
         elif monetaryFact is not None:
@@ -330,7 +295,33 @@ class Report(object):
             return Utils.getUnitAndSymbolStr(perShareMonetaryFact)
         elif sharesFact is not None:
             return Utils.getUnitAndSymbolStr(sharesFact)
-        
+
+
+    # now we know what rows and cols will be hidden, so we can now finalize the promotions.
+    def finalizeProposedPromotions(self):
+        if len(self.promotedAxes) == 0:
+            return
+
+        def dontPromoteUnlessMultipleNonHiddenRowsOrCols(rowOrColList, rowOrColStr):
+            # if there's only one non-hidden row or col at this point, don't promote anything for it.
+            if (rowOrColStr == 'row' and self.numVisibleRows == 1) or (rowOrColStr == 'col' and self.numVisibleColumns == 1):
+                self.promotedAxes = [axisTriple for axisTriple in self.promotedAxes if axisTriple[1] != rowOrColStr]
+
+        rowOrColStrs = [axisTriple[1] for axisTriple in self.promotedAxes]
+        if 'row' in rowOrColStrs:
+            dontPromoteUnlessMultipleNonHiddenRowsOrCols(self.rowList, 'row')
+        if 'col' in rowOrColStrs:
+            dontPromoteUnlessMultipleNonHiddenRowsOrCols(self.colList, 'col')
+
+        unitStrToAppendToEnd = None
+        for axis, ignore, s in self.promotedAxes:
+            if axis == 'unit':
+                unitStrToAppendToEnd = s
+            else:
+                self.shortName += self.filing.titleSeparatorStr + s
+        if unitStrToAppendToEnd is not None:
+            self.shortName += self.filing.titleSeparatorStr + unitStrToAppendToEnd
+
 
     def mergeRowsOrColsIfUnitsCompatible(self, rowOrColStr, rowOrColList):
         i = 0
@@ -351,6 +342,11 @@ class Report(object):
                 else:
                     nonMonetarySet.add(rowOrCol)
                 i += 1
+
+            # non-monetary rows or cols might overlap, in which case, call the whole thing off, don't merge this group.
+            # the other sets can't overlap.
+            if len(nonMonetarySet) > 1 and self.doVectorsOverlap(nonMonetarySet, rowOrColStr):
+                continue
 
             # in these two cases below, we mangle these three sets, and if either of these two conditions are satisfied,
             # in the below for loop, monetary might not be monetary anymore, and nonmonetary might not be nonmonetary either.
@@ -415,21 +411,21 @@ class Report(object):
 
                 else:
                     # if we're doing the rows and units isn't on the rows (and vice versa), we don't check unit compatibility,
-                    # otherwise we need the units to be compatible.
-                    if not unitsAxisOnRowsOrCols or self.areFactsCompatableByUnits(instantRowOrCol, durationRowOrCol):
-                        # test to make sure both rows or cols don't overlap -- unless the overlap is the same
-                        flag = True
-                        instantRowOrColCellVector = self.generateCellVector(rowOrColStr, instantRowOrCol.index)[1]
-                        durationRowOrColCellVector = self.generateCellVector(rowOrColStr, durationRowOrCol.index)[1]
-                        for i in range(len(instantRowOrColCellVector)): # both vectors are the same length
-                            instantCell = instantRowOrColCellVector[i]
-                            durationCell = durationRowOrColCellVector[i]
-                            if instantCell is not None and durationCell is not None and instantCell.fact != durationCell.fact:
-                                flag = False
-                                break # vectors overlap, can't be combined
-                        if flag:
-                            self.deepCopyRowsOrCols(rowOrColStr, durationRowOrCol, instantRowOrCol)
+                    # otherwise we need the units to be compatible. Also make sure the vectors don't overlap.
+                    if      ((not unitsAxisOnRowsOrCols or self.areFactsCompatableByUnits(instantRowOrCol, durationRowOrCol)) and
+                             not self.doVectorsOverlap([instantRowOrCol, durationRowOrCol], rowOrColStr)):
+                        self.deepCopyRowsOrCols(rowOrColStr, durationRowOrCol, instantRowOrCol)
                     del durationRowOrColList[0]
+
+
+    def doVectorsOverlap(self, rowsOrCols, rowOrColStr):
+        # zip takes multiple lists and zips them together and gives you tuples. the star character basically takes a list or 
+        # set of lists and makes each one an argument for zip(). The lists here are basically lists of true/false values,
+        # where true means that the cell is occupied and false means it's empty. then i do some boolean math and since True == 1, 
+        # and false == 0, you can sum the tuple that zip provides and if the sum is greater than 1, you know that you that 
+        # for some position the vectors overlap, so you can't combine them.
+        z = zip(*[[cell is not None for cell in self.generateCellVector(rowOrColStr, rowOrCol.index)[1]] for rowOrCol in rowsOrCols])
+        return any(sum(trueFalseTuple) > 1 for trueFalseTuple in z)
 
 
     def areFactsCompatableByUnits(self, colOrRowToBeMerged, colOrRowToBeMergedInto):
@@ -475,7 +471,7 @@ class Report(object):
                 mergeIntoThisCell.currencyCode =        mergeCell.currencyCode
                 mergeIntoThisCell.unitID =              mergeCell.unitID
                 mergeIntoThisCell.showCurrencySymbol =  mergeCell.showCurrencySymbol
-        mergeRowOrCol.isHidden = True
+        mergeRowOrCol.hide()
         mergeIntoThisRowOrCol.factList += mergeRowOrCol.factList
 
     def hideRedundantColumns(self):
@@ -488,7 +484,7 @@ class Report(object):
                 for col2,facts2 in factSets.items():
                     if not col1 is col2 and not col2.isHidden:
                         if facts2.issubset(facts1):
-                            col2.isHidden = True
+                            col2.hide()
 
     def updateUnitTypeToFactSetDefaultDict(self, fact, rowOrCol):
         if fact.concept.isMonetary:
@@ -606,7 +602,13 @@ class Report(object):
                                 cell.footnoteNumberSet.add(footnoteIndex)
                                 self.footnoteTextList += [footnoteText]
 
+
     def setAndMergeFootnoteRowsAndColumns(self, rowOrColStr, rowOrColList):
+        # if we're looking at rows and there is only one col, it doesn't make sense to promote footnotes to the rows,
+        # only maybe the columns.
+        if (rowOrColStr == 'row' and self.numVisibleColumns == 1) or (rowOrColStr == 'col' and self.numVisibleRows == 1):
+            return
+
         for i, rowOrCol in enumerate(rowOrColList):
             if not rowOrCol.isHidden:
 
@@ -668,7 +670,7 @@ class Report(object):
     def makeSegmentTitleRows(self):
         counter = 0
         prevRow = None
-        forbiddenAxisSet = {'primary', 'unit', 'period'}.union(self.promotedAxes)
+        forbiddenAxisSet = {'primary', 'unit', 'period'}.union({axisTriple[0] for axisTriple in self.promotedAxes})
 
         while counter < len(self.rowList):
 
@@ -755,7 +757,8 @@ class Report(object):
 
     def generateRowAndOrColHeadingsGeneralCase(self):
         # axes to not generate headings for, cheaper to build this set only once and pass it in.
-        noHeadingsForTheseAxesSet = self.promotedAxes.union(self.embedding.noDisplayAxesSet) #.union(self.embedding.groupedAxisQnameSet)
+        promotedAxesSet = {axisTriple[0] for axisTriple in self.promotedAxes}
+        noHeadingsForTheseAxesSet = promotedAxesSet.union(self.embedding.noDisplayAxesSet) #.union(self.embedding.groupedAxisQnameSet)
         if self.repressPeriodHeadings:
             noHeadingsForTheseAxesSet.add('period')
 
@@ -776,7 +779,7 @@ class Report(object):
                 elif not row.IsAbstractGroupTitle and row.headingList == []:
                     self.generateRowOrColHeading('row', row, row.factAxisMemberGroup.factAxisMemberRowList, noHeadingsForTheseAxesSet, mostRecentSegmentTitleRow)
 
-                    if self.embedding.columnUnitPosition != -1 and 'unit' not in self.promotedAxes and len(row.unitTypeToFactSetDefaultDict) == 1:
+                    if self.embedding.columnUnitPosition != -1 and 'unit' not in promotedAxesSet and len(row.unitTypeToFactSetDefaultDict) == 1:
                         unitHeading = self.appendUnitsToRowsIfUnitsOnColsAndRowHasOnlyOneUnit(row)
                         if unitHeading is not None:
                             rowUnitHeadingDefaultDict[unitHeading].append(row)
@@ -799,11 +802,12 @@ class Report(object):
         verboseHeadings = self.filing.verboseHeadingsForDebugging
         previousPseudoAxisNames = []
         noDateRepetitionFlag = False
+        substituteForEmptyHeading = 'Total'
         for i, factAxisMember in enumerate(factAxisMemberList):
             pseudoAxisName = factAxisMember.pseudoAxisName
-            if (pseudoAxisName in noHeadingsForTheseAxesSet or
-                (mostRecentSegmentTitleRow is not None  # do not repeat member information in previous segment title row.
-                 and mostRecentSegmentTitleRow.axisInSegmentTitleHeaderBoolList[i])):
+            if      (pseudoAxisName in noHeadingsForTheseAxesSet or
+                     (mostRecentSegmentTitleRow is not None  # do not repeat member information in previous segment title row.
+                      and mostRecentSegmentTitleRow.axisInSegmentTitleHeaderBoolList[i])):
                 pass
             # TODO: for grouped, if factAxisMember.member is None: continue
             elif pseudoAxisName == 'unit':
@@ -817,19 +821,23 @@ class Report(object):
             elif verboseHeadings:
                 headingList += [factAxisMember.memberLabel]
             elif not factAxisMember.memberIsDefault:
-                if (not isinstance(pseudoAxisName,str) 
-                    and Utils.isEfmStandardNamespace(pseudoAxisName.namespaceURI) 
-                    and pseudoAxisName.localName == 'CreationDateAxis'):
-                    if headingList == []: headingList = ['('+ factAxisMember.memberLabel + ')']
-                    else: headingList[-1] = headingList[-1] + ' ('+ factAxisMember.memberLabel + ')'
+                if      (not isinstance(pseudoAxisName,str)
+                         and Utils.isEfmStandardNamespace(pseudoAxisName.namespaceURI)
+                         and pseudoAxisName.localName == 'CreationDateAxis'):
+                    if headingList == []:
+                        headingList = ['('+ factAxisMember.memberLabel + ')']
+                    else:
+                        headingList[-1] = headingList[-1] + ' ('+ factAxisMember.memberLabel + ')'
                 else:
-                    if (not isinstance(pseudoAxisName,str)
-                        and Utils.isEfmStandardNamespace(pseudoAxisName.namespaceURI) 
-                        and pseudoAxisName.localName == 'StatementScenarioAxis'
-                        and Utils.isEfmStandardNamespace(factAxisMember.member.namespaceURI)
-                        and factAxisMember.member.localName=='RestatementAdjustmentMember' ):
+                    if      (not isinstance(pseudoAxisName,str)
+                             and Utils.isEfmStandardNamespace(pseudoAxisName.namespaceURI) 
+                             and pseudoAxisName.localName == 'StatementScenarioAxis'
+                             and Utils.isEfmStandardNamespace(factAxisMember.member.namespaceURI)
+                             and factAxisMember.member.localName == 'RestatementAdjustmentMember'):
                         noDateRepetitionFlag = True
-                    headingList += [factAxisMember.memberLabel]                
+                    headingList += [factAxisMember.memberLabel]     
+            elif factAxisMember.memberIsDefault and self.cube.isTransposed:
+                substituteForEmptyHeading = factAxisMember.memberLabel      
             previousPseudoAxisNames += [pseudoAxisName]
         
         if rowOrColStr == 'row':
@@ -851,13 +859,11 @@ class Report(object):
         if monthsEndedText is not None and self.embedding.columnPeriodPosition != -1:
             headingList = [monthsEndedText] + headingList
         if headingList == [] and 'primary' not in previousPseudoAxisNames:
-            headingList += substituteForEmptyEquityColumnHeading
+            headingList = [substituteForEmptyHeading]
         rowOrCol.headingList = headingList
 
 
     def generateAndAddUnitHeadings(self, rowOrCol, rowOrColStr):
-        unitAndMaybeSymbolList = []
-
         # sorting by type, but monetary should always come first
         sortedListOfFactSets = []
         for unitType, factSet in sorted(rowOrCol.unitTypeToFactSetDefaultDict.items()):
@@ -867,6 +873,7 @@ class Report(object):
                 sortedListOfFactSets += [factSet]
 
         unitSet = set()
+        unitAndMaybeSymbolList = []
         for arelleFactSet in sortedListOfFactSets:
             # we need a fact for each unit, why?  because the type of the unit is actually in the element declaration
             # so we do all this just to pull the fact out and pass it to getUnitAndSymbolStr, which will probably call fact.unitSymbol()
@@ -880,10 +887,11 @@ class Report(object):
         # we handle rows and cols slightly differently because for rows, we don't want to put filing.rowSeparatorStr between
         # each of the units in the list of units for the row.  however, for column headings, it's done differently, so they should be
         # separated.  so for rows, we want a long string, for cols, we want to append each to the list.
-        if rowOrColStr == 'row':
-            rowOrCol.headingList += [', '.join(sorted(unitAndMaybeSymbolList))]
-        else:
-            rowOrCol.headingList += unitAndMaybeSymbolList
+        if len(unitAndMaybeSymbolList) > 0:
+            if rowOrColStr == 'row':
+                rowOrCol.headingList += [', '.join(sorted(unitAndMaybeSymbolList))]
+            else:
+                rowOrCol.headingList += unitAndMaybeSymbolList
 
 
     # this function is used to append the unit to the end of a row if the units are on the columns and not promoted and
@@ -925,7 +933,7 @@ class Report(object):
                              prevRow.startEndContext.endTime==thisRow.startEndContext.endTime and
                              prevRow.factList==thisRow.factList):
                         tracer(thisRow)
-                        thisRow.isHidden = True
+                        thisRow.hide()
         del mergeableRows
 
 
@@ -1063,7 +1071,9 @@ class Report(object):
         reportSummary.role = self.cube.linkroleUri
         reportSummary.logList = self.logList
         reportSummary.isUncategorized = (self.cube.linkroleUri == 'http://xbrl.sec.gov/role/uncategorizedFacts')
-
+        reportSummary.factXpointers = \
+            {factAxisMemberGroup.fact.xpointer # Assumes that only rendered facts are appearing here.
+             for factAxisMemberGroup in self.embedding.factAxisMemberGroupList}
 
     def writeHtmlAndOrXmlFiles(self, reportSummary):
         baseNameBeforeExtension = self.filing.fileNamePrefix + str(self.cube.fileNumber)
@@ -1110,6 +1120,12 @@ class Report(object):
                         if yMin > factValue:
                             yMin = factValue
                     factList += [(year, factValue)]
+                else:
+                    try:
+                        self.filing.usedOrBrokenFactDefDict[fact].remove(self.embedding)
+                    except KeyError:
+                        pass
+
         if len(factList) == 0:
             return None
         factList = sorted(factList, key=lambda thing: thing[0]) # sorts by year
@@ -1208,6 +1224,7 @@ class Row(object):
         if index is None:
             self.index = report.numRows
         self.report.numRows += 1
+        self.report.numVisibleRows += 1
         self.factAxisMemberGroup = factAxisMemberGroup
         self.coordinateList = coordinateList
         self.coordinateListWithoutPrimary = coordinateListWithoutPrimary
@@ -1251,6 +1268,11 @@ class Row(object):
         self.unitTypeToFactSetDefaultDict = defaultdict(set)
 
 
+    def hide(self):
+        self.isHidden = True
+        self.report.numVisibleRows -= 1
+
+
     def emitRow(self, index):
         rowETree = SubElement(self.report.rowsETree, 'Row', FlagID='0')
         self.emitRowHeader(rowETree, index)
@@ -1283,14 +1305,18 @@ class Row(object):
                     SubElement(cellETree, 'DisplayZeroAsNone').text = str(isNil).casefold()
                     SubElement(cellETree, 'NumericAmount').text = '0'
                     SubElement(cellETree, 'RoundedNumericAmount').text = '0'
-                    if unlabeledSegmentTitle and i == 0:
+                    if isNil:
+                        SubElement(cellETree, 'NonNumbericText').text = ' ' # style sheet quirk
+                    elif unlabeledSegmentTitle and i == 0:
                         SubElement(cellETree, 'NonNumbericText').text = cell.NonNumericText
                     else:
                         SubElement(cellETree, 'NonNumbericText')
-                    SubElement(cellETree, 'FootnoteIndexer')
+                    if isNil:
+                        self.report.writeFootnoteIndexerEtree(cell.footnoteNumberSet, cellETree)
+                    else:
+                        SubElement(cellETree, 'FootnoteIndexer')
                     SubElement(cellETree, 'CurrencyCode')
                     SubElement(cellETree, 'CurrencySymbol')
-                    SubElement(cellETree, 'IsIndependantCurrency').text = 'false'
                     SubElement(cellETree, 'ShowCurrencySymbol').text = 'false'
                     SubElement(cellETree, 'DisplayDateInUSFormat').text = 'false'
                 else: # write a non-empty cell
@@ -1457,6 +1483,7 @@ class Column(object):
         self.report = report
         self.index = report.numColumns
         self.report.numColumns += 1
+        self.report.numVisibleColumns += 1
         self.factAxisMemberGroup = factAxisMemberGroup
         self.coordinateList = coordinateList
         self.coordinateListWithoutUnit = coordinateListWithoutUnit
@@ -1477,6 +1504,11 @@ class Column(object):
             self.preferredLabel = factAxisMemberGroup.preferredLabel.rpartition('/')[2]
         else:
             self.preferredLabel = None
+
+
+    def hide(self):
+        self.isHidden = True
+        self.report.numVisibleColumns -= 1
 
 
     def emitColumn(self, index):
@@ -1576,7 +1608,7 @@ class Cell(object):
         IsNumeric = fact.isNumeric
         IsRatio = False
         NumericAmount = ''
-        valueStr = self.handleFactValue()
+        valueStr = Utils.strFactValue(fact, preferredLabel=self.preferredLabel, filing=self.filing)
         if IsNumeric:
             IsRatio = Utils.isRate(fact, self.filing) # Rename to DisplayAsPercent
             NumericAmount = valueStr
@@ -1673,51 +1705,19 @@ class Cell(object):
                 # it doesn't round the 100500 up because it only rounds to an even.  in the case of 101500 it rounds it up
                 # to 102 because 2 is even.  strange, but this is the new standard and is the way things are done these days.
                 quantum = getattr(self,'quantum',1)
-                scaledNumericAmount = str(decimal.Decimal(NumericAmount).scaleb(self.scalingFactor).quantize(decimal.Decimal(quantum), rounding=decimal.ROUND_HALF_EVEN))
+                amount = None
+                try:
+                    amount = decimal.Decimal(NumericAmount)
+                except decimal.InvalidOperation:
+                    self.filing.controller.logError('"{}" is not a number.'.format(NumericAmount))
+                    return (NumericAmount,float('nan'))
+                scaledNumericAmount = str(amount.scaleb(self.scalingFactor).quantize(decimal.Decimal(quantum), rounding=decimal.ROUND_HALF_EVEN))
                 return (NumericAmount, scaledNumericAmount)
             else:
                 return (NumericAmount, NumericAmount)
         else:
             return (0, 0) # re2 compatibility
 
-
-
-
-
-
-    def handleFactValue(self):
-        fact = self.fact
-        if fact.isNil:
-            return ''
-
-        valueStr = fact.value
-
-        if fact.isNumeric:
-            if len(valueStr) > 0 and valueStr[-1] == '.':
-                valueStr = valueStr[:-1]
-            if self.preferredLabel is not None and 'negated' in self.preferredLabel:
-                if valueStr[0] == '-': # we're making it a negative
-                    return valueStr[1:] # already a negative, make it positive
-                elif valueStr != '0': # we don't want a negative zero.
-                    return '-' + valueStr # positive, make it negative
-        else:
-            try:
-                qnameToGetTheLabelOf = self.filing.factToQlabelDict[fact]
-                return self.filing.modelXbrl.qnameConcepts[qnameToGetTheLabelOf].label(self.preferredLabel)
-            except KeyError:
-                if Utils.isFactTypeEqualToOrDerivedFrom(fact, Utils.isDurationItemTypeQname):
-                    return Utils.handleDurationItemType(fact)
-                elif Utils.isFactTypeEqualToOrDerivedFrom(fact, Utils.isDurationStringItemTypeQname):
-                    # if value "P10Y" it will output "10 years".
-                    # if value "For P10Y we have been building a factory" the below function will throw an exception
-                    # and it will just wind up printing the value of the fact, without any magic at the last line of this
-                    # function. 
-                    try:
-                        return Utils.handleDurationItemType(fact)
-                    except Exception:
-                        pass
-
-        return valueStr
 
     def insertEmbeddingOrBarChartEmbeddingIntoETree(self, embedding, cellETree):
         report = self.row.report

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!--XBRL Rendering Engine 3 daemon configuration file -->
+<!-- EDGAR Renderer daemon configuration file -->
 <configuration>
   <!-- The following are various sub-folders that are created and used during the processing of XBRL filings for organizational purposes: -->
   <!-- resourcesFolder: Default value: ../resources, relative to folders on the pythonpath. -->
@@ -11,7 +11,7 @@
   <!-- filingsFolder: Default value: Filings -->
   <!-- This is the filing staging area for the RE3 daemon service. -->
   <filingsFolder>Filings</filingsFolder>
-  <!-- processingFolder> Default value: Processing -->
+  <!-- processingFolder: Default value: Processing -->
   <!-- This is the location of all zip extractions from the input zip file, as well as other temp processing files. -->
   <processingFolder>Processing</processingFolder>
   <!-- Location of the output zip files for daemon mode. -->
@@ -29,26 +29,28 @@
   <reportXslt>InstanceReport.xslt</reportXslt>
   <!-- Optional, transform FilingSummary.xml into FilingSummary.htm -->
   <summaryXslt>Summarize.xslt</summaryXslt>
-  <!-- Optional transform one r.xml into Excel 2007 xlsx output, or empty if no Excel output desired -->
+  <!-- Optional transform output xml into Excel 2007 xlsx sheet, or empty if no Excel output desired -->
   <excelXslt>InstanceReport_XmlWorkbook.xslt</excelXslt>
   <!-- Application settings that used by RE to manage the processing of XBRL filings: -->
   <!-- renderingService: {Instance: one time rendering || Daemon: background processing} -->
   <renderingService>Daemon</renderingService>
-  <!-- validate: Boolean. Perform XBRL 2.1 validation. Defaults to True. -->
-  <validate>False</validate>
+  <!-- validate: Boolean. Perform XBRL 2.1 validation. Defaults to False if not specified here. -->
+  <validate>True</validate>
+  <!-- utrValidate: Boolean.  Perform utr validation even if the DTS does not contain element dei:UTR -->
   <utrValidate>False</utrValidate>
+  <!-- validateEFM: Boolean.  Perform EDGAR Filer Manual validation -->
   <validateEFM>False</validateEFM>
-  <!-- processingFrequency: The sleep time for the RE3 daemon if no XBRL filing is present in the staging area -->
+  <!-- processingFrequency: The sleep time for the RE3 daemon if no XBRL filing is present in the input folder -->
   <!-- Default to 10 seconds -->
   <processingFrequency>10</processingFrequency>
   <!-- deleteProcessedFilings: Boolean to indicate if unzipped processed filings should be deleted or not; default to True -->
   <deleteProcessedFilings>True</deleteProcessedFilings>
-  <!-- reportFormat: Multiple options...{Xml: only Xml outout || Html: only Html output || HtmlAndXml: both Xml and Html output} -->
+  <!-- reportFormat: Multiple options...{Xml: only Xml output || Html: only Html output || HtmlAndXml: both Xml and Html output} -->
   <reportFormat>HtmlAndXml</reportFormat>
   <!-- htmlReportFormat: Multiple options...{Complete: asPage rendering = True || Fragment: asPage rendering = False} -->
   <htmlReportFormat>Complete</htmlReportFormat>
   <!-- totalClean: Boolean to indicate if RE should completely clean the archive, errors and delivery folders before processing; default to False -->
   <totalClean>False</totalClean>
-  <!-- Abort process on major error, such as when load is unable to find an entry or discovered file. -->
+  <!-- Abort process on major error, such as when load is unable to find an entry or discovered file or XBRL validation failed. -->
   <abortOnMajorError>True</abortOnMajorError>
 </configuration>

@@ -32,54 +32,102 @@ class Cube(object):
         self.embeddingList = []
         self.isEmbedded = False
         self.presentationGroup = None
-        self.isTransposed = False
-        self.isUnlabeled = False
-        self.isElements = False
         self.isUncategorizedFacts = linkroleUri == 'http://xbrl.sec.gov/role/uncategorizedFacts'
         self.axisAndMemberOrderDict = {} # contains a tuple with an orderDict of members and the axes order relative to other axes
         self.defaultFilteredOutAxisSet = set()
         self.periodStartEndLabelDict = defaultdict(list) # populated by PresentationGroup.getLabelsRecursive
+        self.hasDiscoveredDurations = False
+        self.rootNodeToConceptSetDict = {}
+        self.isStatementOfEquity = False
+        self.isStatementOfCashFlows = False
+
         modelRoleTypes = filing.modelXbrl.roleTypes[linkroleUri]
         if modelRoleTypes:
             self.definitionText = (modelRoleTypes[0].genLabel(strip=True) or modelRoleTypes[0].definition or linkroleUri).strip()
         else:
             self.definitionText = linkroleUri
-        self.shortName = self.getShortName()
-        self.cubeType = self.getCubeType()
-        self.hasDiscoveredDurations = False
-        self.rootNodeToConceptSetDict = {}
-        
+        cNum, self.cubeType, self.shortName, self.isTransposed, self.isUnlabeled, self.isElements = self.getCubeInfo()
+
         # TO DO problem 2: searching from statement and equity, dumb
-        if self.definitionText is None or self.definitionText.strip(' ') == '':
-            dt = self.linkroleUri
-        else:
-            dt = self.definitionText.casefold()
-        self.isStatementOfEquity = False
-        self.isStatementOfCashFlows = False
-        if (self.cubeType == 'statement' 
-            and 'parenthetical' not in dt 
-            and '(table' not in dt
-            and '(detail' not in dt
-            and '(polic' not in dt
-            and filing.stmNamespace is not None):
-            if   ('148600' in dt or
-                  '148610' in dt or
-                (('stockholder' in dt or 'shareholder' in dt or 'changes' in dt) and ('equity' in dt or 'deficit' in dt)) or
-                (('partners' in dt or 'accounts' in dt) and 'capital' in dt) or
-                 #('statement' in dt and 'capitalization' in dt) or # TODO: do we want this for case WEC?
-                 ('statement' in dt and 'equity' in dt)):
+        lowerSN = self.shortName.casefold()
+        if      (self.cubeType == 'statement'
+                 and 'parenthetical' not in lowerSN
+                 and '(table' not in lowerSN
+                 and '(detail' not in lowerSN
+                 and '(polic' not in lowerSN
+                 and filing.stmNamespace is not None):
+            if      ('148600' == cNum or
+                     '148610' == cNum or
+                    (('stockholder' in lowerSN or 'shareholder' in lowerSN or 'changes' in lowerSN) and ('equity' in lowerSN or 'deficit' in lowerSN)) or
+                    (('partners' in lowerSN or 'accounts' in lowerSN) and 'capital' in lowerSN) or
+                     #('statement' in lowerSN and 'capitalization' in lowerSN) or # TODO: do we want this for case WEC?
+                     ('statement' in lowerSN and 'equity' in lowerSN)):
                 self.isStatementOfEquity = True
                 filing.controller.logDebug('The Linkrole {} is a Statement of Equity.'.format(self.shortName))
                 if filing.controller.noEquity:
                     self.isStatementOfEquity = False
                     filing.controller.logDebug('But noEquity is True so it will not be treated specially.')
-            if (('cash' in dt and 'flow' in dt[dt.index('cash'):] and not 'supplement' in dt)):
+            elif 'cash' in lowerSN and 'flow' in lowerSN[lowerSN.index('cash'):] and not 'supplement' in lowerSN:
                 self.isStatementOfCashFlows = True
                 filing.controller.logDebug('The Linkrole {} is a Statement of Cash Flows'.format(self.shortName))
-                
+
 
     def __str__(self):
         return "[Cube R{!s} {} {}]".format(self.fileNumber, self.cubeType, self.shortName)
+
+
+    def getCubeInfo(self):
+        if self.definitionText == 'http://xbrl.sec.gov/role/uncategorizedFacts':
+            return ('', '', '', False, False, False)
+
+        cubeNumber, hyphen, rightOfHyphen = self.definitionText.partition('-')
+        cubeType, secondHyphen, cubeName = rightOfHyphen.partition('-')
+        cubeNumber = cubeNumber.strip() # don't need casefold, it's a number
+        cubeType = cubeType.strip().casefold()
+        cubeName = cubeName.strip()
+
+        try:
+            int(cubeNumber)
+            cubeNumberIsANumber = True
+        except ValueError:
+            cubeNumberIsANumber = False
+
+        if not cubeNumberIsANumber or '' in (hyphen, secondHyphen, cubeNumber, cubeType, cubeName):
+            self.controller.logWarn('The link:roleType link:definition text: "{}", for the linkrole with Uri: {}, ' \
+                                    'does not comply with section 6.7.12 of the Edgar Filer Manual.'.format(
+                                    self.definitionText, self.linkroleUri))
+            return ('', '', '', False, False, False)
+
+        indexList = [99999, 99999, 99999] # in order transposed, unlabeled, elements
+
+        def handleIndex(matchObj):
+            if matchObj.group('t') is not None:
+                indexList[0] = matchObj.start()
+            elif matchObj.group('u') is not None:
+                indexList[1] = matchObj.start()
+            elif matchObj.group('e') is not None:
+                indexList[2] = matchObj.start()
+            return ''
+
+        # gets rid of the curly brackets if it has transposed, unlabeled or elements inside.
+        # there are examples (nils) that have other stuff inside of curly brackets, so we keep those.
+        cubeName = re.sub('\s*\{\s*((?P<t>transposed)|(?P<u>unlabeled)|(?P<e>elements))\s*\}\s*', handleIndex, cubeName, flags=re.IGNORECASE)
+
+        isTransposed = isUnlabeled = isElements = False
+        if indexList[0] < 99999: # if transposed is present, the first one of the three mentioned wins 
+            lowestPosition = indexList.index(min(indexList))
+            if lowestPosition == 0:
+                isTransposed = True
+            elif lowestPosition == 1:
+                isUnlabeled = True
+            elif lowestPosition == 2:
+                isElements = True
+        elif indexList[2] < 99999: # if elements is present, it beats unlabeled
+            isElements = True
+        elif indexList[1] < 99999: # if only unlabeled is present, it wins
+            isUnlabeled = True
+
+        return (cubeNumber, cubeType, cubeName, isTransposed, isUnlabeled, isElements)
 
 
     def areTherePhantomAxesInPGWithNoDefault(self):
@@ -191,30 +239,6 @@ class Cube(object):
         self.filing.skippedFactsList += list(skippedFactMembershipSet)
 
 
-    def getShortName(self):
-        shortname = self.definitionText.strip()
-        # gets rid of the curly brackets if it has transposed, unlabeled or elements inside.
-        # there are examples (nils) that have other stuff inside of curly brackets, so we keep those.
-        shortname = re.sub('\{[ ]*(transposed|unlabeled|elements)[ ]*\}', '', shortname, flags=re.IGNORECASE)
-        # the above might leave consecutive spaces, this kills them.
-        shortname = re.sub('[ ]+', ' ', shortname)
-        if ' - ' in shortname:
-            shortname = shortname[shortname.index(' - ')+3:].strip()
-            if ' - ' in shortname:
-                shortname = shortname[shortname.index(' - ')+3:].strip()
-        return shortname
-
-
-    def getCubeType(self):
-        ignore, hyphen, rightOfHyphen = self.definitionText.partition('-')
-        if hyphen == '':
-            return None
-        cubeType, secondHyphen, ignore = rightOfHyphen.partition('-')
-        if secondHyphen == '':
-            return None
-        return cubeType.strip().casefold()
-
-
     def populateUnitPseudoaxis(self):
         giveMemGetPositionDict = {}
         for i, unit in enumerate(sorted(self.unitAxis.values(), key = lambda thing : thing.sourceline)):
@@ -288,41 +312,6 @@ class Cube(object):
                 self.controller.logDebug("Context {} was not part of a complete Movement".format(contextID))
         return sortedList # from SurvivorsOfMovementAnalysis
 
-
-
-    def checkForTransposedUnlabeledAndElements(self):
-        lowercaseDefTextWithNoWhitespace = ''.join(self.definitionText.casefold().split())
-
-        # gives us the lowest indexes of each of these strings.  we want to find the first one.
-        transposedIndex = lowercaseDefTextWithNoWhitespace.find('{transposed}')
-        unlabeledIndex  = lowercaseDefTextWithNoWhitespace.find('{unlabeled}')
-        elementsIndex   = lowercaseDefTextWithNoWhitespace.find('{elements}')
-        # find returns -1 if it finds nothing
-
-        # if transposed is present, the first one of the three mentioned wins
-        if transposedIndex != -1:
-            indexList = [transposedIndex, unlabeledIndex, elementsIndex]
-            lowestAboveZero = len(self.definitionText)
-            lowestPosition = -1
-            for index, current in enumerate(indexList):
-                if current > -1 and current < lowestAboveZero:
-                    lowestAboveZero = current
-                    lowestPosition = index
-
-            if lowestPosition == 0:
-                self.isTransposed = True
-            elif lowestPosition == 1:
-                self.isUnlabeled = True
-            elif lowestPosition == 2:
-                self.isElements = True
-
-        # if elements is present, it beats unlabeled
-        elif elementsIndex != -1:
-            self.isElements = True
-
-        # if only unlabeled is present, it wins
-        elif unlabeledIndex != -1:
-            self.isUnlabeled = True
             
     def rearrangeGiveMemGetPositionDict(self,axisQname,giveMemGetPositionDict):
         memberList = [item[0] for item in sorted(giveMemGetPositionDict.items(),key=lambda item : item[1])]

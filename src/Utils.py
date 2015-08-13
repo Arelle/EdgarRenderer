@@ -47,8 +47,8 @@ def printErrorStringToDiscribeEmbeddedTextBlockFact(embeddedCommandFact):
 
 def hideEmptyRows(rowList):
     for row in rowList:
-        if not any(cell.fact.value != '' or cell.fact.isNil for cell in row.cellList if cell is not None and not cell.column.isHidden):
-            row.isHidden = True
+        if not any(cell.fact.isNil or cell.fact.value != '' for cell in row.cellList if cell is not None and not cell.column.isHidden):
+            row.hide()
 
 
 def booleanFromString(x):
@@ -146,48 +146,75 @@ def getSymbolStr(fact):
         if 'pure' not in symbolStr:
             return symbolStr
 
-def handleDurationItemType(fact):
-    # we are assuming that this value is xml valid, if it's not, there will be a validation error.
+
+def handleDuration(valueStr):
+    # if value "P10Y" it will output "10 years".
+    # if value "P10Y to P12Y", we output "10 years to 12 years"
+
+    def durationPrettyPrint(matchObj):
+        from decimal import Decimal
+        orderedList = [(None if matchObj.group('y') is None else Decimal(matchObj.group('y')), 'year'), \
+                       (None if matchObj.group('mon') is None else Decimal(matchObj.group('mon')), 'month'), \
+                       (None if matchObj.group('d') is None else Decimal(matchObj.group('d')), 'day'), \
+                       (None if matchObj.group('h') is None else Decimal(matchObj.group('h')), 'hour'), \
+                       (None if matchObj.group('min') is None else Decimal(matchObj.group('min')), 'minute'), \
+                       (None if matchObj.group('s') is None else Decimal(matchObj.group('s')), 'second')]
+
+        # this section is to inteligently handle zeros.  if a duration has a zero and other numbers, ignore the zeros.
+        # So, P0Y1M is just one month.  if they're all zeros, just print the biggest so P0Y0M and P0Y both print 0 years.        
+        numStrsSet = {tup[0] for tup in orderedList}
+        allZeroOrNone = numStrsSet <= {Decimal(0), None}
+        someZeroSomeNot = not allZeroOrNone and Decimal(0) in numStrsSet
+        if allZeroOrNone or someZeroSomeNot:
+            startChangingZeroToNone = someZeroSomeNot
+            for i, (num, text) in enumerate(orderedList):
+                if num == Decimal(0):
+                    if startChangingZeroToNone:
+                        orderedList[i] = (None, text)
+                    else:
+                        startChangingZeroToNone = True
+
+        if matchObj.group('minus') == '-':
+            output = 'minus '
+        else:
+            output = ''
+        for num, text in orderedList:
+            if num is not None:
+                output += '{} {}{} '.format(str(num), text, '' if num == Decimal(1) else 's')
+        return output[:-1]  # remove trailing space
+
+    # this huge regex parses an xs:duration type, and pulls out what we want by name.
+
+    # first notice that years, months, days, hours, minutes are all integers, but seconds can have a decimal place.
+    # makes sense, since the remainder of the prior can all spill down the waterfall, but seconds is as low as you
+    # can go. so we have to treat seconds specially.
+
+    # look-ahead's don't "consume" characters like regular regex's.  they basically start at the current position
+    # of the consumption and check that a condition ahead is satisfied, so pay special attention to where they are inserted.
+
+    # lookAhead1 makes sure we can't have just 'P' or '-P', because otherwise the regex allows that, since everything in the
+    # regex besides 'P' has a '?' after it, meaning that it may or may not actually be there.  so, lookAhead1 says that
+    # something needs to follow P.
+
+    # lookAhead2 makes sure that something comes after T, because again in the non-look-ahead part of the regex, 
+    # everything after T is optional.
+
+    # so lookahead 1 and 2 are basically conditions, and the rest of the regex actually consumes the xs:duration pattern.
+
+    lookAhead1 = '(?=(\d+Y|\d+M|\d+D|T\d+H|T\d+M|T(\d+|\d+\.\d+)S))'
+    lookAhead2 = '(?=(\d+H|\d+M|(\d+|\d+\.\d+)S))'
+    beforeT = '(?P<minus>-?)P' + lookAhead1 + '((?P<y>\d+)Y)?((?P<mon>\d+)M)?((?P<d>\d+)D)?'
+    TAndAfter = '(T' + lookAhead2 + '((?P<h>\d+)H)?((?P<min>\d+)M)?((?P<s>\d+|\d+\.\d+)S)?)?'
+
+    # probably don't need to strip with fact.xValue?
+    return re.sub(re.compile(beforeT + TAndAfter), durationPrettyPrint, valueStr.strip()) 
+
+
+def strFactValue(fact, preferredLabel=None, filing=None):
     if fact.isNil:
         return ''
-    outStr = ''
-    valueStr = fact.value.strip() # TODO, if we use fact.xValue, we probably don't need to strip it?
-    if valueStr[0] == '-':
-        valueStr = valueStr[1:]  # get rid of leading -
-        outStr = 'minus '
-    valueStr = valueStr[1:]  # get rid of leading 'P'
-
-    beforeT, ignore, afterT = valueStr.partition('T')
-
-    if beforeT != '':
-        beforeT, outStr = handleDurationItemTypeHelper(beforeT, outStr, 'Y', 'year')
-        beforeT, outStr = handleDurationItemTypeHelper(beforeT, outStr, 'M', 'month')
-        beforeT, outStr = handleDurationItemTypeHelper(beforeT, outStr, 'D', 'day')
-
-    if afterT != '':
-        afterT, outStr = handleDurationItemTypeHelper(afterT, outStr, 'H', 'hour')
-        afterT, outStr = handleDurationItemTypeHelper(afterT, outStr, 'M', 'minute')
-        afterT, outStr = handleDurationItemTypeHelper(afterT, outStr, 'S', 'second')
-
-    return outStr[:-1]  # remove trailing space
-
-def handleDurationItemTypeHelper(valueStr, outStr, separator, printStr):
-    duration, separator, remainder = valueStr.partition(separator)
-    if separator != '':
-        if int(duration) > 1:
-            return (remainder, '{}{} {}s '.format(outStr, duration, printStr))
-        elif int(duration) == 1:
-            return (remainder, '{}{} {} '.format(outStr, duration, printStr))
-        else:  # durationInt == 0
-            return (remainder, outStr)
-    return (valueStr, outStr)  # the string didn't contain the separator.
-
-
-def strFactValue(fact, preferredLabel=None):
-    if fact.isNil:
-        return ''
-
     valueStr = fact.value
+
     if fact.isNumeric:
         if preferredLabel is not None and 'negated' in preferredLabel:
             if valueStr == '':
@@ -198,12 +225,24 @@ def strFactValue(fact, preferredLabel=None):
                 return '-' + valueStr  # positive, make it negative
         else:
             return valueStr
-    elif fact.concept.typeQname.localName == 'durationItemType':
-        return handleDurationItemType(fact)
-    else:  # don't try to handle qnames here.
-        return valueStr
+
+    # handle qlabel
+    if filing is not None:
+        try:
+            qnameToGetTheLabelOf = filing.factToQlabelDict[fact]
+            return filing.modelXbrl.qnameConcepts[qnameToGetTheLabelOf].label(preferredLabel)
+        except KeyError:
+            pass
+
+    if     (isFactTypeEqualToOrDerivedFrom(fact, isDurationItemTypeQname) or
+            isFactTypeEqualToOrDerivedFrom(fact, isDurationStringItemTypeQname)):
+        return handleDuration(valueStr)
+
+    return valueStr
+
 
 def prettyPrintQname(localName):
+    # \g<1> will match to the char that matched ([a-z]) and similarly for \g<2>.
     return re.sub('([a-z])([A-Z0-9])', '\g<1> \g<2>', localName)
 
 

@@ -8,7 +8,7 @@ if "%ARELLE%"=="" set ARELLE=%ROOT%\Arelle
 @rem Location for EdgarRenderer modules
 if "%EDGARRENDERER%"=="" set EDGARRENDERER=%ROOT%\EdgarRenderer
 
-set PYTHONPATH=.;%EDGARRENDERER%;%ARELLE%
+set PYTHONPATH=.;%EDGARRENDERER%;c:\Python34\lib\site-packages;%ARELLE%
 
 @rem  Typical location for the builder service
 if "%SVC%"=="" set SVC=%ROOT%\svc1

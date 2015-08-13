@@ -389,6 +389,10 @@
     <xsl:param name="depth"/>
     <xsl:param name="position"/>
     <xsl:param name="menucat"/>
+    <xsl:param name="prev_instance"/>
+    <xsl:variable name="instance">
+      <xsl:value-of select="(MyReports/Report[position()=$position]/@instance)" />
+    </xsl:variable>
     <xsl:choose>
       <xsl:when test="count(MyReports/*[position() >= $position and Role])=0">
         <!-- we reached the very end of the list -->
@@ -441,7 +445,7 @@
           <xsl:for-each select="MyReports/Report[position()=$position]">
             <xsl:call-template name="menu_name">
               <xsl:with-param name="atstart">
-                <xsl:value-of select="$menucat = 0"/>
+                <xsl:value-of select="$menucat = 0 or $instance != $prev_instance"/>
               </xsl:with-param>
             </xsl:call-template>
           </xsl:for-each>
@@ -452,8 +456,35 @@
             <xsl:with-param name="pos" select="(1 + $position)"/>
           </xsl:call-template>
         </xsl:variable>
+        <xsl:if test="$instance != $prev_instance">
+          <xsl:variable name="doctype">
+            <xsl:value-of select="(/FilingSummary/InputFiles/File[.=$instance]/@doctype)"/>
+          </xsl:variable>
+          <xsl:variable name="original">
+            <xsl:value-of select="(/FilingSummary/InputFiles/File[.=$instance]/@original)"/>
+          </xsl:variable>
+          <xsl:variable name="instance_is_inline">
+            <xsl:value-of select="translate(substring($instance,string-length($instance)-3),'HTM','htm') = '.htm'"/>
+          </xsl:variable>
+          <xsl:if test="$original != ''">
+              <li class="accordion octave">
+                <xsl:choose>
+                  <xsl:when test="$instance_is_inline = 'true'">
+                    <a href="http://hq-dera-d44941:8080/vf/cbe/index.html?file={$original}&amp;xbrl=true"><xsl:value-of select="$doctype"/></a>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <a href="http://hq-dera-d44941:8080/vf/documents/{$original}"><xsl:value-of select="$doctype"/></a>
+                  </xsl:otherwise>
+                </xsl:choose>                
+              </li>              
+           </xsl:if>
+        </xsl:if>        
         <xsl:variable name="octave_divider">
-          <xsl:if test="$menucat = 0"> octave</xsl:if>
+          <xsl:choose>
+            <xsl:when test="$menucat = 0 and not($instance)"> octave</xsl:when>
+            <xsl:when test="$instance != $prev_instance and not(/FilingSummary/InputFiles/File[.=$instance]/@original)"> octave</xsl:when>
+            <xsl:otherwise></xsl:otherwise>
+          </xsl:choose>
         </xsl:variable>
         <li class="accordion{$octave_divider}">
           <a id="menu_cat{$menucat}" href="#">
@@ -479,6 +510,7 @@
           <xsl:with-param name="depth" select="($depth)"/>
           <xsl:with-param name="position" select="$next_cat_position"/>
           <xsl:with-param name="menucat" select="($menucat + 1)"/>
+          <xsl:with-param name="prev_instance" select="$instance"/>
         </xsl:call-template>
       </xsl:when>
     </xsl:choose>

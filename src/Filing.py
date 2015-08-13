@@ -103,7 +103,11 @@ def mainFun(controller, modelXbrl, outputFolderName):
     if len(filing.reportSummaryList) > 0:
         controller.nextFileNum = filing.reportSummaryList[-1].fileNumber + 1
 
-    filing.unusedFactSet = set(modelXbrl.facts) - filing.usedOrBrokenFactSet
+    # have to do some massaging of filing.usedOrBrokenFactDefDict.  can't just do set(filing.usedOrBrokenFactDefDict).
+    # that's because when you remove if you remove every thing in the set for one of the keys, the key still stays.
+    # so we need to make sure they key has a nonempty set associated with it.
+    filing.unusedFactSet = \
+            set(modelXbrl.facts) - {fact for fact, embeddingSet in filing.usedOrBrokenFactDefDict.items() if len(embeddingSet) > 0}
 
     for fact, role, cube, ignore, shortName in filing.skippedFactsList:
         if fact in filing.unusedFactSet:
@@ -132,7 +136,7 @@ class Filing(object):
         self.presentationUnitToConceptDict = {}
 
         self.embeddedCubeSet = set()
-        self.usedOrBrokenFactSet = set()
+        self.usedOrBrokenFactDefDict = defaultdict(set)
         self.unusedFactSet = set()
         self.skippedFactsList = []
 
@@ -141,13 +145,14 @@ class Filing(object):
         self.disallowEmbeddings = True
         self.isInvestTaxonomyInDTS = False
         for namespace in self.modelXbrl.namespaceDocs:
-            if re.compile('http://xbrl.(sec.gov|us)/rr/20.*').match(namespace):
+            if namespace is None: pass
+            elif re.compile('http://xbrl.(sec.gov|us)/rr/20.*').match(namespace):
                 self.isRR = True
             elif re.compile('http://xbrl.sec.gov/invest/*').match(namespace):
                 self.isInvestTaxonomyInDTS = True
         # These namespaces contain elements treated specially in some layouts.
-        self.stmNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if re.search('/us-gaap/20',n) is not None),None)
-        self.deiNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if re.search('/dei/20',n) is not None), None)
+        self.stmNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('/us-gaap/20',n) is not None),None)
+        self.deiNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('/dei/20',n) is not None), None)
         self.builtinEquityColAxes = [('dei',self.deiNamespace,'LegalEntityAxis'),
                                      ('us-gaap',self.stmNamespace,'StatementEquityComponentsAxis'),
                                      ('us-gaap',self.stmNamespace,'PartnerCapitalComponentsAxis'),
@@ -197,7 +202,7 @@ class Filing(object):
 
 
     def populateAndLinkClasses(self, uncategorizedCube = None):
-        duplicateFacts = set()
+        duplicateFacts = self.modelXbrl.duplicateFactSet = set()
 
         if uncategorizedCube is not None:
             for fact in self.unusedFactSet:
@@ -253,73 +258,57 @@ class Filing(object):
             for qname, factSet in self.modelXbrl.factsByQname.items():
 
                 # we are looking to see if we have "duplicate" facts.  a duplicate fact is one with the same qname, context and unit
-                # as another fact.  in this case, we keep the first fact with an 'en-US' language, or if there is none, keep the first fact.
+                # as another fact.  Also, keep the first fact with an 'en-US' language, or if there is none, keep the first fact.
                 # the others need to be proactively added to the set of unused facts.
                 if len(factSet) > 1:
-                    sortedFactList = sorted(factSet, key = lambda thing : (thing.contextID, thing.unitID, thing.sourceline))
+                    def factSortKey (thing):
+                        if thing.isNil: discriminator = float("INF") # Null values always last
+                        elif thing.isNumeric:  discriminator = 0 - float(thing.decimals) # Larger decimal values come first
+                        elif thing.xmlLang == 'en-US': discriminator = 'aa-AA' # en-US comes first
+                        elif thing.xmlLang is None: discriminator = 'aa-AA' # no lang means en-US
+                        else: discriminator = thing.xmlLang # followed by all others
+                        return (thing.contextID,discriminator,thing.sourceline) # sourceLine is the tiebreaker              
+                    sortedFactList = sorted(factSet, key = factSortKey)
                     while len(sortedFactList) > 0:
-
                         firstFact = sortedFactList.pop(0)
-                        if firstFact.xmlLang == 'en-US':
-                            firstEnUsLangFact = firstFact
-                        else:
-                            firstEnUsLangFact = None
-
+                        lineNumOfFactWeAreKeeping = firstFact.sourceline
                         discardedLineNumberList = []
-                        counter = 0
-
+                        discardedCounter = 0
                         # finds facts with same qname, context and unit as firstFact
                         while (len(sortedFactList) > 0 and
                                sortedFactList[0].qname == firstFact.qname and
                                sortedFactList[0].context == firstFact.context and
                                sortedFactList[0].unitID == firstFact.unitID):
-                            counter += 1
+                            discardedCounter += 1
                             fact = sortedFactList.pop(0)
-                            if firstEnUsLangFact is None and fact.xmlLang == 'en-US':
-                                firstEnUsLangFact = fact # keeping this fact
-                            else:
-                                duplicateFacts.add(fact) # not keeping this fact
-                                discardedLineNumberList += [str(fact.sourceline)] # these are added in sorted order by sourceline
+                            duplicateFacts.add(fact) # not keeping this fact
+                            discardedLineNumberList += [str(fact.sourceline)] # these are added in sorted order by sourceline
 
-                        if counter > 0:
-                            if firstEnUsLangFact is None:
-                                lineNumOfFactWeAreKeeping = firstFact.sourceline # there is no en-US fact, keep the first fact we found
-                            else:
-                                lineNumOfFactWeAreKeeping = firstEnUsLangFact.sourceline # we did find an en-US fact, keep it.
-                                if firstFact != firstEnUsLangFact:
-                                    duplicateFacts.add(firstFact)
-                                    discardedLineNumberList = [str(firstFact.sourceline)] + discardedLineNumberList # prepend to maintain sorted order
-
+                        if discardedCounter > 0:
                             # start it off because we can assume that these facts have a qname and a context
-                            # note that even if we are keeping firstEnUsLangFact, we are only printing qname, contextID and unitID,
-                            # which are the same for both firstFact and firstEnUsLangFact.
                             qnameContextIDUnitStr = 'qname {!s}, context {}'.format(firstFact.qname, firstFact.contextID)
                             if firstFact.unit is not None:
                                 qnameContextIDUnitStr += ', unit ' + firstFact.unitID
-                            #message = ErrorMgr.getError('DUPLICATE_FACT_SUPPRESSION').format(qnameContextIDUnitStr, lineNumOfFactWeAreKeeping, ', '.join(discardedLineNumberList))
-                            self.controller.logWarn("There are multiple facts with {}. The fact on line {} of the instance " \
+                            self.controller.logInfo("There are multiple facts with {}. The fact on line {} of the instance " \
                                                     "document will be rendered, and the rest at line(s) {} will not.".format(
                                                     qnameContextIDUnitStr, lineNumOfFactWeAreKeeping,
                                                     ', '.join(discardedLineNumberList)))
 
                 for fact in factSet: # we only want one thing, but we don't want to pop from the set so we "loop" and then break right away
-
-                    elementBroken = False
-
                     if fact.concept is None:
-                        #conceptErrStr = ErrorMgr.getError('FACT_DECLARATION_BROKEN').format(qname)
-                        self.controller.logWarn("The element declaration for {}, or one of its facts, is broken. They will all be " \
-                                                "ignored.".format(qname))
-                        elementBroken = True
-
+                        self.controller.logWarn("The element declaration for {}, or one of its facts, is broken. The element " \
+                                                "will be ignored.".format(qname))
+                        break
+                    elif fact.isTuple:
+                        self.controller.logWarn("The element declaration {} is a Tuple, which is forbidden by the " \
+                                                "EDGAR Filer Manual. The element will be ignored.".format(qname))
+                        break
                     elif fact.concept.type is None:
-                        #typeErrStr = ErrorMgr.getError('The Type declaration for Element {} is either broken or missing. The Element will be ignored.').format(qname)
                         self.controller.logWarn("The Type declaration for Element {} is either broken or missing. The " \
-                                                "Element will be ignored.".format(qname))
-                        elementBroken = True
-
-                    if fact.context is None or elementBroken: # we will print the error if firstContext is broken later
-                        continue # see if there are other facts for this concept with good contexts before we break from the loop, we still might make the Element yet
+                                                "element will be ignored.".format(qname))
+                        break
+                    elif fact.context is None:
+                        continue # don't break, still might be good facts. we print the error if a context is broken later 
 
                     self.elementDict[qname] = Element(fact.concept)
                     break # we don't need to look at more facts from the fact set, we're just trying to make elements.
@@ -346,36 +335,36 @@ class Filing(object):
 
             facts = self.modelXbrl.facts
 
+        for context in self.modelXbrl.contexts.values():
+            if context.scenario is not None:
+                self.controller.logWarn("The Context {} has a scenario element, which is forbidden by the EDGAR Filer " \
+                                        "Manual. This filing is not EDGAR valid, but this should not interfere with " \
+                                        "rendering.".format(context.id))
+
         for fact in facts:
-            if fact.isTuple:
-                #tupleErrStr = ErrorMgr.getError('UNSUPPORTED_TUPLE_FOUND').format(fact.qname)
-                self.controller.logWarn("A Fact with Qname {} is a Tuple and Tuples are forbidden by the EDGAR Filer " \
-                                        "Manual. The Fact will be ignored.".format(fact.qname))
-                self.usedOrBrokenFactSet.add(fact) #now bad fact won't come back to bite us when processing isUncategorizedFacts
-                continue
-
-            if fact.context is None:
-                #contextErrStr1 = ErrorMgr.getError('CONTEXT_BROKEN').format(fact.qname, fact.value)
-                self.controller.logWarn("Either the Context of a Fact with Qname {}, or the reference to the Context " \
-                                        "in the Fact is broken. The Fact will be ignored. The value of this Fact " \
-                                        "is {}.".format(fact.qname, fact.value))
-                self.usedOrBrokenFactSet.add(fact) #now bad fact won't come back to bite us when processing isUncategorizedFacts
-                continue
-
-            if fact.context.scenario is not None:
-                #scenarioErrStr = ErrorMgr.getError('IMPROPER_CONTEXT_FOUND').format(fact.context.id)
-                self.controller.logWarn("The Context {} has a scenario attribute. Such attributes are forbidden by " \
-                                        "the EDGAR Filer Manual. This filing will not validate, but this should not " \
-                                        "interfere with rendering".format(fact.contextID))
             try:
                 element = self.elementDict[fact.qname]
             except KeyError:
-                self.usedOrBrokenFactSet.add(fact) #now bad fact won't come back to bite us when processing isUncategorizedFacts
+                self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue # fact was rejected in first loop of this function because of problem with the Element
 
-            # this is after we check for the bad stuff so that we make sure not to put those into usedOrBrokenFactSet
+            if fact.unit is None and fact.unitID is not None: # to do a unitref that isn't a unit should be found by arelle, but isn't.
+                self.controller.logWarn("The fact {}, defined at line {} of the instance, has a broken unitRef. The fact will be " \
+                                        "ignored.".format(fact.qname, fact.sourceline))
+                self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
+                continue
+
+            elif fact.context is None:
+                self.controller.logWarn("The fact {}, defined at line {} of the instance, either has a broken context or context reference. " \
+                                        "The fact will be ignored.".format(fact.qname, fact.sourceline))
+                self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
+                continue
+
+            # this is after we check for the bad stuff so that we make sure not to put those into usedOrBrokenFactDefDict
             # so that they don't break when processing isUncategorizedFacts
-            if fact in duplicateFacts:
+            elif fact in duplicateFacts:
+                # actually, the duplication of a fact does not mean it is unused.
+                self.usedOrBrokenFactDefDict[fact].add(None)
                 continue
 
             # first see if fact's value is an embedded command, then check if it's a qlabel fact.
@@ -664,7 +653,6 @@ class Filing(object):
             if cube.noFactsOrAllFactsSuppressed:
                 return
 
-            cube.checkForTransposedUnlabeledAndElements()
             if len(cube.periodStartEndLabelDict) > 0:
                 cube.handlePeriodStartEndLabel() # needs preferred labels from the presentationGroup
 
@@ -698,10 +686,10 @@ class Filing(object):
         report.generateRowsOrCols('col', sorted(embedding.factAxisMemberGroupList, key=lambda thing: thing.axisMemberPositionTupleColList))
 
         # this is because if the {Elements} view is used, then you might have lots of facts right next to each other with the same qname
-        # this is fine, but each time you render, they might appear in a different order.  so this will sort the facts by value
+        # this is fine, but each time you render, they might appear in a different order.  so this will sort the facts by source line
         # so that each run the same facts don't appear in different orders.
         if cube.isElements:
-            sortedFAMGL = sorted(embedding.factAxisMemberGroupList, key=lambda thing: (thing.axisMemberPositionTupleRowList, thing.fact.value))
+            sortedFAMGL = sorted(embedding.factAxisMemberGroupList, key=lambda thing: (thing.axisMemberPositionTupleRowList, thing.fact.sourceline))
         else:
             sortedFAMGL = sorted(embedding.factAxisMemberGroupList, key=lambda thing: thing.axisMemberPositionTupleRowList)
         report.generateRowsOrCols('row', sortedFAMGL)
@@ -710,8 +698,8 @@ class Filing(object):
             if self.hasEmbeddings:
                 report.decideWhetherToRepressPeriodHeadings()
             if not cube.isUnlabeled:
-                report.promoteAxes()
-
+                report.proposeAxisPromotions('col', report.colList, [command.pseudoAxis for command in embedding.colCommands])
+                report.proposeAxisPromotions('row', report.rowList, [command.pseudoAxis for command in embedding.rowCommands])
             if embedding.rowUnitPosition != -1:
                 report.mergeRowsOrColsIfUnitsCompatible('row', report.rowList)
             elif embedding.columnUnitPosition != -1:
@@ -732,8 +720,9 @@ class Filing(object):
         if embedding.rowPeriodPosition != -1:
             report.HideAdjacentInstantRows()
         elif cube.isStatementOfCashFlows:
-            self.RemoveStuntedCashFlowColumns(report,cube)
+            self.RemoveStuntedCashFlowColumns(report)
 
+        report.finalizeProposedPromotions()
         report.scaleUnitGlobally()
 
         if      (len(self.factFootnoteDict) > 0 and
@@ -780,47 +769,37 @@ class Filing(object):
 
 
 
-    def RemoveStuntedCashFlowColumns(self,report,cube):
+    def RemoveStuntedCashFlowColumns(self,report):
         visibleColumns = [col for col in report.colList if not col.isHidden]
         didWeHideAnyCols = False
-        if len(visibleColumns)>0:
-            remainingVisibleColumns = visibleColumns.copy()
-            maxMonths = max(col.startEndContext.numMonths for col in visibleColumns)
-            minFacts = min(len(col.factList) for col in visibleColumns if col.startEndContext.numMonths==maxMonths)
-            minToKeep = math.floor(.25*minFacts)
-            for col in visibleColumns:
-                if col.startEndContext.numMonths < maxMonths and len(col.factList) < minToKeep:
-                    self.controller.logInfo(("Columns in cash flow ''{}'' have maximum duration {} months and at least {} " \
-                                  "values. Shorter duration columns must have at least one fourth ({}) as many values. " \
-                                  "Column '{}' is shorter ({} months) and has only {} values, so it is being removed.")
-                                  .format(cube.shortName, maxMonths, minFacts, minToKeep, col.startEndContext,
-                                  col.startEndContext.numMonths,len(col.factList)))
-                    col.isHidden = True
-                    didWeHideAnyCols = True
-                    remainingVisibleColumns.remove(col)
-                    for fact in col.factList: 
-                        appearsInOtherColumn = False
-                        for otherCol in remainingVisibleColumns:
-                            if fact in otherCol.factList:
-                                appearsInOtherColumn = True
-                                break
-                        if not appearsInOtherColumn:
-                            cube.factMemberships = [fm for fm in cube.factMemberships if not fact is fm[0]] # local removal
-                            # Go look whether the fact is now completely uncategorized
-                            if fact in self.usedOrBrokenFactSet:
-                                element = self.elementDict[fact.elementQname]
-                                appearsInOtherCube = False
-                                for c in element.inCubes.values():
-                                    if hasattr(c,'factMemberships'): # Some Cube objects seem uninitialized, not sure why.
-                                        for fm in c.factMemberships:
-                                            if fm[0] is fact: # Assumes that factMemberships is an accurate list of facts presented.
-                                                appearsInOtherCube = True
-                                                break # Only need to find one other place the fact appears
-                                        if appearsInOtherCube is True:
-                                            break
-                                if appearsInOtherCube is False:
-                                    # This was the only place the fact was presented, and now it's hidden.
-                                    self.usedOrBrokenFactSet.remove(fact)             
+        remainingVisibleColumns = visibleColumns.copy()
+        maxMonths = max(col.startEndContext.numMonths for col in visibleColumns)
+        minFacts = min(len(col.factList) for col in visibleColumns if col.startEndContext.numMonths==maxMonths)
+        minToKeep = math.floor(.25*minFacts)
+        for col in visibleColumns:
+            if col.startEndContext.numMonths < maxMonths and len(col.factList) < minToKeep:
+                self.controller.logInfo(("Columns in cash flow ''{}'' have maximum duration {} months and at least {} " \
+                              "values. Shorter duration columns must have at least one fourth ({}) as many values. " \
+                              "Column '{}' is shorter ({} months) and has only {} values, so it is being removed.")
+                              .format(report.shortName, maxMonths, minFacts, minToKeep, col.startEndContext,
+                              col.startEndContext.numMonths,len(col.factList)))
+                col.hide()
+                didWeHideAnyCols = True
+                remainingVisibleColumns.remove(col)
+                for fact in col.factList: 
+                    appearsInOtherColumn = False
+                    for otherCol in remainingVisibleColumns:
+                        if fact in otherCol.factList:
+                            appearsInOtherColumn = True
+                            break
+                    if not appearsInOtherColumn:
+                        # first kick this fact out of report.embedding.factAxisMemberGroupList, our defacto list of facts 
+                        report.embedding.factAxisMemberGroupList = \
+                                [FAMG for FAMG in report.embedding.factAxisMemberGroupList if FAMG.fact != fact] 
+                        try:
+                            self.usedOrBrokenFactDefDict[fact].remove(report.embedding)
+                        except KeyError:
+                            pass
 
         if didWeHideAnyCols:
             Utils.hideEmptyRows(report.rowList)
@@ -855,13 +834,11 @@ class Filing(object):
 
             report = cube.embeddingList[0].report # we know there's no embeddings, so the report is on the first and only embedding
             columnsToKill = []
-            nonHiddenColCount = 0
 
             elementQnamesThatWillBeKeptProvidingThatWeHideTheseCols = set() # if we kill a few cols, we will want to update embedding.hasElements
             for col in report.colList:
 
                 if not col.isHidden:
-                    nonHiddenColCount += 1
                     setOfElementQnamesInCol = {fact.qname for fact in col.factList}
                     setOfElementQnamesAndQnameMemberPairsForCol = setOfElementQnamesInCol.union(col.elementQnameMemberForColHidingSet)
                     # the operator <= means subset, not a proper subset.  so if all the facts in the column are elsewhere, then hide column.
@@ -870,10 +847,10 @@ class Filing(object):
                     else:
                         elementQnamesThatWillBeKeptProvidingThatWeHideTheseCols.update(setOfElementQnamesInCol)
 
-            if 0 < len(columnsToKill) < nonHiddenColCount:
+            if 0 < len(columnsToKill) < report.numVisibleColumns:
                 cube.embeddingList[0].hasElements = elementQnamesThatWillBeKeptProvidingThatWeHideTheseCols # update hasElements, might have less now
                 for col in columnsToKill:
-                    col.isHidden = True
+                    col.hide()
 
                 self.controller.logInfo("In ''{}'', column(s) {!s} are contained in other reports, so were removed by flow through suppression.".format(
                                             cube.shortName, ', '.join([str(col.index + 1) for col in columnsToKill])))

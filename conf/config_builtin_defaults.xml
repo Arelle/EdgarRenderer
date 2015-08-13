@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <configuration>
   <archiveFolder>Archive</archiveFolder>
+  <copyInlineFilesToOutput>False</copyInlineFilesToOutput>
   <deliveryFolder>Delivery</deliveryFolder>
   <errorsFolder>Errors</errorsFolder>
   <failFile>errorLog.log</failFile>
@@ -21,6 +22,9 @@
   <processingFrequency>10</processingFrequency>
   <renderingService>Instance</renderingService>
   <reportFormat>Html</reportFormat>
+  <saveTargetInstance>False</saveTargetInstance>
+  <saveTargetFilign>False</saveTargetFilign>
+  <sourceList />
   <totalClean>False</totalClean>
   <utrValidate>False</utrValidate>
   <validate>False</validate>

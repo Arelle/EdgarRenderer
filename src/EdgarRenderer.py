@@ -6,7 +6,7 @@ Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Comm
 Data and content created by government employees within the scope of their employment 
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
-VERSION = '3.2.0.727'
+VERSION = '3.3.0.790'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -14,7 +14,7 @@ PythonUtil.noop(0)  # Get rid of warning on PythonUtil import
 from arelle import (Cntlr, FileSource, ModelDocument, XmlUtil, Version, ModelValue, Locale, PluginManager, WebCache, ModelFormulaObject,
                     ViewFileFactList, ViewFileFactTable, ViewFileConcepts, ViewFileFormulae,
                     ViewFileRelationshipSet, ViewFileTests, ViewFileRssFeed, ViewFileRoleTypes)
-import RefManager, IoManager, Utils, Filing, Summary
+import RefManager, IoManager, Inline, Utils, Filing, Summary
 import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os
 from lxml import etree
 from os import getcwd, remove, removedirs
@@ -105,8 +105,10 @@ def parseOptions(controller, args):
     parser.add_option("--reportXslt", dest="reportXslt", help=_("Path and name of Stylesheet for producing a report file."))
     parser.add_option("--summaryXslt", dest="summaryXslt", help=_("Path and name of Stylesheet, if any, for producing filing summary html."))
     parser.add_option("--excelXslt", dest="excelXslt", help=_("Path and name of Stylesheet, if any, for producing Excel 2007 xlsx output."))
-    parser.add_option("--auxMetadata", action="store_true", dest="auxMetadata", help=_("Set flag to generate inline xbrl auxiliary files"))
-    
+    parser.add_option("--auxMetadata", action="store_true", dest="auxMetadata", help=_("Set flag to generate inline xbrl auxiliary files"))    
+    Inline.saveTargetDocumentCommandLineOptionExtender(parser)
+    parser.add_option("--sourceList", action="store", dest="sourceList", help=_("Comma-separated triples of instance file, doc type and source file."))
+    parser.add_option("--copyInlineFilesToOutput", action="store_true", dest="copyInlineFilesToOutput", help=_("Set flag to copy all inline files to the output folder or zip."))
     parser.add_option("--noEquity", action="store_true", dest="noEquity", help=_("Set flag to suppress special treatment of Equity Statements. "))
             
     parser.add_option("--xdgConfigHome", action="store", dest="xdgConfigHome",
@@ -480,22 +482,22 @@ class EdgarRenderer(Cntlr.Cntlr):
                 self.webCache.resetProxies(proxySettings)
                 self.config["proxySettings"] = proxySettings
                 self.saveConfig()
-                self.addInfo(_("Proxy configuration has been set."))
+                self.logInfo(_("Proxy configuration has been set."))
             useOsProxy, urlAddr, urlPort, user, password = self.config.get("proxySettings", WebCache.proxyTuple("none"))
             if useOsProxy:
-                self.logInfo(_("Proxy configured to use {0}.").format(
+                self.logDebug(_("Proxy configured to use {0}.").format(
                     _('Microsoft Windows Internet Settings') if sys.platform.startswith("win")
                     else (_('Mac OS X System Configuration') if sys.platform in ("darwin", "macos")
                     else _('environment variables'))))
             elif urlAddr:
-                self.logInfo(_("Proxy setting: http://{0}{1}{2}{3}{4}").format(
+                self.logDebug(_("Proxy setting: http://{0}{1}{2}{3}{4}").format(
                     user if user else "",
                     ":****" if password else "",
                     "@" if (user or password) else "",
                     urlAddr,
                     ":{0}".format(urlPort) if urlPort else ""))
             else:
-                self.logInfo(_("Proxy is disabled."))
+                self.logDebug(_("Proxy is disabled."))
                     
         if options.plugins:
             resetPlugins = False
@@ -566,6 +568,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['abortOnMajorError'] = str(True)
         self.defaultValueDict['archiveFolder'] = 'Archive'
         self.defaultValueDict['auxMetadata'] = str(False)
+        self.defaultValueDict['copyInlineFilesToOutput'] = str(False)
         self.defaultValueDict['deleteProcessedFilings'] = str(True)
         self.defaultValueDict['deliveryFolder'] = 'Delivery'
         self.defaultValueDict['debugMode'] = str(False)
@@ -583,6 +586,9 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['reportsFolder'] = 'Reports'
         self.defaultValueDict['reportXslt'] = 'InstanceReport.xslt'
         self.defaultValueDict['resourcesFolder'] = '..\\resources'
+        self.defaultValueDict['saveTargetInstance'] = str(False)
+        self.defaultValueDict['saveTargetFiling'] = str(False)
+        self.defaultValueDict['sourceList'] = ''
         self.defaultValueDict['summaryXslt'] = None
         self.defaultValueDict['totalClean'] = str(False)
         self.defaultValueDict['utrValidate'] = str(False)
@@ -612,11 +618,11 @@ class EdgarRenderer(Cntlr.Cntlr):
     def initializeReOptions(self, options):
         self.logDebug("General options:")
         
-        def setProp(prop, init, rangeList=None):
+        def setProp(prop, init, rangeList=None, cs=False):
             value = next((x
                          for x in [init, self.configDict[prop], self.defaultValueDict[prop]]
                          if x is not None), None)
-            if type(value)==str: value = value.casefold()
+            if type(value)==str and not cs: value = value.casefold()
             setattr(self, prop, value)
             if rangeList is not None and value not in [x.casefold() for x in rangeList]:
                 raise Exception("Unknown {} '{}' not in {} (case insensitive) on command line or config file.".format(prop,value,rangeList))
@@ -627,7 +633,21 @@ class EdgarRenderer(Cntlr.Cntlr):
         options.renderingService = setProp('renderingService', options.renderingService, rangeList=['Instance','Daemon'])        
         options.reportFormat = setProp('reportFormat', options.reportFormat, rangeList=['Html', 'Xml', 'HtmlAndXml'])               
         options.htmlReportFormat = setProp('htmlReportFormat', options.htmlReportFormat, rangeList=['Complete','Fragment'])
-        options.zipOutputFile = setProp('zipOutputFile', options.zipOutputFile)        
+        options.zipOutputFile = setProp('zipOutputFile', options.zipOutputFile,cs=True)    
+        options.sourceList = " ".join(setProp('sourceList', options.sourceList,cs=True).split()).split(',')
+        self.sourceDict={}
+        # Parse comma and colon separated list a:b b:c, d:e:f into a dictionary {'a': ('b b','c'), 'd': ('e','f') }:
+        for source in options.sourceList:
+            if (len(source) > 0):
+                s = source.split(':') # we must accomodate spaces in tokens separated by colons
+                if (len(s) != 3):
+                    self.logWarn("Ignoring bad token {} in {}".format(s,options.sourceList))
+                else: # we do not accomodate general URL's in the 'original' field.
+                    instance = " ".join(s[0].split())
+                    doctype = " ".join(s[1].split())
+                    original = " ".join(s[2].split())
+                    self.sourceDict[instance]=(doctype,original)
+                
         # These options have to be passed back to arelle via the options object
         options.internetConnectivity = setProp('internetConnectivity',options.internetConnectivity, rangeList=['online','offline'])
         
@@ -643,6 +663,9 @@ class EdgarRenderer(Cntlr.Cntlr):
         options.totalClean = setFlag('totalClean', options.totalClean)
         options.noEquity = setFlag('noEquity', options.noEquity)
         options.auxMetadata = setFlag('auxMetadata', options.auxMetadata)
+        options.copyInlineFilesToOutput = setFlag('copyInlineFilesToOutput', options.copyInlineFilesToOutput)
+        options.saveTargetInstance = setFlag('saveTargetInstance',options.saveTargetInstance)
+        options.saveTargetFiling = setFlag('saveTargetFiling',options.saveTargetFiling)      
         # note that delete processed filings is only relevant when the input had to be unzipped.
         options.deleteProcessedFilings = setFlag('deleteProcessedFilings', options.deleteProcessedFilings)
         options.debugMode = setFlag('debugMode', options.debugMode)        
@@ -756,7 +779,7 @@ class EdgarRenderer(Cntlr.Cntlr):
     def initializeModelManager(self, options):
         if options.validateEFM:
             if options.disclosureSystemName:
-                self.logInfo(_("both --efm and --disclosureSystem validation are requested, proceeding with --efm only"))
+                self.logDebug(_("both --efm and --disclosureSystem validation are requested, proceeding with --efm only"))
             self.modelManager.validateDisclosureSystem = True
             self.modelManager.disclosureSystem.select("efm")
         elif options.disclosureSystemName:
@@ -776,7 +799,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.setLogCodeFilter(options.logCodeFilter)
         if options.calcDecimals:
             if options.calcPrecision:
-                self.logInfo(_("both --calcDecimals and --calcPrecision validation are requested, proceeding with --calcDecimals only"))
+                self.logDebug(_("both --calcDecimals and --calcPrecision validation are requested, proceeding with --calcDecimals only"))
             self.modelManager.validateInferDecimals = True
             self.modelManager.validateCalcLB = True
         elif options.calcPrecision:
@@ -921,7 +944,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         fileName = dirname(modelXbrl.uri) + os.sep + fileName 
                     ModelDocument.load(modelXbrl, fileName)
                     loadTime = time.time() - startedAt
-                    self.logInfo(Locale.format_string(self.modelManager.locale,
+                    self.logDebug(Locale.format_string(self.modelManager.locale,
                                             _("Additional DTS imported in %.2f secs at %s"),
                                             (loadTime, timeNow)))
                     modelXbrl.profileStat(_("import"), loadTime)
@@ -930,7 +953,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                     self.logDebug(_("Model import errors found: {} {}".format(err, traceback.format_tb(sys.exc_info()[2]))))
                     success = False  # loading errors, don't attempt to utilize loaded DTS
             if modelXbrl.modelDocument.type in ModelDocument.Type.TESTCASETYPES:
-                self.logInfo("Loading modelXbrl TestCaseTypes")
+                self.logDebug("Loading modelXbrl TestCaseTypes")
                 for pluginXbrlMethod in PluginManager.pluginClassMethods("Testcases.Start"):
                     pluginXbrlMethod(self, options, modelXbrl)
             else:  # not a test case, probably instance or DTS
@@ -955,14 +978,14 @@ class EdgarRenderer(Cntlr.Cntlr):
                 else:
                     loadTime = time.time() - startedAt
                     modelXbrl.profileStat(_("load"), loadTime)
-                    self.logInfo(Locale.format_string(self.modelManager.locale,
+                    self.logDebug(Locale.format_string(self.modelManager.locale,
                                             _("diff comparison DTS loaded in %.2f secs"),
                                             loadTime))
                     startedAt = time.time()
                     modelDiffReport = self.modelManager.compareDTSes(options.versReportFile)
                     diffTime = time.time() - startedAt
                     modelXbrl.profileStat(_("diff"), diffTime)
-                    self.logInfo(Locale.format_string(self.modelManager.locale, _("compared in %.2f secs"), diffTime))
+                    self.logDebug(Locale.format_string(self.modelManager.locale, _("compared in %.2f secs"), diffTime))
             except ModelDocument.LoadingException as err:
                 self.logInfo("Loading exception: {}".format(err))
                 success = False
@@ -1011,7 +1034,7 @@ class EdgarRenderer(Cntlr.Cntlr):
     
                 if options.formulaAction:  # restore setting
                     modelXbrl.hasFormulae = hasFormulae
-                self.logInfo(Locale.format_string(self.modelManager.locale,
+                self.logDebug(Locale.format_string(self.modelManager.locale,
                                         _("validated in %.2f secs"),
                                         time.time() - startedAt))
                 
@@ -1024,7 +1047,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                     # setup fresh parameters from formula optoins
                     modelXbrl.parameters = formulaOptions.typedParameters()
                     ValidateFormula.validate(modelXbrl, compileOnly=(options.formulaAction != "run"))
-                    self.infoLog(Locale.format_string(self.modelManager.locale,
+                    self.logDebug(Locale.format_string(self.modelManager.locale,
                                         _("formula validation and execution in %.2f secs")
                                         if options.formulaAction == "run"
                                         else _("formula validation only in %.2f secs"),
@@ -1117,7 +1140,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         :param options: OptionParser options from parse_args of main argv arguments (when called from command line) or corresponding arguments from web service (REST) request.
         :type options: optparse.Values
         """
-        self.logDebug("Starting.")
+        self.logDebug("Starting "+VERSION)
         self.logDebug("Command line arguments: {!s}".format(sys.argv))
         # Process command line options
         self.processShowOptions(options)
@@ -1167,7 +1190,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             success = True
             self.logDebug(_("Pre-rendering stats: NumInstance: {!s}; NumInline: {!s}; NumSupplemental: {!s} "
                            ).format(len(self.instanceList), len(self.inlineList), len(self.supplementList)))
-            for inputFileSource in self.instanceList + self.inlineList:
+            for inputFileSource in sorted(self.instanceList + self.inlineList):
                 if success: 
                     loopnum += 1
                     self.entrypoint = inputFileSource
@@ -1175,11 +1198,12 @@ class EdgarRenderer(Cntlr.Cntlr):
                      ) = self.loadModel(options, join(self.processingFolder, inputFileSource))
                     self.modelDiffReport = modelDiffReport
                     self.firstStartedAt = firstStartedAt
-                    if modelXbrl and self.validate: 
+                    if modelXbrl is not None and self.validate: 
                         (success, modelXbrl) = self.validateInstance(options, modelXbrl, fo)     
-                    if success and modelXbrl: 
+                    if success and modelXbrl is not None: 
                         RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
                         self.logDebug(_("Start the rendering process on {}, filing loop {!s}.").format(inputFileSource, loopnum))
+                        Inline.markFactLocations(modelXbrl)
                         success = Filing.mainFun(self, modelXbrl, self.reportsFolder)
                         self.logDebug(_("End of rendering on {}.").format(inputFileSource))
             
@@ -1203,7 +1227,9 @@ class EdgarRenderer(Cntlr.Cntlr):
     
     
     def postprocessInstance(self, options, modelXbrl):
-        xlWriter = self.xlWriter           
+        Inline.saveTargetDocumentIfNeeded(self,options,modelXbrl)
+        del modelXbrl.duplicateFactSet
+        xlWriter = self.xlWriter
         if xlWriter:
             xlWriter.save()
             xlWriter.close()
@@ -1218,13 +1244,14 @@ class EdgarRenderer(Cntlr.Cntlr):
                 os.makedirs(self.reportsFolder, exist_ok=True)
                 source = join(self.resourcesFolder, filename)
                 shutil.copyfile(source, target)                
-        if 'html' in (self.reportFormat or "").casefold():
+        if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:
             copyResourceToReportFolder("Show.js")
             copyResourceToReportFolder("report.css")
         if self.summaryXslt is not None:
-            copyResourceToReportFolder("RenderingLogs.xslt")  # TODO: This will go away
+            copyResourceToReportFolder("RenderingLogs.xslt")
         # TODO: At this point would be nice to call out any files not loaded in any instance DTS
         inputsToCopyToOutputList = self.supplementList
+        if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
         for filename in inputsToCopyToOutputList:
             target = join(self.reportsFolder, filename)
             if exists(target): remove(target)
@@ -1256,7 +1283,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             try:
                 zf = zipfile.ZipFile(self.zipOutputFile, 'w', allowZip64=False)                                             
                 for f in os.listdir(self.reportsFolder):
-                    if not Utils.isZipFilename(f) and not isdir(f) and not IoManager.isFileHidden(f):
+                    if not isdir(f) and not IoManager.isFileHidden(f) and not f == basename(self.zipOutputFile):
                         IoManager.moveToZip(zf, join(zipdir, f), basename(f))
                 # shutil.rmtree(self.reportsFolder)
             finally:
@@ -1314,7 +1341,9 @@ class EdgarRenderer(Cntlr.Cntlr):
         if messageCode not in messageDict: messageLevel = logging.CRITICAL
         else:  messageLevel = messageDict[messageCode.casefold()]
         # if both level and code were given, err on the side of more logging:
-        messageLevel = max(level, messageLevel) 
+        messageLevel = max(level, messageLevel)
+        if self.entrypoint is not None and len(self.instanceList + self.inlineList) > 1:
+            message += ' --' + self.entrypoint
         message = message.encode('utf-8', 'replace').decode('utf-8')
         if messageLevel >= logging.INFO:
             self.ErrorMsgs.append(Errmsg(messageCode, message))

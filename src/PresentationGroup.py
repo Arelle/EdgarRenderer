@@ -275,7 +275,6 @@ class PresentationGroup(object):
         # if preferredLabel is None, it outputs the standard labelStr
         labelStr = concept.label(preferredLabel=preferredLabel, fallbackToQname=False)
         if labelStr is None: # if no labelStr, labelStr function with fallbackToQname=False returns None
-            # below, \g<1> will match to the char that matched ([a-z]) and similarly for \g<1>.
             labelStr = Utils.prettyPrintQname(concept.qname.localName)
         self.cube.labelDict[concept.qname] = labelStr
 
