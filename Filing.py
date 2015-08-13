@@ -152,13 +152,14 @@ class Filing(object):
         self.disallowEmbeddings = True
         self.isInvestTaxonomyInDTS = False
         for namespace in self.modelXbrl.namespaceDocs:
-            if re.compile('http://xbrl.(sec.gov|us)/rr/20.*').match(namespace):
+            if namespace is None: pass
+            elif re.compile('http://xbrl.(sec.gov|us)/rr/20.*').match(namespace):
                 self.isRR = True
             elif re.compile('http://xbrl.sec.gov/invest/*').match(namespace):
                 self.isInvestTaxonomyInDTS = True
         # These namespaces contain elements treated specially in some layouts.
-        self.stmNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if re.search('/us-gaap/20',n) is not None),None)
-        self.deiNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if re.search('/dei/20',n) is not None), None)
+        self.stmNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('/us-gaap/20',n) is not None),None)
+        self.deiNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('/dei/20',n) is not None), None)
         self.builtinEquityColAxes = [('dei',self.deiNamespace,'LegalEntityAxis'),
                                      ('us-gaap',self.stmNamespace,'StatementEquityComponentsAxis'),
                                      ('us-gaap',self.stmNamespace,'PartnerCapitalComponentsAxis'),
@@ -311,7 +312,6 @@ class Filing(object):
 
                 for fact in factSet: # we only want one thing, but we don't want to pop from the set so we "loop" and then break right away
                     if fact.concept is None:
-                        #conceptErrStr = ErrorMgr.getError('FACT_DECLARATION_BROKEN').format(qname)
                         self.modelXbrl.warning("er3:factConceptUndeclared",
                                                _("The element declaration for %(fact)s, or one of its facts, is broken. They will all be " 
                                                 "ignored."),
@@ -324,7 +324,6 @@ class Filing(object):
                                                modelObject=fact, fact=qname)
                         break
                     elif fact.concept.type is None:
-                        #typeErrStr = ErrorMgr.getError('The Type declaration for Element {} is either broken or missing. The Element will be ignored.').format(qname)
                         self.modelXbrl.warning("er3:factTypeUndeclared",
                                                _("The Type declaration for Element %(fact)s is either broken or missing. The " 
                                                 "Element will be ignored."),
@@ -753,8 +752,6 @@ class Filing(object):
 
             report.hideRedundantColumns()
 
-            report.finalizeProposedPromotions()
-
 
     def reportDriverAfterFlowThroughSuppression(self, embedding, xlWriter):
         report = embedding.report
@@ -765,6 +762,7 @@ class Filing(object):
         elif cube.isStatementOfCashFlows:
             self.RemoveStuntedCashFlowColumns(report)
 
+        report.finalizeProposedPromotions()
         report.scaleUnitGlobally()
 
         if      (len(self.factFootnoteDict) > 0 and
@@ -814,37 +812,36 @@ class Filing(object):
     def RemoveStuntedCashFlowColumns(self,report):
         visibleColumns = [col for col in report.colList if not col.isHidden]
         didWeHideAnyCols = False
-        if len(visibleColumns)>0:
-            remainingVisibleColumns = visibleColumns.copy()
-            maxMonths = max(col.startEndContext.numMonths for col in visibleColumns)
-            minFacts = min(len(col.factList) for col in visibleColumns if col.startEndContext.numMonths==maxMonths)
-            minToKeep = math.floor(.25*minFacts)
-            for col in visibleColumns:
-                if col.startEndContext.numMonths < maxMonths and len(col.factList) < minToKeep:
-                    self.modelXbrl.info("er3:shorterColumnsRemoved",
-                                        _("Columns in cash flow \"%(presentationGroup)s\" have maximum duration %(maxDuration)s months and at least %(minNumValues)s " 
-                                          "values. Shorter duration columns must have at least one fourth (%(minToKeep)s) as many values. " 
-                                          "Column \"%(startEndContext)s\" is shorter (%(months)s months) and has only %(numValues)s values, so it is being removed."),
-                                        modelObject=self.modelXbrl.modelDocument, presentationGroup=report.shortName, 
-                                        maxDuration=maxMonths, minNumValues=minFacts, minToKeep=minToKeep, startEndContext=col.startEndContext,
-                                        months=col.startEndContext.numMonths, numValues=len(col.factList))
-                    col.isHidden = True
-                    didWeHideAnyCols = True
-                    remainingVisibleColumns.remove(col)
-                    for fact in col.factList: 
-                        appearsInOtherColumn = False
-                        for otherCol in remainingVisibleColumns:
-                            if fact in otherCol.factList:
-                                appearsInOtherColumn = True
-                                break
-                        if not appearsInOtherColumn:
-                            # first kick this fact out of report.embedding.factAxisMemberGroupList, our defacto list of facts 
-                            report.embedding.factAxisMemberGroupList = \
-                                    [FAMG for FAMG in report.embedding.factAxisMemberGroupList if FAMG.fact != fact] 
-                            try:
-                                self.usedOrBrokenFactDefDict[fact].remove(report.embedding)
-                            except KeyError:
-                                pass
+        remainingVisibleColumns = visibleColumns.copy()
+        maxMonths = max(col.startEndContext.numMonths for col in visibleColumns)
+        minFacts = min(len(col.factList) for col in visibleColumns if col.startEndContext.numMonths==maxMonths)
+        minToKeep = math.floor(.25*minFacts)
+        for col in visibleColumns:
+            if col.startEndContext.numMonths < maxMonths and len(col.factList) < minToKeep:
+                self.modelXbrl.info("er3:shorterColumnsRemoved",
+                                    _("Columns in cash flow \"%(presentationGroup)s\" have maximum duration %(maxDuration)s months and at least %(minNumValues)s " 
+                                      "values. Shorter duration columns must have at least one fourth (%(minToKeep)s) as many values. " 
+                                      "Column \"%(startEndContext)s\" is shorter (%(months)s months) and has only %(numValues)s values, so it is being removed."),
+                                    modelObject=self.modelXbrl.modelDocument, presentationGroup=report.shortName, 
+                                    maxDuration=maxMonths, minNumValues=minFacts, minToKeep=minToKeep, startEndContext=col.startEndContext,
+                                    months=col.startEndContext.numMonths, numValues=len(col.factList))
+                col.hide()
+                didWeHideAnyCols = True
+                remainingVisibleColumns.remove(col)
+                for fact in col.factList: 
+                    appearsInOtherColumn = False
+                    for otherCol in remainingVisibleColumns:
+                        if fact in otherCol.factList:
+                            appearsInOtherColumn = True
+                            break
+                    if not appearsInOtherColumn:
+                        # first kick this fact out of report.embedding.factAxisMemberGroupList, our defacto list of facts 
+                        report.embedding.factAxisMemberGroupList = \
+                                [FAMG for FAMG in report.embedding.factAxisMemberGroupList if FAMG.fact != fact] 
+                        try:
+                            self.usedOrBrokenFactDefDict[fact].remove(report.embedding)
+                        except KeyError:
+                            pass
 
         if didWeHideAnyCols:
             Utils.hideEmptyRows(report.rowList)
@@ -879,13 +876,11 @@ class Filing(object):
 
             report = cube.embeddingList[0].report # we know there's no embeddings, so the report is on the first and only embedding
             columnsToKill = []
-            nonHiddenColCount = 0
 
             elementQnamesThatWillBeKeptProvidingThatWeHideTheseCols = set() # if we kill a few cols, we will want to update embedding.hasElements
             for col in report.colList:
 
                 if not col.isHidden:
-                    nonHiddenColCount += 1
                     setOfElementQnamesInCol = {fact.qname for fact in col.factList}
                     setOfElementQnamesAndQnameMemberPairsForCol = setOfElementQnamesInCol.union(col.elementQnameMemberForColHidingSet)
                     # the operator <= means subset, not a proper subset.  so if all the facts in the column are elsewhere, then hide column.
@@ -894,10 +889,10 @@ class Filing(object):
                     else:
                         elementQnamesThatWillBeKeptProvidingThatWeHideTheseCols.update(setOfElementQnamesInCol)
 
-            if 0 < len(columnsToKill) < nonHiddenColCount:
+            if 0 < len(columnsToKill) < report.numVisibleColumns:
                 cube.embeddingList[0].hasElements = elementQnamesThatWillBeKeptProvidingThatWeHideTheseCols # update hasElements, might have less now
                 for col in columnsToKill:
-                    col.isHidden = True
+                    col.hide()
 
                 self.modelXbrl.info("er3:columnsSuppresed",
                                     _("In \"%(presentationGroup)s\", column(s) %(columns)s are contained in other reports, so were removed by flow through suppression."),

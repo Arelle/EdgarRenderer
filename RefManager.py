@@ -35,7 +35,7 @@ class RefManager(object):
     def getUrls(self,modelXbrl): 
         urls = set()
         from urllib.parse import urlparse,urljoin
-        namespacesInFacts = {f.qname.namespaceURI for f in modelXbrl.facts}
+        namespacesInFacts = {f.qname.namespaceURI for f in modelXbrl.facts if f.qname is not None}
         for fileUri,doc in modelXbrl.urlDocs.items():
             if doc.targetNamespace in namespacesInFacts:
                 parsedUri = urlparse(fileUri)

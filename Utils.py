@@ -48,7 +48,7 @@ def printErrorStringToDiscribeEmbeddedTextBlockFact(embeddedCommandFact):
 def hideEmptyRows(rowList):
     for row in rowList:
         if not any(cell.fact.isNil or cell.fact.value != '' for cell in row.cellList if cell is not None and not cell.column.isHidden):
-            row.isHidden = True
+            row.hide()
 
 
 def booleanFromString(x):
@@ -239,6 +239,7 @@ def strFactValue(fact, preferredLabel=None, filing=None):
         return handleDuration(valueStr)
 
     return valueStr
+
 
 def prettyPrintQname(localName):
     # \g<1> will match to the char that matched ([a-z]) and similarly for \g<2>.

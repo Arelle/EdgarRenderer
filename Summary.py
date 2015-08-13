@@ -241,7 +241,17 @@ class Summary(object):
                     numList.sort()
                     tagAa['auth_ref'] = ['r'+str(num) for num in numList]
                 root['tag'] = s.tagDict           
-            IoManager.writeJsonDoc(roots, os.path.join(str(self.controller.reportsFolder), EJson))
+            if self.controller.reportZip:
+                file = io.StringIO()
+            else:
+                file = os.path.join(self.controller.reportsFolder, EJson)
+            IoManager.writeJsonDoc(roots,file)
+            self.controller.renderedFiles.add(EJson)
+            if self.controller.reportZip:
+                file.seek(0)
+                self.controller.reportZip.writestr(EJson, file.read().encode("utf-8"))
+                file.close()
+                del file  # dereference
         if self.controller.debugMode: innerWriteMetaFiles()
         else:
             try: innerWriteMetaFiles()
@@ -326,7 +336,7 @@ class InstanceSummary(object):
             elif doc.xmlRootElement.localName == 'linkbase':
                 self.otherXbrlFiles += [f]   
                 doctype = 'linkbase'
-                for child in doc.xmlRootElement.iterchildren():
+                for child in doc.xmlRootElement.iterchildren('{'+arelle.XbrlConst.link+'}*'):
                     if child.localName.endswith('Link'):
                         doctype = child.localName
                         if (isLocal):

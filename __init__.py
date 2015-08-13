@@ -86,7 +86,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.2.0.781'
+VERSION = '3.2.0.787'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -599,9 +599,9 @@ class EdgarRenderer(Cntlr.Cntlr):
                     (success, modelXbrl, firstStartedAt, fo
                      ) = self.loadModel(options, inputFileSource)
                     self.firstStartedAt = firstStartedAt
-                    if modelXbrl and self.validate: 
+                    if modelXbrl is not None and self.validate: 
                         (success, modelXbrl) = self.validateInstance(options, modelXbrl, fo)     
-                    if success and modelXbrl: 
+                    if success and modelXbrl is not None: 
                         RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
                         self.logDebug(_("Start the rendering process on {}, filing loop {!s}.").format(inputFileSource, loopnum))
                         Inline.markFactLocations(modelXbrl)
@@ -641,7 +641,7 @@ class EdgarRenderer(Cntlr.Cntlr):
     def postprocessInstance(self, options, modelXbrl):
         Inline.saveTargetDocumentIfNeeded(self,options,modelXbrl)
         del modelXbrl.duplicateFactSet
-        xlWriter = self.xlWriter           
+        xlWriter = self.xlWriter
         if xlWriter:
             xlWriter.save()
             xlWriter.close()
@@ -663,7 +663,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             copyResourceToReportFolder("Show.js")
             copyResourceToReportFolder("report.css")
         if self.summaryXslt is not None:
-            copyResourceToReportFolder("RenderingLogs.xslt")  # TODO: This will go away
+            copyResourceToReportFolder("RenderingLogs.xslt")
         # TODO: At this point would be nice to call out any files not loaded in any instance DTS
         inputsToCopyToOutputList = self.supplementList
         for filename in inputsToCopyToOutputList:
@@ -897,7 +897,7 @@ class Errmsg(object):
 
 __pluginInfo__ = {
     'name': 'Edgar Renderer',
-    'version': '3.2.0.781',
+    'version': '3.2.0.787',
     'description': "This plug-in implements U.S. SEC Edgar Renderer.  ",
     'license': 'Apache-2',
     'author': 'U.S. SEC Employees and Mark V Systems Limited',

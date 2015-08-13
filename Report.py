@@ -43,7 +43,9 @@ class Report(object):
         self.colList = []
 
         self.numColumns = 0
+        self.numVisibleColumns = 0
         self.numRows = 0
+        self.numVisibleRows = 0
         self.footnoteTextList = []
 
         self.RoundingOption = None
@@ -66,17 +68,10 @@ class Report(object):
     def generateCellVector(self, rowOrColStr, index):
         cellVector = []
         if rowOrColStr == 'col':
-            for row in self.rowList:
-                if not row.isHidden:
-                    cellVector += [row.cellList[index]]
-            return (self.colList[index], cellVector)
+            return (self.colList[index], [row.cellList[index] for row in self.rowList if not row.isHidden])
         else:
             row = self.rowList[index]
-            for i, cell in enumerate(row.cellList):
-                if not self.colList[i].isHidden:
-                    cellVector += [cell]
-            return (row, cellVector)
-
+            return (row, [cell for i, cell in enumerate(row.cellList) if not self.colList[i].isHidden])
 
 
     def generateRowsOrCols(self, rowOrColStr, sortedFactAxisMemberGroupList):
@@ -261,6 +256,7 @@ class Report(object):
                     memberLabel = '{!s} months ended {}'.format(startEndContextDuration.numMonths, memberLabel)
                 self.promotedAxes += [(pseudoAxisName, rowOrColStr, memberLabel)]
 
+
     # this is complicated because we still might promote units even if there are multiple units.  for instance, if there are
     # USD, USD/Share and shares as the units, we still promote USD.  same for any pair of two from those three.  however, we won't promote
     # if we have ounces and barrels of oil for instance, or USD, JPY/Share and Share.
@@ -320,13 +316,8 @@ class Report(object):
             return
 
         def dontPromoteUnlessMultipleNonHiddenRowsOrCols(rowOrColList, rowOrColStr):
-            numNonHiddenRowsOrCols = 0
-            for rowOrCol in rowOrColList:
-                if not rowOrCol.isHidden:
-                    numNonHiddenRowsOrCols += 1
-                    if numNonHiddenRowsOrCols > 1:
-                        return
-            # if there's only one non-hidden row or col at this point, don't promote anything for it.
+            if (rowOrColStr == 'row' and self.numVisibleColumns == 1) or (rowOrColStr == 'col' and self.numVisibleRows == 1):
+                return # if there's only one non-hidden row or col at this point, don't promote anything for it.
             self.promotedAxes = [axisTriple for axisTriple in self.promotedAxes if axisTriple[1] != rowOrColStr]
 
         rowOrColStrs = [axisTriple[1] for axisTriple in self.promotedAxes]
@@ -493,7 +484,7 @@ class Report(object):
                 mergeIntoThisCell.currencyCode =        mergeCell.currencyCode
                 mergeIntoThisCell.unitID =              mergeCell.unitID
                 mergeIntoThisCell.showCurrencySymbol =  mergeCell.showCurrencySymbol
-        mergeRowOrCol.isHidden = True
+        mergeRowOrCol.hide()
         mergeIntoThisRowOrCol.factList += mergeRowOrCol.factList
 
     def hideRedundantColumns(self):
@@ -506,7 +497,7 @@ class Report(object):
                 for col2,facts2 in factSets.items():
                     if not col1 is col2 and not col2.isHidden:
                         if facts2.issubset(facts1):
-                            col2.isHidden = True
+                            col2.hide()
 
     def updateUnitTypeToFactSetDefaultDict(self, fact, rowOrCol):
         if fact.concept.isMonetary:
@@ -624,7 +615,13 @@ class Report(object):
                                 cell.footnoteNumberSet.add(footnoteIndex)
                                 self.footnoteTextList += [footnoteText]
 
+
     def setAndMergeFootnoteRowsAndColumns(self, rowOrColStr, rowOrColList):
+        # if we're looking at rows and there is only one col, it doesn't make sense to promote footnotes to the rows,
+        # only maybe the columns.
+        if (rowOrColStr == 'row' and self.numVisibleColumns == 1) or (rowOrColStr == 'col' and self.numVisibleRows == 1):
+            return
+
         for i, rowOrCol in enumerate(rowOrColList):
             if not rowOrCol.isHidden:
 
@@ -944,7 +941,7 @@ class Report(object):
                              prevRow.startEndContext.endTime==thisRow.startEndContext.endTime and
                              prevRow.factList==thisRow.factList):
                         tracer(thisRow)
-                        thisRow.isHidden = True
+                        thisRow.hide()
         del mergeableRows
 
 
@@ -1244,6 +1241,7 @@ class Row(object):
         if index is None:
             self.index = report.numRows
         self.report.numRows += 1
+        self.report.numVisibleRows += 1
         self.factAxisMemberGroup = factAxisMemberGroup
         self.coordinateList = coordinateList
         self.coordinateListWithoutPrimary = coordinateListWithoutPrimary
@@ -1287,6 +1285,11 @@ class Row(object):
         self.unitTypeToFactSetDefaultDict = defaultdict(set)
 
 
+    def hide(self):
+        self.isHidden = True
+        self.report.numVisibleRows -= 1
+
+
     def emitRow(self, index):
         rowETree = SubElement(self.report.rowsETree, 'Row', FlagID='0')
         self.emitRowHeader(rowETree, index)
@@ -1319,14 +1322,18 @@ class Row(object):
                     SubElement(cellETree, 'DisplayZeroAsNone').text = str(isNil).casefold()
                     SubElement(cellETree, 'NumericAmount').text = '0'
                     SubElement(cellETree, 'RoundedNumericAmount').text = '0'
-                    if unlabeledSegmentTitle and i == 0:
+                    if isNil:
+                        SubElement(cellETree, 'NonNumbericText').text = ' ' # style sheet quirk
+                    elif unlabeledSegmentTitle and i == 0:
                         SubElement(cellETree, 'NonNumbericText').text = cell.NonNumericText
                     else:
                         SubElement(cellETree, 'NonNumbericText')
-                    SubElement(cellETree, 'FootnoteIndexer')
+                    if isNil:
+                        self.report.writeFootnoteIndexerEtree(cell.footnoteNumberSet, cellETree)
+                    else:
+                        SubElement(cellETree, 'FootnoteIndexer')
                     SubElement(cellETree, 'CurrencyCode')
                     SubElement(cellETree, 'CurrencySymbol')
-                    SubElement(cellETree, 'IsIndependantCurrency').text = 'false'
                     SubElement(cellETree, 'ShowCurrencySymbol').text = 'false'
                     SubElement(cellETree, 'DisplayDateInUSFormat').text = 'false'
                 else: # write a non-empty cell
@@ -1493,6 +1500,7 @@ class Column(object):
         self.report = report
         self.index = report.numColumns
         self.report.numColumns += 1
+        self.report.numVisibleColumns += 1
         self.factAxisMemberGroup = factAxisMemberGroup
         self.coordinateList = coordinateList
         self.coordinateListWithoutUnit = coordinateListWithoutUnit
@@ -1513,6 +1521,11 @@ class Column(object):
             self.preferredLabel = factAxisMemberGroup.preferredLabel.rpartition('/')[2]
         else:
             self.preferredLabel = None
+
+
+    def hide(self):
+        self.isHidden = True
+        self.report.numVisibleColumns -= 1
 
 
     def emitColumn(self, index):
@@ -1709,7 +1722,13 @@ class Cell(object):
                 # it doesn't round the 100500 up because it only rounds to an even.  in the case of 101500 it rounds it up
                 # to 102 because 2 is even.  strange, but this is the new standard and is the way things are done these days.
                 quantum = getattr(self,'quantum',1)
-                scaledNumericAmount = str(decimal.Decimal(NumericAmount).scaleb(self.scalingFactor).quantize(decimal.Decimal(quantum), rounding=decimal.ROUND_HALF_EVEN))
+                amount = None
+                try:
+                    amount = decimal.Decimal(NumericAmount)
+                except decimal.InvalidOperation:
+                    self.filing.controller.logError('"{}" is not a number.'.format(NumericAmount))
+                    return (NumericAmount,float('nan'))
+                scaledNumericAmount = str(amount.scaleb(self.scalingFactor).quantize(decimal.Decimal(quantum), rounding=decimal.ROUND_HALF_EVEN))
                 return (NumericAmount, scaledNumericAmount)
             else:
                 return (NumericAmount, NumericAmount)
