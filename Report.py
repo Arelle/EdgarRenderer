@@ -20,7 +20,6 @@ import arelle.XbrlConst
 from . import Utils
 Filing = None
 
-substituteForEmptyEquityColumnHeading = ['Total']
 
 xlinkRole = '{' + arelle.XbrlConst.xlink + '}role' # constant belongs in XbrlConsts`headingList
 
@@ -66,7 +65,6 @@ class Report(object):
 
 
     def generateCellVector(self, rowOrColStr, index):
-        cellVector = []
         if rowOrColStr == 'col':
             return (self.colList[index], [row.cellList[index] for row in self.rowList if not row.isHidden])
         else:
@@ -316,9 +314,9 @@ class Report(object):
             return
 
         def dontPromoteUnlessMultipleNonHiddenRowsOrCols(rowOrColList, rowOrColStr):
-            if (rowOrColStr == 'row' and self.numVisibleColumns == 1) or (rowOrColStr == 'col' and self.numVisibleRows == 1):
-                return # if there's only one non-hidden row or col at this point, don't promote anything for it.
-            self.promotedAxes = [axisTriple for axisTriple in self.promotedAxes if axisTriple[1] != rowOrColStr]
+            # if there's only one non-hidden row or col at this point, don't promote anything for it.
+            if (rowOrColStr == 'row' and self.numVisibleRows == 1) or (rowOrColStr == 'col' and self.numVisibleColumns == 1):
+                self.promotedAxes = [axisTriple for axisTriple in self.promotedAxes if axisTriple[1] != rowOrColStr]
 
         rowOrColStrs = [axisTriple[1] for axisTriple in self.promotedAxes]
         if 'row' in rowOrColStrs:
@@ -815,11 +813,12 @@ class Report(object):
         verboseHeadings = self.filing.verboseHeadingsForDebugging
         previousPseudoAxisNames = []
         noDateRepetitionFlag = False
+        substituteForEmptyHeading = 'Total'
         for i, factAxisMember in enumerate(factAxisMemberList):
             pseudoAxisName = factAxisMember.pseudoAxisName
-            if (pseudoAxisName in noHeadingsForTheseAxesSet or
-                (mostRecentSegmentTitleRow is not None  # do not repeat member information in previous segment title row.
-                 and mostRecentSegmentTitleRow.axisInSegmentTitleHeaderBoolList[i])):
+            if      (pseudoAxisName in noHeadingsForTheseAxesSet or
+                     (mostRecentSegmentTitleRow is not None  # do not repeat member information in previous segment title row.
+                      and mostRecentSegmentTitleRow.axisInSegmentTitleHeaderBoolList[i])):
                 pass
             # TODO: for grouped, if factAxisMember.member is None: continue
             elif pseudoAxisName == 'unit':
@@ -833,19 +832,23 @@ class Report(object):
             elif verboseHeadings:
                 headingList += [factAxisMember.memberLabel]
             elif not factAxisMember.memberIsDefault:
-                if (not isinstance(pseudoAxisName,str) 
-                    and Utils.isEfmStandardNamespace(pseudoAxisName.namespaceURI) 
-                    and pseudoAxisName.localName == 'CreationDateAxis'):
-                    if headingList == []: headingList = ['('+ factAxisMember.memberLabel + ')']
-                    else: headingList[-1] = headingList[-1] + ' ('+ factAxisMember.memberLabel + ')'
+                if      (not isinstance(pseudoAxisName,str)
+                         and Utils.isEfmStandardNamespace(pseudoAxisName.namespaceURI)
+                         and pseudoAxisName.localName == 'CreationDateAxis'):
+                    if headingList == []:
+                        headingList = ['('+ factAxisMember.memberLabel + ')']
+                    else:
+                        headingList[-1] = headingList[-1] + ' ('+ factAxisMember.memberLabel + ')'
                 else:
-                    if (not isinstance(pseudoAxisName,str)
-                        and Utils.isEfmStandardNamespace(pseudoAxisName.namespaceURI) 
-                        and pseudoAxisName.localName == 'StatementScenarioAxis'
-                        and Utils.isEfmStandardNamespace(factAxisMember.member.namespaceURI)
-                        and factAxisMember.member.localName=='RestatementAdjustmentMember' ):
+                    if      (not isinstance(pseudoAxisName,str)
+                             and Utils.isEfmStandardNamespace(pseudoAxisName.namespaceURI) 
+                             and pseudoAxisName.localName == 'StatementScenarioAxis'
+                             and Utils.isEfmStandardNamespace(factAxisMember.member.namespaceURI)
+                             and factAxisMember.member.localName == 'RestatementAdjustmentMember'):
                         noDateRepetitionFlag = True
-                    headingList += [factAxisMember.memberLabel]                
+                    headingList += [factAxisMember.memberLabel]     
+            elif factAxisMember.memberIsDefault and self.cube.isTransposed:
+                substituteForEmptyHeading = factAxisMember.memberLabel      
             previousPseudoAxisNames += [pseudoAxisName]
         
         if rowOrColStr == 'row':
@@ -867,13 +870,11 @@ class Report(object):
         if monthsEndedText is not None and self.embedding.columnPeriodPosition != -1:
             headingList = [monthsEndedText] + headingList
         if headingList == [] and 'primary' not in previousPseudoAxisNames:
-            headingList += substituteForEmptyEquityColumnHeading
+            headingList = [substituteForEmptyHeading]
         rowOrCol.headingList = headingList
 
 
     def generateAndAddUnitHeadings(self, rowOrCol, rowOrColStr):
-        unitAndMaybeSymbolList = []
-
         # sorting by type, but monetary should always come first
         sortedListOfFactSets = []
         for unitType, factSet in sorted(rowOrCol.unitTypeToFactSetDefaultDict.items()):
@@ -883,6 +884,7 @@ class Report(object):
                 sortedListOfFactSets += [factSet]
 
         unitSet = set()
+        unitAndMaybeSymbolList = []
         for arelleFactSet in sortedListOfFactSets:
             # we need a fact for each unit, why?  because the type of the unit is actually in the element declaration
             # so we do all this just to pull the fact out and pass it to getUnitAndSymbolStr, which will probably call fact.unitSymbol()
@@ -896,10 +898,11 @@ class Report(object):
         # we handle rows and cols slightly differently because for rows, we don't want to put filing.rowSeparatorStr between
         # each of the units in the list of units for the row.  however, for column headings, it's done differently, so they should be
         # separated.  so for rows, we want a long string, for cols, we want to append each to the list.
-        if rowOrColStr == 'row':
-            rowOrCol.headingList += [', '.join(sorted(unitAndMaybeSymbolList))]
-        else:
-            rowOrCol.headingList += unitAndMaybeSymbolList
+        if len(unitAndMaybeSymbolList) > 0:
+            if rowOrColStr == 'row':
+                rowOrCol.headingList += [', '.join(sorted(unitAndMaybeSymbolList))]
+            else:
+                rowOrCol.headingList += unitAndMaybeSymbolList
 
 
     # this function is used to append the unit to the end of a row if the units are on the columns and not promoted and

@@ -96,9 +96,11 @@ class Cube(object):
             cubeNumberIsANumber = False
 
         if not cubeNumberIsANumber or '' in (hyphen, secondHyphen, cubeNumber, cubeType, cubeName):
-            self.controller.logWarn('The link:roleType link:definition text: "{}", for the linkrole with Uri: {}, ' \
-                                    'does not comply with section 6.7.12 of the Edgar Filer Manual.'.format(
-                                    self.definitionText, self.linkroleUri))
+            self.filing.modelXbrl.warning("er3:linkRoleDefinition",
+                _("The link:roleType link:definition text: \"%(definition)s\", for the linkrole with Uri: %(linkrole)s, "
+                 "does not comply with section 6.7.12 of the Edgar Filer Manual."),
+                 modelObject=self.filing.modelXbrl.modelDocument, 
+                 definition=self.definitionText, linkrole=self.linkroleUri)
             return ('', '', '', False, False, False)
 
         indexList = [99999, 99999, 99999] # in order transposed, unlabeled, elements
@@ -141,11 +143,11 @@ class Cube(object):
             # we know that all of the facts are defaulted on them. BUT, they have no defaults, so all the facts are filtered out.
             self.noFactsOrAllFactsSuppressed = True
             axesStr = ', '.join([str(axisQname) for axisQname in sorted(axesWithoutDefaultsThatAllFactsAreDefaultedOn)])
-            self.modelXbrl.warning("er3:allFactsFiltered",
-                                   _("The presentation group \"%(presentationGroup)s\" contains %(axes)s, which either has (have) no default member in the "
-                                    "presentation group and/or the definition linkbase. Since every fact is defaulted on this (these) axe(s),"
-                                    "all facts have been filtered out."),
-                                    modelObject=self.modelXbrl.modelDocument, presentationGroup=self.shortName, axes=axesStr)
+            self.filing.modelXbrl.warning("er3:allFactsFiltered",
+                _("The presentation group \"%(presentationGroup)s\" contains %(axes)s, which either has (have) no default member in the "
+                 "presentation group and/or the definition linkbase. Since every fact is defaulted on this (these) axe(s),"
+                 "all facts have been filtered out."),
+                 modelObject=self.filing.modelXbrl.modelDocument, presentationGroup=self.shortName, axes=axesStr)
 
 
     def handlePeriodStartEndLabel(self,discoveredDurations=[]):
@@ -231,11 +233,11 @@ class Cube(object):
             # go 'discover' the durations by comparing start and end instants.
             moments = sorted(list({fxm[1]['period'].endTime for fxm in self.factMemberships}))
             if len(moments) > 1:
-                self.modelXbrl.info("er3:inferringDurations",
-                                    _("In \"%(presentationGroup)s\", no matching durations for %(numFacts)s instant facts presented with start or end " 
-                                      "preferred labels. Now inferring durations to form columns. Simplify the presentation " 
-                                      "to get a more compact layout."),
-                                    modelObject=self.modelXbrl.modelDocument, presentationGroup=self.shortName, numFacts=len(skippedFactSet))
+                self.filing.modelXbrl.info("er3:inferringDurations",
+                    _("In \"%(presentationGroup)s\", no matching durations for %(numFacts)s instant facts presented with start or end " 
+                      "preferred labels. Now inferring durations to form columns. Simplify the presentation " 
+                      "to get a more compact layout."),
+                    modelObject=self.filing.modelXbrl.modelDocument, presentationGroup=self.shortName, numFacts=len(skippedFactSet))
                 intervals = []                
                 for i,endTime in enumerate(moments[1:]):
                     startTime = moments[i]
