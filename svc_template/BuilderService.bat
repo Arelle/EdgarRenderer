@@ -35,7 +35,7 @@ SET currentlog=daemon_%ldt:~0,10%_%ldt:~11,2%%ldt:~14,2%%ldt:~17,2%.log
 
 :begin
 @echo on
-%PYTHONEXE% -m EdgarRenderer -c BuilderService.xml --xdgConfigHome "%ARCONF%"  --logfile %currentlog% --logLevel info 
+%PYTHONEXE% -m EdgarRenderer -c BuilderService.xml --xdgConfigHome "%ARCONF%"  --logfile %currentlog% --logLevel debug 
 @echo off
 
 if NOT exist "%FAIL%" goto :fine

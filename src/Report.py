@@ -1070,7 +1070,7 @@ class Report(object):
         reportSummary.shortName = self.cube.shortName # this is because the reports shortName can be polluted with proted axes
         reportSummary.role = self.cube.linkroleUri
         reportSummary.logList = self.logList
-        reportSummary.isUncategorized = (self.cube.linkroleUri == 'http://xbrl.sec.gov/role/uncategorizedFacts')
+        reportSummary.isUncategorized = self.cube.isUncategorizedFacts
         reportSummary.factXpointers = \
             {factAxisMemberGroup.fact.xpointer # Assumes that only rendered facts are appearing here.
              for factAxisMemberGroup in self.embedding.factAxisMemberGroupList}
@@ -1317,6 +1317,7 @@ class Row(object):
                         SubElement(cellETree, 'FootnoteIndexer')
                     SubElement(cellETree, 'CurrencyCode')
                     SubElement(cellETree, 'CurrencySymbol')
+                    SubElement(cellETree, 'IsIndependantCurrency').text = 'false'
                     SubElement(cellETree, 'ShowCurrencySymbol').text = 'false'
                     SubElement(cellETree, 'DisplayDateInUSFormat').text = 'false'
                 else: # write a non-empty cell

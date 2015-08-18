@@ -53,4 +53,6 @@
   <totalClean>False</totalClean>
   <!-- Abort process on major error, such as when load is unable to find an entry or discovered file or XBRL validation failed. -->
   <abortOnMajorError>True</abortOnMajorError>
+  <auxMetadata>True</auxMetadata>
+  <copyInlineFilesToOutput>True</copyInlineFilesToOutput>
 </configuration>

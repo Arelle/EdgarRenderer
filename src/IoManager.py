@@ -13,7 +13,7 @@ import json, re, shutil, sys, datetime, os, zipfile
 import arelle.XbrlConst
 import Utils
 
-jsonIndent = 1  # None for most compact, 0 for left aligned
+jsonIndent = 0  # None for most compact, 0 for left aligned
   
 def genpath(filename):
     if filename == '.':

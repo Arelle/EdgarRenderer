@@ -15,7 +15,7 @@ then
 fi
 if [ "$EXE"=="" ]
 then
-    export EXE=~/bin/python3.3  # need up to date Python, not Red Hat's python
+    export EXE=~/bin/python3.4  # need up to date Python, not Red Hat's python
     export LD_LIBRARY_PATH=~/lib # need very latest libxml2 and other libraries
 fi
 cd $SVC
