@@ -80,7 +80,7 @@ class Cube(object):
 
 
     def getCubeInfo(self):
-        if self.definitionText == 'http://xbrl.sec.gov/role/uncategorizedFacts':
+        if self.isUncategorizedFacts:
             return ('', '', '', False, False, False)
 
         cubeNumber, hyphen, rightOfHyphen = self.definitionText.partition('-')

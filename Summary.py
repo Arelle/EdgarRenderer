@@ -13,16 +13,8 @@ import arelle.ModelDtsObject, arelle.XbrlConst
 from . import IoManager, Utils
 
 metaversion = "2.0"
-ERoot = 'MetaLinks'
-ERoot_list = ERoot + '_list'
-ARoot = "std_ref_list"
-EXml = 'MetaLinks' + ".xml"
 EJson = 'MetaLinks' + ".json"
-AXml = 'MetaRefs' + ".xml"
-AJson = 'MetaRefs' + ".json"
 SFile = 'FilingSummary' + ".xml"
-jsonTextKey = '#text'
-jsonAttrMarker = '-'
 
 def mergeCountDicts(iterable, dictAttribute=None, key=None):
     'Return a dictionary merged from a collection of dictionaries, with values summed.'
@@ -177,11 +169,7 @@ class Summary(object):
 
     def writeMetaFiles(self):
         def innerWriteMetaFiles():
-#             aroot = {}
-#             aroot['dts']=' '.join(self.dtsroots)
-#             aroot['version'] = metaversion
-            roots = {'version' : metaversion}
-            
+            roots = {'version' : metaversion}            
             refs = roots['std_ref'] = {}
             pairs = [(i, ref) for ref, i in self.referencePositionDict.items()]  
             pairs.sort(key=lambda x: x[0]) 
@@ -189,8 +177,6 @@ class Summary(object):
                 i, ref = pair
                 rDict = refs['r'+str(i)] = {}
                 for (att, val) in ref:  rDict[att] = val        
-#             IoManager.writeJsonDoc(aroot,os.path.join(str(self.controller.reportsFolder), AJson))
-
             roots['instance'] = {}
             for s in self.summaryList:
                 root = roots['instance'][' '.join(s.dtsroots)] = {}                
@@ -419,8 +405,6 @@ class InstanceSummary(object):
         for hidden in hiddenSet: 
             self.hiddenCountDict[hidden.qname.namespaceURI] += 1
         
-
-        # TODO: check constant
         self.footnoteCount = len(modelXbrl.relationshipSet('XBRL-footnotes').modelRelationships) 
         self.reportSummaryList = filing.reportSummaryList
         for r in self.reportSummaryList: 
@@ -464,10 +448,9 @@ class InstanceSummary(object):
                         for elt in toReference.iterchildren():
                             s = elt.text
                             if s is not None: # empty elts appear in us-gaap 2008 and 2011 refs
-                                #s = s.strip().replace('&', '&amp;')
                                 if len(s)>0:
                                     r += [(elt.localName,s)]
-                        r = tuple(r)  # make it immutable and suitable as a key                      
+                        r = tuple(r) # make it immutable and suitable as a key                      
                         self.refSet.add(r)
                         self.qnameReferenceDict[fromConcept.qname.clarkNotation].add(r)
                 
@@ -497,23 +480,8 @@ class InstanceSummary(object):
                 
                 roleList = tag['presentation'] = []
                 for presentation in presentations:                    
-                    role =  presentation.linkrole #.split('/')[-1:][0]
-                    if (role not in roleList): roleList += [role]
-                
-#                 roleDict = tag['presentation'] = {}
-#                 for presentation in presentations:  # note there is no use in sorting on incoming arc order.                     
-#                     role =  presentation.linkrole.split('/')[-1:][0]
-#                     parentTag =  presentation.fromModelObject.attrib['id']
-#                     plabelrole = presentation.preferredLabel
-#                     if plabelrole is None: plabelrole = 'label'
-#                     else: plabelrole = plabelrole.split('/')[-1:][0]
-#                     order = presentation.order
-#                     if order is None:  order = 1
-#                     if (role not in roleDict): roleDict[role] = {'parentTag' : {}}
-#                     if (parentTag not in roleDict[role]['parentTag']): roleDict[role]['parentTag'][parentTag] = {'plabelrole':{}}
-#                     roleDict[role]['parentTag'][parentTag]['plabelrole'][plabelrole] = order
-                    
-                
+                    role =  presentation.linkrole 
+                    if (role not in roleList): roleList += [role]                
             labels = conceptLabelRelationshipSet.modelRelationshipsFrom[concept]
             if labels is not None and len(labels) > 0:
                 langDict = tag['lang'] = {}
@@ -527,11 +495,8 @@ class InstanceSummary(object):
                             labeltext = label.text.strip().replace("&", "&amp;").replace("<", "&lt;")
                         if (lang not in langDict): langDict[lang] = {'role': {}}
                         langDict[lang]['role'][labelrole] = labeltext
-        print()
-        
         self.qnameInUseSet = {concept.qname.clarkNotation for concept in conceptInUseSet}
         self.conceptInUseSet = {concept.qname for concept in conceptInUseSet}
-
         return  # from InstanceSummary initialization
    
 
@@ -623,7 +588,6 @@ class InstanceSummary(object):
 
 
     def classifyReportFiniteStateMachine(self, currentState, longName): 
-        # TODO: Review relative to Summary.xslt:
         Cover = 'Cover'
         Statements = 'Statements'
         Notes = 'Notes'
@@ -756,4 +720,4 @@ def isDetail(longName):
     return matchDetail.match(longName) is not None
     
 def isUncategorized(longName):
-    return longName == 'UncategorizedItems'  # Todo: check this.
+    return longName == 'UncategorizedItems' 

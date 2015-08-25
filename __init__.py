@@ -86,7 +86,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.3.0.790'
+VERSION = '3.3.0.800'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -274,7 +274,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         options.renderingService = setProp('renderingService', options.renderingService, rangeList=['Instance','Daemon'])        
         options.reportFormat = setProp('reportFormat', options.reportFormat, rangeList=['Html', 'Xml', 'HtmlAndXml'])               
         options.htmlReportFormat = setProp('htmlReportFormat', options.htmlReportFormat, rangeList=['Complete','Fragment'])
-        options.zipOutputFile = setProp('zipOutputFile', options.zipOutputFile,cs=True)    
+        options.zipOutputFile = setProp('zipOutputFile', self.webCache.normalizeUrl(options.zipOutputFile),cs=True) 
         options.sourceList = " ".join(setProp('sourceList', options.sourceList,cs=True).split()).split(',')
         self.sourceDict={}
         # Parse comma and colon separated list a:b b:c, d:e:f into a dictionary {'a': ('b b','c'), 'd': ('e','f') }:
@@ -332,11 +332,11 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.logDebug("{}=\t{}".format(folder, getattr(self, folder)))
             return getattr(self, folder)
         
-        options.processingFolder = setFolder('processingFolder', options.processingFolder)
+        options.processingFolder = setFolder('processingFolder', self.webCache.normalizeUrl(options.processingFolder))
         self.processInZip = True # bool(options.processingFolder)
-        options.reportsFolder = setFolder('reportsFolder', options.reportsFolder)
+        options.reportsFolder = setFolder('reportsFolder', self.webCache.normalizeUrl(options.reportsFolder))
         self.reportInZip = True # bool(options.reportsFolder)
-        options.resourcesFolder = setFolder('resourcesFolder', options.resourcesFolder,searchPythonPath=True)
+        options.resourcesFolder = setFolder('resourcesFolder', self.webCache.normalizeUrl(options.resourcesFolder),searchPythonPath=True)
 
 
         def setResourceFile(file, init, errstr):
@@ -801,7 +801,6 @@ def edgarRendererCmdLineRun(cntlr, options, sourceZipStream=None, responseZipStr
 # Arelle plugin integrations for validate/EFM
     
 def edgarRendererFilingStart(cntlr, options, entrypointFiles, filing):
-    # cntlr.addToLog("TRACE EDGAR filing start")
     filing.edgarRenderer = edgarRenderer = EdgarRenderer(cntlr)
     edgarRenderer.reportZip = filing.reportZip
     # Set default config params; overwrite with command line args if necessary
@@ -815,7 +814,8 @@ def edgarRendererFilingStart(cntlr, options, entrypointFiles, filing):
     edgarRenderer.supplementList = []
     edgarRenderer.supplementalFileList = []
     edgarRenderer.renderedFiles = filing.renderedFiles # filing-level rendered files
-    # cntlr.addToLog("TRACE EDGAR filing start-end")
+    if not filing.reportZip and edgarRenderer.reportsFolder:
+        IoManager.handleFolder(edgarRenderer, edgarRenderer.reportsFolder, True, edgarRenderer.totalClean)
 
 def edgarRendererXbrlRun(cntlr, options, modelXbrl, filing, report):
     edgarRenderer = filing.edgarRenderer
@@ -897,7 +897,7 @@ class Errmsg(object):
 
 __pluginInfo__ = {
     'name': 'Edgar Renderer',
-    'version': '3.3.0.790',
+    'version': '3.3.0.800',
     'description': "This plug-in implements U.S. SEC Edgar Renderer.  ",
     'license': 'Apache-2',
     'author': 'U.S. SEC Employees and Mark V Systems Limited',
