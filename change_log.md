@@ -1,4 +1,4 @@
-# Improvements to EDGAR® Renderer 3.3.0.800 compared to EDGAR® Renderer 3.2.0.727
+# Improvements to EDGAR® Renderer 3.3.0.800 compared 3.2.0.727
 
 Uncategorized Items:  
 * For Risk Return filings, all facts filtered out of a bar chart and not used anywhere else in the filing, will appear in an “Uncategorized Items” report.  
@@ -14,7 +14,7 @@ Promotion of headings into the upper left corner of reports:
 
 Processing of a linkrole’s definition text:  
 * Improvements to the processing of a linkrole’s definition text will change the way Statements of Equity and Cash Flow statements are recognized.  
- A new warning message for malformed definition texts was added.
+* A new warning message for malformed definition texts was added.
 
 Display of footnotes:  
 * Footnotes on nil facts will now be displayed.
