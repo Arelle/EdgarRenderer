@@ -1,5 +1,5 @@
 # Improvements to EDGAR® Renderer
-** 3.3.0.800 compared 3.2.0.727
+## 3.3.0.800 compared 3.2.0.727
 
 Uncategorized Items:  
 * For Risk Return filings, all facts filtered out of a bar chart and not used anywhere else in the filing, will appear in an “Uncategorized Items” report.  
