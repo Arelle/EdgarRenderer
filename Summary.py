@@ -28,6 +28,39 @@ def mergeCountDicts(iterable, dictAttribute=None, key=None):
             if (key is None or k == key): newdict[k] += v
     return newdict 
 
+def analyzeFactsInCubes(filing): # void
+    controller = filing.controller
+    if not controller.auxMetadata: return
+    factCubeCount = controller.factCubeCount = defaultdict(lambda:0)
+    factHasHtmlAnchor = controller.factHasHtmlAnchor = defaultdict(set)
+    roleHasHtmlAnchor = controller.roleHasHtmlAnchor = defaultdict(set)
+    for cube in filing.cubeDict.values():
+        for factMembership in cube.factMemberships:
+            f = factMembership[0]
+            factCubeCount[f] += 1 # count how many cubes each fact appeared in.
+            if f.concept.isTextBlock:
+                for e in f.iter('*'): # for some reason iter('a') does not work.
+                    if e.localName=='a' and \
+                        not 'href' in e.attrib and \
+                        ('id' in e.attrib \
+                            or 'name' in e.attrib):
+                            atts = e.elementAttributesStr
+                            roleHasHtmlAnchor[cube.linkroleUri].add((str(f.qname),f.contextID,f.xmlLang,atts))
+                            factHasHtmlAnchor[f].add((f,cube,atts,e.sourceline))
+    messages = []
+    for s in factHasHtmlAnchor.values():
+        for v in s:
+            messages += [v]
+    for v in sorted(messages,key=lambda x: x[3]): # Messages should be ordered by line number in source doc.
+        (f,cube,atts,line) = v
+        filing.modelXbrl.warning("er3:factHtmlAnchor",
+                               _("Fact %(fact)s in context %(context)s "
+                                 "in \"%(cube)s\" has an HTML anchor (%(anchor)s) that "
+                                 "may restrict with usability of the Inline XBRL source document. "
+                                 "Please move the HTML anchor outside of the ix:nonNumeric element."),
+                               modelObject=f, fact=f.qname, context=f.contextID,
+                               cube=cube.shortName, anchor=atts)
+
 class Summary(object):
     def __init__(self, controller):
         self.controller = controller
@@ -217,7 +250,11 @@ class Summary(object):
                     elif isDetail(r.longName): subGroupType = 'details'
                     elif isUncategorized(r.longName): subGroupType = 'Uncategorized'
                     report['subGroupType'] = subGroupType
-                    report['factLocation'] = list(getattr(r,'factXpointers',set()))
+                    report['firstAnchor'] = r.firstAnchor
+                    report['uniqueAnchor'] = r.uniqueAnchor
+                    for (qname,context,lang,atts) in r.htmlAnchors:
+                        if ('htmlAnchors' not in report): report['htmlAnchors'] = []
+                        report['htmlAnchors'] += [{'qname':qname,'context':context,'lang':lang,'attributes':atts}]
                         
                 for tagAa in s.tagDict.values():
                     qname = '{' + tagAa['nsuri'] + '}' + tagAa['localname']

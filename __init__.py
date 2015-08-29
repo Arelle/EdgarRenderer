@@ -39,7 +39,7 @@ a) when invoking via arelleCmdLine.py:
    python3.4 arelleCmdLine.py 
    -f "/mydir/test/amd.zip" 
    -o "/mydir/test/out.zip" 
-   --plugins 'EdgarRenderer|validate/EFM|transforms/SEC' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
+   --plugins 'EdgarRenderer|validate/EFM|transforms/SEC.py' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
    --disclosureSystem efm-pragmatic 
    --debugMode
    
@@ -71,7 +71,7 @@ To run (as in EDGAR) with output report files added to the submission directory
    -f "/mydir/test/amd.zip" 
    -r "/mydir/test"  <<- the submission + output reports directory 
    --logFile logToBuffer or an specify an xml log file <<- required to save log messages into filing summary
-   --plugins 'EdgarRenderer|validate/EFM|transforms/SEC' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
+   --plugins 'EdgarRenderer|validate/EFM|transforms/SEC.py' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
    --disclosureSystem efm-pragmatic 
     
 To build an installable cx_Freeze binary, (tested on Ubuntu), uncomment the entries in Arelle's
@@ -86,7 +86,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.3.0.800'
+VERSION = '3.3.0.814'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -532,7 +532,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                    
         :param options: OptionParser options from parse_args of main argv arguments (when called from command line) or corresponding arguments from web service (REST) request.
         :type options: optparse.Values
-        """    
+        """
         self.logDebug("Starting "+VERSION)
         self.logDebug("Command line arguments: {!s}".format(sys.argv))
         # Process command line options
@@ -666,6 +666,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             copyResourceToReportFolder("RenderingLogs.xslt")
         # TODO: At this point would be nice to call out any files not loaded in any instance DTS
         inputsToCopyToOutputList = self.supplementList
+        if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
         for filename in inputsToCopyToOutputList:
             source = join(self.processingFolder, filename)
             if not self.reportZip:
@@ -741,8 +742,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                         message = "[" + errmsg.msgCode + "] " + errmsg.msg
                         print(message, file=f)
                     f.close() 
-    
-    
+
+
     
     def addToLog(self, message, messageArgs=(), messageCode='error', file=basename(__file__), level=logging.DEBUG):
         # Master log and error/warning msg handler            
@@ -756,7 +757,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         if messageCode not in messageDict: messageLevel = logging.CRITICAL
         else:  messageLevel = messageDict[messageCode.casefold()]
         # if both level and code were given, err on the side of more logging:
-        messageLevel = max(level, messageLevel) 
+        messageLevel = max(level, messageLevel)
         if self.entrypoint is not None and len(self.instanceList + self.inlineList) > 1:
             message += ' --' + (self.entrypoint.url if isinstance(self.entrypoint,FileSource.FileSource) else self.entrypoint)
         message = message.encode('utf-8', 'replace').decode('utf-8')
@@ -799,6 +800,15 @@ def edgarRendererCmdLineRun(cntlr, options, sourceZipStream=None, responseZipStr
     
     
 # Arelle plugin integrations for validate/EFM
+def setProcessingFolder(edgarRenderer, filesource):
+    if filesource and edgarRenderer.processingFolder == edgarRenderer.defaultValueDict['processingFolder']:
+        if filesource.isOpen:
+            if filesource.isArchive:
+                edgarRenderer.processingFolder = filesource.basefile
+            else:
+                edgarRenderer.processingFolder = os.path.dirname(filesource.basefile)
+        else:
+            edgarRenderer.processingFolder = os.path.dirname(filesource.url)
     
 def edgarRendererFilingStart(cntlr, options, entrypointFiles, filing):
     filing.edgarRenderer = edgarRenderer = EdgarRenderer(cntlr)
@@ -816,8 +826,10 @@ def edgarRendererFilingStart(cntlr, options, entrypointFiles, filing):
     edgarRenderer.renderedFiles = filing.renderedFiles # filing-level rendered files
     if not filing.reportZip and edgarRenderer.reportsFolder:
         IoManager.handleFolder(edgarRenderer, edgarRenderer.reportsFolder, True, edgarRenderer.totalClean)
+    setProcessingFolder(edgarRenderer, filing.filesource)
 
 def edgarRendererXbrlRun(cntlr, options, modelXbrl, filing, report):
+    setProcessingFolder(edgarRenderer, modelXbrl.fileSource)
     edgarRenderer = filing.edgarRenderer
     edgarRenderer.renderedFiles = report.renderedFiles # report-level rendered files
     if report.basename.endswith(".xml"):
@@ -858,6 +870,7 @@ def edgarRendererFilingEnd(cntlr, options, filing):
         edgarRenderer.renderedFiles.add("RenderingLogs.xslt")
     # TODO: At this point would be nice to call out any files not loaded in any instance DTS
     inputsToCopyToOutputList = edgarRenderer.supplementList
+    if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
     for filename in inputsToCopyToOutputList:
         source = join(edgarRenderer.processingFolder, filename)
         if not edgarRenderer.reportZip:
@@ -880,7 +893,7 @@ def edgarRendererFilingEnd(cntlr, options, filing):
         IoManager.writeHtmlDoc(result, edgarRenderer.reportZip, edgarRenderer.reportsFolder, 'FilingSummary.htm')
         edgarRenderer.renderedFiles.add("FilingSummary.htm")
     edgarRenderer.logDebug("Write filing summary complete")
-    if edgarRenderer.auxMetadata: 
+    if edgarRenderer.auxMetadata and filing.hasInlineReport: 
         summary.writeMetaFiles()
     edgarRenderer.logDebug("Write meta files complete")
     
@@ -897,7 +910,7 @@ class Errmsg(object):
 
 __pluginInfo__ = {
     'name': 'Edgar Renderer',
-    'version': '3.3.0.800',
+    'version': '3.3.0.814',
     'description': "This plug-in implements U.S. SEC Edgar Renderer.  ",
     'license': 'Apache-2',
     'author': 'U.S. SEC Employees and Mark V Systems Limited',

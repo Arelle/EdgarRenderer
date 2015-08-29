@@ -19,6 +19,7 @@ from lxml.etree import Element, SubElement, XSLT, tostring as treeToString
 import arelle.XbrlConst
 from . import Utils
 Filing = None
+from arelle.XbrlConst import qnIXbrl11Hidden
 
 
 xlinkRole = '{' + arelle.XbrlConst.xlink + '}role' # constant belongs in XbrlConsts`headingList
@@ -31,8 +32,6 @@ class Report(object):
         self.filing = filing
         self.controller = filing.controller
         filing.numReports += 1
-
-        self.factSetForFlowThroughSuppression = set()
 
         self.cube = cube
         self.embedding = embedding
@@ -169,7 +168,6 @@ class Report(object):
                 if fact.unit is not None:
                     self.updateUnitTypeToFactSetDefaultDict(fact, rowOrCol)
                 rowOrCol.factList += [fact]
-                self.factSetForFlowThroughSuppression.add(fact)
 
             else:
                 self.factToColDefaultDict[(fact, preferredLabel)].append(previousRowOrCol.index)
@@ -239,12 +237,11 @@ class Report(object):
                     break # there's more than one different member so can't promote axis
 
                 if pseudoAxisName == 'period' and factAxisMember.member.periodTypeStr == 'duration':
-                    if startEndContextDuration is not None:
-                        if startEndContextDuration != factAxisMember.member:
-                            memberLabel = None # there is more than one duration, don't promote
-                            break
-                    else:
+                    if startEndContextDuration is None:
                         startEndContextDuration = factAxisMember.member
+                    elif startEndContextDuration != factAxisMember.member:
+                        memberLabel = None # there is more than one duration, don't promote
+                        break
 
             if memberLabel is not None:
                 # we do this because we want to promote the period if there's an instant and duration ending at the same time.
@@ -1082,9 +1079,35 @@ class Report(object):
         reportSummary.role = self.cube.linkroleUri
         reportSummary.logList = self.logList
         reportSummary.isUncategorized = self.cube.isUncategorizedFacts
-        reportSummary.factXpointers = \
-            {factAxisMemberGroup.fact.xpointer # Assumes that only rendered facts are appearing here.
-             for factAxisMemberGroup in self.embedding.factAxisMemberGroupList}
+        if not self.controller.auxMetadata: return
+        reportSummary.firstAnchor = None
+        reportSummary.uniqueAnchor = None
+        reportSummary.htmlAnchors = self.controller.roleHasHtmlAnchor[self.cube.linkroleUri]
+        cubeCount = 0 
+        while cubeCount < 3: # if every fact appears in 3 or more reports, don't even bother.
+            cubeCount += 1
+            for row in self.rowList:
+                for fact in row.factList:
+                    if (fact.xValid and \
+                        (qnIXbrl11Hidden not in fact.ancestorQnames)):
+                        anchor = \
+                        { 'contextRef':fact.contextID
+                          ,'name':str(fact.qname)
+                          ,'unitRef':fact.unitID
+                          ,'xsiNil':fact.xsiNil
+                          ,'lang':fact.xmlLang
+                          ,'decimals':fact.decimals
+                          ,'ancestors':[str(qname) for qname in fact.ancestorQnames]
+                          ,'reportCount':cubeCount
+                          }
+                        if reportSummary.firstAnchor is None:
+                            reportSummary.firstAnchor = anchor
+                            anchor['first'] = True # flag makes it easier later to see when first same as unique
+                        if self.controller.factCubeCount[fact] == 1:
+                            reportSummary.uniqueAnchor = anchor
+                            anchor['unique'] = True # flag makes it easier later to see when first same as unique
+                            return
+            
 
     def writeHtmlAndOrXmlFiles(self, reportSummary):
         baseNameBeforeExtension = self.filing.fileNamePrefix + str(self.cube.fileNumber)
@@ -1337,6 +1360,7 @@ class Row(object):
                         SubElement(cellETree, 'FootnoteIndexer')
                     SubElement(cellETree, 'CurrencyCode')
                     SubElement(cellETree, 'CurrencySymbol')
+                    SubElement(cellETree, 'IsIndependantCurrency').text = 'false'
                     SubElement(cellETree, 'ShowCurrencySymbol').text = 'false'
                     SubElement(cellETree, 'DisplayDateInUSFormat').text = 'false'
                 else: # write a non-empty cell

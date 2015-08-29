@@ -59,6 +59,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
             xlWriter = controller.xlWriter
             if not xlWriter:
                 controller.xlWriter = xlWriter = Xlout.XlWriter(controller, outputFolderName)
+    Summary.analyzeFactsInCubes(filing)
 
     #import win32process
     #print('memory '  + str(int(win32process.GetProcessMemoryInfo(win32process.GetCurrentProcess())['WorkingSetSize'] / (1024*1024))))
@@ -277,6 +278,7 @@ class Filing(object):
                 if len(factSet) > 1:
                     def factSortKey (thing):
                         if thing.isNil: discriminator = float("INF") # Null values always last
+                        elif thing.isNumeric and thing.decimals is None: discriminator = 0 # Can happen with invalid xbrl
                         elif thing.isNumeric:  discriminator = 0 - float(thing.decimals) # Larger decimal values come first
                         elif thing.xmlLang == 'en-US': discriminator = 'aa-AA' # en-US comes first
                         elif thing.xmlLang is None: discriminator = 'aa-AA' # no lang means en-US

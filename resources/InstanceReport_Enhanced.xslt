@@ -1090,7 +1090,7 @@
 	    <table class="outerFootnotes" width="100%">
 				<xsl:for-each select="Footnotes/Footnote">
 			<tr class="outerFootnote">
-				<td style="vertical-align: top;" valign="top">[<xsl:value-of select="NoteId" />]</td>
+				<td style="vertical-align: top; width: 12pt;" valign="top">[<xsl:value-of select="NoteId" />]</td>
 				<td style="vertical-align: top;" valign="top"><xsl:value-of disable-output-escaping="yes" select="Note" /></td>
 			</tr>
 				</xsl:for-each>
