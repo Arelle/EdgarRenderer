@@ -829,8 +829,8 @@ def edgarRendererFilingStart(cntlr, options, entrypointFiles, filing):
     setProcessingFolder(edgarRenderer, filing.filesource)
 
 def edgarRendererXbrlRun(cntlr, options, modelXbrl, filing, report):
-    setProcessingFolder(edgarRenderer, modelXbrl.fileSource)
     edgarRenderer = filing.edgarRenderer
+    setProcessingFolder(edgarRenderer, modelXbrl.fileSource)
     edgarRenderer.renderedFiles = report.renderedFiles # report-level rendered files
     if report.basename.endswith(".xml"):
         edgarRenderer.instanceList.append(report.basename)
@@ -889,7 +889,8 @@ def edgarRendererFilingEnd(cntlr, options, filing):
     edgarRenderer.renderedFiles.add("FilingSummary.xml")
     if edgarRenderer.summaryXslt and len(edgarRenderer.summaryXslt) > 0 :
         summary_transform = etree.XSLT(etree.parse(edgarRenderer.summaryXslt))
-        result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'))
+        result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'),
+                                   accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")))
         IoManager.writeHtmlDoc(result, edgarRenderer.reportZip, edgarRenderer.reportsFolder, 'FilingSummary.htm')
         edgarRenderer.renderedFiles.add("FilingSummary.htm")
     edgarRenderer.logDebug("Write filing summary complete")

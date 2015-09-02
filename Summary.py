@@ -173,7 +173,7 @@ class Summary(object):
                 href = ref.get("href")
                 if href:
                     fileLines[href.partition("#")[0]].add(ref.get("sourceLine", 0))
-            SubElement(logs, 'Log', type=logRec.messageCode.title()).text = logHandler.format(logRec).rpartition("] ")[2]
+            SubElement(logs, 'Log', type=logRec.levelname.title()).text = logHandler.format(logRec)
 
         inputFilesEtree = SubElement(self.rootETree, 'InputFiles')
         sourceDict = self.controller.sourceDict
