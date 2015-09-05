@@ -22,11 +22,14 @@ modifications to the original.
 This code is in gitHub/arelle/EdgarRenderer the plugin branch.
 
 To debug under eclipse from a normal eclipse project of Arelle it is suggested to check out
-EdgarRenderer from GitHub under the arelle plugin directory, EdgarGenderer is entered to 
-.gitignore in the top level Arelle checkout.  Alternatively on a Mac or linux system one may
-soft link to the eclipse project's plugin directory from a different directory containing a local
-copy of the EdgarRenderer plugin project.  Either way eclipse can debug and modify EdgarRenderer
-source code when debugging and inspecting Arelle.  On a Mac or Linux the soft link command would be:
+EdgarRenderer from GitHub under the arelle plugin directory (e.g., this file would be 
+plugin/EdgarRenderer/__init__.py). Note that EdgarGenderer is not part of Arelle itself, 
+it is in .gitignore in the top level Arelle directory.  
+
+Alternatively on a Mac or linux system one may soft link to the eclipse project's plugin 
+directory from a different directory containing a local copy of the EdgarRenderer plugin 
+project.  Either way eclipse can debug and modify EdgarRenderer source code when debugging 
+and inspecting Arelle.  On a Mac or Linux the soft link command would be:
 
    ln -s ...EdgarRenderer (parent of this file) ...arelle/plugin (the eclipse project directory of plugin)
    add ...arelle/plugin/EdgarRenderer to your .gitignore file
@@ -37,7 +40,7 @@ the file system) and a single output zip (all in memory, not on the file system)
 a) when invoking via arelleCmdLine.py:
 
    python3.4 arelleCmdLine.py 
-   -f "/mydir/test/amd.zip" 
+   -f "/mydir/test/filingInstanceXsdAndLinkbases.zip" 
    -o "/mydir/test/out.zip" 
    --plugins 'EdgarRenderer|validate/EFM|transforms/SEC.py' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
    --disclosureSystem efm-pragmatic 
@@ -73,7 +76,27 @@ To run (as in EDGAR) with output report files added to the submission directory
    --logFile logToBuffer or an specify an xml log file <<- required to save log messages into filing summary
    --plugins 'EdgarRenderer|validate/EFM|transforms/SEC.py' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
    --disclosureSystem efm-pragmatic 
+   
+The filename parameter (-f) may be a JSON structure (as used in EDGAR itself) to pass in
+more information about the filing (see validate/EFM/__init__.py) such as:
+
+   for a single instance filing, such as an SDR K form (without \n's pretty printed below):
+   
+      -f '[{"file": "/Users/joe/.../gpc_gd1-20130930.htm", 
+             "cik": "0000350001", 
+             "cikNameList": {"0001306276":"BIGS FUND TRUST CO"},
+             "submissionType":"SDR-A", 
+             "exhibitType":"EX-99.K SDR.INS", 
+             "accessionNumber":"0001125840-15-000159"}]' 
     
+    for multiple instances (SDR-L's), add more of the {"file": ...} entries.
+    
+    for Windows called from Java, the JSON must be quoted as thus:
+        -f "[{\"file\":\"z:\\Documents\\...\\gpc_gd1-20130930.htm\", 
+            \"cik\": \"0000350001\", 
+            \"cikNameList\": {\"0000350001\":\"BIG FUND TRUST CO\"},
+            \"submissionType\":\"SDR-A\", \"exhibitType\":\"EX-99.K SDR.INS\"}]"  
+               
 To build an installable cx_Freeze binary, (tested on Ubuntu), uncomment the entries in Arelle's
 setup.py that are marked for EdgarRenderer.
     
