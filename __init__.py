@@ -109,7 +109,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.3.0.814'
+VERSION = '3.3.1.830'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -934,7 +934,7 @@ class Errmsg(object):
 
 __pluginInfo__ = {
     'name': 'Edgar Renderer',
-    'version': '3.3.0.814',
+    'version': '3.3.1.830',
     'description': "This plug-in implements U.S. SEC Edgar Renderer.  ",
     'license': 'Apache-2',
     'author': 'U.S. SEC Employees and Mark V Systems Limited',
