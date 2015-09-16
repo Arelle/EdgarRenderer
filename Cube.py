@@ -271,8 +271,10 @@ class Cube(object):
             sortedList = self.SurvivorsOfMovementAnalysis(sortedList)
             if len(sortedList)==0:
                 #message = ErrorMgr.getError('STATEMENT_OF_EQUITY_NO_COMPLETE_MOVEMENTS_WARNING').format(self.shortName)
-                self.controller.logWarn("The statement of equity, ''{}'', has no durations with matching beginning and " \
-                                        "ending instants.".format(self.shortName))
+                self.filing.modelXbrl.warning("er3:noMatchingDurations",
+                    _("The statement of equity, \"%(presentationGroup)s\", has no durations with matching beginning and " 
+                      "ending instants."),
+                    modelObject=self.filing.modelXbrl.modelDocument, presentationGroup=self.shortName)
                 self.isStatementOfEquity = False # no movements, warn the user it is probably not what they wanted                
                 sortedList = list(self.timeAxis) # start over
 

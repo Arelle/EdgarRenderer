@@ -450,7 +450,7 @@ class Filing(object):
                     self.modelXbrl.warning("er3:undeclaredMember",
                                            _("The Member of Axis %(axis)s is broken as referenced by the Fact %(fact)s with Context %(context)s. " 
                                             "The Axis and Member will be ignored for this Fact."),
-                                            modelObject=fct, axis=dimensionConcept.qname, fact=fact.qname, context=fact.contextID)
+                                            modelObject=fact, axis=dimensionConcept.qname, fact=fact.qname, context=fact.contextID)
 
                 else:
                     try:
