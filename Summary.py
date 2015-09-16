@@ -151,29 +151,30 @@ class Summary(object):
         SubElement(reportETree, 'ReportType').text = 'Book'
         SubElement(reportETree, 'ShortName').text = 'All Reports'
 
-        # only output 100 warnings or errors max, after that it's not helpful.
-        ''' Replace with cntlr log buffer
-        for i, errmsg in enumerate(self.controller.ErrorMsgs):
-            if i == 0:
-                logs = SubElement(self.rootETree, 'Logs')
-            if i == 100:
-                SubElement(logs, 'Log', type='Info').text = "There are more than 100 warnings or errors, only 100 will be displayed."
-                break
-            SubElement(logs, 'Log', type=errmsg.msgCode.title()).text = errmsg.msg
-        '''
-        logHandler = self.controller.cntlr.logHandler
-        for i, logRec in enumerate(getattr(logHandler, "logRecordBuffer", ())): # non buffered handlers don't keep log records (e.g., lot to print handler)
-            if i == 0:
-                logs = SubElement(self.rootETree, 'Logs')
-            if i == 100:
-                SubElement(logs, 'Log', type='Info').text = "There are more than 100 warnings or errors, only 100 will be displayed."
-                break
-            fileLines = defaultdict(set)
-            for ref in logRec.refs:
-                href = ref.get("href")
-                if href:
-                    fileLines[href.partition("#")[0]].add(ref.get("sourceLine", 0))
-            SubElement(logs, 'Log', type=logRec.levelname.title()).text = logHandler.format(logRec)
+        if self.controller.includeLogsInSummary:
+            # only output 100 warnings or errors max, after that it's not helpful.
+            ''' Replace with cntlr log buffer
+            for i, errmsg in enumerate(self.controller.ErrorMsgs):
+                if i == 0:
+                    logs = SubElement(self.rootETree, 'Logs')
+                if i == 100:
+                    SubElement(logs, 'Log', type='Info').text = "There are more than 100 warnings or errors, only 100 will be displayed."
+                    break
+                SubElement(logs, 'Log', type=errmsg.msgCode.title()).text = errmsg.msg
+            '''
+            logHandler = self.controller.cntlr.logHandler
+            for i, logRec in enumerate(getattr(logHandler, "logRecordBuffer", ())): # non buffered handlers don't keep log records (e.g., lot to print handler)
+                if i == 0:
+                    logs = SubElement(self.rootETree, 'Logs')
+                if i == 100:
+                    SubElement(logs, 'Log', type='Info').text = "There are more than 100 warnings or errors, only 100 will be displayed."
+                    break
+                fileLines = defaultdict(set)
+                for ref in logRec.refs:
+                    href = ref.get("href")
+                    if href:
+                        fileLines[href.partition("#")[0]].add(ref.get("sourceLine", 0))
+                SubElement(logs, 'Log', type=logRec.levelname.title()).text = logHandler.format(logRec)
 
         inputFilesEtree = SubElement(self.rootETree, 'InputFiles')
         sourceDict = self.controller.sourceDict

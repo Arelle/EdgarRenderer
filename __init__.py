@@ -176,6 +176,7 @@ def edgarRendererCmdLineOptionExtender(parser):
     Inline.saveTargetDocumentCommandLineOptionExtender(parser)
     parser.add_option("--sourceList", action="store", dest="sourceList", help=_("Comma-separated triples of instance file, doc type and source file."))
     parser.add_option("--copyInlineFilesToOutput", action="store_true", dest="copyInlineFilesToOutput", help=_("Set flag to copy all inline files to the output folder or zip."))
+    parser.add_option("--includeLogsInSummary", action="store_true", dest="includeLogsInSummary", help=_("Set flag to copy log entries into <logs> in FilingSummary.xml."))    
     parser.add_option("--noEquity", action="store_true", dest="noEquity", help=_("Set flag to suppress special treatment of Equity Statements. "))
         
     parser.add_option("--showErrors", action="store_true", dest="showErrors",
@@ -233,6 +234,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['archiveFolder'] = 'Archive'
         self.defaultValueDict['auxMetadata'] = str(True) # HF change to true default str(False)
         self.defaultValueDict['copyInlineFilesToOutput'] = str(False)
+        self.defaultValueDict['includeLogsInSummary'] = str(False)
         self.defaultValueDict['deleteProcessedFilings'] = str(True)
         self.defaultValueDict['deliveryFolder'] = 'Delivery'
         self.defaultValueDict['debugMode'] = str(False)
@@ -328,6 +330,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         options.noEquity = setFlag('noEquity', options.noEquity)
         options.auxMetadata = setFlag('auxMetadata', options.auxMetadata)
         options.copyInlineFilesToOutput = setFlag('copyInlineFilesToOutput', options.copyInlineFilesToOutput)
+        options.includeLogsInSummary = setFlag('includeLogsInSummary', options.includeLogsInSummary)
         options.saveTargetInstance = setFlag('saveTargetInstance',options.saveTargetInstance)
         options.saveTargetFiling = setFlag('saveTargetFiling',options.saveTargetFiling)      
         # note that delete processed filings is only relevant when the input had to be unzipped.

@@ -448,9 +448,9 @@ class Filing(object):
                 elif memberConcept is None:
                     #errStr2 = ErrorMgr.getError('XBRL_DIMENSIONS_INVALID_AXIS_MEMBER_BROKEN').format(dimensionConcept.qname, fact.qname, fact.context.id)
                     self.modelXbrl.warning("er3:undeclaredMember",
-                                           _("The Member of Axis %(axis) is broken as referenced by the Fact %(fact)S with Context %(context)s. " 
+                                           _("The Member of Axis %(axis)s is broken as referenced by the Fact %(fact)s with Context %(context)s. " 
                                             "The Axis and Member will be ignored for this Fact."),
-                                            modelObject=fct, fact=fact.qname, context=fact.contextID)
+                                            modelObject=fct, axis=dimensionConcept.qname, fact=fact.qname, context=fact.contextID)
 
                 else:
                     try:
@@ -525,7 +525,7 @@ class Filing(object):
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_TOKEN_NOT_ROW_OR_COLUMN_ERROR').format(token0, tokenCounter, errorStr)
                 self.modelXbrl.error("er3:malformedToken",
-                                     _("The token %(token)s, at position %(position) in the list of tokens in %(list)s, is malformed. "
+                                     _("The token %(token)s, at position %(position)s in the list of tokens in %(list)s, is malformed. "
                                          "An individual command can only start with row or column. These embedded "
                                          "commands will not be rendered."),
                                      modelObject=fact, token=token0, position=tokenCounter, list=errorStr)
@@ -919,7 +919,7 @@ class Filing(object):
                 word = 'ending'
         #message = ErrorMgr.getError('SKIPPED_FACT_WARNING').format(shortName,qname,value,role,word,endTime)
         self.modelXbrl.warning("er3:factNotShown",
-                               _("In ''%(presentationGroup)s'', fact %(fact)S with value %(value)s and preferred label %(preferredLabel)s, was not shown because there are " 
+                               _("In ''%(presentationGroup)s'', fact %(fact)s with value %(value)s and preferred label %(preferredLabel)s, was not shown because there are " 
                                "no facts in a duration %(duration)s at %(time)s. Change the preferred label role or add facts."),
                                 modelObject=fact, presentationGroup=shortName, fact=qname, value=value, 
                                 preferredLabel=role, duration=word, time=endTime)
