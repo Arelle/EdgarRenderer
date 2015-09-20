@@ -44,7 +44,12 @@ a) when invoking via arelleCmdLine.py:
    -o "/mydir/test/out.zip" 
    --plugins 'EdgarRenderer|validate/EFM|transforms/SEC.py' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
    --disclosureSystem efm-pragmatic 
+   --logFile mylogfilename.xxx
    --debugMode
+   
+   Specifying --logFile mylogfilename.txt (or .xml, .json) captures the log output in the 
+   zip file with the specified file name.  The suffix should be .xml or .json to get detailed logging parameters in
+   the respective format.
    
     Adding --debugMode allows uncaught exceptions to provide a trace-back to eclipse, remove that
     for production.  Internet connectivity is by default offline at SEC, so override in this case.
@@ -61,12 +66,14 @@ b) when invoking via REST interface (built in webserver or cgi-bin server):
         -T amd.zip 
         -o out.zip 
         --logFile log.xml  # specifies name of log file to return in zip and whether .txt or .xml
-        "http://localhost:8080/rest/xbrl/validation?efm-pragmatic&media=zip&plugins=EdgarRenderer|validate/EFM|transforms/SEC"
+        "http://localhost:8080/rest/xbrl/validation?efm-pragmatic&media=zip&plugins=EdgarRenderer|validate/EFM|transforms/SEC"&logFile=log.xml
         
     2) to not load EdgarRenderer dynamically, it must be active in plugins.json (as set up by GUI)
     (sibling to the caches directoryexcept Mac where it's under ~/Library/Application Support/Arelle)
     
     then omit &plugins=EdgarRenderer
+    
+    the &logFile parameter specifies providing the log output in specified format in zip file (as noted above)
     
 To run (as in EDGAR) with output report files added to the submission directory
 
