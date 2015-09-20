@@ -53,8 +53,8 @@ class RefManager(object):
             modelXbrl.modelManager.validateDisclosureSystem = False
             for url in self.getUrls(modelXbrl):
                 doc = None
-                try: # isDiscovered is needed here to force the load.
-                    doc = arelle.ModelDocument.load(modelXbrl,url,isDiscovered=False) 
+                try: # isSupplemental is needed here to force the parsing of linkbase.
+                    doc = arelle.ModelDocument.load(modelXbrl,url,isSupplemental=True)
                 except (arelle.ModelDocument.LoadingException):
                     pass
                 if doc is None:
