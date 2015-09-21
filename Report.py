@@ -1466,12 +1466,14 @@ class Row(object):
                 if len(references)>0:
                     referencesText = ''
                     for (i,(role,ref)) in enumerate(references):
-                        referencesText += 'Reference '+str(i+1)+': '+role+'\n\n\n\n'
+                        if referencesText:
+                            referencesText += '\n' # double space multiple references
+                        referencesText += 'Reference '+str(i+1)+': '+role+'\n'
                         for e in ref.iter():
                             if e.text is not None:
                                 text = e.text.strip()                                
                                 if len(text)>0:
-                                    referencesText += ' -'+e.localName+' '+text+'\n\n\n\n'
+                                    referencesText += ' -'+e.localName+' '+text+'\n'
 
         SubElement(rowETree, 'ElementDataType').text = typeQname
         SubElement(rowETree, 'SimpleDataType').text = simpleDataType
