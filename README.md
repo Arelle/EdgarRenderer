@@ -11,7 +11,7 @@ End user support is by e-mail direct to SEC at: Ask-OID@sec.gov
 
 Developer issue management is by the Jira Edgar Renderer project: https://arelle.atlassian.net/projects/ER
 
-This plugin branch was branched from the SEC-contributed master by Mark V Systems, and can be loaded as a plugin to Arelle in the normal manner.  E.g., if running from command line, --plugins  {path to here}/EdgarRenderer
+This plugin branch was branched from the SEC-contributed modules and synchronized to 3.3.0.814 by Mark V Systems, and can be loaded as a plugin to Arelle in the normal manner.  E.g., if running from command line, --plugins  {path to here}/EdgarRenderer
 
 To debug under eclipse, check this project out under arelle's plugin directory or soft link from EdgarRenderer to the Arelle project src/arelle/plugin directory, e.g., under MacOS/Linux:
     ln -s {path to here}/EdgarRenderer {path to arelle project}/src/arelle/plugin
@@ -21,7 +21,10 @@ To use this plugin securely without leaving any xbrl files on a server (such as 
     curl -X POST "-HContent-type: application/zip" 
          -T inputfiling.zip 
          -o outresults.zip 
+         --logFile log.xml  
          "http://localhost:8080/rest/xbrl/validation?efm-pragmatic&media=zip&plugins=EdgarRenderer"
+
+	(--logFile specifies a name for a log file to return inside the zip and whether .txt or .xml)
 
 
 Further notes on usage are in the __init__.py module comments.

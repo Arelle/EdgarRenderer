@@ -116,7 +116,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.3.1.830'
+VERSION = '3.3.0.814'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -634,7 +634,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                     if success and modelXbrl is not None: 
                         RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
                         self.logDebug(_("Start the rendering process on {}, filing loop {!s}.").format(inputFileSource, loopnum))
-                        Inline.markFactLocations(modelXbrl)
+                        # not in 3.3.0.814: Inline.markFactLocations(modelXbrl)
                         success = Filing.mainFun(self, modelXbrl, self.reportsFolder)
                         self.logDebug(_("End of rendering on {}.").format(inputFileSource))
             
@@ -870,7 +870,7 @@ def edgarRendererXbrlRun(cntlr, options, modelXbrl, filing, report):
     RefManager.RefManager(edgarRenderer.resourcesFolder).loadAddedUrls(modelXbrl, edgarRenderer)  # do this after validation.
     edgarRenderer.loopnum = getattr(edgarRenderer, "loopnum", 0) + 1
     edgarRenderer.logDebug(_("Start the rendering process on {}, filing loop {!s}.").format(modelXbrl.modelDocument.basename, edgarRenderer.loopnum))
-    Inline.markFactLocations(modelXbrl)
+    # not in 3.3.0.814: Inline.markFactLocations(modelXbrl)
     Inline.saveTargetDocumentIfNeeded(edgarRenderer,options,modelXbrl)
     success = Filing.mainFun(edgarRenderer, modelXbrl, edgarRenderer.reportsFolder)
     edgarRenderer.renderedFiles = filing.renderedFiles # filing-level rendered files
@@ -941,7 +941,7 @@ class Errmsg(object):
 
 __pluginInfo__ = {
     'name': 'Edgar Renderer',
-    'version': '3.3.1.830',
+    'version': '3.3.0.814',
     'description': "This plug-in implements U.S. SEC Edgar Renderer.  ",
     'license': 'Apache-2',
     'author': 'U.S. SEC Employees and Mark V Systems Limited',
