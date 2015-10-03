@@ -35,7 +35,10 @@ def cleanupNewfolders(controller):
 def absPathOnPythonPath(controller, filename):  # if filename is relative, find it on the PYTHONPATH, otherwise, just return it.
     if filename is None: return None
     if os.path.isabs(filename): return filename
-    pathdirs = [p for p in sys.path if os.path.isdir(p)]
+    # for plugin configuration look in the plugin's own directory first
+    pathdirs = [p
+                for p in [os.path.dirname(__file__)] + sys.path
+                if os.path.isdir(p)]
     for path in pathdirs:
         result = os.path.join(path, filename)
         if exists(result): return os.path.abspath(result)

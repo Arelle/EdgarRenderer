@@ -258,7 +258,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['reportFormat'] = 'Html'
         self.defaultValueDict['reportsFolder'] = 'Reports'
         self.defaultValueDict['reportXslt'] = 'InstanceReport.xslt'
-        self.defaultValueDict['resourcesFolder'] = os.path.normpath(os.path.join(os.path.dirname(__file__), "resources"))
+        self.defaultValueDict['resourcesFolder'] = "resources"
         self.defaultValueDict['saveTargetInstance'] = str(True)
         self.defaultValueDict['saveTargetFiling'] = str(True)
         self.defaultValueDict['sourceList'] = ''
@@ -276,7 +276,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         if configLocation is None: # Although it is odd not to have a config file, it is not an error.
             self.logDebug(_("No config file"))
         else:
-            self.logDebug(_("Extracting info from config file {}".format(configLocation)))
+            self.logDebug(_("Extracting info from config file {}".format(os.path.basename(configLocation))))
             tree = etree.parse(configLocation)
             for child in tree.iter():
                 if child.tag is not etree.Comment and child.text is not None:
@@ -358,9 +358,6 @@ class EdgarRenderer(Cntlr.Cntlr):
                 value = next((x
                                  for x in [init, self.configDict[folder], self.defaultValueDict[folder]]
                                  if x is not None), None)
-            # HF PATCH???
-            if value is None and self.defaultValueDict[folder]:
-                value = self.defaultValueDict[folder]
             setattr(self, folder, value)
             self.logDebug("{}=\t{}".format(folder, getattr(self, folder)))
             return getattr(self, folder)
