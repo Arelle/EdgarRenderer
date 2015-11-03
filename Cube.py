@@ -44,13 +44,14 @@ class Cube(object):
         self.rootNodeToConceptSetDict = {}
         self.isStatementOfEquity = False
         self.isStatementOfCashFlows = False
+
         modelRoleTypes = filing.modelXbrl.roleTypes[linkroleUri]
         if modelRoleTypes:
             self.definitionText = (modelRoleTypes[0].genLabel(strip=True) or modelRoleTypes[0].definition or linkroleUri).strip()
         else:
             self.definitionText = linkroleUri
         cNum, self.cubeType, self.shortName, self.isTransposed, self.isUnlabeled, self.isElements = self.getCubeInfo()
-        
+
         # TO DO problem 2: searching from statement and equity, dumb
         lowerSN = self.shortName.casefold()
         if      (self.cubeType == 'statement'
@@ -96,11 +97,10 @@ class Cube(object):
             cubeNumberIsANumber = False
 
         if not cubeNumberIsANumber or '' in (hyphen, secondHyphen, cubeNumber, cubeType, cubeName):
-            self.filing.modelXbrl.warning("er3:linkRoleDefinition",
-                _("The link:roleType link:definition text: \"%(definition)s\", for the linkrole with Uri: %(linkrole)s, "
-                 "does not comply with section 6.7.12 of the Edgar Filer Manual."),
-                 modelObject=self.filing.modelXbrl.modelDocument, 
-                 definition=self.definitionText, linkrole=self.linkroleUri)
+            if not self.filing.validatedForEFM:
+                self.filing.modelXbrl.error("EFM.6.07.12", # use identical EFM message & parameters as Arelle Filing validation
+                    _("RoleType %(roleType)s definition \"%(definition)s\" must match {Sortcode} - {Type} - {Title}"),
+                    modelObject=self.filing.modelXbrl, roleType=self.linkroleUri, definition=self.definitionText)
             return ('', '', '', False, False, False)
 
         indexList = [99999, 99999, 99999] # in order transposed, unlabeled, elements
@@ -143,11 +143,12 @@ class Cube(object):
             # we know that all of the facts are defaulted on them. BUT, they have no defaults, so all the facts are filtered out.
             self.noFactsOrAllFactsSuppressed = True
             axesStr = ', '.join([str(axisQname) for axisQname in sorted(axesWithoutDefaultsThatAllFactsAreDefaultedOn)])
-            self.filing.modelXbrl.warning("er3:allFactsFiltered",
-                _("The presentation group \"%(presentationGroup)s\" contains %(axes)s, which either has (have) no default member in the "
-                 "presentation group and/or the definition linkbase. Since every fact is defaulted on this (these) axe(s),"
-                 "all facts have been filtered out."),
-                 modelObject=self.filing.modelXbrl.modelDocument, presentationGroup=self.shortName, axes=axesStr)
+            self.filing.modelXbrl.warning("EFM.6.26.01",
+                _("The presentation group \"%(linkroleName)s\" contains %(axisSet)s, which either has (have) no default member "
+                  "in the presentation group. Since every fact is defaulted on this (these) axe(s), all facts have been filtered out."),
+                 modelObject=self.filing.modelXbrl, 
+                 linkrole=self.linkroleUri, linkroleDefinition=self.definitionText,
+                 linkroleName=self.shortName, axisSet=axesStr)
 
 
     def handlePeriodStartEndLabel(self,discoveredDurations=[]):
@@ -166,13 +167,14 @@ class Cube(object):
             iPeriod = iAxm['period'] # instant Period (Period is a synonym for StartEndContext)
             iTime = iPeriod.endTime # instant Time
             assert iPeriod.periodTypeStr == 'instant'
+            preferredLabelIsStart = Utils.isPeriodStartLabel(preferredLabel)
             durations = set() # set of Periods to return
             if len(discoveredDurations)==0:
                 for dFxm in self.factMemberships: # dFxm = duration's fact axis-membership tuple
                     dAxm = dFxm[1] # duration's AxisMembership dictionary
                     dPeriod = dAxm['period'] # duration's startEndContext
                     if dPeriod.periodTypeStr == 'duration' and not dPeriod in durations:
-                        if 'Start' in preferredLabel:
+                        if preferredLabelIsStart:
                             dTimeToMatch = dPeriod.startTime
                         else:
                             dTimeToMatch = dPeriod.endTime
@@ -181,7 +183,7 @@ class Cube(object):
             else:
                 for dPeriod in discoveredDurations:
                     if not dPeriod in durations:
-                        if 'Start' in preferredLabel:
+                        if preferredLabelIsStart:
                             dTimeToMatch = dPeriod.startTime
                         else:
                             dTimeToMatch = dPeriod.endTime
@@ -201,20 +203,17 @@ class Cube(object):
             # The startEndPreferredLabelList shows what label roles the presentation linkbase expected to be present.
             startEndPreferredLabelList = (self.periodStartEndLabelDict.get(fact.qname) or [])
             if len(startEndPreferredLabelList) > 0:
-                startTupleSet = set()  # the set of durations that the instant of this fact begins
-                for startRole in Utils.startRoles:
-                    if startRole in startEndPreferredLabelList:
-                        startTupleSet.update(matchingDurationSet(factMembership,startRole))
-                endTupleSet = set() # the set of durations that the instant of this fact ends
-                for endRole in Utils.endRoles:
-                    if endRole in startEndPreferredLabelList:
-                        endTupleSet.update(matchingDurationSet(factMembership,endRole))
-                setOfMatches = startTupleSet.union(endTupleSet)
-                if len(setOfMatches)==0:
+
+                startAndEndLabelsSet = set()  # the set of durations that the instant of this fact begins
+                for preferredLabel in startEndPreferredLabelList:
+                    if Utils.isPeriodStartOrEndLabel(preferredLabel):
+                        startAndEndLabelsSet.update(matchingDurationSet(factMembership,preferredLabel))
+
+                if len(startAndEndLabelsSet)==0:
                     for role in startEndPreferredLabelList:
-                        skippedFactMembershipSet.add((fact,role,self,self.linkroleUri,self.shortName))
+                        skippedFactMembershipSet.add((fact,role,self,self.linkroleUri,self.shortName,self.definitionText))
                    
-                for startEndTuple, preferredLabel in setOfMatches:
+                for startEndTuple, preferredLabel in startAndEndLabelsSet:
                     try: # if startEndContext exists, find it
                         newStartEndContext = self.filing.startEndContextDict[startEndTuple]
                     except KeyError: # if not, create one and add it to respective data structures
@@ -233,11 +232,11 @@ class Cube(object):
             # go 'discover' the durations by comparing start and end instants.
             moments = sorted(list({fxm[1]['period'].endTime for fxm in self.factMemberships}))
             if len(moments) > 1:
-                self.filing.modelXbrl.info("er3:inferringDurations",
-                    _("In \"%(presentationGroup)s\", no matching durations for %(numFacts)s instant facts presented with start or end " 
+                self.filing.modelXbrl.info("info",
+                    _("In \"%(linkroleName)s\", no matching durations for %(numFacts)s instant facts presented with start or end " 
                       "preferred labels. Now inferring durations to form columns. Simplify the presentation " 
                       "to get a more compact layout."),
-                    modelObject=self.filing.modelXbrl.modelDocument, presentationGroup=self.shortName, numFacts=len(skippedFactSet))
+                    modelObject=self.filing.modelXbrl.modelDocument, linkroleName=self.shortName, numFacts=len(skippedFactSet))
                 intervals = []                
                 for i,endTime in enumerate(moments[1:]):
                     startTime = moments[i]
@@ -271,10 +270,12 @@ class Cube(object):
             sortedList = self.SurvivorsOfMovementAnalysis(sortedList)
             if len(sortedList)==0:
                 #message = ErrorMgr.getError('STATEMENT_OF_EQUITY_NO_COMPLETE_MOVEMENTS_WARNING').format(self.shortName)
-                self.filing.modelXbrl.warning("er3:noMatchingDurations",
-                    _("The statement of equity, \"%(presentationGroup)s\", has no durations with matching beginning and " 
-                      "ending instants."),
-                    modelObject=self.filing.modelXbrl.modelDocument, presentationGroup=self.shortName)
+                self.filing.modelXbrl.warning("EFM.6.26.03",
+                    _("The presentation base set \"%(linkroleName)s\" is a statement of changes in equity, but it has "
+                      "no duration-type facts matching the instant-type facts shown.  Add duration-type facts that represent "
+                      "the changes from instant to instant, or do not label the presentation base set a statement of changes."),
+                    modelObject=self.filing.modelXbrl, linkrole=self.linkroleUri, linkroleDefinition=self.definitionText,
+                    linkroleName=self.shortName)
                 self.isStatementOfEquity = False # no movements, warn the user it is probably not what they wanted                
                 sortedList = list(self.timeAxis) # start over
 
