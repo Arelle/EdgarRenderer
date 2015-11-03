@@ -592,7 +592,7 @@ class Command(object):
                     _('In "%(linkroleName)s" the embedded report created by the embedding text block fact %(fact)s with context %(contextID)s '
                       'contains an iterator "column primary" even though the definition text of '
                       '%(linkrole)s contains the "{Elements}" qualifier. The primary axis will remain on the rows.'),
-                    modelObject=self.factThatContainsEmbeddedCommand, fact=self.factThatContainsEmbeddedCommand, contextID=self.factThatContainsEmbeddedCommand.contextID,
+                    modelObject=self.embedding.factThatContainsEmbeddedCommand, fact=self.embedding.factThatContainsEmbeddedCommand, contextID=self.embedding.factThatContainsEmbeddedCommand.contextID,
                     linkrole=self.cube.linkroleUri, linkroleDefinition=self.cube.definitionText,
                     linkroleName=self.cube.shortName)
 

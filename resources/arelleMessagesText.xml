@@ -2087,8 +2087,7 @@ Please ensure that you comply with the document type and naming provided.
          level="warning"
          module="EdgarRenderer/Embedding.py" line="147"
          args="linkrole linkroleDefinition linkroleName error axis embeddedCommand fact">
-[rq-2606-Axis-Has-No-Order] In ''$(linkroleName)'' the axis $(axis) was not given an order in the presentation linkbase$(embeddedCommand). We arbitrarily chose an order by sorting on its label.
-In ''$(linkroleName)'', the embedded report created by the fact $(fact) with context {context}, the axis $(axis) was not given an order in the presentation base set {embeddedrole}. The axes are being sorted by their labels.
+[rq-2606-Axis-Has-No-Order] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with context {context}, the axis $(axis) was not given an order in the presentation base set $(linkroleDefinition). The axes are being sorted by their labels.
 </message>
 
 <message code="EFM.6.26.07"
