@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!-- EDGAR Renderer daemon configuration file for Previewer -->
+<configuration>
+  <!-- The following are various sub-folders that are created and used during the processing of XBRL filings for organizational purposes: -->
+  <!-- resourcesFolder: Default value: ../resources, relative to folders on the pythonpath. -->
+  <resourcesFolder>../resources</resourcesFolder>
+  <!-- These folders, if not absolute, are relative to the current working directory. -->
+  <!-- reportsFolder: Default value: Reports -->
+  <!-- failFile: string with the name of an empty file to write if the rendering failed. -->
+  <failFile>error.log</failFile>
+  <!-- filingsFolder: Default value: Filings -->
+  <!-- This is the filing staging area for the RE3 daemon service. -->
+  <filingsFolder>Filings</filingsFolder>
+  <!-- processingFolder: Default value: Processing -->
+  <!-- This is the location of all zip extractions from the input zip file, as well as other temp processing files. -->
+  <processingFolder>Processing</processingFolder>
+  <!-- Location of the output zip files for daemon mode. -->
+  <deliveryFolder>Delivery</deliveryFolder>
+  <!-- archiveFolder> Default value: Delivery -->
+  <!-- Optional location of successfully processed input zip files, so they don't disappear during testing. -->
+  <archiveFolder>Archive</archiveFolder>
+  <!-- errorsFolder> Default value: Errors -->
+  <!-- This is the location of input zip files that failed the rendering (and/or subsequent post-processing) engine -->
+  <errorsFolder>Errors</errorsFolder>
+  <!-- This is the location of all generated rendering artifacts, relative to the processing folder. -->
+  <reportsFolder>Reports</reportsFolder>
+  <!-- These locations are relative to the resourcesFolder -->
+  <!-- Optional transform r.xml into r.htm -->
+  <reportXslt>InstanceReport.xslt</reportXslt>
+  <!-- Optional, transform FilingSummary.xml into FilingSummary.htm -->
+  <summaryXslt/>
+  <!-- Optional transform output xml into Excel 2007 xlsx sheet, or empty if no Excel output desired -->
+  <excelXslt>InstanceReport_XmlWorkbook.xslt</excelXslt>
+  <!-- Application settings that used by RE to manage the processing of XBRL filings: -->
+  <!-- renderingService: {Instance: one time rendering || Daemon: background processing} -->
+  <renderingService>Daemon</renderingService>
+  <!-- validate: Boolean. Perform XBRL 2.1 validation. Defaults to False if not specified here. -->
+  <validate>False</validate>
+  <!-- utrValidate: Boolean.  Perform utr validation even if the DTS does not contain element dei:UTR -->
+  <utrValidate>False</utrValidate>
+  <!-- validateEFM: Boolean.  Perform EDGAR Filer Manual validation -->
+  <validateEFM>False</validateEFM>
+  <!-- processingFrequency: The sleep time for the RE3 daemon if no XBRL filing is present in the input folder -->
+  <!-- Default to 10 seconds -->
+  <processingFrequency>10</processingFrequency>
+  <!-- deleteProcessedFilings: Boolean to indicate if unzipped processed filings should be deleted or not; default to True -->
+  <deleteProcessedFilings>True</deleteProcessedFilings>
+  <!-- reportFormat: Multiple options...{Xml: only Xml output || Html: only Html output || HtmlAndXml: both Xml and Html output} -->
+  <reportFormat>Html</reportFormat>
+  <!-- htmlReportFormat: Multiple options...{Complete: asPage rendering = True || Fragment: asPage rendering = False} -->
+  <htmlReportFormat>Complete</htmlReportFormat>
+  <!-- totalClean: Boolean to indicate if RE should completely clean the archive, errors and delivery folders before processing; default to False -->
+  <totalClean>False</totalClean>
+  <!-- Abort process on major error, such as when load is unable to find an entry or discovered file or XBRL validation failed. -->
+  <abortOnMajorError>True</abortOnMajorError>
+</configuration>

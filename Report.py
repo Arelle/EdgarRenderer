@@ -125,13 +125,14 @@ class Report(object):
             # it looks like 3 columns, but really the style sheet makes those columns.
             if previousRowOrCol is None or previousRowOrCol.coordinateList != coordinateList or self.cube.isElements:
                 if rowOrColStr == 'row':
-                    IsCalendarTitle = self.cube.isStatementOfEquity and preferredLabel in Utils.startEndRoles
+                    isStart = Utils.isPeriodStartLabel(preferredLabel)
+                    IsCalendarTitle = self.cube.isStatementOfEquity and (isStart or Utils.isPeriodEndLabel(preferredLabel))
 
                     # this is goofy, in handlePeriodStartEndLabel() we turn instant facts into durations
                     # for the purposes of layout, but now, we artificially make the rows instants again.
                     if IsCalendarTitle and startEndContext is not None:
                         # we kill the startTime, which makes it an instant
-                        if startEndContext.startTime is not None and "Start" in preferredLabel:                            
+                        if startEndContext.startTime is not None and isStart:
                             startEndTuple = (None, startEndContext.startTime)
                         else:
                             startEndTuple = (None, startEndContext.endTime)
@@ -792,15 +793,21 @@ class Report(object):
                         if unitHeading is not None:
                             rowUnitHeadingDefaultDict[unitHeading].append(row)
 
-        skipedFirstFlag = False
-        # sorts by the length of the row list for each heading.  the flag will make it so that it doesn't print the
-        # most popular unitHeading, only the rest.  we do this to prevent clutter, it looks ugly.
-        for unitHeading, rowSet in reversed(sorted(rowUnitHeadingDefaultDict.items(), key=lambda thing : len(thing[1]))):
-            if skipedFirstFlag:
+        # don't print the most popular unitHeading, only the rest.  we do this to prevent clutter, it looks ugly.
+        # however, if the most popular is a tie, we print all the most popular. since we're not printing the most popular, if
+        # there's only 1, we just quit, only proceed if there are two or above.
+        if len(rowUnitHeadingDefaultDict) < 2:
+            return
+
+        def addToRows(listOfUnitRowSetTuples):
+            for unitHeading, rowSet in listOfUnitRowSetTuples:
                 for row in rowSet:
                     row.headingList += [unitHeading]
-            else:
-                skipedFirstFlag = True
+
+        sortedList = sorted(rowUnitHeadingDefaultDict.items(), key=lambda thing : len(thing[1])) # sort by number of rows per unit
+        addToRows(sortedList[:-1]) # do the first n-1 units, which are the ones with the least rows
+        if len(sortedList[len(sortedList) - 1][1]) == len(sortedList[len(sortedList) - 2][1]):
+            addToRows(sortedList[-1:]) # if the unit with the most rows, is tied with the second to last, do the last one too.
 
 
     def generateRowOrColHeading(self, rowOrColStr, rowOrCol, factAxisMemberList, noHeadingsForTheseAxesSet, mostRecentSegmentTitleRow):
@@ -851,9 +858,9 @@ class Report(object):
         if rowOrColStr == 'row':
             thisLayoutDirectionHasPeriodAxis = self.embedding.rowPeriodPosition != -1
         else:
-            thisLayoutDirectionHasPeriodAxis = self.embedding.columnPeriodPosition != -1        
-        isPeriodStartOrEnd = Utils.isRoleOrSuffix(preferredLabel, Utils.startEndRoles)
-        if isPeriodStartOrEnd and thisLayoutDirectionHasPeriodAxis and headingList != []:
+            thisLayoutDirectionHasPeriodAxis = self.embedding.columnPeriodPosition != -1
+
+        if Utils.isPeriodStartOrEndLabel(preferredLabel) and thisLayoutDirectionHasPeriodAxis and headingList != []:
             strDate = (rowOrCol.context.endDatetime + datetime.timedelta(days=-1)).strftime('%b. %d, %Y')
             headingList = [x for x in headingList if x != strDate ]
             heading = ''
@@ -861,8 +868,10 @@ class Report(object):
                 heading = headingList[0]
             if len(headingList) > 1:
                 heading += ' (' + (', '.join(headingList[1:])) + ')'
-            if noDateRepetitionFlag: headingList = [heading]
-            else: headingList = [heading + ' at ' + strDate]
+            if noDateRepetitionFlag:
+                headingList = [heading]
+            else:
+                headingList = [heading + ' at ' + strDate]
                        
         if monthsEndedText is not None and self.embedding.columnPeriodPosition != -1:
             headingList = [monthsEndedText] + headingList
@@ -936,8 +945,8 @@ class Report(object):
             for index, thisRow in enumerate(rowList):
                 if index > 0:
                     prevRow = rowList[index-1]
-                    if      (prevRow.preferredLabel == 'periodEndLabel' and
-                             thisRow.preferredLabel == 'periodStartLabel' and
+                    if      (Utils.isPeriodEndLabel(prevRow.preferredLabel) and
+                             Utils.isPeriodStartLabel(thisRow.preferredLabel) and
                              prevRow.startEndContext.endTime==thisRow.startEndContext.endTime and
                              prevRow.factList==thisRow.factList):
                         tracer(thisRow)
@@ -1097,7 +1106,7 @@ class Report(object):
                           ,'xsiNil':fact.xsiNil
                           ,'lang':fact.xmlLang
                           ,'decimals':fact.decimals
-                          ,'ancestors':[str(qname) for qname in fact.ancestorQnames]
+                          ,'ancestors':[str(ancestor.qname) for ancestor in fact.iterancestors()]
                           ,'reportCount':cubeCount
                           }
                         if reportSummary.firstAnchor is None:
@@ -1191,8 +1200,14 @@ class Report(object):
         numYears = len(factList)
         if numYears > 20:
             errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.embedding.factThatContainsEmbeddedCommand)
-            self.controller.logError("In ''{}''{}, there are {} Annual Return Facts, but there should not be more than 20.".format(
-                                     self.cube.shortName, errorStr, numYears))
+            self.filing.modelXbrl.error("EFM.6.26.08",
+                                   _('In "%(linkroleName)s", the embedded report created by the embedding textBlock fact %(fact)s with context %(contextID)s, '
+                                     'there are %(numYears)s Annual Return Facts, but there must not be more than 20.'),
+                                    modelObject=self.embedding.factThatContainsEmbeddedCommand, 
+                                    linkrole=self.cube.linkroleUri, linkroleDefinition=self.cube.definitionText,
+                                    linkroleName=self.cube.shortName,
+                                    fact=self.embedding.factThatContainsEmbeddedCommand.qname, contextID=self.embedding.factThatContainsEmbeddedCommand.contextID,
+                                    numYears=numYears)
             return 'tooManyFacts'
         xMin = -0.3
         xMax = numYears + 0.3
@@ -1280,8 +1295,6 @@ class Row(object):
         self.isSegmentTitle = isSegmentTitle
         self.IsCalendarTitle = IsCalendarTitle
         self.IsAbstractGroupTitle = IsAbstractGroupTitle
-        self.IsReverseSign = False
-        self.IsTotalLabel = False
         self.factList = []
         self.level = level
         self.cellList = [None for ignore in range(report.numColumns)]
@@ -1303,10 +1316,11 @@ class Row(object):
         self.context = None
         if not (isSegmentTitle or IsAbstractGroupTitle):
             self.context = factAxisMemberGroup.fact.context
-            if self.context == None: # wch added this check.
-                errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(report.embedding.factThatContainsEmbeddedCommand)
-                #message = ErrorMgr.getError('ROW_WITHOUT_CONTEXT_WARNING').format(report.cube.shortName, errorStr, self.index)
-                filing.controller.logWarn(("In ''{}''{}, row {} has no context.").format(report.cube.shortName, errorStr, self.index))
+            if self.context == None and not validatedForEFM: # use Arelle validation message
+                filing.modelXbrl.error("xbrl.4.6.1:itemContextRef",
+                    _("Item %(fact)s in presentation group \"$(linkroleName)s\" must have a context"),
+                    modelObject=factAxisMemberGroup.fact, fact=factAxisMemberGroup.fact.qname,
+                    linkroleName=report.cube.shortName)
 
         self.unitTypeToFactSetDefaultDict = defaultdict(set)
 
@@ -1407,34 +1421,15 @@ class Row(object):
         SubElement(rowETree, 'IsCalendarTitle').text = str(self.IsCalendarTitle).casefold()
         SubElement(rowETree, 'IsEquityPrevioslyReportedAsRow').text = 'false'
         SubElement(rowETree, 'IsEquityAdjustmentRow').text = 'false'
-        SubElement(rowETree, 'IsBeginningBalance').text = str(self.isBeginningBalance()).casefold()        
-        SubElement(rowETree, 'IsEndingBalance').text = str(self.isEndingBalance()).casefold()
 
-        if self.preferredLabel == 'totalLabel':
-            self.IsTotalLabel = True
-        elif self.preferredLabel == 'negatedTotal':
-            self.IsTotalLabel = True
-            self.IsReverseSign = True
-
-        if self.preferredLabel is not None and re.compile('negated').match(self.preferredLabel):
-            self.IsReverseSign = True
-
-        SubElement(rowETree, 'IsReverseSign').text = str(self.IsReverseSign).casefold()
+        # TODO: Accomodate cases where startLabel and endLabel are in not-fully-formed rollforward.
+        SubElement(rowETree, 'IsBeginningBalance').text = str(Utils.isPeriodStartLabel(self.preferredLabel)).casefold()        
+        SubElement(rowETree, 'IsEndingBalance').text    = str(Utils.isPeriodEndLabel(self.preferredLabel)).casefold()
+        SubElement(rowETree, 'IsReverseSign').text      = str(Utils.isNegatedLabel(self.preferredLabel)).casefold()
         if self.preferredLabel is not None:
             SubElement(rowETree, 'PreferredLabelRole').text = self.preferredLabel
 
         self.report.writeFootnoteIndexerEtree(self.footnoteNumberSet, rowETree)
-
-    def isBeginningBalance(self):
-        # TODO: Accomodate cases where startLabel is in not-fully-formed rollforward.
-        return (self.preferredLabel is not None and 'periodStart' in self.preferredLabel)
-
-    def isEndingBalance(self):
-        # TODO: Accomodate cases where endLabel is in not-fully-formed rollforward.
-        return (self.preferredLabel is not None and 'periodEnd' in self.preferredLabel)
-
-
-
 
 
     def emitRowFooter(self, rowETree):
@@ -1479,7 +1474,7 @@ class Row(object):
         SubElement(rowETree, 'SimpleDataType').text = simpleDataType
         SubElement(rowETree, 'ElementDefenition').text = doclabel
         SubElement(rowETree, 'ElementReferences').text = referencesText
-        SubElement(rowETree, 'IsTotalLabel').text = str(self.IsTotalLabel).casefold()
+        SubElement(rowETree, 'IsTotalLabel').text = str(Utils.isTotalLabel(self.preferredLabel)).casefold()
         SubElement(rowETree, 'UnitID').text = '0' # really?
         SubElement(rowETree, 'Label').text = self.filing.rowSeparatorStr.join(self.headingList)
 
@@ -1543,7 +1538,10 @@ class Column(object):
         if self.context == None: # wch added this check.
             errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(report.embedding.factThatContainsEmbeddedCommand)
             #message = ErrorMgr.getError('COLUMN_WITHOUT_CONTEXT_WARNING').format(report.cube.shortName, errorStr, self.index)
-            filing.controller.logWarn(("In ''{}''{}, column {} has no context.").format(report.cube.shortName, errorStr, self.index))
+            filing.modelXbrl.debug("debug",
+                                   _('In "%(cube)s%(error)s, column %(column)s has no context.'),
+                                    modelObject=factAxisMemberGroup.fact, 
+                                    cube=report.cube.shortName, error=errorStr, column=self.index)
         self.startEndContext = startEndContext
         self.unitTypeToFactSetDefaultDict = defaultdict(set)
         if report.embedding.columnPrimaryPosition != -1 and factAxisMemberGroup.preferredLabel is not None:
@@ -1754,10 +1752,12 @@ class Cell(object):
                 amount = None
                 try:
                     amount = decimal.Decimal(NumericAmount)
+                    scaledNumericAmount = str(amount.scaleb(self.scalingFactor).quantize(decimal.Decimal(quantum), rounding=decimal.ROUND_HALF_EVEN))
                 except decimal.InvalidOperation:
-                    self.filing.controller.logError('"{}" is not a number.'.format(NumericAmount))
+                    self.filing.modelXbrl.error("er3:unableToScaleNumber",
+                                           _('Unable to scale value "%(value)s" by scaling factor %(scalingFactor)s.'),
+                                            modelObject=self.fact, value=NumericAmount, scalingFactor=self.scalingFactor)
                     return (NumericAmount,float('nan'))
-                scaledNumericAmount = str(amount.scaleb(self.scalingFactor).quantize(decimal.Decimal(quantum), rounding=decimal.ROUND_HALF_EVEN))
                 return (NumericAmount, scaledNumericAmount)
             else:
                 return (NumericAmount, NumericAmount)
@@ -1778,9 +1778,14 @@ class Cell(object):
             elif fig is None:
                 errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(embedding.factThatContainsEmbeddedCommand)
                 #message = ErrorMgr.getError('FIGURE_HAS_NO_FACTS_WARNING').format(embedding.cube.shortName, errorStr)
-                self.filing.controller.logWarn(("''{}''{}, is a bar chart figure that has zero facts. If a bar chart figure is not " \
-                                                "wanted here, consider removing this particular textblock fact, otherwise, determine " \
-                                                "why all its facts are being filtered out.").format(embedding.cube.shortName, errorStr))
+                self.filing.modelXbrl.warning("EFM.6.26.07",
+                                       _('In "%(linkroleName)s", the embedded report created by the embedding text block fact %(fact)s '
+                                         'with context %(contextID)s, is a bar chart figure that has zero facts. If a bar chart figure '
+                                         'is not wanted here, consider removing this particular text block fact, otherwise, determine why all its facts are being filtered out.'),
+                                        modelObject=embedding.factThatContainsEmbeddedCommand, 
+                                        linkrole=embedding.cube.linkroleUri, linkroleDefinition=embedding.cube.definitionText,
+                                        linkroleName=embedding.cube.shortName, fact=embedding.factThatContainsEmbeddedCommand.qname,
+                                        contextID=embedding.factThatContainsEmbeddedCommand.contextID)
             else:
                 report.controller.nextBarChartFileNum += 1
                 pngname = 'BarChart{!s}.png'.format(report.controller.nextBarChartFileNum)

@@ -9,13 +9,32 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 import re, sys, math, logging
 import arelle.XbrlConst
 
-startRoles = ['http://www.xbrl.org/2003/role/periodStartLabel', 'http://www.xbrl.org/2009/role/negatedPeriodStartLabel']
-endRoles = ['http://www.xbrl.org/2003/role/periodEndLabel', 'http://www.xbrl.org/2009/role/negatedPeriodEndLabel']
-startEndRoles = startRoles + endRoles
-totalRole = 'http://www.xbrl.org/2003/role/totalLabel'
-durationStartRole = "durationStartRoleError"  # fake role URI to indicate that a periodStart label role was put on a duration concept.
-durationEndRole = "durationEndRoleError"  # fake role URI to indicate that a periodEnd label role was put on a duration concept.
-durationStartEndRoles = [durationStartRole, durationEndRole]
+durationStartRoleError = "durationStartRoleError"  # fake role URI to indicate that a periodStart label role was put on a duration concept.
+durationEndRoleError = "durationEndRoleError"  # fake role URI to indicate that a periodEnd label role was put on a duration concept.
+durationStartEndRolesError = [durationStartRoleError, durationEndRoleError]
+
+def isPeriodStartLabel(preferredLabel):
+    if preferredLabel is None:
+        return False
+    return 'periodstart' in preferredLabel.casefold()
+def isPeriodEndLabel(preferredLabel):
+    if preferredLabel is None:
+        return False
+    return 'periodend' in preferredLabel.casefold()
+def isPeriodStartOrEndLabel(preferredLabel):
+    if preferredLabel is None:
+        return False
+    preferredLabelLower = preferredLabel.casefold()
+    return 'periodstart' in preferredLabelLower or 'periodend' in preferredLabelLower
+def isNegatedLabel(preferredLabel):
+    if preferredLabel is None:
+        return False
+    return 'negated' in preferredLabel.casefold()
+def isTotalLabel(preferredLabel):
+    if preferredLabel is None:
+        return False
+    return 'total' in preferredLabel.casefold()
+
 minNumber = -sys.maxsize - 1
 efmStandardAuthorities = ["sec.gov", "fasb.org", "xbrl.org", "xbrl.us", "w3.org"]
 
@@ -25,12 +44,6 @@ def isRate(fact, filing):
              (isFactTypeEqualToOrDerivedFrom(fact, isPureItemTypeQname) and
                 (isEfmInvestNamespace(fact.qname.namespaceURI) or filing.isRR)) or
              (fact.unit.isSingleMeasure and any(utrEntry.unitId == 'Rate' for utrEntry in fact.utrEntries.copy())))
-
-def isRoleOrSuffix(s,roles):
-    return ((s in roles
-            or next((True for role in roles if s == role[(role.rfind("/") + 1):]), False))
-            and True)
-
 
 def printErrorStringToDisambiguateEmbeddedOrNot(embeddedCommandFact):
     if embeddedCommandFact is None:
@@ -104,10 +117,10 @@ def hasCustomNamespace(thing):
         return not isEfmStandardNamespace(thing)
     elif type(thing) in [list, tuple]:
         return next((True for x in thing if hasCustomNamespace(x)), False) and True
-    for a in ('measures', 'namespaceURI', 'namespaceUri'):
-        if hasattr(thing, a):
-            return hasCustomNamespace(getattr(thing, a))
-    raise "Unexpected object {} type {}.".format(thing, type(thing))
+    elif thing is not None:
+        for a in ('measures', 'namespaceURI', 'namespaceUri'):
+            if hasattr(thing, a):
+                return hasCustomNamespace(getattr(thing, a))
     return False
 
 def xbrlErrors(modelXbrl):
@@ -283,13 +296,13 @@ def isDurationItemTypeQname(typeQname):
     """(bool) -- True if the type qname is xbrli:durationItemType"""
     return typeQname.localName == 'durationItemType' and typeQname.namespaceURI == arelle.XbrlConst.xbrli
 
-def modelRelationshipsTransitiveFrom(relationshipSet, concept, linkroleUri, result=set()):
+def modelRelationshipsTransitiveFrom(relationshipSet, concept, linkroleUri, resultSet):
     """Return the subset of a relationship set in the transitive closure starting from concept, limited to linkroleUri."""
     for r in relationshipSet.modelRelationshipsFrom[concept]:
-        if r.linkrole == linkroleUri and r not in result:
-            result.add(r)
-            modelRelationshipsTransitiveFrom(relationshipSet,r.toModelObject,linkroleUri,result)
-    return result
+        if r.linkrole == linkroleUri and r not in resultSet:
+            resultSet.add(r)
+            modelRelationshipsTransitiveFrom(relationshipSet,r.toModelObject,linkroleUri,resultSet)
+    return resultSet
 
 
 def heapsort(l, cmp):  # l is a list, cmp is a two-argument fn
@@ -366,3 +379,18 @@ def embeddingGarbageCollect(embedding):
             col.__dict__.clear()
         report.__dict__.clear()
     embedding.__dict__.clear()
+
+class RenderingException(Exception):
+    def __init__(self, code, message):
+        self.code = str(code)  # called with qname or string, qname -> prefixed name string
+        self.message = message
+        self.args = ( self.__repr__(), )
+    def __repr__(self):
+        return _('[{0}] exception {1}').format(self.code, self.message)
+    
+class Errmsg(object):
+    def __init__(self, messageCode, message):
+        self.msgCode = messageCode
+        self.msg = message
+
+

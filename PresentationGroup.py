@@ -96,14 +96,17 @@ class PresentationGroup(object):
             # twice.  however, if it goes over the same relationship twice on it's way to the root, then there is a cycle.
             # in fact, this will catch every possible cycle in our subgraph, we don't care about cycles outside of our subgraph.
             if relationship in localRelationshipSet:
-                #message = ErrorMgr.getError('PRESENTATION_GROUP_DIRECTED_CYCLE_ERROR').format(self.cube.shortName)
-                self.filing.modelXbrl.exception("er3:presentationGroupCycle",
-                                                _("The presentation group ''%(presentationGroup)s'' contains a directed cycle, which is a "
-                                                 "violation of XBRL 2.1 section 5.2.4.2."),
-                                                modelObject=relationship, presentationGroup=self.cube.shortName)
-                import sys
-                sys.exit()
-            localRelationshipSet.add(relationship)
+                if not self.filing.validatedForEFM:
+                    #message = ErrorMgr.getError('PRESENTATION_GROUP_DIRECTED_CYCLE_ERROR').format(self.cube.shortName)
+                    self.filing.modelXbrl.error("xbrl.5.2.4.2",
+                        _("Relationships have a %(cycle)s cycle in arcrole %(arcrole)s \nlink role %(linkrole)s \nlink %(linkname)s, \narc %(arcname)s, \npath %(path)s"),
+                        modelObject=relationship, cycle="directed", arcrole=arelle.XbrlConst.parentChild, arcname=arelle.XbrlConst.qnLinkPresentationArc, linkname=arelle.XbrlConst.qnLinkPresentationLink,
+                        path = str(concept.qname) + " " + " - ".join(
+                            "{0}:{1} {2}".format(rel.modelDocument.basename, rel.sourceline, rel.toModelObject.qname)
+                            for rel in reversed(localRelationshipSet)),
+                        linkrole=self.cube.linkroleUri)
+                raise Utils.RenderingException("xbrl.5.2.4.2", "Presentation group {} contains a directed cycle".format(self.cube.shortName))
+            localRelationshipSet.append(relationship)
 
             try:
                 # let's see if we've already visited this relationship
@@ -115,16 +118,17 @@ class PresentationGroup(object):
                 return
             except KeyError:
                 # we haven't already visited this relationship, so let's make a new node and maybe add a child.
-                mayBeUnitConcept = childConcept.name in self.filing.modelXbrl.units
-                childNode = PresentationGroupNode(childConcept, relationship, mayBeUnitConcept)
-                if passUpNode is not None:
-                    self.maybeAddChild(childNode, passUpNode, passUpNode.arelleRelationship)
-                passUpNode = childNode
+                if childConcept is not None:
+                    mayBeUnitConcept = childConcept.name in self.filing.modelXbrl.units
+                    childNode = PresentationGroupNode(childConcept, relationship, mayBeUnitConcept)
+                    if passUpNode is not None:
+                        self.maybeAddChild(childNode, passUpNode, passUpNode.arelleRelationship)
+                    passUpNode = childNode
         else:
             childNode = None
 
         childrenList = self.linkRelationshipSet.toModelObject(concept)
-        if len(childrenList) == 0:
+        if len(childrenList) == 0 and concept is not None:
             # a concept can have multiple nodes in the presentation group, but it can't have multiple roots.
             # therefore, if we want to see if we've already visited this root concept, we can just look
             # through root nodes that we've already visited.
@@ -215,13 +219,14 @@ class PresentationGroup(object):
             giveMemGetPositionDictAxis[concept.qname] = len(visited)
         elif not parentIsAnAxis: # we're not on an axis or below an axis, so it's a primary item.
             try:
-                if preferredLabel in Utils.startEndRoles:
+                isStart = Utils.isPeriodStartLabel(preferredLabel)
+                if isStart or Utils.isPeriodEndLabel(preferredLabel):
                     if concept.periodType == 'duration':
                         self.filing.ignoredPreferredLabels += [(relationship.linkrole,concept.qname,preferredLabel,self.cube.shortName)]
-                        if preferredLabel in Utils.startRoles:
-                            preferredLabel = Utils.durationStartRole # not a role.
+                        if isStart:
+                            preferredLabel = Utils.durationStartRoleError # not a role.
                         else:
-                            preferredLabel = Utils.durationEndRole # not a real role.
+                            preferredLabel = Utils.durationEndRoleError # not a real role.
                     else:
                         self.cube.periodStartEndLabelDict[concept.qname].append(preferredLabel)
             except AttributeError:
@@ -264,10 +269,10 @@ class PresentationGroup(object):
             else:
                 # every member on this axis is filtered out, this kills the whole cube.
                 #message = ErrorMgr.getError('PRESENTATION_GROUP_CHILDLESS_AXIS_FILTERS_OUT_ALL_FACTS_WARNING').format(self.cube.shortName)
-                self.filing.modelXbrl.warning("er3:childlessAxis",
-                                              ("The presentation group ''%(presentationGroup)s'' contains an axis with no children, "
-                                                "which effectively filters out every fact."),
-                                              modelObject=concept, presentationGroup=self.cube.shortName)
+                self.filing.modelXbrl.warning("EFM.6.12.08",
+                                              ("The presentation group \"%(linkroleName)s\" contains an axis %(axis)s with no domain element children, which effectively filters out every fact"),
+                                              modelObject=concept, axis=concept.qname,
+                                              linkrole=self.cube.linkroleUri, linkroleDefinition=self.cube.definitionText, linkroleName=self.cube.shortName)
                 self.cube.noFactsOrAllFactsSuppressed = True
 
 
@@ -291,8 +296,7 @@ class PresentationGroup(object):
     def recursivePrint(self, presentationGroupNode, tabString):
         for kid in presentationGroupNode.childrenList:
             if kid.arelleRelationship is not None:
-                self.filing.modelXbrl.log("NOTSET",
-                                          "er3:trace",
+                self.filing.modelXbrl.debug("debug",
                                           _('%(tabs)s%(concept)s    order: %(order)s    preferred label: %(label)s'),
                                           modelObject=kid.arelleConcept, tabs=tabString, 
                                           concept=kid.arelleConcept.qname, order=kid.arelleRelationship.order, label=kid.arelleRelationship.preferredLabel)

@@ -6,7 +6,7 @@ Data and content created by government employees within the scope of their emplo
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
-import sys, traceback, os.path, re, math, io
+import sys, traceback, os.path, re, math, io, logging
 from collections import defaultdict
 from lxml.etree import Element, SubElement
 import arelle.ModelDtsObject, arelle.XbrlConst
@@ -163,18 +163,29 @@ class Summary(object):
                 SubElement(logs, 'Log', type=errmsg.msgCode.title()).text = errmsg.msg
             '''
             logHandler = self.controller.cntlr.logHandler
-            for i, logRec in enumerate(getattr(logHandler, "logRecordBuffer", ())): # non buffered handlers don't keep log records (e.g., lot to print handler)
-                if i == 0:
-                    logs = SubElement(self.rootETree, 'Logs')
-                if i == 100:
-                    SubElement(logs, 'Log', type='Info').text = "There are more than 100 warnings or errors, only 100 will be displayed."
-                    break
-                fileLines = defaultdict(set)
-                for ref in logRec.refs:
-                    href = ref.get("href")
-                    if href:
-                        fileLines[href.partition("#")[0]].add(ref.get("sourceLine", 0))
-                SubElement(logs, 'Log', type=logRec.levelname.title()).text = logHandler.format(logRec)
+            logMessageText = self.controller.logMessageText
+            numShownMessages = 0
+            for logRec in getattr(logHandler, "logRecordBuffer", ()): # non buffered handlers don't keep log records (e.g., log to print handler)
+                if logRec.levelno > logging.INFO:
+                    if numShownMessages == 0:
+                        logs = SubElement(self.rootETree, 'Logs')
+                    if numShownMessages == 100:
+                        SubElement(logs, 'Log', type='Info').text = "There are more than 100 warnings or errors, only 100 will be displayed."
+                        break
+                    fileLines = defaultdict(set)
+                    for ref in logRec.refs:
+                        href = ref.get("href")
+                        if href:
+                            fileLines[href.partition("#")[0]].add(ref.get("sourceLine", 0))
+                    _text = logHandler.format(logRec) # sets logRec.file
+                    if logRec.messageCode in logMessageText:
+                        _text = logMessageText[logRec.messageCode] % logRec.args
+                        if hasattr(logHandler.formatter, "fileLines"):
+                            _fileLines = logHandler.formatter.fileLines(logRec)
+                            if _fileLines:
+                                _text += " - " + _fileLines
+                    SubElement(logs, 'Log', type=logRec.levelname.title()).text = _text
+                    numShownMessages += 1
 
         inputFilesEtree = SubElement(self.rootETree, 'InputFiles')
         sourceDict = self.controller.sourceDict
@@ -279,7 +290,7 @@ class Summary(object):
         if self.controller.debugMode: innerWriteMetaFiles()
         else:
             try: innerWriteMetaFiles()
-            except Exception as err: self.controller.logError(str(err) + traceback.format_tb(sys.exc_info()[2]))
+            except Exception as err: self.controller.logError(str(err) + str(traceback.format_tb(sys.exc_info()[2])))
 
 class InstanceSummary(object):
           
@@ -348,7 +359,7 @@ class InstanceSummary(object):
                 doctype = 'schema'
                 self.otherXbrlFiles += [f]   
                 ns = doc.targetNamespace
-                if 'http://xbrl.sec.gov/rr/' in ns: 
+                if ns and 'http://xbrl.sec.gov/rr/' in ns: 
                     self.hasRR = True
                 if (self.customPrefix is None 
                     and ns is not None 
@@ -370,7 +381,9 @@ class InstanceSummary(object):
                                 self.hasCalculationLinkbase = True
                         break # currently in EDGAR each file can have only kind of link. 
             else:
-                filing.controller.logWarn("Unknown XML doctype {} in DTS file {}".format(doc.xmlRootElement.localName,uri))
+                modelXbrl.debug("debug",
+                                  _("Unknown XML doctype %(doctype)s in file %(file)s."),
+                                  modelObject=doc, doctype=doc.xmlRootElement.localName, file=uri)
             self.dts[doctype][rl] += [f]
         self.dtsroots = self.instanceFiles + self.inlineFiles
         
@@ -499,6 +512,7 @@ class InstanceSummary(object):
                                                   ,'nsuri': concept.qname.namespaceURI
                                                   ,'localname': concept.qname.localName}
             tag = self.tagDict[concept.attrib['id']]
+            roleDict = None
             if concept.balance is not None: tag['crdr'] = concept.balance
             calculations = summationItemRelationshipSet.modelRelationshipsTo[concept]
             if calculations is not None and len(calculations) > 0:
@@ -512,10 +526,18 @@ class InstanceSummary(object):
                     # here we assume that in a given role only one calc parent is allowed.
                     roleDict[role] = {'parentTag' : parentTag
                                         ,'weight' : weight
-                                        ,'order' : order}                
+                                        ,'order' : order} 
+            calculations = summationItemRelationshipSet.modelRelationshipsFrom[concept]
+            if calculations is not None and len(calculations) > 0:
+                for calculation in calculations:
+                    role = calculation.linkrole
+                    if roleDict is None:
+                        roleDict = tag['calculation'] = {}
+                    if role not in roleDict:
+                        roleDict[role] = {'parentTag' : None, 'weight': None, 'order': None, 'root': True}
+                                   
             presentations = parentChildRelationshipSet.modelRelationshipsTo[concept]
-            if presentations is not None and len(presentations) > 0:
-                
+            if presentations is not None and len(presentations) > 0:                
                 roleList = tag['presentation'] = []
                 for presentation in presentations:                    
                     role =  presentation.linkrole 

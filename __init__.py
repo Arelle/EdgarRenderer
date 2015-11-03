@@ -116,7 +116,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.3.0.814'
+VERSION = '3.3.1.845'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -125,7 +125,7 @@ from arelle import (Cntlr, FileSource, ModelDocument, XmlUtil, Version, ModelVal
                     ViewFileFactList, ViewFileFactTable, ViewFileConcepts, ViewFileFormulae,
                     ViewFileRelationshipSet, ViewFileTests, ViewFileRssFeed, ViewFileRoleTypes)
 from . import RefManager, IoManager, Inline, Utils, Filing, Summary
-import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os
+import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os, re
 from lxml import etree
 from os import getcwd, remove, removedirs
 from os.path import join, isfile, exists, dirname, basename, isdir
@@ -183,12 +183,16 @@ def edgarRendererCmdLineOptionExtender(parser):
     Inline.saveTargetDocumentCommandLineOptionExtender(parser)
     parser.add_option("--sourceList", action="store", dest="sourceList", help=_("Comma-separated triples of instance file, doc type and source file."))
     parser.add_option("--copyInlineFilesToOutput", action="store_true", dest="copyInlineFilesToOutput", help=_("Set flag to copy all inline files to the output folder or zip."))
+    parser.add_option("--zipXbrlFilesToOutput", action="store_true", dest="zipXbrlFilesToOutput", help=_("Set flag to zip all sourc xbrl files to the an accession-number-xbrl.zip in reports folder or zip when an accession number parameter is available."))
     parser.add_option("--includeLogsInSummary", action="store_true", dest="includeLogsInSummary", help=_("Set flag to copy log entries into <logs> in FilingSummary.xml."))    
     parser.add_option("--noEquity", action="store_true", dest="noEquity", help=_("Set flag to suppress special treatment of Equity Statements. "))
         
     parser.add_option("--showErrors", action="store_true", dest="showErrors",
                       help=_("List all errors and warnings that may occur during RE3 processing."))
     parser.add_option("--debugMode", action="store_true", dest="debugMode", help=_("Let the debugger handle exceptions."))
+    parser.add_option("--logMessageTextFile", action="store", dest="logMessageTextFile", help=_("Log message text file."))
+    # always use a buffering log handler (even if file or std out)
+    parser.add_option("--logToBuffer", action="store_true", dest="logToBuffer", default=True, help=SUPPRESS_HELP)
 
 
 
@@ -213,6 +217,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.xlWriter = None
         self.excelXslt = None
         self.createdFolders = []
+        self.success = True
         
     # wrap controler properties as needed
     
@@ -237,10 +242,11 @@ class EdgarRenderer(Cntlr.Cntlr):
         # defaultValueDict contains the default strings for
         # when there are no config file and no command line arguments.
         self.defaultValueDict = defaultdict(lambda:None)
-        self.defaultValueDict['abortOnMajorError'] = str(True)
+        self.defaultValueDict['abortOnMajorError'] = str(False)
         self.defaultValueDict['archiveFolder'] = 'Archive'
         self.defaultValueDict['auxMetadata'] = str(True) # HF change to true default str(False)
         self.defaultValueDict['copyInlineFilesToOutput'] = str(False)
+        self.defaultValueDict['zipXbrlFilesToOutput'] = str(False)
         self.defaultValueDict['includeLogsInSummary'] = str(False)
         self.defaultValueDict['deleteProcessedFilings'] = str(True)
         self.defaultValueDict['deliveryFolder'] = 'Delivery'
@@ -268,6 +274,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['validate'] = str(False)
         self.defaultValueDict['validateEFM'] = str(False)
         self.defaultValueDict['zipOutputFile'] = None
+        self.defaultValueDict['logMessageTextFile'] = None
         
         # The configDict holds the values as they were read from the config file.
         # Only options that appear with a value that is not None in defaultValueDict are recognized.
@@ -306,7 +313,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         options.renderingService = setProp('renderingService', options.renderingService, rangeList=['Instance','Daemon'])        
         options.reportFormat = setProp('reportFormat', options.reportFormat, rangeList=['Html', 'Xml', 'HtmlAndXml'])               
         options.htmlReportFormat = setProp('htmlReportFormat', options.htmlReportFormat, rangeList=['Complete','Fragment'])
-        options.zipOutputFile = setProp('zipOutputFile', self.webCache.normalizeUrl(options.zipOutputFile),cs=True) 
+        options.zipOutputFile = setProp('zipOutputFile', options.zipOutputFile,cs=True) 
         options.sourceList = " ".join(setProp('sourceList', options.sourceList,cs=True).split()).split(',')
         self.sourceDict={}
         # Parse comma and colon separated list a:b b:c, d:e:f into a dictionary {'a': ('b b','c'), 'd': ('e','f') }:
@@ -333,20 +340,25 @@ class EdgarRenderer(Cntlr.Cntlr):
             return getattr(self, flag)
             
         # inherited flag: options.abortOnMajorError = setFlag('abortOnMajorError', options.abortOnMajorError)
+        setFlag('abortOnMajorError', options.abortOnMajorError)
         options.totalClean = setFlag('totalClean', options.totalClean)
         options.noEquity = setFlag('noEquity', options.noEquity)
         options.auxMetadata = setFlag('auxMetadata', options.auxMetadata)
         options.copyInlineFilesToOutput = setFlag('copyInlineFilesToOutput', options.copyInlineFilesToOutput)
+        options.zipXbrlFilesToOutput = setFlag('zipXbrlFilesToOutput', options.zipXbrlFilesToOutput)
         options.includeLogsInSummary = setFlag('includeLogsInSummary', options.includeLogsInSummary)
         options.saveTargetInstance = setFlag('saveTargetInstance',options.saveTargetInstance)
         options.saveTargetFiling = setFlag('saveTargetFiling',options.saveTargetFiling)      
         # note that delete processed filings is only relevant when the input had to be unzipped.
         options.deleteProcessedFilings = setFlag('deleteProcessedFilings', options.deleteProcessedFilings)
-        options.debugMode = setFlag('debugMode', options.debugMode)        
+        options.debugMode = setFlag('debugMode', options.debugMode)
         # These flags have to be passed back to arelle via the options object.
         # inherited flag: options.validate = setFlag('validate', options.validate)
+        setFlag('validate', options.validate)
         # inherited flag: options.utrValidate = setFlag('utrValidate', options.utrValidate)
+        setFlag('utrValidate', options.utrValidate)
         # inherited flag: options.validateEFM = setFlag('validateEFM', options.validateEFM)
+        setFlag('validateEFM', options.validateEFM)
     
         
         def setFolder(folder, init, searchPythonPath=False):
@@ -362,11 +374,13 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.logDebug("{}=\t{}".format(folder, getattr(self, folder)))
             return getattr(self, folder)
         
-        options.processingFolder = setFolder('processingFolder', self.webCache.normalizeUrl(options.processingFolder))
+        options.processingFolder = setFolder('processingFolder', options.processingFolder)
         self.processInZip = True # bool(options.processingFolder)
-        options.reportsFolder = setFolder('reportsFolder', self.webCache.normalizeUrl(options.reportsFolder))
+        options.reportsFolder = setFolder('reportsFolder', options.reportsFolder)
+        # keep initial reports folder, may be relative, if so reset on each new filing
+        self.initialReportsFolder = self.reportsFolder
         self.reportInZip = True # bool(options.reportsFolder)
-        options.resourcesFolder = setFolder('resourcesFolder', self.webCache.normalizeUrl(options.resourcesFolder),searchPythonPath=True)
+        options.resourcesFolder = setFolder('resourcesFolder', options.resourcesFolder,searchPythonPath=True)
 
 
         def setResourceFile(file, init, errstr):
@@ -381,33 +395,139 @@ class EdgarRenderer(Cntlr.Cntlr):
                     raise Exception("Cannot locate resources folder '{}'".format(self.resourcesFolder))
                 value = os.path.join(self.resourcesFolder,value)
                 setattr(self, file, value)
-                if getattr(self, file) is not None and not isfile(getattr(self, file)):
-                    raise Exception(_(errstr).format(self.reportXslt))
+                if value is not None and not isfile(value):
+                    raise Exception(_(errstr).format(value))
             self.logDebug("{}=\t{}".format(file, value))            
             return value
        
         #setResourceFile('reportXslt', options.reportXslt, 'INVALID_CONFIG_REPORTXSLT')
-        setResourceFile('reportXslt', options.reportXslt, "Cannot find report xslt {}")
+        options.reportXslt = setResourceFile('reportXslt', options.reportXslt, "Cannot find report xslt {}")
         # Report XSLT is required when reportFormat contains 'Html'.     
         if self.reportXslt is None and 'html' in self.reportFormat.casefold():
             raise Exception('No {} specified when {}={} requires it.'.format('reportXslt', 'reportFormat', self.reportFormat))
 
         # Summary XSLT is optional, but do report if you can't find it.
         #setResourceFile('summaryXslt', options.summaryXslt, 'INVALID_CONFIG_SUMMARYXSLT')
-        setResourceFile('summaryXslt', options.summaryXslt, "Cannot find summary xslt {}")
+        options.summaryXslt = setResourceFile('summaryXslt', options.summaryXslt, "Cannot find summary xslt {}")
 
         # Excel XSLT is optional, but do report if you can't find it.
         #setResourceFile('excelXslt', options.excelXslt, 'INVALID_CONFIG_EXCELXSLT')  
-        setResourceFile('excelXslt', options.excelXslt, "Cannot find excel xslt {}")
+        options.excelXslt = setResourceFile('excelXslt', options.excelXslt, "Cannot find excel xslt {}")
         
+        # logMessageTextFile is optional resources file for messages text (SEC format)
+        options.logMessageTextFile = setResourceFile('logMessageTextFile', options.logMessageTextFile, "Cannot find logMessageTextFile {}")     
+
+        
+    def copyReAttrOptions(self, options):
+        # set EdgarRenderer options from prior processed options object
+        self.renderingService = options.renderingService        
+        self.reportFormat = options.reportFormat               
+        self.htmlReportFormat = options.htmlReportFormat
+        self.zipOutputFile = options.zipOutputFile 
+        self.sourceList = options.sourceList
+        self.sourceDict={}
+        # Parse comma and colon separated list a:b b:c, d:e:f into a dictionary {'a': ('b b','c'), 'd': ('e','f') }:
+        for source in options.sourceList:
+            if (len(source) > 0):
+                s = source.split(':') # we must accomodate spaces in tokens separated by colons
+                if (len(s) != 3):
+                    self.logWarn("Ignoring bad token {} in {}".format(s,options.sourceList))
+                else: # we do not accomodate general URL's in the 'original' field.
+                    instance = " ".join(s[0].split())
+                    doctype = " ".join(s[1].split())
+                    original = " ".join(s[2].split())
+                    self.sourceDict[instance]=(doctype,original)
+                
+        # These options have to be passed back to arelle via the options object
+        # HF, removed:     options.internetConnectivity = setProp('internetConnectivity',options.internetConnectivity, rangeList=['online','offline'])
+            
+        # inherited flag: options.abortOnMajorError = setFlag('abortOnMajorError', options.abortOnMajorError)
+        self.abortOnMajorError = options.abortOnMajorError
+        self.totalClean = options.totalClean
+        self.noEquity = options.noEquity
+        self.auxMetadata = options.auxMetadata
+        self.copyInlineFilesToOutput = options.copyInlineFilesToOutput
+        self.zipXbrlFilesToOutput = options.zipXbrlFilesToOutput
+        self.includeLogsInSummary = options.includeLogsInSummary
+        self.saveTargetInstance = options.saveTargetInstance
+        self.saveTargetFiling = options.saveTargetFiling   
+        # note that delete processed filings is only relevant when the input had to be unzipped.
+        self.deleteProcessedFilings = options.deleteProcessedFilings
+        self.debugMode = options.debugMode       
+        # These flags have to be passed back to arelle via the options object.
+        # inherited flag: options.validate = setFlag('validate', options.validate)
+        self.validate = options.validate
+        # inherited flag: options.utrValidate = setFlag('utrValidate', options.utrValidate)
+        self.utrValidate = options.utrValidate
+        # inherited flag: options.validateEFM = setFlag('validateEFM', options.validateEFM)
+        self.validateEFM = options.validateEFM
+        
+        self.processingFolder = options.processingFolder
+        self.processInZip = True # bool(options.processingFolder)
+        self.reportsFolder = options.reportsFolder # dynamically changed to relative of processing instance unless absolute
+        # keep initial reports folder, may be relative, if so reset on each new filing
+        self.initialReportsFolder = self.reportsFolder
+        self.reportInZip = True # bool(options.reportsFolder)
+        self.resourcesFolder = options.resourcesFolder
+       
+        #setResourceFile('reportXslt', options.reportXslt, 'INVALID_CONFIG_REPORTXSLT')
+        self.reportXslt = options.reportXslt
+        # Report XSLT is required when reportFormat contains 'Html'.     
+        if self.reportXslt is None and 'html' in self.reportFormat.casefold():
+            raise Exception('No {} specified when {}={} requires it.'.format('reportXslt', 'reportFormat', self.reportFormat))
+
+        # Summary XSLT is optional, but do report if you can't find it.
+        #setResourceFile('summaryXslt', options.summaryXslt, 'INVALID_CONFIG_SUMMARYXSLT')
+        self.summaryXslt = options.summaryXslt
+
+        # Excel XSLT is optional, but do report if you can't find it.
+        #setResourceFile('excelXslt', options.excelXslt, 'INVALID_CONFIG_EXCELXSLT')  
+        self.excelXslt = options.excelXslt
+        
+        self.logMessageTextFile = options.logMessageTextFile
+        
+        if self.isDaemon:
+            self.initializeReDaemonOptions(options)
+
     def initializeReSinglesOptions(self, options):
         # At the moment there are not any options relevant only for single-instance mode.
         return
     
     
+    def initializeReDaemonOptions(self, options):
+        self.logDebug("Daemon Options:")
         
+        def setLocation(location, init, mustExist=False, isfile=False):
+            value = next((os.path.join(os.getcwd(), x)
+                             for x in [init
+                                       , self.configDict[location], self.defaultValueDict[location]]
+                             if x is not None), None)
+            setattr(self, location, value)
+            self.logDebug("{}=\t{}".format(location, value))
+            if mustExist and value is None:
+                raise Exception('No {} specified for Daemon.'.format(location))
+            if mustExist and not isfile and not isdir(value):
+                raise Exception('No such {} as {}.'.format(location, value))
+            return value
+        
+        setLocation('filingsFolder', options.filingsFolder)
+        setLocation('deliveryFolder', options.deliveryFolder)
+        setLocation('errorsFolder', options.errorsFolder)
+        setLocation('archiveFolder', options.archiveFolder)
+        setLocation('failFile', options.failFile)
        
-    
+        def setProp(prop, init, required=False):
+            value = next((x
+                         for x in [init, self.configDict[prop], self.defaultValueDict[prop]]
+                         if x is not None), None)
+            setattr(self, prop, value)
+            if required and value is None:
+                raise Exception('{} not set for daemon'.format(prop))        
+            self.logDebug("{}=\t{}".format(prop, getattr(self, prop)))
+            return value
+        
+        setProp('processingFrequency', options.processingFrequency, required=True)
+        
     @property
     def renderMode(self):
         return self.renderingService.casefold()
@@ -419,254 +539,239 @@ class EdgarRenderer(Cntlr.Cntlr):
         return self.renderingService.casefold() == 'daemon'
     
     
-    
-    def validateInstance(self, options, modelXbrl, formulaOptions):
-        success = True
-        try:          
-            self.logDebug("Loading modelXbrl Formulae (if any) and performing validation")
-            modelXbrl = self.modelManager.modelXbrl
-            hasFormulae = modelXbrl.hasFormulae
-            if self.validate:
-                from arelle.Cntlr import LogToBufferHandler
-                xbrlErrorLogger = LogToBufferHandler()
-                modelXbrl.logger.addHandler(xbrlErrorLogger)
-                startedAt = time.time()
-                if options.formulaAction:  # don't automatically run formulas
-                    modelXbrl.hasFormulae = False
-                errorCountBeforeValidation = len(Utils.xbrlErrors(modelXbrl))
-                self.modelManager.validate() 
-                errorCountAfterValidation = len(Utils.xbrlErrors(modelXbrl))
-                errorCountDuringValidation = errorCountAfterValidation - errorCountBeforeValidation
-                if errorCountDuringValidation > 0:
-                    for record in xbrlErrorLogger.logRecordBuffer.copy(): # copy the list so that errors here do not append to it.
-                        try: href = record.refs[0]['href']
-                        except: href = ''
-                        try: sourceLine = record.refs[0]['sourceLine']
-                        except: sourceLine = ''
-                        if record.levelno >= logging.ERROR:
-                            self.logError(_("[{}] {} - {} {}".format(record.messageCode
-                                                                         ,record.getMessage()
-                                                                         ,href.split('#')[0]
-                                                                         ,sourceLine)))
-                    if self.modelManager.abortOnMajorError:
-                        success = False
-                        self.logFatal(_("Not attempting to render after {} validation errors").format(
-                                        errorCountDuringValidation))
-                    else:
-                        self.logInfo(_("Ignoring {} Validation errors because abortOnMajorError is not set.").format(errorCountDuringValidation))
-    
-                if options.formulaAction:  # restore setting
-                    modelXbrl.hasFormulae = hasFormulae
-                self.logInfo(Locale.format_string(self.modelManager.locale,
-                                        _("validated in %.2f secs"),
-                                        time.time() - startedAt))
-                
-            if success:
-                if options.formulaAction in ("validate", "run"):  # do nothing here if "none"
-                    from arelle import ValidateXbrlDimensions, ValidateFormula
-                    startedAt = time.time()
-                    if not self.validate:
-                        ValidateXbrlDimensions.loadDimensionDefaults(modelXbrl)
-                    # setup fresh parameters from formula optoins
-                    modelXbrl.parameters = formulaOptions.typedParameters()
-                    ValidateFormula.validate(modelXbrl, compileOnly=(options.formulaAction != "run"))
-                    self.infoLog(Locale.format_string(self.modelManager.locale,
-                                        _("formula validation and execution in %.2f secs")
-                                        if options.formulaAction == "run"
-                                        else _("formula validation only in %.2f secs"),
-                                        time.time() - startedAt))
-            
-                if options.testReport:
-                    ViewFileTests.viewTests(modelXbrl, options.testReport, options.testReportCols)
-            
-                if options.rssReport:
-                    ViewFileRssFeed.viewRssFeed(modelXbrl, options.rssReport, options.rssReportCols)
-            
-                # if options.DTSFile:
-                    # ViewFileDTS.viewDTS(modelXbrl, options.DTSFile)
-                if options.factsFile:
-                    ViewFileFactList.viewFacts(modelXbrl, options.factsFile, labelrole=options.labelRole, lang=options.labelLang, cols=options.factListCols)
-                if options.factTableFile:
-                    ViewFileFactTable.viewFacts(modelXbrl, options.factTableFile, labelrole=options.labelRole, lang=options.labelLang)
-                if options.conceptsFile:
-                    ViewFileConcepts.viewConcepts(modelXbrl, options.conceptsFile, labelrole=options.labelRole, lang=options.labelLang)
-                if options.preFile:
-                    ViewFileRelationshipSet.viewRelationshipSet(modelXbrl, options.preFile, "Presentation Linkbase", "http://www.xbrl.org/2003/arcrole/parent-child", labelrole=options.labelRole, lang=options.labelLang)
-                if options.calFile:
-                    ViewFileRelationshipSet.viewRelationshipSet(modelXbrl, options.calFile, "Calculation Linkbase", "http://www.xbrl.org/2003/arcrole/summation-item", labelrole=options.labelRole, lang=options.labelLang)
-                if options.dimFile:
-                    ViewFileRelationshipSet.viewRelationshipSet(modelXbrl, options.dimFile, "Dimensions", "XBRL-dimensions", labelrole=options.labelRole, lang=options.labelLang)
-                if options.formulaeFile:
-                    ViewFileFormulae.viewFormulae(modelXbrl, options.formulaeFile, "Formulae", lang=options.labelLang)
-                if options.viewArcrole and options.viewFile:
-                    ViewFileRelationshipSet.viewRelationshipSet(modelXbrl, options.viewFile, basename(options.viewArcrole), options.viewArcrole, labelrole=options.labelRole, lang=options.labelLang)
-                if options.roleTypesFile:
-                    ViewFileRoleTypes.viewRoleTypes(modelXbrl, options.roleTypesFile, "Role Types", isArcrole=False, lang=options.labelLang)
-                if options.arcroleTypesFile:
-                    ViewFileRoleTypes.viewRoleTypes(modelXbrl, options.arcroleTypesFile, "Arcrole Types", isArcrole=True, lang=options.labelLang)
-                for pluginXbrlMethod in PluginManager.pluginClassMethods("CntlrCmdLine.Xbrl.Run"):
-                    pluginXbrlMethod(self, options, modelXbrl)
-    
-        except (IOError, EnvironmentError) as err:
-            #self.logError(ErrorMgr.getError('SAVE_OUTPUT_ERROR').format(err))
-            self.logError("Failed to save output: {}".format(err))
-            success = False
-        except Exception as err:
-            success = False
-            tb = sys.exc_info()[2]  # t,v,tb tuple
-            listOfFrames = []
-            n = 0
-            while tb is not None: 
-                f = tb.tb_frame     
-                lineno = tb.tb_lineno     
-                co = f.f_code     
-                filename = co.co_filename     
-                name = co.co_name     
-                if filename in linecache.cache:     
-                    lines = linecache.cache[filename][2] 
-                else:
+    def dequeueInputZip(self, options):  # returns the location of zip ready to unpack
+        # upon exit, options.entrypoint is set to absolute location of the zip file after the move,
+        # and self.processingFolder is set to absolute location of where it should be processed.
+        inputFileSource = None
+        zipfound = False  
+        options.entrypointFile = None # no entrypoint file(s)
+        # check for next filing in input folder
+        # as usual, self.{some}Folder is absolute, while options.{some}Folder is what was specified in the input.
+        self.originalProcessingFolder = os.path.join(getcwd(), self.processingFolder)    
+        self.logDebug(_("Checking for the oldest zip file in {}").format(self.filingsFolder))            
+        while not zipfound:
+            for file in sorted(os.listdir(self.filingsFolder), key=lambda file: os.stat(join(self.filingsFolder, file)).st_mtime):
+                if not zipfound and Utils.isZipFilename(file):
+                    inputFileSource = join(self.filingsFolder, file)      
+                    self.processingFolder = IoManager.createNewFolder(self,self.originalProcessingFolder,file)
+                    # reportsFolder = normpath(join(self.processingFolder,options.reportsFolder)) 
+                    processingFileSource = join(self.processingFolder, file)
+                    if not exists(inputFileSource): continue  # it got deleted before we could process it.
+                    self.logDebug(_("Found a new zip file to process; moving {} to Processing folder ").format(inputFileSource))                   
                     try:
-                        lines = linecache.updatecache(filename, f.f_globals)
-                    except:
-                        lines = []
-                if 1 <= lineno <= len(lines):
-                    line = lines[lineno - 1]   
-                else:
-                    line = ''                    
-                if line: 
-                    line = line.strip()     
-                else: 
-                    line = "(source not available)"    
-                listOfFrames.append((filename, lineno, name, line))     
-                tb = tb.tb_next     
-                n = n + 1
-            text = "Stack trace, most recent frame last:\n"
-            for (filename, lineno, name, line) in listOfFrames:
-                try:
-                    text += "{0}".format(name)
-                    text += "\t({0}".format(lineno)
-                    text += " in {0})".format(filename)
-                    text += "\n\t{0}\n".format(line)
-                except:
-                    text += "(UNPRINTABLE STACK FRAME)\n"
-            #self.logError(_(ErrorMgr.getError('RE3_STACK_FRAME_ERROR')).format(err, text))
-            self.logError(_('[Exception] Failed to complete request: {} {}').format(err, text))
-        return success, modelXbrl 
-    
-    
-    
-    def runRenderer(self, options, sourceZipStream=None, responseZipStream=None):
-        """Process command line arguments or web service request, such as to load and validate an XBRL document, or start web server.        
-        When a web server has been requested, this method may be called multiple times, once for each web service (REST) request that requires processing.
-        Otherwise (when called for a command line request) this method is called only once for the command line arguments request.
-                   
-        :param options: OptionParser options from parse_args of main argv arguments (when called from command line) or corresponding arguments from web service (REST) request.
-        :type options: optparse.Values
-        """
-        self.logDebug("Starting "+VERSION)
-        self.logDebug("Command line arguments: {!s}".format(sys.argv))
-        # Process command line options
-        self.processShowOptions(options)
-    
-        # set the filesource (input zip file if any)
-        filesource = FileSource.openFileSource(options.entrypoint, self.cntlr, sourceZipStream)
-        
-        if responseZipStream:
-            self.reportZip = zipfile.ZipFile(responseZipStream, 'w', zipfile.ZIP_DEFLATED, True)
-        elif options.zipOutputFile:
-            self.reportZip = zipfile.ZipFile(options.zipOutputFile, 'w', zipfile.ZIP_DEFLATED, True)
-        else:
-            self.reportZip = None
-      
+                        IoManager.move_clobbering_file(inputFileSource, processingFileSource)
+                        options.entrypointFile = processingFileSource
+                        zipfound = True              
+                    except IOError as err: 
+                        self.logError(str(err))
+                        #self.logError(_(ErrorMgr.getError('FILING_MOVE_ERROR').format(self.processingFolder)))              
+                        self.logError(_("Could not remove {}").format(self.processingFolder))              
+                        try: removedirs(self.processingFolder)
+                        except IOError: continue
+                    # provide these parameters to FilingStart via options
+                    options.zipOutputFile = join(self.processingFolder, "-out".join(os.path.splitext(file)))
+                    options.doneFile = join(self.archiveFolder, file)
+                    # self.failFile = join(self.errorsFolder,file)
+                    break
+            # no more files.
+            if not zipfound:
+                sleep = self.processingFrequency
+                self.logDebug(_("Sleeping for " + sleep + " seconds. "))
+                time.sleep(float(sleep))
+                self.cntlr.logHandler.flush() # flush log buffer (if any)
+        return
+
+    def setProcessingFolder(self, filesource, entryPointFile=None):
+        if filesource and self.processingFolder == self.defaultValueDict['processingFolder']:
+            if filesource.isOpen:
+                self.processingFolder = os.path.dirname(filesource.basefile)
+            else:
+                self.processingFolder = os.path.dirname(filesource.url)
+        if entryPointFile and os.path.exists(entryPointFile): # for testcase, is different than filesource, which points to testcase
+            if not (filesource and filesource.isOpen and filesource.isArchive and entryPointFile.startswith(filesource.basefile)):
+                self.processingFolder = os.path.dirname(entryPointFile)   
+                
+    def daemonStartup(self, options):
+        # startup (when in Deamon mode)
+        self.retrieveDefaultREConfigParams(options)
+        self.initializeReOptions(options)
+        if self.isDaemon:
+            self.initializeReDaemonOptions(options)
+            IoManager.handleFolder(self, self.filingsFolder, False, False) 
+            IoManager.handleFolder(self, self.deliveryFolder, False, self.totalClean)
+            IoManager.handleFolder(self, self.archiveFolder, False, self.totalClean)
+            if self.errorsFolder is not None:  # You might not have an errors folder.
+                IoManager.handleFolder(self, self.errorsFolder, False, self.totalClean)             
+            self.dequeueInputZip(options)
+            
+    def filingStart(self, cntlr, options, entrypointFiles, filing):
+        # start a (mult-iinstance) filing
+        filing.edgarRenderer = self
+        self.reportZip = filing.reportZip
         # Set default config params; overwrite with command line args if necessary
         self.retrieveDefaultREConfigParams(options)
         # Initialize the folders and objects required in both modes.
-        self.initializeReOptions(options)
-        
-        def innerRunRenderer():
-            if self.isSingles: # Single mode folders are relative to source file and TEMP if not absolute.
-                self.initializeReSinglesOptions(options)
+        if options.sourceList is None: # options is none on first GUI run testcase variation
+            self.initializeReOptions(options)
+        else: # options previously initialized
+            self.copyReAttrOptions(options)
+        mdlMgr = cntlr.modelManager
+        self.validatedForEFM = not cntlr.hasGui and mdlMgr.validateDisclosureSystem and getattr(mdlMgr.disclosureSystem, "EFMplugin", False)
+        self.instanceSummaryList = []
+        self.instanceList = []
+        self.inlineList = []
+        self.otherXbrlList = []
+        self.supplementList = []
+        self.supplementalFileList = []
+        self.renderedFiles = filing.renderedFiles # filing-level rendered files
+        self.setProcessingFolder(filing.filesource)
+        self.abortedDueToMajorError = False
+        if self.isDaemon:
+            self.zipOutputFile = options.zipOutputFile
+            self.doneFile = options.doneFile
+            
+    def processInstance(self, options, modelXbrl, filing, report):
+        # skip rendering if major errors and abortOnMajorError
+        # errorCountDuringValidation = len(Utils.xbrlErrors(modelXbrl))
+        # won't work for all possible logHandlers (some emit immediately)
+        errorCountDuringValidation = sum(1 for e in modelXbrl.errors if isinstance(e, str)) # don't count assertion results dict if formulas ran
+        if errorCountDuringValidation > 0:
+            if self.abortOnMajorError: # HF renderer raises exception on major errors: self.modelManager.abortOnMajorError:
+                    self.logFatal(_("Not attempting to render after {} validation errors").format(
+                                           errorCountDuringValidation))
+                    self.abortedDueToMajorError = True
+                    return
             else:
-                # Daemon mode must have at least input, processing, and output folders,
-                # but the entrypointFolder and the reportsFolder are created as temporary locations.
-                self.initializeReDaemonOptions(options)
-                IoManager.handleFolder(self, self.filingsFolder, False, False) 
-                IoManager.handleFolder(self, self.deliveryFolder, False, self.totalClean)
-                IoManager.handleFolder(self, self.archiveFolder, False, self.totalClean)
-                if self.errorsFolder is not None:  # You might not have an errors folder.
-                    IoManager.handleFolder(self, self.errorsFolder, False, self.totalClean)             
-                self.dequeueInputZip(options)
-            if options.entrypoint is None and not sourceZipStream:
-                self.logInfo("No filing specified. Exiting renderer.")
-                return False
-            print(options.entrypoint) # write filename to stdout so user can see what is processed; not needed in the log.
-            if not IoManager.unpackInput(self, options, filesource): return False
-            if filesource.isZip and self.zipOutputFile is None and not self.reportZip: 
-                # Output zip name same as input by default
-                self.zipOutputFile = basename(options.entrypoint)            
-            modelXbrl = None        
-            self.supplementalFileList = [basename(f) for f in self.supplementList]
-            self.instanceSummaryList = []
-            if self.reportsFolder and os.path.isabs(self.reportsFolder):
-                self.reportsFolder = join(self.entrypointFolder, self.reportsFolder)
-                IoManager.handleFolder(self, self.reportsFolder, True, self.totalClean)
-            elif self.entrypointFolder and self.reportsFolder:
-                self.reportsFolder = join(self.entrypointFolder, self.reportsFolder)
-                IoManager.handleFolder(self, self.reportsFolder, True, self.totalClean)
-            loopnum = 0
-            success = True
-            self.logDebug(_("Pre-rendering stats: NumInstance: {!s}; NumInline: {!s}; NumSupplemental: {!s} "
-                           ).format(len(self.instanceList), len(self.inlineList), len(self.supplementList)))
-            for inputFileSource in sorted(self.instanceList + self.inlineList):
-                if success: 
-                    loopnum += 1
-                    if filesource.isZip:
-                        filesource.select(inputFileSource)
-                        inputFileSource = filesource
-                    else:
-                        inputFileSource = join(self.processingFolder, inputFileSource)
-                    self.entrypoint = inputFileSource
-                    (success, modelXbrl, firstStartedAt, fo
-                     ) = self.loadModel(options, inputFileSource)
-                    self.firstStartedAt = firstStartedAt
-                    if modelXbrl is not None and self.validate: 
-                        (success, modelXbrl) = self.validateInstance(options, modelXbrl, fo)     
-                    if success and modelXbrl is not None: 
-                        RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
-                        self.logDebug(_("Start the rendering process on {}, filing loop {!s}.").format(inputFileSource, loopnum))
-                        # not in 3.3.0.814: Inline.markFactLocations(modelXbrl)
-                        success = Filing.mainFun(self, modelXbrl, self.reportsFolder)
-                        self.logDebug(_("End of rendering on {}.").format(inputFileSource))
-            
-            if success and modelXbrl:                
-                self.postprocessInstance(options, modelXbrl)
-                self.logDebug("Post-processing complete")
-            return success # from innerRunRenderer
-                
-        if self.debugMode:
-            success = innerRunRenderer()
-        else:
-            try:
-                success = innerRunRenderer()
-            except Exception as err:
-                self.logError("{} {}".format(err, "")) # traceback.format_tb(sys.exc_info()[2]))) # This takes us into infinite recursion.
-                success = False
+                    self.logInfo(_("Ignoring {} Validation errors because abortOnMajorError is not set.").format(errorCountDuringValidation))
+        self.setProcessingFolder(modelXbrl.fileSource, report.entryPoint.get("file"))
+        # if not reportZip and reportsFolder is relative, make it relative to source file location (on first report)
+        if not filing.reportZip and self.initialReportsFolder and len(filing.reports) == 1:
+            if not os.path.isabs(self.initialReportsFolder) and os.path.exists(self.processingFolder):
+                self.reportsFolder = os.path.join(self.processingFolder, self.initialReportsFolder)
+            IoManager.handleFolder(self, self.reportsFolder, True, self.totalClean)
+        self.renderedFiles = report.renderedFiles # report-level rendered files
+        if report.basename.endswith(".xml"):
+            self.instanceList.append(report.basename)
+        elif report.basename.endswith(".htm"):
+            self.inlineList.append(report.basename)
+        self.supplementalFileList += sorted(report.reportedFiles)
+        RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
+        self.loopnum = getattr(self, "loopnum", 0) + 1
+        try:
+            Inline.saveTargetDocumentIfNeeded(self,options,modelXbrl)
+            success = Filing.mainFun(self, modelXbrl, self.reportsFolder)
+        except Utils.RenderingException as ex:
+            success = False # error message provided at source where exception was raised
+            self.logDebug(_("RenderingException after {} validation errors: {}").format(errorCountDuringValidation, ex))
+        except Exception as ex:
+            success = False
+            if errorCountDuringValidation > 0:
+                self.logDebug(_("Exception after {} validation errors: {}").format(errorCountDuringValidation, ex))
+            else:
+                self.logDebug(_("Exception with no validation errors: {}").format(ex))
+            self.logDebug(_("Exception traceback: {}").format(traceback.format_tb(sys.exc_info()[2])))
+        self.renderedFiles = filing.renderedFiles # filing-level rendered files
         if not success:
-            self.postprocessFailure(options) 
-            self.logDebug("Filing processing complete")
-            
-        if self.reportZip:
-            if responseZipStream:
-                if options.logFile:
-                    if options.logFile.endswith(".xml"):
-                        self.reportZip.writestr(options.logFile, self.cntlr.logHandler.getXml())
-                    else:
-                        self.reportZip.writestr(options.logFile, self.cntlr.logHandler.getText())
+            self.success = False            
+                
+    def filingEnd(self, cntlr, options, filesource, filing):
+        if self.abortedDueToMajorError:
+            return # major errors detected
+        if self.success:
+            if self.xlWriter:
+                self.xlWriter.save()
+                self.xlWriter.close()
+                del self.xlWriter 
+                self.logDebug("Excel rendering complete")
+            def copyResourceToReportFolder(filename):
+                source = join(self.resourcesFolder, filename)
+                if not self.reportZip:
+                    target = join(self.reportsFolder, filename)
+                    if not exists(target):
+                        os.makedirs(self.reportsFolder, exist_ok=True)
+                        shutil.copyfile(source, target)
+                        self.renderedFiles.add(filename)             
                 else:
-                    self.reportZip.writestr("log.txt", self.cntlr.logHandler.getText())
-            self.reportZip.close()
-        return success
-    
+                    self.reportZip.write(source, filename)
+            if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:
+                copyResourceToReportFolder("Show.js")
+                copyResourceToReportFolder("report.css")
+            if self.summaryXslt is not None:
+                copyResourceToReportFolder("RenderingLogs.xslt")  # TODO: This will go away
+                self.renderedFiles.add("RenderingLogs.xslt")
+            # TODO: At this point would be nice to call out any files not loaded in any instance DTS
+            inputsToCopyToOutputList = self.supplementList
+            if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
+            for filename in inputsToCopyToOutputList:
+                source = join(self.processingFolder, filename)
+                if not self.reportZip:
+                    target = join(self.reportsFolder, filename)
+                    if exists(target): remove(target)
+                    shutil.copyfile(source, target)                
+                else:
+                    self.reportZip.write(source, filename)
+                        
+        
+            self.logDebug("Instance post-processing complete")
+            
+            self.logMessageText = {}
+            if self.logMessageTextFile:
+                for msgElt in etree.parse(self.logMessageTextFile).iter("message"):
+                    self.logMessageText[msgElt.get("code")] = re.sub(
+                        r"\$\((\w+)\)", r"%(\1)s", msgElt.text.strip())
+            
+            summary = Summary.Summary(self)  
+            rootETree = summary.buildSummaryETree()
+            IoManager.writeXmlDoc(rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
+            self.renderedFiles.add("FilingSummary.xml")
+            if self.summaryXslt and len(self.summaryXslt) > 0 :
+                summary_transform = etree.XSLT(etree.parse(self.summaryXslt))
+                result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'),
+                                           accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")),
+                                           resourcesFolder="'{}'".format(self.resourcesFolder.replace("\\","/")))
+                IoManager.writeHtmlDoc(result, self.reportZip, self.reportsFolder, 'FilingSummary.htm')
+                self.renderedFiles.add("FilingSummary.htm")
+            self.logDebug("Write filing summary complete")
+            if self.auxMetadata and filing.hasInlineReport: 
+                summary.writeMetaFiles()
+            self.logDebug("Write meta files complete")
+            if self.zipXbrlFilesToOutput and hasattr(filing, "accessionNumber"):
+                _fileName = filing.accessionNumber + "-xbrl.zip"
+                if not self.reportZip:
+                    xbrlZip = zipfile.ZipFile(os.path.join(self.reportsFolder, _fileName), mode='w', compression=zipfile.ZIP_DEFLATED, allowZip64=False)
+                else:
+                    zipStream = io.BytesIO()
+                    xbrlZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
+                for report in filing.reports:
+                    _xbrldir = os.path.dirname(report.entryPoint["file"])
+                    for reportedFile in sorted(report.reportedFiles):
+                        fileStream = filesource.file(os.path.join(_xbrldir, reportedFile), binary=True)[0]  # returned in a tuple
+                        xbrlZip.writestr(reportedFile, fileStream.read())
+                        fileStream.close()
+                    filesource.close()
+                xbrlZip.close()
+                if self.reportZip:
+                    zipStream.seek(0)
+                    self.controller.reportZip.writestr(_fileName, zipStream.read().encode("utf-8"))
+                    zipStream.close()
+                self.logDebug("Write {} complete".format(_fileName))
+            
+            if self.isDaemon: # save file in Archives
+                try:
+                    if self.reportZip:
+                        self.reportZip.close() # must be closed before moving
+                    result = IoManager.move_clobbering_file(self.zipOutputFile, # remove -out from output zip
+                                                            os.path.join(self.deliveryFolder, os.path.basename(self.zipOutputFile)[:-8] + ".zip") )
+                    IoManager.move_clobbering_file(options.entrypointFile, self.doneFile)
+                    self.logDebug(_("Successfully post-processed to {}.").format(result))
+                except OSError as err:
+                    #self.logError(_(ErrorMgr.getError('POST_PROCESSING_ERROR').format(err)))
+                    self.logError(_("Failure: Post-processing I/O or OS error: {}").format(err))
+                    
+        elif self.isDaemon: # not successful
+            self.postprocessFailure(filing.options)
+
+
     
     def postprocessInstance(self, options, modelXbrl):
         Inline.saveTargetDocumentIfNeeded(self,options,modelXbrl)
@@ -768,14 +873,32 @@ class EdgarRenderer(Cntlr.Cntlr):
                 IoManager.move_clobbering_file(options.entrypoint, self.errorsFolder)
                 print(self.deliveryFolder + " " + errlogpath)
                 with open(errlogpath, 'w', encoding='utf-8') as f:
+                    ''' get all messages from log, translate if required
                     for errmsg in self.ErrorMsgs:
                         message = "[" + errmsg.msgCode + "] " + errmsg.msg
-                        print(message, file=f)
+                    '''
+                    logHandler = self.cntlr.logHandler
+                    logMessageText = self.controller.logMessageText
+                    for logRec in getattr(logHandler, "logRecordBuffer", ()): # non buffered handlers don't keep log records (e.g., log to print handler)
+                        if logRec.levelno > logging.INFO:
+                            fileLines = defaultdict(set)
+                            for ref in logRec.refs:
+                                href = ref.get("href")
+                                if href:
+                                    fileLines[href.partition("#")[0]].add(ref.get("sourceLine", 0))
+                            _text = logHandler.format(logRec) # sets logRec.file
+                            if logRec.messageCode in logMessageText:
+                                _text = logMessageText[logRec.messageCode] % logRec.args
+                                if hasattr(logHandler.formatter, "fileLines"):
+                                    _fileLines = logHandler.formatter.fileLines(logRec)
+                                    if _fileLines:
+                                        _text += " - " + _fileLines
+                            print(_text, file=f)
                     f.close() 
 
 
     
-    def addToLog(self, message, messageArgs=(), messageCode='error', file=basename(__file__), level=logging.DEBUG):
+    def addToLog(self, message, messageArgs={}, messageCode='error', file=basename(__file__), level=logging.DEBUG):
         # Master log and error/warning msg handler            
         messageDict = {'fatal':logging.FATAL
                        , 'error':logging.ERROR
@@ -792,164 +915,183 @@ class EdgarRenderer(Cntlr.Cntlr):
             message += ' --' + (self.entrypoint.url if isinstance(self.entrypoint,FileSource.FileSource) else self.entrypoint)
         message = message.encode('utf-8', 'replace').decode('utf-8')
         if messageLevel >= logging.INFO:
-            self.ErrorMsgs.append(Errmsg(messageCode, message))
+            self.ErrorMsgs.append(Utils.Errmsg(messageCode, message))
+            
+        # dereference non-string messageArg values
+        messageArgs = dict((k,str(v)) for k,v in messageArgs.items())
 
         if (self.modelManager and getattr(self.modelManager, 'modelXbrl', None)):
-            self.modelManager.modelXbrl.logger.messageLevelFilter = None
-            self.modelManager.modelXbrl.log(messageLevel, messageCode, message, *messageArgs)
+            self.modelManager.modelXbrl.log(logging.getLevelName(messageLevel), messageCode, message, *messageArgs)
         else:
             self.cntlr.addToLog(message, messageArgs=messageArgs, messageCode=messageCode, file=file, level=messageLevel)
             
     # Lowercase tokens apparently write to standard output??
     
-    def logTrace(self, message, messageArgs=(), file=basename(__file__)):
+    def logTrace(self, message, messageArgs={}, file=basename(__file__)):
         self.addToLog(str(message), messageArgs=messageArgs, file=file, level=logging.NOTSET, messageCode='trace')
 
-    def logDebug(self, message, messageArgs=(), file=basename(__file__)):
+    def logDebug(self, message, messageArgs={}, file=basename(__file__)):
         self.addToLog(str(message), messageArgs=messageArgs, file=file, level=logging.DEBUG, messageCode='debug')
 
-    def logInfo(self, message, messageArgs=(), file=None):
-        self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.INFO, messageCode='info')
+    def logInfo(self, message, messageArgs={}, file=None, messageCode='info'):
+        self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.INFO, messageCode=messageCode)
 
-    def logWarn(self, message, messageArgs=(), file=None):
-        self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.WARN, messageCode='warn')
+    def logWarn(self, message, messageArgs={}, file=None, messageCode='warn'):
+        self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.WARN, messageCode=messageCode)
 
-    def logError(self, message, messageArgs=(), file=None):
-        self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.ERROR, messageCode='error')
+    def logError(self, message, messageArgs={}, file=None, messageCode='error'):
+        self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.ERROR, messageCode=messageCode)
 
-    def logFatal(self, message, messageArgs=(), file=None):
-        self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.FATAL, messageCode='fatal')
+    def logFatal(self, message, messageArgs={}, file=None, messageCode='fatal'):
+        self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.FATAL, messageCode=messageCode)
 
-def edgarRendererCmdLineRun(cntlr, options, sourceZipStream=None, responseZipStream=None, **kwargs):
-    # adjust for Arelle CntlrCmdLine to EdgarRenderer options names
-    options.entrypoint = options.entrypointFile
-    # prevent cntrlCmdLine from running normal xbrl load after this plugin
-    options.entrypointFile = None
-    
-    EdgarRenderer(cntlr).runRenderer(options, sourceZipStream, responseZipStream)
-    
-    
-# Arelle plugin integrations for validate/EFM
-def setProcessingFolder(edgarRenderer, filesource):
-    if filesource and edgarRenderer.processingFolder == edgarRenderer.defaultValueDict['processingFolder']:
-        if filesource.isOpen:
-            if filesource.isArchive:
-                edgarRenderer.processingFolder = filesource.basefile
-            else:
-                edgarRenderer.processingFolder = os.path.dirname(filesource.basefile)
-        else:
-            edgarRenderer.processingFolder = os.path.dirname(filesource.url)
-    
+def edgarRendererDaemonStartup(cntlr, options, sourceZipStream=None, *args, **kwargs):
+    """ starts up EdgarRenderer when run as a Deamon (no input files selected) """
+    EdgarRenderer(cntlr).daemonStartup(options)
+        
 def edgarRendererFilingStart(cntlr, options, entrypointFiles, filing):
-    filing.edgarRenderer = edgarRenderer = EdgarRenderer(cntlr)
-    edgarRenderer.reportZip = filing.reportZip
-    # Set default config params; overwrite with command line args if necessary
-    edgarRenderer.retrieveDefaultREConfigParams(options)
-    # Initialize the folders and objects required in both modes.
-    edgarRenderer.initializeReOptions(options)
-    edgarRenderer.instanceSummaryList = []
-    edgarRenderer.instanceList = []
-    edgarRenderer.inlineList = []
-    edgarRenderer.otherXbrlList = []
-    edgarRenderer.supplementList = []
-    edgarRenderer.supplementalFileList = []
-    edgarRenderer.renderedFiles = filing.renderedFiles # filing-level rendered files
-    if not filing.reportZip and edgarRenderer.reportsFolder:
-        IoManager.handleFolder(edgarRenderer, edgarRenderer.reportsFolder, True, edgarRenderer.totalClean)
-    setProcessingFolder(edgarRenderer, filing.filesource)
+    """ prepares EdgarRenderer for a series of muiltple instances """
+    EdgarRenderer(cntlr).filingStart(cntlr, options, entrypointFiles, filing)
 
 def edgarRendererXbrlRun(cntlr, options, modelXbrl, filing, report):
-    edgarRenderer = filing.edgarRenderer
-    setProcessingFolder(edgarRenderer, modelXbrl.fileSource)
-    edgarRenderer.renderedFiles = report.renderedFiles # report-level rendered files
-    if report.basename.endswith(".xml"):
-        edgarRenderer.instanceList.append(report.basename)
-    elif report.basename.endswith(".htm"):
-        edgarRenderer.inlineList.append(report.basename)
-    edgarRenderer.supplementalFileList += sorted(report.reportedFiles)
-    RefManager.RefManager(edgarRenderer.resourcesFolder).loadAddedUrls(modelXbrl, edgarRenderer)  # do this after validation.
-    edgarRenderer.loopnum = getattr(edgarRenderer, "loopnum", 0) + 1
-    edgarRenderer.logDebug(_("Start the rendering process on {}, filing loop {!s}.").format(modelXbrl.modelDocument.basename, edgarRenderer.loopnum))
-    # not in 3.3.0.814: Inline.markFactLocations(modelXbrl)
-    Inline.saveTargetDocumentIfNeeded(edgarRenderer,options,modelXbrl)
-    success = Filing.mainFun(edgarRenderer, modelXbrl, edgarRenderer.reportsFolder)
-    edgarRenderer.renderedFiles = filing.renderedFiles # filing-level rendered files
+    """ processes a single instance """
+    filing.edgarRenderer.processInstance(options, modelXbrl, filing, report)
 
-def edgarRendererFilingEnd(cntlr, options, filing):
-    edgarRenderer = filing.edgarRenderer
-    if edgarRenderer.xlWriter:
-        edgarRenderer.xlWriter.save()
-        edgarRenderer.xlWriter.close()
-        del edgarRenderer.xlWriter 
-        edgarRenderer.logDebug("Excel rendering complete")
-    def copyResourceToReportFolder(filename):
-        source = join(edgarRenderer.resourcesFolder, filename)
-        if not edgarRenderer.reportZip:
-            target = join(edgarRenderer.reportsFolder, filename)
-            if not exists(target):
-                os.makedirs(edgarRenderer.reportsFolder, exist_ok=True)
-                shutil.copyfile(source, target)
-                edgarRenderer.renderedFiles.add(filename)             
-        else:
-            edgarRenderer.reportZip.write(source, filename)
-    if 'html' in (edgarRenderer.reportFormat or "").casefold() or edgarRenderer.summaryXslt is not None:
-        copyResourceToReportFolder("Show.js")
-        copyResourceToReportFolder("report.css")
-    if edgarRenderer.summaryXslt is not None:
-        copyResourceToReportFolder("RenderingLogs.xslt")  # TODO: This will go away
-        edgarRenderer.renderedFiles.add("RenderingLogs.xslt")
-    # TODO: At this point would be nice to call out any files not loaded in any instance DTS
-    inputsToCopyToOutputList = edgarRenderer.supplementList
-    if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
-    for filename in inputsToCopyToOutputList:
-        source = join(edgarRenderer.processingFolder, filename)
-        if not edgarRenderer.reportZip:
-            target = join(edgarRenderer.reportsFolder, filename)
-            if exists(target): remove(target)
-            shutil.copyfile(source, target)                
-        else:
-            self.reportZip.write(source, filename)
-    edgarRenderer.logDebug("Instance post-processing complete")
-    
-    
-    
-    summary = Summary.Summary(edgarRenderer)  
-    rootETree = summary.buildSummaryETree()
-    IoManager.writeXmlDoc(rootETree, edgarRenderer.reportZip, edgarRenderer.reportsFolder, 'FilingSummary.xml')
-    edgarRenderer.renderedFiles.add("FilingSummary.xml")
-    if edgarRenderer.summaryXslt and len(edgarRenderer.summaryXslt) > 0 :
-        summary_transform = etree.XSLT(etree.parse(edgarRenderer.summaryXslt))
-        result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'),
-                                   accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")))
-        IoManager.writeHtmlDoc(result, edgarRenderer.reportZip, edgarRenderer.reportsFolder, 'FilingSummary.htm')
-        edgarRenderer.renderedFiles.add("FilingSummary.htm")
-    edgarRenderer.logDebug("Write filing summary complete")
-    if edgarRenderer.auxMetadata and filing.hasInlineReport: 
-        summary.writeMetaFiles()
-    edgarRenderer.logDebug("Write meta files complete")
-    
+def edgarRendererFilingEnd(cntlr, options, filesource, filing):
+    """ ends processing of a filing (after all intances have been processed) """
+    filing.edgarRenderer.filingEnd(cntlr, options, filesource, filing)
+        
+def edgarRendererGuiRun(cntlr, modelXbrl, attach):
+    """ run EdgarRenderer using GUI interactions for a single instance or testcases """
+    if cntlr.hasGui:
+        # may use GUI mode to process a single instance or test suite
+        options = PythonUtil.attrdict(# simulate options that CntlrCmdLine provides
+            configFile = os.path.join(os.path.dirname(__file__), 'conf', 'config_for_instance.xml'),
+            renderingService = 'Instance',
+            reportFormat = 'Html', # for Rall temporarily override report format to force only xml file output
+            htmlReportFormat = None,
+            zipOutputFile = None,
+            sourceList = None, # after initialization this is an iterable string, not a None
+            internetConnectivity = None,
+            totalClean = True, # force clean output folder
+            noEquity = None,
+            auxMetadata = None,
+            copyInlineFilesToOutput = None,
+            zipXbrlFilesToOutput = None,
+            includeLogsInSummary = None,
+            saveTargetInstance = None,
+            saveTargetFiling = None,
+            deleteProcessedFilings = None,
+            debugMode = None,
+            validate = None,
+            utrValidate = None,
+            validateEFM = None,
+            abortOnMajorError = False, # inherited
+            processingFolder = None,
+            processInZip = None,
+            reportsFolder = "out", # default to reports subdirectory of source input
+            reportInZip = None,
+            resourcesFolder = None,
+            reportXslt = "InstanceReportTable.xslt", # temporarily generate R-all contents
+            summaryXslt = '', # no FilingSummary.htm for Rall.htm production
+                              # "LocalSummarize.xslt", # takes resources parameter for include dir
+            excelXslt = None,
+            logMessageTextFile = None,
+            logFile = None # from cntlrCmdLine but need to simulate for GUI operation
+            )
+        if modelXbrl.modelDocument.type in ModelDocument.Type.TESTCASETYPES:
+            modelXbrl.efmOptions = options  # save options in testcase's modelXbrl
+        if modelXbrl.modelDocument.type not in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INSTANCE):
+            return
+        report = PythonUtil.attrdict( # simulate report
+            isInline = modelXbrl.modelDocument.type == ModelDocument.Type.INLINEXBRL,
+            reportedFiles = set(),
+            renderedFiles = set(),
+            entryPoint = {"file": modelXbrl.modelDocument.filepath},
+            basename = modelXbrl.modelDocument.basename
+            )
+        filing = PythonUtil.attrdict( # simulate filing
+            filesource = modelXbrl.fileSource,
+            reportZip = None,
+            renderedFiles = set(),
+            reports = [report],
+            hasInlineReport = report.isInline
+            )
+        edgarRendererFilingStart(cntlr, options, {}, filing)
+        edgarRenderer = filing.edgarRenderer
+        edgarRendererXbrlRun(cntlr, options, modelXbrl, filing, report)
+        reportsFolder = edgarRenderer.reportsFolder
+        edgarRendererFilingEnd(cntlr, options, modelXbrl.fileSource, filing)
+        '''
+        The usual "mustard menu" output uses jquery to locally load the R files.
+        It does not seem to work in local browsers.
+        Temporarily this function just does an Rall.htm for local viewing.
+        '''
+        if reportsFolder and os.path.exists(os.path.join(edgarRenderer.reportsFolder, "FilingSummary.xml")):
+            edgarRenderer.logDebug("Generate all-reports htm file")
+            rAll = [b'''
+<html>
+  <head>
+    <title>View Filing Data</title>
+    <link rel="stylesheet" type="text/css" href="report.css"/>
+    <script type="text/javascript" src="Show.js">/* Do Not Remove This Comment */</script>
+    <script type="text/javascript">
+                    function toggleNextSibling (e) {
+                    if (e.nextSibling.style.display=='none') {
+                    e.nextSibling.style.display='block';
+                    } else { e.nextSibling.style.display='none'; }
+                    }</script>
+  </head>
+  <body>
+''']
+            filingSummaryTree = etree.parse(os.path.join(edgarRenderer.reportsFolder, "FilingSummary.xml"))
+            for htmlFileName in filingSummaryTree.iter(tag="HtmlFileName"):
+                rFile = htmlFileName.text.strip()
+                rFilePath = os.path.join(edgarRenderer.reportsFolder, rFile)
+                edgarRenderer.logDebug("Appending report file {}".format(rFile))
+                with open(rFilePath, mode='rb') as f:
+                    rAll.append(f.read())
+                os.remove(rFilePath)
+            rAll.append(b'''
+  </body>
+</html>
+''')
+            with open(os.path.join(edgarRenderer.reportsFolder, "Rall.htm"), mode='wb') as f:
+                f.write(b"".join(rAll))
+            shutil.copyfile(os.path.join(edgarRenderer.resourcesFolder, "report.css"), os.path.join(edgarRenderer.reportsFolder, "report.css"))
+            edgarRenderer.logDebug("Write {} complete".format("Rall.htm"))
+            # display on web browser
+            import webbrowser
+            webbrowser.open(url="file://{}/{}".format(reportsFolder.replace("\\","/"), "Rall.htm"))
 
-'''
-Errors and Logging
-'''
-    
-class Errmsg(object):
-    def __init__(self, messageCode, message):
-        self.msgCode = messageCode
-        self.msg = message
+def testcaseVariationExpectedSeverity(modelTestcaseVariation):
+    # allow severity to appear on any variation sub-element (such as result)
+    _severity = XmlUtil.descendantAttr(modelTestcaseVariation, None, "error", "severity")
+    if _severity is not None:
+        return _severity.upper()
+    return None
 
 
 __pluginInfo__ = {
     'name': 'Edgar Renderer',
-    'version': '3.3.0.814',
+    'version': '3.3.1.845',
     'description': "This plug-in implements U.S. SEC Edgar Renderer.  ",
     'license': 'Apache-2',
     'author': 'U.S. SEC Employees and Mark V Systems Limited',
     'copyright': '(c) Portions by SEC Employees not subject to domestic copyright, otherwise (c) Copyright 2015 Mark V Systems Limited, All rights reserved.',
-    # classes of mount points (required)
+    'import': ('validate/EFM', 'transforms/SEC.py'), # import dependent modules
+    # add Edgar Renderer options to command line & web service options
     'CntlrCmdLine.Options': edgarRendererCmdLineOptionExtender,
-    #'CntlrCmdLine.Utility.Run': edgarRendererCmdLineRun,
+    # startup for Daemon mode (polls for filings folder's oldest input zip file)
+    'CntlrCmdLine.Utility.Run': edgarRendererDaemonStartup,
+    # prepare to process a filing of multiple instances
     'EdgarRenderer.Filing.Start': edgarRendererFilingStart,
+    # process a single instance of a filing
     'EdgarRenderer.Xbrl.Run': edgarRendererXbrlRun,
-    'EdgarRenderer.Filing.End': edgarRendererFilingEnd
+    # finish processing a filing after instances have been processed
+    'EdgarRenderer.Filing.End': edgarRendererFilingEnd,
+    # GUI operation startup (renders all reports of an input instance or test suite)
+    'CntlrWinMain.Xbrl.Loaded': edgarRendererGuiRun,
+    # identify expected severity of test cases for EdgarRenderer testcases processing
+    'ModelTestcaseVariation.ExpectedSeverity': testcaseVariationExpectedSeverity
 }

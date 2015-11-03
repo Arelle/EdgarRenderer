@@ -82,7 +82,7 @@ class XlWriter(object):
         except Exception:
             sheetName = 'nonAsciiName_' + str(reportNum)
             #message = ErrorMgr.getError('CANNOT_CREATE_SHEET_NAME').format(reportShortName, sheetName)
-            self.controller.logWarn(("Cannot convert {} to ASCII. The Excel work sheet will instead " \
+            self.controller.logDebug(("Cannot convert {} to ASCII. The Excel work sheet will instead " \
                                      "be labeled {}.").format(reportShortName, sheetName),
                                      file=os.path.basename(__file__))
 
@@ -196,7 +196,7 @@ class XlWriter(object):
                         except Exception as ex:
                             #message = ErrorMgr.getError('CANNOT_ADJUST_WIDTH').format(cell,colLetter, ex)
                             self.controller.logError(("{} could not adjust width on column {}: {}").format(
-                                                      cell, colLetter, ex), file='Xlout.py')
+                                                      cell, colLetter, ex), file='Xlout.py', messageCode="er3:xloutColumnWidthError")
                         return cell
                         
                     mergedAreas = {}  # colNumber: (colspan,lastrow)
@@ -236,11 +236,11 @@ class XlWriter(object):
                                                                                row+rowspan-1))
                                 col += colspan
         except (lxml.etree.LxmlError, lxml.etree.XSLTError) as err:
-            self.controller.logError(str(err.args),file='Xlout.py')
+            self.controller.logError(str(err.args),file='Xlout.py', messageCode="er3:xloutXmlParseError")
         except (Exception) as err:
             try: message = err.message
             except: message = str(getattr(err,'args',err))
-            self.controller.logError(message,file='Xlout.py')
+            self.controller.logError(message,file='Xlout.py', messageCode="er3:xloutError")
 
 
 def tryExtractingTextNodes(text):

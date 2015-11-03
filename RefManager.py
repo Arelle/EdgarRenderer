@@ -59,7 +59,7 @@ class RefManager(object):
                     pass
                 if doc is None:
                     #message = ErrorMgr.getError('UNABLE_TO_LOAD_ADDON_LINKBASE')
-                    modelXbrl.warning("er3:unableToAddOnLinkbase",
+                    modelXbrl.info("info:unableToAddOnLinkbase",
                                   _("Unable to load add-on linkbase %(linkbase)s."),
                                   modelObject=modelXbrl.modelDocument, linkbase=url)
         finally:

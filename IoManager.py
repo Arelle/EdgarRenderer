@@ -103,6 +103,9 @@ def handleFolder(controller, folderName, mustBeEmpty, forceClean):  # return suc
         
 def getConfigFile(controller, options):
     if options.configFile is None: return None
+    _localConfigFile = os.path.join(os.getcwd(), options.configFile)
+    if os.path.exists(_localConfigFile):
+        return(_localConfigFile)
     configFile = absPathOnPythonPath(controller, options.configFile)
     return configFile
 

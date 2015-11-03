@@ -12,6 +12,7 @@ Saves extracted instance document.
 from arelle import ModelXbrl, ValidateXbrlDimensions, XbrlConst
 from arelle.PrototypeDtsObject import LocPrototype, ArcPrototype
 from arelle.ModelDocument import ModelDocument, ModelDocumentReference, Type, load
+from arelle.ModelInstanceObject import ModelInlineFootnote
 from arelle.XmlUtil import addChild, copyIxFootnoteHtml
 from arelle.UrlUtil import isHttpUrl
 from arelle.ValidateFilingText import CDATApattern
@@ -224,6 +225,7 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
     modelXbrl.modelManager.showStatus(_("Creating and validating footnotes and relationships"))
     HREF = "{http://www.w3.org/1999/xlink}href"
     footnoteLinks = defaultdict(list)
+    footnoteIdCount = {}
     for linkKey, linkPrototypes in modelXbrl.baseSets.items():
         arcrole, linkrole, linkqname, arcqname = linkKey
         if (linkrole and linkqname and arcqname and  # fully specified roles

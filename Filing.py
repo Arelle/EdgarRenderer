@@ -11,6 +11,7 @@ from gettext import gettext as _
 from collections import defaultdict
 import os, re, math, datetime, dateutil.relativedelta, lxml, sys
 import arelle.ModelValue, arelle.XbrlConst
+from arelle.ModelObject import ModelObject
 
 from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
 
@@ -39,7 +40,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
             # they all print in one file.
             cube.fileNumber = nextFileNum
             nextFileNum += 1
-            modelXbrl.debug("er3:cubeFile",
+            modelXbrl.debug("debug",
                             _('File R%(cubeFileNumber)s is %(cubeFile)s %(cubeDefinition)s'),
                             modelObject=modelXbrl.modelDocument,
                             cubeFileNumber=cube.fileNumber, cubeFile=cube.linkroleUri, cubeDefinition=cube.definitionText)
@@ -52,7 +53,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
     xlWriter = None
     if controller.excelXslt:
         if filing.hasEmbeddings:
-            modelXbrl.debug("ex3:skippedExcelWithEmbeddedCommands",
+            modelXbrl.debug("debug",
                             _("Excel XSLT is not applied to instance %(instance)s having embedded commands."),
                             modelObject=modelXbrl.modelDocument, instance=filing.fileNameBase)
         else:
@@ -65,7 +66,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
     #print('memory '  + str(int(win32process.GetProcessMemoryInfo(win32process.GetCurrentProcess())['WorkingSetSize'] / (1024*1024))))
 
     # handle the steps after flow through and then emit all of the XML and write the files
-    modelXbrl.debug("ex3:generatingReports",
+    modelXbrl.debug("debug",
                     _("Generating rendered reports in %(folder)s"),
                     modelObject=modelXbrl.modelDocument, folder=outputFolderName)
     for cube in sortedCubeList:
@@ -117,9 +118,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
     filing.unusedFactSet = \
             set(modelXbrl.facts) - {fact for fact, embeddingSet in filing.usedOrBrokenFactDefDict.items() if len(embeddingSet) > 0}
 
-    for fact, role, cube, ignore, shortName in filing.skippedFactsList:
-        if fact in filing.unusedFactSet:
-            filing.strExplainSkippedFact(fact, role, shortName)
+    filing.strExplainSkippedFacts()
 
     if len(filing.unusedFactSet) > 0:
         filing.handleUncategorizedCube(xlWriter)
@@ -185,6 +184,7 @@ class Filing(object):
         self.numReports = 0
 
         self.controller = controller
+        self.validatedForEFM = controller.validatedForEFM
         self.reportXmlFormat = 'xml' in controller.reportFormat.casefold()
         self.reportHtmlFormat = 'html' in controller.reportFormat.casefold()
         self.fileNamePrefix = 'R'
@@ -192,7 +192,8 @@ class Filing(object):
             self.fileNameBase = None
             self.reportZip = controller.reportZip
         else:
-            self.fileNameBase = os.path.normpath(os.path.join(os.path.dirname(controller.webCache.normalizeUrl(modelXbrl.fileSource.url)) ,outputFolderName))
+            # self.fileNameBase = os.path.normpath(os.path.join(os.path.dirname(controller.webCache.normalizeUrl(modelXbrl.fileSource.basefile)) ,outputFolderName))
+            self.fileNameBase = outputFolderName
             if not os.path.exists(self.fileNameBase):  # This is usually the Reports subfolder.
                 os.mkdir(self.fileNameBase)
             self.reportZip = None
@@ -253,7 +254,7 @@ class Filing(object):
                     # although valid XBRL has at most one default, we don't assume it; instead we act like it's a set of defaults.
                     # check to see whether the defaults are all children of the axis in this presentation group.
                     defaultChildSet = {pcrel.toModelObject 
-                                       for pcrel in Utils.modelRelationshipsTransitiveFrom(parentChildRelationshipSet, concept, linkroleUri)
+                                       for pcrel in Utils.modelRelationshipsTransitiveFrom(parentChildRelationshipSet, concept, linkroleUri, set())
                                        if pcrel.toModelObject in defaultSet}
                     if (len(defaultSet)==0  # axis had no default at all
                             or defaultSet != defaultChildSet):
@@ -263,9 +264,9 @@ class Filing(object):
             # print warnings of missing defaults for each cube
             for cube in self.cubeDict.values():
                 if len(cube.defaultFilteredOutAxisSet) > 0:
-                    self.modelXbrl.debug("er3:noDefaults",
-                                         _("In \"%(presentationGroup)s\", the children of axes %(axes)s do not include their defaults."),
-                                         modelObject=self.modelXbrl.modelDocument, presentationGroup=cube.shortName, 
+                    self.modelXbrl.debug("debug",
+                                         _("In \"%(linkroleName)s\", the children of axes %(axes)s do not include their defaults."),
+                                         modelObject=self.modelXbrl.modelDocument, linkroleName=cube.shortName, 
                                          axes=cube.defaultFilteredOutAxisSet)
 
 
@@ -305,7 +306,7 @@ class Filing(object):
                             qnameContextIDUnitStr = 'qname {!s}, context {}'.format(firstFact.qname, firstFact.contextID)
                             if firstFact.unit is not None:
                                 qnameContextIDUnitStr += ', unit ' + firstFact.unitID
-                            self.modelXbrl.info("er3:multipleFacts",
+                            self.modelXbrl.info("info",
                                                 _("There are multiple facts with %(contextUnitIds)s. The fact on line %(lineNumOfFactWeAreKeeping)s of the instance " 
                                                   "document will be rendered, and the rest at line(s) %(linesDiscarded)s will not."),
                                                 modelObject=duplicateFacts, contextUnitIds=qnameContextIDUnitStr, 
@@ -314,22 +315,23 @@ class Filing(object):
 
                 for fact in factSet: # we only want one thing, but we don't want to pop from the set so we "loop" and then break right away
                     if fact.concept is None:
-                        self.modelXbrl.warning("er3:factConceptUndeclared",
-                                               _("The element declaration for %(fact)s, or one of its facts, is broken. They will all be " 
-                                                "ignored."),
-                                               modelObject=fact, fact=qname)
+                        if not self.validatedForEFM:
+                            self.modelXbrl.error("xbrl:schemaImportMissing", # use standard Arelle message for this
+                                    _("Instance fact missing schema definition: %(elements)s"),
+                                    modelObject=fact, elements=fact.prefixedName) 
                         break
                     elif fact.isTuple:
-                        self.controller.logWarn("er3:tupleIsForbidden",
-                                               _("The element declaration %(fact)s is a Tuple, which is forbidden by the " 
-                                                 "EDGAR Filer Manual. The element will be ignored."),
-                                               modelObject=fact, fact=qname)
+                        if not self.validatedForEFM:
+                            self.modelXbrl.error("EFM.6.07.19", # use standard Arelle message for this
+                                _("Concept %(concept)s is a tuple"),
+                                modelObject=fact, concept=qname)
                         break
                     elif fact.concept.type is None:
-                        self.modelXbrl.warning("er3:factTypeUndeclared",
-                                               _("The Type declaration for Element %(fact)s is either broken or missing. The " 
-                                                "Element will be ignored."),
-                                               modelObject=fact, fact=qname)
+                        if not self.validatedForEFM:
+                            self.modelXbrl.warning("xbrl:typeDeclarationMissing",
+                                                   _("The Type declaration for Element %(fact)s is either broken or missing. The " 
+                                                    "Element will be ignored."),
+                                                   modelObject=fact, fact=qname)
                         break
                     elif fact.context is None:
                         continue # don't break, still might be good facts. we print the error if a context is broken later 
@@ -341,7 +343,7 @@ class Filing(object):
             for concept in self.modelXbrl.qnameConcepts.values():
                 for relationship in self.modelXbrl.relationshipSet(arelle.XbrlConst.parentChild).toModelObject(concept):
                     cube = self.cubeDict[relationship.linkrole]
-                    cube.presentationGroup.traverseToRootOrRoots(concept, None, None, None, set())
+                    cube.presentationGroup.traverseToRootOrRoots(concept, None, None, None, []) # HF: path to roots has to be list for proper error reporting
                     try:
                         element = self.elementDict[concept.qname] # retrieve active Element
                         element.linkCube(cube) # link element to this cube.
@@ -360,12 +362,13 @@ class Filing(object):
             facts = self.modelXbrl.facts
 
         for context in self.modelXbrl.contexts.values():
-            if context.scenario is not None:
-                self.controller.logWarn("er3:scenarioForbidden",
-                                        _("The Context %(contextId)s has a scenario element, which is forbidden by the EDGAR Filer " 
-                                        "Manual. This filing is not EDGAR valid, but this should not interfere with " 
-                                        "rendering."),
-                                         modelObject=context, contextId=context.id)
+            if context.scenario is not None and not self.validatedForEFM:
+                childTags = ", ".join([child.prefixedName for child in context.scenario.iterchildren()
+                                       if isinstance(child,ModelObject)])
+                self.modelXbrl.error("EFM.6.05.05", # use standard arelle message
+                                _("%(elementName)s of context Id %(context)s has disallowed content: %(content)s"),
+                                modelObject=context, context=context.id, content=childTags, 
+                                elementName="segment")
 
         for fact in facts:
             try:
@@ -375,18 +378,18 @@ class Filing(object):
                 continue # fact was rejected in first loop of this function because of problem with the Element
 
             if fact.unit is None and fact.unitID is not None: # to do a unitref that isn't a unit should be found by arelle, but isn't.
-                self.modelXbrl.warning("er3:brokenUnitRef",
-                                       _("The fact %(fact)s has a broken unitRef. The fact will be " 
-                                        "ignored."),
-                                       modelObject=fact)
+                if not self.validatedForEFM: # use Arelle validation message
+                    self.modelXbrl.error("xbrl.4.6.2:numericUnit",
+                         _("Fact %(fact)s context %(contextID)s is numeric and must have a unit"),
+                         modelObject=fact, fact=fact.qname, contextID=fact.contextID)
                 self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue
 
             elif fact.context is None:
-                self.modelXbrl.warning("er3:contextMissing",
-                                       _("The fact %(fact)s either has a broken context or context reference " 
-                                        "The fact will be ignored."),
-                                        modelObject=fact, fact=fact.qname)
+                if not self.validatedForEFM: # use Arelle validation message
+                    self.modelXbrl.error("xbrl.4.6.1:itemContextRef",
+                        _("Item %(fact)s must have a context"),
+                        modelObject=fact, fact=fact.qname)
                 self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue
 
@@ -438,19 +441,20 @@ class Filing(object):
             for arelleDimension in fact.context.qnameDims.values():
                 dimensionConcept = arelleDimension.dimension
                 memberConcept = arelleDimension.member
-                if dimensionConcept is None:
-                    #errStr1 = ErrorMgr.getError('XBRL_DIMENSIONS_INVALID_AXIS_BROKEN').format(fact.context.id, fact.qname)
-                    self.modelXbrl.warning("er3:undeclaredDimension",
-                                           _("One of the Axes referenced by the Context %(context)s of Fact %(fact)s, or the reference "
-                                            "itself, is broken. The Axis will be ignored for this Fact."),
-                                            modelObject=fact, context=fact.contextID, fact=fact.qname)
+                if dimensionConcept is None: 
+                    if not self.validatedForEFM: # use Arelle validation message
+                        self.modelXbrl.error("xbrldie:TypedMemberNotTypedDimensionError" if arelleDimension.isTyped else "xbrldie:ExplicitMemberNotExplicitDimensionError",
+                            _("Context %(contextID)s %(dimension)s %(value)s is not an appropriate dimension item"),
+                            modelObject=(arelleDimension,fact), contextID=fact.context.id, 
+                            dimension=arelleDimension.prefixedName, value=arelleDimension.dimensionQname,
+                            messageCodes=("xbrldie:TypedMemberNotTypedDimensionError", "xbrldie:ExplicitMemberNotExplicitDimensionError"))
 
                 elif memberConcept is None:
-                    #errStr2 = ErrorMgr.getError('XBRL_DIMENSIONS_INVALID_AXIS_MEMBER_BROKEN').format(dimensionConcept.qname, fact.qname, fact.context.id)
-                    self.modelXbrl.warning("er3:undeclaredMember",
-                                           _("The Member of Axis %(axis)s is broken as referenced by the Fact %(fact)s with Context %(context)s. " 
-                                            "The Axis and Member will be ignored for this Fact."),
-                                            modelObject=fact, axis=dimensionConcept.qname, fact=fact.qname, context=fact.contextID)
+                    if not self.validatedForEFM: # use Arelle validation message
+                        self.modelXbrl.error("xbrldie:ExplicitMemberUndefinedQNameError",
+                            _("Context %(contextID)s explicit dimension %(dimension)s member %(value)s is not a global member item"),
+                            modelObject=(arelleDimension,fact), contextID=fact.context.id, 
+                            dimension=arelleDimension.dimensionQname, value=arelleDimension.memberQname)
 
                 else:
                     try:
@@ -524,21 +528,28 @@ class Filing(object):
             else:
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_TOKEN_NOT_ROW_OR_COLUMN_ERROR').format(token0, tokenCounter, errorStr)
-                self.modelXbrl.error("er3:malformedToken",
-                                     _("The token %(token)s, at position %(position)s in the list of tokens in %(list)s, is malformed. "
-                                         "An individual command can only start with row or column. These embedded "
-                                         "commands will not be rendered."),
-                                     modelObject=fact, token=token0, position=tokenCounter, list=errorStr)
+                self.modelXbrl.error("EFM.6.26.03.embeddingCmdMalformedDirectionToken",
+                                     _("In \"%(linkrole)s\", the embedded report created by the fact %(fact)s with the context %(contextID)s, "
+                                       "the token %(token)s, at position %(position)s in the list of tokens, is malformed. Each iterator can only start with ‘row’ or ‘column’."),
+                                     modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
+                                     linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri), 
+                                     token=token0, position=tokenCounter)
                 return False
 
 
             token1 = commandTextList.pop(0)
             tokenCounter += 1
             token1Lower = token1.casefold()
+            _malformedAxis = False
             if token1Lower in {'period', 'unit', 'primary'}:
                 listToAddToOutput += [token1Lower]
             elif '_' in token1:
-                listToAddToOutput += [arelle.ModelValue.qname(fact, token1.replace('_',':',1))] # only replace first _, because qnames can have _
+                qn = arelle.ModelValue.qname(fact, token1.replace('_',':',1)) # only replace first _, because qnames can have _
+                axisConcept = self.modelXbrl.qnameConcepts.get(qn)
+                if axisConcept is not None and axisConcept.isDimensionItem:
+                    listToAddToOutput += [qn]
+                else:
+                    _malformedAxis = True
 
             # separator is not supported, we just pop it off and ignore it
             elif token1Lower == 'separator':
@@ -548,20 +559,25 @@ class Filing(object):
                 tokenCounter += 1
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_SEPARATOR_USED_WARNING').format(token1, tokenCounter, errorStr)
-                self.modelXbrl.info("er3:tokenNotSupported",
+                self.modelXbrl.info("info",
                                     _("The token at position %(position)s in the list of tokens in %(list)s, is separator. "
                                         "Currently, this keyword is not supported and was ignored."),
                                     modelObject=fact, position=tokenCounter, list=errorStr)
                 continue
 
             else:
+                _malformedAxis = True
+
+            if _malformedAxis:
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_FIRST_TOKEN_ERROR').format(token1, tokenCounter, errorStr)
-                self.modelXbrl.error("er3:malformedTokenAxis",
-                                     _("The token at position %(position)s in the list of tokens in %(list)s, is malformed. "
-                                         "The axis name can only be period, unit, primary or have an underscore. "
-                                         "These embedded commands will not be rendered."),
-                                         modelObject=fact, postion=tokenCounter, list=errorStr)
+                self.modelXbrl.error("EFM.6.26.03.embeddingCmdMalformedAxis",
+                                     _("In \"%(linkrole)s\", the embedded report created by the embedding textBlock fact %(fact)s with the context %(contextID)s, "
+                                       "the token %(token)s at position %(position)s in the list of tokens is malformed. "
+                                       "This token can only be 'period', 'unit', 'primary' or identify an Axis by its namespace prefix, underscore, and element name."),
+                                    modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
+                                    linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri), 
+                                    token=token1, position=tokenCounter)
                 return False
 
             token2 = commandTextList.pop(0)
@@ -573,7 +589,7 @@ class Filing(object):
                 listToAddToOutput += ['compact']
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_GROUPED_USED_WARNING').format(token2, tokenCounter, errorStr)
-                self.modelXbrl.info("er3:groupedToken",
+                self.modelXbrl.info("info",
                                     _("The token at position %(position)s in the list of tokens in %(list)s, is grouped. "
                                         "Currently, this keyword is not supported and was replaced with compact."),
                                     modelObject=fact, position=tokenCounter, list=errorStr)
@@ -581,18 +597,19 @@ class Filing(object):
                 listToAddToOutput += ['compact']
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_UNITCELL_USED_WARNING').format(token2, tokenCounter, errorStr)
-                self.modelXbrl.info("er3:unitcellToken",
+                self.modelXbrl.info("info",
                                     _("The token at position %(position)s in the list of tokens in %(list)s, is unitcell. " 
                                         "Currently, this keyword is not supported and was replaced with compact."),
                                     modelObject=fact, position=tokenCounter, list=errorStr)
             else:
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_SECOND_TOKEN_ERROR').format(token2, tokenCounter, errorStr)
-                self.modelXbrl.error("er3:malformedSecondToken",
-                                     _("The token %(token)s, at position %(position)s in the list of tokens in %(list)s, is malformed. The second token "
-                                         "of an embedded command can only be compact, grouped, nodisplay or unitcell. These "
-                                         "embedded commands will not be rendered."),
-                                     modelObject=fact, token=token2, position=tokenCounter, list=errorStr)
+                self.modelXbrl.error("EFM.6.26.03.embeddingCmdMalformedStyleToken",
+                                     _(" In \"%(linkrole)s\", the embedded report created by the embedding textBlock fact %(fact)s with the context %(contextID)s, "
+                                       "the style keyword %(style)s is not one of ‘compact’ or ‘nodisplay’."),
+                                     modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
+                                     linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri), 
+                                     style=token2)
                 return False
 
             # there could be multiple members, so grab them all here
@@ -600,22 +617,31 @@ class Filing(object):
             while len(commandTextList) > 0 and commandTextList[0].casefold() not in {'row', 'column'}:
                 tempList += [commandTextList.pop(0)]
 
+            invalidTokens = []
             for tokenMember in tempList: 
                 tokenCounter += 1
                 if '_' in tokenMember:
-                    listToAddToOutput += [arelle.ModelValue.qname(fact, tokenMember.replace('_',':',1))]
+                    qn = arelle.ModelValue.qname(fact, tokenMember.replace('_',':',1))
+                    memConcept = self.modelXbrl.qnameConcepts.get(qn)
+                    if memConcept is not None and memConcept.type is not None and memConcept.type.isDomainItemType:
+                        listToAddToOutput += [qn]
+                    else:
+                        invalidTokens.append(tokenMember)
                 elif tokenMember == '*' and len(tempList) == 1:
                     listToAddToOutput += [tokenMember]
                 else:
-                    errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
-                    #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_MEMBER_NAME_ERROR').format(tokenMember, tokenCounter, errorStr)
-                    self.modelXbrl.error("er3:malformedMemberToken",
-                                         _("The token %(token)s, at position %(position)s in the list of tokens in %(tokenList)s, is malformed. " 
-                                           "The member name must either be * or have an underscore, and if there is " 
-                                           "a list of members for this axis, they all must contain an underscore. " 
-                                           "These embedded commands will not be rendered."),
-                                         modelObject=fact, token=tokenMember, position=tokenCounter, tokenList=errorStr)
-                    return False
+                    invalidTokens.append(tokenMember)
+                    
+            if invalidTokens:
+                errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
+                #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_MEMBER_NAME_ERROR').format(tokenMember, tokenCounter, errorStr)
+                self.modelXbrl.error("EFM.6.26.03.embeddingCmdInvalidMemberOrMembers",
+                                     _("In \"%(linkrole)s\", the embedded report created by the embedding textBlock fact %(fact)s with the context %(contextID)s, "
+                                       "the keywords %(tokenlist)s is not '*', a valid member qname or list of valid member qnames."),
+                                     modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
+                                     linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri), 
+                                     tokenlist=", ".join(invalidTokens))
+                return False
 
             outputList += [listToAddToOutput]
 
@@ -765,7 +791,7 @@ class Filing(object):
             self.RemoveStuntedCashFlowColumns(report)
 
         report.finalizeProposedPromotions()
-        report.scaleUnitGlobally()
+        if not cube.isUncategorizedFacts: report.scaleUnitGlobally()
 
         if      (len(self.factFootnoteDict) > 0 and
                  not {factAxisMemberGroup.fact for factAxisMemberGroup in embedding.factAxisMemberGroupList}.isdisjoint(self.factFootnoteDict)):
@@ -820,7 +846,7 @@ class Filing(object):
         minToKeep = math.floor(.25*minFacts)
         for col in visibleColumns:
             if col.startEndContext.numMonths < maxMonths and len(col.factList) < minToKeep:
-                self.modelXbrl.info("er3:shorterColumnsRemoved",
+                self.modelXbrl.info("info",
                                     _("Columns in cash flow \"%(presentationGroup)s\" have maximum duration %(maxDuration)s months and at least %(minNumValues)s " 
                                       "values. Shorter duration columns must have at least one fourth (%(minToKeep)s) as many values. " 
                                       "Column \"%(startEndContext)s\" is shorter (%(months)s months) and has only %(numValues)s values, so it is being removed."),
@@ -896,37 +922,33 @@ class Filing(object):
                 for col in columnsToKill:
                     col.hide()
 
-                self.modelXbrl.info("er3:columnsSuppresed",
+                self.modelXbrl.info("info",
                                     _("In \"%(presentationGroup)s\", column(s) %(columns)s are contained in other reports, so were removed by flow through suppression."),
                                     modelObject=self.modelXbrl.modelDocument, presentationGroup=cube.shortName, 
                                     columns=', '.join([str(col.index + 1) for col in columnsToKill]))
                 Utils.hideEmptyRows(report.rowList)
 
 
-    def strExplainSkippedFact(self, fact, role, shortName):
-        # we skipped over this fact because it could not be placed
-        # Produce a string explaining for this instant fact why it could not be presented 
-        # with a periodStart or periodEnd label in this presentation group.
-        qname = fact.qname
-        value = Utils.strFactValue(fact, preferredLabel=role)
-        endTime = fact.context.period.stringValue.strip()
-        word = 'Starting or Ending'
-        if role is not None:
-            role = role.rsplit('/')[-1]
-            if 'Start' in role:
-                word = 'starting'
-            elif 'End' in role:
-                word = 'ending'
-        #message = ErrorMgr.getError('SKIPPED_FACT_WARNING').format(shortName,qname,value,role,word,endTime)
-        self.modelXbrl.warning("er3:factNotShown",
-                               _("In ''%(presentationGroup)s'', fact %(fact)s with value %(value)s and preferred label %(preferredLabel)s, was not shown because there are " 
-                               "no facts in a duration %(duration)s at %(time)s. Change the preferred label role or add facts."),
-                                modelObject=fact, presentationGroup=shortName, fact=qname, value=value, 
-                                preferredLabel=role, duration=word, time=endTime)
-
-
-
-
+    def strExplainSkippedFacts(self):
+        for fact, role, ignore1, linkroleUri, shortName, definitionText in self.skippedFactsList:
+            if fact in self.unusedFactSet:
+                # we skipped over this fact because it could not be placed
+                # Produce a string explaining for this instant fact why it could not be presented 
+                # with a periodStart or periodEnd label in this presentation group.
+                value = Utils.strFactValue(fact, preferredLabel=role)
+                endTime = fact.context.period.stringValue.strip()
+                if Utils.isPeriodStartLabel(role):
+                    word = 'starting'
+                elif Utils.isPeriodEndLabel(role):
+                    word = 'ending'
+                else:
+                    word = 'Starting or Ending'
+                self.modelXbrl.warning("EFM.6.26.02",
+                               _('In "%(linkroleName)s", fact %(fact)s with value %(value)s and preferred label %(preferredLabel)s, '
+                                 'was not shown because there are no facts in a duration %(startOrEnd)s at %(date)s. Change the preferred label role or add facts.'),
+                                modelObject=fact, fact=fact.qname, value=value, 
+                                preferredLabel=role, startOrEnd=word, date=endTime,
+                                linkrole=linkroleUri, linkroleDefinition=definitionText, linkroleName=shortName)
 
 class ReportSummary(object):
     def __init__(self):
@@ -948,17 +970,26 @@ class StartEndContext(object):
         self.context = context
         self.startTime = startEndTuple[0]
         self.endTime = startEndTuple[1]
-        self.label = (self.endTime - datetime.timedelta(days=1)).strftime('%b. %d, %Y')
-
-        if self.startTime == None:
-            self.periodTypeStr = 'instant'
+        if context is not None and context.isForeverPeriod:
+            self.label = "forever"
+            self.periodTypeStr = 'forever'
             self.startTimePretty = None
             self.numMonths = 0
+            self.endTimePretty = None
+            self.startTime = datetime.datetime.min
+            self.endTime = datetime.datetime.max
         else:
-            self.periodTypeStr = 'duration'
-            self.startTimePretty = (self.startTime).strftime('%Y-%m-%dT%H:%M:%S')
-            self.numMonths = self.startEndContextInMonths()
-        self.endTimePretty = (self.endTime - datetime.timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%S')
+            self.label = (self.endTime - datetime.timedelta(days=1)).strftime('%b. %d, %Y')
+
+            if self.startTime == None:
+                self.periodTypeStr = 'instant'
+                self.startTimePretty = None
+                self.numMonths = 0
+            else:
+                self.periodTypeStr = 'duration'
+                self.startTimePretty = (self.startTime).strftime('%Y-%m-%dT%H:%M:%S')
+                self.numMonths = self.startEndContextInMonths()
+            self.endTimePretty = (self.endTime - datetime.timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%S')
 
     def startEndContextInMonths(self):
         modifiedEndTime = self.endTime + datetime.timedelta(days=15) # we add to it because it rounds down
