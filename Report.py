@@ -1754,7 +1754,7 @@ class Cell(object):
                     amount = decimal.Decimal(NumericAmount)
                     scaledNumericAmount = str(amount.scaleb(self.scalingFactor).quantize(decimal.Decimal(quantum), rounding=decimal.ROUND_HALF_EVEN))
                 except decimal.InvalidOperation:
-                    self.filing.modelXbrl.error("er3:unableToScaleNumber",
+                    self.filing.modelXbrl.debug("debug",
                                            _('Unable to scale value "%(value)s" by scaling factor %(scalingFactor)s.'),
                                             modelObject=self.fact, value=NumericAmount, scalingFactor=self.scalingFactor)
                     return (NumericAmount,float('nan'))

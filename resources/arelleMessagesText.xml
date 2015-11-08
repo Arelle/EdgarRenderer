@@ -1520,14 +1520,14 @@ Concept $(concept) is monetary without a balance and must have a documentation l
          level="warning"
          module="EdgarRenderer/Embedding.py" line="312"
          args="linkrole linkroleDefinition linkroleName numberRootConcepts">
-[rq-1205-Multiple-Root-Nodes] Presentation relationship set role ''$(linkroleName)'' has multiple ($(numberRootConcepts)) root nodes. XBRL allows unordered root nodes, but rendering requires ordering.  They will instead be ordered by their labels.  To avoid undesirable ordering of axes and primary items across multiple root nodes, rearrange the presentation relationships to have only a single root node.
+[rq-1205-Multiple-Root-Nodes] Presentation base set ''$(linkroleName)'' has multiple ($(numberRootConcepts)) root nodes. XBRL allows unordered root nodes, but rendering requires ordering.  They will instead be ordered by their labels.  To avoid undesirable ordering of axes and primary items across multiple root nodes, rearrange the presentation relationships to have only a single root node.
 </message>
 
 <message code="EFM.6.12.07"
          level="warning"
          module="EdgarRenderer/Embedding.py" line="393"
          args="conceptTo conceptFrom linkrole linkroleDefinition linkroleName preferredLabel preferredLabelValue">
-[rq-1207-Period-Type-Preferred-Label-Mismatch] In ''$(linkroleName)'', element $(conceptTo) has period type 'duration' but is given a preferred label $(preferredLabelValue) when shown under parent $(parentQname).  The preferred label will be ignored.
+[rq-1207-Period-Type-Preferred-Label-Mismatch] In ''$(linkroleName)'', element $(conceptTo) has period type 'duration' but is given a preferred label $(preferredLabelValue) when shown under parent $(conceptFrom).  The preferred label will be ignored.
 </message>
 
 <message code="EFM.6.12.08"
@@ -2108,7 +2108,7 @@ Please ensure that you comply with the document type and naming provided.
          level="warning"
          module="EdgarRenderer/Embedding.py" line="589"
          args="linkrole linkroleDefinition linkroleName fact contextID">
-[rq-2609-Primary-Axis-On-Rows] In ''{linkroleName}'' the embedded report created by the embedding text block fact {fact} with context {contextID} contains an iterator "column primary" even though the definition text of {linkroleDefinition} contains the "{Elements}" qualifier. The primary axis will remain on the rows.
+[rq-2609-Primary-Axis-On-Rows] In ''$(linkroleName)'' the embedded report created by the embedding text block fact $(fact) with context $(contextID) contains an iterator "column primary" even though the definition text of $(linkroleDefinition) contains the "{Elements}" qualifier. The primary axis will remain on the rows.
 </message>
 
 

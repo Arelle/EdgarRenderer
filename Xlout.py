@@ -195,8 +195,8 @@ class XlWriter(object):
                             ws.column_dimensions[colLetter].width = newWidth if currentWidth is None else max(currentWidth,newWidth)                                   
                         except Exception as ex:
                             #message = ErrorMgr.getError('CANNOT_ADJUST_WIDTH').format(cell,colLetter, ex)
-                            self.controller.logError(("{} could not adjust width on column {}: {}").format(
-                                                      cell, colLetter, ex), file='Xlout.py', messageCode="er3:xloutColumnWidthError")
+                            self.controller.logDebug(("Internal error in worksheet generation: {} could not adjust width on column {}: {}").format(
+                                                      cell, colLetter, ex), file='Xlout.py', messageCode="debug")
                         return cell
                         
                     mergedAreas = {}  # colNumber: (colspan,lastrow)
@@ -236,11 +236,11 @@ class XlWriter(object):
                                                                                row+rowspan-1))
                                 col += colspan
         except (lxml.etree.LxmlError, lxml.etree.XSLTError) as err:
-            self.controller.logError(str(err.args),file='Xlout.py', messageCode="er3:xloutXmlParseError")
+            self.controller.logDebug("Internal error in worksheet generation: {}".format(err.args),file='Xlout.py', messageCode="debug")
         except (Exception) as err:
             try: message = err.message
             except: message = str(getattr(err,'args',err))
-            self.controller.logError(message,file='Xlout.py', messageCode="er3:xloutError")
+            self.controller.logDebug("Internal error in worksheet generation: {}".format(message),file='Xlout.py', messageCode="debug")
 
 
 def tryExtractingTextNodes(text):

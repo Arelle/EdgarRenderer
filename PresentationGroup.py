@@ -222,7 +222,7 @@ class PresentationGroup(object):
                 isStart = Utils.isPeriodStartLabel(preferredLabel)
                 if isStart or Utils.isPeriodEndLabel(preferredLabel):
                     if concept.periodType == 'duration':
-                        self.filing.ignoredPreferredLabels += [(relationship.linkrole,concept.qname,preferredLabel,self.cube.shortName)]
+                        self.filing.ignoredPreferredLabels += [(relationship.linkrole,concept.qname,preferredLabel,self.cube.shortName, relationship.fromModelObject.qname)]
                         if isStart:
                             preferredLabel = Utils.durationStartRoleError # not a role.
                         else:
@@ -269,7 +269,7 @@ class PresentationGroup(object):
             else:
                 # every member on this axis is filtered out, this kills the whole cube.
                 #message = ErrorMgr.getError('PRESENTATION_GROUP_CHILDLESS_AXIS_FILTERS_OUT_ALL_FACTS_WARNING').format(self.cube.shortName)
-                self.filing.modelXbrl.warning("EFM.6.12.08",
+                self.filing.modelXbrl.debug("debug", # now detected by EFM.6.12.08 in EFM/Filing.py
                                               ("The presentation group \"%(linkroleName)s\" contains an axis %(axis)s with no domain element children, which effectively filters out every fact"),
                                               modelObject=concept, axis=concept.qname,
                                               linkrole=self.cube.linkroleUri, linkroleDefinition=self.cube.definitionText, linkroleName=self.cube.shortName)

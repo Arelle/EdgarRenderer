@@ -539,7 +539,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         return self.renderingService.casefold() == 'daemon'
     
     
-    def dequeueInputZip(self, options):  # returns the location of zip ready to unpack
+    def daemonDequeueInputZip(self, options):  # returns the location of zip ready to unpack
         # upon exit, options.entrypoint is set to absolute location of the zip file after the move,
         # and self.processingFolder is set to absolute location of where it should be processed.
         inputFileSource = None
@@ -591,10 +591,12 @@ class EdgarRenderer(Cntlr.Cntlr):
             if not (filesource and filesource.isOpen and filesource.isArchive and entryPointFile.startswith(filesource.basefile)):
                 self.processingFolder = os.path.dirname(entryPointFile)   
                 
-    def daemonStartup(self, options):
+    def checkIfDaemonStartup(self, options):
         # startup (when in Deamon mode)
         self.retrieveDefaultREConfigParams(options)
         self.initializeReOptions(options)
+        # if isDaemon, wait for an input zip to process
+        # if not isDaemon, then instance (or zip) is ready to process immediately
         if self.isDaemon:
             self.initializeReDaemonOptions(options)
             IoManager.handleFolder(self, self.filingsFolder, False, False) 
@@ -602,7 +604,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             IoManager.handleFolder(self, self.archiveFolder, False, self.totalClean)
             if self.errorsFolder is not None:  # You might not have an errors folder.
                 IoManager.handleFolder(self, self.errorsFolder, False, self.totalClean)             
-            self.dequeueInputZip(options)
+            self.daemonDequeueInputZip(options) # loop, waiting for an input to process, then returns and processes input as if --file specified the input
             
     def filingStart(self, cntlr, options, entrypointFiles, filing):
         # start a (mult-iinstance) filing
@@ -666,10 +668,10 @@ class EdgarRenderer(Cntlr.Cntlr):
         except Exception as ex:
             success = False
             if errorCountDuringValidation > 0:
-                self.logDebug(_("Exception after {} validation errors: {}").format(errorCountDuringValidation, ex))
+                self.logWarn(_("The rendering engine was unable to produce output after {} validation errors.").format(errorCountDuringValidation))
             else:
-                self.logDebug(_("Exception with no validation errors: {}").format(ex))
-            self.logDebug(_("Exception traceback: {}").format(traceback.format_tb(sys.exc_info()[2])))
+                self.logWarn(_("The rendering engine was unable to produce output due to an internal error.  This is not considered an error in the filing.").format(errorCountDuringValidation))
+            self.logDebug(_("Exception traceback: {}").format(traceback.format_exception(*sys.exc_info())))
         self.renderedFiles = filing.renderedFiles # filing-level rendered files
         if not success:
             self.success = False            
@@ -945,9 +947,9 @@ class EdgarRenderer(Cntlr.Cntlr):
     def logFatal(self, message, messageArgs={}, file=None, messageCode='fatal'):
         self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.FATAL, messageCode=messageCode)
 
-def edgarRendererDaemonStartup(cntlr, options, sourceZipStream=None, *args, **kwargs):
+def edgarRendererCheckIfDaemonStartup(cntlr, options, sourceZipStream=None, *args, **kwargs):
     """ starts up EdgarRenderer when run as a Deamon (no input files selected) """
-    EdgarRenderer(cntlr).daemonStartup(options)
+    EdgarRenderer(cntlr).checkIfDaemonStartup(options)
         
 def edgarRendererFilingStart(cntlr, options, entrypointFiles, filing):
     """ prepares EdgarRenderer for a series of muiltple instances """
@@ -1083,7 +1085,7 @@ __pluginInfo__ = {
     # add Edgar Renderer options to command line & web service options
     'CntlrCmdLine.Options': edgarRendererCmdLineOptionExtender,
     # startup for Daemon mode (polls for filings folder's oldest input zip file)
-    'CntlrCmdLine.Utility.Run': edgarRendererDaemonStartup,
+    'CntlrCmdLine.Utility.Run': edgarRendererCheckIfDaemonStartup,
     # prepare to process a filing of multiple instances
     'EdgarRenderer.Filing.Start': edgarRendererFilingStart,
     # process a single instance of a filing

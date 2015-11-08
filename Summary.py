@@ -53,7 +53,7 @@ def analyzeFactsInCubes(filing): # void
             messages += [v]
     for v in sorted(messages,key=lambda x: x[3]): # Messages should be ordered by line number in source doc.
         (f,cube,atts,line) = v
-        filing.modelXbrl.warning("er3:factHtmlAnchor",
+        filing.modelXbrl.debug("debug", # NOTE FOR INLINE IMPLEMENTATION should be cascade of error detected by XhtmlValidate.py
                                _("Fact %(fact)s in context %(context)s "
                                  "in \"%(cube)s\" has an HTML anchor (%(anchor)s) that "
                                  "may restrict with usability of the Inline XBRL source document. "

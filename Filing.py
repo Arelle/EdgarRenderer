@@ -16,6 +16,9 @@ from arelle.ModelObject import ModelObject
 from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
 
 def mainFun(controller, modelXbrl, outputFolderName):
+    for pi in modelXbrl.modelDocument.processingInstructions:
+        if pi.target == "arelle-unit-test" and pi.get("module") == "EdgarRenderer/Filing.py":
+            raise arelle.PythonUtil.pyNamedObject(pi.get("raise"))
     filing = Filing(controller, modelXbrl, outputFolderName)
     filing.populateAndLinkClasses()
 
@@ -528,7 +531,7 @@ class Filing(object):
             else:
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_TOKEN_NOT_ROW_OR_COLUMN_ERROR').format(token0, tokenCounter, errorStr)
-                self.modelXbrl.error("EFM.6.26.03.embeddingCmdMalformedDirectionToken",
+                self.modelXbrl.error("EFM.6.26.04.embeddingCmdMalformedDirectionToken",
                                      _("In \"%(linkrole)s\", the embedded report created by the fact %(fact)s with the context %(contextID)s, "
                                        "the token %(token)s, at position %(position)s in the list of tokens, is malformed. Each iterator can only start with ‘row’ or ‘column’."),
                                      modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
@@ -536,8 +539,10 @@ class Filing(object):
                                      token=token0, position=tokenCounter)
                 return False
 
-
-            token1 = commandTextList.pop(0)
+            if len(commandTextList) > 0:
+                token1 = commandTextList.pop(0)
+            else:
+                token1 = "missing" # token is issing
             tokenCounter += 1
             token1Lower = token1.casefold()
             _malformedAxis = False
@@ -571,7 +576,7 @@ class Filing(object):
             if _malformedAxis:
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_FIRST_TOKEN_ERROR').format(token1, tokenCounter, errorStr)
-                self.modelXbrl.error("EFM.6.26.03.embeddingCmdMalformedAxis",
+                self.modelXbrl.error("EFM.6.26.04.embeddingCmdMalformedAxis",
                                      _("In \"%(linkrole)s\", the embedded report created by the embedding textBlock fact %(fact)s with the context %(contextID)s, "
                                        "the token %(token)s at position %(position)s in the list of tokens is malformed. "
                                        "This token can only be 'period', 'unit', 'primary' or identify an Axis by its namespace prefix, underscore, and element name."),
@@ -604,7 +609,7 @@ class Filing(object):
             else:
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_SECOND_TOKEN_ERROR').format(token2, tokenCounter, errorStr)
-                self.modelXbrl.error("EFM.6.26.03.embeddingCmdMalformedStyleToken",
+                self.modelXbrl.error("EFM.6.26.04.embeddingCmdMalformedStyleToken",
                                      _(" In \"%(linkrole)s\", the embedded report created by the embedding textBlock fact %(fact)s with the context %(contextID)s, "
                                        "the style keyword %(style)s is not one of ‘compact’ or ‘nodisplay’."),
                                      modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
@@ -635,7 +640,7 @@ class Filing(object):
             if invalidTokens:
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_MEMBER_NAME_ERROR').format(tokenMember, tokenCounter, errorStr)
-                self.modelXbrl.error("EFM.6.26.03.embeddingCmdInvalidMemberOrMembers",
+                self.modelXbrl.error("EFM.6.26.04.embeddingCmdInvalidMemberOrMembers",
                                      _("In \"%(linkrole)s\", the embedded report created by the embedding textBlock fact %(fact)s with the context %(contextID)s, "
                                        "the keywords %(tokenlist)s is not '*', a valid member qname or list of valid member qnames."),
                                      modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,

@@ -393,7 +393,7 @@ class Embedding(object):
                             #message = ErrorMgr.getError('INSTANT_DURATION_CONFLICT_WARNING').format(shortName, errorStr, str(qname), Utils.strFactValue(fact))
                             # TBD: not same as 6.12.7 test, do we replace anyway 
                             self.filing.modelXbrl.warning("EFM.6.12.07",
-                                _("In \"%(linkroleName)s\", element %(conceptTo)s has period type 'duration' but is given a preferred label %(preferredLabelValue)s when shown under parent %(parentQname)s.  The preferred label will be ignored."),
+                                _("In \"%(linkroleName)s\", element %(conceptTo)s has period type 'duration' but is given a preferred label %(preferredLabelValue)s when shown under parent %(conceptFrom)s.  The preferred label will be ignored."),
                                 modelObject=fact, conceptTo=qname, conceptFrom=parentQname, linkrole=linkroleUri, 
                                 linkroleDefinition=shortName, linkroleName=shortName,
                                 preferredLabel=originalLabelRole, preferredLabelValue=originalLabelRole.rpartition("/")[2])
@@ -634,7 +634,7 @@ class Command(object):
             if invalidMems:
                 errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.embedding.factThatContainsEmbeddedCommand)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_MEMBER_NAME_ERROR').format(self.cube.shortName, errorStr, str(mem))
-                self.filing.modelXbrl.error("EFM.6.26.03.embeddingCmdInvalidDomain",
+                self.filing.modelXbrl.error("EFM.6.26.04.embeddingCmdInvalidDomain",
                         _('In "%(linkroleName)s", the embedded report created by the embedding textBlock fact %(fact)s '
                           'with the context %(contextID)s, the domain members %(members)s are not presentation descendants of %(axis)s.'),
                         modelObject=self.embedding.factThatContainsEmbeddedCommand,
