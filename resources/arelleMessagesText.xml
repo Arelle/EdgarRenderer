@@ -484,6 +484,15 @@ Invalid linkbase file name: $(filename), expected $(expectedFilename)
 Href $(elementHref) may only have shorthand xpointers
 </message>
 
+<!-- TBD
+<message code="EFM.6.03.08.moreThanOneINS"
+         level="error"
+         module="EFM/__init__.py" line="285"
+         args="exhibitType">
+[...] A filing contains more than one instance for exhibit type $(exhibitType)
+</message>
+-->
+
 <!-- had inconsistent file/line number text order -->
 <message code="EFM.6.03.11"
          level="error"
@@ -837,6 +846,13 @@ parameters for cikList and cikNameList different list entry counts: $(cikList), 
          module="ValidateFiling.py" line="301"
          args="elementName prefix value">
 [cp-0524-Registrant-Name-Mismatch] The Official Registrant name, $(prefix), does not match the value $(value) in the Required Context.  Please correct dei:EntityRegistrantName.
+</message>
+
+<message code="EFM.6.05.24.multipleLSdrReportsForEntity"
+         level="error"
+         module="ValidateFiling.py" line="301"
+         args="entity">
+[cp-0524-Multiple-L-Sdr-Reports-For-Entity] There is more than one L SDR Exhibit having EntityRegistrantName $(entity). Change one of the names or remove one of the L SDR exhibits.
 </message>
 
 <message code="EFM.6.05.25"
