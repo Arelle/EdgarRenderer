@@ -484,14 +484,12 @@ Invalid linkbase file name: $(filename), expected $(expectedFilename)
 Href $(elementHref) may only have shorthand xpointers
 </message>
 
-<!-- TBD
-<message code="EFM.6.03.08.moreThanOneINS"
+<message code="EFM.6.03.08.moreThanOneIns"
          level="error"
          module="EFM/__init__.py" line="285"
          args="exhibitType">
-[...] A filing contains more than one instance for exhibit type $(exhibitType)
+[cp-0308-More-Than-One-Ins] The submission contains more than one instance for exhibit type $(exhibitType).  Remove all but one or change the exhibit types.
 </message>
--->
 
 <!-- had inconsistent file/line number text order -->
 <message code="EFM.6.03.11"
@@ -1536,7 +1534,7 @@ Concept $(concept) is monetary without a balance and must have a documentation l
          level="warning"
          module="EdgarRenderer/Embedding.py" line="312"
          args="linkrole linkroleDefinition linkroleName numberRootConcepts">
-[rq-1205-Multiple-Root-Nodes] Presentation base set ''$(linkroleName)'' has multiple ($(numberRootConcepts)) root nodes. XBRL allows unordered root nodes, but rendering requires ordering.  They will instead be ordered by their labels.  To avoid undesirable ordering of axes and primary items across multiple root nodes, rearrange the presentation relationships to have only a single root node.
+[rq-1206-Multiple-Root-Nodes] Presentation group ''$(linkroleName)'' has multiple ($(numberRootConcepts)) root nodes. XBRL allows unordered root nodes, but rendering requires ordering.  They will instead be ordered by their labels.  To avoid undesirable ordering of axes and primary items across multiple root nodes, rearrange the presentation relationships to have only a single root node.
 </message>
 
 <message code="EFM.6.12.07"
@@ -1557,7 +1555,7 @@ Concept $(concept) is monetary without a balance and must have a documentation l
          level="warning"
          module="EdgarRenderer/Embedding.py" line="512"
          args="linkrole linkroleDefinition linkroleName foundMeasureSet missingMeasureSet">
-[rq-1209-Presented-Units-Incomplete-Order] Units of measure $(foundMeasureSet) were found in ''$(linkroleName)'' but the facts presented use these additional units of measure: $(missingMeasureSet).  Add presentation relationships to provide a definite ordering of these additional units in the columns and rows of the output.
+[rq-1209-Presented-Units-Incomplete-Order] Units of measure $(foundMeasureSet) were found in ''$(linkroleName)'' but the facts presented use these additional units of measure: $(missingMeasureSet).  Add presentation relationships to provide a definite ordering of these additional units in output.
 </message>
 
 <message code="EFM.6.14.01"
@@ -2034,7 +2032,7 @@ Please ensure that you comply with the document type and naming provided.
          level="warning"
          module="EdgarRenderer/Cube.py" line="145"
          args="linkrole linkroleDefinition linkroleName axisSet">
-[rq-2601-All-Facts-Filtered] The presentation group ''$(linkroleName)'' contains $(axisSet), which either has (have) no default member in the presentation group. Since every fact is defaulted on this (these) axe(s), all facts have been filtered out.
+[rq-2601-All-Facts-Filtered] The presentation base set ''$(linkroleName)'' contains $(axisSet), which either has (have) no default member in the presentation group. Since every fact is defaulted on this (these) axe(s), all facts have been filtered out.
 </message>
 
 <message code="EFM.6.26.02"
@@ -2050,25 +2048,25 @@ Please ensure that you comply with the document type and naming provided.
          args="linkrole linkroleDefinition linkroleName">
 [rq-2603-No-Matching-Durations] The presentation base set ''$(linkroleName)'' is a statement of changes in equity, but it has no duration-type facts matching the instant-type facts shown.  Add duration-type facts that represent the changes from instant to instant, or do not label the presentation base set a statement of changes.
 </message>
-<message code="EFM.6.26.04.embeddingCmdInvalidDomain"
+<message code="EFM.6.26.04.embeddingCmdInvalidMember"
          level="error"
          module="EdgarRenderer/Embedding.py" line="634"
          args="linkrole linkroleDefinition linkroleName fact contextID members axis">
-[rq-2604-Embedding-Command-Invalid-Domain] In ''$(linkroleName)'', the embedded report created by the embedding textBlock fact $(fact) with the context $(contextID), the domain members $(members) are not presentation descendants of $(axis).
+[rq-2604-Embedding-Command-Invalid-Member] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with the context $(contextID), the domain members $(members) are not presentation descendants of $(axis).
 </message>
 
-<message code="EFM.6.26.04.embeddingCmdInvalidMemberOrMembers"
+<message code="EFM.6.26.04.embeddingCmdMalformedMember"
          level="error"
          module="EdgarRenderer/Filing.py" line="640"
          args="linkrole fact contextID linkroleDefinition linkroleName tokenlist">
-[rq-2604-Embedding-Command-Invalid-Member-Or-Members] In ''$(linkrole)'', the embedded report created by the embedding textBlock fact $(fact) with the context $(contextID), the keywords $(tokenlist) is not '*', a valid member qname or list of valid member qnames.
+[rq-2604-Embedding-Command-Malformed-Member] In ''$(linkrole)'', the embedded report created by the fact $(fact) with the context $(contextID), the keyword(s) $(tokenlist) is (are) not '*', a valid member qname or list of valid member qnames.
 </message>
 
 <message code="EFM.6.26.04.embeddingCmdMalformedAxis"
          level="error"
          module="EdgarRenderer/Filing.py" line="576"
          args="linkrole fact contextID linkroleDefinition linkroleName token position">
-[rq-2604-Embedding-Command-Malformed-Axis] In ''$(linkrole)'', the embedded report created by the embedding textBlock fact $(fact) with the context $(contextID), the token $(token) at position $(position) in the list of tokens is malformed. This token can only be 'period', 'unit', 'primary' or identify an Axis by its namespace prefix, underscore, and element name.
+[rq-2604-Embedding-Command-Malformed-Axis] In ''$(linkrole)'', the embedded report created by the fact $(fact) with the context $(contextID), the token $(token), at position $(position) in the list of tokens, is malformed. This token can only be 'period', 'unit', 'primary' or identify an Axis by its namespace prefix, underscore, and element name.
 </message>
 
 <message code="EFM.6.26.04.embeddingCmdMalformedDirectionToken"
@@ -2082,7 +2080,7 @@ Please ensure that you comply with the document type and naming provided.
          level="error"
          module="EdgarRenderer/Filing.py" line="609"
          args="linkrole fact contextID linkroleDefinition linkroleName style">
-[rq-2604-Embedding-Command-Malformed-Style-Token] In ''$(linkrole)'', the embedded report created by the embedding textBlock fact $(fact) with the context $(contextID), the style keyword $(style) is not one of 'compact' or 'nodisplay'.
+[rq-2604-Embedding-Command-Malformed-Style-Token] In ''$(linkrole)'', the embedded report created by the fact $(fact), with the context $(contextID), the style keyword $(style) is not one of 'compact' or 'nodisplay'.
 </message>
 
 <message code="EFM.6.26.05.embeddingCmdMissingIterator"
@@ -2096,7 +2094,7 @@ Please ensure that you comply with the document type and naming provided.
          level="error"
          module="EdgarRenderer/Embedding.py" line="241"
          args="linkrole linkroleDefinition linkroleName fact contextID iftransposed roworcol colorrow axes">
-[rq-2605-Embedding-Command-Missing-Iterator-After-Transposition] In ''$(linkroleName)'', the embedded report created by the embedding textBlock fact $(fact) with the context $(contextID), there are no valid $(roworcol) commands$(iftransposed). Change one of the $(axes) to a $(colorrow) or add a $(roworcol) command with an additional axis.
+[rq-2605-Embedding-Command-Missing-Iterator-After-Transposition] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with the context $(contextID), there are no valid $(roworcol) commands$(iftransposed). Change one of the $(axes) to a $(colorrow) or add a $(roworcol) command with an additional axis.
 </message>
 
 <message code="EFM.6.26.06"
@@ -2110,21 +2108,21 @@ Please ensure that you comply with the document type and naming provided.
          level="warning"
          module="EdgarRenderer/Report.py" line="1793"
          args="linkrole linkroleDefinition linkroleName fact contextID">
-[rq-2607-Empty-Bar-Chart] In ''$(linkroleName)'', the embedded report created by the embedding text block fact $(fact) with context $(contextID), is a bar chart figure that has zero facts. If a bar chart figure is not wanted here, consider removing this particular text block fact, otherwise, determine why all its facts are being filtered out.
+[rq-2607-Empty-Bar-Chart] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with context $(contextID), is a bar chart figure that has zero facts. If a bar chart figure is not wanted here, consider removing the 	text block fact, otherwise, determine why all its facts are being filtered out.
 </message>
 
 <message code="EFM.6.26.08"
          level="error"
          module="EdgarRenderer/Report.py" line="1194"
          args="linkrole linkroleDefinition linkroleName fact contextID numYears">
-[rq-2608-Too-Many-Annual-Return-Facts] In ''$(linkroleName)'', the embedded report created by the embedding textBlock fact $(fact) with context $(contextID), there are $(numYears) Annual Return Facts, but there must not be more than 20.
+[rq-2608-Too-Many-Annual-Return-Facts] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with context $(contextID), there are $(numYears) Annual Return Facts, but there must not be more than 20.
 </message>
 
 <message code="EFM.6.26.09"
          level="warning"
          module="EdgarRenderer/Embedding.py" line="589"
          args="linkrole linkroleDefinition linkroleName fact contextID">
-[rq-2609-Primary-Axis-On-Rows] In ''$(linkroleName)'' the embedded report created by the embedding text block fact $(fact) with context $(contextID) contains an iterator "column primary" even though the definition text of $(linkroleDefinition) contains the "{Elements}" qualifier. The primary axis will remain on the rows.
+[rq-2609-Primary-Axis-On-Rows] In ''$(linkroleName)'' the embedded report created by the fact $(fact) with context $(contextID) contains an iterator "column primary" even though the definition text of $(linkroleDefinition) contains the "{Elements}" qualifier. The primary axis will remain on the rows.
 </message>
 
 

@@ -1201,7 +1201,7 @@ class Report(object):
         if numYears > 20:
             errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.embedding.factThatContainsEmbeddedCommand)
             self.filing.modelXbrl.error("EFM.6.26.08",
-                                   _('In "%(linkroleName)s", the embedded report created by the embedding textBlock fact %(fact)s with context %(contextID)s, '
+                                   _('In "%(linkroleName)s", the embedded report created by the fact %(fact)s with context %(contextID)s, '
                                      'there are %(numYears)s Annual Return Facts, but there must not be more than 20.'),
                                     modelObject=self.embedding.factThatContainsEmbeddedCommand, 
                                     linkrole=self.cube.linkroleUri, linkroleDefinition=self.cube.definitionText,
@@ -1779,9 +1779,9 @@ class Cell(object):
                 errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(embedding.factThatContainsEmbeddedCommand)
                 #message = ErrorMgr.getError('FIGURE_HAS_NO_FACTS_WARNING').format(embedding.cube.shortName, errorStr)
                 self.filing.modelXbrl.warning("EFM.6.26.07",
-                                       _('In "%(linkroleName)s", the embedded report created by the embedding text block fact %(fact)s '
+                                       _('In "%(linkroleName)s", the embedded report created by the fact %(fact)s '
                                          'with context %(contextID)s, is a bar chart figure that has zero facts. If a bar chart figure '
-                                         'is not wanted here, consider removing this particular text block fact, otherwise, determine why all its facts are being filtered out.'),
+                                         'is not wanted here, consider removing the text block fact, otherwise, determine why all its facts are being filtered out.'),
                                         modelObject=embedding.factThatContainsEmbeddedCommand, 
                                         linkrole=embedding.cube.linkroleUri, linkroleDefinition=embedding.cube.definitionText,
                                         linkroleName=embedding.cube.shortName, fact=embedding.factThatContainsEmbeddedCommand.qname,
