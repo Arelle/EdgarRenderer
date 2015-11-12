@@ -572,6 +572,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                     options.zipOutputFile = join(self.processingFolder, "-out".join(os.path.splitext(file)))
                     options.doneFile = join(self.archiveFolder, file)
                     # self.failFile = join(self.errorsFolder,file)
+                    if self.createdFolders: # pass to filing processing any created folders
+                        options.daemonCreatedFolders = self.createdFolders
                     break
             # no more files.
             if not zipfound:
@@ -617,6 +619,10 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.initializeReOptions(options)
         else: # options previously initialized
             self.copyReAttrOptions(options)
+        # Transfer daemonCreatedFilders to this EdgarRenderer to deal with at filingEnd
+        if hasattr(options, "daemonCreatedFolders"):
+            self.createdFolders.extend(options.daemonCreatedFolders)
+            del options.daemonCreatedFolders # don't pass to any subsequent independent filing if any
         mdlMgr = cntlr.modelManager
         self.validatedForEFM = not cntlr.hasGui and mdlMgr.validateDisclosureSystem and getattr(mdlMgr.disclosureSystem, "EFMplugin", False)
         self.instanceSummaryList = []
@@ -712,14 +718,29 @@ class EdgarRenderer(Cntlr.Cntlr):
             # TODO: At this point would be nice to call out any files not loaded in any instance DTS
             inputsToCopyToOutputList = self.supplementList
             if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
-            for filename in inputsToCopyToOutputList:
-                source = join(self.processingFolder, filename)
-                if not self.reportZip:
-                    target = join(self.reportsFolder, filename)
-                    if exists(target): remove(target)
-                    shutil.copyfile(source, target)                
+            if inputsToCopyToOutputList:
+                if filesource is not None and filesource.basefile and filesource.basefile.endswith(".zip"):
+                    # files to copy are in zip archive
+                    for filename in inputsToCopyToOutputList:
+                        file, = filesource.file(filesource.basefile + "/" + filename, binary=True)
+                        if not self.reportZip:
+                            target = join(self.reportsFolder, filename)
+                            if exists(target): remove(target)
+                            with open(target, 'wb') as f:
+                                f.write(file.read())
+                        else:
+                            self.reportZip.writestr(filename, file.read())
+                    filesource.close()
                 else:
-                    self.reportZip.write(source, filename)
+                    # files to copy are in local directory
+                    for filename in inputsToCopyToOutputList:
+                        if not self.reportZip:
+                            target = join(self.reportsFolder, filename)
+                            if exists(target): remove(target)
+                            shutil.copyfile(source, target)                
+                        else:
+                            source = join(self.processingFolder, filename)
+                            self.reportZip.write(source, filename)
                         
         
             self.logDebug("Instance post-processing complete")
@@ -773,6 +794,10 @@ class EdgarRenderer(Cntlr.Cntlr):
                     result = IoManager.move_clobbering_file(self.zipOutputFile, # remove -out from output zip
                                                             os.path.join(self.deliveryFolder, os.path.basename(self.zipOutputFile)[:-8] + ".zip") )
                     IoManager.move_clobbering_file(options.entrypointFile, self.doneFile)
+                    if self.deleteProcessedFilings:
+                        for folder in self.createdFolders: 
+                            shutil.rmtree(folder,ignore_errors=True) 
+                        del self.createdFolders[:] # prevent any other use of created folders
                     self.logDebug(_("Successfully post-processed to {}.").format(result))
                 except OSError as err:
                     #self.logError(_(ErrorMgr.getError('POST_PROCESSING_ERROR').format(err)))
