@@ -180,10 +180,10 @@ class Summary(object):
                     _text = logHandler.format(logRec) # sets logRec.file
                     if logRec.messageCode in logMessageText:
                         _text = logMessageText[logRec.messageCode] % logRec.args
-                        if hasattr(logHandler.formatter, "fileLines"):
-                            _fileLines = logHandler.formatter.fileLines(logRec)
-                            if _fileLines:
-                                _text += " - " + _fileLines
+                    if hasattr(logHandler.formatter, "fileLines"):
+                        _fileLines = logHandler.formatter.fileLines(logRec)
+                        if _fileLines:
+                            _text += " - " + _fileLines
                     SubElement(logs, 'Log', type=logRec.levelname.title()).text = _text
                     numShownMessages += 1
 

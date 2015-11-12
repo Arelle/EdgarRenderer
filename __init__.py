@@ -679,6 +679,14 @@ class EdgarRenderer(Cntlr.Cntlr):
     def filingEnd(self, cntlr, options, filesource, filing):
         if self.abortedDueToMajorError:
             return # major errors detected
+        
+        # logMessageText needed for successful and unsuccessful termination
+        self.logMessageText = {}
+        if self.logMessageTextFile:
+            for msgElt in etree.parse(self.logMessageTextFile).iter("message"):
+                self.logMessageText[msgElt.get("code")] = re.sub(
+                    r"\$\((\w+)\)", r"%(\1)s", msgElt.text.strip())
+        
         if self.success:
             if self.xlWriter:
                 self.xlWriter.save()
@@ -860,19 +868,18 @@ class EdgarRenderer(Cntlr.Cntlr):
             #message = ErrorMgr.getError('CANNOT_PROCESS_INPUT_FILE').format(self.entrypoint)
             self.logError("Cannot process input file {}.".format(self.entrypoint), file=__file__ + ' postprocessFailure')
         else:
-            # In daemon mode, write an error log file looking somewhat like the one from RE2 and named the same.
-            # Separately, create a zero-length "fail file" for the sole purpose of signaling status.
-            if self.failFile is not None: 
-                open(self.failFile, 'w').close()
-            if self.entrypoint is None:
-                #message = _(ErrorMgr.getError('CANNOT_PROCESS_INPUT_FILE')).format(self.entrypoint)
-                self.logError(_("Cannot process input file {}.").format(self.entrypoint))
-            else:
-                errlogpath = join(self.deliveryFolder, os.path.splitext(self.zipOutputFile)[0] + '_errorLog.txt')
+            try:
+                if self.reportZip:
+                    self.reportZip.close() # must be closed before moving
+                # In daemon mode, write an error log file looking somewhat like the one from RE2 and named the same.
+                # Separately, create a zero-length "fail file" for the sole purpose of signaling status.
+                if self.failFile is not None: 
+                    open(self.failFile, 'w').close()
+                errlogpath = join(self.deliveryFolder, os.path.basename(self.zipOutputFile)[:-8] + '_errorLog.txt')
                 if isfile(errlogpath): os.remove(errlogpath)
                 #self.logError(_(ErrorMgr.getError('CANNOT_PROCESS_ZIP_FILE')).format(options.entrypoint))
-                self.logError(_("Cannot process zip file {}; moving to fail folder.").format(options.entrypoint))
-                IoManager.move_clobbering_file(options.entrypoint, self.errorsFolder)
+                self.logDebug(_("Cannot process zip file {}; moving to fail folder.").format(options.entrypointFile))
+                IoManager.move_clobbering_file(options.entrypointFile, self.errorsFolder)
                 print(self.deliveryFolder + " " + errlogpath)
                 with open(errlogpath, 'w', encoding='utf-8') as f:
                     ''' get all messages from log, translate if required
@@ -880,7 +887,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         message = "[" + errmsg.msgCode + "] " + errmsg.msg
                     '''
                     logHandler = self.cntlr.logHandler
-                    logMessageText = self.controller.logMessageText
+                    logMessageText = self.logMessageText
                     for logRec in getattr(logHandler, "logRecordBuffer", ()): # non buffered handlers don't keep log records (e.g., log to print handler)
                         if logRec.levelno > logging.INFO:
                             fileLines = defaultdict(set)
@@ -891,12 +898,17 @@ class EdgarRenderer(Cntlr.Cntlr):
                             _text = logHandler.format(logRec) # sets logRec.file
                             if logRec.messageCode in logMessageText:
                                 _text = logMessageText[logRec.messageCode] % logRec.args
-                                if hasattr(logHandler.formatter, "fileLines"):
-                                    _fileLines = logHandler.formatter.fileLines(logRec)
-                                    if _fileLines:
-                                        _text += " - " + _fileLines
+                            if hasattr(logHandler.formatter, "fileLines"):
+                                _fileLines = logHandler.formatter.fileLines(logRec)
+                                if _fileLines:
+                                    _text += " - " + _fileLines
                             print(_text, file=f)
                     f.close() 
+            
+            
+            except OSError as err:
+                #self.logError(_(ErrorMgr.getError('POST_PROCESSING_ERROR').format(err)))
+                self.logError(_("Failure: Post-processing I/O or OS error: {}").format(err))
 
 
     
@@ -966,6 +978,7 @@ def edgarRendererFilingEnd(cntlr, options, filesource, filing):
 def edgarRendererGuiRun(cntlr, modelXbrl, attach):
     """ run EdgarRenderer using GUI interactions for a single instance or testcases """
     if cntlr.hasGui:
+        _combinedReports = False # use mustard menu
         # may use GUI mode to process a single instance or test suite
         options = PythonUtil.attrdict(# simulate options that CntlrCmdLine provides
             configFile = os.path.join(os.path.dirname(__file__), 'conf', 'config_for_instance.xml'),
@@ -980,7 +993,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach):
             auxMetadata = None,
             copyInlineFilesToOutput = None,
             zipXbrlFilesToOutput = None,
-            includeLogsInSummary = None,
+            includeLogsInSummary = None, # for GUI logger does not have buffered messages available, always no logs in output
             saveTargetInstance = None,
             saveTargetFiling = None,
             deleteProcessedFilings = None,
@@ -994,10 +1007,10 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach):
             reportsFolder = "out", # default to reports subdirectory of source input
             reportInZip = None,
             resourcesFolder = None,
-            reportXslt = "InstanceReportTable.xslt", # temporarily generate R-all contents
-            summaryXslt = '', # no FilingSummary.htm for Rall.htm production
+            reportXslt = ('InstanceReport.xslt', 'InstanceReportTable.xslt')[_combinedReports],
+            summaryXslt = ('Summarize.xslt', '')[_combinedReports], # no FilingSummary.htm for Rall.htm production
                               # "LocalSummarize.xslt", # takes resources parameter for include dir
-            excelXslt = None,
+            excelXslt = ('InstanceReport_XmlWorkbook.xslt', None)[_combinedReports],
             logMessageTextFile = None,
             logFile = None # from cntlrCmdLine but need to simulate for GUI operation
             )
@@ -1030,8 +1043,9 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach):
         Temporarily this function just does an Rall.htm for local viewing.
         '''
         if reportsFolder and os.path.exists(os.path.join(edgarRenderer.reportsFolder, "FilingSummary.xml")):
-            edgarRenderer.logDebug("Generate all-reports htm file")
-            rAll = [b'''
+            if _combinedReports:
+                edgarRenderer.logDebug("Generate all-reports htm file")
+                rAll = [b'''
 <html>
   <head>
     <title>View Filing Data</title>
@@ -1046,25 +1060,27 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach):
   </head>
   <body>
 ''']
-            filingSummaryTree = etree.parse(os.path.join(edgarRenderer.reportsFolder, "FilingSummary.xml"))
-            for htmlFileName in filingSummaryTree.iter(tag="HtmlFileName"):
-                rFile = htmlFileName.text.strip()
-                rFilePath = os.path.join(edgarRenderer.reportsFolder, rFile)
-                edgarRenderer.logDebug("Appending report file {}".format(rFile))
-                with open(rFilePath, mode='rb') as f:
-                    rAll.append(f.read())
-                os.remove(rFilePath)
-            rAll.append(b'''
+                filingSummaryTree = etree.parse(os.path.join(edgarRenderer.reportsFolder, "FilingSummary.xml"))
+                for htmlFileName in filingSummaryTree.iter(tag="HtmlFileName"):
+                    rFile = htmlFileName.text.strip()
+                    rFilePath = os.path.join(edgarRenderer.reportsFolder, rFile)
+                    edgarRenderer.logDebug("Appending report file {}".format(rFile))
+                    with open(rFilePath, mode='rb') as f:
+                        rAll.append(f.read())
+                    os.remove(rFilePath)
+                rAll.append(b'''
   </body>
 </html>
 ''')
-            with open(os.path.join(edgarRenderer.reportsFolder, "Rall.htm"), mode='wb') as f:
-                f.write(b"".join(rAll))
-            shutil.copyfile(os.path.join(edgarRenderer.resourcesFolder, "report.css"), os.path.join(edgarRenderer.reportsFolder, "report.css"))
-            edgarRenderer.logDebug("Write {} complete".format("Rall.htm"))
+                with open(os.path.join(edgarRenderer.reportsFolder, "Rall.htm"), mode='wb') as f:
+                    f.write(b"".join(rAll))
+                shutil.copyfile(os.path.join(edgarRenderer.resourcesFolder, "report.css"), os.path.join(edgarRenderer.reportsFolder, "report.css"))
+                edgarRenderer.logDebug("Write {} complete".format("Rall.htm"))
             # display on web browser
             import webbrowser
-            webbrowser.open(url="file://{}/{}".format(reportsFolder.replace("\\","/"), "Rall.htm"))
+            webbrowser.open(url="file://{}/{}".format(
+                                  reportsFolder.replace("\\","/"), 
+                                  ("FilingSummary.htm", "Rall.htm")[_combinedReports]))
 
 def testcaseVariationExpectedSeverity(modelTestcaseVariation):
     # allow severity to appear on any variation sub-element (such as result)
