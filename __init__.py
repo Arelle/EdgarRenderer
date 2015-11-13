@@ -125,7 +125,7 @@ from arelle import (Cntlr, FileSource, ModelDocument, XmlUtil, Version, ModelVal
                     ViewFileFactList, ViewFileFactTable, ViewFileConcepts, ViewFileFormulae,
                     ViewFileRelationshipSet, ViewFileTests, ViewFileRssFeed, ViewFileRoleTypes)
 from . import RefManager, IoManager, Inline, Utils, Filing, Summary
-import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os, re
+import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os, re, io
 from lxml import etree
 from os import getcwd, remove, removedirs
 from os.path import join, isfile, exists, dirname, basename, isdir
@@ -680,18 +680,39 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.logDebug(_("Exception traceback: {}").format(traceback.format_exception(*sys.exc_info())))
         self.renderedFiles = filing.renderedFiles # filing-level rendered files
         if not success:
-            self.success = False            
+            self.success = False   
+            
+    def loadLogMessageText(self):         
+        self.logMessageText = {}
+        if self.logMessageTextFile:
+            for msgElt in etree.parse(self.logMessageTextFile).iter("message"):
+                self.logMessageText[msgElt.get("code")] = re.sub(
+                    r"\$\((\w+)\)", r"%(\1)s", msgElt.text.strip())
+                
+    def formatLogMessage(self, logRec):
+        logHandler = self.cntlr.logHandler
+        fileLines = defaultdict(set)
+        for ref in logRec.refs:
+            href = ref.get("href")
+            if href:
+                fileLines[href.partition("#")[0]].add(ref.get("sourceLine", 0))
+        _text = logHandler.format(logRec) # sets logRec.file
+        try:
+            _text = self.logMessageText[logRec.messageCode] % logRec.args
+        except KeyError:
+            pass # not replacable messageCode or a %(xxx)s format arg was not in the logRec arcs or it's a $() java function reference
+        if hasattr(logHandler.formatter, "fileLines"):
+            _fileLines = logHandler.formatter.fileLines(logRec)
+            if _fileLines:
+                _text += " - " + _fileLines
+        return _text
                 
     def filingEnd(self, cntlr, options, filesource, filing):
         if self.abortedDueToMajorError:
             return # major errors detected
         
         # logMessageText needed for successful and unsuccessful termination
-        self.logMessageText = {}
-        if self.logMessageTextFile:
-            for msgElt in etree.parse(self.logMessageTextFile).iter("message"):
-                self.logMessageText[msgElt.get("code")] = re.sub(
-                    r"\$\((\w+)\)", r"%(\1)s", msgElt.text.strip())
+        self.loadLogMessageText()
         
         if self.success:
             if self.xlWriter:
@@ -745,12 +766,6 @@ class EdgarRenderer(Cntlr.Cntlr):
         
             self.logDebug("Instance post-processing complete")
             
-            self.logMessageText = {}
-            if self.logMessageTextFile:
-                for msgElt in etree.parse(self.logMessageTextFile).iter("message"):
-                    self.logMessageText[msgElt.get("code")] = re.sub(
-                        r"\$\((\w+)\)", r"%(\1)s", msgElt.text.strip())
-            
             summary = Summary.Summary(self)  
             rootETree = summary.buildSummaryETree()
             IoManager.writeXmlDoc(rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
@@ -783,7 +798,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 xbrlZip.close()
                 if self.reportZip:
                     zipStream.seek(0)
-                    self.controller.reportZip.writestr(_fileName, zipStream.read().encode("utf-8"))
+                    self.reportZip.writestr(_fileName, zipStream.read())
                     zipStream.close()
                 self.logDebug("Write {} complete".format(_fileName))
             
@@ -915,19 +930,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                     logMessageText = self.logMessageText
                     for logRec in getattr(logHandler, "logRecordBuffer", ()): # non buffered handlers don't keep log records (e.g., log to print handler)
                         if logRec.levelno > logging.INFO:
-                            fileLines = defaultdict(set)
-                            for ref in logRec.refs:
-                                href = ref.get("href")
-                                if href:
-                                    fileLines[href.partition("#")[0]].add(ref.get("sourceLine", 0))
-                            _text = logHandler.format(logRec) # sets logRec.file
-                            if logRec.messageCode in logMessageText:
-                                _text = logMessageText[logRec.messageCode] % logRec.args
-                            if hasattr(logHandler.formatter, "fileLines"):
-                                _fileLines = logHandler.formatter.fileLines(logRec)
-                                if _fileLines:
-                                    _text += " - " + _fileLines
-                            print(_text, file=f)
+                            print(self.formatLogMessage(logRec), file=f)
                     f.close() 
             
             

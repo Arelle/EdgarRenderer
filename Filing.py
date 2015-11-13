@@ -949,10 +949,10 @@ class Filing(object):
                 else:
                     word = 'Starting or Ending'
                 self.modelXbrl.warning("EFM.6.26.02",
-                               _('In "%(linkroleName)s", fact %(fact)s with value %(value)s and preferred label %(preferredLabel)s, '
+                               _('In "%(linkroleName)s", fact %(fact)s with value %(value)s and preferred label %(preferredLabelValue)s, '
                                  'was not shown because there are no facts in a duration %(startOrEnd)s at %(date)s. Change the preferred label role or add facts.'),
-                                modelObject=fact, fact=fact.qname, value=value, 
-                                preferredLabel=role, startOrEnd=word, date=endTime,
+                                modelObject=fact, fact=fact.qname, value=value,  startOrEnd=word, date=endTime,
+                                preferredLabel=role, preferredLabelValue=role.rpartition("/")[2], 
                                 linkrole=linkroleUri, linkroleDefinition=definitionText, linkroleName=shortName)
 
 class ReportSummary(object):

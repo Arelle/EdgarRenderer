@@ -163,7 +163,6 @@ class Summary(object):
                 SubElement(logs, 'Log', type=errmsg.msgCode.title()).text = errmsg.msg
             '''
             logHandler = self.controller.cntlr.logHandler
-            logMessageText = self.controller.logMessageText
             numShownMessages = 0
             for logRec in getattr(logHandler, "logRecordBuffer", ()): # non buffered handlers don't keep log records (e.g., log to print handler)
                 if logRec.levelno > logging.INFO:
@@ -172,18 +171,7 @@ class Summary(object):
                     if numShownMessages == 100:
                         SubElement(logs, 'Log', type='Info').text = "There are more than 100 warnings or errors, only 100 will be displayed."
                         break
-                    fileLines = defaultdict(set)
-                    for ref in logRec.refs:
-                        href = ref.get("href")
-                        if href:
-                            fileLines[href.partition("#")[0]].add(ref.get("sourceLine", 0))
-                    _text = logHandler.format(logRec) # sets logRec.file
-                    if logRec.messageCode in logMessageText:
-                        _text = logMessageText[logRec.messageCode] % logRec.args
-                    if hasattr(logHandler.formatter, "fileLines"):
-                        _fileLines = logHandler.formatter.fileLines(logRec)
-                        if _fileLines:
-                            _text += " - " + _fileLines
+                    _text = self.controller.formatLogMessage(logRec)
                     SubElement(logs, 'Log', type=logRec.levelname.title()).text = _text
                     numShownMessages += 1
 

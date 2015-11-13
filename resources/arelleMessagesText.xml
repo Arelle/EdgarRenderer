@@ -2032,21 +2032,21 @@ Please ensure that you comply with the document type and naming provided.
          level="warning"
          module="EdgarRenderer/Cube.py" line="145"
          args="linkrole linkroleDefinition linkroleName axisSet">
-[rq-2601-All-Facts-Filtered] The presentation base set ''$(linkroleName)'' contains $(axisSet), which either has (have) no default member in the presentation group. Since every fact is defaulted on this (these) axe(s), all facts have been filtered out.
+[rq-2601-All-Facts-Filtered] The presentation group ''$(linkroleName)'' contains $(axisSet), which has (have) no default member in the presentation group. Since every fact is defaulted on this (these) axe(s), all facts have been filtered out.
 </message>
 
 <message code="EFM.6.26.02"
          level="warning"
          module="EdgarRenderer/Filing.py" line="949"
-         args="fact value preferredLabel startOrEnd date linkrole linkroleDefinition linkroleName">
-[rq-2602-Duration-Without-Matching-Instant] In ''$(linkroleName)'', fact $(fact) with value $(value) and preferred label $(preferredLabel), was not shown because there are no facts in a duration $(startOrEnd) at $(date). Change the preferred label role or add facts.
+         args="fact value preferredLabel preferredLabelValue startOrEnd date linkrole linkroleDefinition linkroleName">
+[rq-2602-Duration-Without-Matching-Instant] In ''$(linkroleName)'', fact $(fact) with value $(value) and preferred label $(preferredLabelValue), was not shown because there are no facts in a duration $(startOrEnd) at $(date). Change the preferred label role or add facts.
 </message>
 
 <message code="EFM.6.26.03"
          level="warning"
          module="EdgarRenderer/Cube.py" line="273"
          args="linkrole linkroleDefinition linkroleName">
-[rq-2603-No-Matching-Durations] The presentation base set ''$(linkroleName)'' is a statement of changes in equity, but it has no duration-type facts matching the instant-type facts shown.  Add duration-type facts that represent the changes from instant to instant, or do not label the presentation base set a statement of changes.
+[rq-2603-No-Matching-Durations] The presentation group ''$(linkroleName)'' is a statement of changes in equity, but it has no duration-type facts matching the instant-type facts shown.  Add duration-type facts that represent the changes from instant to instant, or do not label the presentation base set a statement of changes.
 </message>
 <message code="EFM.6.26.04.embeddingCmdInvalidMember"
          level="error"
@@ -2100,15 +2100,15 @@ Please ensure that you comply with the document type and naming provided.
 <message code="EFM.6.26.06"
          level="warning"
          module="EdgarRenderer/Embedding.py" line="147"
-         args="linkrole linkroleDefinition linkroleName error axis embeddedCommand fact">
-[rq-2606-Axis-Has-No-Order] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with context {context}, the axis $(axis) was not given an order in the presentation base set $(linkroleDefinition). The axes are being sorted by their labels.
+         args="linkrole linkroleDefinition linkroleName error axis embeddedCommand fact contextID">
+[rq-2606-Axis-Has-No-Order] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with context $(contextID), the axis $(axis) was not given an order in the presentation group $(linkroleDefinition). The axes are being sorted by their labels.
 </message>
 
 <message code="EFM.6.26.07"
          level="warning"
          module="EdgarRenderer/Report.py" line="1793"
          args="linkrole linkroleDefinition linkroleName fact contextID">
-[rq-2607-Empty-Bar-Chart] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with context $(contextID), is a bar chart figure that has zero facts. If a bar chart figure is not wanted here, consider removing the 	text block fact, otherwise, determine why all its facts are being filtered out.
+[rq-2607-Bar-Chart-Has-No-Facts] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with context $(contextID), is a bar chart figure that has zero facts. If a bar chart figure is not wanted here, consider removing the 	text block fact, otherwise, determine why all its facts are being filtered out.
 </message>
 
 <message code="EFM.6.26.08"
