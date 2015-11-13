@@ -737,10 +737,11 @@ class EdgarRenderer(Cntlr.Cntlr):
                 copyResourceToReportFolder("RenderingLogs.xslt")  # TODO: This will go away
                 self.renderedFiles.add("RenderingLogs.xslt")
             # TODO: At this point would be nice to call out any files not loaded in any instance DTS
-            inputsToCopyToOutputList = [reportedFile
-                                        for report in filing.reports
-                                        for reportedFile in report.reportedFiles
-                                        if Utils.isImageFilename(reportedFile)]
+            self.supplementList = [reportedFile
+                                   for report in filing.reports
+                                   for reportedFile in report.reportedFiles
+                                   if Utils.isImageFilename(reportedFile)]
+            inputsToCopyToOutputList = self.supplementList
             if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
             if inputsToCopyToOutputList and filing.entrypointfiles:
                 _xbrldir = os.path.dirname(filing.entrypointfiles[0]["file"])
