@@ -662,7 +662,14 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.instanceList.append(report.basename)
         elif report.basename.endswith(".htm"):
             self.inlineList.append(report.basename)
-        self.supplementalFileList += sorted(report.reportedFiles)
+        for reportedFile in sorted(report.reportedFiles):
+            if Utils.isImageFilename(reportedFile):
+                self.supplementalFileList.append(reportedFile)
+                self.supplementList.append(reportedFile)
+            elif reportedFile.endswith(".htm"):
+                self.inlineList.append(reportedFile)
+            elif reportedFile != report.basename:
+                self.otherXbrlList.append(reportedFile)
         RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
         self.loopnum = getattr(self, "loopnum", 0) + 1
         try:
@@ -737,10 +744,6 @@ class EdgarRenderer(Cntlr.Cntlr):
                 copyResourceToReportFolder("RenderingLogs.xslt")  # TODO: This will go away
                 self.renderedFiles.add("RenderingLogs.xslt")
             # TODO: At this point would be nice to call out any files not loaded in any instance DTS
-            self.supplementList = [reportedFile
-                                   for report in filing.reports
-                                   for reportedFile in report.reportedFiles
-                                   if Utils.isImageFilename(reportedFile)]
             inputsToCopyToOutputList = self.supplementList
             if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
             if inputsToCopyToOutputList and filing.entrypointfiles:
