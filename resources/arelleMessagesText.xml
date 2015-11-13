@@ -1534,7 +1534,7 @@ Concept $(concept) is monetary without a balance and must have a documentation l
          level="warning"
          module="EdgarRenderer/Embedding.py" line="312"
          args="linkrole linkroleDefinition linkroleName numberRootConcepts">
-[rq-1206-Multiple-Root-Nodes] Presentation group ''$(linkroleName)'' has multiple ($(numberRootConcepts)) root nodes. XBRL allows unordered root nodes, but rendering requires ordering.  They will instead be ordered by their labels.  To avoid undesirable ordering of axes and primary items across multiple root nodes, rearrange the presentation relationships to have only a single root node.
+[rq-1206-Multiple-Root-Nodes] Presentation group ''$(linkroleName)'' has multiple 	root nodes. XBRL allows unordered root nodes, but rendering requires ordering.  They will instead be ordered by their labels.  To avoid undesirable ordering of axes and primary items across multiple root nodes, rearrange the presentation relationships to have only a single root node.
 </message>
 
 <message code="EFM.6.12.07"
@@ -2108,7 +2108,7 @@ Please ensure that you comply with the document type and naming provided.
          level="warning"
          module="EdgarRenderer/Report.py" line="1793"
          args="linkrole linkroleDefinition linkroleName fact contextID">
-[rq-2607-Bar-Chart-Has-No-Facts] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with context $(contextID), is a bar chart figure that has zero facts. If a bar chart figure is not wanted here, consider removing the 	text block fact, otherwise, determine why all its facts are being filtered out.
+[rq-2607-Bar-Chart-Has-No-Facts] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with context $(contextID), is a bar chart figure that has zero facts. If a bar chart figure is not wanted here, consider removing the text block fact; otherwise, determine why all its facts are being filtered out.
 </message>
 
 <message code="EFM.6.26.08"
