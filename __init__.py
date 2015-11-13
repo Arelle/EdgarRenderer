@@ -737,32 +737,23 @@ class EdgarRenderer(Cntlr.Cntlr):
                 copyResourceToReportFolder("RenderingLogs.xslt")  # TODO: This will go away
                 self.renderedFiles.add("RenderingLogs.xslt")
             # TODO: At this point would be nice to call out any files not loaded in any instance DTS
-            inputsToCopyToOutputList = self.supplementList
+            inputsToCopyToOutputList = [reportedFile
+                                        for report in filing.reports
+                                        for reportedFile in report.reportedFiles
+                                        if Utils.isImageFilename(reportedFile)]
             if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
-            if inputsToCopyToOutputList:
-                if filesource is not None and filesource.basefile and filesource.basefile.endswith(".zip"):
-                    # files to copy are in zip archive
-                    for filename in inputsToCopyToOutputList:
-                        file, = filesource.file(filesource.basefile + "/" + filename, binary=True)
-                        if not self.reportZip:
-                            target = join(self.reportsFolder, filename)
-                            if exists(target): remove(target)
-                            with open(target, 'wb') as f:
-                                f.write(file.read())
-                        else:
-                            self.reportZip.writestr(filename, file.read())
-                    filesource.close()
-                else:
-                    # files to copy are in local directory
-                    for filename in inputsToCopyToOutputList:
-                        if not self.reportZip:
-                            target = join(self.reportsFolder, filename)
-                            if exists(target): remove(target)
-                            shutil.copyfile(source, target)                
-                        else:
-                            source = join(self.processingFolder, filename)
-                            self.reportZip.write(source, filename)
-                        
+            if inputsToCopyToOutputList and filing.entrypointfiles:
+                _xbrldir = os.path.dirname(filing.entrypointfiles[0]["file"])
+                # files to copy are in zip archive
+                for filename in inputsToCopyToOutputList:
+                    file = filesource.file(os.path.join(_xbrldir, filename), binary=True)[0]  # returned in a tuple
+                    if not self.reportZip:
+                        target = join(self.reportsFolder, filename)
+                        if exists(target): remove(target)
+                        with open(target, 'wb') as f:
+                            f.write(file.read())
+                    else:
+                        self.reportZip.writestr(filename, file.read())
         
             self.logDebug("Instance post-processing complete")
             
