@@ -392,7 +392,7 @@ class Embedding(object):
                             errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.factThatContainsEmbeddedCommand)
                             #message = ErrorMgr.getError('INSTANT_DURATION_CONFLICT_WARNING').format(shortName, errorStr, str(qname), Utils.strFactValue(fact))
                             # TBD: not same as 6.12.7 test, do we replace anyway 
-                            self.filing.modelXbrl.warning("EFM.6.12.07",
+                            self.filing.modelXbrl.debug("debug",
                                 _("In \"%(linkroleName)s\", element %(conceptTo)s has period type 'duration' but is given a preferred label %(preferredLabelValue)s when shown under parent %(conceptFrom)s.  The preferred label will be ignored."),
                                 modelObject=fact, conceptTo=qname, conceptFrom=parentQname, linkrole=linkroleUri, 
                                 linkroleDefinition=shortName, linkroleName=shortName,
