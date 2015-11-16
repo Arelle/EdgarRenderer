@@ -19,10 +19,29 @@ license and protected by usual Arelle copyright and license.  GitHub allows one 
 inspect the changes log of the plugin branch from the SEC contributed branch to identify
 modifications to the original.
 
-This code is in gitHub/arelle/EdgarRenderer the plugin branch.
+This code is in gitHub/arelle/EdgarRenderer the edgr154 branch.
+
+Installable applications are available with this module for Windows and MacOS on 
+http://arelle.org/download.  The GUI versions run this code after selecting the
+EdgarRenderer plugin (help->manage plugins, click select, select EdgarRenderer).
+
+For command line operation, install arelle somewhere, and on Windows run arelleCmdLine.
+On MacOS, at Arelle.app, with terminal shell, cd /Applications/Arelle.app/Contents/MacOS/, 
+and type in ./arelleCmdLine --about (or other parameters as needed).
+
+To run from source code, libraries required are the following or newer:
+
+        pip install pytz-2014.10-py2.py3-none-any.whl
+        pip install six-1.9.0-py2.py3-none-any.whl
+        pip install python_dateutil-2.4.0-py2.py3-none-any.whl
+        pip install pyparsing-2.0.3-py3-none-any.whl
+        pip install numpy-1.9.1+mkl-cp34-none-win_amd64.whl
+        pip install matplotlib-1.4.2-cp34-none-win_amd64.whl
+        pip install jdcal-1.0-py2.py3-none-any.whl
+        pip install openpyxl-2.1.4-py2.py3-none-any.whl
 
 To debug under eclipse from a normal eclipse project of Arelle it is suggested to check out
-EdgarRenderer from GitHub under the arelle plugin directory (e.g., this file would be 
+EdgarRenderer[edgr154] from GitHub under the arelle plugin directory (e.g., this file would be 
 plugin/EdgarRenderer/__init__.py). Note that EdgarGenderer is not part of Arelle itself, 
 it is in .gitignore in the top level Arelle directory.  
 
@@ -39,10 +58,10 @@ the file system) and a single output zip (all in memory, not on the file system)
 
 a) when invoking via arelleCmdLine.py:
 
-   python3.4 arelleCmdLine.py 
+   python3.4 arelleCmdLine.py (or arelleCmdLine, windows, or ./arelleCmdLine, Mac)
    -f "/mydir/test/filingInstanceXsdAndLinkbases.zip" 
    -o "/mydir/test/out.zip" 
-   --plugins 'EdgarRenderer|validate/EFM|transforms/SEC.py' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
+   --plugins EdgarRenderer # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
    --disclosureSystem efm-pragmatic 
    --logFile mylogfilename.xxx
    --debugMode
@@ -66,7 +85,7 @@ b) when invoking via REST interface (built in webserver or cgi-bin server):
         -T amd.zip 
         -o out.zip 
         --logFile log.xml  # specifies name of log file to return in zip and whether .txt or .xml
-        "http://localhost:8080/rest/xbrl/validation?efm-pragmatic&media=zip&plugins=EdgarRenderer|validate/EFM|transforms/SEC"&logFile=log.xml
+        "http://localhost:8080/rest/xbrl/validation?efm-pragmatic&media=zip&plugins=EdgarRenderer&logFile=log.xml"
         
     2) to not load EdgarRenderer dynamically, it must be active in plugins.json (as set up by GUI)
     (sibling to the caches directoryexcept Mac where it's under ~/Library/Application Support/Arelle)
@@ -77,7 +96,7 @@ b) when invoking via REST interface (built in webserver or cgi-bin server):
     
 To run (as in EDGAR) with output report files added to the submission directory
 
-   python3.4 arelleCmdLine.py 
+   python3.4 arelleCmdLine.py  (or arelleCmdLine for Win/Mac apps)
    -f "/mydir/test/amd.zip" 
    -r "/mydir/test"  <<- the submission + output reports directory 
    --logFile logToBuffer or an specify an xml log file <<- required to save log messages into filing summary
@@ -107,8 +126,6 @@ more information about the filing (see validate/EFM/__init__.py) such as:
 To build an installable cx_Freeze binary, (tested on Ubuntu), uncomment the entries in Arelle's
 setup.py that are marked for EdgarRenderer.
     
-At this moment, Xlout.py requires openpyxl 2.1.4, it does not work right on openpyxl 2.2.x
-
 Required if running under Java (using runtime.exec) on Windows, suggested always:
 
     if xdgConfigHome or environment variable XDG_CONFIG_HOME are set:
