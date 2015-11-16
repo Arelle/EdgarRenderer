@@ -709,10 +709,14 @@ class EdgarRenderer(Cntlr.Cntlr):
     def loadLogMessageText(self):         
         self.logMessageText = {}
         if self.logMessageTextFile:
-            for msgElt in etree.parse(self.logMessageTextFile).iter("message"):
-                self.logMessageText[msgElt.get("code")] = re.sub(
-                    r"\$\((\w+)\)", r"%(\1)s", msgElt.text.strip())
-                
+            try:
+                for msgElt in etree.parse(self.logMessageTextFile).iter("message"):
+                    self.logMessageText[msgElt.get("code")] = re.sub(
+                        r"\$\((\w+)\)", r"%(\1)s", msgElt.text.strip())
+            except Exception as ex:
+                self.logDebug(_("Exception loading logMessageText file, traceback: {}").format(traceback.format_exception(*sys.exc_info())))
+                self.logMessageText.clear() # don't leave possibly erroneous messages text entries
+
     def formatLogMessage(self, logRec):
         logHandler = self.cntlr.logHandler
         fileLines = defaultdict(set)
@@ -739,96 +743,100 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.loadLogMessageText()
         
         if self.success:
-            if self.xlWriter:
-                self.xlWriter.save()
-                self.xlWriter.close()
-                del self.xlWriter 
-                self.logDebug("Excel rendering complete")
-            def copyResourceToReportFolder(filename):
-                source = join(self.resourcesFolder, filename)
-                if not self.reportZip:
-                    target = join(self.reportsFolder, filename)
-                    if not exists(target):
-                        os.makedirs(self.reportsFolder, exist_ok=True)
-                        shutil.copyfile(source, target)
-                        self.renderedFiles.add(filename)             
-                else:
-                    self.reportZip.write(source, filename)
-            if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:
-                copyResourceToReportFolder("Show.js")
-                copyResourceToReportFolder("report.css")
-            if self.summaryXslt is not None:
-                copyResourceToReportFolder("RenderingLogs.xslt")  # TODO: This will go away
-                self.renderedFiles.add("RenderingLogs.xslt")
-            # TODO: At this point would be nice to call out any files not loaded in any instance DTS
-            inputsToCopyToOutputList = self.supplementList
-            if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
-            if inputsToCopyToOutputList and filing.entrypointfiles:
-                _xbrldir = os.path.dirname(filing.entrypointfiles[0]["file"])
-                # files to copy are in zip archive
-                for filename in inputsToCopyToOutputList:
-                    file = filesource.file(os.path.join(_xbrldir, filename), binary=True)[0]  # returned in a tuple
+            try:
+                if self.xlWriter:
+                    self.xlWriter.save()
+                    self.xlWriter.close()
+                    del self.xlWriter 
+                    self.logDebug("Excel rendering complete")
+                def copyResourceToReportFolder(filename):
+                    source = join(self.resourcesFolder, filename)
                     if not self.reportZip:
                         target = join(self.reportsFolder, filename)
-                        if exists(target): remove(target)
-                        with open(target, 'wb') as f:
-                            f.write(file.read())
+                        if not exists(target):
+                            os.makedirs(self.reportsFolder, exist_ok=True)
+                            shutil.copyfile(source, target)
+                            self.renderedFiles.add(filename)             
                     else:
-                        self.reportZip.writestr(filename, file.read())
-        
-            self.logDebug("Instance post-processing complete")
+                        self.reportZip.write(source, filename)
+                if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:
+                    copyResourceToReportFolder("Show.js")
+                    copyResourceToReportFolder("report.css")
+                if self.summaryXslt is not None:
+                    copyResourceToReportFolder("RenderingLogs.xslt")  # TODO: This will go away
+                    self.renderedFiles.add("RenderingLogs.xslt")
+                # TODO: At this point would be nice to call out any files not loaded in any instance DTS
+                inputsToCopyToOutputList = self.supplementList
+                if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
+                if inputsToCopyToOutputList and filing.entrypointfiles:
+                    _xbrldir = os.path.dirname(filing.entrypointfiles[0]["file"])
+                    # files to copy are in zip archive
+                    for filename in set(inputsToCopyToOutputList): # set() to deduplicate if multiple references
+                        file = filesource.file(os.path.join(_xbrldir, filename), binary=True)[0]  # returned in a tuple
+                        if not self.reportZip:
+                            target = join(self.reportsFolder, filename)
+                            if exists(target): remove(target)
+                            with open(target, 'wb') as f:
+                                f.write(file.read())
+                        else:
+                            self.reportZip.writestr(filename, file.read())
             
-            summary = Summary.Summary(self)  
-            rootETree = summary.buildSummaryETree()
-            IoManager.writeXmlDoc(rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
-            self.renderedFiles.add("FilingSummary.xml")
-            if self.summaryXslt and len(self.summaryXslt) > 0 :
-                summary_transform = etree.XSLT(etree.parse(self.summaryXslt))
-                result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'),
-                                           accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")),
-                                           resourcesFolder="'{}'".format(self.resourcesFolder.replace("\\","/")))
-                IoManager.writeHtmlDoc(result, self.reportZip, self.reportsFolder, 'FilingSummary.htm')
-                self.renderedFiles.add("FilingSummary.htm")
-            self.logDebug("Write filing summary complete")
-            if self.auxMetadata and filing.hasInlineReport: 
-                summary.writeMetaFiles()
-            self.logDebug("Write meta files complete")
-            if self.zipXbrlFilesToOutput and hasattr(filing, "accessionNumber"):
-                _fileName = filing.accessionNumber + "-xbrl.zip"
-                if not self.reportZip:
-                    xbrlZip = zipfile.ZipFile(os.path.join(self.reportsFolder, _fileName), mode='w', compression=zipfile.ZIP_DEFLATED, allowZip64=False)
-                else:
-                    zipStream = io.BytesIO()
-                    xbrlZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
-                for report in filing.reports:
-                    _xbrldir = os.path.dirname(report.entryPoint["file"])
-                    for reportedFile in sorted(report.reportedFiles):
-                        fileStream = filesource.file(os.path.join(_xbrldir, reportedFile), binary=True)[0]  # returned in a tuple
-                        xbrlZip.writestr(reportedFile, fileStream.read())
-                        fileStream.close()
-                    filesource.close()
-                xbrlZip.close()
-                if self.reportZip:
-                    zipStream.seek(0)
-                    self.reportZip.writestr(_fileName, zipStream.read())
-                    zipStream.close()
-                self.logDebug("Write {} complete".format(_fileName))
-            
-            if self.isDaemon: # save file in Archives
-                try:
+                self.logDebug("Instance post-processing complete")
+                
+                summary = Summary.Summary(self)  
+                rootETree = summary.buildSummaryETree()
+                IoManager.writeXmlDoc(rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
+                self.renderedFiles.add("FilingSummary.xml")
+                if self.summaryXslt and len(self.summaryXslt) > 0 :
+                    summary_transform = etree.XSLT(etree.parse(self.summaryXslt))
+                    result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'),
+                                               accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")),
+                                               resourcesFolder="'{}'".format(self.resourcesFolder.replace("\\","/")))
+                    IoManager.writeHtmlDoc(result, self.reportZip, self.reportsFolder, 'FilingSummary.htm')
+                    self.renderedFiles.add("FilingSummary.htm")
+                self.logDebug("Write filing summary complete")
+                if self.auxMetadata and filing.hasInlineReport: 
+                    summary.writeMetaFiles()
+                self.logDebug("Write meta files complete")
+                if self.zipXbrlFilesToOutput and hasattr(filing, "accessionNumber"):
+                    _fileName = filing.accessionNumber + "-xbrl.zip"
+                    if not self.reportZip:
+                        xbrlZip = zipfile.ZipFile(os.path.join(self.reportsFolder, _fileName), mode='w', compression=zipfile.ZIP_DEFLATED, allowZip64=False)
+                    else:
+                        zipStream = io.BytesIO()
+                        xbrlZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
+                    for report in filing.reports:
+                        _xbrldir = os.path.dirname(report.entryPoint["file"])
+                        for reportedFile in sorted(report.reportedFiles):
+                            fileStream = filesource.file(os.path.join(_xbrldir, reportedFile), binary=True)[0]  # returned in a tuple
+                            xbrlZip.writestr(reportedFile, fileStream.read())
+                            fileStream.close()
+                        filesource.close()
+                    xbrlZip.close()
                     if self.reportZip:
-                        self.reportZip.close() # must be closed before moving
-                    result = IoManager.move_clobbering_file(self.zipOutputFile, # remove -out from output zip
-                                                            os.path.join(self.deliveryFolder, os.path.basename(self.zipOutputFile)[:-8] + ".zip") )
-                    IoManager.move_clobbering_file(options.entrypointFile, self.doneFile)
-                    if self.deleteProcessedFilings:
-                        for folder in self.createdFolders: 
-                            shutil.rmtree(folder,ignore_errors=True) 
-                        del self.createdFolders[:] # prevent any other use of created folders
-                    self.logDebug(_("Successfully post-processed to {}.").format(result))
-                except OSError as err:
-                    #self.logError(_(ErrorMgr.getError('POST_PROCESSING_ERROR').format(err)))
-                    self.logError(_("Failure: Post-processing I/O or OS error: {}").format(err))
+                        zipStream.seek(0)
+                        self.reportZip.writestr(_fileName, zipStream.read())
+                        zipStream.close()
+                    self.logDebug("Write {} complete".format(_fileName))
+                
+                if self.isDaemon: # save file in Archives
+                    try:
+                        if self.reportZip:
+                            self.reportZip.close() # must be closed before moving
+                        result = IoManager.move_clobbering_file(self.zipOutputFile, # remove -out from output zip
+                                                                os.path.join(self.deliveryFolder, os.path.basename(self.zipOutputFile)[:-8] + ".zip") )
+                        IoManager.move_clobbering_file(options.entrypointFile, self.doneFile)
+                        if self.deleteProcessedFilings:
+                            for folder in self.createdFolders: 
+                                shutil.rmtree(folder,ignore_errors=True) 
+                            del self.createdFolders[:] # prevent any other use of created folders
+                        self.logDebug(_("Successfully post-processed to {}.").format(result))
+                    except OSError as err:
+                        #self.logError(_(ErrorMgr.getError('POST_PROCESSING_ERROR').format(err)))
+                        self.logError(_("Failure: Post-processing I/O or OS error: {}").format(err))
+            except Exception as ex:
+                self.logWarn(_("The rendering engine was unable to produce output due to an internal error.  This is not considered an error in the filing.").format(errorCountDuringValidation))
+                self.logDebug(_("Exception in filing end, traceback: {}").format(traceback.format_exception(*sys.exc_info())))
                     
         elif self.isDaemon: # not successful
             self.postprocessFailure(filing.options)
