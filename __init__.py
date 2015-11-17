@@ -834,11 +834,13 @@ class EdgarRenderer(Cntlr.Cntlr):
                     except OSError as err:
                         #self.logError(_(ErrorMgr.getError('POST_PROCESSING_ERROR').format(err)))
                         self.logError(_("Failure: Post-processing I/O or OS error: {}").format(err))
+                        self.success = False
             except Exception as ex:
-                self.logWarn(_("The rendering engine was unable to produce output due to an internal error.  This is not considered an error in the filing.").format(errorCountDuringValidation))
-                self.logDebug(_("Exception in filing end, traceback: {}").format(traceback.format_exception(*sys.exc_info())))
+                self.logWarn(_("The rendering engine was unable to produce output due to an internal error.  This is not considered an error in the filing."))
+                self.logDebug(_("Exception in filing end processing, traceback: {}").format(traceback.format_exception(*sys.exc_info())))
+                self.success = False # force postprocessingFailure
                     
-        elif self.isDaemon: # not successful
+        if not self.success and self.isDaemon: # not successful
             self.postprocessFailure(filing.options)
 
 
