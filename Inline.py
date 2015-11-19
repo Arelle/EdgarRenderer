@@ -147,13 +147,16 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                        , outputZip=None, filingFiles=None
                        , suffix=DEFAULT_DISTINGUISHING_SUFFIX, iext=DEFAULT_INSTANCE_EXT):
     sourceDir = os.path.dirname(modelXbrl.modelDocument.filepath)
-    def addLocallyReferencedFile(elt,filingFileSet):
+    def addLocallyReferencedFile(elt,filingFiles):
         if elt.tag in ("a", "img"):
             for attrTag, attrValue in elt.items():
-                if attrTag in ("href", "src") and not isHttpUrl(attrValue) and not os.path.isabs(attrvalue):
-                    file = os.path.join(sourceDir,attrValue)
-                    if os.path.exists(file):
-                        filingFiles.add(os.path.join(sourceDir,attrValue))
+                if attrTag in ("href", "src") and not isHttpUrl(attrValue) and not os.path.isabs(attrValue):
+                    attrValue = attrValue.partition('#')[0] # remove anchor
+                    if attrValue: # ignore anchor references to base document
+                        attrValue = os.path.normpath(attrValue) # change url path separators to host separators
+                        file = os.path.join(sourceDir,attrValue)
+                        if modelXbrl.fileSource.isInArchive(file, checkExistence=True) or os.path.exists(file):
+                            filingFiles.add(file)
                     
     targetUrl = modelXbrl.modelManager.cntlr.webCache.normalizeUrl(targetDocumentFilename, modelXbrl.modelDocument.filepath)
     targetUrlParts = targetUrl.rpartition(".")
