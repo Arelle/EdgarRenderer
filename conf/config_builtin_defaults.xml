@@ -26,4 +26,6 @@
   <validate>False</validate>
   <validateEFM>False</validateEFM>
   <zipOutputFile />
+  <includeLogsInSummary>True</includeLogsInSummary>
+  <logMessageTextFile>arelleMessagesText.xml</logMessageTextFile>
 </configuration>
