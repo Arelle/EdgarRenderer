@@ -13,6 +13,7 @@
   <xsl:param name="source"/>
   <xsl:param name="otherStandardPrefix"/>
   <xsl:param name="authMode">0</xsl:param>
+  <xsl:param name="infText">&#x221E;</xsl:param>
   <xsl:decimal-format name="currency" digit="D"/>
   <xsl:output method="html" omit-xml-declaration="yes"/>
   <xsl:preserve-space elements="label"/>
@@ -469,7 +470,7 @@
   <xsl:template name="authRefLink">
     <xsl:choose>
       <xsl:when test="not(../../../IsTransposed = 'true') and string-length(.//Label[@Id = 0]/@Key) > 0 and $majorversion &lt; 3">
-        <a class="a" href="javascript:void(0);" onclick="top.Show.showAR( this, 'defref_{translate(.//Label[@Id=0]/@Key,':','=')}', window );">
+        <a class="a" href="javascript:void(0);" onclick="Show.showAR( this, 'defref_{translate(.//Label[@Id=0]/@Key,':','=')}', window );">
           <xsl:choose>
             <xsl:when test="IsAbstractGroupTitle = 'true'">
               <strong>
@@ -486,7 +487,7 @@
         <xsl:variable name="firstinfo" select="(following-sibling::Row[MCU][1]/MCU/contextRef/Segments/Segment[IsDefaultForEntity != 'true'])[position() = 1]/DimensionInfo"/>
         <xsl:variable name="dim" select="$firstinfo/dimensionId"/>
         <xsl:variable name="mem" select="$firstinfo/Id"/>
-        <a class="a" href="javascript:void(0);" onclick="top.Show.showAR( this, 'defref_{translate(concat($dim,'=',$mem),':','_')}', window );">
+        <a class="a" href="javascript:void(0);" onclick="Show.showAR( this, 'defref_{translate(concat($dim,'=',$mem),':','_')}', window );">
           <xsl:choose>
             <xsl:when test="IsAbstractGroupTitle = 'true'">
               <strong>
@@ -503,7 +504,7 @@
         <xsl:variable name="lastinfo" select="(following-sibling::Row[MCU][1]/MCU/contextRef/Segments/Segment[IsDefaultForEntity != 'true'])[position() = last()]/DimensionInfo"/>
         <xsl:variable name="dim" select="$lastinfo/dimensionId"/>
         <xsl:variable name="mem" select="$lastinfo/Id"/>
-        <a class="a" href="javascript:void(0);" onclick="top.Show.showAR( this, 'defref_{translate(concat($dim,'=',$mem),':','_')}', window );">
+        <a class="a" href="javascript:void(0);" onclick="Show.showAR( this, 'defref_{translate(concat($dim,'=',$mem),':','_')}', window );">
           <xsl:choose>
             <xsl:when test="IsAbstractGroupTitle = 'true'">
               <strong>
@@ -534,7 +535,7 @@
         </div>
       </xsl:when>
       <xsl:otherwise>
-        <a class="a" href="javascript:void(0);" onclick="top.Show.showAR( this, 'defref_{ElementName}', window );">
+        <a class="a" href="javascript:void(0);" onclick="Show.showAR( this, 'defref_{ElementName}', window );">
           <xsl:choose>
             <xsl:when test="IsAbstractGroupTitle = 'true'">
               <strong>
@@ -565,14 +566,14 @@
       <xsl:attribute name="id">defref_<xsl:value-of select="$Name"/></xsl:attribute>
       <tr>
         <td class="hide">
-          <a style="color: white;" href="javascript:void(0);" onclick="top.Show.hideAR();">X</a>
+          <a style="color: white;" href="javascript:void(0);" onclick="Show.hideAR();">X</a>
         </td>
       </tr>
       <tr>
         <td>
           <div class="body" style="padding: 2px;">
             <xsl:if test="string-length(ElementDefenition) > 0 and not(ElementDefenition = 'No definition available.')">
-              <a href="javascript:void(0);" onclick="top.Show.toggleNext( this );">
+              <a href="javascript:void(0);" onclick="Show.toggleNext( this );">
                 <xsl:choose>
                   <xsl:when test="$first = 'ElementDefenition'">- Definition</xsl:when>
                   <xsl:otherwise>+ Definition</xsl:otherwise>
@@ -588,7 +589,7 @@
               </div>
             </xsl:if>
             <xsl:if test="string-length(ElementReferences) > 0 and not(ElementReferences = 'No authoritative reference available.')">
-              <a href="javascript:void(0);" onclick="top.Show.toggleNext( this );">
+              <a href="javascript:void(0);" onclick="Show.toggleNext( this );">
                 <xsl:choose>
                   <xsl:when test="$first = 'ElementReferences'">- References</xsl:when>
                   <xsl:otherwise>+ References</xsl:otherwise>
@@ -605,7 +606,7 @@
                 </p>
               </div>
             </xsl:if>
-            <a href="javascript:void(0);" onclick="top.Show.toggleNext( this );">
+            <a href="javascript:void(0);" onclick="Show.toggleNext( this );">
               <xsl:choose>
                 <xsl:when test="$first = 'Details'">- Details</xsl:when>
                 <xsl:otherwise>+ Details</xsl:otherwise>
@@ -804,6 +805,9 @@
       <xsl:when test="IsRatio = 'true'">
         <xsl:variable name="absolute" select="number($entire)"/>
         <xsl:value-of select="format-number($absolute, '0.00DDD%', 'currency')"/>
+      </xsl:when>
+      <xsl:when test="$entire = 'Infinity'">
+        <xsl:value-of select="$infText"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="numberFormatCulture">
