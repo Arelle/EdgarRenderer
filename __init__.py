@@ -312,7 +312,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         #message = ErrorMgr.getError('UNSUPPORTED_CONFIG_TAG').format(child.text, child.tag)
                         self.logWarn("Found value {} for unsupported configuration tag {}".format(child.text, child.tag)) 
 
-    def initializeReOptions(self, options):
+    def initializeReOptions(self, options, setCntlrOptions=False):
         self.logDebug("General options:")
         
         def setProp(prop, init, rangeList=None, cs=False):
@@ -369,6 +369,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # note that delete processed filings is only relevant when the input had to be unzipped.
         options.deleteProcessedFilings = setFlag('deleteProcessedFilings', options.deleteProcessedFilings)
         options.debugMode = setFlag('debugMode', options.debugMode)
+        
         # These flags have to be passed back to arelle via the options object.
         # inherited flag: options.validate = setFlag('validate', options.validate)
         setFlag('validate', options.validate)
@@ -376,7 +377,12 @@ class EdgarRenderer(Cntlr.Cntlr):
         setFlag('utrValidate', options.utrValidate)
         # inherited flag: options.validateEFM = setFlag('validateEFM', options.validateEFM)
         setFlag('validateEFM', options.validateEFM)
-    
+        
+        if setCntlrOptions: 
+            # cmd line mode, pass back flags as set here
+            options.validate = self.validate
+            options.utrValidate = self.utrValidate
+            options.validateEFM = self.validateEFM
         
         def setFolder(folder, init, searchPythonPath=False):
             if searchPythonPath: # if the folder is not an absolute path, we want to look for it relative to the python path.
@@ -613,7 +619,7 @@ class EdgarRenderer(Cntlr.Cntlr):
     def checkIfDaemonStartup(self, options):
         # startup (when in Deamon mode)
         self.retrieveDefaultREConfigParams(options)
-        self.initializeReOptions(options)
+        self.initializeReOptions(options, setCntlrOptions=True)
         # if isDaemon, wait for an input zip to process
         # if not isDaemon, then instance (or zip) is ready to process immediately
         if self.isDaemon:
