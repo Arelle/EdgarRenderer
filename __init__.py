@@ -768,7 +768,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:
                     copyResourceToReportFolder("Show.js")
                     copyResourceToReportFolder("report.css")
-                if self.summaryXslt is not None:
+                if self.summaryXslt and len(self.summaryXslt) > 0 :
                     copyResourceToReportFolder("RenderingLogs.xslt")  # TODO: This will go away
                     self.renderedFiles.add("RenderingLogs.xslt")
                 # TODO: At this point would be nice to call out any files not loaded in any instance DTS
@@ -875,7 +875,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:
             copyResourceToReportFolder("Show.js")
             copyResourceToReportFolder("report.css")
-        if self.summaryXslt is not None:
+        if self.summaryXslt and len(self.summaryXslt) > 0 :
             copyResourceToReportFolder("RenderingLogs.xslt")
         # TODO: At this point would be nice to call out any files not loaded in any instance DTS
         inputsToCopyToOutputList = self.supplementList
