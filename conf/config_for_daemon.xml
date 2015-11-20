@@ -49,4 +49,6 @@
   <totalClean>False</totalClean>
   <internetConnectivity>offline</internetConnectivity>
   <debugMode>False</debugMode>
+  <includeLogsInSummary>True</includeLogsInSummary>
+  <logMessageTextFile>arelleMessagesText.xml</logMessageTextFile>
 </configuration>
