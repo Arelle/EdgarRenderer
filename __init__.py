@@ -743,7 +743,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 
     def filingEnd(self, cntlr, options, filesource, filing):
         if self.abortedDueToMajorError:
-            return # major errors detected
+            self.success = False # major errors detected
         
         # logMessageText needed for successful and unsuccessful termination
         self.loadLogMessageText()
@@ -824,6 +824,9 @@ class EdgarRenderer(Cntlr.Cntlr):
                         self.reportZip.writestr(_fileName, zipStream.read())
                         zipStream.close()
                     self.logDebug("Write {} complete".format(_fileName))
+                
+                if "EdgarRenderer/__init__.py#filingEnd" in filing.arelleUnitTests:
+                    raise arelle.PythonUtil.pyNamedObject(filing.arelleUnitTests["EdgarRenderer/__init__.py#filingEnd"])
                 
                 if self.isDaemon: # save file in Archives
                     try:

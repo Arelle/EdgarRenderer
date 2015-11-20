@@ -16,9 +16,8 @@ from arelle.ModelObject import ModelObject
 from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
 
 def mainFun(controller, modelXbrl, outputFolderName):
-    for pi in modelXbrl.modelDocument.processingInstructions:
-        if pi.target == "arelle-unit-test" and pi.get("module") == "EdgarRenderer/Filing.py":
-            raise arelle.PythonUtil.pyNamedObject(pi.get("raise"))
+    if "EdgarRenderer/Filing.py#mainFun" in modelXbrl.arelleUnitTests:
+        raise arelle.PythonUtil.pyNamedObject(modelXbrl.arelleUnitTests["EdgarRenderer/Filing.py#mainFun"])
     filing = Filing(controller, modelXbrl, outputFolderName)
     filing.populateAndLinkClasses()
 
