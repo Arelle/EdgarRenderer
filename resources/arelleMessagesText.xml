@@ -1534,7 +1534,7 @@ Concept $(concept) is monetary without a balance and must have a documentation l
          level="warning"
          module="EdgarRenderer/Embedding.py" line="312"
          args="linkrole linkroleDefinition linkroleName numberRootConcepts">
-[rq-1206-Multiple-Root-Nodes] Presentation group ''$(linkroleName)'' has multiple 	root nodes. XBRL allows unordered root nodes, but rendering requires ordering.  They will instead be ordered by their labels.  To avoid undesirable ordering of axes and primary items across multiple root nodes, rearrange the presentation relationships to have only a single root node.
+[rq-1206-Multiple-Root-Nodes] Presentation group ''$(linkroleName)'' has multiple root nodes. XBRL allows unordered root nodes, but rendering requires ordering.  They will instead be ordered by their labels.  To avoid undesirable ordering of axes and primary items across multiple root nodes, rearrange the presentation relationships to have only a single root node.
 </message>
 
 <message code="EFM.6.12.07"
@@ -2032,7 +2032,7 @@ Please ensure that you comply with the document type and naming provided.
          level="warning"
          module="EdgarRenderer/Cube.py" line="145"
          args="linkrole linkroleDefinition linkroleName axisSet">
-[rq-2601-All-Facts-Filtered] The presentation group ''$(linkroleName)'' contains $(axisSet), which has (have) no default member in the presentation group. Since every fact is defaulted on this (these) axe(s), all facts have been filtered out.
+[rq-2601-All-Facts-Filtered] The presentation group ''$(linkroleName)'' contains $(axisSet), which has (have) no default member in the presentation group. Since every fact in the group is defaulted on this (these) axis (axes), all facts have been filtered out.
 </message>
 
 <message code="EFM.6.26.02"
@@ -2059,35 +2059,35 @@ Please ensure that you comply with the document type and naming provided.
          level="error"
          module="EdgarRenderer/Filing.py" line="640"
          args="linkrole fact contextID linkroleDefinition linkroleName tokenlist">
-[rq-2604-Embedding-Command-Malformed-Member] In ''$(linkrole)'', the embedded report created by the fact $(fact) with the context $(contextID), the keyword(s) $(tokenlist) is (are) not '*', a valid member qname or list of valid member qnames.
+[rq-2604-Embedding-Command-Malformed-Member] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with the context $(contextID), the keyword(s) $(tokenlist) is not '*', a valid member qname or list of valid member qnames.
 </message>
 
 <message code="EFM.6.26.04.embeddingCmdMalformedAxis"
          level="error"
          module="EdgarRenderer/Filing.py" line="576"
          args="linkrole fact contextID linkroleDefinition linkroleName token position">
-[rq-2604-Embedding-Command-Malformed-Axis] In ''$(linkrole)'', the embedded report created by the fact $(fact) with the context $(contextID), the token $(token), at position $(position) in the list of tokens, is malformed. This token can only be 'period', 'unit', 'primary' or identify an Axis by its namespace prefix, underscore, and element name.
+[rq-2604-Embedding-Command-Malformed-Axis] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with the context $(contextID), the token $(token), at position $(position) in the list of tokens, is malformed. This token can only be 'period', 'unit', 'primary' or identify an Axis by its namespace prefix, underscore, and element name.
 </message>
 
 <message code="EFM.6.26.04.embeddingCmdMalformedDirectionToken"
          level="error"
          module="EdgarRenderer/Filing.py" line="533"
          args="linkrole fact contextID linkroleDefinition linkroleName token position">
-[rq-2604-Embedding-Command-Malformed-Direction-Token] In ''$(linkrole)'', the embedded report created by the fact $(fact) with the context $(contextID), the token $(token), at position $(position) in the list of tokens, is malformed. Each iterator can only start with 'row' or 'column'.
+[rq-2604-Embedding-Command-Malformed-Direction-Token] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with the context $(contextID), the token $(token), at position $(position) in the list of tokens, is malformed. Each iterator can only start with 'row' or 'column'.
 </message>
 
 <message code="EFM.6.26.04.embeddingCmdMalformedStyleToken"
          level="error"
          module="EdgarRenderer/Filing.py" line="609"
          args="linkrole fact contextID linkroleDefinition linkroleName style">
-[rq-2604-Embedding-Command-Malformed-Style-Token] In ''$(linkrole)'', the embedded report created by the fact $(fact), with the context $(contextID), the style keyword $(style) is not one of 'compact' or 'nodisplay'.
+[rq-2604-Embedding-Command-Malformed-Style-Token] In ''$(linkroleName)'', the embedded report created by the fact $(fact), with the context $(contextID), the style keyword $(style) is not one of 'compact' or 'nodisplay'.
 </message>
 
 <message code="EFM.6.26.05.embeddingCmdMissingIterator"
          level="error"
          module="EdgarRenderer/Embedding.py" line="241"
          args="linkrole linkroleDefinition linkroleName fact contextID iftransposed roworcol colorrow axes">
-[rq-2605-Embedding-Command-Missing-Iterator] In ''$(linkroleName)'', the embedded report created by the embedding textBlock fact $(fact) with the context $(contextID), there are no valid $(roworcol) commands$(iftransposed). Change one of the $(axes) to a $(colorrow) or add a $(roworcol) command with an additional axis.
+[rq-2605-Embedding-Command-Missing-Iterator] In ''$(linkroleName)'', the embedded report created by the fact $(fact) with the context $(contextID), there are no valid $(roworcol) commands$(iftransposed). Change one of the $(axes) to a $(colorrow) or add a $(roworcol) command with an additional axis.
 </message>
 
 <message code="EFM.6.26.05.embeddingCmdMissingIteratorAfterTransposition"
