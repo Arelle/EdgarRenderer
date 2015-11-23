@@ -1108,7 +1108,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             reportZip = None,
             renderedFiles = set(),
             reports = [report],
-            hasInlineReport = report.isInline
+            hasInlineReport = report.isInline,
+            arelleUnitTests = {}
             )
         edgarRendererFilingStart(cntlr, options, {}, filing)
         edgarRenderer = filing.edgarRenderer

@@ -2046,7 +2046,7 @@ Please ensure that you comply with the document type and naming provided.
          level="warning"
          module="EdgarRenderer/Cube.py" line="273"
          args="linkrole linkroleDefinition linkroleName">
-[rq-2603-No-Matching-Durations] The presentation group ''$(linkroleName)'' is a statement of changes in equity, but it has no duration-type facts matching the instant-type facts shown.  Add duration-type facts that represent the changes from instant to instant, or do not label the presentation base set a statement of changes.
+[rq-2603-No-Matching-Durations] The presentation group ''$(linkroleName)'' is a statement of changes in equity, but it has no duration-type facts matching the instant-type facts shown.  Add duration-type facts that represent the changes from instant to instant, or do not label the presentation group a statement of changes.
 </message>
 <message code="EFM.6.26.04.embeddingCmdInvalidMember"
          level="error"
