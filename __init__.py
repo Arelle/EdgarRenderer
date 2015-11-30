@@ -202,6 +202,7 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     parser.add_option("--copyInlineFilesToOutput", action="store_true", dest="copyInlineFilesToOutput", help=_("Set flag to copy all inline files to the output folder or zip."))
     parser.add_option("--zipXbrlFilesToOutput", action="store_true", dest="zipXbrlFilesToOutput", help=_("Set flag to zip all sourc xbrl files to the an accession-number-xbrl.zip in reports folder or zip when an accession number parameter is available."))
     parser.add_option("--includeLogsInSummary", action="store_true", dest="includeLogsInSummary", help=_("Set flag to copy log entries into <logs> in FilingSummary.xml."))    
+    parser.add_option("--noLogsInSummary", action="store_false", dest="includeLogsInSummary", help=_("Unset flag to copy log entries into <logs> in FilingSummary.xml."))    
     parser.add_option("--noEquity", action="store_true", dest="noEquity", help=_("Set flag to suppress special treatment of Equity Statements. "))
         
     parser.add_option("--showErrors", action="store_true", dest="showErrors",
