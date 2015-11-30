@@ -136,8 +136,9 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
                 fileStream = modelXbrl.fileSource.file(refFile, binary=True)[0]  # returned in a tuple
                 filingZip.writestr(modelDocument.relativeUri(refFile), fileStream.read())
                 fileStream.close()
-                
-    filingZip.close()
+     
+    if filingZip:          
+        filingZip.close()
     if cntlr.reportZip:
         zipStream.seek(0)
         cntlr.reportZip.writestr(saveTargetPath, zipStream.read())
@@ -260,7 +261,7 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                     footnoteIdCount[linkChild.footnoteID] = idUseCount
                     newChild = addChild(newLink, linkChild.qname, 
                                         attributes=attributes)
-                    copyIxFootnoteHtml(linkChild, newChild, withText=True)
+                    copyIxFootnoteHtml(linkChild, newChild, targetModelDocument=targetInstance.modelDocument, withText=True)
                     if filingFiles and linkChild.textValue:
                         footnoteHtml = XML("<body/>")
                         copyIxFootnoteHtml(linkChild, footnoteHtml)
@@ -268,6 +269,8 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                             addLocallyReferencedFile(elt,filingFiles)
             
     targetInstance.saveInstance(overrideFilepath=targetUrl, outputZip=outputZip)
+    if getattr(modelXbrl, "isTestcaseVariation", False):
+        modelXbrl.extractedInlineInstance = True # for validation comparison
     modelXbrl.modelManager.showStatus(_("Saved extracted instance"), clearAfter=5000)       
 
 def saveTargetDocumentCommandLineOptionExtender(parser):
