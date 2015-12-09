@@ -84,7 +84,8 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
         return
     modelDocument = modelXbrl.modelDocument
     if options.saveTargetFiling or options.saveTargetInstance:
-        if options.saveTargetFiling:
+        saveTargetPath = options.saveTargetFiling
+        if saveTargetPath:
             (path, ignore) = os.path.splitext(modelDocument.filepath)
             if not cntlr.reportZip:
                 saveTargetPath = os.path.join(cntlr.reportsFolder, os.path.basename(path) + suffix + 'zip')
@@ -95,7 +96,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
         targetFilename = modelDocument.targetDocumentPreferredFilename
         targetSchemaRefs = modelDocument.targetDocumentSchemaRefs
     else:
-        filepath, fileext = os.path.splitext(os.path.join(cntlr.reportsFolder, modelDocument.basename))
+        filepath, fileext = os.path.splitext(modelDocument.filepath)
         if fileext not in USUAL_INSTANCE_EXTS: fileext = iext
         targetFilename = filepath + fileext
         targetSchemaRefs = set(modelDocument.relativeUri(referencedDoc.uri)
@@ -135,9 +136,8 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
                 fileStream = modelXbrl.fileSource.file(refFile, binary=True)[0]  # returned in a tuple
                 filingZip.writestr(modelDocument.relativeUri(refFile), fileStream.read())
                 fileStream.close()
-     
-    if filingZip:          
-        filingZip.close()
+                
+    filingZip.close()
     if cntlr.reportZip:
         zipStream.seek(0)
         cntlr.reportZip.writestr(saveTargetPath, zipStream.read())
@@ -157,7 +157,9 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                         file = os.path.join(sourceDir,attrValue)
                         if modelXbrl.fileSource.isInArchive(file, checkExistence=True) or os.path.exists(file):
                             filingFiles.add(file)
-    targetUrlParts = targetDocumentFilename.rpartition(".")
+                    
+    targetUrl = modelXbrl.modelManager.cntlr.webCache.normalizeUrl(targetDocumentFilename, modelXbrl.modelDocument.filepath)
+    targetUrlParts = targetUrl.rpartition(".")
     targetUrl = targetUrlParts[0] + suffix + targetUrlParts[2]
     modelXbrl.modelManager.showStatus(_("Extracting instance ") + os.path.basename(targetUrl))
     targetInstance = ModelXbrl.create(modelXbrl.modelManager,
@@ -258,7 +260,7 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                     footnoteIdCount[linkChild.footnoteID] = idUseCount
                     newChild = addChild(newLink, linkChild.qname, 
                                         attributes=attributes)
-                    copyIxFootnoteHtml(linkChild, newChild, targetModelDocument=targetInstance.modelDocument, withText=True)
+                    copyIxFootnoteHtml(linkChild, newChild, withText=True)
                     if filingFiles and linkChild.textValue:
                         footnoteHtml = XML("<body/>")
                         copyIxFootnoteHtml(linkChild, footnoteHtml)
@@ -266,8 +268,6 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                             addLocallyReferencedFile(elt,filingFiles)
             
     targetInstance.saveInstance(overrideFilepath=targetUrl, outputZip=outputZip)
-    if getattr(modelXbrl, "isTestcaseVariation", False):
-        modelXbrl.extractedInlineInstance = True # for validation comparison
     modelXbrl.modelManager.showStatus(_("Saved extracted instance"), clearAfter=5000)       
 
 def saveTargetDocumentCommandLineOptionExtender(parser):
