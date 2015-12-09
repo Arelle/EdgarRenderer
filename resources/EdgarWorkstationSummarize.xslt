@@ -10,53 +10,53 @@
         include/report.css
         include/print.css
         Images/reports.gif
-     cbe files are part of tomcat workstation's web content of cbe directory
-	cbe/index.html
-	cbe/css/app.css
-	cbe/css/bootstrap/bootstrap.css.map
-	cbe/css/bootstrap/bootstrap.min.css
-	cbe/css/bootstrap/bootstrap-submenu.css
-	cbe/css/bootstrap/bootstrap-submenu.css.map
-	cbe/css/bootstrap/bootstrap-submenu.min.css
-	cbe/css/bootstrap/bootstrap-theme.css
-	cbe/css/bootstrap/bootstrap-theme.css.map
-	cbe/css/bootstrap/bootstrap-theme.min.css
-	cbe/css/fonts/glyphicons-halflings-regular.eot
-	cbe/css/fonts/glyphicons-halflings-regular.svg
-	cbe/css/fonts/glyphicons-halflings-regular.ttf
-	cbe/css/fonts/glyphicons-halflings-regular.woff
-	cbe/css/fonts/glyphicons-halflings-regular.woff2
-	cbe/css/rightNavigation.css
-	cbe/images/copyold.png
-	cbe/images/copy.png
-	cbe/images/file-open.png
-	cbe/images/Filter.png
-	cbe/images/help.png
-	cbe/images/info.png
-	cbe/images/save-as.png
-	cbe/images/settings.png
-	cbe/images/Thumbs.db
-	cbe/js/app/about.js
-	cbe/js/app/app.js
-	cbe/js/app/find.js
-	cbe/js/app/help.js
-	cbe/js/app/ixtFunctions.js
-	cbe/js/app/settings.js
-	cbe/js/app/uri.js
-	cbe/js/bootstrap/bootstrap-filestyle.js
-	cbe/js/bootstrap/bootstrap.min.js
-	cbe/js/bootstrap/bootstrap-submenu.js
-	cbe/js/bootstrap/bootstrap-submenu.min.js
-	cbe/js/bootstrap/tooltip.js
-	cbe/js/cbe.js
-	cbe/js/FileSaver.js
-	cbe/js/jquery/jquery-2.1.1.min.js
-	cbe/js/jquery/jquery.browser.min.js
-	cbe/js/jquery/jquery.custom.js
-	cbe/js/jquery/jquery.simple-color.min.js
-	cbe/js/jquery/jquery-ui.js
-	cbe/js/jszip.min.js
-	cbe/js/slide-panel.js
+     ix files are part of tomcat workstation's web content of ix directory
+	ix/index.html
+	ix/css/app.css
+	ix/css/bootstrap/bootstrap.css.map
+	ix/css/bootstrap/bootstrap.min.css
+	ix/css/bootstrap/bootstrap-submenu.css
+	ix/css/bootstrap/bootstrap-submenu.css.map
+	ix/css/bootstrap/bootstrap-submenu.min.css
+	ix/css/bootstrap/bootstrap-theme.css
+	ix/css/bootstrap/bootstrap-theme.css.map
+	ix/css/bootstrap/bootstrap-theme.min.css
+	ix/css/fonts/glyphicons-halflings-regular.eot
+	ix/css/fonts/glyphicons-halflings-regular.svg
+	ix/css/fonts/glyphicons-halflings-regular.ttf
+	ix/css/fonts/glyphicons-halflings-regular.woff
+	ix/css/fonts/glyphicons-halflings-regular.woff2
+	ix/css/rightNavigation.css
+	ix/images/copyold.png
+	ix/images/copy.png
+	ix/images/file-open.png
+	ix/images/Filter.png
+	ix/images/help.png
+	ix/images/info.png
+	ix/images/save-as.png
+	ix/images/settings.png
+	ix/images/Thumbs.db
+	ix/js/app/about.js
+	ix/js/app/app.js
+	ix/js/app/find.js
+	ix/js/app/help.js
+	ix/js/app/ixtFunctions.js
+	ix/js/app/settings.js
+	ix/js/app/uri.js
+	ix/js/bootstrap/bootstrap-filestyle.js
+	ix/js/bootstrap/bootstrap.min.js
+	ix/js/bootstrap/bootstrap-submenu.js
+	ix/js/bootstrap/bootstrap-submenu.min.js
+	ix/js/bootstrap/tooltip.js
+	ix/js/ix.js
+	ix/js/FileSaver.js
+	ix/js/jquery/jquery-2.1.1.min.js
+	ix/js/jquery/jquery.browser.min.js
+	ix/js/jquery/jquery.custom.js
+	ix/js/jquery/jquery.simple-color.min.js
+	ix/js/jquery/jquery-ui.js
+	ix/js/jszip.min.js
+	ix/js/slide-panel.js
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
   <xsl:output encoding="UTF-8" indent="yes" method="html" doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"/>
@@ -66,16 +66,12 @@
   <xsl:variable name="nreports" select="count(/FilingSummary/MyReports/Report)"/>
   <xsl:variable name="nbooks" select="count(/FilingSummary/MyReports/Report[ReportType='Book'])"/>
   <xsl:variable name="isrr" select="0 &lt; count(/FilingSummary/MyReports/Report[contains(Role,'http://xbrl.sec.gov/rr')])"/>
-  <!-- EDGAR workstation, block logs on menu -->
-  <xsl:variable name="nlogs" select="0" />
-  <!-- EDGAR workstation 
-    <xsl:variable name="nlogs">
-      <xsl:choose>
+  <xsl:variable name="nlogs">
+    <xsl:choose>
         <xsl:when test="count(/FilingSummary/Logs/*) > 0">1</xsl:when>
         <xsl:otherwise>0</xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-  -->
+    </xsl:choose>
+  </xsl:variable>
   <xsl:template match="Report" mode="reportarray">
     <xsl:text>
         reports[</xsl:text>
@@ -223,10 +219,15 @@
    }
    
    function fixSrcAttr(src) {
-      var url_path = "";
+      var url_path = "DisplayDocument.do?step=docOnly&accessionNumber=" + accessionNumber +
+               		 "&interpretedFormat=true&redline=true&filename=";
       var uri = src.substr(0,5);
       // No change is needed if the 'src' attribute contains an embedded image
       if (uri == 'data:') {
+         return src;
+      }
+      // EDGAR no change if already a workstation database query format
+      if (src.substr(0,19) == "DisplayDocument.do?") {
          return src;
       }
       // Absolute URL on EDGAR website is unchanged
@@ -245,10 +246,10 @@
       if (xsl_url == null) { xsl_url = InstanceReportXslt; }
       var ext = url.substring(url.lastIndexOf('.')+1, url.length);
       /* EDGAR Workstation requires database query to obtain a submission rendered file */
-      var _url = "DisplayDocument.do?step=docOnly&accessionNumber=" + accessionNumber +
-        "&interpretedFormat=true&redline=" + true +
-        "&filename=" + url;
+      var _url;
       if (ext == 'htm') {
+	  _url = "DisplayDocument.do?step=docOnly&accessionNumber=" + accessionNumber +
+                 "&interpretedFormat=true&redline=true&filename=" + url;
           $.ajax({
           type: "GET",
           url: _url,
@@ -259,14 +260,24 @@
               }
           });            
       } else {
+	  _url = "DisplayDocument.do?step=docOnly&accessionNumber=" + accessionNumber +
+                 "&interpretedFormat=false&redline=true&filename=" + url; //causes HTML wrapping of XML
           $.ajax({
           type: "GET",
           url: _url,
           dataType: "text",
           async: false,
           success: function(data) {
+		  // remove EDGAR workstation HTML wrpping of XML
+		  data = data.replace(/<HTML><HEAD><TITLE>.+<PRE><FONT SIZE = 3>/g, ''); // header
+		  data = data.replace(/<\/FONT><\/PRE><\/BODY><\/HTML>/g, ''); // footer
+		  data = data.replace(/<P CLASS=\"page\">&nbsp;<\/P>/g, '\n'); // newlines
+		  data = data.replace(/&gt;/g, '>'); 
+		  data = data.replace(/&lt;/g, '<'); 
+		  data = data.replace(/&amp;/g, '&'); 
+		  // end of EDGAR HTML wrapping removal
                   data = data.replace(/^\s+|\s+$/g, ''); // leading or trailing whitespace causes problems
-                  var path="/" + url.substring(1, url.lastIndexOf('/')+1);
+                  var path=_url; // not for EDGAR Workstation: "/" + _url.substring(1, _url.lastIndexOf('/')+1);
                   
                   // code for IE
                   if (window.ActiveXObject) {                  
@@ -333,7 +344,9 @@
          xsl_url = null;
          if (reports[idx].indexOf('FilingSummary.xml') > -1) {
             unHighlightAllMenuItems();
-            xsl_url="RenderingLogs.xslt";
+            /* EDGAR Workstation requires database query to obtain a submission rendered file */
+            xsl_url = "DisplayDocument.do?step=docOnly&accessionNumber=" + accessionNumber +
+                      "&interpretedFormat=true&redline=true&filename=RenderingLogs.xslt";
          } 
          if (reports[idx] == 'all') {
             highlightAllMenuItems();
@@ -550,7 +563,7 @@
                     <xsl:comment>EDGAR workstation requires escaped database query for document retrieval</xsl:comment>
                     <xsl:variable name="htmUrl">DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D<xsl:value-of select="$accessionNumber"/>%26interpretedFormat%3Dtrue%26redline%3Dtrue%26filename%3D<xsl:value-of select="($original)"/></xsl:variable>
                     <xsl:variable name="metalinksUrl">DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D<xsl:value-of select="$accessionNumber"/>%26interpretedFormat%3Dtrue%26redline%3Dtrue%26filename%3DMetaLinks.json</xsl:variable>
-                    <a href="cbe/index.html?xbrl=true&amp;file={$htmUrl}&amp;metalinks={$metalinksUrl}"><xsl:value-of select="$doctype"/></a>
+                    <a href="ix/index.html?xbrl=true&amp;file={$htmUrl}&amp;metalinks={$metalinksUrl}"><xsl:value-of select="$doctype"/></a>
                   </xsl:when>
                   <xsl:otherwise>
                     <a href="vf/documents/{$original}"><xsl:value-of select="$doctype"/></a>
