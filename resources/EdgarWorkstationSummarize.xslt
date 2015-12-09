@@ -566,7 +566,8 @@
                     <a href="ix/index.html?xbrl=true&amp;file={$htmUrl}&amp;metalinks={$metalinksUrl}"><xsl:value-of select="$doctype"/></a>
                   </xsl:when>
                   <xsl:otherwise>
-                    <a href="vf/documents/{$original}"><xsl:value-of select="$doctype"/></a>
+                    <xsl:variable name="htmUrl">DisplayDocument.do?step=docOnly&amp;accessionNumber=<xsl:value-of select="$accessionNumber"/>&amp;interpretedFormat=true&amp;redline=true&amp;filename=<xsl:value-of select="($original)"/></xsl:variable>
+                    <a href="{$htmUrl}"><xsl:value-of select="$doctype"/></a>
                   </xsl:otherwise>
                 </xsl:choose>                
               </li>              
