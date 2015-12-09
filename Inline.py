@@ -84,8 +84,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
         return
     modelDocument = modelXbrl.modelDocument
     if options.saveTargetFiling or options.saveTargetInstance:
-        saveTargetPath = options.saveTargetFiling
-        if saveTargetPath:
+        if options.saveTargetFiling:
             (path, ignore) = os.path.splitext(modelDocument.filepath)
             if not cntlr.reportZip:
                 saveTargetPath = os.path.join(cntlr.reportsFolder, os.path.basename(path) + suffix + 'zip')
@@ -96,7 +95,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
         targetFilename = modelDocument.targetDocumentPreferredFilename
         targetSchemaRefs = modelDocument.targetDocumentSchemaRefs
     else:
-        filepath, fileext = os.path.splitext(modelDocument.filepath)
+        filepath, fileext = os.path.splitext(os.path.join(cntlr.reportsFolder, modelDocument.basename))
         if fileext not in USUAL_INSTANCE_EXTS: fileext = iext
         targetFilename = filepath + fileext
         targetSchemaRefs = set(modelDocument.relativeUri(referencedDoc.uri)
@@ -158,9 +157,7 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                         file = os.path.join(sourceDir,attrValue)
                         if modelXbrl.fileSource.isInArchive(file, checkExistence=True) or os.path.exists(file):
                             filingFiles.add(file)
-                    
-    targetUrl = modelXbrl.modelManager.cntlr.webCache.normalizeUrl(targetDocumentFilename, modelXbrl.modelDocument.filepath)
-    targetUrlParts = targetUrl.rpartition(".")
+    targetUrlParts = targetDocumentFilename.rpartition(".")
     targetUrl = targetUrlParts[0] + suffix + targetUrlParts[2]
     modelXbrl.modelManager.showStatus(_("Extracting instance ") + os.path.basename(targetUrl))
     targetInstance = ModelXbrl.create(modelXbrl.modelManager,
