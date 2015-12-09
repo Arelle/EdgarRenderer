@@ -284,7 +284,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['reportXslt'] = 'InstanceReport.xslt'
         self.defaultValueDict['resourcesFolder'] = "resources"
         self.defaultValueDict['saveTargetInstance'] = str(True)
-        self.defaultValueDict['saveTargetFiling'] = str(True)
+        self.defaultValueDict['saveTargetFiling'] = str(False)
         self.defaultValueDict['sourceList'] = ''
         self.defaultValueDict['summaryXslt'] = None
         self.defaultValueDict['totalClean'] = str(False)
@@ -789,6 +789,20 @@ class EdgarRenderer(Cntlr.Cntlr):
                             self.reportZip.writestr(filename, file.read())
             
                 self.logDebug("Instance post-processing complete")
+                
+                # temporary work-around to create SDR summaryDict
+                if not self.sourceDict and any(
+                        report.documentType and report.documentType.endswith(" SDR") 
+                        for report in filing.reports):
+                    for report in filing.reports:
+                        if report.isInline:
+                            self.sourceDict[report.basename] = (report.documentType, report.basename)
+                        else:
+                            for ext in (".htm", ".txt"):
+                                sourceFilepath = report.filepath.rpartition(".")[0] + ext
+                                if filesource.exists(sourceFilepath):
+                                    self.sourceDict[report.basename] = (report.documentType, os.path.basename(sourceFilepath))
+                                    break
                 
                 summary = Summary.Summary(self)  
                 rootETree = summary.buildSummaryETree()
