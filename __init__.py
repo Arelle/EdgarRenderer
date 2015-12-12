@@ -133,7 +133,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.3.1.900'
+VERSION = '3.4.0.0'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -165,6 +165,8 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
                       help=_("Path of location of Edgar Renderer configuration file relative to CWD. Default is EdgarRenderer.xml."))
     parser.add_option("-r", "--reports", dest="reportsFolder",
                      help=_("Relative or absolute path and name of the reports folder."))
+    parser.add_option("--noReportOutput", action="store_true", dest="noReportOutput",
+                     help=_("Block production of reports (FilingSummary, R files, xslx, etc)."))
     parser.add_option("--resources", dest="resourcesFolder",
                      help=_("Relative path and name of the resources folder, which includes static xslt, css and js support files."))
     parser.add_option("--filings", dest="filingsFolder",
@@ -400,10 +402,13 @@ class EdgarRenderer(Cntlr.Cntlr):
         
         options.processingFolder = setFolder('processingFolder', options.processingFolder)
         self.processInZip = True # bool(options.processingFolder)
-        options.reportsFolder = setFolder('reportsFolder', options.reportsFolder)
-        # keep initial reports folder, may be relative, if so reset on each new filing
-        self.initialReportsFolder = self.reportsFolder
-        self.reportInZip = True # bool(options.reportsFolder)
+        if options.noReportOutput:
+            options.reportsFolder = self.reportsFolder = self.initialReportsFolder = None
+        else:
+            options.reportsFolder = setFolder('reportsFolder', options.reportsFolder)
+            # keep initial reports folder, may be relative, if so reset on each new filing
+            self.initialReportsFolder = self.reportsFolder
+            self.reportInZip = True # bool(options.reportsFolder)
         options.resourcesFolder = setFolder('resourcesFolder', options.resourcesFolder,searchPythonPath=True)
 
 
@@ -704,10 +709,11 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.logDebug(_("RenderingException after {} validation errors: {}").format(errorCountDuringValidation, ex))
         except Exception as ex:
             success = False
+            action = "complete validation" if options.noReportOutput else "produce output"
             if errorCountDuringValidation > 0:
-                self.logWarn(_("The rendering engine was unable to produce output after {} validation errors.").format(errorCountDuringValidation))
+                self.logWarn(_("The rendering engine was unable to {} after {} validation errors.").format(action, errorCountDuringValidation))
             else:
-                self.logWarn(_("The rendering engine was unable to produce output due to an internal error.  This is not considered an error in the filing.").format(errorCountDuringValidation))
+                self.logWarn(_("The rendering engine was unable to {} due to an internal error.  This is not considered an error in the filing.").format(action, errorCountDuringValidation))
             self.logDebug(_("Exception traceback: {}").format(traceback.format_exception(*sys.exc_info())))
         self.renderedFiles = filing.renderedFiles # filing-level rendered files
         if not success:
@@ -758,14 +764,14 @@ class EdgarRenderer(Cntlr.Cntlr):
                     self.logDebug("Excel rendering complete")
                 def copyResourceToReportFolder(filename):
                     source = join(self.resourcesFolder, filename)
-                    if not self.reportZip:
+                    if self.reportZip:
+                        self.reportZip.write(source, filename)
+                    elif self.reportsFolder is not None:
                         target = join(self.reportsFolder, filename)
                         if not exists(target):
                             os.makedirs(self.reportsFolder, exist_ok=True)
                             shutil.copyfile(source, target)
-                            self.renderedFiles.add(filename)             
-                    else:
-                        self.reportZip.write(source, filename)
+                            self.renderedFiles.add(filename)
                 if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:
                     copyResourceToReportFolder("Show.js")
                     copyResourceToReportFolder("report.css")
@@ -780,13 +786,13 @@ class EdgarRenderer(Cntlr.Cntlr):
                     # files to copy are in zip archive
                     for filename in set(inputsToCopyToOutputList): # set() to deduplicate if multiple references
                         file = filesource.file(os.path.join(_xbrldir, filename), binary=True)[0]  # returned in a tuple
-                        if not self.reportZip:
+                        if self.reportZip:
+                            self.reportZip.writestr(filename, file.read())
+                        elif self.reportsFolder is not None:
                             target = join(self.reportsFolder, filename)
                             if exists(target): remove(target)
                             with open(target, 'wb') as f:
                                 f.write(file.read())
-                        else:
-                            self.reportZip.writestr(filename, file.read())
             
                 self.logDebug("Instance post-processing complete")
                 
@@ -806,39 +812,40 @@ class EdgarRenderer(Cntlr.Cntlr):
                 
                 summary = Summary.Summary(self)  
                 rootETree = summary.buildSummaryETree()
-                IoManager.writeXmlDoc(rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
-                self.renderedFiles.add("FilingSummary.xml")
-                if self.summaryXslt and len(self.summaryXslt) > 0 :
-                    summary_transform = etree.XSLT(etree.parse(self.summaryXslt))
-                    result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'),
-                                               accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")),
-                                               resourcesFolder="'{}'".format(self.resourcesFolder.replace("\\","/")))
-                    IoManager.writeHtmlDoc(result, self.reportZip, self.reportsFolder, 'FilingSummary.htm')
-                    self.renderedFiles.add("FilingSummary.htm")
-                self.logDebug("Write filing summary complete")
-                if self.auxMetadata and filing.hasInlineReport: 
-                    summary.writeMetaFiles()
-                self.logDebug("Write meta files complete")
-                if self.zipXbrlFilesToOutput and hasattr(filing, "accessionNumber"):
-                    _fileName = filing.accessionNumber + "-xbrl.zip"
-                    if not self.reportZip:
-                        xbrlZip = zipfile.ZipFile(os.path.join(self.reportsFolder, _fileName), mode='w', compression=zipfile.ZIP_DEFLATED, allowZip64=False)
-                    else:
-                        zipStream = io.BytesIO()
-                        xbrlZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
-                    for report in filing.reports:
-                        _xbrldir = os.path.dirname(report.entryPoint["file"])
-                        for reportedFile in sorted(report.reportedFiles):
-                            fileStream = filesource.file(os.path.join(_xbrldir, reportedFile), binary=True)[0]  # returned in a tuple
-                            xbrlZip.writestr(reportedFile, fileStream.read())
-                            fileStream.close()
-                        filesource.close()
-                    xbrlZip.close()
-                    if self.reportZip:
-                        zipStream.seek(0)
-                        self.reportZip.writestr(_fileName, zipStream.read())
-                        zipStream.close()
-                    self.logDebug("Write {} complete".format(_fileName))
+                if self.reportZip or self.reportsFolder is not None:
+                    IoManager.writeXmlDoc(rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
+                    self.renderedFiles.add("FilingSummary.xml")
+                    if self.summaryXslt and len(self.summaryXslt) > 0 :
+                        summary_transform = etree.XSLT(etree.parse(self.summaryXslt))
+                        result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'),
+                                                   accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")),
+                                                   resourcesFolder="'{}'".format(self.resourcesFolder.replace("\\","/")))
+                        IoManager.writeHtmlDoc(result, self.reportZip, self.reportsFolder, 'FilingSummary.htm')
+                        self.renderedFiles.add("FilingSummary.htm")
+                    self.logDebug("Write filing summary complete")
+                    if self.auxMetadata and filing.hasInlineReport: 
+                        summary.writeMetaFiles()
+                    self.logDebug("Write meta files complete")
+                    if self.zipXbrlFilesToOutput and hasattr(filing, "accessionNumber"):
+                        _fileName = filing.accessionNumber + "-xbrl.zip"
+                        if not self.reportZip:
+                            xbrlZip = zipfile.ZipFile(os.path.join(self.reportsFolder, _fileName), mode='w', compression=zipfile.ZIP_DEFLATED, allowZip64=False)
+                        else:
+                            zipStream = io.BytesIO()
+                            xbrlZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
+                        for report in filing.reports:
+                            _xbrldir = os.path.dirname(report.entryPoint["file"])
+                            for reportedFile in sorted(report.reportedFiles):
+                                fileStream = filesource.file(os.path.join(_xbrldir, reportedFile), binary=True)[0]  # returned in a tuple
+                                xbrlZip.writestr(reportedFile, fileStream.read())
+                                fileStream.close()
+                            filesource.close()
+                        xbrlZip.close()
+                        if self.reportZip:
+                            zipStream.seek(0)
+                            self.reportZip.writestr(_fileName, zipStream.read())
+                            zipStream.close()
+                        self.logDebug("Write {} complete".format(_fileName))
                 
                 if "EdgarRenderer/__init__.py#filingEnd" in filing.arelleUnitTests:
                     raise arelle.PythonUtil.pyNamedObject(filing.arelleUnitTests["EdgarRenderer/__init__.py#filingEnd"])
@@ -860,7 +867,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                         self.logError(_("Failure: Post-processing I/O or OS error: {}").format(err))
                         self.success = False
             except Exception as ex:
-                self.logWarn(_("The rendering engine was unable to produce output due to an internal error.  This is not considered an error in the filing."))
+                action = "complete validation" if options.noReportOutput else "produce output"
+                self.logWarn(_("The rendering engine was unable to {} due to an internal error.  This is not considered an error in the filing.").format(action))
                 self.logDebug(_("Exception in filing end processing, traceback: {}").format(traceback.format_exception(*sys.exc_info())))
                 self.success = False # force postprocessingFailure
                     
@@ -883,13 +891,13 @@ class EdgarRenderer(Cntlr.Cntlr):
             modelXbrl.logProfileStats() 
         def copyResourceToReportFolder(filename):
             source = join(self.resourcesFolder, filename)
-            if not self.reportZip:
+            if self.reportZip:
+                self.reportZip.write(source, filename)
+            elif self.reportsFolder is not None:
                 target = join(self.reportsFolder, filename)
                 if not exists(target):
                     os.makedirs(self.reportsFolder, exist_ok=True)
-                    shutil.copyfile(source, target)                
-            else:
-                self.reportZip.write(source, filename)
+                    shutil.copyfile(source, target) 
         if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:
             copyResourceToReportFolder("Show.js")
             copyResourceToReportFolder("report.css")
@@ -900,12 +908,12 @@ class EdgarRenderer(Cntlr.Cntlr):
         if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
         for filename in inputsToCopyToOutputList:
             source = join(self.processingFolder, filename)
-            if not self.reportZip:
+            if self.reportZip:
+                self.reportZip.write(source, filename)
+            elif self.reportsFolder is not None:
                 target = join(self.reportsFolder, filename)
                 if exists(target): remove(target)
-                shutil.copyfile(source, target)                
-            else:
-                self.reportZip.write(source, filename)
+                shutil.copyfile(source, target)
         self.modelManager.close(modelXbrl)
         self.logDebug("Instance post-processing complete")
         
@@ -1097,7 +1105,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             abortOnMajorError = False, # inherited
             processingFolder = None,
             processInZip = None,
-            reportsFolder = "out", # default to reports subdirectory of source input
+            reportsFolder = "out" if cntlr.showFilingData.get() else None, # default to reports subdirectory of source input
+            noReportOutput = None if cntlr.showFilingData.get() else True,
             reportInZip = None,
             resourcesFolder = None,
             reportXslt = ('InstanceReport.xslt', 'InstanceReportTable.xslt')[_combinedReports],
@@ -1116,7 +1125,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             reportedFiles = set(),
             renderedFiles = set(),
             entryPoint = {"file": modelXbrl.modelDocument.filepath},
-            basename = modelXbrl.modelDocument.basename
+            basename = modelXbrl.modelDocument.basename,
+            documentType = None
             )
         filing = PythonUtil.attrdict( # simulate filing
             filesource = modelXbrl.fileSource,
@@ -1136,7 +1146,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
         It does not seem to work in local browsers.
         Temporarily this function just does an Rall.htm for local viewing.
         '''
-        if reportsFolder and os.path.exists(os.path.join(edgarRenderer.reportsFolder, "FilingSummary.xml")):
+        if reportsFolder is not None and os.path.exists(os.path.join(reportsFolder, "FilingSummary.xml")):
             if _combinedReports:
                 edgarRenderer.logDebug("Generate all-reports htm file")
                 rAll = [b'''

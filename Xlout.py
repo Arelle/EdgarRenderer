@@ -61,8 +61,10 @@ class XlWriter(object):
         if self.controller.reportZip:
             import io
             file = io.BytesIO()
-        else:
+        elif self.outputFolderName is not None:
             file = os.path.join(self.outputFolderName, OUTPUT_FILE_NAME)
+        else:
+            return # no report output (just validation)
         self.wb.save(file)
         if self.controller.reportZip:
             file.seek(0)

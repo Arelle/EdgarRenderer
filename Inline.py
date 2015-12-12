@@ -83,19 +83,20 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
         cntlr.logTrace(_("No Inline XBRL document or manifest."))
         return
     modelDocument = modelXbrl.modelDocument
-    if options.saveTargetFiling or options.saveTargetInstance:
+    if ((options.saveTargetFiling or options.saveTargetInstance) and
+        (cntlr.reportZip or cntlr.reportsFolder is not None)):
         if options.saveTargetFiling:
             (path, ignore) = os.path.splitext(modelDocument.filepath)
-            if not cntlr.reportZip:
-                saveTargetPath = os.path.join(cntlr.reportsFolder, os.path.basename(path) + suffix + 'zip')
-            else:
+            if cntlr.reportZip:
                 saveTargetPath = os.path.basename(path) + suffix + 'zip'
+            elif cntlr.reportsFolder is not None:
+                saveTargetPath = os.path.join(cntlr.reportsFolder, os.path.basename(path) + suffix + 'zip')
     else: return       
     if isinstance(modelDocument, ModelInlineXbrlDocumentSet):
         targetFilename = modelDocument.targetDocumentPreferredFilename
         targetSchemaRefs = modelDocument.targetDocumentSchemaRefs
     else:
-        filepath, fileext = os.path.splitext(os.path.join(cntlr.reportsFolder, modelDocument.basename))
+        filepath, fileext = os.path.splitext(os.path.join(cntlr.reportsFolder or "", modelDocument.basename))
         if fileext not in USUAL_INSTANCE_EXTS: fileext = iext
         targetFilename = filepath + fileext
         targetSchemaRefs = set(modelDocument.relativeUri(referencedDoc.uri)
@@ -105,11 +106,11 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
     filingFiles = None
     if options.saveTargetFiling:
         targetFilename = os.path.basename(targetFilename)
-        if not cntlr.reportZip:
-            filingZip = zipfile.ZipFile(saveTargetPath, mode='w', compression=zipfile.ZIP_DEFLATED, allowZip64=False)
-        else:
+        if cntlr.reportZip:
             zipStream = io.BytesIO()
             filingZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
+        elif cntlr.reportsFolder is not None:
+            filingZip = zipfile.ZipFile(saveTargetPath, mode='w', compression=zipfile.ZIP_DEFLATED, allowZip64=False)
 
         filingFiles = set()
         # copy referencedDocs to two levels.

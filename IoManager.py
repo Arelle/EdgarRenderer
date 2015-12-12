@@ -9,6 +9,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 
 from os import getpid, remove, makedirs, getenv, listdir
 from os.path import basename, isfile, abspath, isdir, dirname, exists, join, splitext, normpath
+from io import IOBase
 import json, re, shutil, sys, datetime, os, zipfile
 import arelle.XbrlConst
 from lxml.etree import tostring as treeToString
@@ -46,22 +47,22 @@ def absPathOnPythonPath(controller, filename):  # if filename is relative, find 
     return None
     
 def writeXmlDoc(etree, reportZip, reportFolder, filename):  
-    if not reportZip:
-        etree.getroottree().write(os.path.join(reportFolder, filename), method='xml', with_tail=False, pretty_print=True, encoding='utf-8', xml_declaration=True)   
-    else:
+    if reportZip:
         reportZip.writestr(filename, treeToString(etree.getroottree(), method='xml', with_tail=False, pretty_print=True, encoding='utf-8', xml_declaration=True))  
+    elif reportFolder is not None:
+        etree.getroottree().write(os.path.join(reportFolder, filename), method='xml', with_tail=False, pretty_print=True, encoding='utf-8', xml_declaration=True)   
     
 def writeHtmlDoc(root, reportZip, reportFolder, filename):  
-    if not reportZip:
-        root.write(os.path.join(reportFolder, filename), method='html', with_tail=False, pretty_print=True, encoding='utf-8')
-    else:
+    if reportZip:
         reportZip.writestr(filename, treeToString(root, method='html', with_tail=False, pretty_print=True, encoding='utf-8'))  
+    elif reportFolder is not None:
+        root.write(os.path.join(reportFolder, filename), method='html', with_tail=False, pretty_print=True, encoding='utf-8')
     
 def writeJsonDoc(lines, pathOrStream):
     if isinstance(pathOrStream, str):
         with open(pathOrStream, mode='w') as f:
             json.dump(lines, f, sort_keys=True, indent=jsonIndent)
-    else: # path is an open file
+    elif isinstance(pathOrStream, IOBase): # path is an open file
         json.dump(lines, pathOrStream, sort_keys=True, indent=jsonIndent)
 
 def moveToZip(zf, abspath, zippath):                        

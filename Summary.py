@@ -67,7 +67,7 @@ class Summary(object):
         self.rootETree = None   
         self.reportFormat = controller.reportFormat
         self.instanceSummaryList = controller.instanceSummaryList
-        self.reportsFolder = str(controller.reportsFolder)
+        self.reportsFolder = controller.reportsFolder # may be null when no optput is desired
         self.summaryList = controller.instanceSummaryList
         self.entrypoint = controller.entrypoint
         summaries = self.instanceSummaryList                
@@ -266,8 +266,10 @@ class Summary(object):
                 root['tag'] = s.tagDict           
             if self.controller.reportZip:
                 file = io.StringIO()
-            else:
+            elif self.controller.reportsFolder is not None:
                 file = os.path.join(self.controller.reportsFolder, EJson)
+            else:
+                file = None
             IoManager.writeJsonDoc(roots,file)
             self.controller.renderedFiles.add(EJson)
             if self.controller.reportZip:
@@ -275,10 +277,7 @@ class Summary(object):
                 self.controller.reportZip.writestr(EJson, file.read().encode("utf-8"))
                 file.close()
                 del file  # dereference
-        if self.controller.debugMode: innerWriteMetaFiles()
-        else:
-            try: innerWriteMetaFiles()
-            except Exception as err: self.controller.logError(str(err) + str(traceback.format_tb(sys.exc_info()[2])))
+        innerWriteMetaFiles() # if exception is raised, must be caught by caller in EdgarRenderer.filingEnd()
 
 class InstanceSummary(object):
           

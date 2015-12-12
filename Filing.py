@@ -57,7 +57,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
         if filing.hasEmbeddings:
             modelXbrl.debug("debug",
                             _("Excel XSLT is not applied to instance %(instance)s having embedded commands."),
-                            modelObject=modelXbrl.modelDocument, instance=filing.fileNameBase)
+                            modelObject=modelXbrl.modelDocument, instance=modelXbrl.modelDocument.basename)
         else:
             xlWriter = controller.xlWriter
             if not xlWriter:
@@ -68,9 +68,14 @@ def mainFun(controller, modelXbrl, outputFolderName):
     #print('memory '  + str(int(win32process.GetProcessMemoryInfo(win32process.GetCurrentProcess())['WorkingSetSize'] / (1024*1024))))
 
     # handle the steps after flow through and then emit all of the XML and write the files
-    modelXbrl.debug("debug",
-                    _("Generating rendered reports in %(folder)s"),
-                    modelObject=modelXbrl.modelDocument, folder=outputFolderName)
+    if outputFolderName is not None:
+        modelXbrl.debug("debug",
+                        _("Generating rendered reports in %(folder)s"),
+                        modelObject=modelXbrl.modelDocument, folder=outputFolderName)
+    else:
+        modelXbrl.debug("debug",
+                        _("Validating renderable reports"),
+                        modelObject=modelXbrl.modelDocument)
     for cube in sortedCubeList:
         if cube.noFactsOrAllFactsSuppressed:
             for embedding in cube.embeddingList:
@@ -193,12 +198,14 @@ class Filing(object):
         if controller.reportZip:
             self.fileNameBase = None
             self.reportZip = controller.reportZip
-        else:
+        elif outputFolderName is not None:
             # self.fileNameBase = os.path.normpath(os.path.join(os.path.dirname(controller.webCache.normalizeUrl(modelXbrl.fileSource.basefile)) ,outputFolderName))
             self.fileNameBase = outputFolderName
             if not os.path.exists(self.fileNameBase):  # This is usually the Reports subfolder.
                 os.mkdir(self.fileNameBase)
             self.reportZip = None
+        else:
+            self.fileNameBase = self.reportZip = None
 
         if controller.reportXslt:
             self.transform = lxml.etree.XSLT(lxml.etree.parse(controller.reportXslt))
