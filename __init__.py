@@ -84,8 +84,10 @@ b) when invoking via REST interface (built in webserver or cgi-bin server):
     curl -X POST "-HContent-type: application/zip" 
         -T amd.zip 
         -o out.zip 
-        --logFile log.xml  # specifies name of log file to return in zip and whether .txt or .xml
         "http://localhost:8080/rest/xbrl/validation?efm-pragmatic&media=zip&plugins=EdgarRenderer&logFile=log.xml"
+
+        (-T specifies zip of the filing, -o the file to store rendering results)
+        (use log.txt if a text log files is desired instead)
         
     2) to not load EdgarRenderer dynamically, it must be active in plugins.json (as set up by GUI)
     (sibling to the caches directoryexcept Mac where it's under ~/Library/Application Support/Arelle)
@@ -834,7 +836,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                             zipStream = io.BytesIO()
                             xbrlZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
                         for report in filing.reports:
-                            _xbrldir = os.path.dirname(report.entryPoint["file"])
+                            _xbrldir = os.path.dirname(report.filepath)
                             for reportedFile in sorted(report.reportedFiles):
                                 fileStream = filesource.file(os.path.join(_xbrldir, reportedFile), binary=True)[0]  # returned in a tuple
                                 xbrlZip.writestr(reportedFile, fileStream.read())
@@ -1026,8 +1028,8 @@ class EdgarRenderer(Cntlr.Cntlr):
     def logTrace(self, message, messageArgs={}, file=basename(__file__)):
         self.addToLog(str(message), messageArgs=messageArgs, file=file, level=logging.NOTSET, messageCode='trace')
 
-    def logDebug(self, message, messageArgs={}, file=basename(__file__)):
-        self.addToLog(str(message), messageArgs=messageArgs, file=file, level=logging.DEBUG, messageCode='debug')
+    def logDebug(self, message, messageArgs={}, file=basename(__file__), messageCode='debug'):
+        self.addToLog(str(message), messageArgs=messageArgs, file=file, level=logging.DEBUG, messageCode=messageCode)
 
     def logInfo(self, message, messageArgs={}, file=None, messageCode='info'):
         self.addToLog(str(message), messageArgs=messageArgs, file=None, level=logging.INFO, messageCode=messageCode)
@@ -1079,6 +1081,7 @@ def edgarRendererGuiViewMenuExtender(cntlr, viewMenu, *args, **kwargs):
 def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
     """ run EdgarRenderer using GUI interactions for a single instance or testcases """
     if cntlr.hasGui:
+        from arelle.ValidateFilingText import referencedFiles
         _combinedReports = not cntlr.showTablesMenu.get() # use mustard menu
         # may use GUI mode to process a single instance or test suite
         options = PythonUtil.attrdict(# simulate options that CntlrCmdLine provides
@@ -1122,15 +1125,18 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             return
         report = PythonUtil.attrdict( # simulate report
             isInline = modelXbrl.modelDocument.type == ModelDocument.Type.INLINEXBRL,
-            reportedFiles = set(),
+            reportedFiles = {modelXbrl.modelDocument.basename} | referencedFiles(modelXbrl),
             renderedFiles = set(),
-            entryPoint = {"file": modelXbrl.modelDocument.filepath},
+            entryPoint = {"file": modelXbrl.modelDocument.uri},
+            url = modelXbrl.modelDocument.uri,
+            filepath = modelXbrl.modelDocument.filepath,
             basename = modelXbrl.modelDocument.basename,
             documentType = None
             )
         filing = PythonUtil.attrdict( # simulate filing
             filesource = modelXbrl.fileSource,
             reportZip = None,
+            entrypointfiles = [{"file":modelXbrl.modelDocument.uri}],
             renderedFiles = set(),
             reports = [report],
             hasInlineReport = report.isInline,
