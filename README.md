@@ -11,7 +11,7 @@ End user support is by e-mail direct to SEC at: StructuredData@sec.gov
 
 Developer issue management is by the Jira Edgar Renderer project: https://arelle.atlassian.net/projects/ER
 
-This plugin branch was branched from the SEC-contributed modules and synchronized to the version under test at SEC for EDGAR release 15.4.  It differs from the branch "plugin.3.3.0.814" by conforming to the EFM sections for RenderingEngine messages of [SEC's public test suite](https://www.sec.gov/spotlight/xbrl/interactive_data_test_suite.shtml).  This plugin can be loaded as a plugin to Arelle in the normal manner.  E.g., if running from command line, --plugins  {path to here}/EdgarRenderer
+This is the edgr1601 branch.  It is being tested for EDGAR Release 16.0.1.  It differs from the branch "edgr154" by inline XBRL features and itegration with Arelle user environments.  
 
 To debug under eclipse, check this project out under arelle's plugin directory or soft link from EdgarRenderer to the Arelle project src/arelle/plugin directory, e.g., under MacOS/Linux:
     ln -s {path to here}/EdgarRenderer {path to arelle project}/src/arelle/plugin
