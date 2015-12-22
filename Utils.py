@@ -43,7 +43,8 @@ def isRate(fact, filing):
     return   (isFactTypeEqualToOrDerivedFrom(fact, isPercentItemTypeQname) or
              (isFactTypeEqualToOrDerivedFrom(fact, isPureItemTypeQname) and
                 (isEfmInvestNamespace(fact.qname.namespaceURI) or filing.isRR)) or
-             (fact.unit.isSingleMeasure and any(utrEntry.unitId == 'Rate' for utrEntry in fact.utrEntries.copy())))
+             (fact.unit is not None and fact.unit.isSingleMeasure and 
+              any(utrEntry.unitId == 'Rate' for utrEntry in fact.utrEntries.copy())))
 
 def printErrorStringToDisambiguateEmbeddedOrNot(embeddedCommandFact):
     if embeddedCommandFact is None:

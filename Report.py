@@ -1622,6 +1622,7 @@ class Cell(object):
         if      (fact is not None and
                  fact.isNumeric and
                  not fact.isNil and
+                 fact.unit is not None and # unit can be none if there are xbrl2.1 or inline issues
                  (fact.concept.isMonetary or Utils.isFactTypeEqualToOrDerivedFrom(fact, Utils.isPerShareItemTypeQname))):
 
             # we do this weird call here because we know the type is either perShareDerivedType or monetaryDerivedType.  either way, we know numerator is monetary.
