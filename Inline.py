@@ -165,7 +165,8 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                                       newDocumentType=Type.INSTANCE,
                                       url=targetUrl,
                                       schemaRefs=targetDocumentSchemaRefs,
-                                      isEntry=True)
+                                      isEntry=True,
+                                      discover=False) # don't attempt to load DTS
     ValidateXbrlDimensions.loadDimensionDefaults(targetInstance)  # need dimension defaults - why?
     # roleRef and arcroleRef (of each inline document)
     for sourceRefs in (modelXbrl.targetRoleRefs, modelXbrl.targetArcroleRefs):
