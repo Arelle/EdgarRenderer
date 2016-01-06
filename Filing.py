@@ -515,6 +515,8 @@ class Filing(object):
         # we take out the URI first, because it might have double quotes in it and we want to cleanse the rest of the
         # command of double quotes since the separator command wraps the separator character in double quotes.
         commandTextList = commandText.split(maxsplit=1) # this is a list of length 1 or 2.
+        if not commandTextList: # if no list contents, then it's not an embedded command
+            return False
         linkroleUri = commandTextList.pop(0) # now commandTextList is a list of length 0 or 1
         try:
             cube = self.cubeDict[linkroleUri]
