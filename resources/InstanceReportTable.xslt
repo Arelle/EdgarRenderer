@@ -9,6 +9,7 @@
   <xsl:param name="source"/>
   <xsl:param name="otherStandardPrefix"/>
   <xsl:param name="authMode">0</xsl:param>
+  <xsl:param name="infText">&#x221E;</xsl:param>
   <xsl:decimal-format name="currency" digit="D"/>
   <xsl:preserve-space elements="label"/>
   <xsl:variable name="majorversion" select="substring-before(/InstanceReport/Version, '.')"/>
@@ -786,6 +787,9 @@
       <xsl:when test="IsRatio = 'true'">
         <xsl:variable name="absolute" select="number($entire)"/>
         <xsl:value-of select="format-number($absolute, '0.00DDD%', 'currency')"/>
+      </xsl:when>
+      <xsl:when test="$entire = 'Infinity'">
+        <xsl:value-of select="$infText"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="numberFormatCulture">
