@@ -204,7 +204,8 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     Inline.saveTargetDocumentCommandLineOptionExtender(parser)
     parser.add_option("--sourceList", action="store", dest="sourceList", help=_("Comma-separated triples of instance file, doc type and source file."))
     parser.add_option("--copyInlineFilesToOutput", action="store_true", dest="copyInlineFilesToOutput", help=_("Set flag to copy all inline files to the output folder or zip."))
-    parser.add_option("--zipXbrlFilesToOutput", action="store_true", dest="zipXbrlFilesToOutput", help=_("Set flag to zip all sourc xbrl files to the an accession-number-xbrl.zip in reports folder or zip when an accession number parameter is available."))
+    parser.add_option("--copyXbrlFilesToOutput", action="store_true", dest="copyXbrlFilesToOutput", help=_("Set flag to copy all source xbrl files to the output folder or zip."))
+    parser.add_option("--zipXbrlFilesToOutput", action="store_true", dest="zipXbrlFilesToOutput", help=_("Set flag to zip all source xbrl files to the an accession-number-xbrl.zip in reports folder or zip when an accession number parameter is available."))
     parser.add_option("--includeLogsInSummary", action="store_true", dest="includeLogsInSummary", help=_("Set flag to copy log entries into <logs> in FilingSummary.xml."))    
     parser.add_option("--noLogsInSummary", action="store_false", dest="includeLogsInSummary", help=_("Unset flag to copy log entries into <logs> in FilingSummary.xml."))    
     parser.add_option("--noEquity", action="store_true", dest="noEquity", help=_("Set flag to suppress special treatment of Equity Statements. "))
@@ -268,6 +269,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['archiveFolder'] = 'Archive'
         self.defaultValueDict['auxMetadata'] = str(True) # HF change to true default str(False)
         self.defaultValueDict['copyInlineFilesToOutput'] = str(False)
+        self.defaultValueDict['copyXbrlFilesToOutput'] = str(False)
         self.defaultValueDict['zipXbrlFilesToOutput'] = str(False)
         self.defaultValueDict['includeLogsInSummary'] = str(False)
         self.defaultValueDict['deleteProcessedFilings'] = str(True)
@@ -367,6 +369,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         options.noEquity = setFlag('noEquity', options.noEquity)
         options.auxMetadata = setFlag('auxMetadata', options.auxMetadata)
         options.copyInlineFilesToOutput = setFlag('copyInlineFilesToOutput', options.copyInlineFilesToOutput)
+        options.copyXbrlFilesToOutput = setFlag('copyXbrlFilesToOutput', options.copyXbrlFilesToOutput)
         options.zipXbrlFilesToOutput = setFlag('zipXbrlFilesToOutput', options.zipXbrlFilesToOutput)
         options.includeLogsInSummary = setFlag('includeLogsInSummary', options.includeLogsInSummary)
         options.saveTargetInstance = setFlag('saveTargetInstance',options.saveTargetInstance)
@@ -478,6 +481,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.noEquity = options.noEquity
         self.auxMetadata = options.auxMetadata
         self.copyInlineFilesToOutput = options.copyInlineFilesToOutput
+        self.copyXbrlFilesToOutput = options.copyXbrlFilesToOutput
         self.zipXbrlFilesToOutput = options.zipXbrlFilesToOutput
         self.includeLogsInSummary = options.includeLogsInSummary
         self.saveTargetInstance = options.saveTargetInstance
@@ -782,7 +786,11 @@ class EdgarRenderer(Cntlr.Cntlr):
                     self.renderedFiles.add("RenderingLogs.xslt")
                 # TODO: At this point would be nice to call out any files not loaded in any instance DTS
                 inputsToCopyToOutputList = self.supplementList
-                if options.copyInlineFilesToOutput: inputsToCopyToOutputList += self.inlineList
+                if options.copyInlineFilesToOutput:
+                    inputsToCopyToOutputList += self.inlineList
+                if options.copyXbrlFilesToOutput:
+                    for report in filing.reports:
+                        inputsToCopyToOutputList += report.reportedFiles                
                 if inputsToCopyToOutputList and filing.entrypointfiles:
                     _xbrldir = os.path.dirname(filing.entrypointfiles[0]["file"])
                     # files to copy are in zip archive
@@ -1096,6 +1104,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             noEquity = None,
             auxMetadata = None,
             copyInlineFilesToOutput = None,
+            copyXbrlFilesToOutput = None,
             zipXbrlFilesToOutput = None,
             includeLogsInSummary = None, # for GUI logger does not have buffered messages available, always no logs in output
             saveTargetInstance = None,
