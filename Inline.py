@@ -210,6 +210,7 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                 else:
                     text = fact.xValue if fact.xValid else fact.textValue
                 newFact = targetInstance.createFact(fact.qname, attributes=attrs, text=text, parent=parent)
+                # if fact.isFraction, create numerator and denominator
                 newFactForOldObjId[fact.objectIndex] = newFact
                 if filingFiles is not None and fact.concept is not None and fact.concept.isTextBlock:
                     # check for img and other filing references so that referenced files are included in the zip.
