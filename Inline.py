@@ -175,7 +175,7 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                      attributes=roleRefElt.items())
     
     # contexts
-    for context in modelXbrl.contexts.values():
+    for context in sorted(modelXbrl.contexts.values(), key=lambda c: c.sourceline):
         ignore = targetInstance.createContext(context.entityIdentifier[0],
                                                context.entityIdentifier[1],
                                                'instant' if context.isInstantPeriod else
@@ -186,7 +186,7 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                                                None,
                                                context.qnameDims, [], [],
                                                id=context.id)
-    for unit in modelXbrl.units.values():
+    for unit in sorted(modelXbrl.units.values(), key=lambda u: u.sourceline):
         measures = unit.measures
         ignore = targetInstance.createUnit(measures[0], measures[1], id=unit.id)
 
