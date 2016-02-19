@@ -13,7 +13,7 @@ from arelle import ModelXbrl, ValidateXbrlDimensions, XbrlConst
 from arelle.PrototypeDtsObject import LocPrototype, ArcPrototype
 from arelle.ModelDocument import ModelDocument, ModelDocumentReference, Type, load
 from arelle.ModelInstanceObject import ModelInlineFootnote
-from arelle.XmlUtil import addChild, copyIxFootnoteHtml
+from arelle.XmlUtil import addChild, copyIxFootnoteHtml, elementChildSequence
 from arelle.UrlUtil import isHttpUrl
 from arelle.ValidateFilingText import CDATApattern
 import os, zipfile, io
@@ -175,7 +175,7 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                      attributes=roleRefElt.items())
     
     # contexts
-    for context in sorted(modelXbrl.contexts.values(), key=lambda c: c.sourceline):
+    for context in sorted(modelXbrl.contexts.values(), key=lambda c: elementChildSequence(c)):
         ignore = targetInstance.createContext(context.entityIdentifier[0],
                                                context.entityIdentifier[1],
                                                'instant' if context.isInstantPeriod else
@@ -186,7 +186,7 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                                                None,
                                                context.qnameDims, [], [],
                                                id=context.id)
-    for unit in sorted(modelXbrl.units.values(), key=lambda u: u.sourceline):
+    for unit in sorted(modelXbrl.units.values(), key=lambda u: elementChildSequence(u)):
         measures = unit.measures
         ignore = targetInstance.createUnit(measures[0], measures[1], id=unit.id)
 
