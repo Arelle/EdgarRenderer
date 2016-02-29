@@ -508,7 +508,7 @@ class Filing(object):
         if tilde == '':
             return False
         leftOfTilde, tilde, ignore = rightOfTilde.partition('~')
-        if tilde == '' or leftOfTilde == '':
+        if not tilde or not leftOfTilde or leftOfTilde.isspace():
             return False
         commandText = leftOfTilde
 
