@@ -64,4 +64,5 @@ class RefManager(object):
                                   modelObject=modelXbrl.modelDocument, linkbase=url)
         finally:
             modelXbrl.modelManager.validateDisclosureSystem = validateDisclosureSystem
+            modelXbrl.relationshipSets.clear() # relationships have to be re-cached
         return
