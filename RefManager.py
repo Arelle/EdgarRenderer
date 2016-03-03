@@ -49,12 +49,14 @@ class RefManager(object):
 
     def loadAddedUrls(self,modelXbrl,controller):
         validateDisclosureSystem = modelXbrl.modelManager.validateDisclosureSystem
+        loadedAdditionalUrls = False
         try:
             modelXbrl.modelManager.validateDisclosureSystem = False
             for url in self.getUrls(modelXbrl):
                 doc = None
                 try: # isSupplemental is needed here to force the parsing of linkbase.
                     doc = arelle.ModelDocument.load(modelXbrl,url,isSupplemental=True)
+                    loadedAdditionalUrls = True
                 except (arelle.ModelDocument.LoadingException):
                     pass
                 if doc is None:
@@ -64,5 +66,6 @@ class RefManager(object):
                                   modelObject=modelXbrl.modelDocument, linkbase=url)
         finally:
             modelXbrl.modelManager.validateDisclosureSystem = validateDisclosureSystem
-            modelXbrl.relationshipSets.clear() # relationships have to be re-cached
+            if loadedAdditionalUrls:
+                modelXbrl.relationshipSets.clear() # relationships have to be re-cached
         return
