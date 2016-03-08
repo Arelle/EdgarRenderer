@@ -71,7 +71,7 @@
             <xsl:value-of select="$p4"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="." disable-output-escaping="yes"/>
+            <xsl:value-of select="." disable-output-escaping="no"/>
           </xsl:otherwise>
         </xsl:choose>
       </td>
