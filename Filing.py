@@ -315,12 +315,12 @@ class Filing(object):
                             qnameContextIDUnitStr = 'qname {!s}, context {}'.format(firstFact.qname, firstFact.contextID)
                             if firstFact.unit is not None:
                                 qnameContextIDUnitStr += ', unit ' + firstFact.unitID
-                            self.modelXbrl.info("info",
-                                                _("There are multiple facts with %(contextUnitIds)s. The fact on line %(lineNumOfFactWeAreKeeping)s of the instance " 
-                                                  "document will be rendered, and the rest at line(s) %(linesDiscarded)s will not."),
-                                                modelObject=duplicateFacts, contextUnitIds=qnameContextIDUnitStr, 
-                                                lineNumOfFactWeAreKeeping=lineNumOfFactWeAreKeeping,
-                                                linesDiscarded=', '.join(discardedLineNumberList))
+                            self.modelXbrl.debug("debug",
+                                                 _("There are multiple facts with %(contextUnitIds)s. The fact on line %(lineNumOfFactWeAreKeeping)s of the instance " 
+                                                   "document will be rendered, and the rest at line(s) %(linesDiscarded)s will not."),
+                                                 modelObject=duplicateFacts, contextUnitIds=qnameContextIDUnitStr, 
+                                                 lineNumOfFactWeAreKeeping=lineNumOfFactWeAreKeeping,
+                                                 linesDiscarded=', '.join(discardedLineNumberList))
 
                 for fact in factSet: # we only want one thing, but we don't want to pop from the set so we "loop" and then break right away
                     if fact.concept is None:
