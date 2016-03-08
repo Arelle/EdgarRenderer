@@ -410,7 +410,10 @@ class InstanceSummary(object):
                     hiddenSet.add(fact)                    
                         
         for c in contextSet:
-            segmentSet.update([(s.dimension,s.member) for s in c.segDimValues.values()])
+            for s in c.segDimValues.values():
+                segmentSet.update([(s.dimension,s.member)])
+                if s.dimension is not None: conceptInUseSet.add(s.dimension)
+                if s.member is not None: conceptInUseSet.add(s.member)
             entitySet.update({itag.text for itag in c.iter(tag=arelle.XbrlConst.qnXbrliIdentifier.clarkNotation)})
         
         for context in contextsInUseSet:
