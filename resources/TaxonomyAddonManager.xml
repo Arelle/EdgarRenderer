@@ -30,28 +30,15 @@
         <string>country-doc-2013-01-31.xml</string>
       </DefinitionFiles>
       <ReferenceFiles/>
-    </TaxonomyAddon><TaxonomyAddon>
+    </TaxonomyAddon>
+        <TaxonomyAddon>
       <Taxonomy>country-2016-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>country-doc-2016-01-31.xml</string>
       </DefinitionFiles>
       <ReferenceFiles/>
     </TaxonomyAddon>
-    <TaxonomyAddon>
-      <Taxonomy>currency-2009-01-31.xsd</Taxonomy>
-      <DefinitionFiles>
-        <string>currency-doc-2009-01-31.xml</string>
-      </DefinitionFiles>
-      <ReferenceFiles/>
-    </TaxonomyAddon>
-    <TaxonomyAddon>
-      <Taxonomy>currency-2011-01-31.xsd</Taxonomy>
-      <DefinitionFiles>
-        <string>currency-doc-2011-01-31.xml</string>
-      </DefinitionFiles>
-      <ReferenceFiles/>
-    </TaxonomyAddon>
-    <TaxonomyAddon>
+	<TaxonomyAddon>
       <Taxonomy>currency-2012-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>currency-doc-2012-01-31.xml</string>
@@ -64,13 +51,14 @@
         <string>currency-doc-2014-01-31.xml</string>
       </DefinitionFiles>
       <ReferenceFiles/>
-    </TaxonomyAddon><TaxonomyAddon>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>currency-2016-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>currency-doc-2016-01-31.xml</string>
       </DefinitionFiles>
       <ReferenceFiles/>
-    </TaxonomyAddon>
+    </TaxonomyAddon>	
     <TaxonomyAddon>
       <Taxonomy>dei-2009-01-31.xsd</Taxonomy>
       <DefinitionFiles>
@@ -117,15 +105,6 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
-      <Taxonomy>exch-2009-01-31.xsd</Taxonomy>
-      <DefinitionFiles>
-        <string>exch-doc-2009-01-31.xml</string>
-      </DefinitionFiles>
-      <ReferenceFiles>
-        <string>exch-ref-2009-01-31.xml</string>
-      </ReferenceFiles>
-    </TaxonomyAddon>
-    <TaxonomyAddon>
       <Taxonomy>exch-2011-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>exch-doc-2011-01-31.xml</string>
@@ -161,7 +140,7 @@
         <string>exch-ref-2014-01-31.xml</string>
       </ReferenceFiles>
     </TaxonomyAddon>
-	<TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>exch-2015-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>exch-doc-2015-01-31.xml</string>
@@ -169,7 +148,8 @@
       <ReferenceFiles>
         <string>exch-ref-2015-01-31.xml</string>
       </ReferenceFiles>
-    </TaxonomyAddon><TaxonomyAddon>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>exch-2016-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>exch-doc-2016-01-31.xml</string>
@@ -177,7 +157,7 @@
       <ReferenceFiles>
         <string>exch-ref-2016-01-31.xml</string>
       </ReferenceFiles>
-    </TaxonomyAddon>
+    </TaxonomyAddon>	
     <TaxonomyAddon>
       <Taxonomy>invest-2011-01-31.xsd</Taxonomy>
       <DefinitionFiles>
@@ -311,13 +291,13 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
-      <Taxonomy>us-gaap-2016-01-31.xsd</Taxonomy>
+	<Taxonomy>us-gaap-2016-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>us-gaap-doc-2016-01-31.xml</string>
       </DefinitionFiles>
       <ReferenceFiles>
         <string>us-gaap-ref-2016-01-31.xml</string>
       </ReferenceFiles>
-    </TaxonomyAddon>
+    </TaxonomyAddon>	
   </TaxonomyList>
 </TaxonomyAddonManager>
