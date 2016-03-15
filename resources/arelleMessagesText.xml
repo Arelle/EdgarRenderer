@@ -668,7 +668,7 @@ Invalid entity identifier $(entityIdentifierName): $(entityIdentifer)
          level="error"
          module="ValidateFiling.py" line="454"
          args="documentType">
-Required context (no segment) not found for document type $(documentType).
+[cp-0519-Required-Context] Required context (no segment) not found for document type $(documentType).
 </message>
 
 <message code="EFM.6.05.20.missingAmendmentFlag"
