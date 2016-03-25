@@ -30,7 +30,7 @@ def mergeCountDicts(iterable, dictAttribute=None, key=None):
 
 def analyzeFactsInCubes(filing): # void
     controller = filing.controller
-    if not controller.auxMetadata: return
+    # run always (HF): if not controller.auxMetadata: return
     factCubeCount = controller.factCubeCount = defaultdict(lambda:0)
     factHasHtmlAnchor = controller.factHasHtmlAnchor = defaultdict(set)
     roleHasHtmlAnchor = controller.roleHasHtmlAnchor = defaultdict(set)

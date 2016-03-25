@@ -135,7 +135,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.4.0.0'
+VERSION = '3.4.0.3'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -267,7 +267,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict = defaultdict(lambda:None)
         self.defaultValueDict['abortOnMajorError'] = str(False)
         self.defaultValueDict['archiveFolder'] = 'Archive'
-        self.defaultValueDict['auxMetadata'] = str(True) # HF change to true default str(False)
+        self.defaultValueDict['auxMetadata'] = str(False)
         self.defaultValueDict['copyInlineFilesToOutput'] = str(False)
         self.defaultValueDict['copyXbrlFilesToOutput'] = str(False)
         self.defaultValueDict['zipXbrlFilesToOutput'] = str(False)
@@ -833,9 +833,9 @@ class EdgarRenderer(Cntlr.Cntlr):
                         IoManager.writeHtmlDoc(result, self.reportZip, self.reportsFolder, 'FilingSummary.htm')
                         self.renderedFiles.add("FilingSummary.htm")
                     self.logDebug("Write filing summary complete")
-                    if self.auxMetadata and filing.hasInlineReport: 
+                    if self.auxMetadata or filing.hasInlineReport: 
                         summary.writeMetaFiles()
-                    self.logDebug("Write meta files complete")
+                        self.logDebug("Write meta files complete")
                     if self.zipXbrlFilesToOutput and hasattr(filing, "accessionNumber"):
                         _fileName = filing.accessionNumber + "-xbrl.zip"
                         if not self.reportZip:

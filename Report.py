@@ -1088,7 +1088,7 @@ class Report(object):
         reportSummary.role = self.cube.linkroleUri
         reportSummary.logList = self.logList
         reportSummary.isUncategorized = self.cube.isUncategorizedFacts
-        if not self.controller.auxMetadata: return
+        # run always (HF): if not self.controller.auxMetadata: return
         reportSummary.firstAnchor = None
         reportSummary.uniqueAnchor = None
         reportSummary.htmlAnchors = self.controller.roleHasHtmlAnchor[self.cube.linkroleUri]
