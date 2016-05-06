@@ -232,7 +232,8 @@ class Summary(object):
                 reportDict = root['report'] = {}
                 isDefault = True
                 for i,r in enumerate(s.reportSummaryList):
-                    report = reportDict[r.htmlFileName[:-4]] = {}                    
+                    f = r.htmlFileName if r.htmlFileName is not None else r.xmlFileName
+                    report = reportDict[f[:-4]] = {}
                     report['role']=r.role
                     report['longName'] = r.longName
                     report['shortName'] = r.shortName
