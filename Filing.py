@@ -992,8 +992,10 @@ class StartEndContext(object):
             self.startTime = datetime.datetime.min
             self.endTime = datetime.datetime.max
         else:
-            self.label = (self.endTime - datetime.timedelta(days=1)).strftime('%b. %d, %Y')
-
+            endDateTime = self.endTime - datetime.timedelta(days=1)
+            abbr= '.'
+            if endDateTime.month == 5: abbr = ''
+            self.label = endDateTime.strftime('%b'+abbr+' %d, %Y')
             if self.startTime == None:
                 self.periodTypeStr = 'instant'
                 self.startTimePretty = None
@@ -1002,7 +1004,7 @@ class StartEndContext(object):
                 self.periodTypeStr = 'duration'
                 self.startTimePretty = (self.startTime).strftime('%Y-%m-%dT%H:%M:%S')
                 self.numMonths = self.startEndContextInMonths()
-            self.endTimePretty = (self.endTime - datetime.timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%S')
+            self.endTimePretty = endDateTime.strftime('%Y-%m-%dT%H:%M:%S')
 
     def startEndContextInMonths(self):
         modifiedEndTime = self.endTime + datetime.timedelta(days=15) # we add to it because it rounds down
