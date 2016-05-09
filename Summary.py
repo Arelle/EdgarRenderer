@@ -34,19 +34,27 @@ def analyzeFactsInCubes(filing): # void
     factCubeCount = controller.factCubeCount = defaultdict(lambda:0)
     factHasHtmlAnchor = controller.factHasHtmlAnchor = defaultdict(set)
     roleHasHtmlAnchor = controller.roleHasHtmlAnchor = defaultdict(set)
-    for cube in filing.cubeDict.values():
-        for factMembership in cube.factMemberships:
-            f = factMembership[0]
-            factCubeCount[f] += 1 # count how many cubes each fact appeared in.
-            if f.concept.isTextBlock:
-                for e in f.iter('*'): # for some reason iter('a') does not work.
-                    if e.localName=='a' and \
-                        not 'href' in e.attrib and \
-                        ('id' in e.attrib \
-                            or 'name' in e.attrib):
-                            atts = e.elementAttributesStr
-                            roleHasHtmlAnchor[cube.linkroleUri].add((str(f.qname),f.contextID,f.xmlLang,atts))
-                            factHasHtmlAnchor[f].add((f,cube,atts,e.sourceline))
+    for role,cube in filing.cubeDict.items():
+        for embedding in cube.embeddingList:
+            report = embedding.report
+            if report is None: continue
+            for row in report.rowList:
+                if row.isHidden: continue
+                for i, col in enumerate(report.colList):
+                    if col.isHidden: continue
+                    if row.cellList[i] is None: continue
+                    f = row.cellList[i].fact
+                    if f is not None:
+                        factCubeCount[f] += 1 # count how many cubes each fact rendered in, for inline navigation.
+                        if f.concept.isTextBlock:
+                            for e in f.iter('*'): # for some reason iter('a') does not work.
+                                if e.localName=='a' and \
+                                    not 'href' in e.attrib and \
+                                    ('id' in e.attrib \
+                                        or 'name' in e.attrib):
+                                        atts = e.elementAttributesStr
+                                        roleHasHtmlAnchor[cube.linkroleUri].add((str(f.qname),f.contextID,f.xmlLang,atts))
+                                        factHasHtmlAnchor[f].add((f,cube,atts,e.sourceline))
     messages = []
     for s in factHasHtmlAnchor.values():
         for v in s:
