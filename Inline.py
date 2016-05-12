@@ -83,6 +83,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
         cntlr.logTrace(_("No Inline XBRL document or manifest."))
         return
     modelDocument = modelXbrl.modelDocument
+    saveTargetPath = None
     if ((options.saveTargetFiling or options.saveTargetInstance) and
         (cntlr.reportZip or cntlr.reportsFolder is not None)):
         if options.saveTargetFiling:
@@ -109,7 +110,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
         if cntlr.reportZip:
             zipStream = io.BytesIO()
             filingZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
-        elif cntlr.reportsFolder is not None:
+        elif cntlr.reportsFolder is not None and saveTargetPath:
             filingZip = zipfile.ZipFile(saveTargetPath, mode='w', compression=zipfile.ZIP_DEFLATED, allowZip64=False)
 
         filingFiles = set()
@@ -137,9 +138,9 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
                 filingZip.writestr(modelDocument.relativeUri(refFile), fileStream.read())
                 fileStream.close()
      
-    if filingZip:          
+    if options.saveTargetFiling and filingZip:          
         filingZip.close()
-    if cntlr.reportZip:
+    if cntlr.reportZip and saveTargetPath:
         zipStream.seek(0)
         cntlr.reportZip.writestr(saveTargetPath, zipStream.read())
         zipStream.close()

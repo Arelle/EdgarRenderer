@@ -797,7 +797,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                     for filename in set(inputsToCopyToOutputList): # set() to deduplicate if multiple references
                         file = filesource.file(os.path.join(_xbrldir, filename), binary=True)[0]  # returned in a tuple
                         if self.reportZip:
-                            self.reportZip.writestr(filename, file.read())
+                            if filename not in self.reportZip.namelist():
+                                self.reportZip.writestr(filename, file.read())
                         elif self.reportsFolder is not None:
                             target = join(self.reportsFolder, filename)
                             if exists(target): remove(target)
@@ -836,8 +837,11 @@ class EdgarRenderer(Cntlr.Cntlr):
                     if self.auxMetadata or filing.hasInlineReport: 
                         summary.writeMetaFiles()
                         self.logDebug("Write meta files complete")
-                    if self.zipXbrlFilesToOutput and hasattr(filing, "accessionNumber"):
-                        _fileName = filing.accessionNumber + "-xbrl.zip"
+                    if self.zipXbrlFilesToOutput and (hasattr(filing, "accessionNumber") or filing.entrypointfiles):
+                        if hasattr(filing, "accessionNumber"):
+                            _fileName = filing.accessionNumber + "-xbrl.zip"
+                        else:
+                            _fileName = os.path.splitext(os.path.basename(filing.entrypointfiles[0]["file"]))[0] + ".zip"
                         if not self.reportZip:
                             xbrlZip = zipfile.ZipFile(os.path.join(self.reportsFolder, _fileName), mode='w', compression=zipfile.ZIP_DEFLATED, allowZip64=False)
                         else:
@@ -846,9 +850,10 @@ class EdgarRenderer(Cntlr.Cntlr):
                         for report in filing.reports:
                             _xbrldir = os.path.dirname(report.filepath)
                             for reportedFile in sorted(report.reportedFiles):
-                                fileStream = filesource.file(os.path.join(_xbrldir, reportedFile), binary=True)[0]  # returned in a tuple
-                                xbrlZip.writestr(reportedFile, fileStream.read())
-                                fileStream.close()
+                                if reportedFile not in xbrlZip.namelist():
+                                    fileStream = filesource.file(os.path.join(_xbrldir, reportedFile), binary=True)[0]  # returned in a tuple
+                                    xbrlZip.writestr(reportedFile, fileStream.read())
+                                    fileStream.close()
                             filesource.close()
                         xbrlZip.close()
                         if self.reportZip:
