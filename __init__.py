@@ -135,7 +135,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.4.0.3'
+VERSION = '3.5.0.1'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
