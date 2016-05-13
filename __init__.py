@@ -693,16 +693,18 @@ class EdgarRenderer(Cntlr.Cntlr):
                 self.reportsFolder = os.path.join(self.processingFolder, self.initialReportsFolder)
             IoManager.handleFolder(self, self.reportsFolder, True, self.totalClean)
         self.renderedFiles = report.renderedFiles # report-level rendered files
-        if report.basename.endswith(".xml"):
-            self.instanceList.append(report.basename)
-        elif report.basename.endswith(".htm"):
-            self.inlineList.append(report.basename)
+        if report.isInline:
+            if report.basename not in self.inlineList:
+                self.inlineList.append(report.basename)
+        elif report.basename.endswith(".xml"):
+            if report.basename not in self.instanceList:          
+                self.instanceList.append(report.basename)
         for reportedFile in sorted(report.reportedFiles):
             if Utils.isImageFilename(reportedFile):
                 self.supplementalFileList.append(reportedFile)
                 self.supplementList.append(reportedFile)
-            elif reportedFile.endswith(".htm"):
-                self.inlineList.append(reportedFile)
+            #elif reportedFile.endswith(".htm"): # the non-inline primary document isn't known to Arelle yet in EDGAR
+            #    self.inlineList.append(reportedFile)
             elif reportedFile != report.basename:
                 self.otherXbrlList.append(reportedFile)
         RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
@@ -809,7 +811,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 
                 # temporary work-around to create SDR summaryDict
                 if not self.sourceDict and any(
-                        report.documentType and report.documentType.endswith(" SDR") 
+                        report.documentType # HF: believe condition wrong: and report.documentType.endswith(" SDR") 
                         for report in filing.reports):
                     for report in filing.reports:
                         if report.isInline:
