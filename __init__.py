@@ -150,6 +150,8 @@ from os import getcwd, remove, removedirs
 from os.path import join, isfile, exists, dirname, basename, isdir
 from optparse import OptionParser, SUPPRESS_HELP
 
+MODULENAME = os.path.basename(os.path.dirname(__file__))
+
 # Helper functions
 
 # def linenum():
@@ -1011,7 +1013,7 @@ class EdgarRenderer(Cntlr.Cntlr):
 
 
     
-    def addToLog(self, message, messageArgs={}, messageCode='error', file=basename(__file__), level=logging.DEBUG):
+    def addToLog(self, message, messageArgs={}, messageCode='error', file=MODULENAME, level=logging.DEBUG):
         # Master log and error/warning msg handler            
         messageDict = {'fatal':logging.FATAL
                        , 'error':logging.ERROR
@@ -1040,10 +1042,10 @@ class EdgarRenderer(Cntlr.Cntlr):
             
     # Lowercase tokens apparently write to standard output??
     
-    def logTrace(self, message, messageArgs={}, file=basename(__file__)):
+    def logTrace(self, message, messageArgs={}, file=MODULENAME):
         self.addToLog(str(message), messageArgs=messageArgs, file=file, level=logging.NOTSET, messageCode='trace')
 
-    def logDebug(self, message, messageArgs={}, file=basename(__file__), messageCode='debug'):
+    def logDebug(self, message, messageArgs={}, file=MODULENAME, messageCode='debug'):
         self.addToLog(str(message), messageArgs=messageArgs, file=file, level=logging.DEBUG, messageCode=messageCode)
 
     def logInfo(self, message, messageArgs={}, file=None, messageCode='info'):

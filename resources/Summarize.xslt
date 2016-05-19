@@ -137,6 +137,7 @@
 					var filesummaryUrl = url_path+"FilingSummary.xml";
 		  </xsl:text>
 		  <xsl:text>var reports = new Array();</xsl:text>
+		  <xsl:text>var default_rpt = 1;</xsl:text>
           <!--
 		  <xsl:apply-templates mode="reportarray" select="MyReports/Report"/>
           <xsl:if test="$nlogs > 0"><xsl:text>
@@ -262,18 +263,10 @@
    		    var riskFlag = false;
             var risk = "http://xbrl.sec.gov/rr/";
 
-			if(myreports.length>0){
-                // Looking for Risk Return filing
-                myreports.each(function(idx,report){
-                    var riskText = $(report).find("Role")
-					.text().match('^http://xbrl.sec.gov/rr/');
-
-                    if(riskText !== null && riskText.length>0){
-                        riskFlag = true;
-                        return false;
-                    }
-                });
-            }
+            var risk = /^http:\/\/xbrl.sec.gov\/rr/g;
+			riskFlag = $(myreports).find('Role').filter(function(){
+				return risk.test(this.textContent);
+			}).length > 0;
 
             $(myreports[0]).attr("instance");
             var menu = new Menu(riskFlag);
@@ -282,9 +275,13 @@
             reports.push("");
 
 			var instance='';
+			var count_rpt = 0;
 			myreports.each(function(idx,report){
 				var longName='',shortName='',role='';
-
+				count_rpt += 1;
+                if ($(report).find("IsDefault").text().toLowerCase()==='true') {
+                    default_rpt = count_rpt;
+                }
 				longName = $(report).find("LongName").text();
 				role = $(report).find("Role").text()
 				shortName = $(report).find("ShortName").text()
@@ -301,7 +298,7 @@
 					xbrlReportFiles[idx]="All";
 				 }
 
-				if (true && report.hasAttribute("instance")) {
+				if (true && report.getAttribute("instance")!==null) {
 					 var s = report.getAttribute("instance");
 					 if (s !== instance) { // we just found a new instance in this list
 						 instance = s;
@@ -639,7 +636,7 @@
 				+reports[1]+" from opening.");
 		   }else{
 			 //loadFilingSummaryDoc(fileSummaryUrl);
-			 loadReport(1);
+			 loadReport(default_rpt);
 		   }
 		}
 
