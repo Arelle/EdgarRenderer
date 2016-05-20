@@ -9,9 +9,9 @@
         include/interactive.css
         include/report.css
         include/print.css
-        Images/reports.gif
+        images/reports.gif
      ix files are part of tomcat workstation's web content of ixviewer directory
-	ixviewer/index.html
+	ixviewer/ix.html
 	ixviewer/css/app.css
 	ixviewer/css/bootstrap/bootstrap.css.map
 	ixviewer/css/bootstrap/bootstrap.min.css
@@ -61,6 +61,13 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
   <xsl:output encoding="UTF-8" indent="yes" method="html" doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"/>
   <xsl:param name="xslt">http://www.sec.gov/include/InstanceReport.xslt</xsl:param>
+  <!-- wch 5/20/2016 parameterized stylesheet -->
+  <xsl:param name="accessionNumber">PROVIDED-BY-ARELLE-FILE-ARGUMENT-OBJECT</xsl:param>
+  <xsl:variable name="fetchprefix"><![CDATA[../DisplayDocument.do?step=docOnly&accessionNumber=]]></xsl:variable>
+  <xsl:variable name="fetchprefixquoted"><![CDATA[../DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3F]]></xsl:variable>
+  <xsl:variable name="fetchsuffix"><![CDATA[&interpretedFormat=true&redline=true&filename=]]></xsl:variable>  
+  <xsl:variable name="fetchsuffixquoted"><![CDATA[%26interpretedFormat%3Dtrue%26redline%3Dtrue%26filename%3F]]></xsl:variable>
+  <xsl:variable name="fetchraw"><![CDATA[&interpretedFormat=false&redline=true&filename=]]></xsl:variable>
   <xsl:key name="keyParent" match="Report" use="ParentRole"/>
   <xsl:variable name="majorversion" select="substring-before(/FilingSummary/Version,'.')"/>
   <xsl:variable name="nreports" select="count(/FilingSummary/MyReports/Report)"/>
@@ -190,7 +197,9 @@
           <xsl:text>var InstanceReportXslt = "</xsl:text>
           <xsl:value-of select="$xslt"/>
           <xsl:text>"; var InstanceReportXsltDoc = null; </xsl:text>
-          <xsl:text>var accessionNumber = "</xsl:text><xsl:value-of select="$accessionNumber"/><xsl:text>"; </xsl:text>
+          <xsl:text>var accessionNumber = "</xsl:text><xsl:value-of select="$accessionNumber"/><xsl:text>";</xsl:text>
+          <xsl:text>var fetchprefix = "</xsl:text><xsl:value-of select="$fetchprefix"/><xsl:text>";</xsl:text>
+          <xsl:text>var fetchsuffix = "</xsl:text><xsl:value-of select="$fetchsuffix"/><xsl:text>";</xsl:text>
           <xsl:text>var reports = new Array();</xsl:text>
           <xsl:apply-templates mode="reportarray" select="MyReports/Report"/>
           <xsl:if test="$nlogs > 0"><xsl:text>
@@ -219,15 +228,14 @@
    }
    
    function fixSrcAttr(src) {
-      var url_path = "DisplayDocument.do?step=docOnly&accessionNumber=" + accessionNumber +
-               		 "&interpretedFormat=true&redline=true&filename=";
+      var url_path = fetchprefix + accessionNumber + fetchsuffix;
       var uri = src.substr(0,5);
       // No change is needed if the 'src' attribute contains an embedded image
       if (uri == 'data:') {
          return src;
       }
       // EDGAR no change if already a workstation database query format
-      if (src.substr(0,19) == "DisplayDocument.do?") {
+      if (src.indexOf("DisplayDocument.do")>0) {
          return src;
       }
       // Absolute URL on EDGAR website is unchanged
@@ -245,11 +253,9 @@
    function getReport(url, xsl_url) {
       if (xsl_url == null) { xsl_url = InstanceReportXslt; }
       var ext = url.substring(url.lastIndexOf('.')+1, url.length);
-      /* EDGAR Workstation requires database query to obtain a submission rendered file */
       var _url;
       if (ext == 'htm') {
-	  _url = "DisplayDocument.do?step=docOnly&accessionNumber=" + accessionNumber +
-                 "&interpretedFormat=true&redline=true&filename=" + url;
+	    _url = fetchprefix + accessionNumber + fetchsuffix + url;
           $.ajax({
           type: "GET",
           url: _url,
@@ -260,8 +266,7 @@
               }
           });            
       } else {
-	  _url = "DisplayDocument.do?step=docOnly&accessionNumber=" + accessionNumber +
-                 "&interpretedFormat=false&redline=true&filename=" + url; //causes HTML wrapping of XML
+	  _url = fetchprefix + accessionNumber + fetchraw + url; //causes HTML wrapping of XML
           $.ajax({
           type: "GET",
           url: _url,
@@ -345,8 +350,7 @@
          if (reports[idx].indexOf('FilingSummary.xml') > -1) {
             unHighlightAllMenuItems();
             /* EDGAR Workstation requires database query to obtain a submission rendered file */
-            xsl_url = "DisplayDocument.do?step=docOnly&accessionNumber=" + accessionNumber +
-                      "&interpretedFormat=true&redline=true&filename=RenderingLogs.xslt";
+            xsl_url = fetchprefix + accessionNumber + fetchsuffix + 'RenderingLogs.xslt";
          } 
          if (reports[idx] == 'all') {
             highlightAllMenuItems();
@@ -439,15 +443,12 @@
         <div>
           <table>
             <tr>
-              <!-- EDGAR Workstation requires database query to obtain a submission rendered file -->
               <td colspan="2">
                  <a class="xbrlviewer" style="color: black; font-weight: bold;"
                     href="javascript:window.print();">Print Document</a><xsl:if test="not($isrr)">&#160;<a
                        class="xbrlviewer">
                   <xsl:attribute name="href">
-                    <xsl:text>DisplayDocument.do?step=docOnly&amp;accessionNumber=</xsl:text>
-                    <xsl:value-of select="$accessionNumber"/>
-                    <xsl:text>&amp;interpretedFormat=true&amp;redline=true&amp;filename=Financial_Report.xlsx</xsl:text>
+                    <xsl:value-of select="concat($fetchprefix,$accessionNumber,$fetchsuffix,'Financial_Report.xlsx')"/>
                   </xsl:attribute>View Excel Document</a></xsl:if></td>
             </tr>
             <tr>
@@ -493,7 +494,7 @@
                 <xsl:text>javascript:loadReport(</xsl:text>
                 <xsl:value-of select="$nreports"/>
                 <xsl:text>)</xsl:text>
-              </xsl:attribute><img src="Images/reports.gif" border="0" height="12" width="9" alt="Reports"/>All Reports</a>
+              </xsl:attribute><img src="images/reports.gif" border="0" height="12" width="9" alt="Reports"/>All Reports</a>
           </li>
         </xsl:if>
         <xsl:if test="$nlogs > 0">
@@ -502,7 +503,7 @@
                 <xsl:text>javascript:loadReport(</xsl:text>
                 <xsl:value-of select="$nreports + $nlogs "/>
                 <xsl:text>)</xsl:text>
-              </xsl:attribute><img src="Images/reports.gif" border="0" height="12" width="9" alt="Logs"/>Rendering Log</a>
+              </xsl:attribute><img src="images/reports.gif" border="0" height="12" width="9" alt="Logs"/>Rendering Log</a>
           </li>
         </xsl:if>
       </xsl:when>
@@ -561,12 +562,13 @@
                 <xsl:choose>
                   <xsl:when test="$instance_is_inline = 'true'">
                     <xsl:comment>EDGAR workstation requires escaped database query for document retrieval</xsl:comment>
-                    <xsl:variable name="htmUrl">DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D<xsl:value-of select="$accessionNumber"/>%26interpretedFormat%3Dtrue%26redline%3Dtrue%26filename%3D<xsl:value-of select="($original)"/></xsl:variable>
-                    <xsl:variable name="metalinksUrl">DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D<xsl:value-of select="$accessionNumber"/>%26interpretedFormat%3Dtrue%26redline%3Dtrue%26filename%3DMetaLinks.json</xsl:variable>
-                    <a href="ixviewer/ix.html?xbrl=true&amp;doc={$htmUrl}&amp;metalinks={$metalinksUrl}"><xsl:value-of select="$doctype"/></a>
+                    <xsl:variable name="htmUrl" select="concat($fetchprefixquoted,$accessionNumber,$fetchsuffixquoted,$original)"/>
+                    <xsl:variable name="metalinksUrl" select="concat($fetchprefixquoted,$accessionNumber,$fetchsuffixquoted,'MetaLinks.json')"/>
+                    
+                    <a href="ixviewer/ix.html&amp;xbrl=true&amp;doc={$htmUrl}&amp;metalinks={$metalinksUrl}"><xsl:value-of select="$doctype"/></a>
                   </xsl:when>
                   <xsl:otherwise>
-                    <xsl:variable name="htmUrl">DisplayDocument.do?step=docOnly&amp;accessionNumber=<xsl:value-of select="$accessionNumber"/>&amp;interpretedFormat=true&amp;redline=true&amp;filename=<xsl:value-of select="($original)"/></xsl:variable>
+                    <xsl:variable name="htmUrl" select="concat($fetchprefix,$accessionNumber,$fetchsuffix,$original)"/>
                     <a href="{$htmUrl}"><xsl:value-of select="$doctype"/></a>
                   </xsl:otherwise>
                 </xsl:choose>                
@@ -768,43 +770,4 @@
     <xsl:value-of select="string-length($p3) &gt; 0"/>
   </xsl:template>
   
-  <!--
-  <xsl:template name="MenuCategory">
-    <xsl:param name="CatNum"/>
-    <xsl:param name="CatName"/>
-    <xsl:variable name="MenuCategories" select="count(Report[MenuCategory])"/>
-    <xsl:choose>
-      <xsl:when test="$MenuCategories=0"/>
-      <xsl:when test="count(Report[MenuCategory=$CatName and string-length(ParentRole)=0])>0">
-        <li class="accordion">
-          <a id="menu_cat{$CatNum}" href="#">
-            <xsl:value-of select="$CatName"/>
-          </a>
-          <ul>
-            <xsl:for-each select="Report[Role]">
-              <xsl:if test="string-length(ParentRole)=0">
-                <xsl:call-template name="MenuItem">
-                  <xsl:with-param name="Pos" select="position()"/>
-                  <xsl:with-param name="Cat" select="$CatName"/>
-                </xsl:call-template>
-              </xsl:if>
-            </xsl:for-each>
-          </ul>
-        </li>
-      </xsl:when>
-    </xsl:choose>
-  </xsl:template>
-
-  <xsl:template name="DrillUp">
-    <xsl:param name="Pos" select="position()"/>
-    <a>
-      <xsl:attribute name="href">
-        <xsl:text>javascript:loadReport(</xsl:text>
-        <xsl:value-of select="$Pos"/>
-        <xsl:text>);</xsl:text>
-      </xsl:attribute>up</a>
-  </xsl:template>
-  <xsl:template name="DrillDowns">
-  </xsl:template>
-  -->
 </xsl:stylesheet>
