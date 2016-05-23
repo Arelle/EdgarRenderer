@@ -64,9 +64,9 @@
   <!-- wch 5/20/2016 parameterized stylesheet -->
   <xsl:param name="accessionNumber">PROVIDED-BY-ARELLE-FILE-ARGUMENT-OBJECT</xsl:param>
   <xsl:variable name="fetchprefix"><![CDATA[../DisplayDocument.do?step=docOnly&accessionNumber=]]></xsl:variable>
-  <xsl:variable name="fetchprefixquoted"><![CDATA[../DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3F]]></xsl:variable>
+  <xsl:variable name="fetchprefixquoted"><![CDATA[../DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D]]></xsl:variable>
   <xsl:variable name="fetchsuffix"><![CDATA[&interpretedFormat=true&redline=true&filename=]]></xsl:variable>  
-  <xsl:variable name="fetchsuffixquoted"><![CDATA[%26interpretedFormat%3Dtrue%26redline%3Dtrue%26filename%3F]]></xsl:variable>
+  <xsl:variable name="fetchsuffixquoted"><![CDATA[%26interpretedFormat%3Dtrue%26redline%3Dtrue%26filename%3D]]></xsl:variable>
   <xsl:variable name="fetchraw"><![CDATA[&interpretedFormat=false&redline=true&filename=]]></xsl:variable>
   <xsl:key name="keyParent" match="Report" use="ParentRole"/>
   <xsl:variable name="majorversion" select="substring-before(/FilingSummary/Version,'.')"/>
