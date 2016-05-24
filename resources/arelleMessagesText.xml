@@ -2039,7 +2039,7 @@ Please ensure that you comply with the document type and naming provided.
          level="warning"
          module="EdgarRenderer/Filing.py" line="949"
          args="fact value preferredLabel preferredLabelValue startOrEnd date linkrole linkroleDefinition linkroleName">
-[rq-2602-Duration-Without-Matching-Instant] In ''$(linkroleName)'', fact $(fact) with value $(value) and preferred label $(preferredLabelValue), was not shown because there are no facts in a duration $(startOrEnd) at $(date). Change the preferred label role or add facts.
+[rq-2602-Instant-Without-Matching-Duration] In ''$(linkroleName)'', fact $(fact) with value $(value) and preferred label $(preferredLabelValue), was not shown because there are no facts in a duration $(startOrEnd) at $(date). Change the preferred label role or add facts.
 </message>
 
 <message code="EFM.6.26.03"
