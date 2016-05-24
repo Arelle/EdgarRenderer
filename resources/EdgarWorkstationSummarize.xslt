@@ -9,7 +9,7 @@
         include/interactive.css
         include/report.css
         include/print.css
-        images/reports.gif
+        Images/reports.gif
      ix files are part of tomcat workstation's web content of ixviewer directory
 	ixviewer/ix.html
 	ixviewer/css/app.css
@@ -494,7 +494,7 @@
                 <xsl:text>javascript:loadReport(</xsl:text>
                 <xsl:value-of select="$nreports"/>
                 <xsl:text>)</xsl:text>
-              </xsl:attribute><img src="images/reports.gif" border="0" height="12" width="9" alt="Reports"/>All Reports</a>
+              </xsl:attribute><img src="Images/reports.gif" border="0" height="12" width="9" alt="Reports"/>All Reports</a>
           </li>
         </xsl:if>
         <xsl:if test="$nlogs > 0">
@@ -503,7 +503,7 @@
                 <xsl:text>javascript:loadReport(</xsl:text>
                 <xsl:value-of select="$nreports + $nlogs "/>
                 <xsl:text>)</xsl:text>
-              </xsl:attribute><img src="images/reports.gif" border="0" height="12" width="9" alt="Logs"/>Rendering Log</a>
+              </xsl:attribute><img src="Images/reports.gif" border="0" height="12" width="9" alt="Logs"/>Rendering Log</a>
           </li>
         </xsl:if>
       </xsl:when>
