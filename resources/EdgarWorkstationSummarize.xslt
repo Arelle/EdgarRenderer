@@ -63,8 +63,8 @@
   <xsl:param name="xslt">http://www.sec.gov/include/InstanceReport.xslt</xsl:param>
   <!-- wch 5/20/2016 parameterized stylesheet -->
   <xsl:param name="accessionNumber">PROVIDED-BY-ARELLE-FILE-ARGUMENT-OBJECT</xsl:param>
-  <xsl:variable name="fetchprefix"><![CDATA[../DisplayDocument.do?step=docOnly&accessionNumber=]]></xsl:variable>
-  <xsl:variable name="fetchprefixquoted"><![CDATA[../DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D]]></xsl:variable>
+  <xsl:variable name="fetchprefix"><![CDATA[DisplayDocument.do?step=docOnly&accessionNumber=]]></xsl:variable>
+  <xsl:variable name="fetch_ix_prefixquoted"><![CDATA[../DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D]]></xsl:variable>
   <xsl:variable name="fetchsuffix"><![CDATA[&interpretedFormat=true&redline=true&filename=]]></xsl:variable>  
   <xsl:variable name="fetchsuffixquoted"><![CDATA[%26interpretedFormat%3Dtrue%26redline%3Dtrue%26filename%3D]]></xsl:variable>
   <xsl:variable name="fetchraw"><![CDATA[&interpretedFormat=false&redline=true&filename=]]></xsl:variable>
@@ -350,7 +350,7 @@
          if (reports[idx].indexOf('FilingSummary.xml') > -1) {
             unHighlightAllMenuItems();
             /* EDGAR Workstation requires database query to obtain a submission rendered file */
-            xsl_url = fetchprefix + accessionNumber + fetchsuffix + 'RenderingLogs.xslt";
+            xsl_url = fetchprefix + accessionNumber + fetchsuffix + 'RenderingLogs.xslt';
          } 
          if (reports[idx] == 'all') {
             highlightAllMenuItems();
@@ -475,7 +475,7 @@
 
   <xsl:template name="menuGroups">
     <!-- tail recursive template over myReports, current context FilingSummary -->
-    <!-- note that the thing callsed menu_cat0, menu_cat1, refers only to the numerical sequence -->
+    <!-- note that the thing calls menu_cat0, menu_cat1, refers only to the numerical sequence -->
     <!-- the thing called menu_name refers to the symbolic name such as "Cover", "Notes", etc. -->
     <xsl:param name="depth"/>
     <xsl:param name="position"/>
@@ -562,10 +562,9 @@
                 <xsl:choose>
                   <xsl:when test="$instance_is_inline = 'true'">
                     <xsl:comment>EDGAR workstation requires escaped database query for document retrieval</xsl:comment>
-                    <xsl:variable name="htmUrl" select="concat($fetchprefixquoted,$accessionNumber,$fetchsuffixquoted,$original)"/>
-                    <xsl:variable name="metalinksUrl" select="concat($fetchprefixquoted,$accessionNumber,$fetchsuffixquoted,'MetaLinks.json')"/>
-                    
-                    <a href="ixviewer/ix.html&amp;xbrl=true&amp;doc={$htmUrl}&amp;metalinks={$metalinksUrl}"><xsl:value-of select="$doctype"/></a>
+                    <xsl:variable name="htmUrl" select="concat($fetch_ix_prefixquoted,$accessionNumber,$fetchsuffixquoted,$original)"/>
+                    <xsl:variable name="metalinksUrl" select="concat($fetch_ix_prefixquoted,$accessionNumber,$fetchsuffixquoted,'MetaLinks.json')"/>
+                    <a href="ixviewer/ix.html?xbrl=true&amp;doc={$htmUrl}&amp;metalinks={$metalinksUrl}"><xsl:value-of select="$doctype"/></a>
                   </xsl:when>
                   <xsl:otherwise>
                     <xsl:variable name="htmUrl" select="concat($fetchprefix,$accessionNumber,$fetchsuffix,$original)"/>
