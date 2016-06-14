@@ -130,289 +130,15 @@
         <script type="text/javascript">
           <xsl:text>var InstanceReportXslt = "</xsl:text>
           <xsl:value-of select="$xslt"/>
-		  <xsl:text>";var renderingLogs = </xsl:text>
-          <xsl:value-of select="$nlogs"/>
-          <xsl:text>; var InstanceReportXsltDoc = null;
-					var url_path = '';
-					var filesummaryUrl = url_path+"FilingSummary.xml";
-		  </xsl:text>
-		  <xsl:text>var reports = new Array();</xsl:text>
-		  <xsl:text>var default_rpt = 1;</xsl:text>
-          <!--
-		  <xsl:apply-templates mode="reportarray" select="MyReports/Report"/>
+          <xsl:text>"; var InstanceReportXsltDoc = null; </xsl:text>
+          <xsl:text>var reports = new Array();</xsl:text>
+          <xsl:apply-templates mode="reportarray" select="MyReports/Report"/>
           <xsl:if test="$nlogs > 0"><xsl:text>
-			reports[</xsl:text><xsl:value-of select="$nreports + $nlogs "/>
-                        <xsl:text>]="FilingSummary.xml";</xsl:text></xsl:if>
-			-->
-			<![CDATA[
+        reports[</xsl:text><xsl:value-of select="$nreports + $nlogs "/>
+                        <xsl:text>]="FilingSummary.xml";</xsl:text></xsl:if><![CDATA[
           var parentreport = new Array();//]]>
                     <xsl:apply-templates mode="parentreportarray" select="MyReports/Report"/>                    
-                    <xsl:text disable-output-escaping="yes">
-		<![CDATA[
-
-	function findTextForRegex(name,regex) {
-       return name.match(regex);
-   }
-
-   function Menu(riskFlag) {
-
-          this.prevCategory = -1;
-          this.prevLongName;
-           	if(riskFlag){
-           	    this.coverCategory = 7;
-           	}else{
-           	    this.coverCategory = 0;
-           	}
-          this.cats = [];
-          this.list = [];
-
-            //initialize static variables
-          this.titles = ["Cover", "Financial Statements",
-                          "Notes to Financial Statements", "Accounting Policies",
-                          "Notes Tables", "Notes Details", "Other", "Risk Return Reports",
-                          "Uncategorized","",""];
-          this.parentheticalRegex = ".*\\-.+-.*Parenth.+";
-          this.policyRegex = ".*\\(.*Polic.*\\).*";
-          this.statementRegex = ".*\\s\\-\\sStatement\\s\\-\\s.*";
-          this.disclosureRegex = ".*\\s\\-\\sDisclosure\\s\\-\\s.*";
-          this.tableRegex = ".*\\(\\s*Table.*\\).*";
-          this.uncategorizedRegex = ".*Uncategorized.*";
-          this.riskReturnRegex = ".*://xbrl\\.sec\\.gov\\/rr.*";
-          this.detailRegex = ".*\\(\\s*Detail.*\\).*";
-      }
-
-      Menu.prototype = {
-
-           addToList: function(role,longName,shortName,isInline) {
-            var categoryIdx = -1;
-            if (role == null) {
-                // special case of a file entry.
-                // shortName is the filename of the source file in the previewer, since we don't know doctype.
-                longName = "~"; // character code 126, sure to be gt any longname.
-                categoryIdx = isInline?9:10;
-            } else if (findTextForRegex(role,this.uncategorizedRegex) || findTextForRegex(longName,this.uncategorizedRegex)) {
-                // Assign to 'Uncategorized' category
-                categoryIdx = 8;
-            } else if (findTextForRegex(role,this.riskReturnRegex)) {
-                // Assign to 'Risk Return Reports' category
-                categoryIdx = 7;
-            } else if (findTextForRegex(longName,this.detailRegex)) {
-                // Assign to 'Detail' category
-                categoryIdx = 5;
-            } else if (findTextForRegex(longName,this.tableRegex)) {
-                // Assign to 'Table' category
-                categoryIdx = 4;
-            } else if (findTextForRegex(longName,this.statementRegex) || findTextForRegex(longName,this.parentheticalRegex)) {
-                // Assign to 'Financial Statements' category
-                categoryIdx = 1;
-            } else if (findTextForRegex(longName,this.disclosureRegex) && findTextForRegex(longName,this.policyRegex)) {
-                // Assign to 'Policy' category
-                categoryIdx = 3;
-            } else if (this.prevLongName != null
-                    && this.prevLongName.toUpperCase()>longName.toUpperCase()) {
-                // Assign to 'Cover' category
-                categoryIdx = this.coverCategory;
-            } else if (this.prevCategory < 0) {
-                // Assign to 'Cover' category
-                categoryIdx = this.coverCategory;
-            } else if (this.prevCategory < 3) {
-                // Assign to 'Notes' category
-                categoryIdx = 2;
-            } else {
-                // Assign to 'Other' category
-                categoryIdx = 6;
-            }
-            if (categoryIdx !== this.prevCategory) {
-                this.cats.push(categoryIdx);
-                this.list.push([]);
-            }
-            this.list[this.list.length - 1].push(shortName);
-            this.prevCategory = categoryIdx;
-            this.prevLongName = longName;
-        },
-
-        add: function (child) {
-            this.children.push(child);
-        },
-
-        remove: function (child) {
-           var length = this.children.length;
-           for (var i = 0; i < length; i++) {
-               if (this.children[i] === child) {
-                   this.children.splice(i, 1);
-                   return;
-               }
-           }
-        },
-
-        get: function (i) {
-            return this.children[i];
-        },
-
-        hasChildren: function () {
-               return this.children.length > 0;
-        }
-      }
-
-     function buildMenu(filesummaryData){
-   	      //Process the xml to create Menu item
-
-   		    var myreports = $(filesummaryData).find("FilingSummary > MyReports > Report");
-   	        // Risk Flag
-   		    var role = "";
-   		    var riskFlag = false;
-            var risk = "http://xbrl.sec.gov/rr/";
-
-            var risk = /^http:\/\/xbrl.sec.gov\/rr/g;
-			riskFlag = $(myreports).find('Role').filter(function(){
-				return risk.test(this.textContent);
-			}).length > 0;
-
-            $(myreports[0]).attr("instance");
-            var menu = new Menu(riskFlag);
-            var xbrlReportNames=[],xbrlReportFiles=[];
-            var sourceFile = filesummaryData.getElementsByTagName("File");
-            reports.push("");
-
-			var instance='';
-			var count_rpt = 0;
-			myreports.each(function(idx,report){
-				var longName='',shortName='',role='';
-				count_rpt += 1;
-                if ($(report).find("IsDefault").text().toLowerCase()==='true') {
-                    default_rpt = count_rpt;
-                }
-				longName = $(report).find("LongName").text();
-				role = $(report).find("Role").text()
-				shortName = $(report).find("ShortName").text()
-				xbrlReportNames[idx] = shortName;
-
-				/* All - <xmlFilename/> and <HtmlFilename/>*/
-				if ("All Reports"!==shortName) {
-					if (report.getElementsByTagName("XmlFileName").length>0) {
-					   xbrlReportFiles[idx]=$(report.getElementsByTagName("XmlFileName")).text();
-					}else if (report.getElementsByTagName("HtmlFileName").length>0) {
-					   xbrlReportFiles[idx]=$(report.getElementsByTagName("HtmlFileName")).text();
-					}
-				 }else {
-					xbrlReportFiles[idx]="All";
-				 }
-
-				if (true && report.getAttribute("instance")!==null) {
-					 var s = report.getAttribute("instance");
-					 if (s !== instance) { // we just found a new instance in this list
-						 instance = s;
-						 var doctype = null,original = null;
-						 $(sourceFile).each(function(j,sourceNode){
-								var nt = $(sourceNode).text();
-							if (nt === instance) {
-								$(sourceNode.attributes).each(function(k,attribute){
-									if ("doctype" === attribute.name) {
-										doctype = attribute.nodeValue;
-									} else if ("original" === attribute.name) {
-										original = attribute.nodeValue;
-									}
-								});
-								if (doctype !== null && original !== null) {
-									 // a link to the inline original file goes here.
-									 menu.addToList(null,"",original,instance === original);
-								}
-							}
-						 });
-					 }
-				};
-
-				if (longName.length > 0 && xbrlReportNames[idx].length > 0) {
-					if (xbrlReportNames[idx]!=="All Reports") {
-					   if (riskFlag) {
-						  menu.addToList(risk, longName, xbrlReportNames[idx],false);
-					   }
-					   else {
-						  menu.addToList(role, longName, xbrlReportNames[idx],false);
-					   }
-					}
-				}
-
-				if ("All"!==xbrlReportFiles[idx]){
-					reports.push(url_path+xbrlReportFiles[idx]);
-				}
-			});
-
-			reports.push("all");
-			if(renderingLogs===1){
-				reports.push(filesummaryUrl);
-			}
-
-
-   			var menuTag = ' ' ,prevIdx = 0;count = 1
-            for(var i=0;i<menu.list.length;i++){
-                var tmpList = menu.list[i];
-                var idx = menu.cats[i];
-                if(tmpList.length>0){
-                    if(idx===9){  // top level link to inline file.
-                        menuTag = menuTag.concat('<li class="accordion');
-                        if(prevIdx !== 0){
-                            menuTag = menuTag.concat(' octave');
-                        }
-                        menuTag = menuTag.concat('" >').concat('<a target="new" href="ix?doc='+ url_path + tmpList[0]+'">'+tmpList[0]+'</a></li>');
-                    }else if(idx===10){   // top level link to non-inline file (the previewer never creates these; this is for symmetry with viewer.pl).
-                        menuTag = menuTag.concat('<li class="accordion');
-                        if(prevIdx !== 0){
-                            menuTag = menuTag.concat(' octave');
-                        }
-                        menuTag = menuTag.concat('" >').concat('<a target="new" href="/'+ url_path + tmpList[0]+'">'+tmpList[0]+'</a></li>');
-                    }else{
-                        menuTag = menuTag.concat('<li class="accordion');
-                        if(idx < prevIdx && prevIdx < 9){
-                            menuTag = menuTag.concat(' octave');
-                        }
-                        menuTag = menuTag.concat('" >').concat('<a id="menu_cat'+idx+'" href="#">'+menu.titles[idx]+'</a><ul>');
-                        $(tmpList).each(function(index,item){
-                            menuTag = menuTag.concat('<li class="accordion"><a class="xbrlviewer" onClick="javascript:highlight(this);" href="javascript:loadReport('+count+');">')
-                                      .concat(item+'</a></li>');
-                            count++;
-                        });
-                        menuTag = menuTag.concat('</ul></li>');
-
-                    }
-					prevIdx = idx;
-                }
-			}
-
-            /* If there was at least one report then show the 'All Reports' item */
-            if(count>1){
-                menuTag = menuTag.concat('<li class="accordion"><a href="javascript:loadReport('+count+');"><img src="images/reports.gif" border="0" height="12" width="9" alt="Reports" />All Reports</a></li>');
-                count++;
-            }
-
-            if(renderingLogs===1){
-                menuTag = menuTag.concat('<li class="accordion"><a href="javascript:loadReport('+count+');"><img src="images/reports.gif" border="0" height="12" width="9" alt="Logs" />Rendering Log</a></li>');
-            }
-
-			$("#menu").empty();
-   			$("#menu").append(menuTag)
-   			initMenu();
-      }
-
-      function loadFilingSummaryDoc(url) {
-         $.ajax({
-   		type: "GET",
-   		url: url,
-   		dataType: "xml",
-   		async: false,
-   		success: function(filesummaryData) {
-             if($(filesummaryData).find('Report')){
-                buildMenu(filesummaryData);
-             }
-   		},
-   		error: function(msg) {
-   			alert("Failed to process XML file:");
-			console.log("Failed to process the file:"+msg);
-   		}
-   		});
-
-    }
-
+                    <xsl:text disable-output-escaping="yes"><![CDATA[  
    function loadXmlDoc(url) {
       var doc;
       var jqxhr=$.ajax({type: "GET",
@@ -612,35 +338,16 @@
    window.onload = function () {
          if (window.location.href.substring(0,5)=='file:') {
           ableToOpenReportFiles = 0;
-          try {
-			$.ajax({
-			       type: "GET",
-				   url: filesummaryUrl,
-				   dataType: "xml",
-				   async:false,
-				   success: function (data) {
-						if (data != 0){
-							buildMenu(data);
-							ableToOpenReportFiles = 1;
-						}
-				   }
-			});
-          } catch (err) {
-			console.log(err);
-		  }
-
-		  if (ableToOpenReportFiles == 0) {
-				alert("In this browser environment, opening the url\n"
-				+window.location.href
-				+"\nprevents individual report files such as "
-				+reports[1]+" from opening.");
-		   }else{
-			 //loadFilingSummaryDoc(fileSummaryUrl);
-			 loadReport(default_rpt);
-		   }
-		}
-
-	}
+          try {$.ajax({type: "GET",url: reports[1],dataType: "text",async:false,
+              success: function (data) { if (data != 0) ableToOpenReportFiles = 1; }});
+          } catch (err) {}
+          if (ableToOpenReportFiles == 0) {
+            alert("In this browser environment, opening the url\n"
+            +window.location.href
+            +"\nprevents individual report files such as "
+            +reports[1]+" from opening.");}}
+      loadReport(1);
+   }
 ]]></xsl:text>
                 </script>
       </head>
@@ -763,7 +470,7 @@
               <li class="accordion octave">
                 <xsl:choose>
                   <xsl:when test="$instance_is_inline = 'true'">
-                    <a href="http://hq-dera-d44941:8080/vf/cbe/index.html?file={$original}&amp;xbrl=true"><xsl:value-of select="$doctype"/></a>
+                    <a href="ix.html?doc={$original}&amp;xbrl=true"><xsl:value-of select="$doctype"/></a>
                   </xsl:when>
                   <xsl:otherwise>
                     <a href="http://hq-dera-d44941:8080/vf/documents/{$original}"><xsl:value-of select="$doctype"/></a>

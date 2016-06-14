@@ -144,7 +144,7 @@ from arelle import (Cntlr, FileSource, ModelDocument, XmlUtil, Version, ModelVal
                     ViewFileFactList, ViewFileFactTable, ViewFileConcepts, ViewFileFormulae,
                     ViewFileRelationshipSet, ViewFileTests, ViewFileRssFeed, ViewFileRoleTypes)
 from . import RefManager, IoManager, Inline, Utils, Filing, Summary
-import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os, re, io
+import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os, re, io, tempfile
 from lxml import etree
 from os import getcwd, remove, removedirs
 from os.path import join, isfile, exists, dirname, basename, isdir
@@ -691,8 +691,17 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.setProcessingFolder(modelXbrl.fileSource, report.entryPoint.get("file"))
         # if not reportZip and reportsFolder is relative, make it relative to source file location (on first report)
         if not filing.reportZip and self.initialReportsFolder and len(filing.reports) == 1:
-            if not os.path.isabs(self.initialReportsFolder) and os.path.exists(self.processingFolder):
-                self.reportsFolder = os.path.join(self.processingFolder, self.initialReportsFolder)
+            if not os.path.isabs(self.initialReportsFolder):
+                # try input file's directory
+                if os.path.exists(self.processingFolder) and os.access(self.processingFolder, os.W_OK | os.X_OK):
+                    self.reportsFolder = os.path.join(self.processingFolder, self.initialReportsFolder)
+                else:
+                    _dir = modelXbrl.modelManager.cntlr.webCache.urlToCacheFilepath(self.processingFolder)
+                    # try cache directory locating reportsFolder where the entry point instance is in cache
+                    if os.path.exists(_dir) and os.access(_dir, os.W_OK | os.X_OK):
+                        self.reportsFolder = os.path.join(_dir, self.initialReportsFolder)
+                    else: # a temp directory
+                        self.reportsFolder = tempfile.mkdtemp(prefix="EdgarRenderer_") # Mac or Windows temp directory
             IoManager.handleFolder(self, self.reportsFolder, True, self.totalClean)
         self.renderedFiles = report.renderedFiles # report-level rendered files
         if report.isInline:
@@ -1090,7 +1099,7 @@ def edgarRendererGuiViewMenuExtender(cntlr, viewMenu, *args, **kwargs):
     cntlr.showFilingData = BooleanVar(value=cntlr.config.get("edgarRendererShowFilingData", True))
     cntlr.showFilingData.trace("w", setShowFilingData)
     erViewMenu.add_checkbutton(label=_("Show Filing Data"), underline=0, variable=cntlr.showFilingData, onvalue=True, offvalue=False)
-    cntlr.showTablesMenu = BooleanVar(value=cntlr.config.get("edgarRendererShowTablesMenu", False))
+    cntlr.showTablesMenu = BooleanVar(value=cntlr.config.get("edgarRendererShowTablesMenu", True))
     cntlr.showTablesMenu.trace("w", setShowTablesMenu)
     erViewMenu.add_checkbutton(label=_("Show Tables Menu"), underline=0, variable=cntlr.showTablesMenu, onvalue=True, offvalue=False)
 
@@ -1112,7 +1121,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             totalClean = True, # force clean output folder
             noEquity = None,
             auxMetadata = None,
-            copyInlineFilesToOutput = None,
+            copyInlineFilesToOutput = True, # needed for ixviewer
             copyXbrlFilesToOutput = None,
             zipXbrlFilesToOutput = None,
             includeLogsInSummary = None, # for GUI logger does not have buffered messages available, always no logs in output
@@ -1206,9 +1215,10 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
                 edgarRenderer.logDebug("Write {} complete".format("Rall.htm"))
             # display on web browser
             if cntlr.showFilingData.get():
+                from . import LocalViewer
+                _localhost = LocalViewer.init(cntlr, reportsFolder)
                 import webbrowser
-                webbrowser.open(url="file://{}/{}".format(
-                                      reportsFolder.replace("\\","/"), 
+                webbrowser.open(url="{}/{}".format(_localhost,
                                       ("FilingSummary.htm", "Rall.htm")[_combinedReports]))
 
 def testcaseVariationExpectedSeverity(modelTestcaseVariation, *args, **kwargs):
