@@ -11,7 +11,9 @@ End user support is by e-mail direct to SEC at: StructuredData@sec.gov
 
 Developer issue management is by the Jira Edgar Renderer project: https://arelle.atlassian.net/projects/ER
 
-This is the edgr1601 branch.  It is being tested for EDGAR Release 16.0.1.  It differs from the branch "edgr154" by inline XBRL features and itegration with Arelle user environments.  
+This is the edgr162 branch.  It is in production for EDGAR Release 16.2 as of Monday June 13, 2016. 
+
+(Commits to this branch after Monday June 13 implement interfaces for the "local viewer" capability for inline XBRL documents, for the ixviewer javascript features, when using Arelle by its GUI.  There have been no rendering behavior changes.)
 
 To debug under eclipse, check this project out under arelle's plugin directory or soft link from EdgarRenderer to the Arelle project src/arelle/plugin directory, e.g., under MacOS/Linux:
     ln -s {path to here}/EdgarRenderer {path to arelle project}/src/arelle/plugin
