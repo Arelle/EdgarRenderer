@@ -179,7 +179,7 @@ class XlWriter(object):
                             
                         # set style all at once (see http://openpyxl.readthedocs.org/en/latest/styles.html)
                         if (fontBold or wrapText or fmt != "General" or alignHorizontal != "general" or alignVertical != "bottom"):
-                            if openpyxl.__version__ >= "2.2.0":
+                            if getattr(openpyxl, "__version__", "unknown") >= "2.2.0":
                                 cell.font = openpyxl.styles.Font(bold=fontBold)
                                 cell.alignment = openpyxl.styles.Alignment(horizontal=alignHorizontal, vertical=alignVertical, wrap_text=wrapText)
                             else:
