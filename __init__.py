@@ -102,8 +102,10 @@ To run (as in EDGAR) with output report files added to the submission directory
    -f "/mydir/test/amd.zip" 
    -r "/mydir/test"  <<- the submission + output reports directory 
    --logFile logToBuffer or an specify an xml log file <<- required to save log messages into filing summary
-   --plugins 'EdgarRenderer|validate/EFM|transforms/SEC.py' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
-   --disclosureSystem efm-pragmatic 
+   --plugins 'EdgarRenderer' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
+   --disclosureSystem efm-pragmatic
+   
+   Note that the -r "out" directory is cleared on each run to assure no prior run files get inter 
    
 The filename parameter (-f) may be a JSON structure (as used in EDGAR itself) to pass in
 more information about the filing (see validate/EFM/__init__.py) such as:
