@@ -6,7 +6,7 @@ Data and content created by government employees within the scope of their emplo
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
-from arelle.webserver.bottle import Bottle, static_file, response
+from arelle.webserver.bottle import Bottle, static_file
 import os, threading, time, logging
 
 port = None
