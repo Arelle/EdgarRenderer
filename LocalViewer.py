@@ -6,7 +6,7 @@ Data and content created by government employees within the scope of their emplo
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
-from arelle.webserver.bottle import Bottle, static_file
+from arelle.webserver.bottle import Bottle, static_file, response
 import os, threading, time, logging
 
 port = None
@@ -36,7 +36,11 @@ def init(cntlr, reportsFolder): # returns browser root
             if _file.startswith("ixviewer/"): # really in ixviewer subtree
                 return static_file(_file[9:], root=reportsFolders[0])              
             if _report.isnumeric(): # in reportsFolder folder
-                return static_file(_file, root=reportsFolders[int(_report)])
+                return static_file(_file, root=reportsFolders[int(_report)],
+                                   # extra_headers modification to py-bottle
+                                   more_headers={'Cache-Control': 'no-cache, no-store, must-revalidate',
+                                                 'Pragma': 'no-cache',
+                                                 'Expires': '0'})
             return static_file(file, root="/") # probably can't get here unless path is wrong
         
         # start server
