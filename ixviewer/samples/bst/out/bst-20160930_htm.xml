@@ -1,0 +1,3405 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xbrl
+  xmlns="http://www.xbrl.org/2003/instance"
+  xmlns:bst="http://www.brightstar.com/20160930"
+  xmlns:dei="http://xbrl.sec.gov/dei/2014-01-31"
+  xmlns:iso4217="http://www.xbrl.org/2003/iso4217"
+  xmlns:link="http://www.xbrl.org/2003/linkbase"
+  xmlns:us-gaap="http://fasb.org/us-gaap/2016-01-31"
+  xmlns:xbrldi="http://xbrl.org/2006/xbrldi"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+    <link:schemaRef xlink:href="bst-20160930.xsd" xlink:type="simple"/>
+    <context id="HeavyEquipment_P3m20160930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">bst:HeavyEquipmentMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2016-07-01</startDate>
+            <endDate>2016-09-30</endDate>
+        </period>
+    </context>
+    <context id="Other_P3m20150930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">bst:OtherMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2015-07-01</startDate>
+            <endDate>2015-09-30</endDate>
+        </period>
+    </context>
+    <context id="Mainline_P3m20150930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">us-gaap:MainlineMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2015-07-01</startDate>
+            <endDate>2015-09-30</endDate>
+        </period>
+    </context>
+    <context id="ThreeMonthsEnded_2015-09-30">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+        </entity>
+        <period>
+            <startDate>2015-07-01</startDate>
+            <endDate>2015-09-30</endDate>
+        </period>
+    </context>
+    <context id="HeavyEquipment_P9m20160930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">bst:HeavyEquipmentMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2016-01-01</startDate>
+            <endDate>2016-09-30</endDate>
+        </period>
+    </context>
+    <context id="Cargo_P9m20160930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">bst:CargoMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2016-01-01</startDate>
+            <endDate>2016-09-30</endDate>
+        </period>
+    </context>
+    <context id="Regional_P9m20160930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">us-gaap:RegionalCarrierMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2016-01-01</startDate>
+            <endDate>2016-09-30</endDate>
+        </period>
+    </context>
+    <context id="Other_P9m20160930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">bst:OtherMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2016-01-01</startDate>
+            <endDate>2016-09-30</endDate>
+        </period>
+    </context>
+    <context id="Mainline_P9m20160930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">us-gaap:MainlineMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2016-01-01</startDate>
+            <endDate>2016-09-30</endDate>
+        </period>
+    </context>
+    <context id="NineMonthsEnded_2016-09-30">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+        </entity>
+        <period>
+            <startDate>2016-01-01</startDate>
+            <endDate>2016-09-30</endDate>
+        </period>
+    </context>
+    <context id="HeavyEquipment_P9m20150930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">bst:HeavyEquipmentMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2015-01-02</startDate>
+            <endDate>2015-09-30</endDate>
+        </period>
+    </context>
+    <context id="Cargo_P3m20160930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">bst:CargoMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2016-07-01</startDate>
+            <endDate>2016-09-30</endDate>
+        </period>
+    </context>
+    <context id="Cargo_P9m20150930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">bst:CargoMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2015-01-02</startDate>
+            <endDate>2015-09-30</endDate>
+        </period>
+    </context>
+    <context id="Regional_P9m20150930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">us-gaap:RegionalCarrierMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2015-01-02</startDate>
+            <endDate>2015-09-30</endDate>
+        </period>
+    </context>
+    <context id="Other_P9m20150930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">bst:OtherMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2015-01-02</startDate>
+            <endDate>2015-09-30</endDate>
+        </period>
+    </context>
+    <context id="Mainline_P9m20150930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">us-gaap:MainlineMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2015-01-02</startDate>
+            <endDate>2015-09-30</endDate>
+        </period>
+    </context>
+    <context id="From_2015-01-02_To_2015-09-30">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+        </entity>
+        <period>
+            <startDate>2015-01-02</startDate>
+            <endDate>2015-09-30</endDate>
+        </period>
+    </context>
+    <context id="BalanceAsOf_2015-12-31">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+        </entity>
+        <period>
+            <instant>2015-12-31</instant>
+        </period>
+    </context>
+    <context id="BalanceAsOf_2015-01-01">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+        </entity>
+        <period>
+            <instant>2015-01-01</instant>
+        </period>
+    </context>
+    <context id="BalanceAsOf_2016-09-30">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+        </entity>
+        <period>
+            <instant>2016-09-30</instant>
+        </period>
+    </context>
+    <context id="BalanceAsOf_2015-09-30">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+        </entity>
+        <period>
+            <instant>2015-09-30</instant>
+        </period>
+    </context>
+    <context id="BalanceAsOf_2016-04-01">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+        </entity>
+        <period>
+            <instant>2016-04-01</instant>
+        </period>
+    </context>
+    <context id="Regional_P3m20160930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">us-gaap:RegionalCarrierMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2016-07-01</startDate>
+            <endDate>2016-09-30</endDate>
+        </period>
+    </context>
+    <context id="Other_P3m20160930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">bst:OtherMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2016-07-01</startDate>
+            <endDate>2016-09-30</endDate>
+        </period>
+    </context>
+    <context id="Mainline_P3m20160930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">us-gaap:MainlineMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2016-07-01</startDate>
+            <endDate>2016-09-30</endDate>
+        </period>
+    </context>
+    <context id="ThreeMonthsEnded_2016-09-30">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+        </entity>
+        <period>
+            <startDate>2016-07-01</startDate>
+            <endDate>2016-09-30</endDate>
+        </period>
+    </context>
+    <context id="HeavyEquipment_P3m20150930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">bst:HeavyEquipmentMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2015-07-01</startDate>
+            <endDate>2015-09-30</endDate>
+        </period>
+    </context>
+    <context id="Cargo_P3m20150930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">bst:CargoMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2015-07-01</startDate>
+            <endDate>2015-09-30</endDate>
+        </period>
+    </context>
+    <context id="Regional_P3m20150930">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">1010101010</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="us-gaap:StatementBusinessSegmentsAxis">us-gaap:RegionalCarrierMember</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2015-07-01</startDate>
+            <endDate>2015-09-30</endDate>
+        </period>
+    </context>
+    <unit id="iso4217_USD">
+        <measure>iso4217:USD</measure>
+    </unit>
+    <unit id="shares">
+        <measure>shares</measure>
+    </unit>
+    <unit id="iso4217_USD_per_shares">
+        <divide>
+            <unitNumerator>
+                <measure>iso4217:USD</measure>
+            </unitNumerator>
+            <unitDenominator>
+                <measure>shares</measure>
+            </unitDenominator>
+        </divide>
+    </unit>
+    <dei:EntityRegistrantName contextRef="NineMonthsEnded_2016-09-30">BRIGHTSTAR AIRLINES INLINE TESTING SAMPLE CO</dei:EntityRegistrantName>
+    <us-gaap:PreferredStockSharesIssued
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="INF"
+      unitRef="shares">0</us-gaap:PreferredStockSharesIssued>
+    <us-gaap:PreferredStockSharesIssued
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="INF"
+      unitRef="shares">0</us-gaap:PreferredStockSharesIssued>
+    <dei:EntityFilerCategory contextRef="NineMonthsEnded_2016-09-30">Large Accelerated Filer</dei:EntityFilerCategory>
+    <dei:CurrentFiscalYearEndDate contextRef="NineMonthsEnded_2016-09-30">--12-31</dei:CurrentFiscalYearEndDate>
+    <dei:EntityCentralIndexKey contextRef="NineMonthsEnded_2016-09-30">1010101010</dei:EntityCentralIndexKey>
+    <dei:DocumentFiscalPeriodFocus contextRef="NineMonthsEnded_2016-09-30">Q3</dei:DocumentFiscalPeriodFocus>
+    <dei:DocumentPeriodEndDate contextRef="NineMonthsEnded_2016-09-30">2016-09-30</dei:DocumentPeriodEndDate>
+    <dei:AmendmentFlag contextRef="NineMonthsEnded_2016-09-30">false</dei:AmendmentFlag>
+    <dei:DocumentType contextRef="NineMonthsEnded_2016-09-30">10-Q</dei:DocumentType>
+    <dei:DocumentFiscalYearFocus contextRef="NineMonthsEnded_2016-09-30">2016</dei:DocumentFiscalYearFocus>
+    <dei:EntityCommonStockSharesOutstanding
+      contextRef="BalanceAsOf_2016-04-01"
+      decimals="INF"
+      unitRef="shares">138921478</dei:EntityCommonStockSharesOutstanding>
+    <us-gaap:CashAndCashEquivalentsAtCarryingValue
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">288783000</us-gaap:CashAndCashEquivalentsAtCarryingValue>
+    <us-gaap:CashAndCashEquivalentsAtCarryingValue
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">362786000</us-gaap:CashAndCashEquivalentsAtCarryingValue>
+    <us-gaap:AllowanceForDoubtfulAccountsReceivableCurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">30676000</us-gaap:AllowanceForDoubtfulAccountsReceivableCurrent>
+    <us-gaap:AllowanceForDoubtfulAccountsReceivableCurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">19180000</us-gaap:AllowanceForDoubtfulAccountsReceivableCurrent>
+    <us-gaap:AccountsNotesAndLoansReceivableNetCurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">1583565000</us-gaap:AccountsNotesAndLoansReceivableNetCurrent>
+    <us-gaap:AccountsNotesAndLoansReceivableNetCurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">1341025000</us-gaap:AccountsNotesAndLoansReceivableNetCurrent>
+    <us-gaap:AirlineRelatedInventory
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">2548897000</us-gaap:AirlineRelatedInventory>
+    <us-gaap:AirlineRelatedInventory
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">2342304000</us-gaap:AirlineRelatedInventory>
+    <us-gaap:PrepaidExpenseAndOtherAssetsCurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">344682000</us-gaap:PrepaidExpenseAndOtherAssetsCurrent>
+    <us-gaap:PrepaidExpenseAndOtherAssetsCurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">292003000</us-gaap:PrepaidExpenseAndOtherAssetsCurrent>
+    <us-gaap:AssetsCurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">4765928000</us-gaap:AssetsCurrent>
+    <us-gaap:AssetsCurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">4338118000</us-gaap:AssetsCurrent>
+    <bst:GoodwillAndIntangibleAssetsLessAccumulatedAmortization
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">1152164000</bst:GoodwillAndIntangibleAssetsLessAccumulatedAmortization>
+    <bst:GoodwillAndIntangibleAssetsLessAccumulatedAmortization
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">448055000</bst:GoodwillAndIntangibleAssetsLessAccumulatedAmortization>
+    <us-gaap:DeferredTaxAssetsNetNoncurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">231814000</us-gaap:DeferredTaxAssetsNetNoncurrent>
+    <us-gaap:DeferredTaxAssetsNetNoncurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">251517000</us-gaap:DeferredTaxAssetsNetNoncurrent>
+    <us-gaap:OtherAssetsNoncurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">415955000</us-gaap:OtherAssetsNoncurrent>
+    <us-gaap:OtherAssetsNoncurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">578937000</us-gaap:OtherAssetsNoncurrent>
+    <us-gaap:AccumulatedDepreciationDepletionAndAmortizationPropertyPlantAndEquipment
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">733383000</us-gaap:AccumulatedDepreciationDepletionAndAmortizationPropertyPlantAndEquipment>
+    <us-gaap:AccumulatedDepreciationDepletionAndAmortizationPropertyPlantAndEquipment
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">683676000</us-gaap:AccumulatedDepreciationDepletionAndAmortizationPropertyPlantAndEquipment>
+    <us-gaap:PropertyPlantAndEquipmentNet
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">583653000</us-gaap:PropertyPlantAndEquipmentNet>
+    <us-gaap:PropertyPlantAndEquipmentNet
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">509729000</us-gaap:PropertyPlantAndEquipmentNet>
+    <us-gaap:Assets
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">7149513000</us-gaap:Assets>
+    <us-gaap:Assets
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">6126355000</us-gaap:Assets>
+    <us-gaap:AccountsPayableCurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">1991871000</us-gaap:AccountsPayableCurrent>
+    <us-gaap:AccountsPayableCurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">1513710000</us-gaap:AccountsPayableCurrent>
+    <us-gaap:SeniorNotesCurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">525506000</us-gaap:SeniorNotesCurrent>
+    <us-gaap:SeniorNotesCurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">225000000</us-gaap:SeniorNotesCurrent>
+    <us-gaap:AccruedIncomeTaxesCurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">17258000</us-gaap:AccruedIncomeTaxesCurrent>
+    <us-gaap:AccruedIncomeTaxesCurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">3919000</us-gaap:AccruedIncomeTaxesCurrent>
+    <us-gaap:DividendsPayableCurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">74684000</us-gaap:DividendsPayableCurrent>
+    <us-gaap:DividendsPayableCurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">68977000</us-gaap:DividendsPayableCurrent>
+    <us-gaap:OtherLiabilitiesCurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">499365000</us-gaap:OtherLiabilitiesCurrent>
+    <us-gaap:OtherLiabilitiesCurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">427269000</us-gaap:OtherLiabilitiesCurrent>
+    <us-gaap:LiabilitiesCurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">3108685000</us-gaap:LiabilitiesCurrent>
+    <us-gaap:LiabilitiesCurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">2238874000</us-gaap:LiabilitiesCurrent>
+    <us-gaap:SeniorLongTermNotes
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">225000000</us-gaap:SeniorLongTermNotes>
+    <us-gaap:SeniorLongTermNotes
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">225000000</us-gaap:SeniorLongTermNotes>
+    <us-gaap:PensionAndOtherPostretirementDefinedBenefitPlansLiabilitiesNoncurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">433200000</us-gaap:PensionAndOtherPostretirementDefinedBenefitPlansLiabilitiesNoncurrent>
+    <us-gaap:PensionAndOtherPostretirementDefinedBenefitPlansLiabilitiesNoncurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">515689000</us-gaap:PensionAndOtherPostretirementDefinedBenefitPlansLiabilitiesNoncurrent>
+    <us-gaap:DeferredTaxLiabilitiesGrossNoncurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">81526000</us-gaap:DeferredTaxLiabilitiesGrossNoncurrent>
+    <us-gaap:OtherLiabilitiesNoncurrent
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">463245000</us-gaap:OtherLiabilitiesNoncurrent>
+    <us-gaap:OtherLiabilitiesNoncurrent
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">439430000</us-gaap:OtherLiabilitiesNoncurrent>
+    <us-gaap:PreferredStockParOrStatedValuePerShare
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="INF"
+      unitRef="iso4217_USD_per_shares">1</us-gaap:PreferredStockParOrStatedValuePerShare>
+    <us-gaap:PreferredStockSharesAuthorized
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="INF"
+      unitRef="shares">9000000</us-gaap:PreferredStockSharesAuthorized>
+    <us-gaap:PreferredStockValue
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">0</us-gaap:PreferredStockValue>
+    <us-gaap:PreferredStockValue
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">0</us-gaap:PreferredStockValue>
+    <us-gaap:CommonStockParOrStatedValuePerShare
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="INF"
+      unitRef="iso4217_USD_per_shares">1</us-gaap:CommonStockParOrStatedValuePerShare>
+    <us-gaap:CommonStockSharesAuthorized
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="INF"
+      unitRef="shares">405000000</us-gaap:CommonStockSharesAuthorized>
+    <us-gaap:CommonStockSharesIssued
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="INF"
+      unitRef="shares">138921478</us-gaap:CommonStockSharesIssued>
+    <us-gaap:CommonStockSharesIssued
+      contextRef="BalanceAsOf_2015-01-01"
+      decimals="INF"
+      unitRef="shares">139357294</us-gaap:CommonStockSharesIssued>
+    <us-gaap:CommonStockValue
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">138921000</us-gaap:CommonStockValue>
+    <us-gaap:CommonStockValue
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">139357000</us-gaap:CommonStockValue>
+    <us-gaap:RetainedEarningsAccumulatedDeficit
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">3213320000</us-gaap:RetainedEarningsAccumulatedDeficit>
+    <us-gaap:RetainedEarningsAccumulatedDeficit
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">3010084000</us-gaap:RetainedEarningsAccumulatedDeficit>
+    <us-gaap:AccumulatedOtherComprehensiveIncomeLossNetOfTax
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-523487000</us-gaap:AccumulatedOtherComprehensiveIncomeLossNetOfTax>
+    <us-gaap:AccumulatedOtherComprehensiveIncomeLossNetOfTax
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">-451343000</us-gaap:AccumulatedOtherComprehensiveIncomeLossNetOfTax>
+    <us-gaap:StockholdersEquity
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">2828755000</us-gaap:StockholdersEquity>
+    <us-gaap:StockholdersEquity
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">2698098000</us-gaap:StockholdersEquity>
+    <us-gaap:MinorityInterest
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">9103000</us-gaap:MinorityInterest>
+    <us-gaap:MinorityInterest
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">9263000</us-gaap:MinorityInterest>
+    <us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">2837858000</us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest>
+    <us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">2707361000</us-gaap:StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest>
+    <us-gaap:LiabilitiesAndStockholdersEquity
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">7149513000</us-gaap:LiabilitiesAndStockholdersEquity>
+    <us-gaap:LiabilitiesAndStockholdersEquity
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">6126355000</us-gaap:LiabilitiesAndStockholdersEquity>
+    <us-gaap:SalesRevenueNet
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">3316719000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">3038200000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">9504038000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">8905412000</us-gaap:SalesRevenueNet>
+    <us-gaap:CostOfGoodsSold
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">2325888000</us-gaap:CostOfGoodsSold>
+    <us-gaap:CostOfGoodsSold
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">2159768000</us-gaap:CostOfGoodsSold>
+    <us-gaap:CostOfGoodsSold
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">6689037000</us-gaap:CostOfGoodsSold>
+    <us-gaap:CostOfGoodsSold
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">6324722000</us-gaap:CostOfGoodsSold>
+    <us-gaap:GrossProfit
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">990831000</us-gaap:GrossProfit>
+    <us-gaap:GrossProfit
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">878432000</us-gaap:GrossProfit>
+    <us-gaap:GrossProfit
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">2815001000</us-gaap:GrossProfit>
+    <us-gaap:GrossProfit
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">2580690000</us-gaap:GrossProfit>
+    <us-gaap:SellingGeneralAndAdministrativeExpense
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">714561000</us-gaap:SellingGeneralAndAdministrativeExpense>
+    <us-gaap:SellingGeneralAndAdministrativeExpense
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">611005000</us-gaap:SellingGeneralAndAdministrativeExpense>
+    <us-gaap:SellingGeneralAndAdministrativeExpense
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">1998986000</us-gaap:SellingGeneralAndAdministrativeExpense>
+    <us-gaap:SellingGeneralAndAdministrativeExpense
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">1824388000</us-gaap:SellingGeneralAndAdministrativeExpense>
+    <us-gaap:DepreciationAndAmortization
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">31698000</us-gaap:DepreciationAndAmortization>
+    <us-gaap:DepreciationAndAmortization
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">23048000</us-gaap:DepreciationAndAmortization>
+    <us-gaap:DepreciationAndAmortization
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">88265000</us-gaap:DepreciationAndAmortization>
+    <us-gaap:DepreciationAndAmortization
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">65996000</us-gaap:DepreciationAndAmortization>
+    <us-gaap:OperatingExpenses
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">746259000</us-gaap:OperatingExpenses>
+    <us-gaap:OperatingExpenses
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">634053000</us-gaap:OperatingExpenses>
+    <us-gaap:OperatingExpenses
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">2087251000</us-gaap:OperatingExpenses>
+    <us-gaap:OperatingExpenses
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">1890384000</us-gaap:OperatingExpenses>
+    <us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">244571000</us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest>
+    <us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">244380000</us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest>
+    <us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">727750000</us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest>
+    <us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">690305000</us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest>
+    <us-gaap:CurrentIncomeTaxExpenseBenefit
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">88200000</us-gaap:CurrentIncomeTaxExpenseBenefit>
+    <us-gaap:CurrentIncomeTaxExpenseBenefit
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">88731000</us-gaap:CurrentIncomeTaxExpenseBenefit>
+    <us-gaap:CurrentIncomeTaxExpenseBenefit
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">246707000</us-gaap:CurrentIncomeTaxExpenseBenefit>
+    <us-gaap:CurrentIncomeTaxExpenseBenefit
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">251271000</us-gaap:CurrentIncomeTaxExpenseBenefit>
+    <us-gaap:ProfitLoss
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">156371000</us-gaap:ProfitLoss>
+    <us-gaap:ProfitLoss
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">155649000</us-gaap:ProfitLoss>
+    <us-gaap:ProfitLoss
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">481043000</us-gaap:ProfitLoss>
+    <us-gaap:ProfitLoss
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">439034000</us-gaap:ProfitLoss>
+    <us-gaap:EarningsPerShareBasic
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="2"
+      unitRef="iso4217_USD_per_shares">1.01</us-gaap:EarningsPerShareBasic>
+    <us-gaap:EarningsPerShareBasic
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="2"
+      unitRef="iso4217_USD_per_shares">1.00</us-gaap:EarningsPerShareBasic>
+    <us-gaap:EarningsPerShareBasic
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="2"
+      unitRef="iso4217_USD_per_shares">3.11</us-gaap:EarningsPerShareBasic>
+    <us-gaap:EarningsPerShareBasic
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="2"
+      unitRef="iso4217_USD_per_shares">2.83</us-gaap:EarningsPerShareBasic>
+    <us-gaap:EarningsPerShareDiluted
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="2"
+      unitRef="iso4217_USD_per_shares">1.01</us-gaap:EarningsPerShareDiluted>
+    <us-gaap:EarningsPerShareDiluted
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="2"
+      unitRef="iso4217_USD_per_shares">1.00</us-gaap:EarningsPerShareDiluted>
+    <us-gaap:EarningsPerShareDiluted
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="2"
+      unitRef="iso4217_USD_per_shares">3.09</us-gaap:EarningsPerShareDiluted>
+    <us-gaap:EarningsPerShareDiluted
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="2"
+      unitRef="iso4217_USD_per_shares">2.80</us-gaap:EarningsPerShareDiluted>
+    <us-gaap:CommonStockDividendsPerShareDeclared
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="INF"
+      unitRef="iso4217_USD_per_shares">0.48</us-gaap:CommonStockDividendsPerShareDeclared>
+    <us-gaap:CommonStockDividendsPerShareDeclared
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="INF"
+      unitRef="iso4217_USD_per_shares">0.45</us-gaap:CommonStockDividendsPerShareDeclared>
+    <us-gaap:CommonStockDividendsPerShareDeclared
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="INF"
+      unitRef="iso4217_USD_per_shares">1.45</us-gaap:CommonStockDividendsPerShareDeclared>
+    <us-gaap:CommonStockDividendsPerShareDeclared
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="INF"
+      unitRef="iso4217_USD_per_shares">1.34</us-gaap:CommonStockDividendsPerShareDeclared>
+    <us-gaap:WeightedAverageNumberOfSharesOutstandingBasic
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="shares">139110000</us-gaap:WeightedAverageNumberOfSharesOutstandingBasic>
+    <us-gaap:WeightedAverageNumberOfSharesOutstandingBasic
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="shares">139632000</us-gaap:WeightedAverageNumberOfSharesOutstandingBasic>
+    <us-gaap:WeightedAverageNumberOfSharesOutstandingBasic
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="shares">139352000</us-gaap:WeightedAverageNumberOfSharesOutstandingBasic>
+    <us-gaap:WeightedAverageNumberOfSharesOutstandingBasic
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="shares">140011000</us-gaap:WeightedAverageNumberOfSharesOutstandingBasic>
+    <us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="shares">986000</us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment>
+    <us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="shares">889000</us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment>
+    <us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="shares">974000</us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment>
+    <us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="shares">934000</us-gaap:WeightedAverageNumberDilutedSharesOutstandingAdjustment>
+    <us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="shares">140097000</us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding>
+    <us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="shares">140522000</us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding>
+    <us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="shares">140325000</us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding>
+    <us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="shares">140945000</us-gaap:WeightedAverageNumberOfDilutedSharesOutstanding>
+    <us-gaap:ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">173085000</us-gaap:ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest>
+    <us-gaap:ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">189488000</us-gaap:ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest>
+    <us-gaap:ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">408899000</us-gaap:ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest>
+    <us-gaap:ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">494108000</us-gaap:ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest>
+    <us-gaap:ProfitLoss
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">481043000</us-gaap:ProfitLoss>
+    <us-gaap:ProfitLoss
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">439034000</us-gaap:ProfitLoss>
+    <us-gaap:DepreciationAndAmortization
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">88265000</us-gaap:DepreciationAndAmortization>
+    <us-gaap:DepreciationAndAmortization
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">65996000</us-gaap:DepreciationAndAmortization>
+    <us-gaap:ShareBasedCompensation
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">8039000</us-gaap:ShareBasedCompensation>
+    <us-gaap:ShareBasedCompensation
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">7288000</us-gaap:ShareBasedCompensation>
+    <us-gaap:ExcessTaxBenefitFromShareBasedCompensationOperatingActivities
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">10818000</us-gaap:ExcessTaxBenefitFromShareBasedCompensationOperatingActivities>
+    <us-gaap:ExcessTaxBenefitFromShareBasedCompensationOperatingActivities
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">8315000</us-gaap:ExcessTaxBenefitFromShareBasedCompensationOperatingActivities>
+    <us-gaap:IncreaseDecreaseInOtherOperatingCapitalNet
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">45547000</us-gaap:IncreaseDecreaseInOtherOperatingCapitalNet>
+    <us-gaap:IncreaseDecreaseInOtherOperatingCapitalNet
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">910000</us-gaap:IncreaseDecreaseInOtherOperatingCapitalNet>
+    <us-gaap:IncreaseDecreaseInOperatingCapital
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-232755000</us-gaap:IncreaseDecreaseInOperatingCapital>
+    <us-gaap:IncreaseDecreaseInOperatingCapital
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-185244000</us-gaap:IncreaseDecreaseInOperatingCapital>
+    <us-gaap:NetCashProvidedByUsedInOperatingActivities
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">753737000</us-gaap:NetCashProvidedByUsedInOperatingActivities>
+    <us-gaap:NetCashProvidedByUsedInOperatingActivities
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">688338000</us-gaap:NetCashProvidedByUsedInOperatingActivities>
+    <us-gaap:PaymentsToAcquirePropertyPlantAndEquipment
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">75731000</us-gaap:PaymentsToAcquirePropertyPlantAndEquipment>
+    <us-gaap:PaymentsToAcquirePropertyPlantAndEquipment
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">64464000</us-gaap:PaymentsToAcquirePropertyPlantAndEquipment>
+    <bst:PaymentsToAcquireBusinessesNetOfCashAcquiredAndEquityMethodInvestments
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">552698000</bst:PaymentsToAcquireBusinessesNetOfCashAcquiredAndEquityMethodInvestments>
+    <bst:PaymentsToAcquireBusinessesNetOfCashAcquiredAndEquityMethodInvestments
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">490840000</bst:PaymentsToAcquireBusinessesNetOfCashAcquiredAndEquityMethodInvestments>
+    <us-gaap:NetCashProvidedByUsedInInvestingActivities
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-628430000</us-gaap:NetCashProvidedByUsedInInvestingActivities>
+    <us-gaap:NetCashProvidedByUsedInInvestingActivities
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-555305000</us-gaap:NetCashProvidedByUsedInInvestingActivities>
+    <us-gaap:ProceedsFromLongTermLinesOfCredit
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">1885095000</us-gaap:ProceedsFromLongTermLinesOfCredit>
+    <us-gaap:ProceedsFromLongTermLinesOfCredit
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">675000000</us-gaap:ProceedsFromLongTermLinesOfCredit>
+    <us-gaap:RepaymentsOfLongTermLinesOfCredit
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">1791184000</us-gaap:RepaymentsOfLongTermLinesOfCredit>
+    <us-gaap:RepaymentsOfLongTermLinesOfCredit
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">675000000</us-gaap:RepaymentsOfLongTermLinesOfCredit>
+    <bst:PaymentsForShareBasedAwardsExercisedNetOfTaxesPaid
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">12882000</bst:PaymentsForShareBasedAwardsExercisedNetOfTaxesPaid>
+    <bst:PaymentsForShareBasedAwardsExercisedNetOfTaxesPaid
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">3607000</bst:PaymentsForShareBasedAwardsExercisedNetOfTaxesPaid>
+    <us-gaap:ExcessTaxBenefitFromShareBasedCompensationFinancingActivities
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">10818000</us-gaap:ExcessTaxBenefitFromShareBasedCompensationFinancingActivities>
+    <us-gaap:ExcessTaxBenefitFromShareBasedCompensationFinancingActivities
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">8315000</us-gaap:ExcessTaxBenefitFromShareBasedCompensationFinancingActivities>
+    <us-gaap:PaymentsOfDividends
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">218936000</us-gaap:PaymentsOfDividends>
+    <us-gaap:PaymentsOfDividends
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">201753000</us-gaap:PaymentsOfDividends>
+    <us-gaap:PaymentsForRepurchaseOfCommonStock
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">64564000</us-gaap:PaymentsForRepurchaseOfCommonStock>
+    <us-gaap:PaymentsForRepurchaseOfCommonStock
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">52927000</us-gaap:PaymentsForRepurchaseOfCommonStock>
+    <us-gaap:NetCashProvidedByUsedInFinancingActivities
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-191652000</us-gaap:NetCashProvidedByUsedInFinancingActivities>
+    <us-gaap:NetCashProvidedByUsedInFinancingActivities
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-249972000</us-gaap:NetCashProvidedByUsedInFinancingActivities>
+    <us-gaap:EffectOfExchangeRateOnCashAndCashEquivalents
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-7657000</us-gaap:EffectOfExchangeRateOnCashAndCashEquivalents>
+    <us-gaap:EffectOfExchangeRateOnCashAndCashEquivalents
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">2696000</us-gaap:EffectOfExchangeRateOnCashAndCashEquivalents>
+    <us-gaap:CashAndCashEquivalentsPeriodIncreaseDecrease
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-74003000</us-gaap:CashAndCashEquivalentsPeriodIncreaseDecrease>
+    <us-gaap:CashAndCashEquivalentsPeriodIncreaseDecrease
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-114242000</us-gaap:CashAndCashEquivalentsPeriodIncreaseDecrease>
+    <us-gaap:CashAndCashEquivalentsAtCarryingValue
+      contextRef="BalanceAsOf_2015-12-31"
+      decimals="-3"
+      unitRef="iso4217_USD">362786000</us-gaap:CashAndCashEquivalentsAtCarryingValue>
+    <us-gaap:CashAndCashEquivalentsAtCarryingValue
+      contextRef="BalanceAsOf_2015-01-01"
+      decimals="-3"
+      unitRef="iso4217_USD">472549000</us-gaap:CashAndCashEquivalentsAtCarryingValue>
+    <us-gaap:CashAndCashEquivalentsAtCarryingValue
+      contextRef="BalanceAsOf_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">288783000</us-gaap:CashAndCashEquivalentsAtCarryingValue>
+    <us-gaap:CashAndCashEquivalentsAtCarryingValue
+      contextRef="BalanceAsOf_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">358306000</us-gaap:CashAndCashEquivalentsAtCarryingValue>
+    <us-gaap:SegmentReportingDisclosureTextBlock contextRef="NineMonthsEnded_2016-09-30">&lt;p style="line-height: normal;  margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;
+					&lt;span style="text-decoration: underline"&gt;
+						&lt;span style="font-size: 10.0pt;"&gt;Note 2 - Segment Information&lt;/span&gt;
+					&lt;/span&gt;
+				&lt;/p&gt;
+				
+					&lt;p style="line-height: normal;  margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;						&lt;span style="font-size: 10.0pt;"&gt;&#160;&lt;/span&gt;
+					&lt;/p&gt;
+					&lt;div style="text-align: center"&gt;
+						&lt;table style="border:none;border-collapse: collapse; width: 92.0%"&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td style="width: 55.0%"/&gt;
+									&lt;td style="width: 4.0%" valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td style="width: 4.0%" valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td style="width: 4.0%" valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td style="width: 4.0%" valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="6" valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;Three Months Ended Sept. 30,&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="6" valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;Nine Months Ended Sept. 30,&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="2" style="border: none; border-bottom: solid black 1.0pt; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;2016&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="2" style="border: none; border-bottom: solid black 1.0pt; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;2015&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="2" style="border: none; border-bottom: solid black 1.0pt; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;2016&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="2" style="border: none; border-bottom: solid black 1.0pt; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;2015&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="6" valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;(in thousands)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="6" valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;(in thousands)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 12.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Net sales:&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Passenger - Mainline&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+                         1,814,468
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+											  1,485,771
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+                        5,015,174
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+											  4,310,332
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Passenger - Regional&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												999,278
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												1,024,969
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												3,009,979
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												3,058,921
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Cargo&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												387,411
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												399,830
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												1,127,571
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												1,155,373
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Heavy equipment&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												128,536
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												135,789
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												382,476
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												402,690
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Other&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(12,975
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(8,159
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(31,162
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(21,904
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 60.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Total net sales&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												3,316,719
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												3,038,200
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												9,504,038
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												8,905,412
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 12.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Operating profit:&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Passenger - Mainline&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												162,149
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												135,583
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												438,832
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												376,368
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Passenger - Regional&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												71,636
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												85,159
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												222,644
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												246,602
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Cargo&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												25,285
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												26,948
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												81,949
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												88,261
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Heavy equipment&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												11,363
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												12,200
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												31,767
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												34,609
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 60.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Total operating profit&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												270,433
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												259,889
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												775,192
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												745,840
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 12.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Interest expense, net&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(6,328
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(4,474
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(16,412
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(13,235
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 12.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Other intangible assets amortization&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(6,953
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(3,085
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(18,438
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(8,262
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 12.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Other, net&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(12,580
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(7,951
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(12,591
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(34,038
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 60.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Income before income taxes&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												244,571
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												244,380
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												727,750
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												690,305
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+					&lt;/div&gt;
+					&lt;p style="line-height: normal;  margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;
+						&lt;span style="font-size: 10.0pt;"&gt;&#160;&lt;/span&gt;
+					&lt;/p&gt;
+				
+				&lt;p style="line-height: normal;  margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;
+					&lt;span style="font-size: 10.0pt;"&gt;Net sales by segment exclude the effect of certain discounts, incentives and freight billed to customers. The line item "Other" represents the net effect of the discounts, incentives and freight billed to customers, which is reported as a component of net sales in the Company's condensed consolidated statements of income and comprehensive income. &lt;/span&gt;
+				&lt;/p&gt;</us-gaap:SegmentReportingDisclosureTextBlock>
+    <us-gaap:ScheduleOfSegmentReportingInformationBySegmentTextBlock contextRef="NineMonthsEnded_2016-09-30">&lt;p style="line-height: normal;  margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;						&lt;span style="font-size: 10.0pt;"&gt;&#160;&lt;/span&gt;
+					&lt;/p&gt;
+					&lt;div style="text-align: center"&gt;
+						&lt;table style="border:none;border-collapse: collapse; width: 92.0%"&gt;
+							&lt;tbody&gt;
+								&lt;tr&gt;
+									&lt;td style="width: 55.0%"/&gt;
+									&lt;td style="width: 4.0%" valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td style="width: 4.0%" valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td style="width: 4.0%" valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td style="width: 4.0%" valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+									&lt;td/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="6" valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;Three Months Ended Sept. 30,&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="6" valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;Nine Months Ended Sept. 30,&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="2" style="border: none; border-bottom: solid black 1.0pt; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;2016&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="2" style="border: none; border-bottom: solid black 1.0pt; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;2015&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="2" style="border: none; border-bottom: solid black 1.0pt; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;2016&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="2" style="border: none; border-bottom: solid black 1.0pt; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;2015&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="6" valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;(in thousands)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td colspan="6" valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: center"&gt;
+											&lt;span style="font-size: 8.0pt;"&gt;(in thousands)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 12.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Net sales:&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Passenger - Mainline&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+                         1,814,468
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+											  1,485,771
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+                        5,015,174
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+											  4,310,332
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Passenger - Regional&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												999,278
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												1,024,969
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												3,009,979
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												3,058,921
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Cargo&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												387,411
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												399,830
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												1,127,571
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												1,155,373
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Heavy equipment&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												128,536
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												135,789
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												382,476
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												402,690
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Other&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(12,975
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(8,159
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(31,162
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(21,904
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 60.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Total net sales&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												3,316,719
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												3,038,200
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												9,504,038
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												8,905,412
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 12.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Operating profit:&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Passenger - Mainline&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												162,149
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												135,583
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												438,832
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												376,368
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Passenger - Regional&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												71,636
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												85,159
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												222,644
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												246,602
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Cargo&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												25,285
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												26,948
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												81,949
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												88,261
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: .5in; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Heavy equipment&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												11,363
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												12,200
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												31,767
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												34,609
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 60.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Total operating profit&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												270,433
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												259,889
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												775,192
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												745,840
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 12.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Interest expense, net&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(6,328
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(4,474
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(16,412
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(13,235
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 12.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Other intangible assets amortization&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(6,953
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(3,085
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(18,438
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(8,262
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 12.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Other, net&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(12,580
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(7,951
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(12,591
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;(34,038
+&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="white-space: nowrap" valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;)&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td style="background: #CCEEFF; " valign="top"&gt;
+										&lt;p style="line-height: normal; margin-left: 60.0pt; text-indent: -12.0pt"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;Income before income taxes&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												244,571
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												244,380
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												727,750
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"/&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal; "&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;$&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF; " valign="bottom"&gt;
+										&lt;p style="line-height: normal;  text-align: right"&gt;
+											&lt;span style="font-size: 10.0pt;"&gt;
+												690,305
+											&lt;/span&gt;
+										&lt;/p&gt;
+									&lt;/td&gt;
+									&lt;td style="background: #CCEEFF;  white-space: nowrap" valign="bottom"/&gt;
+								&lt;/tr&gt;
+								&lt;tr&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td valign="bottom"/&gt;
+									&lt;td/&gt;
+								&lt;/tr&gt;
+							&lt;/tbody&gt;
+						&lt;/table&gt;
+					&lt;/div&gt;
+					&lt;p style="line-height: normal;  margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;
+						&lt;span style="font-size: 10.0pt;"&gt;&#160;&lt;/span&gt;
+					&lt;/p&gt;</us-gaap:ScheduleOfSegmentReportingInformationBySegmentTextBlock>
+    <us-gaap:SalesRevenueNet
+      contextRef="Mainline_P3m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">1814468000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Mainline_P3m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">1485771000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Mainline_P9m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">5015174000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Mainline_P9m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">4310332000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Regional_P3m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">999278000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Regional_P3m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">1024969000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Regional_P9m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">3009979000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Regional_P9m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">3058921000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Cargo_P3m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">387411000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Cargo_P3m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">399830000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Cargo_P9m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">1127571000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Cargo_P9m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">1155373000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="HeavyEquipment_P3m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">128536000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="HeavyEquipment_P3m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">135789000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="HeavyEquipment_P9m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">382476000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="HeavyEquipment_P9m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">402690000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Other_P3m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">-12975000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Other_P3m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">-8159000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Other_P9m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">-31162000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="Other_P9m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">-21904000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">3316719000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">3038200000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">9504038000</us-gaap:SalesRevenueNet>
+    <us-gaap:SalesRevenueNet
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">8905412000</us-gaap:SalesRevenueNet>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="Mainline_P3m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">162149000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="Mainline_P3m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">135583000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="Mainline_P9m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">438832000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="Mainline_P9m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">376368000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="Regional_P3m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">71636000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="Regional_P3m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">85159000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="Regional_P9m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">222644000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="Regional_P9m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">246602000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="Cargo_P3m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">25285000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="Cargo_P3m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">26948000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="Cargo_P9m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">81949000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="Cargo_P9m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">88261000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="HeavyEquipment_P3m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">11363000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="HeavyEquipment_P3m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">12200000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="HeavyEquipment_P9m20160930"
+      decimals="-3"
+      unitRef="iso4217_USD">31767000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="HeavyEquipment_P9m20150930"
+      decimals="-3"
+      unitRef="iso4217_USD">34609000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">270433000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">259889000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">775192000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:OperatingIncomeLoss
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">745840000</us-gaap:OperatingIncomeLoss>
+    <us-gaap:InterestRevenueExpenseNet
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-6328000</us-gaap:InterestRevenueExpenseNet>
+    <us-gaap:InterestRevenueExpenseNet
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-4474000</us-gaap:InterestRevenueExpenseNet>
+    <us-gaap:InterestRevenueExpenseNet
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-16412000</us-gaap:InterestRevenueExpenseNet>
+    <us-gaap:InterestRevenueExpenseNet
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">-13235000</us-gaap:InterestRevenueExpenseNet>
+    <us-gaap:AmortizationOfIntangibleAssets
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">6953000</us-gaap:AmortizationOfIntangibleAssets>
+    <us-gaap:AmortizationOfIntangibleAssets
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">3085000</us-gaap:AmortizationOfIntangibleAssets>
+    <us-gaap:AmortizationOfIntangibleAssets
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">18438000</us-gaap:AmortizationOfIntangibleAssets>
+    <us-gaap:AmortizationOfIntangibleAssets
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">8262000</us-gaap:AmortizationOfIntangibleAssets>
+    <us-gaap:OtherNoninterestExpense
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">12580000</us-gaap:OtherNoninterestExpense>
+    <us-gaap:OtherNoninterestExpense
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">7951000</us-gaap:OtherNoninterestExpense>
+    <us-gaap:OtherNoninterestExpense
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">12591000</us-gaap:OtherNoninterestExpense>
+    <us-gaap:OtherNoninterestExpense
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">34038000</us-gaap:OtherNoninterestExpense>
+    <us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest
+      contextRef="ThreeMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">244571000</us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest>
+    <us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest
+      contextRef="ThreeMonthsEnded_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">244380000</us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest>
+    <us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest
+      contextRef="NineMonthsEnded_2016-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">727750000</us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest>
+    <us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest
+      contextRef="From_2015-01-02_To_2015-09-30"
+      decimals="-3"
+      unitRef="iso4217_USD">690305000</us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest>
+</xbrl>
