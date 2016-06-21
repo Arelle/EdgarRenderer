@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Local Viewer adaptation of Summarize.xslt
+     Prior references to files on www.sec.gov/include and images
+     are changed to /include (on current web host).
+     Herm Fischer, Mark V Systems Limited, 2015-06-20
+-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
   <xsl:output encoding="UTF-8" indent="yes" method="html" doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"/>
-  <xsl:param name="xslt">http://www.sec.gov/include/InstanceReport.xslt</xsl:param>
+  <xsl:param name="xslt">/include/InstanceReport.xslt</xsl:param>
   <xsl:key name="keyParent" match="Report" use="ParentRole"/>
   <xsl:variable name="majorversion" select="substring-before(/FilingSummary/Version,'.')"/>
   <xsl:variable name="nreports" select="count(/FilingSummary/MyReports/Report)"/>
@@ -58,12 +63,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta http-equiv="Cache-Control" content="no-cache"/>
         <title>View Filing Data</title>
-        <script type="text/javascript" src="http://www.sec.gov/include/jquery-1.4.3.min.js"/>
-        <script type="text/javascript" src="http://www.sec.gov/include/accordionMenu.js"/>
-        <script type="text/javascript" src="Show.js"/>
-        <link rel="stylesheet" type="text/css" href="http://www.sec.gov/include/interactive.css"/>
-        <link rel="stylesheet" type="text/css" href="report.css"/>
-        <link rel="stylesheet" type="text/css" href="http://www.sec.gov/include/print.css" media="print"/>
+        <script type="text/javascript" src="/include/jquery-1.4.3.min.js"/>
+        <script type="text/javascript" src="/include/accordionMenu.js"/>
+        <script type="text/javascript" src="/include/Show.js"/>
+        <link rel="stylesheet" type="text/css" href="/include/interactive.css"/>
+        <link rel="stylesheet" type="text/css" href="/include/report.css"/>
+        <link rel="stylesheet" type="text/css" href="/include/print.css" media="print"/>
         <style type="text/css">
           #menu{
             font-family:Helvetica, Arial, sans-serif;
@@ -403,7 +408,7 @@
                 <xsl:text>javascript:loadReport(</xsl:text>
                 <xsl:value-of select="$nreports"/>
                 <xsl:text>)</xsl:text>
-              </xsl:attribute><img src="http://www.sec.gov/images/reports.gif" border="0" height="12" width="9" alt="Reports"/>All Reports</a>
+              </xsl:attribute><img src="/include/reports.gif" border="0" height="12" width="9" alt="Reports"/>All Reports</a>
           </li>
         </xsl:if>
         <xsl:if test="$nlogs > 0">
@@ -412,7 +417,7 @@
                 <xsl:text>javascript:loadReport(</xsl:text>
                 <xsl:value-of select="$nreports + $nlogs "/>
                 <xsl:text>)</xsl:text>
-              </xsl:attribute><img src="http://www.sec.gov/images/reports.gif" border="0" height="12" width="9" alt="Logs"/>Rendering Log</a>
+              </xsl:attribute><img src="/include/reports.gif" border="0" height="12" width="9" alt="Logs"/>Rendering Log</a>
           </li>
         </xsl:if>
       </xsl:when>

@@ -10,7 +10,7 @@ from arelle.webserver.bottle import Bottle, static_file
 import os, threading, time, logging
 
 port = None
-reportsFolders = [os.path.join(os.path.dirname(__file__), 'ixviewer')] # 0 is ixviewer
+reportsFolders = [os.path.dirname(__file__)] # 0 is root of include and ixviewer
 
 def init(cntlr, reportsFolder): # returns browser root
     global port
@@ -27,15 +27,20 @@ def init(cntlr, reportsFolder): # returns browser root
         
         def getlocalfile(file=None):
             cntlr.addToLog(_("http://localhost:{}/{}").format(port,file), messageCode="localViewer:get",level=logging.DEBUG)
-            #print ("GET file={}".format(file))
+            # print ("GET file={}".format(file))
             if file == 'favicon.ico':
                 return static_file("arelle.ico", root=cntlr.imagesDir, mimetype='image/vnd.microsoft.icon')
             _report, _sep, _file = file.partition("/")
             if _file.startswith("ix.html"): # although in ixviewer, it refers relatively to ixviewer/
-                return static_file(_file, root=reportsFolders[0])              
+                return static_file(_file, root=os.path.join(reportsFolders[0], 'ixviewer')) 
+            if _report == "include": # really in include subtree
+                # print(os.path.join(os.path.join(reportsFolders[0], 'include'), _file))
+                return static_file(_file, root=os.path.join(reportsFolders[0], 'include'))                 
             if _file.startswith("ixviewer/"): # really in ixviewer subtree
-                return static_file(_file[9:], root=reportsFolders[0])              
+                # print(os.path.join(os.path.join(reportsFolders[0], 'ixviewer'),_file[9:]))
+                return static_file(_file[9:], root=os.path.join(reportsFolders[0], 'ixviewer'))              
             if _report.isnumeric(): # in reportsFolder folder
+                # print (os.path.join(reportsFolders[int(_report)], _file))
                 return static_file(_file, root=reportsFolders[int(_report)],
                                    # extra_headers modification to py-bottle
                                    more_headers={'Cache-Control': 'no-cache, no-store, must-revalidate',
