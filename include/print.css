@@ -1,0 +1,45 @@
+
+#headerTop, #headerBottom, #formDivPreviewer, #breadCrumbs, #help, #footer {
+  
+  display : none;
+
+}
+
+
+
+html>body .alignRight {
+	
+	width: 600px;
+
+}
+
+
+
+.report {
+	
+	width:400px;
+	
+	margin-top : 10%;
+	
+	border: 2px solid #000000;
+	
+	color: black;
+	
+	font: normal 6pt Helvetica, Arial, san-serif;
+
+	page-break-after : always;	
+}
+
+
+
+html>body div#reportDiv html>body {
+
+	font-family: Arial, Helvetica, sans-serif;
+	
+	color: black;
+	
+	padding-top: 50px;
+
+	page-break-after: always;
+	
+}

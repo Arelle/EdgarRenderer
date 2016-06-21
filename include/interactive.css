@@ -1,0 +1,2160 @@
+@charset "utf-8";
+
+
+
+/***********************************************/
+
+/* Header Divs                              */
+
+/***********************************************/
+
+
+
+body {
+
+	font-family:Arial, Helvetica, sans-serif;
+
+}
+
+
+
+#headerTop {
+
+	background-image: url(../images/bannerBack.gif);
+
+	background-repeat: repeat-x;
+
+	background-position: left;
+
+	height: 93px;
+
+	margin: 0px;
+
+	padding: 0px;
+
+	width: 100%;
+
+}
+
+#headerTop #seal {
+
+	height: 93px;
+
+	width: 298px;
+
+	float: left;
+
+}
+
+#headerTop #Nav {
+
+	float: right;
+
+	width: 300px;
+
+	margin-top: 14px;
+
+	font-size: 13px;
+
+	color: #CCCCCC;
+
+	margin-right: 3px;
+
+	display:block;
+
+	clear: right;
+	
+	text-align:right;
+
+}
+
+
+
+#headerTop #Nav a:link, #headerTop #Nav a:visited, #headerTop #Nav a:active{
+
+	color: #CCCCCC;
+
+	text-decoration: none;
+
+}
+
+
+
+#headerTop #Nav a:hover{
+
+	color: #CCCCCC;
+
+	text-decoration: underline;
+
+}
+
+
+
+#secWordGraphic {
+
+	float: right;
+
+	right: 8px;
+
+	width:393px;
+
+	height:28px;
+
+	clear: right;
+
+	margin-top: 19px;
+
+}
+
+#secBetaGraphic {
+	float: right;
+	right: 8px;
+	width:219px;
+	height:46px;
+	margin-top: 19px;
+	border-style: none;
+}
+
+
+#headerBottom {
+
+	background-image: url(../images/sealBot.gif);
+
+	background-repeat: no-repeat;
+
+	background-position: top left;
+
+	height: 64px;
+        padding-bottom: 5px;
+
+}
+
+#PageTitle {
+
+	font-size: 18px;
+
+	font-weight: bold;
+
+	color: #000099;
+
+	margin-left: 160px;
+
+	padding-top: 25px;
+
+}
+
+
+
+#searchHome {
+
+	float: right;
+
+	font-size: 10px;
+
+	width: 150px;
+
+	margin: 15px 10px 0 0;
+
+}
+
+
+
+#searchHome a{
+
+	text-decoration: none;
+
+	color: #bf0023;
+	
+	font-size:12px;
+}
+
+#searchHome a:active{
+
+	text-decoration: none;
+
+	color: #bf0023;
+	
+	font-size:12px;
+
+}
+
+#searchHome a:visited{
+
+	text-decoration: none;
+
+	color: #f24c6a;
+	
+	font-size:12px;
+
+}
+
+
+#searchHome a:hover{
+
+	text-decoration: underline;
+
+	color: #bf0023;
+
+}
+
+
+
+
+
+#ideaLogo {
+
+	float: right;
+
+	width: 150px;
+
+	height: 64px;
+
+}
+
+
+
+/***********************************************/
+
+/* Breadcrumb Divs                              */
+
+/***********************************************/
+
+
+
+#breadCrumbs {
+
+	padding: 5px 0 5px 0px;
+
+	border-top-width: 1px;
+
+	border-bottom-width: 1px;
+
+	border-top-style: solid;
+
+	border-top-color: #Bcd6f8;
+
+	border-bottom-color: #Bcd6f8;
+
+	border-bottom-style: solid;
+
+	font-size: 12px;
+
+}
+
+.alert {
+	font-size: 15px;
+	color: #CC3300;
+	font-weight: bold;
+}
+
+.alert p {
+	font-size: 12px;
+}
+
+
+
+#breadCrumbs ul{
+
+	padding-left: 20px;
+
+	display: inline;
+
+	margin: 0px;
+
+	
+
+}
+
+#breadCrumbs li{
+
+	display: inline;
+
+	padding-left:2px;
+
+}
+
+#breadCrumbs ul li.last{
+
+	font-style: italic;		
+
+}
+
+
+
+#breadCrumbs a{
+
+	text-decoration: none;
+
+	color: #bf0023;
+
+}
+
+#breadCrumbs a:active{
+
+	text-decoration: none;
+
+	color: #bf0023;
+
+}
+
+#breadCrumbs a:visited{
+
+	text-decoration: none;
+
+	color: #f24c6a;
+
+}
+
+
+#breadCrumbs a:hover{
+
+	text-decoration: underline;
+
+	color: #bf0023;
+
+}
+
+
+
+/***********************************************/
+
+/* CONTENT                             */
+
+/***********************************************/
+
+
+
+#contentDiv {
+
+	font-size: 12px;
+
+	margin-top: 15px;
+
+	margin-right: 20px;
+
+	margin-bottom: 0px;
+
+	margin-left: 20px;
+
+}
+
+
+
+#contentDiv a{
+
+	text-decoration: none;
+
+	color: #bf0023;
+
+}
+
+#contentDiv a:visited, #contentDiv a:active{
+
+	text-decoration: none;
+
+	color: #bf0023;
+
+}
+
+#contentDiv a:hover{
+
+	text-decoration: underline;
+
+	color: #bf0023;
+
+}
+
+/***********************************************/
+
+/* DOCUMENTS BUTTON                            */
+
+
+
+/***********************************************/
+
+#seriesDiv #documentsbutton
+{
+  width: 62px;
+  height: 15px;
+  font-size:10px;
+  color:#1010ff;
+  background-image: url(../images/reg_doc_button_bg.jpg);
+  text-decoration:none;
+  padding:1px 9px 9px 3px;
+  font-family:tahoma;
+  background-repeat:no-repeat;
+
+}
+
+#seriesDiv #documentsbutton:visited
+{ 
+  clear:none;
+  color:#00004C;
+  background-image: url(../images/visited_doc_button_bg.jpg);
+  text-decoration:none;
+  padding:1px 9px 9px 3px;
+  font-family:tahoma;
+  background-repeat:no-repeat;
+  }
+
+#seriesDiv #documentsbutton:hover
+{ 
+  color:#000000;
+  background-image: url(../images/hover_doc_button_bg.jpg);
+  text-decoration:none;
+  padding:1px 9px 9px 3px;
+  font-family:tahoma;
+  background-repeat:no-repeat;
+}
+
+
+
+#seriesDiv #interactiveDataBtn
+{
+  width: 84px;
+  height: 14px;
+  font-size:10px;
+  color:#FFFFFF;
+  background-image: url(../images/interactive_data_buttonbg.gif);
+  text-decoration:none;
+  padding:1px 9px 9px 3px;
+  font-family:tahoma;
+  background-repeat:no-repeat;
+
+}
+
+#seriesDiv #interactiveDataBtn:visited
+{ 
+  clear:none;
+  color:#FFFFFF;
+  background-image: url(../images/visited_interactive_data_buttonbg.gif);
+  text-decoration:none;
+  padding:1px 9px 9px 3px;
+  font-family:tahoma;
+  background-repeat:no-repeat;
+  }
+
+#seriesDiv #interactiveDataBtn:hover
+{ 
+  color:#FFFFFF;
+  background-image: url(../images/interactive_data_buttonbg.gif);
+  text-decoration:none;
+  padding:1px 9px 9px 3px;
+  font-family:tahoma;
+  background-repeat:no-repeat;
+}
+
+
+
+#seriesDiv #voluntaryIntDataBtn
+{
+  width: 82px;
+  height: 20px;
+  font-size:10px;
+  color:#000000;
+  background-image: url(../images/voluntary_int_data_bg.gif);
+  text-decoration:none;
+  padding:1px 9px 9px 3px;
+  font-family:tahoma;
+  background-repeat:no-repeat;
+
+}
+
+#seriesDiv #voluntaryIntDataBtn:visited
+{ 
+  clear:none;
+  color:#000000;
+  background-image: url(../images/visited_voluntary_int_data_bg.gif);
+  text-decoration:none;
+  padding:1px 9px 9px 3px;
+  font-family:tahoma;
+  background-repeat:no-repeat;
+  }
+
+#seriesDiv #voluntaryIntDataBtn:hover
+{ 
+  color:#000000;
+  background-image: url(../images/voluntary_int_data_bg.gif);
+  text-decoration:none;
+  padding:1px 9px 9px 3px;
+  font-family:tahoma;
+  background-repeat:no-repeat;
+}
+
+
+
+
+#searchTips {
+
+	float: left;
+
+	margin-right: 20px;
+
+	width: 150px;
+
+	height: auto;
+
+}
+
+
+
+.legend {
+
+	background-color:#FAD549;
+
+	font-size: 9px;
+
+	padding: 0px;
+
+}
+
+
+
+/***********************************************/
+
+/* Filer Company Divs                              */
+
+/***********************************************/
+
+
+
+#filerDiv{
+
+	margin: 15px 0 10px 0;
+
+	background-color: #BCD6F8;
+
+	padding: 3px;
+
+	overflow: hidden;
+
+	width: 100%;
+
+	clear: both;
+
+}
+
+
+
+.companyInfo {
+
+}
+
+
+
+.companyInfo .companyName {
+
+	font-size: 15px;
+
+	font-weight: bold;
+
+	display: block;
+
+	padding-bottom: 5px;
+
+}
+
+
+
+.companyInfo .companyName .cikLabel {
+
+	font-size: 15px;
+
+	font-weight: normal;
+
+}
+
+
+
+.companyInfo p {
+
+	display: block;
+
+	margin: 0px;
+
+}
+
+
+
+.mailer {
+
+	font-size: 12px;
+
+	float: right;
+
+	width: 20%;
+
+	padding: 0px;
+
+}
+
+.mailerAddress {
+
+	font-style:italic;
+
+	display: block;
+
+	text-transform: uppercase;
+
+}
+
+
+
+.clear {
+
+	clear: both;
+
+	line-height: 0;
+
+	font-size: 0;
+
+}
+
+	
+
+/***********************************************/
+
+/* Form Information Divs                       */
+
+/***********************************************/	
+
+
+
+#formDiv{
+
+	margin: 5px 0px 0px 0px;
+
+	background-color: #F5F5EB;
+
+	overflow:hidden;
+
+	border: 1px solid #FFCC33;
+
+	clear: both;
+	
+	float:left;
+	
+	width:100%;
+	
+	position:relative;
+	
+	word-wrap:break-word;
+}
+
+#formDiv #formHeader {
+
+	font-size: 11px;
+
+	background-color: #FCE68D;	
+
+	padding: 3px 0px 3px 10px;
+
+	height: 18px;
+
+
+}
+
+#formDiv ul{
+
+margin: 0;
+
+list-style-type: none;
+
+}
+
+
+#formDivPreviewer{
+	
+	left: 4px;
+
+	margin: 2px;
+	
+	padding: 3px;
+
+	background-color: #F5F5EB;
+
+	overflow:hidden;
+
+	border: 1px solid #FFCC33;
+
+	clear: both;
+	
+	float:left;
+	
+	width:189px;
+	
+	position:relative;
+	
+	word-wrap:break-word;
+}
+
+#formDivPreviewer #formHeader {
+
+	font-size: 11px;
+
+	background-color: #FCE68D;	
+
+	padding: 3px 0px 3px 10px;
+
+	height: 18px;
+
+}
+.unhidden{display:block}
+.hidden{display:none}
+
+#formDivPreviewer ul{
+
+margin: 0;
+
+list-style-type: none;
+
+}
+
+#formName {
+
+	font-style:italic;
+
+	float: left;
+
+}
+
+#secNum {
+
+	float: right;
+
+	padding-right: 15px;
+
+}
+
+
+
+#formDiv .formContent {
+
+	padding: 3px 3px 3px 10px;	
+
+}
+
+#formDiv .formContent .formGrouping {
+
+	float:left;
+
+	margin-right:5px;
+
+	width: 22%;
+
+	font-size:11px;
+
+}
+
+
+
+#formDiv .formContent .formGrouping .infoHead {
+
+	font-weight: bold;
+
+	float: left;
+
+	width: 100%; /*change to 22% for sake of stuff in viewer */
+
+	font-size: 12px;
+
+}
+
+
+
+#formDiv .formContent .formGrouping .info {
+
+	margin-left: 15px;
+
+	clear: left;
+
+}
+
+#formDivPreviewer .formContent {
+
+	padding: 3px 3px 3px 10px;	
+
+
+}
+
+#formDivPreviewer .formContent .formGrouping {
+
+	float:left;
+
+	margin-right:5px;
+
+	width:189px;
+
+	font-size:11px;
+
+}
+
+
+
+#formDivPreviewer .formContent .formGrouping .infoHead {
+
+	font-weight: bold;
+
+	float: left;
+
+	width: 100%;
+
+	font-size: 12px;
+
+}
+
+
+
+#formDivPreviewer .formContent .formGrouping .info {
+
+	margin-left: 15px;
+
+	clear: left;
+
+}
+
+
+
+
+/***********************************************/
+
+/* File Information Table                            */
+
+/***********************************************/	
+
+
+
+.tableFile {
+
+	margin: 0px;
+
+	background:#FFFFFF;
+
+	border: 1px solid #BCD6F8;
+
+	font-family:Arial, Helvetica, sans-serif;
+
+	font-size: 12px;
+
+	width: 99%;
+
+}
+
+
+
+.buttons {
+
+	height: 14px;
+
+	margin: 8px 0px 8px 0px;
+
+}
+
+
+
+.tableFile th {
+
+	text-align: left;
+
+	background-color:#BCD6F8;
+
+}
+
+
+
+.tableFile .blueRow {
+
+	background-color: #EEF4FD;
+
+}	
+
+
+
+
+
+/***********************************************/
+
+/* Series/Classes Information Table                            */
+
+/***********************************************/	
+
+
+
+.seriesClassTitle {
+
+	font-size: 14px;
+
+	font-weight: bold;
+
+	padding: 20px 0px 0px 10px;
+
+}
+
+
+
+#seriesDiv {
+
+	width: 100%;
+
+	clear: both;
+
+	margin-top: 10px;
+
+	margin-right: 0px;
+
+	margin-bottom: 0px;
+
+	margin-left: 0px;
+
+}
+
+
+
+.tableSeries {
+
+	margin: 0px;
+
+	background:#FFFFFF;
+
+	font-size: 12px;
+
+	width: 100%
+
+}
+
+
+
+.tableSeries .CIKname {
+
+	text-align: left;
+
+	background-color:#BCD6F8;
+
+	font-size: 14px;
+
+	font-weight: bold;
+
+	padding-bottom: 2px;
+
+}
+
+.tableSeries .seriesName {
+
+	text-align: left;
+
+	background-color:#EEF4FD;
+
+	font-size: 12px;
+
+	font-weight: bold;
+
+	padding-left: 25px;}
+
+
+
+
+
+.tableSeries .contractRow {
+
+	font-size: 11px;
+
+	background-image: url(../images/cellBorder.gif);
+
+	background-repeat: repeat-x;
+
+	background-position: bottom;
+
+	padding: 3px;
+
+}
+
+
+
+.tableSeries .classContract {
+
+	text-align: right;
+
+	padding-right: 35px;
+
+	font-style: italic;
+
+}
+
+
+
+.tableSeries .classContractHead {
+
+	font-weight: bold;
+
+	background-color: #F5F5EB;	
+
+}
+
+
+
+
+
+/***********************************************/
+
+/* Search FORM Divs                            */
+
+/***********************************************/	
+
+
+
+#searchFormDiv {
+
+	padding: 7px;
+
+	border: 1px solid #BCD2E9;
+
+	margin-top: 8px;
+
+	overflow:hidden;
+
+	width: 99%;
+
+}
+
+
+
+#searchFormDiv #first_errorloc {
+
+	float: left;
+	
+	width: 100%;
+}
+
+
+
+#searchFormDiv #second_errorloc {
+	
+	position: relative;
+	
+	width: 100%;
+	
+	float: left;
+
+	padding-left: 50%;
+}	
+
+
+
+#searchFormDiv #third_errorloc {
+	
+	position: relative;
+	
+	width: 100%;
+	
+	float: left;
+
+	padding-left: 50%;
+}
+
+
+
+#searchFormDiv .searchFormFieldsLeft {
+
+	float: left;
+
+	width: 60%;
+
+	margin-top: 10px;
+
+	padding: 0px;
+
+}
+
+
+
+#searchFormDiv .searchFormFieldsRight {
+
+	float: left;
+
+	width: 40%;
+
+	margin-top: 10px;
+
+	padding: 0px;
+
+}
+
+
+
+#searchFormDiv .searchFormFields h4 {
+
+	font-weight: bold;
+
+	font-size: 12px;
+
+	padding: 3px;
+
+	display: block;
+
+	line-height: 12px;
+
+	margin-top: 0;
+
+	margin-bottom: 3px;
+
+}
+
+
+
+
+
+#searchFormDiv .searchFormFields {
+
+	float: left;
+
+	margin-top: 2px;
+
+	width: 49%;
+
+	padding: 0px;
+
+	margin-right: 7px;
+
+}
+
+
+
+#searchFormDiv .searchFormFields ul {
+
+	clear: both;
+
+	margin-top: 0px;
+
+	padding-top:0px;
+
+}
+
+
+
+#searchFormDiv .searchFormFields ul li {
+
+	display: inline-block;
+
+	background-image: url(../images/bullet.gif);
+
+	background-repeat: no-repeat;
+
+	list-style-type: none;
+
+	padding: 0px 0px 0px 30px;
+
+	margin: 0 0 7px 0;
+
+	text-align:left;
+
+}
+
+
+
+#xbrlLinks {
+
+	padding: 0px 0px 0px 0px;
+
+	margin: 0px 0px 0px 0px;
+
+}
+
+
+
+#xbrlLinks ul li{
+
+	display: inline;
+
+	list-style-type: none;
+
+	padding: 0px 0px 0px 30px;
+
+	margin: 0px;
+
+	float: right;
+
+	font-size: 10px;
+
+}
+
+	
+
+
+
+/***********************************************/
+
+/* Search Page LI                              */
+
+/***********************************************/	
+
+
+
+.searchDiv {
+
+	float: left;
+
+	width: 36%;
+
+	margin-top: 10px;
+
+	padding: 0px;
+
+}
+
+
+
+.searchDiv ul {
+
+	clear: both;
+
+}
+
+
+
+
+
+.searchDiv li {
+
+	font-weight: bold;
+
+	display: inline-block;
+
+	background-image: url(../images/bullet.gif);
+
+	background-repeat: no-repeat;
+
+	list-style-type: none;
+
+	padding: 0 0 0 30px;
+
+	margin: 0px;
+
+	text-align:left;
+
+}
+
+
+
+
+
+.liDesc {
+
+	display: block;
+
+	font-size: 10px;
+
+	font-style: italic;	
+
+}
+
+
+
+.searchTips {
+
+	margin-top: 5px;
+
+	float: left;
+
+	width: 150px;
+
+	padding: 5px;
+
+	font-size:10px;
+
+	border: 1px solid #A5C8F6;
+
+}
+
+
+
+.searchTipPhrase {
+
+	border-bottom-width: 1px;
+
+	border-bottom-style: solid;
+
+	border-bottom-color: #6666CC;
+
+	display: block;	
+
+	padding: 2px;
+
+	clear: both;
+
+}
+
+
+
+.searchTipPhrase a {
+
+	text-decoration: none;
+
+}
+
+
+
+.searchTipsTitle {
+
+	background-color:#003399;
+
+	color: #FFFFFF;
+
+	float: left;
+
+
+	font-weight:bold;
+
+	font-size: 12px;
+
+	padding: 3px;
+
+	width: 144px;
+
+}
+
+
+
+.xmlFeedLinksBox {
+
+	float: right;
+
+}
+
+
+
+
+
+.xmlFeedLinks {
+
+	display: block;
+
+	font-size: 10px;
+
+	text-align: right;
+
+}
+
+
+
+
+
+/***********************************************/
+
+/* COMPANY SEARCH FORM FIELDS                              */
+
+/***********************************************/
+
+
+
+.companySearchForm {
+
+	padding: 10px;       
+
+	margin: 0;
+
+	background-color: #BCD6F8;
+
+	border: 1px solid #9BC1F4;	
+
+}
+
+
+
+.companySearchForm fieldset {
+
+	border: solid 2px white;
+
+	background-color:#E0ECFC;
+
+	padding: 5px;
+
+	
+
+}
+
+
+
+.companySearchForm .fieldset {
+
+	border: solid 2px white;
+
+	background-color:#E0ECFC;
+
+	padding: 5px;	
+	
+	min-height: 250px;
+	
+	_height: 250px;
+
+}
+
+
+
+.companySearchForm label { 
+
+	display: inline-block;  /* block float the labels to left column, set a width */
+
+	padding: 0; 
+
+	width: 150px; 
+
+	margin: 5px 0px 0px 0px; /* set top margin same as form input - textarea etc. elements */
+
+	text-align: right;
+
+}
+
+label.companySearchFormTLA { 
+
+	display: inline-block;  
+
+	width: auto; 
+
+	padding: 0; 
+
+	margin: 5px 0px 0px 0px; /* set top margin same as form input - textarea etc. elements */
+
+	text-align: left;
+
+}
+
+
+
+.companySearchForm .alignLeft { 
+
+	display: block;  /* block float the labels to left column, set a width */
+
+	float: left; 
+
+	width: 150px; 
+
+	padding: 0; 
+
+	margin: 5px 0px 0px 0px; /* set top margin same as form input - textarea etc. elements */
+
+	text-align: right; 
+
+}
+
+
+#reportDiv {
+	width:auto;
+}
+
+.alignRight {
+
+	display: block; 
+
+	margin: 5px 5px 0px 0px; 
+
+	font-weight: bold;
+
+	text-align: left;
+		
+	float:left;
+	
+	width:auto;
+		
+	position:relative;
+	
+}
+
+
+
+.companySearchForm .alignRightInput {
+
+	display: block;  
+
+	padding: 0;
+
+	margin: 5px 0px 0px 150px; 
+
+}
+
+
+
+.companySearchForm .browse {
+
+	padding: 0;
+
+}
+
+
+
+
+
+.companySearchForm input, .companySearchForm textarea, .companySearchForm select {
+
+	/* display: inline; inline display must not be set or will hide submit buttons in IE 5x mac */
+
+	width:auto;      /* set width of form elements to auto-size, otherwise watch for wrap on resize */
+
+	margin:5px 0px 0px 10px; 
+
+	/* set margin on left of form elements rather than right of
+
+                              label aligns textarea better in IE */
+
+}
+
+
+
+.companySearchForm small {
+
+	display: block;
+
+	font-style:italic;
+
+	margin: 0px 0px 5px 160px; /* instructions/comments left margin set to align w/ right column inputs */
+
+	padding: 1px 3px;
+
+	font-size: 88%;
+
+}
+
+
+
+.companySearchForm .required{font-weight:bold;} /* uses class instead of div, more efficient */
+
+
+
+.companySearchForm br {
+
+	clear:left; /* setting clear on inputs didn't work consistently, so brs added for degrade */
+
+}
+
+
+
+
+
+#help {
+
+	clear: both;
+
+}
+
+
+
+
+
+.renderedRed {
+
+	font-weight: bold;
+
+	color: #993333;
+
+}
+
+.smallLink {
+
+	font-size: 12px;
+	
+	font-weight:bold;
+
+	margin: 0px 5px 0px 20px;
+
+}
+
+.italicText {
+
+	margin: 10px;
+
+	font-style: italic;
+
+}
+
+
+
+/***********************************************/
+
+/* Search Results Page DIV                         */
+
+/***********************************************/
+
+
+
+
+
+.searchResultsDiv {
+
+	margin: 0px;
+
+}
+
+
+
+.searchResultsDiv a{
+
+	font-size: 10px;
+
+}
+
+
+
+.searchResultsDiv fieldset{
+
+	padding: 7px;
+
+	border: 1px solid #BCD2E9;
+
+	margin-top: 8px;
+
+
+
+}
+
+
+
+.searchResultsDiv h1 {
+
+	font-size: 14px;
+
+	font-weight: bold;
+
+	display: block;
+
+	float: left;
+
+	margin: 0px;
+
+	padding-right: 0;
+
+	padding-bottom: 0;
+
+	padding-left: 0;
+
+	}
+
+
+
+.filterWrap {
+
+	float: left;
+
+	margin: 0 10px 0 10px;
+
+	}
+
+	
+
+.filterWrap input, .filterWrap select{
+
+	font-size: 10px;
+
+	}
+
+	
+
+.searchResultsDiv label{
+
+	font-weight: bold;
+
+	float: left;
+
+}
+
+
+
+.searchResultsDiv input[type="text"]{
+
+	width: 100px;
+
+}
+
+
+
+.searchResultsDiv input[type="radio"]{
+
+	width: auto;
+
+}
+
+
+
+
+
+.searchResultsDiv select{
+
+	width: auto;
+
+}
+
+
+
+.tableFile2 {
+
+	margin: 0px;
+
+	background:#FFFFFF;
+
+	border: 1px solid #BCD6F8;
+
+	font-size: 12px;
+
+	width: 100%
+
+}
+
+
+
+.tableFile2 th {
+
+	text-align: left;
+
+	background-color:#BCD6F8;
+
+}
+
+
+
+.tableFile2 .blueRow {
+
+	background-color: #EEF4FD;
+
+}	
+
+
+.items{
+
+	clear: left;
+
+	float: left;
+
+	font-size: 10px;
+
+	margin: 10px 0 5px 0;
+
+	padding: 0 0 0 20px;
+
+}
+
+
+
+.rightAlign{
+
+	float: right;
+
+	margin: 5px 0 5px 0;
+
+}
+
+
+
+
+
+.documents {
+
+	font-size: 11px;
+
+	padding: 5px;
+
+}
+
+
+
+.documents ol {
+
+	font-size: 12px;
+
+	padding: 5px;
+
+	margin-top: 0;
+
+	margin-right: 0;
+
+	margin-bottom: 0;
+
+	margin-left: 30px;
+
+}
+
+
+
+
+
+/***********************************************/
+
+/* File Information TABS                              */
+
+/***********************************************/	
+
+.TabbedPanels {
+
+	margin: 0px;
+
+	padding: 5px 0px 0px 0px;
+
+}
+
+
+
+.TabbedPanelsTabGroup {
+
+	margin: 0px;
+
+	padding: 0px;
+
+	background-position: bottom;
+
+	height: 35px;		
+
+}
+
+
+
+
+
+.TabbedPanelsTab {
+
+	position: relative;
+
+	top: 1px;
+
+	float: left;
+
+	padding: 4px 10px;
+
+	margin: 15px 1px 0px 0px;
+
+	list-style: none;
+
+	border: solid 1px #3F509D;
+
+	-moz-user-select: none;
+
+	-khtml-user-select: none;
+
+	cursor: pointer;
+
+	font-size: 12px;
+
+	background-image: url(../images/tabsgif.gif);
+
+}
+
+
+
+.TabbedPanelsTabHover {
+
+	background-image: url(../images/tabSelected.gif);
+
+	color: #FFFFFF;
+
+}
+
+
+
+.TabbedPanelsTabSelected {
+
+	border-bottom: 1px solid #3F509D;
+
+	font-size: 12px;
+
+	font-weight: bold;
+
+	color: #fff;
+
+	background-image: url(../images/tabSelected.gif);
+
+}
+
+
+
+.TabbedPanelsTab a {
+
+	color: black;
+
+	text-decoration: none;
+
+	font-size: 10px;
+
+}
+
+
+
+.TabbedPanelsContentGroup {
+
+	border: solid 1px #3F509D;
+
+	background-color: #F5F5EB;
+
+	clear: both;
+
+}
+
+
+
+.TabbedPanelsContentGroup2 {
+
+	border: solid 1px #3F509D;
+
+	background-color: #ffffff;
+
+	clear: both;
+
+}
+
+
+
+.TabbedPanelsContent {
+
+	padding: 0px 0px 4px 0px;
+
+	font-size: 12px;
+
+	margin: 0 2px 0px 5px;
+
+	width: 100%;
+
+	overflow:hidden;
+
+}
+
+
+
+
+
+.TabbedPanelsContentVisible {
+
+}
+
+
+
+.VTabbedPanels .TabbedPanelsTabGroup {
+
+	float: left;
+
+	width: 10em;
+
+	height: 20em;
+
+	background-color: #EEE;
+
+	position: relative;
+
+	border: solid 1px #3F509D;	
+
+}
+
+
+
+.VTabbedPanels .TabbedPanelsTab {
+
+	float: none;
+
+	margin: 0px;
+
+	border-top: none;
+
+	border-left: none;
+
+	border-right: none;
+
+}
+
+
+
+.VTabbedPanels .TabbedPanelsTabSelected {
+
+	border-bottom: solid 1px #3F509D;
+
+	background-image: url(../images/tabSelected.gif);
+
+}
+
+
+
+.VTabbedPanels .TabbedPanelsContentGroup {
+
+	clear: none;
+
+	float: left;
+
+	padding: 0px;
+
+	width: 30em;
+
+	height: 20em;
+
+}
+
+
+
+/***********************************************/
+
+/* FOOTER DIV                             */
+
+
+
+/***********************************************/
+
+
+
+#footer {
+
+	margin: 25px 20px 15px 20px;
+
+	padding-bottom: 25px;
+
+	font-size: 12px;
+
+	clear: both;	
+
+}
+
+#footer .currentURL {
+
+	border-bottom: solid 1px #999999;
+
+	padding-bottom: 10px;
+
+	font-style:italic;
+
+	display: block;
+
+}
+
+
+
+#footer .links {
+
+	font-size: 11px;
+
+	color: #3B4FAE; 
+
+	float: left;
+
+	margin-top: 10px;
+
+	display: block;
+
+}
+
+
+
+#footer .modified {
+
+	font-size: 11px;
+
+	float: right;
+
+	margin-top: 10px;
+
+	display: block;
+
+}
+
+
+
+#footer .links a{
+
+	text-decoration: none;
+
+	color: #3B4FAE;
+
+}
+
+
+
+#footer .links a: hover{
+
+	text-decoration: none;
+
+	color: #3B4FAE;
+
+}
+
+
+
+#footer .links a: active{
+
+	text-decoration: none;
+
+	color: #3B4FAE;
+
+}
+
+
+
+#footer .links a: visited{
+
+	text-decoration: none;
+
+	color: #3B4FAE;
+
+}
+
+
+
+.companyMatch {
+
+	font-weight: bold;
+
+	color: #0066CC;
+
+}
+
+
+
+/* red link, underline on hover, similar to default links */
+
+/* used on menu-level pages as main category links */
+
+A.mainCat:Link, A.mainCat:Visited, A.mainCat {
+
+  color : #BF0023;
+
+  text-decoration: none;
+
+}
+
+A.mainCat:Active {
+
+  color : #F9D449;
+
+  text-decoration: underline;
+
+}
+
+A.mainCat:Hover  {
+
+  color : #BF0023;
+
+  text-decoration: underline;
+
+}
+
+
+
+A.xbrlviewer:Link, A.xbrlviewer:Visited {
+
+  color : #BF0023;
+
+  text-decoration: none;
+
+	font-size: 11px;
+
+}
+
+
+
+A.xbrlviewer:Active, A.xbrlviewer:Hover {
+
+  color : #BF0023;
+
+  text-decoration: underline;
+
+	font-size: 11px;
+
+}
+
+
+
+LI.helpful {
+
+  padding-bottom: 20;
+
+}
+
