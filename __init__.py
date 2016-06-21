@@ -1152,9 +1152,19 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             modelXbrl.efmOptions = options  # save options in testcase's modelXbrl
         if modelXbrl.modelDocument.type not in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INSTANCE):
             return
+        reportedFiles = {modelXbrl.modelDocument.basename} | referencedFiles(modelXbrl)
+        sourceDir = modelXbrl.modelDocument.filepathdir
+        def addRefDocs(doc):
+            for refDoc in doc.referencesDocument.keys():
+                if refDoc.filepath and refDoc.filepath.startswith(sourceDir):
+                    reportedFile = refDoc.filepath[len(sourceDir)+1:]
+                    if reportedFile not in reportedFiles:
+                        reportedFiles.add(reportedFile)
+                        addRefDocs(refDoc)
+        addRefDocs(modelXbrl.modelDocument)
         report = PythonUtil.attrdict( # simulate report
             isInline = modelXbrl.modelDocument.type == ModelDocument.Type.INLINEXBRL,
-            reportedFiles = {modelXbrl.modelDocument.basename} | referencedFiles(modelXbrl),
+            reportedFiles = reportedFiles,
             renderedFiles = set(),
             entryPoint = {"file": modelXbrl.modelDocument.uri},
             url = modelXbrl.modelDocument.uri,
