@@ -2297,5 +2297,23 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
     margin: 30px 20px;
     }
 }
+.radio-taggedFact{
+    position: relative;
+    display: block;
+    min-height: 20px;
+    margin-top: -6px;
+    margin-bottom: 2px
+}
+.radio-inline-taggedFact {
+    display: inline-block;
+    padding-left: 6px;
+    margin-bottom: 0;
+    font-weight: 400;
+    vertical-align: top;
+    cursor: pointer;
+}
+button::-moz-focus-inner {border: 1px dotted transparent;}
+
+button:focus::-moz-focus-inner {border-color: white} 
 /*input[type=text]::-ms-clear {  display: none; width : 0; height: 0; }
 input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }*/

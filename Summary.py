@@ -108,7 +108,7 @@ class Summary(object):
         self.qnameSet = qnameSet
         self.refSet = refSet
         self.referencePositionDict = dict()
-        for i, r in enumerate(refSet):
+        for i, r in enumerate(sorted(list(refSet))): # WcH 6/20/2016 stabilize output ordering.
             self.referencePositionDict[r] = i
             
     @property
@@ -537,10 +537,11 @@ class InstanceSummary(object):
                                    
             presentations = parentChildRelationshipSet.modelRelationshipsTo[concept]
             if presentations is not None and len(presentations) > 0:                
-                roleList = tag['presentation'] = []
+                roleSet = set()
                 for presentation in presentations:                    
                     role =  presentation.linkrole 
-                    if (role not in roleList): roleList += [role]                
+                    roleSet.add(role)
+                tag['presentation'] = sorted(list(roleSet)) # WcH 6/20/2016 sort to make MetaLinks files more comparable            
             labels = conceptLabelRelationshipSet.modelRelationshipsFrom[concept]
             if labels is not None and len(labels) > 0:
                 langDict = tag['lang'] = {}

@@ -10,6 +10,17 @@ var _dataList = ['Amounts Only', 'Text Only', 'Calculations Only', 'Negatives On
 var _tagList = ['Standard Only', 'Custom Only'];
 var App_Find = {
     init:function() {
+	
+	$(document).ready(function(){
+	//$("html,body").animate({scrollTop: 0}, 100);
+	if(screen.width>=768 && ((window.orientation) || (window.orientation=='0') || (window.orientation=='180'))){
+	$("html,body").animate({scrollTop: 0}, 100);
+	}
+	if(screen.width>=768 && (((window.orientation=='90') || (window.orientation=='-90')))){
+	$("html,body").animate({scrollTop: 0}, 100);
+		}
+});
+
 		$('.dropdown-submenu > a').submenupicker();
 
 		$("#settings-modal").draggable({
@@ -3193,6 +3204,21 @@ var App_Find = {
             });
 
             header.find('.btn-remove').on('click', function() {
+
+if(screen.width>=768 && ((window.orientation) || (window.orientation=='0') || (window.orientation=='180'))){
+
+
+
+            $(".fixedMenuBar").css('position', 'absolute');
+        
+        
+}
+else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation=='-90')))){
+
+	$(".fixedMenuBar").css('position', 'absolute');
+
+}
+
 
                 App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected');
                 //$(this).parents('.selection-detail-container').hide('slide');

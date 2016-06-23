@@ -81,7 +81,12 @@ def move_clobbering_file(src, dst):  # this works across Windows drives, simple 
     destination = join(dstfolder, dstfile)
     if exists(join(dstfolder, dstfile)): remove(destination)                     
     shutil.copy2(src, destination)
-    remove(src)
+    try:
+        remove(src)
+    except OSError as err:
+        # HF: fix msg in next release ("Non fatal Cleanup problem: {}".format(err))
+        return None
+
     return destination
 
 

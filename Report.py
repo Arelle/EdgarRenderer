@@ -1096,8 +1096,10 @@ class Report(object):
         while cubeCount < 3: # if every fact appears in 3 or more reports, don't even bother.
             cubeCount += 1
             for row in self.rowList:
-                for fact in row.factList:
-                    if (fact.xValid and \
+                for cell in row.cellList: # WcH 6/19/2016 do not consider facts in hidden cells
+                    fact = None
+                    if cell is not None and not getattr(cell.column,'isHidden',False): fact = cell.fact
+                    if (fact is not None and fact.xValid and \
                         (qnIXbrl11Hidden not in fact.ancestorQnames)):
                         anchor = \
                         { 'contextRef':fact.contextID
@@ -1112,7 +1114,7 @@ class Report(object):
                         if reportSummary.firstAnchor is None:
                             reportSummary.firstAnchor = anchor
                             anchor['first'] = True # flag makes it easier later to see when first same as unique
-                        if self.controller.factCubeCount[fact] == 1:
+                        if self.controller.factCubeCount[fact] == 1 and reportSummary.uniqueAnchor is None: # WcH 6/19/2016
                             reportSummary.uniqueAnchor = anchor
                             anchor['unique'] = True # flag makes it easier later to see when first same as unique
                             return
@@ -1351,13 +1353,14 @@ class Row(object):
                         # only in third case, if there's a fact and it's nil, will it not throw an exception
                         contextID = cell.fact.contextID
                         isNil = True
-                        ratio = 'Ratio'
+                        unitId = cell.fact.unitID
                     except AttributeError:
                         isNil = False
-                        contextID = ratio = ''
+                        contextID = unitId = ''
 
                     # lots of stuff here just to maintain compatibility with re2
-                    cellETree = SubElement(cellsETree , 'Cell', FlagID='0', ContextID=contextID, UnitID=ratio)
+                    cellETree = SubElement(cellsETree , 'Cell', FlagID='0', ContextID=contextID)
+                    if unitId is not None and len(unitId) > 0: cellETree.set('UnitID',unitId)
                     SubElement(cellETree, 'Id').text = str(i+1)
                     SubElement(cellETree, 'IsNumeric').text = 'false'
                     SubElement(cellETree, 'IsRatio').text = str(isNil).casefold()
@@ -1374,8 +1377,12 @@ class Row(object):
                         self.report.writeFootnoteIndexerEtree(cell.footnoteNumberSet, cellETree)
                     else:
                         SubElement(cellETree, 'FootnoteIndexer')
-                    SubElement(cellETree, 'CurrencyCode')
-                    SubElement(cellETree, 'CurrencySymbol')
+                    if cell is not None and cell.fact is not None: # WCH 6/17/2016 nil numeric facts have units.
+                        SubElement(cellETree, 'CurrencyCode').text = cell.currencyCode
+                        SubElement(cellETree, 'CurrencySymbol').text = cell.currencySymbol
+                    else:
+                        SubElement(cellETree, 'CurrencyCode')
+                        SubElement(cellETree, 'CurrencySymbol')
                     SubElement(cellETree, 'IsIndependantCurrency').text = 'false'
                     SubElement(cellETree, 'ShowCurrencySymbol').text = 'false'
                     SubElement(cellETree, 'DisplayDateInUSFormat').text = 'false'
@@ -1621,7 +1628,7 @@ class Cell(object):
 
         if      (fact is not None and
                  fact.isNumeric and
-                 not fact.isNil and
+                 # not fact.isNil and # WCH 6/17/2016 numeric nil facts have units
                  fact.unit is not None and # unit can be none if there are xbrl2.1 or inline issues
                  (fact.concept.isMonetary or Utils.isFactTypeEqualToOrDerivedFrom(fact, Utils.isPerShareItemTypeQname))):
 
@@ -1634,7 +1641,7 @@ class Cell(object):
                 if right == 'shares':
                     currencySymbol = left
             self.currencySymbol = currencySymbol
-            self.showCurrencySymbol = True
+            self.showCurrencySymbol = not fact.isNil # WCH 2016-06-17 numeric nil facts have units
         else:
             self.currencyCode = None
             self.unitID = None # we need to tell USD and USD/share apart.  otherwise they have the same currencySymbol and currencyCode.

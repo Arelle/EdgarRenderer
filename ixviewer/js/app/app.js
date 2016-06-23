@@ -7,7 +7,7 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  * */
 var App = {
-    Version: '1.0.0.81',
+    Version: '1.0.0.83',
     InlineDoc:null,
     XMLInlineDoc:null,
     XBRLDoc:null,
@@ -177,16 +177,30 @@ var App = {
 
         ele.append('<div class="spinner" style="position:absolute;left:45%;top:43%;zindex:2000000;"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
         setTimeout(function() {
-
-            callback();
+        	try
+        	{
+        		callback();
+        	}
+        	catch(Error)
+        	{
+        		App.showMessage("The selected feature has encountered a processing issue and is not able to complete at this time.");
+        		App.hideSpinner();
+        	}
         }, 200);
     },
         showSpinner1:function(ele, callback) {
 
         ele.append('<div class="spinner" style="position:absolute;top:20%;left:50%;zindex:2000000;"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
         setTimeout(function() {
-
-            callback();
+        	try
+        	{
+        		callback();
+        	}
+        	catch(Error)
+        	{
+        		App.showMessage("The selected feature has encountered a processing issue and is not able to complete at this time.");
+        		App.hideSpinner();
+        	}
         }, 200);
     },
     hideSpinner:function() {
@@ -284,7 +298,7 @@ var App_RemoteDocs = {
     	
     	var hrefPath = "#";
         var hrefZip = "#";
-         
+        // This code assumes that the doc= argument is a simple URL with no query components.
         var dir = docPath.substring(0, docPath.lastIndexOf("/")+1);
         
         // getting _htm.xml file details
@@ -995,7 +1009,7 @@ $(window).load(function() {
         }
             	
         $('#alert-modal').modal('show');
-        document.getElementById('browser-compitability').innerHTML  =note;
+        document.getElementById('browser-compatibility').innerHTML  =note;
         
     }
 });

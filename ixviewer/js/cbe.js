@@ -11,10 +11,10 @@
      * Common namespaces
      */
     var _namespaces = {
-        'ixt':'http://www.xbrl.org/inlineXBRL/transformation/2010-04-20',
+        //'ixt':'http://www.xbrl.org/inlineXBRL/transformation/2010-04-20',
         'link':'http://www.xbrl.org/2003/linkbase',
         'xml':'http://www.w3.org/XML/1998/namespace',
-        'ixtex':'urn:inlinexbrl:transformation:rules:xmlns:ixtex:1.0',
+        //'ixtex':'urn:inlinexbrl:transformation:rules:xmlns:ixtex:1.0',
         'xhtml':'http://www.w3.org/1999/xhtml',
         'xbrli':'http://www.xbrl.org/2003/instance',
         'xl':'http://www.xbrl.org/2003/XLink',
@@ -151,24 +151,10 @@
                 }
             };
 
-            /*var _setDocumentCustomPrefix = function() {
-
-                var domains = ["w3.org", "xbrl.org", "fasb.org", "sec.gov", "compsciresources.com"];
-                for (var k in _inlineDocNamespaces) {
-
-                    var a = document.createElement('a');
-                    a.href = _inlineDocNamespaces[k];
-                    var hostname = a.host.replace(':80', '').split('.').slice(-2).join(".");
-                    if (domains.indexOf(hostname) == -1) {
-                        self.customPrefix = k;
-                        break;
-                    }
-                }
-            };*/
-            
             var _setDocumentCustomPrefix = function() {
-
-                self.customPrefix = _cacheInstance.nsprefix;
+            	if (_cacheInstance != null) {
+            		self.customPrefix = _cacheInstance.nsprefix;
+            	}
             };
 
             var _setInstancePrefix = function() {
@@ -243,27 +229,40 @@
             	var uri = URI(window.location.href);
 		        var queryAry = URI.parseQuery(uri.query());
 		        var dir;
-		        var query;
+		        var docUrl;
+		        var metalinksUrl;		        
+		        if (queryAry['metalinks']) {
+		        	metalinksUrl = queryAry['metalinks'].toString();
+		        	metalinksUrl.replace('interpretedFormat=true','interpretedFormat=false');
+		        } 
 		        if (queryAry['file']) {
-		        	query = queryAry['file'];	
+		        	docUrl = queryAry['file'];	
 		        } else if (queryAry['doc']) {
-		        	query = queryAry['doc'];		        	
+		        	docUrl = queryAry['doc'];		        	
 		        } else {
 		        	App.showMessage("Missing ?doc= in "+uri.path());
 		        	App.hideLoadingDialog();
 		        	return;
 		        };
-		        query = URI(query);
-		        var filename = query.filename(); 
-		        var metalinks = query.filename('MetaLinks.json').toString();
-		        //metalinks = "../documents/"+metalinks;
+		        var filename;
+		        if (docUrl.indexOf('?')>0) {
+		        	var subquery = URI.parseQuery(docUrl);
+		        	filename = subquery['filename'].toString();
+		        	if (metalinksUrl == null) {
+		        		metalinksUrl = (subquery['filename']='MetaLinks.json').toString();
+		        	}
+		        } else {
+		        	var docURI = URI(docUrl);
+		        	filename = docURI.filename();
+		        	metalinksUrl = docURI.filename('MetaLinks.json').toString();
+		        }
 		        $.ajax({
-			        url:  metalinks,
+			        url:  metalinksUrl,
 			        dataType: "json", 
 			        async: false,
 			        cache: false,
 			        error: function(requestObject, error, errorThrown) {
-			            App.showMessage("Could not locate valid <a href='"+metalinks+"'>metadata</a> document.");
+			            App.showMessage("Could not locate valid <a href='"+metalinksUrl+"'>metadata</a> document.");
 			            App.hideLoadingDialog();
 			        },
 			        success: function (requestObject) {

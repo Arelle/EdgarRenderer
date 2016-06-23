@@ -31,7 +31,8 @@ def init(cntlr, reportsFolder): # returns browser root
             if file == 'favicon.ico':
                 return static_file("arelle.ico", root=cntlr.imagesDir, mimetype='image/vnd.microsoft.icon')
             _report, _sep, _file = file.partition("/")
-            if _file.startswith("ix.html"): # although in ixviewer, it refers relatively to ixviewer/
+            if (_file.startswith("ix.html") # although in ixviewer, it refers relatively to ixviewer/
+                or _file.startswith("css/") or _file.startswith("images/") or _file.startswith("js/")):
                 return static_file(_file, root=os.path.join(reportsFolders[0], 'ixviewer')) 
             if _report == "include": # really in include subtree
                 # print(os.path.join(os.path.join(reportsFolders[0], 'include'), _file))

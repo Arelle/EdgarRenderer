@@ -70,7 +70,7 @@ xmlns:us-types="http://fasb.org/us-types/2016-01-31">
 <link:usedOn>link:definitionLink</link:usedOn>
 </link:roleType>
 <link:roleType id="DisclosureSegmentInformationSummaryOfSegmentInformation" roleURI="http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation">
-<link:definition>121 - Disclosure - Segment Information - Summary of Segment Information (Detail)</link:definition>
+<link:definition>121 - Disclosure - Segment Information (Detail)</link:definition>
 <link:usedOn>link:calculationLink</link:usedOn>
 <link:usedOn>link:presentationLink</link:usedOn>
 <link:usedOn>link:definitionLink</link:usedOn>
