@@ -71,12 +71,11 @@
    "elementCount": 111,
    "entityCount": 1,
    "hidden": {
-    "http://fasb.org/us-gaap/2016-01-31": 2,
-    "http://xbrl.sec.gov/dei/2014-01-31": 7,
-    "total": 9
+    "http://xbrl.sec.gov/dei/2014-01-31": 6,
+    "total": 6
    },
    "keyCustom": 3,
-   "keyStandard": 82,
+   "keyStandard": 83,
    "memberCustom": 3,
    "memberStandard": 2,
    "nsprefix": "bst",
@@ -349,6 +348,46 @@
       "decimals": null,
       "first": true,
       "lang": "en-US",
+      "name": "us-gaap:OrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     },
+     "groupType": "disclosure",
+     "isDefault": "false",
+     "longName": "107 - Disclosure - Basis of Presentation",
+     "role": "http://www.brightstar.com/taxonomy/role/NotesToFinancialStatementsOrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock",
+     "shortName": "Basis of Presentation",
+     "subGroupType": "",
+     "uniqueAnchor": {
+      "ancestors": [
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": "en-US",
+      "name": "us-gaap:OrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     }
+    },
+    "R7": {
+     "firstAnchor": {
+      "ancestors": [
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": "en-US",
       "name": "us-gaap:SegmentReportingDisclosureTextBlock",
       "reportCount": 1,
       "unique": true,
@@ -378,7 +417,7 @@
       "xsiNil": "false"
      }
     },
-    "R7": {
+    "R8": {
      "firstAnchor": {
       "ancestors": [
        "us-gaap:SegmentReportingDisclosureTextBlock",
@@ -420,7 +459,7 @@
       "xsiNil": "false"
      }
     },
-    "R8": {
+    "R9": {
      "firstAnchor": {
       "ancestors": [
        "span",
@@ -445,9 +484,9 @@
      },
      "groupType": "disclosure",
      "isDefault": "false",
-     "longName": "121 - Disclosure - Segment Information - Summary of Segment Information (Detail)",
+     "longName": "121 - Disclosure - Segment Information (Detail)",
      "role": "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation",
-     "shortName": "Segment Information - Summary of Segment Information (Detail)",
+     "shortName": "Segment Information (Detail)",
      "subGroupType": "details",
      "uniqueAnchor": {
       "ancestors": [
