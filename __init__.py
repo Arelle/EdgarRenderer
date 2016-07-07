@@ -1172,6 +1172,12 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             basename = modelXbrl.modelDocument.basename,
             documentType = None
             )
+        for concept in modelXbrl.nameConcepts["DocumentType"]:
+            for f in modelXbrl.factsByQname[concept.qname]:
+                cntx = f.context
+                if cntx is not None and not cntx.hasSegment and f.xValue:
+                    report.documentType = f.xValue # find document type for mustard menu
+                    break
         filing = PythonUtil.attrdict( # simulate filing
             filesource = modelXbrl.fileSource,
             reportZip = None,
