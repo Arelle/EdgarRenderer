@@ -8,11 +8,6 @@ xmlns:xbrldt="http://xbrl.org/2005/xbrldt"
 xmlns:xbrli="http://www.xbrl.org/2003/instance"
 xmlns:xlink="http://www.w3.org/1999/xlink" attributeFormDefault="unqualified" elementFormDefault="qualified"
 xmlns:bst="http://www.brightstar.com/20160930"
-xmlns:country="http://xbrl.sec.gov/country/2016-01-31"
-xmlns:currency="http://xbrl.sec.gov/currency/2016-01-31"
-xmlns:exch="http://xbrl.sec.gov/exch/2016-01-31"
-xmlns:invest="http://xbrl.sec.gov/invest/2013-01-31"
-xmlns:stpr="http://xbrl.sec.gov/stpr/2011-01-31"
 xmlns:us-gaap="http://fasb.org/us-gaap/2016-01-31"
 xmlns:us-types="http://fasb.org/us-types/2016-01-31">
 <annotation>
@@ -84,12 +79,7 @@ xmlns:us-types="http://fasb.org/us-types/2016-01-31">
 <import schemaLocation="http://www.xbrl.org/dtr/type/numeric-2009-12-16.xsd" namespace="http://www.xbrl.org/dtr/type/numeric" />
 <import schemaLocation="http://www.xbrl.org/dtr/type/nonNumeric-2009-12-16.xsd" namespace="http://www.xbrl.org/dtr/type/non-numeric" />
 <import schemaLocation="http://xbrl.fasb.org/us-gaap/2016/elts/us-gaap-2016-01-31.xsd" namespace="http://fasb.org/us-gaap/2016-01-31" />
-<import schemaLocation="http://xbrl.sec.gov/country/2016/country-2016-01-31.xsd" namespace="http://xbrl.sec.gov/country/2016-01-31" />
-<import schemaLocation="http://xbrl.sec.gov/currency/2016/currency-2016-01-31.xsd" namespace="http://xbrl.sec.gov/currency/2016-01-31" />
 <import schemaLocation="http://xbrl.sec.gov/dei/2014/dei-2014-01-31.xsd" namespace="http://xbrl.sec.gov/dei/2014-01-31" />
-<import schemaLocation="http://xbrl.sec.gov/exch/2016/exch-2016-01-31.xsd" namespace="http://xbrl.sec.gov/exch/2016-01-31" />
-<import schemaLocation="http://xbrl.sec.gov/invest/2013/invest-2013-01-31.xsd" namespace="http://xbrl.sec.gov/invest/2013-01-31" />
-<import schemaLocation="http://xbrl.sec.gov/stpr/2011/stpr-2011-01-31.xsd" namespace="http://xbrl.sec.gov/stpr/2011-01-31" />
 <element name="DocumentAndEntityInformationAbstract" id="bst_DocumentAndEntityInformationAbstract" xbrli:periodType="duration" abstract="true" nillable="true" substitutionGroup="xbrli:item" type="xbrli:stringItemType" />
 <element name="CargoMember" id="bst_CargoMember" xbrli:periodType="duration" abstract="true" nillable="true" substitutionGroup="xbrli:item" type="nonnum:domainItemType" />
 <element name="OtherMember" id="bst_OtherMember" xbrli:periodType="duration" abstract="true" nillable="true" substitutionGroup="xbrli:item" type="nonnum:domainItemType" />

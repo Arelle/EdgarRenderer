@@ -59,12 +59,7 @@
       "http://xbrl.fasb.org/us-gaap/2016/elts/us-parts-codification-2016-01-31.xsd",
       "http://xbrl.fasb.org/us-gaap/2016/elts/us-roles-2016-01-31.xsd",
       "http://xbrl.fasb.org/us-gaap/2016/elts/us-types-2016-01-31.xsd",
-      "http://xbrl.sec.gov/country/2016/country-2016-01-31.xsd",
-      "http://xbrl.sec.gov/currency/2016/currency-2016-01-31.xsd",
-      "http://xbrl.sec.gov/dei/2014/dei-2014-01-31.xsd",
-      "http://xbrl.sec.gov/exch/2016/exch-2016-01-31.xsd",
-      "http://xbrl.sec.gov/invest/2013/invest-2013-01-31.xsd",
-      "http://xbrl.sec.gov/stpr/2011/stpr-2011-01-31.xsd"
+      "http://xbrl.sec.gov/dei/2014/dei-2014-01-31.xsd"
      ]
     }
    },
