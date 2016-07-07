@@ -103,9 +103,7 @@ def handleFolder(controller, folderName, mustBeEmpty, forceClean):  # return suc
                 else:
                     remove(fullfilepath)
         elif mustBeEmpty and len(fileList) > 0 :
-            message = "Folder {} exists and is not empty.".format(folderName)
-            controller.logError(message, file=basename(__file__))
-            raise Exception(message)
+            controller.logDebug(_("Folder {} exists and is not empty.").format(folderName), file=basename(__file__))
         
 def getConfigFile(controller, options):
     if options.configFile is None: return None
