@@ -769,7 +769,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 _text += " - " + _fileLines
         return _text
                 
-    def filingEnd(self, cntlr, options, filesource, filing):
+    def filingEnd(self, cntlr, options, filesource, filing, sourceZipStream=None, *args, **kwargs):
         if self.abortedDueToMajorError:
             self.success = False # major errors detected
         
@@ -810,7 +810,11 @@ class EdgarRenderer(Cntlr.Cntlr):
                     _xbrldir = os.path.dirname(filing.entrypointfiles[0]["file"])
                     # files to copy are in zip archive
                     for filename in set(inputsToCopyToOutputList): # set() to deduplicate if multiple references
-                        file = filesource.file(os.path.join(_xbrldir, filename), binary=True)[0]  # returned in a tuple
+                        _filepath = os.path.join(_xbrldir, filename)
+                        if sourceZipStream is not None:
+                            file = FileSource.openFileSource(_filepath, cntlr, sourceZipStream).file(_filepath, binary=True)[0]      
+                        else:
+                            file = filesource.file(_filepath, binary=True)[0]  # returned in a tuple
                         if self.reportZip:
                             if filename not in self.reportZip.namelist():
                                 self.reportZip.writestr(filename, file.read())
@@ -1085,7 +1089,7 @@ def edgarRendererXbrlRun(cntlr, options, modelXbrl, filing, report, *args, **kwa
 
 def edgarRendererFilingEnd(cntlr, options, filesource, filing, *args, **kwargs):
     """ ends processing of a filing (after all intances have been processed) """
-    filing.edgarRenderer.filingEnd(cntlr, options, filesource, filing)
+    filing.edgarRenderer.filingEnd(cntlr, options, filesource, filing, *args, **kwargs)
     
 def edgarRendererGuiViewMenuExtender(cntlr, viewMenu, *args, **kwargs):
     # persist menu selections for showing filing data and tables menu
