@@ -823,6 +823,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                             if exists(target): remove(target)
                             with open(target, 'wb') as f:
                                 f.write(file.read())
+                        file.close()
             
                 self.logDebug("Instance post-processing complete")
                 
@@ -870,9 +871,13 @@ class EdgarRenderer(Cntlr.Cntlr):
                             _xbrldir = os.path.dirname(report.filepath)
                             for reportedFile in sorted(report.reportedFiles):
                                 if reportedFile not in xbrlZip.namelist():
-                                    fileStream = filesource.file(os.path.join(_xbrldir, reportedFile), binary=True)[0]  # returned in a tuple
-                                    xbrlZip.writestr(reportedFile, fileStream.read())
-                                    fileStream.close()
+                                    _filepath = os.path.join(_xbrldir, reportedFile)
+                                    if sourceZipStream is not None:
+                                        file = FileSource.openFileSource(_filepath, cntlr, sourceZipStream).file(_filepath, binary=True)[0]      
+                                    else:
+                                        file = filesource.file(_filepath, binary=True)[0]  # returned in a tuple
+                                    xbrlZip.writestr(reportedFile, file.read())
+                                    file.close()
                             filesource.close()
                         xbrlZip.close()
                         if self.reportZip:
