@@ -210,6 +210,10 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                     text = None
                 else:
                     text = fact.xValue if fact.xValid else fact.textValue
+                    if fact.concept is not None and fact.concept.baseXsdType in ("string", "normalizedString"): # default
+                        xmlLang = fact.xmlLang
+                        if xmlLang is not None and xmlLang != "en-US":
+                            attrs["{http://www.w3.org/XML/1998/namespace}lang"] = xmlLang
                 newFact = targetInstance.createFact(fact.qname, attributes=attrs, text=text, parent=parent)
                 # if fact.isFraction, create numerator and denominator
                 newFactForOldObjId[fact.objectIndex] = newFact
@@ -262,7 +266,11 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                     footnoteIdCount[linkChild.footnoteID] = idUseCount
                     newChild = addChild(newLink, linkChild.qname, 
                                         attributes=attributes)
+                    xmlLang = linkChild.xmlLang
+                    if xmlLang is not None and xmlLang != "en-US": # default
+                        newChild.set("{http://www.w3.org/XML/1998/namespace}lang", xmlLang)
                     copyIxFootnoteHtml(linkChild, newChild, targetModelDocument=targetInstance.modelDocument, withText=True)
+
                     if filingFiles and linkChild.textValue:
                         footnoteHtml = XML("<body/>")
                         copyIxFootnoteHtml(linkChild, footnoteHtml)
