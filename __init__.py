@@ -137,7 +137,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.5.0.2'
+VERSION = '3.6.0.2'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -690,6 +690,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                     return
             else:
                     self.logInfo(_("Ignoring {} Validation errors because abortOnMajorError is not set.").format(errorCountDuringValidation))
+        modelXbrl.profileActivity()
         self.setProcessingFolder(modelXbrl.fileSource, report.entryPoint.get("file"))
         # if not reportZip and reportsFolder is relative, make it relative to source file location (on first report)
         if not filing.reportZip and self.initialReportsFolder and len(filing.reports) == 1:
@@ -739,6 +740,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.renderedFiles = filing.renderedFiles # filing-level rendered files
         if not success:
             self.success = False   
+        modelXbrl.profileStat(_("EdgarRenderer process instance {}").format(report.basename))
             
     def loadLogMessageText(self):         
         self.logMessageText = {}
@@ -779,10 +781,11 @@ class EdgarRenderer(Cntlr.Cntlr):
         if self.success:
             try:
                 if self.xlWriter:
+                    _startedAt = time.time()
                     self.xlWriter.save()
                     self.xlWriter.close()
                     del self.xlWriter 
-                    self.logDebug("Excel rendering complete")
+                    self.logDebug("Excel saving complete {:.3f} secs.".format(time.time() - _startedAt))
                 def copyResourceToReportFolder(filename):
                     source = join(self.resourcesFolder, filename)
                     if self.reportZip:
@@ -793,6 +796,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                             os.makedirs(self.reportsFolder, exist_ok=True)
                             shutil.copyfile(source, target)
                             self.renderedFiles.add(filename)
+                _startedAt = time.time()
                 if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:
                     copyResourceToReportFolder("Show.js")
                     copyResourceToReportFolder("report.css")
@@ -823,9 +827,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                             if exists(target): remove(target)
                             with open(target, 'wb') as f:
                                 f.write(file.read())
-                        file.close()
             
-                self.logDebug("Instance post-processing complete")
+                self.logDebug("Instance post-processing complete {:.3f} secs.".format(time.time() - _startedAt))
                 
                 # temporary work-around to create SDR summaryDict
                 if not self.sourceDict and any(
@@ -847,10 +850,12 @@ class EdgarRenderer(Cntlr.Cntlr):
                     IoManager.writeXmlDoc(rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
                     self.renderedFiles.add("FilingSummary.xml")
                     if self.summaryXslt and len(self.summaryXslt) > 0 :
+                        _startedAt = time.time()
                         summary_transform = etree.XSLT(etree.parse(self.summaryXslt))
                         result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'),
                                                    accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")),
                                                    resourcesFolder="'{}'".format(self.resourcesFolder.replace("\\","/")))
+                        self.logDebug("FilingSummary XSLT transform {:.3f} secs.".format(time.time() - _startedAt))
                         IoManager.writeHtmlDoc(result, self.reportZip, self.reportsFolder, 'FilingSummary.htm')
                         self.renderedFiles.add("FilingSummary.htm")
                     self.logDebug("Write filing summary complete")
@@ -913,8 +918,6 @@ class EdgarRenderer(Cntlr.Cntlr):
                     
         if not self.success and self.isDaemon: # not successful
             self.postprocessFailure(filing.options)
-
-
     
     def postprocessInstance(self, options, modelXbrl):
         Inline.saveTargetDocumentIfNeeded(self,options,modelXbrl)

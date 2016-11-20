@@ -13,7 +13,7 @@ At this moment, Xlout.py requires openpyxl 2.1.4, it does not work with openpyxl
 
 """
 
-import os.path, re, datetime, lxml, decimal, collections, openpyxl.cell, openpyxl.styles, openpyxl.worksheet.dimensions
+import os.path, re, datetime, time, lxml, decimal, collections, openpyxl.cell, openpyxl.styles, openpyxl.utils, openpyxl.worksheet.dimensions
 
 # note that number pattern allows word before number like shares (1,234,567) (but would misfire on same in text block!)
 numberPattern = re.compile(r"\s*[_A-Za-z\xC0-\xD6\xD8-\xF6\xF8-\xFF\u0100-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]*"
@@ -39,7 +39,7 @@ class XlWriter(object):
         self.controller = controller
         self.outputFolderName = outputFolderName
         self.simplified_transform = lxml.etree.XSLT(lxml.etree.parse(controller.excelXslt))
-        self.wb = openpyxl.Workbook(encoding='utf-8')
+        self.wb = openpyxl.Workbook()
         self.sheetNames = set() # prevent duplicates
         self.workSheet = None
         controller.logDebug(_('Excel writer initialized {}'.format(controller.entrypoint)),file=os.path.basename(__file__))
@@ -107,7 +107,9 @@ class XlWriter(object):
             # colspan attribute (does not seem to actually happen)
             # any <table> element appearing in a textBlock is being dropped.
             # any other html formatting of users' text blocks is pretty much thrown away by this.
+            _startedAt = time.time()
             rdoc = self.simplified_transform(report.rootETree,asPage=lxml.etree.XSLT.strparam('true'),method='html')
+            self.controller.logDebug("R{} xlout XSLT {:.3f} secs".format(report.cube.fileNumber, time.time() - _startedAt))
             row = 0  # openpyxl changed to 1-offset col numbering in version 2
             widthPerCharacter = 1
             maxWidth = 80
@@ -116,7 +118,7 @@ class XlWriter(object):
                 if (tableElt.xpath("count(ancestor::table)") == 0 and tableElt.xpath("count(ancestor-or-self::table[@class='report'])")>0):
                     def populateCell(col,row,text,tag,fontBold):
                         # TODO Just cut off the text at 32767 the biggest string Excel 2010 can handle.
-                        colLetter = openpyxl.cell.get_column_letter(col)
+                        colLetter = openpyxl.utils.get_column_letter(col)
                         if colLetter not in colsWithCustomDimensions:
                             colsWithCustomDimensions.add(colLetter)
                             ws.column_dimensions[colLetter] = openpyxl.worksheet.dimensions.ColumnDimension(ws, customWidth=True)
@@ -236,9 +238,9 @@ class XlWriter(object):
                                 if colspan > 1 or rowspan > 1:
                                     # openpyxl bug in 2.0.2, these row/col are 0 offset, not 1 offset
                                     #ws.merge_cells(start_row=row, end_row=row+rowspan-1, start_column=col, end_column=col+colspan-1)
-                                    ws.merge_cells(range_string='%s%s:%s%s' % (openpyxl.cell.get_column_letter(col),
+                                    ws.merge_cells(range_string='%s%s:%s%s' % (openpyxl.utils.get_column_letter(col),
                                                                                row,
-                                                                               openpyxl.cell.get_column_letter(col+colspan-1),
+                                                                               openpyxl.utils.get_column_letter(col+colspan-1),
                                                                                row+rowspan-1))
                                 col += colspan
         except (lxml.etree.LxmlError, lxml.etree.XSLTError) as err:

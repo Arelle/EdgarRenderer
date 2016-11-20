@@ -7,7 +7,7 @@ Data and content created by government employees within the scope of their emplo
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
-import os.path, re, lxml
+import os.path, re, lxml, time
 import arelle.ModelDocument
 from arelle.FileSource import openFileSource
 from arelle import PythonUtil # define 2.x or 3.x string types
@@ -50,6 +50,8 @@ class RefManager(object):
     def loadAddedUrls(self,modelXbrl,controller):
         validateDisclosureSystem = modelXbrl.modelManager.validateDisclosureSystem
         loadedAdditionalUrls = False
+        _startedAt = time.time()
+        _numUrls = 0
         try:
             modelXbrl.modelManager.validateDisclosureSystem = False
             for url in self.getUrls(modelXbrl):
@@ -64,8 +66,10 @@ class RefManager(object):
                     modelXbrl.info("info:unableToAddOnLinkbase",
                                   _("Unable to load add-on linkbase %(linkbase)s."),
                                   modelObject=modelXbrl.modelDocument, linkbase=url)
+                _numUrls += 1
         finally:
             modelXbrl.modelManager.validateDisclosureSystem = validateDisclosureSystem
             if loadedAdditionalUrls:
                 modelXbrl.relationshipSets.clear() # relationships have to be re-cached
+        controller.logDebug("{} add on linkbases loaded {:.3f} secs.".format(_numUrls, time.time() - _startedAt))
         return

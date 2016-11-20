@@ -13,7 +13,7 @@ from matplotlib import use as matplotlib_use
 # must initialize matplotlib to not use tkinter or $DISPLAY (before other imports)
 matplotlib_use("Agg")
 
-import os, re, datetime, decimal, io
+import os, re, datetime, decimal, io, time
 from collections import defaultdict
 from lxml.etree import Element, SubElement, XSLT, tostring as treeToString
 import arelle.XbrlConst
@@ -1143,9 +1143,9 @@ class Report(object):
         baseName = baseNameBeforeExtension + '.htm'
         reportSummary.htmlFileName = baseName     
 
-        self.controller.logDebug("Starting XSLT transform on {}.xml.".format(baseNameBeforeExtension))
+        _startedAt = time.time()
         result = self.filing.transform(tree, asPage=XSLT.strparam('true'))
-        self.controller.logDebug("Finished XSLT transform.")
+        self.controller.logDebug("R{} htm XSLT {:.3f} secs.".format(self.cube.fileNumber, time.time() - _startedAt))
         if self.filing.reportZip:
             self.filing.reportZip.writestr(baseName, 
                 treeToString(result,method='html',with_tail=False,pretty_print=True,encoding='us-ascii'));
