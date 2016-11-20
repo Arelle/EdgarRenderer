@@ -1768,6 +1768,12 @@ i {
   .rightNavLinks {
 	width:96%;	
   }
+  #search-input {
+		height: 20px;
+	}
+  #search-btn {
+    height: 19px;
+}
 }
 /* For Android Landscape*/  
 @media only screen and (min-device-width: 321px) and (max-device-width: 640px) and (orientation:landscape)
@@ -2289,6 +2295,12 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
   .modal-dialog {
     margin: 30px 20px;
     }
+  #search-input {
+		height: 20px;
+	}
+  #search-btn {
+    height: 20px;
+}
 }
 /* For Android Portrait*/  
 @media only screen and (min-device-width: 321px) and (max-device-width: 480px) and (orientation:portrait)
@@ -2317,3 +2329,10 @@ button::-moz-focus-inner {border: 1px dotted transparent;}
 button:focus::-moz-focus-inner {border-color: white} 
 /*input[type=text]::-ms-clear {  display: none; width : 0; height: 0; }
 input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }*/
+
+#taggedDataResetColor, #searchResultsResetColor, #selectedFactResetColor{
+	width: 25px;
+	float: left;
+	clear: right;
+	}
+}

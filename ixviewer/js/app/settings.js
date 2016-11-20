@@ -7,11 +7,15 @@ var App_Settings = {
     defaults:{
         initialHighlightColor:'#FFD700',
         focusHighlightColor:'#003768',
-        elementBorderColor:'#FF6600'
+        focusHighlightSelectionColor:'#003768',
+        elementBorderColor:'#FF6600',
+        blockHighlightColor:'rgba(249,237,237,0.6)',
+        focusContentSelectionColor:"#FF6600"
     },
     initialHighlightColor:null,
     focusHighlightColor:null,
     elementBorderColor:null,
+    blockHighlightColor:null,
     init:function() {
 
         var colorOptions =  {
@@ -27,7 +31,11 @@ var App_Settings = {
                 } else if (input.prop('id') == 'setting-focus-highlight-color') {
 
                     App_Settings.save('focusHighlightColor', '#' + color);
-                } else {
+                } else if (input.prop('id') == 'setting-block-highlight-color'){
+
+                    App_Settings.save('blockHighlightColor', '#' + color);
+                }
+                else {
 
                     App_Settings.save('elementBorderColor', '#' + color);
                 }
@@ -39,6 +47,8 @@ var App_Settings = {
         App_Settings.focusHighlightColor.val(App_Settings.get('focusHighlightColor')).simpleColor(colorOptions);
         App_Settings.elementBorderColor = $('#setting-element-border-color');
         App_Settings.elementBorderColor.val(App_Settings.get('elementBorderColor')).simpleColor(colorOptions);
+        App_Settings.blockHighlightColor = $('#setting-block-highlight-color');
+        App_Settings.blockHighlightColor.val(App_Settings.get('blockHighlightColor')).simpleColor(colorOptions);
     },
     get:function(key) {
 

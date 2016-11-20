@@ -188,6 +188,16 @@ $(document).ready(function(){
 					$('#menuIcon').click();
 				}
 			});
+	$('#menuIcon').on('click', function() {
+		if (($('#menudropdown').hasClass("open"))) {
+			$('#menuIcon').attr("aria-label", "Expand Menu Button");
+			$('#menuIcon').attr("title", "Expand Menu Button");
+		}
+		else{
+				$('#menuIcon').attr("aria-label", "Collapse Menu Button");
+				$('#menuIcon').attr("title", "Collapse Menu Button");
+		}
+		});
 	$('#taggedDataResetColor').bind('keydown',function(e)
 	{
 		var code = e.keyCode || e.which;
@@ -229,7 +239,47 @@ $(document).ready(function(){
 		});
 		}
 	});
-	
+	$('#setting-border-highlight-color').bind('keydown',function(e)
+			{
+				var code = e.keyCode || e.which;
+				if((code == 13) || (code == 32)) {
+					var icons = document.getElementsByClassName("simpleColorDisplay");
+					for(var i=0; i<icons.length; i++) {
+					$(icons[0]).attr("tabindex",0);
+					$(icons[0]).attr("aria-label","Tagged Data Color Selector");
+					   icons[0].click();
+					}	
+				$('.simpleColorChooser').attr("tabindex",0);
+				$('.simpleColorCell').attr("tabindex",0);
+				//var simpleClorCellZeroId= $('.simpleColorCell')[0].id;
+				//var hexcode="#"+simpleClorCellZeroId;
+				//$('.simpleColorCell').attr("aria-label",hexcode);
+				$('.simpleColorCell').attr("aria-label","Inside Tagged Data Color Selector");
+				var count=0;
+				$('.simpleColorCell').bind('keydown',function(e){
+					var code = e.keyCode || e.which;
+					if(code==9){
+						count=count+1;
+						for(j=0;j<223;j++){
+						if(j==(count)){
+						//var simpleClorCellIds= $('.simpleColorCell')[j].id;
+						//var hexcode="#"+simpleClorCellIds;
+						//$('.simpleColorCell').attr("aria-label",hexcode);
+						$('.simpleColorCell').attr("aria-label","Inside Tagged Data Color Selector");
+						break;
+						}
+						}
+					}
+					if((code == 13) || (code == 32)) {
+					$(this).click();
+					for(var i=0; i<icons.length; i++) {
+						   icons[0].click();
+						   icons[0].focus();
+						}
+					}
+				});
+				}
+			});
 	$('#searchResultsResetColor').bind('keydown',function(e)
 			{
 				var code = e.keyCode || e.which;

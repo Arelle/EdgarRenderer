@@ -5,54 +5,55 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 <html lang="en">
 <head>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
-    <link type="text/css" rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet" href="css/bootstrap/bootstrap-theme.min.css" />
-    <link type="text/css" rel="stylesheet" href="css/bootstrap/bootstrap-submenu.min.css" />
-    <link type="text/css" rel="stylesheet" href="css/app.css?v131" />
-    <link type="text/css" rel="stylesheet" href="css/rightNavigation.css?v131" />
-    <script type="text/javascript">
-    window.onload=function(){
-    	var ie7 = navigator.appVersion.indexOf("MSIE 7");
-    	var ie8 = navigator.appVersion.indexOf("MSIE 8");
-    	if ((ie7 > 0) || (ie8 > 0)) {
-    	var note = 'The browser mode you are running is not compatible with this application.';
-		browserName ='Microsoft Internet Explorer';
-		note +='You are currently running '+browserName+' '+((ie7>0)?7:8)+'.0.';
-        var userAgent = window.navigator.userAgent.toLowerCase();
-        if(userAgent.indexOf('ipad') != -1 || userAgent.indexOf('iphone') != -1 || userAgent.indexOf('apple') != -1){	        	
-        	note += ' Please use a more current version of '+browserName+' in order to use the application.';
-        }else if(userAgent.indexOf('android') != -1){
-        	note += ' Please use a more current version of Google Chrome or Mozilla Firefox in order to use the application.';
-        }else{  	
-        	note += ' Please use a more current version of Microsoft Internet Explorer, Google Chrome or Mozilla Firefox in order to use the application.';
-        }
-        alert(note);
-        document.getElementById('browser-compatibility').innerHTML = note;
-        return;
-		}
-    };
+    <meta id="viewport" name="viewport" content="user-scalable=no, initial-scale=0.90, maximum-scale=1.0, minimum-scale=0.90, width=device-width, height=device-height" />
+
+	<script type="text/javascript">
+   	 window.onload=function(){
+	    	var ie7 = navigator.appVersion.indexOf("MSIE 7");
+	    	var ie8 = navigator.appVersion.indexOf("MSIE 8");
+	    	if ((ie7 > 0) || (ie8 > 0)) {
+	    	var note = 'The browser mode you are running is not compatible with this application.';
+			browserName ='Microsoft Internet Explorer';
+			note +='You are currently running '+browserName+' '+((ie7>0)?7:8)+'.0.';       
+		        var userAgent = window.navigator.userAgent.toLowerCase();	        
+		        if(userAgent.indexOf('ipad') != -1 || userAgent.indexOf('iphone') != -1 || userAgent.indexOf('apple') != -1){	        	
+		        	note += ' Please use a more current version of '+browserName+' in order to use the application.';
+		        }else if(userAgent.indexOf('android') != -1){	        	
+		        	note += ' Please use a more current version of Google Chrome or Mozilla Firefox in order to use the application.';
+		        }else{	        	
+		        	note += ' Please use a more current version of Microsoft Internet Explorer, Google Chrome or Mozilla Firefox in order to use the application.';
+		        }
+		        alert(note);
+		        document.getElementById('browser-compatibility').innerHTML = note;
+		        return;
+			}
+	    };
     </script>
-    <script type="text/javascript" src="js/jquery/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="js/jquery/jquery.browser.min.js"></script>
-    <script type="text/javascript" src="js/jquery/jquery.simple-color.min.js"></script>
-    <script type="text/javascript" src="js/jquery/jquery.custom.js?v131"></script>
-    <script type="text/javascript" src="js/jquery/jquery-ui.js"></script>
-    <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap/bootstrap-submenu.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap/tooltip.js"></script>
-    <script type="text/javascript" src="js/bootstrap/bootstrap-filestyle.js"></script>
-    <script type="text/javascript" src="js/jszip.min.js"></script>
-    <script type="text/javascript" src="js/FileSaver.js"></script>
-    <script type="text/javascript" src="js/slide-panel.js"></script>
-    <script type="text/javascript" src="js/cbe.js?v131"></script>
-    <script type="text/javascript" src="js/app/app.js?v131"></script>
-    <script type="text/javascript" src="js/app/find.js?v131"></script>
-    <script type="text/javascript" src="js/app/about.js?v131"></script>
-    <script type="text/javascript" src="js/app/settings.js?v131"></script>
-    <script type="text/javascript" src="js/app/help.js?v131"></script>
-    <script type="text/javascript" src="js/app/ixtFunctions.js"></script>
-    <script type="text/javascript" src="js/app/uri.js"></script>
+    <link type="text/css" rel="stylesheet" href="ixviewer/css/bootstrap/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="ixviewer/css/bootstrap/bootstrap-theme.min.css" />
+    <link type="text/css" rel="stylesheet" href="ixviewer/css/bootstrap/bootstrap-submenu.min.css">
+    <link type="text/css" rel="stylesheet" href="ixviewer/css/app.css?v131" />
+    <link type="text/css" rel="stylesheet" href="ixviewer/css/rightNavigation.css?v131" />
+    <script type="text/javascript" src="ixviewer/js/jquery/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="ixviewer/js/jquery/jquery.browser.min.js"></script>
+    <script type="text/javascript" src="ixviewer/js/jquery/jquery.simple-color.min.js"></script>
+    <script type="text/javascript" src="ixviewer/js/jquery/jquery.custom.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/jquery/jquery-ui.js"></script>
+    <script type="text/javascript" src="ixviewer/js/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="ixviewer/js/bootstrap/bootstrap-submenu.min.js"></script>
+    <script type="text/javascript" src="ixviewer/js/bootstrap/tooltip.js"></script>
+    <script type="text/javascript" src="ixviewer/js/bootstrap/bootstrap-filestyle.js"></script>
+    <script type="text/javascript" src="ixviewer/js/jszip.min.js"></script>
+    <script type="text/javascript" src="ixviewer/js/FileSaver.js"></script>
+    <script type="text/javascript" src="ixviewer/js/slide-panel.js"></script>
+    <script type="text/javascript" src="ixviewer/js/cbe.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/app/app.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/app/find.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/app/about.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/app/settings.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/app/help.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/app/ixtFunctions.js"></script>
+    <script type="text/javascript" src="ixviewer/js/app/uri.js"></script>
     <title>Inline XBRL Viewer</title>
 </head>
 <body id="sec-body">
@@ -60,24 +61,42 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 		<div class="fixedMenuBar">
 			<div class="homeSection">
 				<ul class="nav">
-					<li class="dropdown">
+					<li id="menudropdown" class="dropdown">
 						<button id="menuIcon" type="button" data-toggle="dropdown"
 							class="menuIcon" tabindex="1" aria-label="Expand Menu"
 						title="Expand Menu">
 							<span class="glyphicon glyphicon-align-justify"
-								style="color: #FFF;"></span> <font class="hidden-xs">Menu</font>
+								style="color: #FFF;"></span> <font id="menu" class="hidden-xs">Menu</font>
 						</button>
 						<ul class="dropdown-menu" 
 							aria-labelledby="dropdownMenu1">
 							<li><a id="information" href="#" tabindex="1" data-toggle="panel-collapse"
 								data-target="#about-modal" >Information</a></li>
+							<!--<li id="dropdown-submenu" class="dropdown-submenu">
+						  <a href="#" tabindex="0" data-toggle="dropdown">Information</a>
+						  <ul class="dropdown-menu">
+						    <li><a href="#" data-toggle="modal" data-target="#about1-modal">Document</a></li>
+						    <li><a href="#" data-toggle="modal" data-target="#about2-modal">Statistics</a></li>
+						     <li><a href="#" data-toggle="modal" data-target="#about3-modal">Taxonomies</a></li>
+						    <li><a href="#" data-toggle="modal" data-target="#about4-modal">Files</a></li>
+						  </ul>
+						</li>-->
+							<!--  <li class="dropdown-submenu"  id="dropdown-submenu1">
+						    <a href="#" data-toggle="dropdown">Save As</a>
+						  <ul class="dropdown-menu">
+						    <li id="instanceFileLi"><a href="#" id="instanceFile" download>Save XBRL Instance</a></li>
+						    <li id="instanceFileIELi"><a href="javascript:void(0)" id="instanceFileIE" >Save XBRL Instance</a></li>
+						    <li><a href="#" id="instanceAndCustomFile">Save XBRL Zip File</a></li>
+						  </ul>
+						</li>-->
 							<li id="instanceFileLi"><a href="#" id="instanceFile" tabindex="1"
 								download>Save XBRL Instance</a></li>
 							<li id="instanceFileIELi"><a href="javascript:void(0)" tabindex="1"
 								id="instanceFileIE">Save XBRL Instance</a></li>
 							<li><a href="#" id="instanceAndCustomFile" tabindex="1">Save XBRL Zip
 									File</a></li>
-							<li class="visible-xs visible-sm hidden-md hidden-lg"><a
+							<li><a href="#" id="openAsHtml" onclick="window.open(this.href); return false;" tabindex="1" open>Open as HTML</a></li>
+							<li id="taggedSectionsReport" class="visible-xs visible-sm hidden-md hidden-lg"><a
 								href="#" id="btn-reports" data-toggle="collapse"
 								data-target=".nav-collapse" tabindex="1">Tagged Sections</a></li>
 							<li><a href="#" id="btn-settings" data-toggle="modal"
@@ -89,7 +108,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 				</ul>
 			</div>
 			<div class="separator hidden-xs hidden-sm">&nbsp;</div>
-			<div class="dataSection hidden-xs hidden-sm">
+			<div id="taggedSections" class="dataSection hidden-xs hidden-sm">
 				<ul class="nav">
 					<li class="inline"><label class="menuIcon"
 						style="color: #FFF;"><span style="line-height: 15px;">Sections
@@ -131,7 +150,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 				</form>
 			</div>
 			<div class="separator hidden-xs">&nbsp;</div>
-			<div class="dataSection hidden-xs">
+			<div id="dataFilter" class="dataSection hidden-xs">
 				<ul class="nav">
 					<li class="dropdown">
 						<button type="button" data-toggle="modal"
@@ -145,7 +164,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 				</ul>
 			</div>
 			<div class="separator hidden-xs">&nbsp;</div>
-			<div class="conceptsSection hidden-xs">
+			<div id="tags" class="conceptsSection hidden-xs">
 				<ul class="nav">
 					<li class="dropdown">
 						<button type="button" data-toggle="modal"
@@ -166,13 +185,13 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 							class="menuIcon" tabindex="8" aria-label="Expand More Filters"
 						title="Expand More Filters">
 							<span class="glyphicon glyphicon-filter" style="color: #FFF;"></span>
-							<font class="hidden-xs">More Filters</font>
+							<font id="moreFilters" class="hidden-xs">More Filters</font>
 						</button>
-						<ul class="dropdown-menu" role="menu"
+						<ul id="moreFiltersList" class="dropdown-menu" role="menu"
 							aria-labelledby="dropdownMenu2">
-							<li class="visible-xs hidden-md hidden-lg"><a
+							<li id="dataFilterLink" class="visible-xs hidden-md hidden-lg"><a
 								data-toggle="modal" data-target="#highlight-data-modal" href="#">Data</a></li>
-							<li class="visible-xs hidden-md hidden-lg"><a
+							<li id="tagsFilterLink" class="visible-xs hidden-md hidden-lg"><a
 								data-toggle="modal" data-target="#highlight-concept-modal"
 								href="#">Tags</a></li>
 							<li><a data-toggle="modal"
@@ -193,7 +212,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 				<ul class="nav">
 					<li class="inline"><label class="hidden-xs menuIcon"
 						style="color: #FFF;"><span
-							style="vertical-align: middle; line-height: 15px;">Facts </span></label>&nbsp;&nbsp;<span
+							id="factList" style="vertical-align: middle; line-height: 15px;">Facts </span></label>&nbsp;&nbsp;<span
 						id="results-count" class="badge badge-Custom"></span>&nbsp;<span
 						class="glyphicon glyphicon-chevron-down menuIcon" id="opener"
 						style="color: #FFF; vertical-align: middle; line-height: 15px;"
@@ -564,7 +583,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						<!-- results -->
 						<div id="panel-section-results" class="panel-section">
 							 <div  id="results-header"  style="text-align:center;" class="clearfix" >
-                       <span id="results-count"></span><span class="factResultLinks" style="float:left; margin-right: 3px" tabindex="0" alt="Previous Fact" title="Previous Fact">Prev </span>&nbsp;&nbsp;<span style="float:left;" class="factResultLinks" tabindex="0" alt="Next Fact" title="Next Fact">Next</span>
+                       <span id="results-count"></span><span class="factResultLinks" style="float:left; margin-right: 3px" tabindex="0" alt="Previous Fact" aria-label="Previous Fact" title="Previous Fact">Prev </span>&nbsp;&nbsp;<span style="float:left;" class="factResultLinks" tabindex="0" alt="Next Fact" aria-label="Next Fact" title="Next Fact">Next</span>
                        <span id="results-pages" ></span>
                         <div class="pull-right">
                             <div class="btn-container form-inline" style="display: inline-block;">
@@ -640,39 +659,37 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 									<div id="documentTypeSingleLIDiv"></div>
 									<div id="documentTypeMainLIDiv">
 										<li class="nav-header" id="documentTypeMainLI">
-											<h5 style="font-weight: bold;">Document and Entity Information
-											<a href="#" data-toggle="collapse" data-target="#documentType" style="text-decoration: none;" tabindex="3">
+											<h5 style="font-weight: bold;"  role="application">Document and Entity Information
+											<a href="#" data-toggle="collapse" aria-label="Document and Entity Information" aria-title="Document and Entity Information" data-target="#documentType" style="text-decoration: none;" tabindex="3">
 												<i class="glyphicon glyphicon-chevron-right" style="margin-right: 0px;"></i>
 											</a></h5>
 											<ul class="list-unstyled collapse in" id="documentType"></ul>
 										</li>
 									</div>
-									<li class="nav-header" id="statementLi"><h5 style="font-weight: bold;">
+									<li class="nav-header" id="statementLi"><h5 style="font-weight: bold;" role="application">
 												Financial Statements <a href="#"
-										data-toggle="collapse" data-target="#statementType"
+										data-toggle="collapse" aria-label="Financial Statements" aria-title="Financial Statements" data-target="#statementType"
 										style="text-decoration: none;" tabindex="3">
-											<i
-													class="glyphicon glyphicon-chevron-right" style="margin-right: 0px;"></i>
+											<i class="glyphicon glyphicon-chevron-right" style="margin-right: 0px;"></i>
 											
 									</a>
 									</h5>
 										<ul class="list-unstyled collapse in" id="statementType"></ul>
 									</li>
-									<li class="nav-header" id="disclosureLi"><h5 style="font-weight: bold;">
+									<li class="nav-header"  id="disclosureLi"><h5 style="font-weight: bold;" role="application">
 												Notes to the Financials <a href="#"
-										data-toggle="collapse" data-target="#disclosureType"
+										data-toggle="collapse" aria-label="Notes to the Financials" aria-title="Notes to the Financials" data-target="#disclosureType"
 										style="text-decoration: none;" tabindex="3">
 											<i
 													class="glyphicon glyphicon-chevron-down" style="margin-right: 0px;"></i>
 											
 									</a></h5>
-										<ul class="list-unstyled collapse" id="disclosureType"></ul></li>
-									<li class="nav-header" id="disclosureLiDup"><h5 style="font-weight: bold;">
+										<ul class="list-unstyled collapse" role="application" id="disclosureType"></ul></li>
+									<li class="nav-header" id="disclosureLiDup"><h5 style="font-weight: bold;" role="application">
 												Notes to the Financials <a href="#"
-										data-toggle="collapse" data-target="#disclosureTypeExpanded"
+										data-toggle="collapse" aria-label="Notes to the Financials" aria-title="Notes to the Financials" data-target="#disclosureTypeExpanded"
 										style="text-decoration: none;" tabindex="3">
-											<i
-													class="glyphicon glyphicon-chevron-right" style="margin-right: 0px;"></i></a>
+											<i class="glyphicon glyphicon-chevron-right" style="margin-right: 0px;"></i></a>
 											</h5>
 									
 										<ul class="list-unstyled collapse in"
@@ -715,31 +732,36 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 							<div class="col-sm-12">
 								<div class="form-group" role="application">
 									<label style="font-size: 16px"><b>Highlight Colors</b></label><br />
-									<label for="setting-element-border-color">Tagged Data</label>
-									<div  id="taggedDataResetColor" tabindex="0" >
-										  <input type="text" tabindex="0" id="setting-element-border-color"
-											class="setting-color-picker-container" /> 
-											<a tabindex="0"
-											href="javascript:App_Settings.resetColor('elementBorderColor');">reset
-											to default</a>
-									</div>
+									<label for="setting-element-border-color">Tagged Data</label><br/>
+									<div  id="taggedDataResetColor" tabindex="0" aria-label="Tagged Data Color Selector"><input type="text" id="setting-element-border-color" class="setting-color-picker-container" /></div>
+									<a tabindex="0" href="javascript:App_Settings.resetColor('elementBorderColor');" aria-label="Tagged data reset to default">reset to default</a>
+									
 								</div>
 								<div class="form-group" role="application">
-									<label for="setting-initial-highlight-color">Search
-										Results</label>
-									<div id="searchResultsResetColor" tabindex="0">
+									<label for="setting-initial-highlight-color" style="margin-top: 5px;margin-left: -25px;">Search Results</label><br/>
+									<div id="searchResultsResetColor" tabindex="0" aria-label="Search Results Color Selector">
 										<input type="text" tabindex="0" id="setting-initial-highlight-color"
-											class="setting-color-picker-container" /> <a tabindex="0"
-											href="javascript:App_Settings.resetColor('initialHighlightColor');">reset
+											class="setting-color-picker-container" />
+										</div>
+										 <a tabindex="0"
+											href="javascript:App_Settings.resetColor('initialHighlightColor');" aria-label="Search results reset to default">reset
 											to default</a>
-									</div>
+									
 								</div>
 								<div class="form-group" role="application">
-									<label for="setting-focus-highlight-color">Selected
-										Fact</label>
-									<div id="selectedFactResetColor" tabindex="0">
+									<label for="setting-focus-highlight-color" style="margin-top: 5px;margin-left: -25px;">Selected Fact</label><br/>
+									<div id="selectedFactResetColor" tabindex="0" aria-label="Selected Fact Color Selector">
 										<input type="text" tabindex="0" id="setting-focus-highlight-color"
-											class="setting-color-picker-container" /><a tabindex="0" href="javascript:App_Settings.resetColor('focusHighlightColor');"> reset
+											class="setting-color-picker-container" />
+									</div>
+									<a tabindex="0" href="javascript:App_Settings.resetColor('focusHighlightColor');" aria-label="Selected Fact reset to default"> reset
+											to default</a>
+								</div>
+									<div class="form-group" role="application">
+									<label for="setting-block-highlight-color" style="margin-top: 5px;margin-left: -25px;">Block Tag Shading</label>
+									<div id="selectedBlockResetColor" tabindex="0">
+										<input type="text" tabindex="0" id="setting-block-highlight-color"
+											class="setting-color-picker-container" /><a tabindex="0" href="javascript:App_Settings.resetColor('blockHighlightColor');"> reset
 											to default</a>
 									</div>
 								</div>
@@ -810,12 +832,12 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 		<div id="about-modal" class="about-modal">
 			<div class="about-header" style="cursor: move;">
 				<div class="modalTitleLeft"    tabindex="0"  id="about-header">
-					<span style="font-weight: bold;" data-content="subtitle">Company
+					<span style="font-weight: bold;" data-content="subtitle" aria-label="Comapny and Document">Company
 						and Document</span>
 				</div>
 				<div class="modalTitleRight" style="cursor: move;">
-					<div class="glyphicon glyphicon-copy btn-copy" tabindex="0" aria-label="Copy All"  title="Copy All"></div>
-					<div class="glyphicon glyphicon-remove btn-remove" tabindex="0" aria-label="close"  title="Close"></div>
+					<div id="copyAllCoAndDoc" class="glyphicon glyphicon-copy btn-copy" tabindex="0" aria-label="Copy All"></div>
+                    <div id="closeCoAndDoc" class="glyphicon glyphicon-remove btn-remove" tabindex="0" aria-label="close"></div>
 				</div>
 			</div>
 			<div class="selection-detail-inner">
@@ -865,15 +887,6 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 										<td style="padding: 3px;" width="60%"><span data-content="companyAmendment"></span></td>
 									</tr>
 								</table>
-								<!--  <div>
-	                        <div><strong>Company Name:</strong> <span data-content="companyName"></span></div>
-	                        <div><strong>Central Index Key:</strong> <span data-content="companyCIK"></span></div>
-	                        <div><strong>Document Type:</strong> <span data-content="companyDocument"></span></div>
-	                        <div><strong>Period End Date:</strong> <span data-content="companyPeriodEndDate"></span></div>
-	                        <div><strong>Fiscal Year/Period Focus:</strong> <span data-content="companyFiscalYearAndPeriodFocus"></span></div>
-	                        <div><strong>Current Fiscal Year End:</strong> <span data-content="companyFiscalYear"></span></div>
-	                        <div><strong>Amendment/Description:</strong> <span data-content="companyAmendment"></span> <span data-content="companyAmendmentDescription"></span></div>
-	                    </div>-->
 							</div>
 							<!-- </div> /.modal-content -->
 						</div>
@@ -934,27 +947,6 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						</div>
 						<!-- /.modal -->
 
-						<!-- Texonomy -->
-						<!-- <div id="about3-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="About" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header" style="cursor: move;">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title"><span data-content="subtitle">Taxonomies</span></h4>
-      </div>
-      <div class="modal-body" data-modal-content>
-            <div id="about-carousel" class="carousel slide">
-            <div class="carousel-inner">
-                <div data-slide-content="taxonomies"></div>
-            </div>
-      </div>
-      </div>
-      <div class="modal-footer">
-      </div>
-    </div>
-  </div>
-</div> -->
-
 						<!-- File In Use -->
 						<div  id="about4-modal"  tabindex="0" class="item" data-slide-index="2"
 							style="padding-top: 20px;">
@@ -979,9 +971,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						<!-- /.modal -->
 					</div>
 					<div class="carousel-controls">
-						<a class="left carousel-control" href="#about-carousel"
-							role="button" data-slide="prev"> <span id="prev" 
-							class="glyphicon glyphicon-chevron-left" tabindex="0" aria-label="Previous"  title="Prev" ></span>
+						<a id="prevCarousel" class="left carousel-control glyphicon glyphicon-chevron-left" href="#about-carousel"
+							role="button" data-slide="prev" tabindex="0" aria-label="Previous" style="color: #003768;"> 
 						</a>
 						<ol class="carousel-indicators">
 							<li  id="lnk1" data-target="#about-carousel" tabindex="0" data-slide-to="0"
@@ -993,9 +984,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 							<li id="lnk4" data-target="#about-carousel" tabindex="0" data-slide-to="3"
 								aria-label="Additional Items"  title="Additional Items"></li>
 						</ol>
-						<a class="right carousel-control" href="#about-carousel"
-							role="button" data-slide="next"> <span
-							class="glyphicon glyphicon-chevron-right" tabindex="0" aria-label="Next" title="Next"></span>
+						<a id="nextCarousel" class="right carousel-control glyphicon glyphicon-chevron-right" href="#about-carousel"
+							role="button" data-slide="next" aria-label="Next" tabindex="0" style="color: #003768;">
 						</a>
 					</div>
 				</div>
@@ -1358,8 +1348,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 					<span style="font-weight: bold;" data-content="subtitle"></span>
 				</div>
 				<div class="modalTitleRight" style="cursor: move;">
-					<div class="glyphicon glyphicon-copy btn-copy" tabindex="0" aria-label="Copy All" title="Copy All"></div>
-					<div class="glyphicon glyphicon-remove btn-remove" tabindex="0" aria-label="Close"></div>
+					<div id="copyAllFRW" class="glyphicon glyphicon-copy btn-copy" tabindex="0" aria-label="Copy All"></div>
+					<div id="closeFRW" class="glyphicon glyphicon-remove btn-remove" tabindex="0" aria-label="Close"></div>
 				</div>
 			</div>
 			<div class="selection-detail-inner">
@@ -1407,9 +1397,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 					</div>
 
 					<div class="carousel-controls">
-						<a class="left carousel-control" href="#selection-detail-carousel"
-							role="button" data-slide="prev"> <span
-							class="glyphicon glyphicon-chevron-left" tabindex="0" aria-label="Previous" title="Prev"></span>
+						<a id="prevCarousel1" class="left carousel-control glyphicon glyphicon-chevron-left" href="#selection-detail-carousel"
+							role="button" data-slide="prev" tabindex="0" aria-label="Previous" style="color: #003768;">
 						</a>
 						<ol class="carousel-indicators">
 							<li id="lnk1" data-target="#selection-detail-carousel"
@@ -1422,16 +1411,15 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 								data-slide-to="3" tabindex="0" aria-label="Calculation" title="Calculation"></li>
 							<!--Fifth review window code  <li  id="lnk5" data-target="#selection-detail-carousel" data-slide-to="4" title="Custom"></li>-->
 						</ol>
-						<a class="right carousel-control"
-							href="#selection-detail-carousel" role="button" data-slide="next">
-							<span class="glyphicon glyphicon-chevron-right" tabindex="0" aria-label="Next" title="Next"></span>
+						<a id="nextCarousel1" class="right carousel-control glyphicon glyphicon-chevron-right"
+							href="#selection-detail-carousel" role="button" data-slide="next" tabindex="0" aria-label="Next" style="color: #003768;">
 						</a>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<!-- alert -->
+	<!-- alert -->
 		<div id="alert-modal" class="modal" tabindex="-1" role="dialog"
 			aria-labelledby="Error:Browser Old" aria-hidden="true"
 			data-keyboard="false" data-backdrop="static">

@@ -373,72 +373,12 @@ var App_About = {
             var elementAry = [];
             $('#total-number-facts').html(elements.length);
             $('#inline-version').html(App.InlineDoc.inlineVersion);
-            elements.each(function() {
-
-                var name = $(this).attr('name');
-                if (name && $.inArray(name, elementAry) == -1) {
-
-                    elementAry.push(name);
-                    var idAry = name.split(':');
-                    if (idAry[0] == App.InlineDoc.customPrefix) {
-
-                        facts.key_concepts.custom++;
-                    } else {
-
-                        facts.key_concepts.standard++;
-                    }
-                }
-            });
-
-            var dimensions = [];
-            var members = [];
-            var contexts = App.InlineDoc.getContexts();
-            contexts.each(function() {
-
-                var node = $(this);
-                var segments = App.InlineDoc.getSegmentsForContext(node);
-                if (segments.length == 1) {
-
-                    segments.children().each(function() {
-
-                        var node = $(this);
-                        var dimension = node.attr('dimension');
-                        if ($.inArray(dimension, dimensions) == -1) {
-
-                            if (dimension.match(/Axis\b/i)) {
-
-                                var dimensionAry = dimension.split(':');
-                                if (dimensionAry[0] == App.InlineDoc.customPrefix) {
-
-                                    facts.axis.custom++;
-                                } else {
-
-                                    facts.axis.standard++;
-                                }
-                            }
-                            dimensions.push(dimension);
-                        }
-
-                        var member = node.html();
-                        if ($.inArray(member, members) == -1) {
-
-                            if (member.match(/Member\b/i)) {
-
-                                var memberAry = member.split(':');
-                                if (memberAry[0] == App.InlineDoc.customPrefix) {
-
-                                    facts.member.custom++;
-                                } else {
-
-                                    facts.member.standard++;
-                                }
-                            }
-                            members.push(member);
-                        }
-                    });
-                }
-            });
-
+            facts.key_concepts.custom=App.InlineDoc.getMetaData().keyCustom;
+			facts.key_concepts.standard=App.InlineDoc.getMetaData().keyStandard;
+			facts.axis.custom=App.InlineDoc.getMetaData().axisCustom;
+			facts.axis.standard=App.InlineDoc.getMetaData().axisStandard;
+			facts.member.custom=App.InlineDoc.getMetaData().memberCustom;
+			facts.member.standard=App.InlineDoc.getMetaData().memberStandard;
             var sections = ['key_concepts', 'axis', 'member', 'total'];
             for (var i=0; i<sections.length; i++){
 
@@ -615,72 +555,12 @@ var App_About = {
         var elementAry = [];
         $('#total-number-facts').html(elements.length);
         $('#inline-version').html(App.InlineDoc.inlineVersion);
-        elements.each(function() {
-
-            var name = $(this).attr('name');
-            if (name && $.inArray(name, elementAry) == -1) {
-
-                elementAry.push(name);
-                var idAry = name.split(':');
-                if (idAry[0] == App.InlineDoc.customPrefix) {
-
-                    facts.key_concepts.custom++;
-                } else {
-
-                    facts.key_concepts.standard++;
-                }
-            }
-        });
-
-        var dimensions = [];
-        var members = [];
-        var contexts = App.InlineDoc.getContexts();
-        contexts.each(function() {
-
-            var node = $(this);
-            var segments = App.InlineDoc.getSegmentsForContext(node);
-            if (segments.length == 1) {
-
-                segments.children().each(function() {
-
-                    var node = $(this);
-                    var dimension = node.attr('dimension');
-                    if ($.inArray(dimension, dimensions) == -1) {
-
-                        if (dimension.match(/Axis\b/i)) {
-
-                            var dimensionAry = dimension.split(':');
-                            if (dimensionAry[0] == App.InlineDoc.customPrefix) {
-
-                                facts.axis.custom++;
-                            } else {
-
-                                facts.axis.standard++;
-                            }
-                        }
-                        dimensions.push(dimension);
-                    }
-
-                    var member = node.html();
-                    if ($.inArray(member, members) == -1) {
-
-                        if (member.match(/Member\b/i)) {
-
-                            var memberAry = member.split(':');
-                            if (memberAry[0] == App.InlineDoc.customPrefix) {
-
-                                facts.member.custom++;
-                            } else {
-
-                                facts.member.standard++;
-                            }
-                        }
-                        members.push(member);
-                    }
-                });
-            }
-        });
-
+        facts.key_concepts.custom=App.InlineDoc.getMetaData().keyCustom;
+        facts.key_concepts.standard=App.InlineDoc.getMetaData().keyStandard;
+        facts.axis.custom=App.InlineDoc.getMetaData().axisCustom;
+        facts.axis.standard=App.InlineDoc.getMetaData().axisStandard;
+        facts.member.custom=App.InlineDoc.getMetaData().memberCustom;
+        facts.member.standard=App.InlineDoc.getMetaData().memberStandard;
         var sections = ['key_concepts', 'axis', 'member', 'total'];
         for (var i=0; i<sections.length; i++){
 

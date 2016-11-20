@@ -7,7 +7,7 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  * */
 var App = {
-    Version: '1.0.0.83',
+    Version: '1.0.0.85',
     InlineDoc:null,
     XMLInlineDoc:null,
     XBRLDoc:null,
@@ -38,6 +38,39 @@ var App = {
     },
     init:function() {
         $("#version").text("Inline XBRL Viewer "+App.Version);
+		(function(doc) {
+			var viewport = document.getElementById('viewport');
+			if ( navigator.userAgent.match(/iPhone/i)) {
+				viewport.setAttribute("content", "initial-scale=0.20");
+                document.getElementById("dataFilter").classList.add("hidden-md");
+				document.getElementById("dataFilter").classList.add("hidden-lg");
+				document.getElementById("tags").classList.add("hidden-md");
+				document.getElementById("tags").classList.add("hidden-lg");
+				document.getElementById("menu").classList.add("hidden-md");
+				document.getElementById("menu").classList.add("hidden-lg");
+				document.getElementById("taggedSections").classList.add("hidden-md");
+				document.getElementById("taggedSections").classList.add("hidden-lg");
+				document.getElementById("moreFilters").classList.add("hidden-md");
+				document.getElementById("moreFilters").classList.add("hidden-lg");
+				document.getElementById("factList").classList.add("hidden-md");
+				document.getElementById("factList").classList.add("hidden-lg");
+                document.getElementById("taggedSectionsReport").classList.remove("hidden-md");
+				document.getElementById("taggedSectionsReport").classList.remove("hidden-lg");
+				document.getElementById("taggedSectionsReport").classList.add("visible-md");
+				document.getElementById("taggedSectionsReport").classList.add("visible-lg");
+				document.getElementById("dataFilterLink").classList.remove("hidden-md");
+				document.getElementById("dataFilterLink").classList.remove("hidden-lg");
+				document.getElementById("dataFilterLink").classList.add("visible-md");
+				document.getElementById("dataFilterLink").classList.add("visible-lg");
+				document.getElementById("tagsFilterLink").classList.remove("hidden-md");
+				document.getElementById("tagsFilterLink").classList.remove("hidden-lg");
+				document.getElementById("tagsFilterLink").classList.add("visible-md");
+				document.getElementById("tagsFilterLink").classList.add("visible-lg");
+
+			} else if ( navigator.userAgent.match(/iPad/i) ) {
+				viewport.setAttribute("content", "initial-scale=0.90");
+			}
+		}(document));
         App.showLoadingDialog({
             message:"loading document...",
             percent:100
@@ -91,7 +124,19 @@ var App = {
 
             // wire up close button for message box
             $('#message-box-container').find('.message-btn').first().on('click', function() {
-
+            	
+            	 if($("#filterDataDiv").height()==0){
+            		 $('.modal').css("top", "0px");
+            	 }
+            	 if($("#filterDataDiv").height()==23){
+            		 $('.modal').css("top", "25px");
+            	 }
+            	 if($("#filterDataDiv").height()==46){
+            		 $('.modal').css("top", "50px");
+            	 }
+                $('#app-panel-reports-container .toolbar h4').css("marginTop", "5px");
+                $('#app-panel-help-container .toolbar h4').css("marginTop", "5px");
+                $('#results-header').css("marginTop", "5px");
                 App.hideMessage();
             });
 
@@ -125,7 +170,33 @@ var App = {
 
         $('#message-content').html(message);
         $('#message-box-container').slideDown();
-
+        if($("#filterDataDiv").height()==0){
+            $("#message-box-container").css("top", "30px");
+            if($("#message-box-container").height()>0){
+            $(".modal").css("top","40px");
+            $('#app-panel-reports-container .toolbar h4').css("marginTop", "40px");
+            $('#app-panel-help-container .toolbar h4').css("marginTop", "40px");
+            $('#results-header').css("marginTop", "40px");
+            }
+            
+        }
+		else if($("#filterDataDiv").height()==23){
+            $("#message-box-container").css("top", "55px");
+            $(".modal").css("top","65px");
+        }
+        else if($("#filterDataDiv").height()==46){
+        	$("#message-box-container").css("top", "80px");
+        	$(".modal").css("top","90px");
+        }else if($("#filterDataDiv").height()==69){
+        	$("#message-box-container").css("top", "105px");
+        	$(".modal").css("top","115px");
+        }else if($("#filterDataDiv").height()==92){
+        	$("#message-box-container").css("top", "130px");
+        	$(".modal").css("top","140px");
+        }else if($("#filterDataDiv").height()==115){
+        	$("#message-box-container").css("top", "155px");
+        	$(".modal").css("top","165px");
+        }
         if (options.hideAfter) {
 
             setTimeout(function() {
@@ -183,8 +254,9 @@ var App = {
         	}
         	catch(Error)
         	{
-        		App.showMessage("The selected feature has encountered a processing issue and is not able to complete at this time.");
-        		App.hideSpinner();
+        		
+        		App.showMessage("Selected feature has encountered a processing issue.");	
+                App.hideSpinner();
         	}
         }, 200);
     },
@@ -198,7 +270,7 @@ var App = {
         	}
         	catch(Error)
         	{
-        		App.showMessage("The selected feature has encountered a processing issue and is not able to complete at this time.");
+        		App.showMessage("Selected feature has encountered a processing issue.");
         		App.hideSpinner();
         	}
         }, 200);
@@ -220,12 +292,22 @@ var App = {
 
         var frameHead = App.frame.contents().find('head');
         var style = App.frame.contents().find('#sec-app-style').first();
-        var styleStr = '.sec-cbe-highlight-dashed { border: 2px dashed ' + App_Settings.get('elementBorderColor') + '!important; cursor: pointer; }' +
+        //var styleStr = '.sec-cbe-highlight-dashed { border: 0px dashed ' + App_Settings.get('elementBorderColor') + '!important; cursor: pointer; }' +
+        var styleStr = '.sec-cbe-highlight-dashed { border-top: 2px solid ' + App_Settings.get('elementBorderColor') + '!important; cursor: pointer; border-bottom: 2px solid ' + App_Settings.get('elementBorderColor') + '!important ; cursor: pointer;box-shadow: 0 0 10px #ccc;}' + 
+            '.sec-cbe-highlight-dashed-highlight { border: 0px dashed ' + App_Settings.get('elementBorderColor') + '!important; cursor: pointer; }' +
             '.sec-cbe-highlight-block { display:block }' +
             '.sec-cbe-highlight-inline { display:inline }' +
            '.sec-cbe-highlight-filter { background-color:' + App_Settings.get('initialHighlightColor') + '!important; }' +
            '.sec-cbe-highlight-filter * { background-color:' + App_Settings.get('initialHighlightColor') + '!important; }' +
-            '.sec-cbe-highlight-filter-selected { border: 3px solid ' + App_Settings.get('focusHighlightColor') + '!important; cursor: pointer; }';
+            '.sec-cbe-highlight-filter-selected { border: 3px solid ' + App_Settings.get('focusHighlightColor') + '!important; cursor: pointer; }' +
+            '.sec-cbe-highlight-filter-selected-nodes { border: 0px solid ' + App_Settings.get('focusHighlightColor') + '!important; cursor: pointer; }' +
+            //'.sec-cbe-highlight-filter-content-selected { border: 1px solid ' + App_Settings.get('focusHighlightSelectionColor') + '!important; cursor: pointer; }' +
+            '.sec-cbe-highlight-filter-content-selected {background-color:' + App_Settings.get('blockHighlightColor') + ' !important; cursor: pointer;}' +
+            '.sec-cbe-highlight-hover-content {background-color:' + App_Settings.get('blockHighlightColor') + ' !important; cursor: pointer;border: 2px dotted ' + App_Settings.get('elementBorderColor') + '}' +
+            '.sec-cbe-highlight-hover-over-content-selected {border: 2px solid ' + App_Settings.get('focusContentSelectionColor') + '!important; cursor: pointer;}' +
+            '.sec-cbe-highlight-content-selected { background-color:' + App_Settings.get('blockHighlightColor') + ' !important ; cursor: pointer;}'+
+           // '.sec-cbe-highlight-content-selected { background-color:#CDCDCD !important ; cursor: pointer;}'+
+            '.sec-cbe-highlight-inline-block { display:inline}';
         if (style.length == 0) {
 
             frameHead.append('<style id="sec-cbe-style" type="text/css">' + styleStr + '</style>');
@@ -298,13 +380,16 @@ var App_RemoteDocs = {
     	
     	var hrefPath = "#";
         var hrefZip = "#";
-        // This code assumes that the doc= argument is a simple URL with no query components.
+         
         var dir = docPath.substring(0, docPath.lastIndexOf("/")+1);
         
         // getting _htm.xml file details
         var fileName = docBasePath.substring(0, docBasePath.indexOf('.')) +"_htm.xml";
+		var openfileName = docBasePath.substring(0, docBasePath.indexOf('.')) +".htm";
         hrefPath = dir + fileName;
+		openhrefPath = dir + openfileName;
         $('#instanceFile').attr('href',hrefPath);
+		$("#openAsHtml").attr('href',openhrefPath);
         $('#instanceFileIE').on('click', function() {
                 
              var _window = window.open(hrefPath, '_blank');
@@ -346,6 +431,12 @@ var App_RemoteDocs = {
                       App.showMessage("File does not exist at the specified path");
              });
         }
+		 if(openhrefPath=="#"){
+            $('#openAsHtml').on('click', function() {
+
+                   App.showMessage("The Inline XBRL document could not be found.");
+          });
+     }
      },
     initReferenceDocs:function(docBasePath) {
 
@@ -852,7 +943,11 @@ var App_Utils = {
     },
     convertToXBRLId:function(name) {
 
-        return name.replace(':', '_');
+    	if(name){
+			return name.replace(':', '_');
+		}else{
+			return name;
+		}
     },
     loadDocument:function(url, callback, options) {
 

@@ -3,7 +3,67 @@ jQuery.fn.selectionHighlight = function() {
     App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); //.unwrap();
     $(this).parent().addClass('sec-cbe-highlight-filter-selected'); //.wrap('<span class="sec-cbe-highlight-filter-selected"></span>');
 };
+jQuery.fn.selectionHighlightNodes = function() {
 
+    App.frame.contents().find('.sec-cbe-highlight-filter-selected-nodes').removeClass('sec-cbe-highlight-filter-selected-nodes'); //.unwrap();
+    $(this).parent().addClass('sec-cbe-highlight-filter-selected-nodes'); //.wrap('<span class="sec-cbe-highlight-filter-selected"></span>');
+};
+jQuery.fn.removeHighlightNodes = function(allLinkedNodes) {
+
+	for(var i=0;i<allLinkedNodes.length;i++){
+    	var cls = 'sec-cbe-highlight-content-selected'; 
+    	if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:nonnumeric"){
+    		$(allLinkedNodes[i]).parent().addClass('sec-cbe-highlight-dashed');
+    		$(allLinkedNodes[i]).removeClass(cls);
+    	}
+    	if ($(allLinkedNodes[i]).children().length > 0) { 
+    		$(allLinkedNodes[i]).children().removeClass(cls);
+    		if($(allLinkedNodes[i]).children().children().length >0){
+			    if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="span")){
+    				$(allLinkedNodes[i]).children().children().removeClass(cls);
+        			}
+    			if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="div")){
+    				$(allLinkedNodes[i]).children().children().removeClass(cls);
+        			}
+			   $(allLinkedNodes[i]).children().children().children().children().children().removeClass(cls);
+			   $(allLinkedNodes[i]).children().children().children().children().removeClass(cls);
+			   $(allLinkedNodes[i]).children().children().removeClass(cls);
+    		}
+    		
+    	}
+    	else if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:continuation"){
+    		$(allLinkedNodes[i]).removeClass(cls);
+    	}
+        };
+	
+};
+jQuery.fn.removeHighlightSelectionNodes = function(allLinkedNodes) {
+	for(var i=0;i<allLinkedNodes.length;i++){
+    	var cls = 'sec-cbe-highlight-filter-content-selected'; 
+		if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:nonnumeric"){
+    		//$(allLinkedNodes[i]).parent().removeClass('sec-cbe-highlight-dashed');
+    		$(allLinkedNodes[i]).removeClass(cls);
+    	}
+    	if ($(allLinkedNodes[i]).children().length > 0) { 
+    		$(allLinkedNodes[i]).children().removeClass(cls);
+    		if($(allLinkedNodes[i]).children().children().length >0){
+			    if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="span")){
+    				$(allLinkedNodes[i]).children().children().removeClass(cls);
+        			}
+    			if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="div")){
+    				$(allLinkedNodes[i]).children().children().removeClass(cls);
+        			}
+			   $(allLinkedNodes[i]).children().children().children().children().children().removeClass(cls);
+			   $(allLinkedNodes[i]).children().children().children().children().removeClass(cls);
+			   $(allLinkedNodes[i]).children().children().removeClass(cls);
+    		}
+    		
+    	}
+    	else if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:continuation"){
+    		$(allLinkedNodes[i]).removeClass(cls);
+    	}
+    };
+};
 jQuery.fn.filterHighlight = function(index) {
 
     // make sure node isn't already filtered
@@ -188,6 +248,29 @@ jQuery.fn.matchesSearch = function(search, ele) {
         pattern = "g";
     }*/
     var str = search.searchStr;
+   
+    if(ele.attr('continuedAt')!=null){
+ 	   var allLinkedNodes=[];
+    	   allLinkedNodes=App_Find.Element.groupIxContinuation(ele);
+    	   
+    	   var xbrlValue=" ";
+    	   for(var l=0;l<allLinkedNodes.length;l++){
+    		   
+    		   xbrlValue=allLinkedNodes[l].text();
+    		   if (search.matchCase) {
+    			   if(xbrlValue.indexOf(str) >= 0){
+        			   isValid = true;
+    	               return isValid;
+        		   }
+	            }else{
+	       			if(xbrlValue.toLowerCase().indexOf(str.toLowerCase()) >= 0){
+	     			   isValid = true;
+	 	               return isValid;
+	     		   }
+	       		}
+    		   
+    	   }
+    }
     if (str.match(/\|/gi)) {
         //str = str.replace(/\s\|\s/g, "|").split('|').join('|');
         var terms = str.replace(/\s\|\s/g, "|").split('|');
@@ -792,13 +875,21 @@ jQuery.fn.calendarFriendlyName = function() {
 
     var friendlyName = this.prop('id');
     var start = this.find(App.InlineDoc.instancePrefix + '\\:startDate');
+	if(start.length==0){
+    	 start = this.find('startDate');
+    }
     var instant = this.find(App.InlineDoc.instancePrefix + '\\:instant');
 
     if (start.length == 1) {
 
         var startDateAry = start.html().split('-');
         var startDate = new Date(startDateAry[0], parseInt(startDateAry[1]) - 1, startDateAry[2]);
-        var endDateAry = this.find(App.InlineDoc.instancePrefix + '\\:endDate').html().split('-');
+        //var endDateAry = this.find(App.InlineDoc.instancePrefix + '\\:endDate').html().split('-');
+		var end=this.find(App.InlineDoc.instancePrefix + '\\:endDate');
+        if(end.length==0){
+        	end = this.find('endDate');
+       }
+        var endDateAry = end.html().split('-');
         var endDate = new Date(endDateAry[0], parseInt(endDateAry[1]) - 1, endDateAry[2]);
 
         var lastDayOfMonth = new Date(endDate.getFullYear(), endDate.getMonth()+1, 0);
@@ -968,8 +1059,9 @@ jQuery.fn.htmlDecode = function (value) {
 }
 
 jQuery.fn.isCustom = function() {
-
+if($(this).attr('name')){
     return App.InlineDoc.customPrefix == $(this).attr('name').split(':')[0];
+}
 };
 
 jQuery.fn.isHidden = function() {

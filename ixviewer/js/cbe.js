@@ -127,7 +127,9 @@
                 contextIDsForAxis:$(),
                 dimensionNameforAxis:$(),
                 contextIDsForSearch:$(),
-				dimensionNameForSearch:$()
+				dimensionNameForSearch:$(),
+				relationships:$(),
+				continuations:$()
             };
             var _cacheMetaLinks = null;
             var _cacheInstance = null;
@@ -193,7 +195,6 @@
 
                     var node = $(element);
                     var nodeName = element.nodeName.toLowerCase();
-
                     // first make sure it is a tagged item
                     if (nodeName.substring(0, this.nodeName.indexOf(':')) == self.inlinePrefix) {
 
@@ -207,6 +208,7 @@
                                  if (element.nodeName.toLowerCase() == 'ix:footnote') {
                                 	 _cache.footnotes.push($(element));
                                  }
+                                 
                              });
                            
                         } else if (node.parents(self.inlinePrefix + '\\:header, header').length == 0) {
@@ -214,12 +216,20 @@
                             // numeric and text elements are kept together because there is a requirement to follow the order in the inline document
                             if ((nodeName == self.inlinePrefix + ':nonfraction') ||
                                 nodeName == self.inlinePrefix + ':nonnumeric') {
-
-                                _cache.elements.push(node);
+                            	 _cache.elements.push(node);
                             } else if (nodeName == self.inlinePrefix + ':footnote') {
                                 _cache.footnotes.push(node);
                             }
+                           
                         }
+                        if (nodeName == self.inlinePrefix + ':' + 'relationship') {
+                        	_cache.relationships.push(node);
+                        }
+                        if (nodeName == self.inlinePrefix + ':' + 'continuation') {
+                        	 _cache.continuations.push(node);
+
+                        }
+                       
                     }
                 });
 
@@ -256,13 +266,14 @@
 		        	filename = docURI.filename();
 		        	metalinksUrl = docURI.filename('MetaLinks.json').toString();
 		        }
+		        //metalinksUrl = "../documents/"+metalinksUrl;
 		        $.ajax({
 			        url:  metalinksUrl,
 			        dataType: "json", 
 			        async: false,
 			        cache: false,
 			        error: function(requestObject, error, errorThrown) {
-			            App.showMessage("Could not locate valid <a href='"+metalinksUrl+"'>metadata</a> document.");
+			            App.showMessage("The <a href='"+metalinksUrl+"'>metadata</a> file could not be found.");
 			            App.hideLoadingDialog();
 			        },
 			        success: function (requestObject) {
@@ -293,7 +304,7 @@
 		        query = URI(query);
 		        var filename = query.filename(); 
 		        var metamore = query.filename('MetaMore.json').toString();
-		       // metamore = "../documents/"+metamore;
+		        //metamore = "../documents/"+metamore;
 		        $.ajax({
 			        url:  metamore,
 			        dataType: "json", 
@@ -380,7 +391,6 @@
 
                     // hidden
                     if (includeHidden != undefined && includeHidden) {
-
                         $.merge(results, self.getHiddenElementsByType(types));
                     }
                     
@@ -564,23 +574,27 @@
             };
 
             this.getHiddenElementsByType = function(types) {
-
                 var results = $();
                 if (types instanceof Array) {
 
                     var includeNumeric = $.inArray('nonFraction', types) != -1;
                     var includeText = $.inArray('nonNumeric', types) != -1;
+                    var includeSign = $.inArray('sign', types) != -1;
 
                     _cache.hidden.each(function(index, element) {
 
-                        var nodeAry = element.nodeName.split(':'); 
+                        var nodeAry = element.nodeName.split(':');
                         if(nodeAry.length > 1) {
 
                             var type = nodeAry[1].toLowerCase();
                             if ((includeNumeric &&  type == 'nonfraction') ||
-                                (includeText && type == 'nonnumeric')) {
-
+                                (includeText && type == 'nonnumeric') ) {
                                 results.push($(element));
+                            }
+                            else if($(element).attr('sign')){
+                            	if(includeSign && ($(element).attr('sign')=="-")){
+                            		results.push($(element));
+                            	}
                             }
                         }
                     });
@@ -706,7 +720,21 @@
                 return items;
 
             };
-            
+            this.getRelationships = function(){
+            	var relationships=[];
+            	relationships=_cache.relationships;
+	        	return relationships;            
+            };
+            this.getFootnoteElements = function(){
+            	var footnotes=[];
+            	footnotes=_cache.footnotes;
+	        	return footnotes;            
+            };
+            this.getContinuations = function(){
+            	var continuations=[];
+            	continuations=_cache.continuations;
+	        	return continuations;            
+            };
             this.getDocumentContent = function() {
 
                 return _inlineDoc;
@@ -822,10 +850,18 @@
            };
            
            this.getSelectedLabel = function(idgiven,parent,cnamegetting,callback){
-               var result = App.InlineDoc.getMetaData();
+        	   var result = App.InlineDoc.getMetaData();
                if (!result) return;
-               var label = result.tag[idgiven].lang['en-US'].role['label'];
-               if (label) callback.apply(parent,[label]);             
+               if(result.tag[idgiven]){
+            	   if(result.tag[idgiven].lang['en-US']){
+            		   var label = result.tag[idgiven].lang['en-US'].role['label'];
+                       if (label) callback.apply(parent,[label]); 
+            	   }else{
+            		   return;
+            	   }
+               }else{
+            	   return;
+               }             
              }; 
            
            this.getReportFromURI = function(uri,parent,callback){
@@ -919,11 +955,13 @@
             };
             
             this.getIdTypes = function(idgiven, parent, cnamegetting,callback){
-                var result = App.InlineDoc.getMetaLinks();
+            	var result = App.InlineDoc.getMetaLinks();
                 if (!result) return;
                 var resjson = null;
-                resjson = App.InlineDoc.getMetaData().tag[idgiven].xbrltype;
-        		if (resjson) {callback.apply(parent,[resjson]);};                
+                if(App.InlineDoc.getMetaData().tag[idgiven]){
+                	resjson = App.InlineDoc.getMetaData().tag[idgiven].xbrltype;
+                }
+        		if (resjson) {callback.apply(parent,[resjson]);};                  
             };
 
             /* initialize */
@@ -936,6 +974,10 @@
                 _setInlinePrefix();
                 var fallback = (new RegExp("(doc|file)=([^&]*)", "i").exec(window.location.search))[2];
                 if (self.inlinePrefix == "" && self.instancePrefix == "") {
+                	var nodes = document.getElementById("mainDiv").getElementsByTagName('*');
+                	for(var i = 0; i < nodes.length; i++){
+                	     nodes[i].disabled = true;
+                	}
                 	App.showMessage("<a href='"+fallback+"' >"+fallback+"</a> was not an inline document.");
                 	App.hideLoadingDialog();
 
