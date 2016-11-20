@@ -10,6 +10,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 from collections import defaultdict
 import arelle.ModelValue
 from . import Utils
+Filing = None
 
 class FactAxisMemberGroup(object):
     def __init__(self, fact, preferredLabel = None):
@@ -36,6 +37,9 @@ class FactAxisMember(object):
 
 class Embedding(object):
     def __init__(self, filing, cube, commandTextListOfLists, factThatContainsEmbeddedCommand=None):
+        global Filing
+        if Filing is None:
+            from . import Filing
         self.filing = filing
         self.controller = filing.controller
         self.cube = cube
@@ -268,6 +272,23 @@ class Embedding(object):
         else:
             primaryRowOrColStr = 'col'
             primaryIndex = len(self.rowCommands) + self.columnPrimaryPosition
+            
+        # if any typed dimensions, get values to order them
+        for pseudoAxis, (giveMemGetPositionDict, ignore) in self.cube.axisAndMemberOrderDict.items():
+            if isinstance(pseudoAxis, arelle.ModelValue.QName) and "!?isTypedDimensionAxis?!" in giveMemGetPositionDict:
+                # get fact member values for this pseudo axis
+                try: # try to sort by native value
+                    for typedMember in sorted((getMemberOnAxisForFactDict[pseudoAxis]
+                                               for fact, getMemberOnAxisForFactDict, periodStartEndLabel in self.cube.factMemberships
+                                               if pseudoAxis in getMemberOnAxisForFactDict),
+                                              key=lambda member: member.typedMemberSortKey):
+                        giveMemGetPositionDict[typedMember] = len(giveMemGetPositionDict)
+                except TypeError: # if unsortable members, try as string (but will be inconsistent on numbers)
+                    for typedMember in sorted((getMemberOnAxisForFactDict[pseudoAxis]
+                                               for fact, getMemberOnAxisForFactDict, periodStartEndLabel in self.cube.factMemberships
+                                               if pseudoAxis in getMemberOnAxisForFactDict),
+                                              key=lambda member: str(member.typedMemberSortKey)):
+                        giveMemGetPositionDict[typedMember] = len(giveMemGetPositionDict)
 
         for fact, getMemberOnAxisForFactDict, periodStartEndLabel in self.cube.factMemberships:
             factAxisMemberGroupList = self.buildFactAxisMemberGroupsForFactOrFilter(pseudoAxisRowColStrTuples, pseudoAxisSet, fact, getMemberOnAxisForFactDict,
@@ -417,7 +438,8 @@ class Embedding(object):
             memberQname = self.filing.startEndContextDict[(None, substituteInstant)]
 
         if memberQname is None: # member is a default
-            if pseudoAxisName in {'unit', 'period'}:
+            isTypedDimension = ('!?isTypedDimensionAxis?!' in getMemberPositionsOnAxisDict)
+            if pseudoAxisName in {'unit', 'period'} or isTypedDimension:
                 memberPositionOnAxis = Utils.minNumber  # has no order from PG, so put at beginning
             else:
                 if pseudoAxisName in self.cube.defaultFilteredOutAxisSet:
@@ -461,7 +483,17 @@ class Embedding(object):
                         return None
             memberIsDefault = True
 
-        else: # member is not a default
+        elif isinstance(memberQname, Filing.Member): # typed dimension member
+            # typed dim position is table
+            filingMember = memberQname
+            if filingMember not in getMemberPositionsOnAxisDict:
+                getMemberPositionsOnAxisDict[filingMember] = len(getMemberPositionsOnAxisDict)
+            memberPositionOnAxis = getMemberPositionsOnAxisDict[filingMember]
+            memberLabel = "{}: {}".format(
+                    self.cube.labelDict[pseudoAxisName], 
+                    "(nil)" if memberQname.typedMemberIsNil else memberQname.typedValue)
+            memberIsDefault = False
+        else: # explicit member is not a default
             try:
                 memberPositionOnAxis = getMemberPositionsOnAxisDict[memberQname]  # look up memberQname order
             except KeyError:

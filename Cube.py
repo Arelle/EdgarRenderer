@@ -26,7 +26,7 @@ class Cube(object):
         self.isBarChart = 'barchart' in linkroleUri.casefold()
         self.fileNumber = None
         self.hasAxes = {}
-        self.hasMembers = {}
+        self.hasMembers = set()
         self.hasElements = set()
         self.timeAxis = set()
         self.unitAxis = {}
@@ -349,9 +349,9 @@ class Cube(object):
         text = '\n\n\naxes and members from contexts:\n'
         for axisQname, axis in self.hasAxes.items():
             text += 'Axis: {!s}\n'.format(axisQname)
-            for memberQname in axis.hasMembers:
-                if memberQname in self.hasMembers:
-                    text += '\tmember: {!s}\n'.format(memberQname)
+            for member in axis.hasMembers:
+                if member in self.hasMembers:
+                    text += '\tmember: {!s}\n'.format(member.memberValue)
         self.controller.logTrace(text)
   
         text = '\naxisAndMemberOrderDict:\n'

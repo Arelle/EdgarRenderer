@@ -13,7 +13,7 @@ import arelle.XbrlConst
 
 
 class PresentationGroupNode(object):
-    def __init__(self, arelleConcept, arelleRelationship, mayBeUnitConcept):
+    def __init__(self, arelleConcept, arelleRelationship, mayBeUnitConcept, typedValue=None):
         self.arelleConcept = arelleConcept
         self.arelleRelationship =  arelleRelationship
         self.childrenList = [] # lists can be ordered and have duplicates, which is good
@@ -22,8 +22,11 @@ class PresentationGroupNode(object):
         # we are traversing this graph, we don't yet have all of the facts that will be in this cube.  therefore, we can only check if this node references a
         # unit in the whole document, but not yet if it's a unit that is actually used in the cube.  so until we know, we say it may be for a unit ordering.
         self.mayBeUnitConcept = mayBeUnitConcept
+        self.typedValue = typedValue
 
     def __str__(self):
+        if self.TypedValue is not none:
+            return "[typedValue: {} with {!s} children]".format(self.typedValue, self.arelleRelationship.preferredLabel, len(self.childrenList))
         return "[{} {} with {!s} children]".format(self.arelleConcept.qname, self.arelleRelationship.preferredLabel, len(self.childrenList))
 
 
@@ -64,13 +67,16 @@ class PresentationGroup(object):
                 self.buildLabel(default)
                 giveMemGetPositionDict[default.qname] = 0 # put default first by giving it lowest order
 
-            # sort the axes members by their qnames
-            for i, member in enumerate(sorted(axis.hasMembers.values(), key = lambda thing : thing.arelleConcept.qname)):
-                concept = member.arelleConcept
-                rn.childrenList += [PresentationGroupNode(concept, None, False)]
-                self.buildLabel(concept)
-                giveMemGetPositionDict[concept.qname] = i + 1 # add one to be bigger than the zero for the default
-
+            # sort the axes members by their Member object (built-in) sort order
+            for i, member in enumerate(sorted(axis.hasMembers)):
+                if member.arelleConcept is not None: # explicit
+                    concept = member.arelleConcept
+                    rn.childrenList += [PresentationGroupNode(concept, None, False)]
+                    self.buildLabel(concept)
+                    giveMemGetPositionDict[member.memberValue] = i + 1 # add one to be bigger than the zero for the default
+                else:
+                    rn.childrenList += [PresentationGroupNode(None, None, False, member.memberValue)]
+                    giveMemGetPositionDict[member.memberValue] = i + 1
             self.cube.axisAndMemberOrderDict[axisConcept.qname] = (giveMemGetPositionDict, Utils.minNumber)
 
         # add all the elements too
@@ -203,7 +209,7 @@ class PresentationGroup(object):
         concept = node.arelleConcept
 
         # making giveMemGetPositionDict's
-        nodeIsAnAxis = concept.isDimensionItem
+        nodeIsAnAxis = concept is not None and concept.isDimensionItem
         if nodeIsAnAxis:
             if concept in visited or concept.qname not in self.cube.hasAxes:
                 # first, make sure we don't visit an axis twice, could happen if it has multiple parents
@@ -261,6 +267,8 @@ class PresentationGroup(object):
                 self.doPreorderTraversal(childNode, giveMemGetPositionDictPrimary, {}, parentIsAnAxis, setOfConcepts, visited)
 
         if nodeIsAnAxis:
+            if concept.isTypedDimension: # designate this as a typed dimension axis
+                giveMemGetPositionDictAxis["!?isTypedDimensionAxis?!"] = True
             # now we've already recursed on all of the axes children, so we have their ordering, so we can add to axisAndMemberOrderDict
             if len(giveMemGetPositionDictAxis) > 0:
                 if self.cube.isStatementOfEquity:

@@ -9,17 +9,23 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 
 from gettext import gettext as _
 from collections import defaultdict
-import os, re, math, datetime, dateutil.relativedelta, lxml, sys
+import os, re, math, datetime, dateutil.relativedelta, lxml, sys, time
 import arelle.ModelValue, arelle.XbrlConst
 from arelle.ModelObject import ModelObject
+from arelle.XmlUtil import collapseWhitespace
+from arelle.XmlValidate import VALID, VALID_NO_CONTENT
+from lxml import etree
 
 from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
 
 def mainFun(controller, modelXbrl, outputFolderName):
     if "EdgarRenderer/Filing.py#mainFun" in modelXbrl.arelleUnitTests:
         raise arelle.PythonUtil.pyNamedObject(modelXbrl.arelleUnitTests["EdgarRenderer/Filing.py#mainFun"])
+    _funStartedAt = time.time()
     filing = Filing(controller, modelXbrl, outputFolderName)
+    controller.logDebug("Filing initialized {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
     filing.populateAndLinkClasses()
+    controller.logDebug("Filing populateAndLinkClasses {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
 
     sortedCubeList = sorted(filing.cubeDict.values(), key=lambda cube : cube.definitionText)
 
@@ -29,9 +35,11 @@ def mainFun(controller, modelXbrl, outputFolderName):
             embedding = Embedding.Embedding(filing, cube, [])
             cube.embeddingList = [embedding]
             filing.embeddingDriverBeforeFlowThroughSuppression(embedding)
+    controller.logDebug("Filing cubes {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
 
     if not filing.hasEmbeddings:
         filing.filterOutColumnsWhereAllElementsAreInOtherReports(sortedCubeList) # otherwise known as flow through suppression
+    controller.logDebug("Filing flow thru suppression {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
 
     # this complicated way to number files is all about maintaining re2 compatibility
     nextFileNum = controller.nextFileNum
@@ -50,6 +58,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
             # we keep track of embedded cubes so that we know later if for some cubes, no embeddings were actually embedded.
             if cube.isEmbedded:
                 filing.embeddedCubeSet.add(cube)
+    controller.logDebug("Filing cube numbering {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
 
     # handle excel writing
     xlWriter = None
@@ -63,6 +72,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
             if not xlWriter:
                 controller.xlWriter = xlWriter = Xlout.XlWriter(controller, outputFolderName)
     Summary.analyzeFactsInCubes(filing)
+    controller.logDebug("Filing analyzeFactsInCubes {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
 
     #import win32process
     #print('memory '  + str(int(win32process.GetProcessMemoryInfo(win32process.GetCurrentProcess())['WorkingSetSize'] / (1024*1024))))
@@ -77,6 +87,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
                         _("Validating renderable reports"),
                         modelObject=modelXbrl.modelDocument)
     for cube in sortedCubeList:
+        _funStartedAt = time.time()
         if cube.noFactsOrAllFactsSuppressed:
             for embedding in cube.embeddingList:
                 Utils.embeddingGarbageCollect(embedding)
@@ -88,7 +99,10 @@ def mainFun(controller, modelXbrl, outputFolderName):
                 filing.reportDriverAfterFlowThroughSuppression(embedding, xlWriter)
                 filing.finishOffReportIfNotEmbedded(embedding)
             Utils.embeddingGarbageCollect(embedding)
+        controller.logDebug("R{} total {:.3f} secs.".format(cube.fileNumber, time.time() - _funStartedAt))
         Utils.cubeGarbageCollect(cube)
+        
+    _funStartedAt = time.time()
 
     # now we make sure that every cube referenced by embedded command facts actually gets embedded.  this might not happen
     # if for example, the embedded command facts were all filtered out.  In that case, we make a generic embedding and
@@ -96,6 +110,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
     filing.disallowEmbeddings = True # this stops any more embeddings from happening
 
     for cube in filing.embeddedCubeSet:
+        _funStartedAt = time.time()
         try:
             if cube.noFactsOrAllFactsSuppressed:
                 continue
@@ -114,6 +129,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
         # it might have other embeddings, but they didn't get embedded and we don't need them anymore.
         for embedding in cube.embeddingList:
             Utils.embeddingGarbageCollect(embedding)
+        controller.logDebug("R{} total {:.3f} secs.".format(cube.fileNumber, time.time() - _funStartedAt))
         Utils.cubeGarbageCollect(cube)
 
     if len(filing.reportSummaryList) > 0:
@@ -132,6 +148,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
         controller.nextUncategorizedFileNum -= 1
         
     controller.instanceSummaryList += [Summary.InstanceSummary(filing, modelXbrl)]  
+    controller.logDebug("Filing finish {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
     return True
 
 
@@ -208,9 +225,13 @@ class Filing(object):
             self.fileNameBase = self.reportZip = None
 
         if controller.reportXslt:
+            _xsltStartedAt = time.time()
             self.transform = lxml.etree.XSLT(lxml.etree.parse(controller.reportXslt))
+            self.controller.logDebug("Excel XSLT transform {:.3f} secs.".format(time.time() - _xsltStartedAt))
         if controller.summaryXslt:
+            _xsltStartedAt = time.time()
             self.summary_transform = lxml.etree.XSLT(lxml.etree.parse(controller.summaryXslt))
+            self.controller.logDebug("Summary XSLT transform {:.3f} secs.".format(time.time() - _xsltStartedAt))
         self.reportSummaryList = []
 
         self.rowSeparatorStr = ' | '
@@ -226,6 +247,7 @@ class Filing(object):
 
     def populateAndLinkClasses(self, uncategorizedCube = None):
         duplicateFacts = self.modelXbrl.duplicateFactSet = set()
+        dupFactFootnoteOrigin = {} # original fact of duplicate
 
         if uncategorizedCube is not None:
             for fact in self.unusedFactSet:
@@ -278,7 +300,8 @@ class Filing(object):
                                          modelObject=self.modelXbrl.modelDocument, linkroleName=cube.shortName, 
                                          axes=cube.defaultFilteredOutAxisSet)
 
-
+            footnoteRelationships = self.modelXbrl.relationshipSet('XBRL-footnotes')
+            
             # initialize elements
             for qname, factSet in self.modelXbrl.factsByQname.items():
 
@@ -308,6 +331,8 @@ class Filing(object):
                             discardedCounter += 1
                             fact = sortedFactList.pop(0)
                             duplicateFacts.add(fact) # not keeping this fact
+                            if footnoteRelationships.fromModelObject(fact): # does duplicate have any footnotes?
+                                dupFactFootnoteOrigin[fact] = firstFact # track first fact for footnotes from duplicate
                             discardedLineNumberList += [str(fact.sourceline)] # these are added in sorted order by sourceline
 
                         if discardedCounter > 0:
@@ -359,15 +384,32 @@ class Filing(object):
                     except KeyError:
                         pass
 
-            # footnotes
-            for relationship in self.modelXbrl.relationshipSet('XBRL-footnotes').modelRelationships:
+            # footnotes from firstFact of possibly merged duplicates
+            for relationship in footnoteRelationships.modelRelationships:
                 # relationship.fromModelObject is a fact
                 # relationship.toModelObject is a resource
                 # make sure Element is active and that no Error is caught by relationshipErrorThrower()
                 # if relationship.fromModelObject.qname in self.elementDict and not self.relationshipErrorThrower(relationship, 'Footnote'):
                 #if relationship.fromModelObject.qname in self.elementDict:
-                self.factFootnoteDict[relationship.fromModelObject].append((relationship.toModelObject, relationship.toModelObject.viewText()))
-
+                # HF: link footnote to first fact if a duplicate fact
+                if relationship.fromModelObject not in dupFactFootnoteOrigin:
+                    # only process firstFact footnotes on this pass
+                    self.factFootnoteDict[relationship.fromModelObject].append((relationship.toModelObject, relationship.toModelObject.viewText()))
+                    
+            # now the duplicates, if footnote not already in the firstFact footnotes list
+            for relationship in footnoteRelationships.modelRelationships:
+                dupFirstFact = dupFactFootnoteOrigin.get(relationship.fromModelObject)
+                if dupFirstFact is not None:
+                    _contentsDuplicated = False
+                    _contents = collapseWhitespace(relationship.toModelObject.viewText())
+                    # check that footnote isn't a complete duplicate of footnote already in footnoteDict
+                    for _otherResource, _otherContents in self.factFootnoteDict[dupFirstFact]:
+                        if _contents == collapseWhitespace(_otherContents): # compare as normalized string
+                            _contentsDuplicated = True
+                            break
+                    if not _contentsDuplicated:
+                        self.factFootnoteDict[dupFirstFact].append((relationship.toModelObject, relationship.toModelObject.viewText()))
+                        
             facts = self.modelXbrl.facts
 
         for context in self.modelXbrl.contexts.values():
@@ -458,13 +500,17 @@ class Filing(object):
                             dimension=arelleDimension.prefixedName, value=arelleDimension.dimensionQname,
                             messageCodes=("xbrldie:TypedMemberNotTypedDimensionError", "xbrldie:ExplicitMemberNotExplicitDimensionError"))
 
-                elif memberConcept is None:
+                elif arelleDimension.isExplicit and memberConcept is None:
                     if not self.validatedForEFM: # use Arelle validation message
                         self.modelXbrl.error("xbrldie:ExplicitMemberUndefinedQNameError",
                             _("Context %(contextID)s explicit dimension %(dimension)s member %(value)s is not a global member item"),
                             modelObject=(arelleDimension,fact), contextID=fact.context.id, 
                             dimension=arelleDimension.dimensionQname, value=arelleDimension.memberQname)
-
+                elif arelleDimension.isTyped and arelleDimension.typedMember.xValid < VALID:
+                    self.modelXbrl.debug("debug",
+                        _("Context %(contextID)s typed dimension %(dimension)s member %(value)s is not an xml schema validated value"),
+                        modelObject=(arelleDimension,fact), contextID=fact.context.id, 
+                        dimension=arelleDimension.dimensionQname, value=arelleDimension.typedMember.text)
                 else:
                     try:
                         axis = self.axisDict[dimensionConcept.qname]
@@ -478,16 +524,25 @@ class Filing(object):
                         try:
                             member = self.memberDict[memberConcept.qname]
                         except KeyError:
-                            member = Member(memberConcept)
+                            member = Member(explicitMember=memberConcept)
                             self.memberDict[memberConcept.qname] = member
                         member.linkAxis(axis)
                         axis.linkMember(member)
-                    axisMemberLookupDict[axis.arelleConcept.qname] = member.arelleConcept.qname
+                        axisMemberLookupDict[axis.arelleConcept.qname] = member.arelleConcept.qname
+                    elif arelleDimension.isTyped:
+                        member = Member(typedMember=arelleDimension.typedMember)
+                        try: # replace with equivalent member, if there is one
+                            member = self.memberDict[member] # use previous member object
+                        except KeyError:
+                            self.memberDict[member] = member
+                        member.linkAxis(axis)
+                        axis.linkMember(member)
+                        axisMemberLookupDict[axis.arelleConcept.qname] = member
 
                     # while we're at it, do some other stuff
                     for cube in element.inCubes.values():
                         cube.hasAxes[axis.arelleConcept.qname] = axis
-                        cube.hasMembers[member.arelleConcept.qname] = member
+                        cube.hasMembers.add(member)
                         axis.linkCube(cube)
 
             for cube in element.inCubes.values():
@@ -797,6 +852,7 @@ class Filing(object):
     def reportDriverAfterFlowThroughSuppression(self, embedding, xlWriter):
         report = embedding.report
         cube = embedding.cube
+        _rStartedAt = time.time()
 
         if embedding.rowPeriodPosition != -1:
             report.HideAdjacentInstantRows()
@@ -813,6 +869,7 @@ class Filing(object):
             report.setAndMergeFootnoteRowsAndColumns('col', report.colList)
 
         report.removeVerticalInteriorSymbols()
+        self.controller.logDebug("R{} cols, rows, footnotes {:.3f} secs.".format(cube.fileNumber, time.time() - _rStartedAt)); _rStartedAt = time.time()
 
         #if len(embedding.groupedAxisQnameSet) > 0:
         #    report.handleGrouped()
@@ -825,29 +882,32 @@ class Filing(object):
             # if embedding.rowPrimaryPosition != -1, then primary elements aren't on the rows, so no abstracts to add
             if embedding.rowPrimaryPosition != -1 and not cube.isUnlabeled:
                 report.addAbstracts()
+        self.controller.logDebug("R{} titles {:.3f} secs.".format(cube.fileNumber, time.time() - _rStartedAt)); _rStartedAt = time.time()
 
         if cube.isElements:
             report.generateRowAndOrColHeadingsForElements()
         else:
             report.generateRowAndOrColHeadingsGeneralCase()
-
+        self.controller.logDebug("R{} headings {:.3f} secs.".format(cube.fileNumber, time.time() - _rStartedAt)); _rStartedAt = time.time()
+        
         report.emitRFile()
+        self.controller.logDebug("R{} emit RFile {:.3f} secs.".format(cube.fileNumber, time.time() - _rStartedAt))
 
         if xlWriter:
             # we pass the cube's shortname since it doesn't have units and stuff tacked onto the end.
+            _rStartedAt = time.time()
             xlWriter.createWorkSheet(cube.fileNumber, cube.shortName)
             xlWriter.buildWorkSheet(report)
+            self.controller.logDebug("R{} xlout total {:.3f} secs.".format(cube.fileNumber, time.time() - _rStartedAt))
 
 
     def finishOffReportIfNotEmbedded(self, embedding):
+        _rStartedAt = time.time()
         reportSummary = ReportSummary()
         embedding.report.createReportSummary(reportSummary)
         embedding.report.writeHtmlAndOrXmlFiles(reportSummary)
         self.reportSummaryList += [reportSummary]
-
-
-
-
+        self.controller.logDebug("R{} summary {:.3f} secs.".format(embedding.cube.fileNumber, time.time() - _rStartedAt))
 
 
     def RemoveStuntedCashFlowColumns(self,report):
@@ -1025,26 +1085,144 @@ class StartEndContext(object):
 class Axis(object):
     def __init__(self, arelleConcept):
         self.inCubes = {}
-        self.hasMembers = {}
+        self.hasMembers = set()
         self.arelleConcept = arelleConcept
         self.defaultArelleConcept = None
     def linkCube(self, cubeObj):
         self.inCubes[cubeObj.linkroleUri] = cubeObj
     def linkMember(self, memObj):
-        self.hasMembers[memObj.arelleConcept.qname] = memObj
+        self.hasMembers.add(memObj)
     def __repr__(self):
         return "axis(arelleConcept={}, default={})".format(self.arelleConcept, self.defaultArelleConcept)
 
 class Member(object):
-    def __init__(self, arelleConcept):
-        self.hasMembers = {}
-        self.arelleConcept = arelleConcept
+    def __init__(self, explicitMember=None, typedMember=None):
+        self.hasMembers = set() # HF: now set of Member objects (was list of expl dim QNames before)
+        self.arelleConcept = explicitMember
+        self.typedValue = self.typedKey = typedHash = self.typedMemberIsNil = None
+        if typedMember is not None:
+            self.typedValue = []
+            self.typedKey = []
+            for typedElt in typedMember.iter(etree.Element): # restrict to elements only
+                self.initTypedElt(typedElt)
+            self.typedValue = ", ".join(self.typedValue) # for printing
+            typedHash = tuple(self.typedKey) # can only hash a tuple
+            if len(self.typedKey) == 1:
+                self.typedKey = self.typedKey[0] # non-complex typed dimension
         self.axis = None
         self.parent = None
+        self.memberHash = hash((hash(self.arelleConcept), hash(typedHash)))
+    def initTypedElt(self, typedElt):
+        if VALID <= getattr(typedElt, "xValid") < VALID_NO_CONTENT:
+            if typedElt.get("{http://www.w3.org/2001/XMLSchema-instance}nil") in ("true", "1"):
+                self.typedMemberIsNil = True
+            typedValue = getattr(typedElt, "xValue", None)
+            try:
+                self.typedKey.append(typedElt.modelXbrl.qnameConcepts[typedElt.qname].type.facets["enumeration"][typedElt.xValue].objectIndex)
+            except (AttributeError, IndexError, TypeError):
+                self.typedKey.append(typedValue)
+            if isinstance(typedValue, arelle.ModelValue.IsoDuration):
+                self.typedValue.append(typedValue.viewText()) # duration in words instead of lexical notation
+            else:
+                self.typedValue.append(str(typedValue)) # displayable typed value
+    @property
+    def memberValue(self):
+        if self.arelleConcept is not None:
+            return self.arelleConcept.qname
+        else:
+            return self.typedValue
+    @property
+    def typedMemberSortKey(self):
+        return self.typedKey or self.typedValue
+        
     def linkAxis(self, axisObj):
         self.axis = axisObj
     def linkParent(self, parentObj):
         self.parent = parentObj
+    def __repr__(self):
+        return str(self.memberValue)
+    # functions required for dict key and value comparison of Member
+    def __hash__(self):
+        return self.memberHash
+    def __eq__(self,other):
+        if not isinstance(other, Member):
+            return False
+        if (self.arelleConcept is None) ^ (other.arelleConcept is None):
+            return False # both must be typed or explicit
+        if self.arelleConcept is not None: 
+            # explicit dimension
+            return self.arelleConcept.prefixedName == other.arelleConcept.prefixedName
+        # typed dimension
+        return self.typedMemberIsNil == other.typedMemberIsNil and self.typedValue == other.typedValue
+    def __ne__(self,other):
+        return not self.__eq__(other)
+    def __lt__(self,other):
+        if not isinstance(other, Member):
+            return False
+        if self.arelleConcept is not None:
+            if other.arelleConcept is not None:
+                return self.arelleConcept.prefixedName < other.arelleConcept.prefixedName
+            return True
+        if self.typedMemberIsNil:
+            return not other.typedMemberIsNil
+        if other.typedMemberIsNil:
+            return False
+        try:
+            return self.typedValue < other.typedValue
+        except TypeError: # might be int vs string
+            return str(self.typedValue) < str(other.typedValue)
+    def __le__(self,other):
+        if not isinstance(other, Member):
+            return False
+        if self.arelleConcept is not None:
+            if other.arelleConcept is not None:
+                return self.arelleConcept.prefixedName <= other.arelleConcept.prefixedName
+            return True
+        if self.typedMemberIsNil:
+            return not other.typedMemberIsNil
+        if other.typedMemberIsNil:
+            return True
+        try:
+            return self.typedValue <= other.typedValue
+        except TypeError: # might be int vs string
+            return str(self.typedValue) <= str(other.typedValue)
+    def __gt__(self,other):
+        if not isinstance(other, Member):
+            return True
+        if self.arelleConcept is not None:
+            if other.arelleConcept is not None:
+                return self.arelleConcept.prefixedName > other.arelleConcept.prefixedName
+            return False
+        if self.typedMemberIsNil:
+            return other.typedMemberIsNil
+        if other.typedMemberIsNil:
+            return True
+        try:
+            return self.typedValue > other.typedValue
+        except TypeError: # might be int vs string
+            return str(self.typedValue) > str(other.typedValue)
+    def __ge__(self,other):
+        if not isinstance(other, Member):
+            return True
+        if self.arelleConcept is not None:
+            if other.arelleConcept is not None:
+                return arelleConcept.prefixedName >= other.arelleConcept.prefixedName
+            return False
+        if self.typedMemberIsNil:
+            return other.typedMemberIsNil
+        if other.typedMemberIsNil:
+            return True
+        try:
+            return self.typedValue >= other.typedValue
+        except TypeError: # might be int vs string
+            return str(self.typedValue) >= str(other.typedValue)
+    def __bool__(self):
+        if self.arelleConcept is not None:
+            return bool(self.arelleConcept)
+        # typed member
+        if self.typedMemberIsNil:
+            return True
+        return bool(self.typedValue)
 
 class Element(object):
     def __init__(self, arelleConcept):
