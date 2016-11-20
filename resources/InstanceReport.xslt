@@ -673,7 +673,7 @@
     <xsl:param name="rounding"/>
     <xsl:for-each select="Cells/Cell">
       <td>
-        <xsl:if test="contains($headsWithNotes, concat('|', Id, '|')) and not(contains($colsWithNotes, concat('|', Id, '|')))">
+        <xsl:if test="$hasFootnotes and contains($headsWithNotes, concat('|', Id, '|')) and not(contains($colsWithNotes, concat('|', Id, '|')))">
           <xsl:attribute name="colspan">2</xsl:attribute>
         </xsl:if>
         <xsl:choose>

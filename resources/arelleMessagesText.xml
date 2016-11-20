@@ -413,6 +413,41 @@ Disallowed character '$(text)' in file $(file) at line $(line) col $(column)
 Disallowed entity code $(text) in file $(file) line $(line) column $(column)
 </message>
 
+<message code="EFM.5.02.05.standardNamespacePrefix"
+         level="error"
+         module="ValidateFiling.py" line="1408"
+         args="submittedPrefix recommendedPrefix namespace">
+[ix-0502-Standard-Namespace-Prefix] The prefix $(submittedPrefix) must be replaced by $(recommendedPrefix) for standard namespace $(namespace)
+</message>
+
+<message code="EFM.5.02.05.14.hidden-fact-eligible-for-transform"
+         level="warning"
+         module="ValidateFiling.py" line="1439"
+         args="countEligible elements">
+[ix-0514-Hidden-Fact-Eligible-For-Transform] WARN: $(countEligible) fact(s) appearing in ix:hidden were eligible for transformation: $(elements)
+</message>
+
+<message code="EFM.5.02.05.14.hidden-fact-not-referenced"
+         level="warning"
+         module="ValidateFiling.py" line="1458"
+         args="countUnreferenced elements">
+[ix-0514-Hidden-Fact-Not-Referenced] WARN: $(countUnreferenced) fact(s) appearing in ix:hidden were not referenced by any -sec-ix-hidden style property: $(elements)
+</message>
+
+<message code="EFM.5.02.05.14.hidden-fact-multiple-references"
+         level="warning"
+         module="ValidateFiling.py" line="1448"
+         args="element id countReferences">
+[ix-0514-Hidden-Fact-Multiple-References] WARN: $(element) is referenced by $(countReferences) -sec-ix-hidden style properties: $(id).
+</message>
+
+<message code="EFM.5.02.05.14.hidden-fact-not-found"
+         level="error"
+         module="ValidateFiling.py" line="1448"
+         args="id">
+[ix-0514-Hidden-Fact-Not-Found] The value of the -sec-ix-hidden style property, $(id), does not correspond to the id of any hidden fact.
+</message>
+
 <!--WcH 6.03.03 would be caught by EDGARLink but is useful for offline validation -->
 <!-- the 6.03.03 messages are not indicative of the nature of the problems.  this whole section needs attention. -->
 <message code="EFM.6.03.03"
@@ -727,6 +762,13 @@ $(elementName) is in the default context is incorrect '$(date)'
          module="ValidateFiling.py" line="584"
          args="contextID">
 [fs-0520-Amendment-Description-Without-Amendment-Flag] AmendmentFlag is not true in context $(contextID), so do not provide an AmendmentDescription in that context.
+</message>
+
+<message code="EFM.6.05.20.documentTypeNamespaceInconsistency"
+         level="error"
+         module="ValidateFiling.py" line="1609"
+         args="contextID documentType namespace">
+[cp-0520-Document-Type-Namespace-Inconsistency] DocumentType $(documentType) is not consistent with standard namespace $(namespace).
 </message>
 
 <message code="EFM.6.05.21.EntityCentralIndexKey"
@@ -1706,7 +1748,7 @@ Axis $(dimension) in DRS role $(linkrole), missing targetrole consecutive relati
          level="error"
          module="ValidateFiling.py" line="940"
          args="namespaceConflicts conflictClass">
-[cp-0200-Incompatible-Taxonomy-Versions]  $(refUrl) uses concepts from more than one version of the $(conflictClass) taxonomy.
+[cp-2203-Incompatible-Taxonomy-Versions]  $(refUrl) uses concepts from more than one version of the $(conflictClass) taxonomy.
 </message>
 
 <message code="EFM.6.23.01"
