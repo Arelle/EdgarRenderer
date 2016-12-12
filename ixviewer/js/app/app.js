@@ -7,7 +7,7 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  * */
 var App = {
-    Version: '1.0.0.85',
+    Version: '1.0.0.86',
     InlineDoc:null,
     XMLInlineDoc:null,
     XBRLDoc:null,
@@ -110,15 +110,6 @@ var App = {
                 $('#app-panel-container').find('[title]').each(function(index, element) {
 
                     $(element).tooltip({placement:'left'});
-                });
-            }
-
-            // check for File API support.
-            if (window.File && window.FileReader && window.FileList && window.Blob) {
-
-                $('#inline-file-input').on('change', function(evt) {
-
-                    App_LocalDocs.handleInlineFileSelect(evt);
                 });
             }
 
@@ -289,23 +280,25 @@ var App = {
         }
     },
     updateDocStyle:function() {
-
+    	
         var frameHead = App.frame.contents().find('head');
         var style = App.frame.contents().find('#sec-app-style').first();
-        //var styleStr = '.sec-cbe-highlight-dashed { border: 0px dashed ' + App_Settings.get('elementBorderColor') + '!important; cursor: pointer; }' +
-        var styleStr = '.sec-cbe-highlight-dashed { border-top: 2px solid ' + App_Settings.get('elementBorderColor') + '!important; cursor: pointer; border-bottom: 2px solid ' + App_Settings.get('elementBorderColor') + '!important ; cursor: pointer;box-shadow: 0 0 10px #ccc;}' + 
-            '.sec-cbe-highlight-dashed-highlight { border: 0px dashed ' + App_Settings.get('elementBorderColor') + '!important; cursor: pointer; }' +
-            '.sec-cbe-highlight-block { display:block }' +
+        var styleStr = '.sec-cbe-highlight-dashed { border-top: 2px solid ' + App_Settings.get('elementBorderColor') + '!important; cursor: pointer; border-bottom: 2px solid ' + App_Settings.get('elementBorderColor') + '!important ; cursor: pointer;}' + 
+            '.sec-cbe-highlight-dashed-highlight { border: 0px !important; cursor: pointer; }' +
+            '.sec-cbe-highlight-block { display:block;}' +
+            '.sec-cbe-highlight-dashed_block { display:block; border-left: 3px solid ' + App_Settings.get('elementBorderColor') + '!important; border-top:0px !important; border-bottom:0px !important;margin-left:6px;}' +
+            '.sec-cbe-highlight-block-continuation { display:block;}' +
             '.sec-cbe-highlight-inline { display:inline }' +
-           '.sec-cbe-highlight-filter { background-color:' + App_Settings.get('initialHighlightColor') + '!important; }' +
-           '.sec-cbe-highlight-filter * { background-color:' + App_Settings.get('initialHighlightColor') + '!important; }' +
-            '.sec-cbe-highlight-filter-selected { border: 3px solid ' + App_Settings.get('focusHighlightColor') + '!important; cursor: pointer; }' +
-            '.sec-cbe-highlight-filter-selected-nodes { border: 0px solid ' + App_Settings.get('focusHighlightColor') + '!important; cursor: pointer; }' +
-            //'.sec-cbe-highlight-filter-content-selected { border: 1px solid ' + App_Settings.get('focusHighlightSelectionColor') + '!important; cursor: pointer; }' +
-            '.sec-cbe-highlight-filter-content-selected {background-color:' + App_Settings.get('blockHighlightColor') + ' !important; cursor: pointer;}' +
             '.sec-cbe-highlight-hover-content {background-color:' + App_Settings.get('blockHighlightColor') + ' !important; cursor: pointer;border: 2px dotted ' + App_Settings.get('elementBorderColor') + '}' +
             '.sec-cbe-highlight-hover-over-content-selected {border: 2px solid ' + App_Settings.get('focusContentSelectionColor') + '!important; cursor: pointer;}' +
             '.sec-cbe-highlight-content-selected { background-color:' + App_Settings.get('blockHighlightColor') + ' !important ; cursor: pointer;}'+
+            '.sec-cbe-highlight-left-border {border-left: 2px dashed ' + App_Settings.get('focusHighlightColor') + ';}'+
+            '.sec-cbe-highlight-filter { background-color:' + App_Settings.get('initialHighlightColor') + '!important; }' +
+            '.sec-cbe-highlight-filter * { background-color:' + App_Settings.get('initialHighlightColor') + '!important; }' +
+             '.sec-cbe-highlight-filter-selected { border: 3px solid ' + App_Settings.get('focusHighlightColor') + '!important; cursor: pointer; }' +
+             '.sec-cbe-highlight-filter-selected-block { border-left: 3px solid ' + App_Settings.get('focusHighlightColor') + '!important; background-color:' + App_Settings.get('blockHighlightColor') + ' !important ;cursor: pointer; }' +
+             '.sec-cbe-highlight-filter-selected-nodes { border: 0px solid ' + App_Settings.get('focusHighlightColor') + '!important; cursor: pointer; }' +
+             '.sec-cbe-highlight-filter-content-selected {background-color:' + App_Settings.get('blockHighlightColor') + ' !important; cursor: pointer;}' +
            // '.sec-cbe-highlight-content-selected { background-color:#CDCDCD !important ; cursor: pointer;}'+
             '.sec-cbe-highlight-inline-block { display:inline}';
         if (style.length == 0) {
@@ -568,208 +561,6 @@ var App_RemoteDocs = {
             App.XBRLDoc.setRefDocs(refDocs);
             App.hideLoadingDialog();
         }
-    }
-};
-
-var App_LocalDocs = {
-    handleInlineFileSelect:function(evt) {
-
-        App.fileNames = {
-            filing: {
-                inline: '',
-                schema: '',
-                label: '',
-                calculation: ''
-            },
-            refs:{
-                schema:'',
-                label:'',
-                documentation:''
-            }
-        };
-
-        // close selection detail if necessary
-        $('#selection-detail-container').hide();
-        $('#about-modal').hide();
-        App.showLoadingDialog({
-            message:"loading inline document ...",
-            percent:100
-        }, function() {
-
-            var files = evt.target.files; // FileList object
-            if (files.length == 0) {
-
-                App.hideLoadingDialog();
-            } else {
-
-                var j = 0, k = files.length;
-                for (var i = 0, f; f = files[i]; i++) {
-
-                    var reader = new FileReader();
-                    reader.onload = (function (theFile) {
-                        return function (e) {
-
-                            j++;
-
-                            try {
-
-                                App.XMLInlineDoc = $($.parseXML(e.target.result));
-                                if (cbe.Utils.nsLookupByValue(App.XMLInlineDoc.find(':root')[0], cbe.Utils.namespaces.inline['1.0']) ||
-                                    cbe.Utils.nsLookupByValue(App.XMLInlineDoc.find(':root')[0], cbe.Utils.namespaces.inline['1.1'])) {
-
-                                    // reset the app
-                                    App.resetUI();
-                                    App.fileSelect = { inlineLoaded:true, customLoaded:false, refLoaded:false};
-                                    App.fileNames.filing.inline = theFile.name.substring(0, theFile.name.indexOf('.'));
-
-                                    // move on to loading custom files
-                                    App.frame[0].contentDocument.open("text/html");
-                                    App.frame[0].contentDocument.write(e.target.result);
-                                    App.frame[0].contentDocument.close();
-                                    App.frame[0].contentWindow.scrollTo(0, 0);
-                                } else {
-
-                                    alert('An Inline document was not provided; please select another file.');
-                                }
-                            } catch (e) {
-
-                                console.log(e);
-                                alert('Problem loading inline document: (' + e.message + ')');
-                            }
-                            App.hideLoadingDialog();
-                        };
-                    })(f);
-
-                    if (f && f.type == "text/html") {
-
-                        reader.readAsText(f);
-                    } else if ((i == (k - 1)) && j == 0) {
-
-                        alert('An Inline document was not provided; please select another file.');
-                        App.hideLoadingDialog();
-                    }
-                }
-            }
-        });
-    },
-    handleCustomFilesSelect:function(evt) {
-
-        App.showLoadingDialog({
-            message:"loading custom taxonomy files ...",
-            percent:100
-        }, function() {
-
-            var schemaDoc, labelDoc, calcDoc;
-            var files = evt.target.files; // FileList object
-            var totalRead = 0;
-            var j = 0, k = files.length;
-            for (var i = 0, f; f = files[i]; i++) {
-
-                var reader = new FileReader();
-                reader.onload = (function(theFile) {
-                    return function(e) {
-
-                        j++;
-
-                        var doc = $($.parseXML(e.target.result));
-                        if (!schemaDoc && cbe.Utils.nsLookupByValue(doc.find(':root')[0], "http://www.w3.org/2001/XMLSchema")) {
-
-                            App.fileNames.filing.schema = theFile.name;
-                            schemaDoc = doc;
-                        } else if (!labelDoc && doc.find('link\\:label, label').length > 0) {
-
-                            App.fileNames.filing.label = theFile.name;
-                            labelDoc = doc;
-                        } else if (!calcDoc && doc.find('link\\:calculationLink, calculationLink').length > 0) {
-
-                            App.fileNames.filing.calculation = theFile.name;
-                            calcDoc = doc;
-                        }
-
-                        if (j == totalRead) {
-
-                            App.fileSelect.customLoaded = true;
-                            App.XBRLDoc = new cbe.XBRLDoc();
-                            App.XBRLDoc.setFilingDocs({
-                                schema:schemaDoc,
-                                label:labelDoc,
-                                calculation:calcDoc
-                            });
-
-                            App.hideMessage();
-                            App.hideLoadingDialog();
-
-                            // prompt to load reference docs
-                            App.showMessage(
-                                    'Cannot find the standard taxonomy files; click folder icon to select the or close the message to continue. ' +
-                                    '<div style="width:24px;height:22px;display: inline-block;position:relative;">' +
-                                    '<a href="javascript:void(0);" class="glyphicon glyphicon-folder-open" style="position:absolute;left:0;top:5px;color:#000;">&nbsp;</a>' +
-                                    '<input id="ref-file-input" type="file" multiple accept=".xml,.xsd" style="position:absolute;left:0;top:5px;width:inherit;opacity: 0;" />' +
-                                    '</div>'
-                            );
-                            $('#ref-file-input').on('change', function(evt) {
-
-                                App_LocalDocs.handleRefDocFilesSelect(evt);
-                            });
-                        }
-                    };
-                })(f);
-
-                if ((f.type == "text/xml" || f.name.indexOf('.xsd') != -1)) {
-
-                    totalRead++;
-                    reader.readAsText(f);
-                } else if ((i == (k - 1)) && j == 0) {
-
-                    App.hideLoadingDialog();
-                }
-            }
-        });
-    },
-    handleRefDocFilesSelect:function(evt) {
-
-        App.showLoadingDialog({
-            message:"loading standard taxonomy files ...",
-            percent:100
-        }, function() {
-
-            var schemaDoc, labelDoc, documentationDoc;
-            var files = evt.target.files; // FileList object
-            var totalRead = 0;
-            var j = 0, k = files.length;
-            for (var i = 0, f; f = files[i]; i++) {
-
-                var reader = new FileReader();
-                reader.onload = (function (theFile) {
-                    return function (e) {
-
-                        j++;
-
-                        var doc = $($.parseXML(e.target.result));
-
-                        if (j == totalRead) {
-
-                            App.XBRLDoc.setRefDocs({
-                                schema: schemaDoc,
-                                label: labelDoc,
-                                documentation: documentationDoc
-                            });
-                            App.hideMessage();
-                            App.hideLoadingDialog();
-                        }
-                    };
-                })(f);
-
-                if (f && (f.type == "text/xml" || f.name.indexOf('.xsd') != -1)) {
-
-                    totalRead++;
-                    reader.readAsText(f);
-                } else if ((i == (k - 1)) && j == 0) {
-
-                    App.hideLoadingDialog();
-                }
-            }
-        });
     }
 };
 

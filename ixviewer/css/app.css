@@ -1585,7 +1585,27 @@ i {
 	margin:0px 0px 0px 2.5%;
   }
 }
+@media (min-width: 768px) and (max-device-width: 1280px) and (orientation:portrait){
+  #labelWithoutButtons {
+    max-width:180px;
+  }
+  #labelWithThreeButton {
+    max-width:130px;
+  }
+  #labelWithBothButtons {
+    max-width:140px;
+  }
+  #labelWithOneButton {
+    max-width:150px;
+  }
+  .rightNavigation {
+	margin:0px 10px 0px 8px;
+  }
+  .rightNavLinks {
+	width:92%;	
+  }
 
+}
 @media (min-width: 768px) and (max-device-width: 1280px) {
   #labelWithoutButtons {
     max-width:290px;
@@ -1601,7 +1621,27 @@ i {
   }
 
 }
+@media (min-width: 768px) and (max-device-width: 1280px) and (orientation:portrait){
+ #labelWithoutButtons {
+    max-width:180px;
+  }
+  #labelWithThreeButton {
+    max-width:130px;
+  }
+  #labelWithBothButtons {
+    max-width:140px;
+  }
+  #labelWithOneButton {
+    max-width:150px;
+  }
+  .rightNavigation {
+	margin:0px 10px 0px 8px;
+  }
+  .rightNavLinks {
+	width:92%;	
+  }
 
+}
 @media (min-width: 1281px) and (max-device-width: 1366px) {
   #labelWithoutButtons {
     max-width:320px;
@@ -2330,7 +2370,7 @@ button:focus::-moz-focus-inner {border-color: white}
 /*input[type=text]::-ms-clear {  display: none; width : 0; height: 0; }
 input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }*/
 
-#taggedDataResetColor, #searchResultsResetColor, #selectedFactResetColor{
+#taggedDataResetColor, #searchResultsResetColor, #selectedFactResetColor, #selectedBlockResetColor{
 	width: 25px;
 	float: left;
 	clear: right;

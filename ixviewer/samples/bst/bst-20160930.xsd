@@ -70,6 +70,12 @@ xmlns:us-types="http://fasb.org/us-types/2016-01-31">
 <link:usedOn>link:presentationLink</link:usedOn>
 <link:usedOn>link:definitionLink</link:usedOn>
 </link:roleType>
+<link:roleType id="Role_RecentAccountingProunouncements" roleURI="http://www.brightstar.com/taxonomy/role/RecentAccountingPronouncements">
+<link:definition>109 - Disclosure - Recent Accounting Pronouncements</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
 </appinfo>
 </annotation>
 <import schemaLocation="http://www.xbrl.org/2003/xbrl-instance-2003-12-31.xsd" namespace="http://www.xbrl.org/2003/instance" />

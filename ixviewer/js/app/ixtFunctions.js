@@ -75,7 +75,7 @@ var monthnumber = {
                "JULY":7, "AUGUST":8, "SEPTEMBER":9, "OCTOBER":10, "NOVEMBER":11, "DECEMBER":12,
                // danish
                "jan":1, "feb":2, "mar": 3, "apr":4, "maj":5, "jun":6,
-               "jul":7, "aug":8, "sep":9, "okt":10, "nov":11, "dec":12,
+               "jul":7, "aug":8, "sep":9, "okt":10, "nov":11, "dec":12
            };
 
 var maxDayInMoTbl = {
@@ -118,7 +118,7 @@ var sakaMonthNumber = {
                 "Agrahayana":9,"Agrah\u0101ya\u1E47a":9,"Margashirsha":9, "M\u0101rga\u015B\u012Br\u1E63a":9, "\u092E\u093E\u0930\u094D\u0917\u0936\u0940\u0930\u094D\u0937":9, "\u0905\u0917\u0939\u0928":9,
                 "Pausa":10, "Pausha":10, "Pau\u1E63a":10, "\u092A\u094C\u0937":10,
                 "Magha":11, "Magh":11, "M\u0101gha":11, "\u092E\u093E\u0918":11,
-                "Phalguna":12, "Phalgun":12, "Ph\u0101lguna":12, "\u092B\u093E\u0932\u094D\u0917\u0941\u0928":12,
+                "Phalguna":12, "Phalgun":12, "Ph\u0101lguna":12, "\u092B\u093E\u0932\u094D\u0917\u0941\u0928":12
             };
 var sakaMonthPattern = /(C\S*ait|\u091A\u0948\u0924\u094D\u0930)|(Vai|\u0935\u0948\u0936\u093E\u0916|\u092C\u0948\u0938\u093E\u0916)|(Jy|\u091C\u094D\u092F\u0947\u0937\u094D\u0920)|(dha|\u1E0Dha|\u0906\u0937\u093E\u0922|\u0906\u0937\u093E\u0922\u093C)|(vana|\u015Ar\u0101va\u1E47a|\u0936\u094D\u0930\u093E\u0935\u0923|\u0938\u093E\u0935\u0928)|(Bh\S+dra|Pro\u1E63\u1E6Dhapada|\u092D\u093E\u0926\u094D\u0930\u092A\u0926|\u092D\u093E\u0926\u094B)|(in|\u0906\u0936\u094D\u0935\u093F\u0928)|(K\S+rti|\u0915\u093E\u0930\u094D\u0924\u093F\u0915)|(M\S+rga|Agra|\u092E\u093E\u0930\u094D\u0917\u0936\u0940\u0930\u094D\u0937|\u0905\u0917\u0939\u0928)|(Pau|\u092A\u094C\u0937)|(M\S+gh|\u092E\u093E\u0918)|(Ph\S+lg|\u092B\u093E\u0932\u094D\u0917\u0941\u0928)/;
 
@@ -785,7 +785,7 @@ tr3Functions = ({
     // same as v2: 'numdotdecimal': numdotdecimal,
     'numdotdecimalin': numdotdecimalin,
     // same as v2: 'numunitdecimal': numunitdecimal,
-    'numunitdecimalin': numunitdecimalin,
+    'numunitdecimalin': numunitdecimalin
     // same as v2: 'zerodash': zerodash,
 })
 // tr3 starts with tr2 and adds more functions.
@@ -800,46 +800,52 @@ ixtNamespaceFunctions = {
     'http://www.xbrl.org/2008/inlineXBRL/transformation': tr1Functions // the CR/PR pre-REC namespace
 }
 
-
-
 ////////
 
 function getDurationValue(arg) {
-	var n = parseFloat(arg);
-	if (n == NaN) return {sign: null, value: null, error: 'ixt:durationTypeError'};
-	var sign = '';
-	if (n != NaN && n < 0) sign = '-';
-	return {sign: sign, value: n, error: false};
+    var n = parseFloat(arg);
+    if (n == NaN) return {sign: null, value: null, error: 'ixt:durationTypeError'};
+    var sign = '';
+    if (n != NaN && n < 0) sign = '-';
+    return {sign: sign, value: Math.abs(n), error: false};
 }
 
 function printDurationType(y, m, d, h, sign) {
-	// preprocess each value so we don't print P0Y0M0D or something like that.
+    // preprocess each value so we don't print P0Y0M0D 
     // in this case, we should print P0Y, and leave out the months and days.
-	var nonempty = false;
-	nonempty = nonempty || (y != null && y != 0);
-	nonempty = nonempty || (m != null && m != 0);
-	nonempty = nonempty || (d != null && d != 0);
-	nonempty = nonempty || (h != null && h != 0);
-	if (!nonempty) {
-        sign = ""; // don't need to print -P0Y, just print P0Y
-	} else {
-        var hasDigit;
-        if (y != null) {
-        	hasDigit = true;
-        }
-        if (m != null) {
-        	if (m == 0 && hasDigit) m = null;
-        	else hasDigit = true;
-        }
-        if (d != null) {
-        	if (d == 0 && hasDigit) d = null;
-        	else hasDigit = true;
-        }
-        if (h != null) {
-        	if (h == 0 && hasDigit) h = null;
-        	else hasDigit = true;
-        }       
+    var empty = true;	
+    empty = empty && (y == null || y == 0);
+    empty = empty && (m == null || m == 0);
+    empty = empty && (d == null || d == 0);
+    empty = empty && (h == null || h == 0);
+    if (empty) { // zero is a special case.
+	sign = '';  // don't need to print -P0Y, just print P0Y
+	hitFirstZeroYet = false;
+	if (y != null && y ==0) {
+	    hitFirstZeroYet = true;
 	}
+	if (m != null && m == 0) {
+	    if (hitFirstZeroYet) {
+		m = null;
+	    } else {
+		hitFirstZeroYet = true;
+	    }
+	}
+	if (d != null && d == 0) {
+	    if (hitFirstZeroYet) {
+		d = null;
+	    } else {
+		hitFirstZeroYet = true;
+	    }
+	}
+	if (h != null && h == 0 && hitFirstZeroYet) {
+	    if (hitFirstZeroYet) {
+		h = null;
+	    } else {
+		hitFirstZeroYet = true;
+	    }
+	}
+    }
     var output = sign + "P"
     if (y != null) output += y.toString() + 'Y'
     if (m != null) output += m.toString() + 'M'
@@ -847,21 +853,21 @@ function printDurationType(y, m, d, h, sign) {
     if (h != null) output += 'T' + h.toString() + 'H'
     return output;
 }
-   
 
-// if arg is not an integer, the rest can spill into months and days, but nothing lower
+
+//if arg is not an integer, the rest can spill into months and days, but nothing lower
 function duryear(arg) {
-	var n = getDurationValue(arg);
-	if (n.error) return n.error;
+    var n = getDurationValue(arg);
+    if (n.error) return n.error;
     var years = Math.floor(n.value);
     var months =  (n.value - years) * 12;
     var days = Math.floor((months - Math.floor(months)) * 30.4375);
     var months = Math.floor(months);
     return printDurationType(years, months, days, null, n.sign);
 }
-    
 
-// if arg is not an integer, the rest can spill into days, but nothing lower
+
+//if arg is not an integer, the rest can spill into days, but nothing lower
 function durmonth(arg) {
     var n = getDurationValue(arg);
     if (n.error) return n.error;
@@ -871,30 +877,172 @@ function durmonth(arg) {
 }
 
 
-// the output will only be in days, nothing lower
-// xs:durationType doesn't have weeks, only years, months and days, so we display it all in days
+//the output will only be in days, nothing lower
+//xs:durationType doesn't have weeks, only years, months and days, so we display it all in days
 function durweek(arg) {
     var n = getDurationValue(arg);
     if (n.error) return n.error;
-    var days = Math.floor(n * 7);
+    var days = Math.floor(n.value * 7);
     return printDurationType(null, null, days, null, n.sign);
 }
 
-// if arg is not an integer, the rest can spill into hours, but nothing lower
+//if arg is not an integer, the rest can spill into hours, but nothing lower
 function durday(arg) {
     var n = getDurationValue(arg);
     if (n.error) return n.error;
-    days = Math.floor(n);
-    hours = Math.floor((n - days) * 24);
+    if (n.value) {
+	days = Math.floor(n.value);
+	hours = Math.floor((n.value - days) * 24);
+    }
+    else{
+	days = Math.floor(n.value);
+	hours = Math.floor((n.value - days) * 24);	
+    }
     return printDurationType(null, null, days, hours, n.sign);
 }
 
-// the output will only be in hours, nothing lower
+//the output will only be in hours, nothing lower
 function durhour(arg) {
-	var n = getDurationValue(arg);
-	if (n.error) return n.error;
-    hours = Math.floor(n)
-    return printDurationType(null, null, null, hours, sign);
+    var n = getDurationValue(arg);
+    if (n.error) return n.error;
+    hours = Math.floor(n.value)
+    return printDurationType(null, null, null, hours, n.sign);
+}
+
+function numinf(arg) {
+    return 'INF';
+}
+
+function numneginf(arg) {
+    return '-INF';
+}
+
+function numnan(arg) {
+    return 'NaN';
+}
+
+numwordsenPattern = /^\s*(((((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))\s+[Qq]uintillion(\s*,\s*|\s+|$))?(((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))\s+[Qq]uadrillion(\s*,\s*|\s+|$))?(((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))\s+[Tt]rillion(\s*,\s*|\s+|$))?(((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))\s+[Bb]illion(\s*,\s*|\s+|$))?(((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))\s+[Mm]illion(\s*,\s*|\s+|$))?((((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))\s+[Tt]housand((\s*,\s*|\s+)((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?)))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|[Zz]ero|[Nn]o(ne)?)\s*$/ ;
+
+numwordsNoPattern = /^\s*[Nn]o(ne)?\s*$/ ;
+
+commaAndPattern = /,|\sand\s/ ; // substitute whitespace for comma or and
+    
+function numwordsen(arg) {
+    if (numwordsNoPattern.exec(arg)) {
+	return "0";
+    } else if (arg.trim().length > 0) {
+	var m = numwordsenPattern.exec(arg);
+	if (arg.length >0 && m) {
+	    var str = arg.trim().toLowerCase().replace(commaAndPattern," ");
+	    return text2num(str).toString();	
+	}
+    }
+    return 'Not a number: '+arg.toString();
+}
+
+durwordsenPattern = /^\s*((((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))|[Zz]ero|[Nn]o|[0-9][0-9]{0,3})\s+[Yy]ears?(,?\s+(and\s+)?|$))?((((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))|[Zz]ero|[Nn]o|[0-9][0-9]{0,3})\s+[Mm]onths?(,?\s+(and\s+)?|$))?((((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)((-|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))|[Zz]ero|[Nn]o|[0-9][0-9]{0,3})\s+[Dd]ays?)?\s*$/ ;
+
+durwordZeroNoPattern = /^\s*([Zz]ero|[Nn]o(ne)?)\s*$/ ;
+
+function durwordsen(arg) {
+    var durWordsMatch = durwordsenPattern.exec(arg);
+    if (durWordsMatch && arg.trim().length > 0) {
+	var dur = 'P';
+	var grp = [[1+1,'Y'],[61+1,'M'],[121+1,'D']];
+	for (var i = 0; i < grp.length; i++) {
+	    var groupIndex = grp[i][0];
+	    var groupSuffix = grp[i][1];
+	    var groupPart = durWordsMatch[groupIndex];
+	    if (groupPart != null) {
+		if (durwordZeroNoPattern.exec(groupPart) == null) {
+		    if (isNaN(groupPart)) {
+			var tmp = groupPart.trim().toLowerCase().replace(commaAndPattern," ");
+			dur += text2num(tmp);
+		    } else {
+			dur += groupPart;
+		    }
+		    dur += groupSuffix;
+		}
+	    }
+	}
+	return (dur.length > 1)?dur:"P0D";
+    }
+    return 'Not a duration: '+arg.toString();
+}
+
+
+var Small = {
+	'zero': 0,
+	'one': 1,
+	'two': 2,
+	'three': 3,
+	'four': 4,
+	'five': 5,
+	'six': 6,
+	'seven': 7,
+	'eight': 8,
+	'nine': 9,
+	'ten': 10,
+	'eleven': 11,
+	'twelve': 12,
+	'thirteen': 13,
+	'fourteen': 14,
+	'fifteen': 15,
+	'sixteen': 16,
+	'seventeen': 17,
+	'eighteen': 18,
+	'nineteen': 19,
+	'twenty': 20,
+	'thirty': 30,
+	'forty': 40,
+	'fifty': 50,
+	'sixty': 60,
+	'seventy': 70,
+	'eighty': 80,
+	'ninety': 90
+};
+
+
+var Magnitude = {
+	'thousand':     1000,
+	'million':      1000000,
+	'billion':      1000000000,
+	'trillion':     1000000000000,
+	'quadrillion':  1000000000000000,
+	'quintillion':  1000000000000000000,
+	'sextillion':   1000000000000000000000,
+	'septillion':   1000000000000000000000000,
+	'octillion':    1000000000000000000000000000,
+	'nonillion':    1000000000000000000000000000000,
+	'decillion':    1000000000000000000000000000000000,
+};
+
+function text2num(s) {
+    var wordSplitPattern = /[\s-]+/;
+    var a = s.toString().split(wordSplitPattern);
+    var n = 0;
+    var g = 0;
+    for (var i=0;i < a.length; i++) {
+	var w = a[i];
+	var x = Small[w];
+	if (x != null) {
+	    g = g + x;
+	}
+	else if (w == "hundred") {
+	    g = g * 100;
+	}
+	else {
+	    x = Magnitude[w];
+	    if (x != null) {
+		n = n + g * x; 
+		g = 0;
+	    }
+	    else { 
+		return 'ixt:text2numError ' + w;
+	    }
+	}
+    }
+    return n + g;
 }
 
 edgarFunctions = {    
@@ -902,7 +1050,12 @@ edgarFunctions = {
 	    'durmonth': durmonth,
 	    'durweek': durweek,
 	    'durday': durday,
-	    'durhour': durhour,
+	    'durhour': durhour
+	    ,'numinf': numinf
+	    ,'numneginf': numneginf
+	    ,'numnan': numnan
+	    ,'numwordsen': numwordsen
+	    ,'durwordsen': durwordsen
 	    }
 
 ixtNamespaceFunctions['http://www.sec.gov/inlineXBRL/transformation/2015-08-31'] = edgarFunctions;

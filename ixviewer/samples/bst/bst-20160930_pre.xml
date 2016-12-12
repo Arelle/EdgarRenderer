@@ -13,6 +13,12 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
 <roleRef roleURI="http://www.brightstar.com/taxonomy/role/NotesToFinancialStatementsSegmentReportingDisclosureTextBlockTables" xlink:type="simple" xlink:href="bst-20160930.xsd#Role_NotesToFinancialStatementsSegmentReportingDisclosureTextBlockTables" />
 <roleRef roleURI="http://www.xbrl.org/2009/role/negatedLabel" xlink:type="simple" xlink:href="http://www.xbrl.org/lrr/role/negated-2009-12-16.xsd#negatedLabel" />
 <roleRef roleURI="http://www.xbrl.org/2009/role/negatedTotalLabel" xlink:type="simple" xlink:href="http://www.xbrl.org/lrr/role/negated-2009-12-16.xsd#negatedTotalLabel" />
+<roleRef roleURI="http://www.brightstar.com/taxonomy/role/RecentAccountingPronouncements" xlink:type="simple" xlink:href="bst-20160930.xsd#Role_RecentAccountingProunouncements" />
+<presentationLink xlink:type="extended" xlink:role="http://www.brightstar.com/taxonomy/role/RecentAccountingPronouncements">
+<loc xlink:type="locator" xlink:href="http://xbrl.fasb.org/us-gaap/2016/elts/us-gaap-2016-01-31.xsd#us-gaap_NewAccountingPronouncementsAndChangesInAccountingPrinciplesAbstract" xlink:label="NewAccountingPronouncementsAndChangesInAccountingPrinciplesAbstract" />
+<loc xlink:type="locator" xlink:href="http://xbrl.fasb.org/us-gaap/2016/elts/us-gaap-2016-01-31.xsd#us-gaap_DescriptionOfNewAccountingPronouncementsNotYetAdopted" xlink:label="DescriptionOfNewAccountingPronouncementsNotYetAdopted" />
+<presentationArc xlink:type="arc" order="1.01" preferredLabel="http://www.xbrl.org/2003/role/terseLabel" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" xlink:from="NewAccountingPronouncementsAndChangesInAccountingPrinciplesAbstract" xlink:to="DescriptionOfNewAccountingPronouncementsNotYetAdopted" />
+</presentationLink>
 <presentationLink xlink:type="extended" xlink:role="http://www.brightstar.com/taxonomy/role/DocumentandEntityInformation">
 <loc xlink:type="locator" xlink:href="bst-20160930.xsd#bst_DocumentAndEntityInformationAbstract" xlink:label="bst_DocumentAndEntityInformationAbstract" />
 <loc xlink:type="locator" xlink:href="http://xbrl.sec.gov/dei/2014/dei-2014-01-31.xsd#dei_DocumentType" xlink:label="dei_DocumentType" />

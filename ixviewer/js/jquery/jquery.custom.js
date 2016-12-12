@@ -3,11 +3,23 @@ jQuery.fn.selectionHighlight = function() {
     App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); //.unwrap();
     $(this).parent().addClass('sec-cbe-highlight-filter-selected'); //.wrap('<span class="sec-cbe-highlight-filter-selected"></span>');
 };
-jQuery.fn.selectionHighlightNodes = function() {
+jQuery.fn.selectionHighlightForBlock = function() {
+
+    App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block'); //.unwrap();
+    $(this).parent().addClass('sec-cbe-highlight-filter-selected-block'); 
+};
+jQuery.fn.selectionHighlightNodesOnClick = function() {
 
     App.frame.contents().find('.sec-cbe-highlight-filter-selected-nodes').removeClass('sec-cbe-highlight-filter-selected-nodes'); //.unwrap();
     $(this).parent().addClass('sec-cbe-highlight-filter-selected-nodes'); //.wrap('<span class="sec-cbe-highlight-filter-selected"></span>');
 };
+
+jQuery.fn.selectionHighlightHiddenNodes = function() {
+
+    App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); //.unwrap();
+    $(this).addClass('sec-cbe-highlight-filter-selected'); //.wrap('<span class="sec-cbe-highlight-filter-selected"></span>');
+};
+
 jQuery.fn.removeHighlightNodes = function(allLinkedNodes) {
 
 	for(var i=0;i<allLinkedNodes.length;i++){
@@ -21,10 +33,9 @@ jQuery.fn.removeHighlightNodes = function(allLinkedNodes) {
     		if($(allLinkedNodes[i]).children().children().length >0){
 			    if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="span")){
     				$(allLinkedNodes[i]).children().children().removeClass(cls);
-        			}
-    			if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="div")){
+        		}else if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="div")){
     				$(allLinkedNodes[i]).children().children().removeClass(cls);
-        			}
+        		}
 			   $(allLinkedNodes[i]).children().children().children().children().children().removeClass(cls);
 			   $(allLinkedNodes[i]).children().children().children().children().removeClass(cls);
 			   $(allLinkedNodes[i]).children().children().removeClass(cls);
@@ -37,33 +48,7 @@ jQuery.fn.removeHighlightNodes = function(allLinkedNodes) {
         };
 	
 };
-jQuery.fn.removeHighlightSelectionNodes = function(allLinkedNodes) {
-	for(var i=0;i<allLinkedNodes.length;i++){
-    	var cls = 'sec-cbe-highlight-filter-content-selected'; 
-		if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:nonnumeric"){
-    		//$(allLinkedNodes[i]).parent().removeClass('sec-cbe-highlight-dashed');
-    		$(allLinkedNodes[i]).removeClass(cls);
-    	}
-    	if ($(allLinkedNodes[i]).children().length > 0) { 
-    		$(allLinkedNodes[i]).children().removeClass(cls);
-    		if($(allLinkedNodes[i]).children().children().length >0){
-			    if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="span")){
-    				$(allLinkedNodes[i]).children().children().removeClass(cls);
-        			}
-    			if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="div")){
-    				$(allLinkedNodes[i]).children().children().removeClass(cls);
-        			}
-			   $(allLinkedNodes[i]).children().children().children().children().children().removeClass(cls);
-			   $(allLinkedNodes[i]).children().children().children().children().removeClass(cls);
-			   $(allLinkedNodes[i]).children().children().removeClass(cls);
-    		}
-    		
-    	}
-    	else if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:continuation"){
-    		$(allLinkedNodes[i]).removeClass(cls);
-    	}
-    };
-};
+
 jQuery.fn.filterHighlight = function(index) {
 
     // make sure node isn't already filtered
@@ -72,7 +57,14 @@ jQuery.fn.filterHighlight = function(index) {
         this.parent().addClass('sec-cbe-highlight-filter').attr('data-result-index',index);
     }
 };
+jQuery.fn.filterHighlightLinkedNodes = function(index) {
 
+    // make sure node isn't already filtered
+    if (!this.hasClass('sec-cbe-highlight-filter')) {
+
+        this.addClass('sec-cbe-highlight-filter');
+    }
+};
 jQuery.fn.resultItemHighlight = function() {
 
     $(this).css('background-color', '#CC0000');
@@ -885,7 +877,7 @@ jQuery.fn.calendarFriendlyName = function() {
         var startDateAry = start.html().split('-');
         var startDate = new Date(startDateAry[0], parseInt(startDateAry[1]) - 1, startDateAry[2]);
         //var endDateAry = this.find(App.InlineDoc.instancePrefix + '\\:endDate').html().split('-');
-		var end=this.find(App.InlineDoc.instancePrefix + '\\:endDate');
+		        var end=this.find(App.InlineDoc.instancePrefix + '\\:endDate');
         if(end.length==0){
         	end = this.find('endDate');
        }
@@ -1024,6 +1016,9 @@ jQuery.fn.getXbrlValue = function() {
     } else if (this[0].nodeName.toLowerCase() == 'ix:nonfraction') {
 
         xbrlValue = e.text();
+        if (e.attr('format')) {
+            xbrlValue = App_Utils.applyFormat(e);
+        }
         var scale = parseInt(this.attr('scale'));
         var decimals = parseInt(this.attr('decimals'));
         if (scale > 0) {

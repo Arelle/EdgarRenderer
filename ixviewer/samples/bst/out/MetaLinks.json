@@ -63,14 +63,15 @@
      ]
     }
    },
-   "elementCount": 111,
+   "elementCount": 113,
    "entityCount": 1,
    "hidden": {
+    "http://fasb.org/us-gaap/2016-01-31": 2,
     "http://xbrl.sec.gov/dei/2014-01-31": 6,
-    "total": 6
+    "total": 8
    },
    "keyCustom": 3,
-   "keyStandard": 83,
+   "keyStandard": 84,
    "memberCustom": 3,
    "memberStandard": 2,
    "nsprefix": "bst",
@@ -119,6 +120,60 @@
       "reportCount": 1,
       "unique": true,
       "unitRef": null,
+      "xsiNil": "false"
+     }
+    },
+    "R10": {
+     "firstAnchor": {
+      "ancestors": [
+       "span",
+       "p",
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "ThreeMonthsEnded_2016-09-30",
+      "decimals": "-3",
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:SalesRevenueNet",
+      "reportCount": 1,
+      "unitRef": "iso4217_USD",
+      "xsiNil": "false"
+     },
+     "groupType": "disclosure",
+     "isDefault": "false",
+     "longName": "121 - Disclosure - Segment Information (Detail)",
+     "role": "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation",
+     "shortName": "Segment Information (Detail)",
+     "subGroupType": "details",
+     "uniqueAnchor": {
+      "ancestors": [
+       "span",
+       "p",
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "us-gaap:ScheduleOfSegmentReportingInformationBySegmentTextBlock",
+       "us-gaap:SegmentReportingDisclosureTextBlock",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "ThreeMonthsEnded_2016-09-30",
+      "decimals": "-3",
+      "lang": null,
+      "name": "us-gaap:OperatingIncomeLoss",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": "iso4217_USD",
       "xsiNil": "false"
      }
     },
@@ -415,6 +470,46 @@
     "R8": {
      "firstAnchor": {
       "ancestors": [
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": "en-US",
+      "name": "us-gaap:DescriptionOfNewAccountingPronouncementsNotYetAdopted",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     },
+     "groupType": "disclosure",
+     "isDefault": "false",
+     "longName": "109 - Disclosure - Recent Accounting Pronouncements",
+     "role": "http://www.brightstar.com/taxonomy/role/RecentAccountingPronouncements",
+     "shortName": "Recent Accounting Pronouncements",
+     "subGroupType": "",
+     "uniqueAnchor": {
+      "ancestors": [
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": "en-US",
+      "name": "us-gaap:DescriptionOfNewAccountingPronouncementsNotYetAdopted",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     }
+    },
+    "R9": {
+     "firstAnchor": {
+      "ancestors": [
        "us-gaap:SegmentReportingDisclosureTextBlock",
        "div",
        "body",
@@ -451,60 +546,6 @@
       "reportCount": 1,
       "unique": true,
       "unitRef": null,
-      "xsiNil": "false"
-     }
-    },
-    "R9": {
-     "firstAnchor": {
-      "ancestors": [
-       "span",
-       "p",
-       "td",
-       "tr",
-       "tbody",
-       "table",
-       "div",
-       "div",
-       "body",
-       "html"
-      ],
-      "contextRef": "ThreeMonthsEnded_2016-09-30",
-      "decimals": "-3",
-      "first": true,
-      "lang": null,
-      "name": "us-gaap:SalesRevenueNet",
-      "reportCount": 1,
-      "unitRef": "iso4217_USD",
-      "xsiNil": "false"
-     },
-     "groupType": "disclosure",
-     "isDefault": "false",
-     "longName": "121 - Disclosure - Segment Information (Detail)",
-     "role": "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation",
-     "shortName": "Segment Information (Detail)",
-     "subGroupType": "details",
-     "uniqueAnchor": {
-      "ancestors": [
-       "span",
-       "p",
-       "td",
-       "tr",
-       "tbody",
-       "table",
-       "div",
-       "us-gaap:ScheduleOfSegmentReportingInformationBySegmentTextBlock",
-       "us-gaap:SegmentReportingDisclosureTextBlock",
-       "div",
-       "body",
-       "html"
-      ],
-      "contextRef": "ThreeMonthsEnded_2016-09-30",
-      "decimals": "-3",
-      "lang": null,
-      "name": "us-gaap:OperatingIncomeLoss",
-      "reportCount": 1,
-      "unique": true,
-      "unitRef": "iso4217_USD",
       "xsiNil": "false"
      }
     }
@@ -768,7 +809,7 @@
     },
     "dei_EntityCentralIndexKey": {
      "auth_ref": [
-      "r134"
+      "r135"
      ],
      "lang": {
       "en-US": {
@@ -824,7 +865,7 @@
     },
     "dei_EntityRegistrantName": {
      "auth_ref": [
-      "r134"
+      "r135"
      ],
      "lang": {
       "en-US": {
@@ -915,8 +956,8 @@
     "us-gaap_AccruedIncomeTaxesCurrent": {
      "auth_ref": [
       "r17",
-      "r120",
-      "r127"
+      "r121",
+      "r128"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
@@ -945,7 +986,7 @@
     "us-gaap_AccumulatedDepreciationDepletionAndAmortizationPropertyPlantAndEquipment": {
      "auth_ref": [
       "r27",
-      "r92"
+      "r93"
      ],
      "crdr": "credit",
      "lang": {
@@ -1044,7 +1085,7 @@
     "us-gaap_AllowanceForDoubtfulAccountsReceivableCurrent": {
      "auth_ref": [
       "r36",
-      "r85"
+      "r86"
      ],
      "crdr": "credit",
      "lang": {
@@ -1066,8 +1107,8 @@
     "us-gaap_AmortizationOfIntangibleAssets": {
      "auth_ref": [
       "r56",
-      "r89",
-      "r90"
+      "r90",
+      "r91"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation": {
@@ -1095,8 +1136,8 @@
     },
     "us-gaap_Assets": {
      "auth_ref": [
-      "r119",
-      "r126"
+      "r120",
+      "r127"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
@@ -1208,7 +1249,7 @@
     "us-gaap_CashAndCashEquivalentsPeriodIncreaseDecrease": {
      "auth_ref": [
       "r52",
-      "r117"
+      "r118"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
@@ -1237,7 +1278,7 @@
     },
     "us-gaap_CommonStockDividendsPerShareDeclared": {
      "auth_ref": [
-      "r94"
+      "r95"
      ],
      "lang": {
       "en-US": {
@@ -1345,8 +1386,8 @@
     },
     "us-gaap_ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest": {
      "auth_ref": [
-      "r110",
-      "r116"
+      "r111",
+      "r117"
      ],
      "crdr": "credit",
      "lang": {
@@ -1398,8 +1439,8 @@
      "auth_ref": [
       "r3",
       "r60",
-      "r106",
-      "r107"
+      "r107",
+      "r108"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
@@ -1427,11 +1468,11 @@
     },
     "us-gaap_DeferredTaxAssetsNetNoncurrent": {
      "auth_ref": [
-      "r100",
       "r101",
       "r102",
       "r103",
-      "r104"
+      "r104",
+      "r105"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
@@ -1459,8 +1500,8 @@
     },
     "us-gaap_DeferredTaxLiabilitiesGrossNoncurrent": {
      "auth_ref": [
-      "r100",
-      "r105"
+      "r101",
+      "r106"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
@@ -1489,7 +1530,7 @@
     "us-gaap_DepreciationAndAmortization": {
      "auth_ref": [
       "r56",
-      "r91"
+      "r92"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
@@ -1520,6 +1561,26 @@
       "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
      ],
      "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_DescriptionOfNewAccountingPronouncementsNotYetAdopted": {
+     "auth_ref": [
+      "r61"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The entire disclosure for a new accounting pronouncement that has been issued but not yet adopted.",
+        "label": "Description of New Accounting Pronouncements not yet Adopted [Text Block]",
+        "terseLabel": "New Accounting Pronouncements"
+       }
+      }
+     },
+     "localname": "DescriptionOfNewAccountingPronouncementsNotYetAdopted",
+     "nsuri": "http://fasb.org/us-gaap/2016-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/RecentAccountingPronouncements"
+     ],
+     "xbrltype": "textBlockItemType"
     },
     "us-gaap_DividendsPayableCurrent": {
      "auth_ref": [
@@ -1554,11 +1615,11 @@
     "us-gaap_EarningsPerShareBasic": {
      "auth_ref": [
       "r43",
-      "r63",
-      "r65",
+      "r64",
       "r66",
-      "r124",
-      "r132"
+      "r67",
+      "r125",
+      "r133"
      ],
      "lang": {
       "en-US": {
@@ -1579,9 +1640,9 @@
     "us-gaap_EarningsPerShareDiluted": {
      "auth_ref": [
       "r43",
-      "r63",
-      "r124",
-      "r132"
+      "r64",
+      "r125",
+      "r133"
      ],
      "lang": {
       "en-US": {
@@ -1601,7 +1662,7 @@
     },
     "us-gaap_EffectOfExchangeRateOnCashAndCashEquivalents": {
      "auth_ref": [
-      "r117"
+      "r118"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
@@ -1629,7 +1690,7 @@
     },
     "us-gaap_ExcessTaxBenefitFromShareBasedCompensationFinancingActivities": {
      "auth_ref": [
-      "r99"
+      "r100"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
@@ -1657,7 +1718,7 @@
     },
     "us-gaap_ExcessTaxBenefitFromShareBasedCompensationOperatingActivities": {
      "auth_ref": [
-      "r99"
+      "r100"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
@@ -1714,9 +1775,9 @@
     "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest": {
      "auth_ref": [
       "r42",
-      "r118",
-      "r123",
-      "r133"
+      "r119",
+      "r124",
+      "r134"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation": {
@@ -1848,8 +1909,8 @@
     "us-gaap_LiabilitiesAndStockholdersEquity": {
      "auth_ref": [
       "r23",
-      "r122",
-      "r130"
+      "r123",
+      "r131"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
@@ -1942,8 +2003,8 @@
     "us-gaap_MinorityInterest": {
      "auth_ref": [
       "r35",
-      "r121",
-      "r129"
+      "r122",
+      "r130"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
@@ -2107,6 +2168,19 @@
      ],
      "xbrltype": "stringItemType"
     },
+    "us-gaap_NewAccountingPronouncementsAndChangesInAccountingPrinciplesAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "New Accounting Pronouncements and Chances in Accounting Principles [Abstract]"
+       }
+      }
+     },
+     "localname": "NewAccountingPronouncementsAndChangesInAccountingPrinciplesAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2016-01-31",
+     "xbrltype": "stringItemType"
+    },
     "us-gaap_OperatingExpenses": {
      "auth_ref": [],
      "calculation": {
@@ -2198,8 +2272,8 @@
       "r7",
       "r8",
       "r59",
-      "r67",
-      "r111"
+      "r68",
+      "r112"
      ],
      "lang": {
       "en-US": {
@@ -2305,7 +2379,7 @@
     },
     "us-gaap_OtherNoninterestExpense": {
      "auth_ref": [
-      "r125"
+      "r126"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation": {
@@ -2421,10 +2495,10 @@
     "us-gaap_PensionAndOtherPostretirementDefinedBenefitPlansLiabilitiesNoncurrent": {
      "auth_ref": [
       "r33",
-      "r95",
       "r96",
       "r97",
-      "r98"
+      "r98",
+      "r99"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
@@ -2599,11 +2673,11 @@
     },
     "us-gaap_ProfitLoss": {
      "auth_ref": [
-      "r110",
-      "r112",
+      "r111",
       "r113",
-      "r115",
-      "r116"
+      "r114",
+      "r116",
+      "r117"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
@@ -2641,8 +2715,8 @@
      "auth_ref": [
       "r15",
       "r16",
-      "r93",
-      "r131"
+      "r94",
+      "r132"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
@@ -2718,8 +2792,8 @@
     "us-gaap_RetainedEarningsAccumulatedDeficit": {
      "auth_ref": [
       "r20",
-      "r94",
-      "r128"
+      "r95",
+      "r129"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
@@ -2794,11 +2868,11 @@
     },
     "us-gaap_ScheduleOfSegmentReportingInformationBySegmentTable": {
      "auth_ref": [
-      "r71",
       "r72",
       "r73",
-      "r76",
-      "r88"
+      "r74",
+      "r77",
+      "r89"
      ],
      "lang": {
       "en-US": {
@@ -2818,11 +2892,11 @@
     },
     "us-gaap_ScheduleOfSegmentReportingInformationBySegmentTextBlock": {
      "auth_ref": [
-      "r71",
       "r72",
       "r73",
-      "r76",
-      "r88"
+      "r74",
+      "r77",
+      "r89"
      ],
      "lang": {
       "en-US": {
@@ -2874,10 +2948,9 @@
     },
     "us-gaap_SegmentReportingDisclosureTextBlock": {
      "auth_ref": [
-      "r68",
       "r69",
       "r70",
-      "r74",
+      "r71",
       "r75",
       "r76",
       "r77",
@@ -2887,7 +2960,8 @@
       "r81",
       "r82",
       "r83",
-      "r84"
+      "r84",
+      "r85"
      ],
      "lang": {
       "en-US": {
@@ -2926,7 +3000,7 @@
     "us-gaap_SellingGeneralAndAdministrativeExpense": {
      "auth_ref": [
       "r47",
-      "r87"
+      "r88"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
@@ -3038,7 +3112,7 @@
     },
     "us-gaap_StatementBusinessSegmentsAxis": {
      "auth_ref": [
-      "r69"
+      "r70"
      ],
      "lang": {
       "en-US": {
@@ -3089,7 +3163,7 @@
       "r19",
       "r21",
       "r22",
-      "r86"
+      "r87"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
@@ -3117,9 +3191,9 @@
     },
     "us-gaap_StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest": {
      "auth_ref": [
-      "r108",
       "r109",
-      "r114"
+      "r110",
+      "r115"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
@@ -3164,7 +3238,7 @@
     },
     "us-gaap_WeightedAverageNumberDilutedSharesOutstandingAdjustment": {
      "auth_ref": [
-      "r64"
+      "r65"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
@@ -3191,8 +3265,8 @@
     },
     "us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding": {
      "auth_ref": [
-      "r62",
-      "r64"
+      "r63",
+      "r65"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
@@ -3221,8 +3295,8 @@
     "us-gaap_WeightedAverageNumberOfSharesOutstandingBasic": {
      "auth_ref": [
       "r6",
-      "r61",
-      "r64"
+      "r62",
+      "r65"
      ],
      "calculation": {
       "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
@@ -3275,6 +3349,15 @@
   },
   "r100": {
    "Name": "Accounting Standards Codification",
+   "Paragraph": "24",
+   "Publisher": "FASB",
+   "Section": "55",
+   "SubTopic": "20",
+   "Topic": "718",
+   "URI": "http://asc.fasb.org/extlink&oid=65896087&loc=d3e11374-113907"
+  },
+  "r101": {
+   "Name": "Accounting Standards Codification",
    "Paragraph": "4",
    "Publisher": "FASB",
    "Section": "45",
@@ -3282,7 +3365,7 @@
    "Topic": "740",
    "URI": "http://asc.fasb.org/extlink&oid=75116654&loc=d3e31917-109318"
   },
-  "r101": {
+  "r102": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "5",
    "Publisher": "FASB",
@@ -3291,7 +3374,7 @@
    "Topic": "740",
    "URI": "http://asc.fasb.org/extlink&oid=75116654&loc=d3e31928-109318"
   },
-  "r102": {
+  "r103": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "6",
    "Publisher": "FASB",
@@ -3300,7 +3383,7 @@
    "Topic": "740",
    "URI": "http://asc.fasb.org/extlink&oid=75116654&loc=d3e31931-109318"
   },
-  "r103": {
+  "r104": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "9",
    "Publisher": "FASB",
@@ -3309,7 +3392,7 @@
    "Topic": "740",
    "URI": "http://asc.fasb.org/extlink&oid=75116654&loc=d3e31958-109318"
   },
-  "r104": {
+  "r105": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "2",
    "Publisher": "FASB",
@@ -3319,7 +3402,7 @@
    "Topic": "740",
    "URI": "http://asc.fasb.org/extlink&oid=65882285&loc=d3e32537-109319"
   },
-  "r105": {
+  "r106": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "2",
    "Publisher": "FASB",
@@ -3328,7 +3411,7 @@
    "Topic": "740",
    "URI": "http://asc.fasb.org/extlink&oid=65882285&loc=d3e32537-109319"
   },
-  "r106": {
+  "r107": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "9",
    "Publisher": "FASB",
@@ -3338,7 +3421,7 @@
    "Topic": "740",
    "URI": "http://asc.fasb.org/extlink&oid=65882285&loc=d3e32639-109319"
   },
-  "r107": {
+  "r108": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -3348,7 +3431,7 @@
    "Topic": "740",
    "URI": "http://asc.fasb.org/extlink&oid=34349781&loc=d3e330036-122817"
   },
-  "r108": {
+  "r109": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "15",
    "Publisher": "FASB",
@@ -3356,15 +3439,6 @@
    "SubTopic": "10",
    "Topic": "810",
    "URI": "http://asc.fasb.org/extlink&oid=68079674&loc=SL4568447-111683"
-  },
-  "r109": {
-   "Name": "Accounting Standards Codification",
-   "Paragraph": "16",
-   "Publisher": "FASB",
-   "Section": "45",
-   "SubTopic": "10",
-   "Topic": "810",
-   "URI": "http://asc.fasb.org/extlink&oid=68079674&loc=SL4568740-111683"
   },
   "r11": {
    "Name": "Accounting Standards Codification",
@@ -3377,6 +3451,15 @@
   },
   "r110": {
    "Name": "Accounting Standards Codification",
+   "Paragraph": "16",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "810",
+   "URI": "http://asc.fasb.org/extlink&oid=68079674&loc=SL4568740-111683"
+  },
+  "r111": {
+   "Name": "Accounting Standards Codification",
    "Paragraph": "19",
    "Publisher": "FASB",
    "Section": "45",
@@ -3384,7 +3467,7 @@
    "Topic": "810",
    "URI": "http://asc.fasb.org/extlink&oid=68079674&loc=SL4569616-111683"
   },
-  "r111": {
+  "r112": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -3393,7 +3476,7 @@
    "Topic": "810",
    "URI": "http://asc.fasb.org/extlink&oid=64809438&loc=d3e5614-111684"
   },
-  "r112": {
+  "r113": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1A",
    "Publisher": "FASB",
@@ -3403,7 +3486,7 @@
    "Topic": "810",
    "URI": "http://asc.fasb.org/extlink&oid=64809438&loc=SL4573702-111684"
   },
-  "r113": {
+  "r114": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1A",
    "Publisher": "FASB",
@@ -3413,7 +3496,7 @@
    "Topic": "810",
    "URI": "http://asc.fasb.org/extlink&oid=64809438&loc=SL4573702-111684"
   },
-  "r114": {
+  "r115": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "4I",
    "Publisher": "FASB",
@@ -3422,7 +3505,7 @@
    "Topic": "810",
    "URI": "http://asc.fasb.org/extlink&oid=65897068&loc=SL4590271-111686"
   },
-  "r115": {
+  "r116": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "4J",
    "Publisher": "FASB",
@@ -3431,7 +3514,7 @@
    "Topic": "810",
    "URI": "http://asc.fasb.org/extlink&oid=65897068&loc=SL4591551-111686"
   },
-  "r116": {
+  "r117": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "4K",
    "Publisher": "FASB",
@@ -3440,7 +3523,7 @@
    "Topic": "810",
    "URI": "http://asc.fasb.org/extlink&oid=65897068&loc=SL4591552-111686"
   },
-  "r117": {
+  "r118": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -3449,7 +3532,7 @@
    "Topic": "830",
    "URI": "http://asc.fasb.org/extlink&oid=49171198&loc=d3e33268-110906"
   },
-  "r118": {
+  "r119": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -3457,16 +3540,6 @@
    "SubTopic": "20",
    "Topic": "940",
    "URI": "http://asc.fasb.org/extlink&oid=68072869&loc=d3e41242-110953"
-  },
-  "r119": {
-   "Name": "Accounting Standards Codification",
-   "Paragraph": "1",
-   "Publisher": "FASB",
-   "Section": "S99",
-   "SubTopic": "210",
-   "Subparagraph": "(SX 210.9-03(11))",
-   "Topic": "942",
-   "URI": "http://asc.fasb.org/extlink&oid=6876686&loc=d3e534808-122878"
   },
   "r12": {
    "Name": "Accounting Standards Codification",
@@ -3483,7 +3556,7 @@
    "Publisher": "FASB",
    "Section": "S99",
    "SubTopic": "210",
-   "Subparagraph": "(SX 210.9-03(15)(1))",
+   "Subparagraph": "(SX 210.9-03(11))",
    "Topic": "942",
    "URI": "http://asc.fasb.org/extlink&oid=6876686&loc=d3e534808-122878"
   },
@@ -3493,7 +3566,7 @@
    "Publisher": "FASB",
    "Section": "S99",
    "SubTopic": "210",
-   "Subparagraph": "(SX 210.9-03(22))",
+   "Subparagraph": "(SX 210.9-03(15)(1))",
    "Topic": "942",
    "URI": "http://asc.fasb.org/extlink&oid=6876686&loc=d3e534808-122878"
   },
@@ -3503,11 +3576,21 @@
    "Publisher": "FASB",
    "Section": "S99",
    "SubTopic": "210",
-   "Subparagraph": "(SX 210.9-03(23))",
+   "Subparagraph": "(SX 210.9-03(22))",
    "Topic": "942",
    "URI": "http://asc.fasb.org/extlink&oid=6876686&loc=d3e534808-122878"
   },
   "r123": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "210",
+   "Subparagraph": "(SX 210.9-03(23))",
+   "Topic": "942",
+   "URI": "http://asc.fasb.org/extlink&oid=6876686&loc=d3e534808-122878"
+  },
+  "r124": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -3517,7 +3600,7 @@
    "Topic": "942",
    "URI": "http://asc.fasb.org/extlink&oid=6879574&loc=d3e536633-122882"
   },
-  "r124": {
+  "r125": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -3527,7 +3610,7 @@
    "Topic": "942",
    "URI": "http://asc.fasb.org/extlink&oid=6879574&loc=d3e536633-122882"
   },
-  "r125": {
+  "r126": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -3537,7 +3620,7 @@
    "Topic": "942",
    "URI": "http://asc.fasb.org/extlink&oid=6879574&loc=d3e536633-122882"
   },
-  "r126": {
+  "r127": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -3547,7 +3630,7 @@
    "Topic": "944",
    "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
   },
-  "r127": {
+  "r128": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -3557,23 +3640,13 @@
    "Topic": "944",
    "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
   },
-  "r128": {
-   "Name": "Accounting Standards Codification",
-   "Paragraph": "1",
-   "Publisher": "FASB",
-   "Section": "S99",
-   "SubTopic": "210",
-   "Subparagraph": "(SX 210.7-03(a)(23)(a)(4))",
-   "Topic": "944",
-   "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
-  },
   "r129": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
    "Section": "S99",
    "SubTopic": "210",
-   "Subparagraph": "(SX 210.7-03(a)(24))",
+   "Subparagraph": "(SX 210.7-03(a)(23)(a)(4))",
    "Topic": "944",
    "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
   },
@@ -3592,7 +3665,7 @@
    "Publisher": "FASB",
    "Section": "S99",
    "SubTopic": "210",
-   "Subparagraph": "(SX 210.7-03(a)(25))",
+   "Subparagraph": "(SX 210.7-03(a)(24))",
    "Topic": "944",
    "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
   },
@@ -3602,11 +3675,21 @@
    "Publisher": "FASB",
    "Section": "S99",
    "SubTopic": "210",
-   "Subparagraph": "(SX 210.7-03(a)(8))",
+   "Subparagraph": "(SX 210.7-03(a)(25))",
    "Topic": "944",
    "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
   },
   "r132": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "210",
+   "Subparagraph": "(SX 210.7-03(a)(8))",
+   "Topic": "944",
+   "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
+  },
+  "r133": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -3616,7 +3699,7 @@
    "Topic": "944",
    "URI": "http://asc.fasb.org/extlink&oid=6879464&loc=d3e573970-122913"
   },
-  "r133": {
+  "r134": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -3626,7 +3709,7 @@
    "Topic": "944",
    "URI": "http://asc.fasb.org/extlink&oid=6879464&loc=d3e573970-122913"
   },
-  "r134": {
+  "r135": {
    "Name": "Regulation 12B",
    "Number": "240",
    "Publisher": "SEC",
@@ -4125,6 +4208,16 @@
   },
   "r61": {
    "Name": "Accounting Standards Codification",
+   "Paragraph": "5",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SAB Topic 11.M)",
+   "Topic": "250",
+   "URI": "http://asc.fasb.org/extlink&oid=26874127&loc=d3e31137-122693"
+  },
+  "r62": {
+   "Name": "Accounting Standards Codification",
    "Paragraph": "10",
    "Publisher": "FASB",
    "Section": "45",
@@ -4132,7 +4225,7 @@
    "Topic": "260",
    "URI": "http://asc.fasb.org/extlink&oid=64863997&loc=d3e1448-109256"
   },
-  "r62": {
+  "r63": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "16",
    "Publisher": "FASB",
@@ -4141,7 +4234,7 @@
    "Topic": "260",
    "URI": "http://asc.fasb.org/extlink&oid=64863997&loc=d3e1505-109256"
   },
-  "r63": {
+  "r64": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "2",
    "Publisher": "FASB",
@@ -4150,7 +4243,7 @@
    "Topic": "260",
    "URI": "http://asc.fasb.org/extlink&oid=64863997&loc=d3e1252-109256"
   },
-  "r64": {
+  "r65": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -4160,7 +4253,7 @@
    "Topic": "260",
    "URI": "http://asc.fasb.org/extlink&oid=6371337&loc=d3e3550-109257"
   },
-  "r65": {
+  "r66": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -4169,7 +4262,7 @@
    "Topic": "260",
    "URI": "http://asc.fasb.org/extlink&oid=6371337&loc=d3e3550-109257"
   },
-  "r66": {
+  "r67": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "52",
    "Publisher": "FASB",
@@ -4178,7 +4271,7 @@
    "Topic": "260",
    "URI": "http://asc.fasb.org/extlink&oid=65016374&loc=d3e4984-109258"
   },
-  "r67": {
+  "r68": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "3",
    "Publisher": "FASB",
@@ -4187,7 +4280,7 @@
    "Topic": "272",
    "URI": "http://asc.fasb.org/extlink&oid=6373374&loc=d3e70478-108055"
   },
-  "r68": {
+  "r69": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -4195,15 +4288,6 @@
    "SubTopic": "10",
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8380-108599"
-  },
-  "r69": {
-   "Name": "Accounting Standards Codification",
-   "Paragraph": "10",
-   "Publisher": "FASB",
-   "Section": "50",
-   "SubTopic": "10",
-   "Topic": "280",
-   "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8538-108599"
   },
   "r7": {
    "Name": "Accounting Standards Codification",
@@ -4216,6 +4300,15 @@
   },
   "r70": {
    "Name": "Accounting Standards Codification",
+   "Paragraph": "10",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Topic": "280",
+   "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8538-108599"
+  },
+  "r71": {
+   "Name": "Accounting Standards Codification",
    "Paragraph": "12",
    "Publisher": "FASB",
    "Section": "50",
@@ -4223,7 +4316,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8595-108599"
   },
-  "r71": {
+  "r72": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "21",
    "Publisher": "FASB",
@@ -4233,7 +4326,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8721-108599"
   },
-  "r72": {
+  "r73": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "22",
    "Publisher": "FASB",
@@ -4242,7 +4335,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8736-108599"
   },
-  "r73": {
+  "r74": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "25",
    "Publisher": "FASB",
@@ -4251,7 +4344,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8813-108599"
   },
-  "r74": {
+  "r75": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "26",
    "Publisher": "FASB",
@@ -4260,7 +4353,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8844-108599"
   },
-  "r75": {
+  "r76": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "29",
    "Publisher": "FASB",
@@ -4269,7 +4362,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8864-108599"
   },
-  "r76": {
+  "r77": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "30",
    "Publisher": "FASB",
@@ -4278,7 +4371,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8906-108599"
   },
-  "r77": {
+  "r78": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "31",
    "Publisher": "FASB",
@@ -4287,7 +4380,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8924-108599"
   },
-  "r78": {
+  "r79": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "32",
    "Publisher": "FASB",
@@ -4295,15 +4388,6 @@
    "SubTopic": "10",
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8933-108599"
-  },
-  "r79": {
-   "Name": "Accounting Standards Codification",
-   "Paragraph": "33",
-   "Publisher": "FASB",
-   "Section": "50",
-   "SubTopic": "10",
-   "Topic": "280",
-   "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8971-108599"
   },
   "r8": {
    "Name": "Accounting Standards Codification",
@@ -4316,6 +4400,15 @@
   },
   "r80": {
    "Name": "Accounting Standards Codification",
+   "Paragraph": "33",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Topic": "280",
+   "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8971-108599"
+  },
+  "r81": {
+   "Name": "Accounting Standards Codification",
    "Paragraph": "34",
    "Publisher": "FASB",
    "Section": "50",
@@ -4323,7 +4416,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8981-108599"
   },
-  "r81": {
+  "r82": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "35",
    "Publisher": "FASB",
@@ -4332,7 +4425,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e8984-108599"
   },
-  "r82": {
+  "r83": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "40",
    "Publisher": "FASB",
@@ -4341,7 +4434,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e9031-108599"
   },
-  "r83": {
+  "r84": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "41",
    "Publisher": "FASB",
@@ -4350,7 +4443,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e9038-108599"
   },
-  "r84": {
+  "r85": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "42",
    "Publisher": "FASB",
@@ -4359,7 +4452,7 @@
    "Topic": "280",
    "URI": "http://asc.fasb.org/extlink&oid=68060357&loc=d3e9054-108599"
   },
-  "r85": {
+  "r86": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "4",
    "Publisher": "FASB",
@@ -4368,7 +4461,7 @@
    "Topic": "310",
    "URI": "http://asc.fasb.org/extlink&oid=66008989&loc=d3e5074-111524"
   },
-  "r86": {
+  "r87": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "2",
    "Publisher": "FASB",
@@ -4378,7 +4471,7 @@
    "Topic": "310",
    "URI": "http://asc.fasb.org/extlink&oid=27010918&loc=d3e74512-122707"
   },
-  "r87": {
+  "r88": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "8",
    "Publisher": "FASB",
@@ -4387,7 +4480,7 @@
    "Topic": "330",
    "URI": "http://asc.fasb.org/extlink&oid=68048583&loc=d3e3636-108311"
   },
-  "r88": {
+  "r89": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -4395,15 +4488,6 @@
    "SubTopic": "20",
    "Topic": "350",
    "URI": "http://asc.fasb.org/extlink&oid=35741047&loc=d3e13816-109267"
-  },
-  "r89": {
-   "Name": "Accounting Standards Codification",
-   "Paragraph": "2",
-   "Publisher": "FASB",
-   "Section": "45",
-   "SubTopic": "30",
-   "Topic": "350",
-   "URI": "http://asc.fasb.org/extlink&oid=6388964&loc=d3e16225-109274"
   },
   "r9": {
    "Name": "Accounting Standards Codification",
@@ -4419,13 +4503,22 @@
    "Name": "Accounting Standards Codification",
    "Paragraph": "2",
    "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "30",
+   "Topic": "350",
+   "URI": "http://asc.fasb.org/extlink&oid=6388964&loc=d3e16225-109274"
+  },
+  "r91": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
    "Section": "50",
    "SubTopic": "30",
    "Subparagraph": "(a)(2)",
    "Topic": "350",
    "URI": "http://asc.fasb.org/extlink&oid=66006027&loc=d3e16323-109275"
   },
-  "r91": {
+  "r92": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -4435,7 +4528,7 @@
    "Topic": "360",
    "URI": "http://asc.fasb.org/extlink&oid=6391035&loc=d3e2868-110229"
   },
-  "r92": {
+  "r93": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -4445,7 +4538,7 @@
    "Topic": "360",
    "URI": "http://asc.fasb.org/extlink&oid=6391035&loc=d3e2868-110229"
   },
-  "r93": {
+  "r94": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -4454,7 +4547,7 @@
    "Topic": "360",
    "URI": "http://asc.fasb.org/extlink&oid=6391035&loc=d3e2868-110229"
   },
-  "r94": {
+  "r95": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -4464,7 +4557,7 @@
    "Topic": "505",
    "URI": "http://asc.fasb.org/extlink&oid=27012166&loc=d3e187085-122770"
   },
-  "r95": {
+  "r96": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "2",
    "Publisher": "FASB",
@@ -4473,7 +4566,7 @@
    "Topic": "715",
    "URI": "http://asc.fasb.org/extlink&oid=64852052&loc=d3e1703-114919"
   },
-  "r96": {
+  "r97": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "1",
    "Publisher": "FASB",
@@ -4483,7 +4576,7 @@
    "Topic": "715",
    "URI": "http://asc.fasb.org/extlink&oid=65897934&loc=d3e1928-114920"
   },
-  "r97": {
+  "r98": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "2",
    "Publisher": "FASB",
@@ -4492,7 +4585,7 @@
    "Topic": "715",
    "URI": "http://asc.fasb.org/extlink&oid=65897934&loc=d3e2410-114920"
   },
-  "r98": {
+  "r99": {
    "Name": "Accounting Standards Codification",
    "Paragraph": "3",
    "Publisher": "FASB",
@@ -4500,15 +4593,6 @@
    "SubTopic": "20",
    "Topic": "715",
    "URI": "http://asc.fasb.org/extlink&oid=65897934&loc=d3e2417-114920"
-  },
-  "r99": {
-   "Name": "Accounting Standards Codification",
-   "Paragraph": "24",
-   "Publisher": "FASB",
-   "Section": "55",
-   "SubTopic": "20",
-   "Topic": "718",
-   "URI": "http://asc.fasb.org/extlink&oid=65896087&loc=d3e11374-113907"
   }
  },
  "version": "2.0"

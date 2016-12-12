@@ -9,6 +9,7 @@ var App_Settings = {
         focusHighlightColor:'#003768',
         focusHighlightSelectionColor:'#003768',
         elementBorderColor:'#FF6600',
+        elementBorderColorCode:'ff6600',
         blockHighlightColor:'rgba(249,237,237,0.6)',
         focusContentSelectionColor:"#FF6600"
     },
@@ -36,8 +37,9 @@ var App_Settings = {
                     App_Settings.save('blockHighlightColor', '#' + color);
                 }
                 else {
-
                     App_Settings.save('elementBorderColor', '#' + color);
+                    App_Settings.save('elementBorderColorCode', color.toLowerCase());
+                    window.location.reload();
                 }
             }
         };

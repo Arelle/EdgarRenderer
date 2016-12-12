@@ -7,6 +7,7 @@ $(document).ready(function(){
 	$('#opener').bind('keypress', function(e) {
 		var code = e.keyCode || e.which;
 		if((code == 13) || (code == 32)) { //Enter keycode
+			App_Find.Results.init();
 		  	var panel = $('#app-panel');
 			if (screen.width < 641) {
 				if (panel.hasClass("visible")) {
@@ -97,6 +98,8 @@ $(document).ready(function(){
 		}
 	});
 	$('#opener').on('click', function() {
+		$(window).resize();
+		App_Find.Results.init();
 		$('#about-modal').dialog("close");
 		var panel = $('#app-panel');
 		if (screen.width < 641) {
@@ -334,9 +337,6 @@ $(document).ready(function(){
 			}	
 		$('.simpleColorChooser').attr("tabindex",0);
 		$('.simpleColorCell').attr("tabindex",0);
-		//var simpleClorCellZeroId= $('.simpleColorCell')[0].id;
-		//var hexcode="#"+simpleClorCellZeroId;
-		//$('.simpleColorCell').attr("aria-label",hexcode);
 		$('.simpleColorCell').attr("aria-label","Inside Selected Fact Color Selector");
 		var count=0;
 		$('.simpleColorCell').bind('keydown',function(e){
@@ -345,9 +345,6 @@ $(document).ready(function(){
 				count=count+1;
 				for(j=0;j<223;j++){
 				if(j==(count)){
-				//var simpleClorCellIds= $('.simpleColorCell')[j].id;
-				//var hexcode="#"+simpleClorCellIds;
-				//$('.simpleColorCell').attr("aria-label",hexcode);
 				$('.simpleColorCell').attr("aria-label","Inside Selected Fact Color Selector");
 				break;
 				}
@@ -365,6 +362,7 @@ $(document).ready(function(){
 		
 	});
 	$('#btn-help').on('click', function() {	
+	$(window).resize();
 		$('#menuIcon').dropdown("toggle");	
 		var panel = $('#app-panel1');
 		if (screen.width < 641) {
@@ -438,11 +436,6 @@ $(document).ready(function(){
 		$('#about-modal').dialog("close");
 		
 	});
-    $('#menuBtn-reports').on('click', function() {	
-		
-		$('#about-modal').dialog("close");
-		
-	});
     $('#menuIcon').on('click', function() {	
     	$('#about-modal').dialog("close");
 		
@@ -451,6 +444,9 @@ $(document).ready(function(){
 	$('#btn-reports').on('click', function() {
 		$('#about-modal').dialog("close");
 		$('#menuIcon').dropdown("toggle");	
+		App_Find.TaggedSection.lazyLoadData();
+    	$('#app-panel-reports-container').show('slide');
+		App_Find.TaggedSection.loadData();
 		var panel = $('#app-panel2');
 		if (screen.width < 641) {
 			if (panel.hasClass("visible")) {
@@ -472,25 +468,6 @@ $(document).ready(function(){
 				
 			}	
 		}
-		/*else if (((screen.width > 641) && (screen.width < 767))  && (window.orientation) && (window.orientation == 90 || window.orientation == -90)) {
-			if (panel.hasClass("visible")) {
-			
-				panel.removeClass('visible').animate({'margin-left':'-100%','width':'100%'});
-	      		$('#app-inline-xbrl-doc').css({'width':'100%'});
-			} else {panel.addClass('visible').animate({'margin-left':'0px','width':'100%'});
-
-	      		$('#app-inline-xbrl-doc').css({'width':'0%','float':'right'});
-	      		if($('#app-panel').hasClass("visible")) {
-					$('#app-panel').removeClass('visible').animate({'margin-right':'-100%','width':'100%'});
-					$('#opener').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down');
-					$('#opener').attr("title", "Expand Facts");
-				}
-				if($('#app-panel1').hasClass("visible")) {
-					$('#app-panel1').removeClass('visible').animate({'margin-left':'-100%','width':'100%'});
-				}
-				
-			}	
-		}*/
 		else{
 			if (panel.hasClass("visible")) {
 				panel.removeClass('visible').animate({'margin-left':'-30%','width':'30%'});

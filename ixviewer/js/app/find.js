@@ -8,91 +8,99 @@
 var _filterList = [];
 var _dataList = ['Amounts Only', 'Text Only', 'Calculations Only', 'Negatives Only', 'Additional Items Only'];
 var _tagList = ['Standard Only', 'Custom Only'];
+var _htmlHover = {
+        id:"",
+        xbrlValue:"",
+        html:""
+    };
+
+var _lazyLoadTaggedSection = false;
+var _lazyLoadResults = false;
+
 var App_Find = {
     init:function() {
 	
-	$(document).ready(function(){
-	//$("html,body").animate({scrollTop: 0}, 100);
+	/*$(document).ready(function(){
 	if(screen.width>=768 && ((window.orientation) || (window.orientation=='0') || (window.orientation=='180'))){
 	$("html,body").animate({scrollTop: 0}, 100);
 	}
 	if(screen.width>=768 && (((window.orientation=='90') || (window.orientation=='-90')))){
-	$("html,body").animate({scrollTop: 0}, 100);
-		}
+		$("html,body").animate({scrollTop: 0}, 100);
+	}
+});*/
+	
+
+$('.dropdown-submenu > a').submenupicker();
+
+$("#settings-modal").draggable({
+    handle: ".modal-header"
+});
+$("#highlight-data-modal").draggable({
+    handle: ".modal-header"
+});
+$("#highlight-concept-modal").draggable({
+    handle: ".modal-header"
+});
+$("#selection-detail-container").draggable({
+    handle: ".selection-detail-header"
+});
+$("#filter-period-modal").draggable({
+    handle: ".modal-header"
+});
+$("#filter-unit-modal").draggable({
+    handle: ".modal-header"
+});
+$("#filter-axis-modal").draggable({
+	handle : ".modal-header"
+});
+$("#filter-scale-modal").draggable({
+	handle : ".modal-header"
+});
+$("#filter-balance-modal").draggable({
+	handle : ".modal-header"
 });
 
-		$('.dropdown-submenu > a').submenupicker();
+$("#about-modal").draggable({
+	handle : ".about-header"
+});        
 
-		$("#settings-modal").draggable({
-		    handle: ".modal-header"
-		});
-		$("#highlight-data-modal").draggable({
-		    handle: ".modal-header"
-		});
-		$("#highlight-concept-modal").draggable({
-		    handle: ".modal-header"
-		});
-		$("#selection-detail-container").draggable({
-            handle: ".selection-detail-header"
-        });
-		$("#filter-period-modal").draggable({
-		    handle: ".modal-header"
-		});
-		$("#filter-unit-modal").draggable({
-		    handle: ".modal-header"
-		});
-		$("#filter-axis-modal").draggable({
-			handle : ".modal-header"
-		});
-		$("#filter-scale-modal").draggable({
-			handle : ".modal-header"
-		});
-		$("#filter-balance-modal").draggable({
-			handle : ".modal-header"
-		});
-		
-		$("#about-modal").draggable({
-			handle : ".about-header"
-		});        
-        
-		$( "#copyAllCoAndDoc" ).mouseover(function() {
-		  $( "#copyAllCoAndDoc" ).attr("title","Copy All");
-		});
-		
-		$( "#closeCoAndDoc" ).mouseover(function() {
-		  $( "#closeCoAndDoc" ).attr("title","Close");
-		});
-		
-		$( "#copyAllFRW" ).mouseover(function() {
-		  $( "#copyAllFRW" ).attr("title","Copy All");
-		});
-		
-		$( "#closeFRW" ).mouseover(function() {
-		  $( "#closeFRW" ).attr("title","Close");
-		});
-        
-        $( "#nextCarousel" ).mouseover(function() {
-		  $( "#nextCarousel" ).attr("title","Next");
-		});
-		
-		$( "#prevCarousel" ).mouseover(function() {
-		  $( "#prevCarousel" ).attr("title","Prev");
-		});
-		
-		$( "#nextCarousel1" ).mouseover(function() {
-		  $( "#nextCarousel1" ).attr("title","Next");
-		});
-		
-		$( "#prevCarousel1" ).mouseover(function() {
-		  $( "#prevCarousel1" ).attr("title","Prev");
-		});
+$( "#copyAllCoAndDoc" ).mouseover(function() {
+    $( "#copyAllCoAndDoc" ).attr("title","Copy All");
+});
+
+$( "#closeCoAndDoc" ).mouseover(function() {
+  $( "#closeCoAndDoc" ).attr("title","Close");
+});
+
+$( "#copyAllFRW" ).mouseover(function() {
+  $( "#copyAllFRW" ).attr("title","Copy All");
+});
+
+$( "#closeFRW" ).mouseover(function() {
+  $( "#closeFRW" ).attr("title","Close");
+});
+
+$( "#nextCarousel" ).mouseover(function() {
+  $( "#nextCarousel" ).attr("title","Next");
+});
+
+$( "#prevCarousel" ).mouseover(function() {
+  $( "#prevCarousel" ).attr("title","Prev");
+});
+
+$( "#nextCarousel1" ).mouseover(function() {
+  $( "#nextCarousel1" ).attr("title","Next");
+});
+
+$( "#prevCarousel1" ).mouseover(function() {
+  $( "#prevCarousel1" ).attr("title","Prev");
+});
 
 		App_Find.Highlight.init();
 		App_Find.Filter.init();
-		App_Find.Breadcrumb.init();
 		App_Find.Search.init();
 		App_Find.TaggedSection.init();
-		App_Find.Results.init();
+		//App_Find.Results.init();
 		App_Find.Element.init();
 		App_Find.Settings.init();
 		$("#selection-detail-container").dialog({
@@ -129,7 +137,8 @@ var App_Find = {
             footnote:$(),
             continuedAt:$(),
 			allData:$(),
-			nonnumericnodes:$()
+			nonnumericnodes:$(),
+			linkedHiddenNodes:null
         },
         init:function() {
 
@@ -152,6 +161,26 @@ var App_Find = {
                 });
             });
         },
+        
+        initLinkedHiddenNodes:function(){
+        	App_Find.Highlight.cachedResults.linkedHiddenNodes = $();
+        	App.frame.contents().find('*[style*="-sec-ix-hidden"]').each(
+        	function (index) {
+        		var elt = this.nodeName.split(':');
+        		if (elt.length < 2) {
+        			var style = this.getAttribute("style");
+					style = style.substring(style.indexOf("-sec-ix-hidden"));
+					var id = style.substring(style.indexOf(":")+1).trim();
+					if(id.indexOf(";")>-1){
+                		id = id.substring(0,id.indexOf(";"));
+               		}
+                var specialNode = [];
+                specialNode.push(id,[this]);
+                App_Find.Highlight.cachedResults.linkedHiddenNodes.push(specialNode);
+        		}
+        	});
+        },
+        
         resetUI:function() {
 
             App_Find.Highlight.cachedResults.both = $();
@@ -188,6 +217,7 @@ var App_Find = {
         highlight:function() {
  
             App.frame.contents().find('.sec-cbe-highlight-dashed').removeClass('sec-cbe-highlight-dashed');
+            App.frame.contents().find('.sec-cbe-highlight-dashed_block').removeClass('sec-cbe-highlight-dashed_block');
             var highlightType = App_Find.Highlight.getSelected().value;
             var results = App_Find.Highlight.getResults();
             var instance = App.InlineDoc.getMetaData();
@@ -240,9 +270,9 @@ var App_Find = {
 	                }
 	            }
 	            App_Find.Results.load();
-	            if(!App_Find.TaggedSection.isInitialized){
+	            /*if(!App_Find.TaggedSection.isInitialized){
 	            	App_Find.TaggedSection.load();
-	            }
+	            }*/
             }
         },
         getResults:function() {
@@ -1075,18 +1105,6 @@ var App_Find = {
         }
     },
     Breadcrumb:{
-        init:function() {
-			/*$('#app-panel-breadcrum-container').find('span[data-btn-clearAllFilter]').on('click', function() {
-				App_Find.Highlight.resetData();
-				App_Find.Highlight.resetConcepts();
-				App_Find.Filter.resetPeriod();
-				App_Find.Filter.resetUnits();
-				App_Find.Filter.resetAxis();
-				App_Find.Filter.resetScale();
-                App_Find.Filter.resetBalance();
-                App_Find.Highlight.refresh();
-            });*/
-        },
         resetUI:function() {
 
             App_Find.Breadcrumb.refresh();
@@ -1847,10 +1865,6 @@ var App_Find = {
             	}else{
             		App_Find.TaggedSection.highlightItem(index); 
             	}
-            	/*if (showElementDetail){//  || $('#selection-detail-container').css('display') == 'block') { 
-            		App_Find.Element.showSelectionDetail(found);
-            	}   */ 
-            	
             	       	
             } else {
             	 App.showMessage('Internal error locating '+report.shortName+'.');
@@ -1891,14 +1905,11 @@ var App_Find = {
             if (resultItem.length == 1) {
 				prevItem = showElementDetail;
                 resultItem.attr('data-is-selected', 'true');
-                //var resultItemDiv = resultItem.find('[class="result-item"]');
-                //console.log(resultItemDiv);
                 showElementDetail.css('border', '4px solid '+App_Settings.get('focusHighlightColor'));
             }
         },
     	init:function(){  
-            
-            $('[data-toggle=collapse]').click(function(){
+    		$('[data-toggle=collapse]').click(function(){
 			  	// toggle icon
 			  	$(this).find("i").toggleClass("glyphicon-chevron-right glyphicon-chevron-down");
 			});
@@ -1911,147 +1922,152 @@ var App_Find = {
 				  	$(this).click();
 				}
 			});
-            
-			
-			
-            var section = $('#results-header-report-mutualFund');
-			
-            // wire up the next/prev item buttons
-            section.find('a').each(function(index, element) {
-
-                if (index == 0) {
-
-                    // prev item
-                    $(element).on('click', function() {
-
-                        App_Find.TaggedSection.prevItem();
-                    });
-                } else {
-
-                    // next item
-                    $(element).on('click', function() {
-
-                        App_Find.TaggedSection.nextItem();
-                    });
-                }
-            });
-            
-            
-
-            // wire up the paging buttons
-            section.find('.btn-container button').each(function(index, element) {
-
-                switch (index) {
-
-                    case 0:
-                        // Page To Beginning
-                        $(element).on('click', function() {
-
-                            App_Find.TaggedSection.goToPage(1, ':first');
-                        });
-                        break;
-                    case 1:
-                        // Prev Page
-                        $(element).on('click', function() {
-
-                            App_Find.TaggedSection.prevPage(':first');
-                        });
-                        break;
-                    case 2:
-                        // Next Page
-                        $(element).on('click', function() {
-
-                            App_Find.TaggedSection.nextPage(':first');
-                        });
-                        break;
-                    case 3:
-                        // Page To End
-                        $(element).on('click', function() {
-
-                            App_Find.TaggedSection.goToPage(App_Find.TaggedSection.totalPages, ':first');
-                        });
-                        break;
-                }
-            });
-            
-            
-            var section = $('#results-header-report-operating');
-			
-            // wire up the paging buttons
-            section.find('.btn-container button').each(function(index, element) {
-
-                switch (index) {
-
-                    case 0:
-                        // Page To Beginning
-                        $(element).on('click', function() {
-
-                            App_Find.TaggedSection.goToPage(1, ':first');
-                        });
-                        break;
-                    case 1:
-                        // Prev Page
-                        $(element).on('click', function() {
-
-                            App_Find.TaggedSection.prevPage(':first');
-                        });
-                        break;
-                    case 2:
-                        // Next Page
-                        $(element).on('click', function() {
-
-                            App_Find.TaggedSection.nextPage(':first');
-                        });
-                        break;
-                    case 3:
-                        // Page To End
-                        $(element).on('click', function() {
-
-                            App_Find.TaggedSection.goToPage(App_Find.TaggedSection.totalPages, ':first');
-                        });
-                        break;
-                 }
-            });
-            
-
-	        $('#app-panel-reports-container').find('[data-btn-remove]').on('click', function() {
-				if (screen.width < 641) {
-					$('#app-panel-reports-container').hide('slide');
-	            	$('#app-panel2').removeClass('visible').animate({'margin-left':'-100%'});
-	            	$('#app-inline-xbrl-doc').css({'width':'100%'});
-				}else{
-	            	$('#app-panel-reports-container').hide('slide');
-	            	$('#app-panel2').removeClass('visible').animate({'margin-left':'-30%'});
-	            	$('#app-inline-xbrl-doc').css({'width':'100%'});
-	            }
-	            if((App_Find.TaggedSection._cachescrollDestination!=null)){
-	            	App_Find.TaggedSection._cachescrollDestination.scrollIntoView();
-	            	App_Find.TaggedSection._cachescrollDestination=null;
-	            }
-	        });
         
-            $('#btn-reports').on('click', function() {
-            
-            	$('#app-panel-reports-container').show('slide');
-				App_Find.TaggedSection.loadData();
-	            	
-			});
-			
 			$('#menuBtn-reports').on('click', function() {
-			
+				App_Find.TaggedSection.lazyLoadData();
+				$('#about-modal').dialog("close");
             	$('#app-panel-reports-container').show('slide');
 				App_Find.TaggedSection.loadData();
+				$(window).resize();
 	            	
 			});
 			
 			$('#menuBtn-reports').bind('keypress', function(e) {
 				var code = e.keyCode || e.which;
 				if((code == 13) || (code == 32)) { //Enter keycode
+					App_Find.TaggedSection.lazyLoadData();
+					$('#about-modal').dialog("close");
 				  	$('#app-panel-reports-container').show('slide');
 					App_Find.TaggedSection.loadData();			
 				}
 			});
 			
+         },
+         
+         lazyLoadData:function(){
+        	 if(!_lazyLoadTaggedSection){
+        		 _lazyLoadTaggedSection=true;
+        		 
+     			
+     			
+                 var section = $('#results-header-report-mutualFund');
+     			
+                 // wire up the next/prev item buttons
+                 section.find('a').each(function(index, element) {
+
+                     if (index == 0) {
+
+                         // prev item
+                         $(element).on('click', function() {
+
+                             App_Find.TaggedSection.prevItem();
+                         });
+                     } else {
+
+                         // next item
+                         $(element).on('click', function() {
+
+                             App_Find.TaggedSection.nextItem();
+                         });
+                     }
+                 });
+                 
+                 
+
+                 // wire up the paging buttons
+                 section.find('.btn-container button').each(function(index, element) {
+
+                     switch (index) {
+
+                         case 0:
+                             // Page To Beginning
+                             $(element).on('click', function() {
+
+                                 App_Find.TaggedSection.goToPage(1, ':first');
+                             });
+                             break;
+                         case 1:
+                             // Prev Page
+                             $(element).on('click', function() {
+
+                                 App_Find.TaggedSection.prevPage(':first');
+                             });
+                             break;
+                         case 2:
+                             // Next Page
+                             $(element).on('click', function() {
+
+                                 App_Find.TaggedSection.nextPage(':first');
+                             });
+                             break;
+                         case 3:
+                             // Page To End
+                             $(element).on('click', function() {
+
+                                 App_Find.TaggedSection.goToPage(App_Find.TaggedSection.totalPages, ':first');
+                             });
+                             break;
+                     }
+                 });
+                 
+                 
+                 var section = $('#results-header-report-operating');
+     			
+                 // wire up the paging buttons
+                 section.find('.btn-container button').each(function(index, element) {
+
+                     switch (index) {
+
+                         case 0:
+                             // Page To Beginning
+                             $(element).on('click', function() {
+
+                                 App_Find.TaggedSection.goToPage(1, ':first');
+                             });
+                             break;
+                         case 1:
+                             // Prev Page
+                             $(element).on('click', function() {
+
+                                 App_Find.TaggedSection.prevPage(':first');
+                             });
+                             break;
+                         case 2:
+                             // Next Page
+                             $(element).on('click', function() {
+
+                                 App_Find.TaggedSection.nextPage(':first');
+                             });
+                             break;
+                         case 3:
+                             // Page To End
+                             $(element).on('click', function() {
+
+                                 App_Find.TaggedSection.goToPage(App_Find.TaggedSection.totalPages, ':first');
+                             });
+                             break;
+                      }
+                 });
+                 
+
+     	        $('#app-panel-reports-container').find('[data-btn-remove]').on('click', function() {
+     				if (screen.width < 641) {
+     					$('#app-panel-reports-container').hide('slide');
+     	            	$('#app-panel2').removeClass('visible').animate({'margin-left':'-100%'});
+     	            	$('#app-inline-xbrl-doc').css({'width':'100%'});
+     				}else{
+     	            	$('#app-panel-reports-container').hide('slide');
+     	            	$('#app-panel2').removeClass('visible').animate({'margin-left':'-30%'});
+     	            	$('#app-inline-xbrl-doc').css({'width':'100%'});
+     	            }
+     	            if((App_Find.TaggedSection._cachescrollDestination!=null)){
+     	            	App_Find.TaggedSection._cachescrollDestination.scrollIntoView();
+     	            	App_Find.TaggedSection._cachescrollDestination=null;
+     	            }
+     	        });
+        		 
+        		 
+        	 }
          },
          
          getReportData:function(){
@@ -2355,80 +2371,84 @@ var App_Find = {
         calendars:[],
         _cachescrollDestination:$(),
         init:function() {
+        	if(!_lazyLoadResults){
+        		_lazyLoadResults = true;
+        		var section = $('#panel-section-results');
 
-            var section = $('#panel-section-results');
+                // wire up the next/prev item buttons
+                section.find('span').each(function(index, element) {
+                    if (index == 1) {
 
-            // wire up the next/prev item buttons
-            section.find('span').each(function(index, element) {
-                if (index == 1) {
+                        // prev item
+                        $(element).on('click', function() {
 
-                    // prev item
-                    $(element).on('click', function() {
-
-                        App_Find.Results.prevItem();
+                            App_Find.Results.prevItem();
+                            
+                        });
                         
-                    });
-                    
-                    $(element).on('keypress', function(e) {
-                    	var code = e.keyCode || e.which;
-    					if((code == 13) || (code == 32)) { //Enter keycode
-    						App_Find.Results.prevItem();
-    					}
-                    });
-                } else if (index == 2) {
+                        $(element).on('keypress', function(e) {
+                        	var code = e.keyCode || e.which;
+        					if((code == 13) || (code == 32)) { //Enter keycode
+        						App_Find.Results.prevItem();
+        					}
+                        });
+                    } else if (index == 2) {
 
-                    // next item
-                    $(element).on('click', function() {
+                        // next item
+                        $(element).on('click', function() {
 
-                        App_Find.Results.nextItem();
-                    });
-                    
-                    $(element).on('keypress', function(e) {
-                    	var code = e.keyCode || e.which;
-    					if((code == 13) || (code == 32)) { //Enter keycode
-    						App_Find.Results.nextItem();
-    					}
-                    });
-                }
-            });
+                            App_Find.Results.nextItem();
+                        });
+                        
+                        $(element).on('keypress', function(e) {
+                        	var code = e.keyCode || e.which;
+        					if((code == 13) || (code == 32)) { //Enter keycode
+        						App_Find.Results.nextItem();
+        					}
+                        });
+                    }
+                });
+                
+                
+
+                // wire up the paging buttons
+                section.find('.btn-container button').each(function(index, element) {
+
+                    switch (index) {
+
+                        case 0:
+                            // Page To Beginning
+                            $(element).on('click', function() {
+
+                                App_Find.Results.goToPage(1, ':first');
+                            });
+                            break;
+                        case 1:
+                            // Prev Page
+                            $(element).on('click', function() {
+
+                                App_Find.Results.prevPage(':first');
+                            });
+                            break;
+                        case 2:
+                            // Next Page
+                            $(element).on('click', function() {
+
+                                App_Find.Results.nextPage(':first');
+                            });
+                            break;
+                        case 3:
+                            // Page To End
+                            $(element).on('click', function() {
+
+                                App_Find.Results.goToPage(App_Find.Results.totalPages, ':first');
+                            });
+                            break;
+                    }
+                });
+        	}
+
             
-            
-
-            // wire up the paging buttons
-            section.find('.btn-container button').each(function(index, element) {
-
-                switch (index) {
-
-                    case 0:
-                        // Page To Beginning
-                        $(element).on('click', function() {
-
-                            App_Find.Results.goToPage(1, ':first');
-                        });
-                        break;
-                    case 1:
-                        // Prev Page
-                        $(element).on('click', function() {
-
-                            App_Find.Results.prevPage(':first');
-                        });
-                        break;
-                    case 2:
-                        // Next Page
-                        $(element).on('click', function() {
-
-                            App_Find.Results.nextPage(':first');
-                        });
-                        break;
-                    case 3:
-                        // Page To End
-                        $(element).on('click', function() {
-
-                            App_Find.Results.goToPage(App_Find.Results.totalPages, ':first');
-                        });
-                        break;
-                }
-            });
         },
         resetUI:function() {
 
@@ -2503,7 +2523,6 @@ var App_Find = {
 
                 ele = $(ele);
             }
-
             App_Find.Results.highlightItem(index);
             if(ele){
             	ele.selectionHighlight();
@@ -2516,6 +2535,21 @@ var App_Find = {
                    		selectionHighlightClickNodes(allLinkedNodes); 
                    		}
           		 }
+                if(ele.attr('id')){     				
+     				var spanNodes = App_Find.Highlight.cachedResults.linkedHiddenNodes;
+                    if(spanNodes){
+     					for(var i=0;i<spanNodes.length;i++){
+     						if(spanNodes[i][0]==ele.attr('id')){
+     							var spanNode = spanNodes[i][1][0];
+     							if (spanNode) {
+	     							$(spanNode).selectionHighlightHiddenNodes();
+	     							App_Find.Results._cachescrollDestination = spanNode;
+	     							spanNode.scrollIntoView();
+     							}     							
+     						}
+     					}
+     			    }
+     			}
             	if((window.orientation) || (window.orientation=='0')){
 	                    if ((screen.width > 640) && (screen.width < 769) && ($("#filterDataDiv").height()==0)) {
 	                	   ele.css({"padding-top": "30px"});
@@ -2541,7 +2575,6 @@ var App_Find = {
             	ele[0].scrollIntoView();
 			}
             if (showElementDetail || $('#selection-detail-container').parent().css('display') == 'block') {
-
                 App_Find.Element.showSelectionDetail(ele);
             }
         },
@@ -2584,9 +2617,12 @@ var App_Find = {
             });
         },
         load:function() {
+        	if(!App_Find.Highlight.cachedResults.linkedHiddenNodes){
+            	App_Find.Highlight.initLinkedHiddenNodes();
+        	}
         	
             App_Find.removeHighlightFilter();
-
+            var srcImg = "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png";
             var filter = App_Find.Filter.getSelected();
             var search = App_Find.Search.getSelected();
             
@@ -2594,8 +2630,12 @@ var App_Find = {
             var instance = App.InlineDoc.getMetaData();
 
             selectionHighlightNodes = function(allLinkedNodes) {
-            	for(var i=0;i<allLinkedNodes.length;i++){
+            	
+            	//alert("inside selectionhighlightnodes find");
+            	var allLinkedNodesLength=allLinkedNodes.length;
             	var cls = 'sec-cbe-highlight-content-selected'; 
+            	for(var i=0;i<allLinkedNodesLength;i++){
+            	
             	if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:nonnumeric"){
             		//$(allLinkedNodes[i]).parent().removeClass('sec-cbe-highlight-dashed');
             		$(allLinkedNodes[i]).addClass(cls);
@@ -2604,9 +2644,10 @@ var App_Find = {
         			$(allLinkedNodes[i]).children().addClass(cls);
         			if($(allLinkedNodes[i]).children().children().length >0){
 					    if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="span")){
-            				$(allLinkedNodes[i]).children().children().addClass(cls);
+            				(allLinkedNodes[i]).children().children().addClass(cls);
                 			}
             			if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="div")){
+            				//alert("inside div");
             				$(allLinkedNodes[i]).children().children().addClass(cls);
                 			}
 						$(allLinkedNodes[i]).children().children().children().children().children().addClass(cls);
@@ -2617,7 +2658,26 @@ var App_Find = {
             	else if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:continuation"){
             		$(allLinkedNodes[i]).addClass(cls);
             	}
+            	
             };
+              if(allLinkedNodes[allLinkedNodesLength-1]){
+            if(allLinkedNodes[allLinkedNodesLength-1].children()){
+                var lastNodeChildren=allLinkedNodes[allLinkedNodesLength-1].children();
+                var lastNodeChildrenLength=lastNodeChildren.length;
+                if(lastNodeChildrenLength>0){
+                	if(lastNodeChildren[lastNodeChildrenLength-1].nodeName.toLowerCase()=="br"){
+                		var elem = document.createElement("br");
+                    	allLinkedNodes[allLinkedNodesLength-1].children().wrap('<div id="wrapBr" class="sec-cbe-highlight-content-selected wordBreakDiv" style="white-space: nowrap;  "></div>');
+                    	if (($.browser.msie)){
+                    	allLinkedNodes[allLinkedNodesLength-1].children().append(elem);
+                    	}
+                    	$(allLinkedNodes[i]).children().addClass(cls);
+                    	$(allLinkedNodes[i]).children().children().addClass(cls);
+                	}
+                }
+            }
+            }
+            
             }
             selectionHighlightClickNodes = function(allLinkedNodes) {
 			    App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
@@ -2667,42 +2727,64 @@ var App_Find = {
         			return false;
             	
             }
-            			 findParentIxNonnumericNode= function(eCatId,found,parentNode){
-            var parentNode;
-            if(found==false){
-            for(var k=0;k<App_Find.Highlight.cachedResults.nonnumericnodes.length;k++){
-        		if(eCatId==App_Find.Highlight.cachedResults.nonnumericnodes[k].attr('continuedat')){
-        			parentNode=App_Find.Highlight.cachedResults.nonnumericnodes[k];
-        			found=true;
-        			break;
-        		}
-        		
-        	}
-            }
-           if(found==false){
-        	   for(var l=0;l<App_Find.Highlight.cachedResults.continuedAt.length;l++){
-           		if(eCatId==App_Find.Highlight.cachedResults.continuedAt[l].attr('continuedat')){
-           			parentNode=findParentIxNonnumericNode(App_Find.Highlight.cachedResults.continuedAt[l].attr('id'),found);
-           		}
-           	}
-           }
-            return parentNode;
-            }
+	     getAlreadyExistingImage= function(imageId){
+         	
+         	
+         	arrayOfImages = App.frame.contents().find('img');
+         	var arrImageId="";
+     		for (var i=0; i<arrayOfImages.length; i++)
+     		{
+     			if(arrayOfImages[i].getAttribute('id')==imageId){
+     				arrImageId=arrayOfImages[i];
+     				break;
+     			}
+     			
+     		}
+     		if(arrImageId!=""){
+     			return arrImageId;
+     		}
+     		
+         	
+         }
+	     findParentIxNonnumericNode= function(eCatId,found,parentNode){
+	    	 var parentNode;
+	    	 if(found==false){
+	    		 for(var k=0;k<App_Find.Highlight.cachedResults.nonnumericnodes.length;k++){
+	    			 if(eCatId==App_Find.Highlight.cachedResults.nonnumericnodes[k].attr('continuedat')){
+	    				 parentNode=App_Find.Highlight.cachedResults.nonnumericnodes[k];
+	    				 found=true;
+	    				 break;
+	    			 }
+
+	    		 }
+	    	 }
+	    	 if(found==false){
+	    		 for(var l=0;l<App_Find.Highlight.cachedResults.continuedAt.length;l++){
+	    			 if(eCatId==App_Find.Highlight.cachedResults.continuedAt[l].attr('continuedat')){
+	    				 parentNode=findParentIxNonnumericNode(App_Find.Highlight.cachedResults.continuedAt[l].attr('id'),found);
+	    			 }
+	    		 }
+	    	 }
+	    	 return parentNode;
+	     }
             
             
             
             function wrapInDashesForContinuationArray(nodeNew,blueImagePath,continuedNodeId,found,parentNode,parentnodeId,parentNodeOfContinuation,positionOfElementsNew,parentNodeParent,parentNodeParentNodeName){
             	$(nodeNew).on('click', function(event) {
-				App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
+				App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+				App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
+            		App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
             		arrayOfImages = App.frame.contents().find('img');
 					for (var j=0, len=arrayOfImages.length; j<len; j++)
 					 {
 						if(arrayOfImages[j].getAttribute('src')==blueImagePath){
-							arrayOfImages[j].setAttribute("src", "/ixviewer/images/orange-vertical-rectangle-md.png");
+							arrayOfImages[j].setAttribute("src", srcImg);
 						}
 					 }
 					continuedNodeId=$(nodeNew).attr('id');
         		    parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+					if(parentnodeId.parent().parent()[0].nodeName.toLowerCase()!="ix:continuation"){
                 	parentNodeParent=parentnodeId.parent();
                 	if($(parentnodeId).parent()[0]){
                 	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
@@ -2718,18 +2800,70 @@ var App_Find = {
                 	}
                 	if(parentNodeParentNodeName!="ix:continuation"){
                 		if(($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation")){
-    						continuedNodeId=$(nodeNew).parent().attr('id');
-    						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-    					}
+                			parentNodeParent=parentnodeId.parent();
+                        	if($(parentnodeId).parent()[0]){
+                        	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
+                        	}
+                        	while(parentNodeParentNodeName!="ix:nonnumeric"){
+                        		parentNodeParent=parentNodeParent.parent();
+                        		if($(parentNodeParent)[0]){
+                        		parentNodeParentNodeName=$(parentNodeParent)[0].nodeName.toLowerCase();
+                        		}
+                        		else{
+                        			break;
+                        		}
+                        	}
+                        	
+                        	if(parentNodeParentNodeName!="ix:nonnumeric"){
+                        		continuedNodeId=$(nodeNew).parent().attr('id');
+                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+                        	}
+                		}
                 		else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()=="ix:continuation")){
     						continuedNodeId=$(nodeNew).parent().parent().attr('id');
     						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-    					}                		
-                	}              		
+    					}
+                		
+                	}
+					else{
+                		if($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation" && $(nodeNew).parent().children().length==1){
+                			var childNodes=$(nodeNew).parent().children();
+                			var childNodeLength=childNodes.length;
+                			var childNodeName="";
+                			for(var j=0;j<childNodeLength;j++){
+                				if(childNodes[j][0]){
+                					childNodeName=childNodes[j][0].nodeName.toLowerCase();
+                				}
+                				while(childNodeName !="ix:nonnumeric"){
+                					childNodes[j] = $(childNodes[j]).children();
+        							if($(childNodes[j])[0]){
+        								childNodeName =childNodes[j][0].nodeName.toLowerCase();
+        							}
+        							else{
+        								break;
+        							}
+        						}
+                			}
+                			if(childNodeName.toLowerCase() =="ix:nonnumeric" || childNodeName.toLowerCase() =="ix:nonfraction" || childNodeName.toLowerCase() ==""){
+            					continuedNodeId=$(nodeNew).attr('id');
+                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+    						}
+            				else{
+            					continuedNodeId=$(nodeNew).parent().attr('id');
+                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+            				}
+                		}
+                		
+                	}
+              		}
            			allLinkedNodes=App_Find.Element.groupIxContinuation(parentnodeId);
-                    	selectionHighlightNodes(allLinkedNodes);
+                    	selectionHighlightClickNodes(allLinkedNodes);
                     	App_Find.Element.showSelectionDetail(parentnodeId);
                     	var positionTop = (allLinkedNodes[0][0]).offsetTop;
+                    	var positionOfElementsNew=[];
+						for(var i=0;i<allLinkedNodes.length;i++){
+               					positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
+               				}
                			for(var i=0;i<allLinkedNodes.length;i++){
 
                				parentNodeOfContinuation=allLinkedNodes[i].parent();
@@ -2752,9 +2886,6 @@ var App_Find = {
                				}
                			}
                			else{
-               				for(var i=0;i<allLinkedNodes.length;i++){
-               					positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
-               				}
                				var positionTopRearranged="";
                				for (i = 0; i < positionOfElementsNew.length; i++)
                				{
@@ -2801,234 +2932,97 @@ var App_Find = {
                     	event.stopPropagation();
                 	
             	}).on('mousemove', function(event) {
+				//App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
 					continuedNodeId=$(nodeNew).attr('id');
             		    parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-                    	parentNodeParent=parentnodeId.parent();
-                    	if($(parentnodeId).parent()[0]){
-                    	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
-                    	}
-                    	while(parentNodeParentNodeName!="ix:continuation"){
-                    		parentNodeParent=parentNodeParent.parent();
-                    		if($(parentNodeParent).parent()[0]){
-                    		parentNodeParentNodeName=$(parentNodeParent).parent()[0].nodeName.toLowerCase();
-                    		}
-                    		else{
-                    			break;
-                    		}
-                    	}
-                    	if(parentNodeParentNodeName!="ix:continuation"){
-                    		if(($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation")){
-        						continuedNodeId=$(nodeNew).parent().attr('id');
-        						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-        					}
-                    		else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()=="ix:continuation")){
-        						continuedNodeId=$(nodeNew).parent().parent().attr('id');
-        						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-        					}
-                    		
-                    	}
-                  		
-               			allLinkedNodes=App_Find.Element.groupIxContinuation(parentnodeId);
-						 selectionHighlightNodes(allLinkedNodes); 
-               			
-               			 if(App_Find.Element.enableTooltip=="enable"){
-                          	 
-                            var container = $('#selection-detail-container-mouseOver');
-                            var maxValueTextLength = 50;
-                            var id = parentnodeId.attr('name');
-                            var xbrId = App_Utils.convertToXBRLId(id);
-
-                            var container = $('#selection-detail-container-mouseOver');
-                            container.find('[data-content="label"]').html('');
-                			html = '<table class="table-framed-onHover">';
-
-                			// xbrl value
-                            var xbrlValue = 'N/A';
-                            var nodeName = parentnodeId[0].nodeName.toLowerCase();
-                            if (nodeName == 'ix:nonfraction') {
-                            	
-                                xbrlValue = parentnodeId.getXbrlValue();
-                                if (parentnodeId.attr('format') && xbrlValue=="-") { xbrlValue =  App_Utils.applyFormat(parentnodeId); }
-                            	xbrlValue = App_Utils.addCommas(xbrlValue);                    
-                            } else if (nodeName == 'ix:nonnumeric') {
-
-                                xbrlValue = parentnodeId.htmlDecode(parentnodeId.text());
-                                if (parentnodeId.attr('format')) { xbrlValue =  App_Utils.applyFormat(parentnodeId); }
-                                if (xbrlValue.length > maxValueTextLength) {
-
-                                    xbrlValue = xbrlValue.trim().substring(0, maxValueTextLength) + '...';
-                                }
-                            }
-                            if(!xbrlValue){
-                            	var selectedlabelval = App.InlineDoc.getSelectedLabel(xbrId,this,null,function(value){
-
-                            		container.find('[data-content="label"]').html(value);
-                                });
-                            }else if(xbrlValue.length<15){
-                            	var continuedAt = parentnodeId.attr('continuedAt');
-                            	for(var i=0; i<App_Find.Highlight.cachedResults.continuedAt.length;i++){
-                            		
-                            		if(continuedAt==App_Find.Highlight.cachedResults.continuedAt[i].attr('id')){
-                            			xbrlValue = xbrlValue + " "+ App_Find.Highlight.cachedResults.continuedAt[i].text();
-                            			xbrlValue = xbrlValue.trim().substring(0, maxValueTextLength) + '...';
-                            			container.find('[data-content="label"]').html(xbrlValue);
-                            			break;
-                            		}
-                            				           			          			
-                                }
-                            	
-                            }else{
-                            	container.find('[data-content="label"]').html(xbrlValue);
-                            }
-                            if (!id) {
-
-                                id = 'N/A';
-                            }
-                            var tag = parentnodeId.htmlDecode(id);
-                            if (tag.substring(0,8) == "us-gaap:") {
-                            tag = "<span style='white-space:nowrap;'>us-gaap:</span>"+tag.substring(8);
-                            }
-                            html += '<tr><td width="55px">Tag:</td><td><div class="wordBreakDiv">'+tag+'</div></td></tr>';
-                            
-                			// calendar
-                            var contextRef = parentnodeId.attr('contextRef');
-                            if (!contextRef) {
-
-                                contextRef = 'N/A';
-                            } else {
-
-                                var context = App.InlineDoc.getContext(contextRef);
-                                if (context.length == 1) {
-
-                                    contextRef = context.calendarFriendlyName();
-                                }
-                            }
-                            html += '<tr><td width="55px">Period:</td><td><div class="wordBreakDiv">'+parentnodeId.htmlDecode(contextRef)+'</div></td></tr>';
-
-                			 // unit
-                            var unit = 'N/A';
-                            var unitRef = parentnodeId.attr('unitRef');
-                            if (unitRef) {
-                                var u = App.InlineDoc.getUnitById(unitRef);
-                                if (u.length > 0) {
-                                    unit = u.unitFriendlyName();
-                                }
-                            }
-                            if(unit !='N/A'){
-                            html += '<tr><td width="55px">Measure:</td><td><div class="wordBreakDiv">'+unit+'</div></td></tr>';
-                            }
-                            if(parentnodeId.scaleFriendlyName() !='N/A'){
-        					html += '<tr><td width="55px">Scale:</td><td><div class="wordBreakDiv">'+parentnodeId.scaleFriendlyName()+'</div></td></tr>';
-                            }
-                            if(parentnodeId.precisionFriendlyName() !='N/A'){
-                            html += '<tr><td width="55px">Decimals:</td><td><div class="wordBreakDiv">'+parentnodeId.precisionFriendlyName()+'</div></td></tr>';
-                            }
-                            // type
-                            var typeHTML = '';
-                            html += '</table>';
-                            $('#selection-detail-container-mouseOver').find('[data-content="attributes"]').html(html);        
-                            container.show();
-                			
-                	 var container = $('#selection-detail-container-mouseOver');
-                        var panel = $('#app-panel1');
-                        var panel2 = $('#app-panel2');
-                        var marginLeft = event.clientX;
-                        var marginTop = event.clientY + 35;
-                        var panelWidth=0;
-
-                        if(panel.hasClass("visible") || panel2.hasClass("visible")){
-                        	panelWidth = (30/100)*(screen.width);
-        				}
-                       
-                      
-                        if(screen.width>1600 && screen.width < 1921){
-                    	if(event.clientX > (screen.width-1400)){
-                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-        				}
-                    	else
-                		{
-                		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-                		var marginLeft = (event.clientX - container.width())+panelWidth;
-                		}
-                		}
-                        }
-                        if(screen.width>1440 && screen.width < 1601){
-   	                    	if(event.clientX > (screen.width-1200)){
-   	                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-   	        				}
-   	                    	else
-   	                    		{
-   	                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-   	                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-   	                    		}
-   	                    		}
-                        	
-   	                        }
-                        if(screen.width>1366 && screen.width < 1441){
-
-   	                    	if(event.clientX > (screen.width-1000)){
-   	                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-   	        				}
-   	                    	else
-                    		{
-                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-                    		}
-                    		}
-   	                        }
-                        if(screen.width>1280 && screen.width < 1367){
-   	                    	if(event.clientX > (screen.width-900)){
-   	                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-   	        				}
-   	                    	else
-                    		{
-                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-                    		}
-                    		}
-   	                        }
-                        if(screen.width>1024 && screen.width < 1281){
-   	                    	if(event.clientX > (screen.width-800)){
-   	                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-   	        				}
-   	                    	else
-                    		{
-                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-                    		}
-                    		}
-   	                        }
-                        if(screen.width < 1025){
-   	                    	if(event.clientX > (screen.width-600)){
-   	                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-   	        				}
-   	                    	else
-                    		{
-                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-                    		}
-                    		}
-   	                        }
-                        
-                        if($('#filterDataDiv').height()>0){
-                        	if(event.clientY > (screen.height-500)){
-                        		var marginTop =( (event.clientY) - container.height())+$('#filterDataDiv').height()+25;
+						if(parentnodeId.parent().parent()[0].nodeName.toLowerCase()!="ix:continuation"){
+                    	if(parentnodeId){
+                    		parentNodeParent=parentnodeId.parent();
+                        	if($(parentnodeId).parent()[0]){
+                        	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
                         	}
-                        	else
-                        		{
-                        		var marginTop =( (event.clientY+ $('#filterDataDiv').height()))+35;
+                        	while(parentNodeParentNodeName!="ix:continuation"){
+                        		parentNodeParent=parentNodeParent.parent();
+                        		if($(parentNodeParent).parent()[0]){
+                        		parentNodeParentNodeName=$(parentNodeParent).parent()[0].nodeName.toLowerCase();
                         		}
-                        }
-                        else{
-                        	if(event.clientY > (screen.height-500)){
-                        		 var marginTop =(event.clientY - container.height())+25;
+                        		else{
+                        			break;
+                        		}
                         	}
-                        }
-                	
-                	container.css('margin-left',marginLeft +'px');
-                	container.css('margin-top', marginTop +'px');
-                	
-                    	}
+                        	if(parentNodeParentNodeName!="ix:continuation"){
+                		if(($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation")){
+                			parentNodeParent=parentnodeId.parent();
+                        	if($(parentnodeId).parent()[0]){
+                        	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
+                        	}
+                        	while(parentNodeParentNodeName!="ix:nonnumeric"){
+                        		parentNodeParent=parentNodeParent.parent();
+                        		if($(parentNodeParent)[0]){
+                        		parentNodeParentNodeName=$(parentNodeParent)[0].nodeName.toLowerCase();
+                        		}
+                        		else{
+                        			break;
+                        		}
+                        	}
+                        	
+                        	if(parentNodeParentNodeName!="ix:nonnumeric"){
+                        		continuedNodeId=$(nodeNew).parent().attr('id');
+                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+                        	}
+                		}
+                		else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()=="ix:continuation")){
+    						continuedNodeId=$(nodeNew).parent().parent().attr('id');
+    						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+    					}
+                		
+                	}
+					else{
+                		if($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation" && $(nodeNew).parent().children().length==1){
+                			var childNodes=$(nodeNew).parent().children();
+                			var childNodeLength=childNodes.length;
+                			var childNodeName="";
+                			for(var j=0;j<childNodeLength;j++){
+                				if(childNodes[j][0]){
+                					childNodeName=childNodes[j][0].nodeName.toLowerCase();
+                				}
+                				while(childNodeName !="ix:nonnumeric"){
+                					childNodes[j] = $(childNodes[j]).children();
+        							if($(childNodes[j])[0]){
+        								childNodeName =childNodes[j][0].nodeName.toLowerCase();
+        							}
+        							else{
+        								break;
+        							}
+        						}
+                			}
+                			if(childNodeName.toLowerCase() =="ix:nonnumeric" || childNodeName.toLowerCase() =="ix:nonfraction" || childNodeName.toLowerCase() ==""){
+            					continuedNodeId=$(nodeNew).attr('id');
+                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+    						}
+            				else{
+            					continuedNodeId=$(nodeNew).parent().attr('id');
+                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+            				}
+                		}
+                		
+                	}
+                      		}
+							}
+                   			allLinkedNodes=App_Find.Element.groupIxContinuation(parentnodeId);
+    						selectionHighlightNodes(allLinkedNodes); 
+    						
+    						if(App_Find.Element.enableTooltip=="enable"){
+                             	 
+                                getMouseOverDiv(parentnodeId, null,true);
+                    			
+                                placeMouseOverDiv(event);
+                    	
+                        	}
+                    	
+            		    
+               			
+               			 
                      	//}
                			
                			event.stopPropagation();
@@ -3036,7 +3030,9 @@ var App_Find = {
                 }).on('mouseout', function(event) {
 					continuedNodeId=$(nodeNew).attr('id');
             		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-                    	parentNodeParent=parentnodeId.parent();
+					if(parentnodeId.parent().parent()[0].nodeName.toLowerCase()!="ix:continuation"){
+            		if(parentnodeId){
+            			parentNodeParent=parentnodeId.parent();
                     	if($(parentnodeId).parent()[0]){
                     	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
                     	}
@@ -3050,27 +3046,387 @@ var App_Find = {
                     		}
                     	}
                     	if(parentNodeParentNodeName!="ix:continuation"){
-                    		if(($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation")){
-        						continuedNodeId=$(nodeNew).parent().attr('id');
-        						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-        					}
-                    		else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()=="ix:continuation")){
-        						continuedNodeId=$(nodeNew).parent().parent().attr('id');
-        						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-        					}
-                    		
-                    	}
-                  		
+                		if(($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation")){
+                			parentNodeParent=parentnodeId.parent();
+                        	if($(parentnodeId).parent()[0]){
+                        	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
+                        	}
+                        	while(parentNodeParentNodeName!="ix:nonnumeric"){
+                        		parentNodeParent=parentNodeParent.parent();
+                        		if($(parentNodeParent)[0]){
+                        		parentNodeParentNodeName=$(parentNodeParent)[0].nodeName.toLowerCase();
+                        		}
+                        		else{
+                        			break;
+                        		}
+                        	}
+                        	
+                        	if(parentNodeParentNodeName!="ix:nonnumeric"){
+                        		continuedNodeId=$(nodeNew).parent().attr('id');
+                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+                        	}
+                		}
+                		else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()=="ix:continuation")){
+    						continuedNodeId=$(nodeNew).parent().parent().attr('id');
+    						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+    					}
+                		
+                	}
+					else{
+                		if($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation" && $(nodeNew).parent().children().length==1){
+                			var childNodes=$(nodeNew).parent().children();
+                			var childNodeLength=childNodes.length;
+                			var childNodeName="";
+                			for(var j=0;j<childNodeLength;j++){
+                				if(childNodes[j][0]){
+                					childNodeName=childNodes[j][0].nodeName.toLowerCase();
+                				}
+                				while(childNodeName !="ix:nonnumeric"){
+                					childNodes[j] = $(childNodes[j]).children();
+        							if($(childNodes[j])[0]){
+        								childNodeName =childNodes[j][0].nodeName.toLowerCase();
+        							}
+        							else{
+        								break;
+        							}
+        						}
+                			}
+                			if(childNodeName.toLowerCase() =="ix:nonnumeric" || childNodeName.toLowerCase() =="ix:nonfraction" || childNodeName.toLowerCase() ==""){
+            					continuedNodeId=$(nodeNew).attr('id');
+                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+    						}
+            				else{
+            					continuedNodeId=$(nodeNew).parent().attr('id');
+                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+            				}
+                		}
+                		
+                	}
+                  		}
+						}
                			allLinkedNodes=App_Find.Element.groupIxContinuation(parentnodeId);
-               			$(this).removeHighlightNodes(allLinkedNodes); 
-                	 var container = $('#selection-detail-container-mouseOver');
-                 	 container.hide();
-                 	event.stopPropagation();
+               			$(this).removeHighlightNodes(allLinkedNodes);
+            		
+                    	 
+                	    var container = $('#selection-detail-container-mouseOver');
+                 	    container.hide();
+                 	    event.stopPropagation();
                 	
                 	
                 });
-            }		
-			function wrapInDashes(index,ele,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem) {
+            }	
+            
+            function getHTMLfromCache(xbrId,xbrlValue){
+            	if(_htmlHover){
+	            	if(xbrId==_htmlHover.id && xbrlValue == _htmlHover.xbrlValue){
+	            		return _htmlHover.html;
+	            	}else{
+	            		return "";
+	            	}
+            	}
+            	
+            }
+            
+            function savehtmlDetailsForMouseOver(xbrId,xbrlValue,html){
+            	_htmlHover.id=xbrId;
+            	_htmlHover.xbrlValue=xbrlValue;
+            	_htmlHover.html=html;
+            }
+            
+            function getMouseOverDiv(ele,node,isContinuedAt){
+    			var id = ele.attr('name');
+                var xbrId = App_Utils.convertToXBRLId(id);
+                
+                var container = $('#selection-detail-container-mouseOver');
+                var maxValueTextLength = 50;
+                
+                container.find('[data-content="label"]').html('');
+    			// xbrl value
+                var xbrlValue = 'N/A';
+                var nodeName = ele[0].nodeName.toLowerCase();
+                if (nodeName == 'ix:nonfraction') {                	
+                    xbrlValue = ele.getXbrlValue();
+                    xbrlValue = App_Utils.addCommas(xbrlValue);
+                } else if (nodeName == 'ix:nonnumeric') {
+                    xbrlValue = ele.htmlDecode(ele.text());
+                    if (ele.attr('format')) { xbrlValue =  App_Utils.applyFormat(ele); }
+                    if (xbrlValue.length > maxValueTextLength) {
+                        xbrlValue = xbrlValue.trim().substring(0, maxValueTextLength) + '...';
+                    }
+                }
+                
+                if(!xbrlValue){
+                	var selectedlabelval = App.InlineDoc.getSelectedLabel(xbrId,this,null,function(value){
+
+                		container.find('[data-content="label"]').html(value);
+                    });
+                }else if(xbrlValue.length<15){
+                	if(!isContinuedAt){
+                		if(node.attr('continuedat')!=null){
+                    		var continuedAt = ele.attr('continuedAt');
+                        	for(var i=0; i<App_Find.Highlight.cachedResults.continuedAt.length;i++){
+                        		
+                        		if(continuedAt==App_Find.Highlight.cachedResults.continuedAt[i].attr('id')){
+                        			xbrlValue = xbrlValue + " "+ App_Find.Highlight.cachedResults.continuedAt[i].text();
+                        			xbrlValue = xbrlValue.trim().substring(0, maxValueTextLength) + '...';
+                        			break;
+                        		}
+                        				           			          			
+                            }
+                    	}else{
+                    		container.find('[data-content="label"]').html(xbrlValue);
+                    	}
+                	}else{
+                		var continuedAt = ele.attr('continuedAt');
+                    	for(var i=0; i<App_Find.Highlight.cachedResults.continuedAt.length;i++){
+                    		
+                    		if(continuedAt==App_Find.Highlight.cachedResults.continuedAt[i].attr('id')){
+                    			xbrlValue = xbrlValue + " "+ App_Find.Highlight.cachedResults.continuedAt[i].text();
+                    			xbrlValue = xbrlValue.trim().substring(0, maxValueTextLength) + '...';
+                    			container.find('[data-content="label"]').html(xbrlValue);
+                    			break;
+                    		}
+                    				           			          			
+                        }
+                	}
+                	
+                	
+                }else{
+                	container.find('[data-content="label"]').html(xbrlValue);
+                }
+    			var html = getHTMLfromCache(xbrId,xbrlValue);
+    			if(!html){
+    				html = '<table class="table-framed-onHover">';
+    				if (!id) {
+    					
+                        id = 'N/A';
+                    }
+                    var tag = ele.htmlDecode(id);
+                    if (tag.substring(0,8) == "us-gaap:") {
+                    tag = "<span style='white-space:nowrap;'>us-gaap:</span>"+tag.substring(8);
+                    }
+                    html += '<tr><td width="55px">Tag:</td><td><div class="wordBreakDiv">'+tag+'</div></td></tr>';
+                    
+        			// calendar
+                    var contextRef = ele.attr('contextRef');
+                    if (!contextRef) {
+
+                        contextRef = 'N/A';
+                    } else {
+
+                        var context = App.InlineDoc.getContext(contextRef);
+                        if (context.length == 1) {
+
+                            contextRef = context.calendarFriendlyName();
+                        }
+                    }
+                    html += '<tr><td width="55px">Period:</td><td><div class="wordBreakDiv">'+ele.htmlDecode(contextRef)+'</div></td></tr>';
+
+        			 // unit
+                    var unit = 'N/A';
+                    var unitRef = ele.attr('unitRef');
+                    if (unitRef) {
+                        var u = App.InlineDoc.getUnitById(unitRef);
+                        if (u.length > 0) {
+                            unit = u.unitFriendlyName();
+                        }
+                    }
+                    if(unit !='N/A'){
+                    html += '<tr><td width="55px">Measure:</td><td><div class="wordBreakDiv">'+unit+'</div></td></tr>';
+                    }
+                    if(ele.scaleFriendlyName() !='N/A'){
+					html += '<tr><td width="55px">Scale:</td><td><div class="wordBreakDiv">'+ele.scaleFriendlyName()+'</div></td></tr>';
+                    }
+                    if(ele.precisionFriendlyName() !='N/A'){
+                    html += '<tr><td width="55px">Decimals:</td><td><div class="wordBreakDiv">'+ele.precisionFriendlyName()+'</div></td></tr>';
+                    }
+                    // type
+                    var typeHTML = '';
+                    html += '</table>';
+                    
+                   savehtmlDetailsForMouseOver(xbrId,xbrlValue,html);
+                    
+    			}
+                
+                $('#selection-detail-container-mouseOver').find('[data-content="attributes"]').html(html);    
+                container.show();
+    			
+            }
+            
+            function placeMouseOverDiv(event){
+            	var container = $('#selection-detail-container-mouseOver');
+                var panel = $('#app-panel1');
+                var panel2 = $('#app-panel2');
+                var marginLeft = event.clientX;
+                var marginTop = event.clientY + 35;
+                var panelWidth=0;
+
+                if(panel.hasClass("visible") || panel2.hasClass("visible")){
+                	panelWidth = (30/100)*(screen.width);
+				}
+               
+              
+                if(screen.width>1600 && screen.width < 1921){
+            	if(event.clientX > (screen.width-1400)){
+            		var marginLeft = (event.clientX - container.width())+panelWidth-5;
+				}
+            	else
+        		{
+        		if(panel.hasClass("visible") || panel2.hasClass("visible")){
+        		var marginLeft = (event.clientX - container.width())+panelWidth;
+        		}
+        		}
+                }
+                if(screen.width>1440 && screen.width < 1601){
+                	if(event.clientX > (screen.width-1200)){
+                		var marginLeft = (event.clientX - container.width())+panelWidth-5;
+    				}
+                	else
+                		{
+                		if(panel.hasClass("visible") || panel2.hasClass("visible")){
+                		var marginLeft = (event.clientX - container.width())+panelWidth;
+                		}
+                		}
+                	
+                    }
+                if(screen.width>1366 && screen.width < 1441){
+
+                	if(event.clientX > (screen.width-1000)){
+                		var marginLeft = (event.clientX - container.width())+panelWidth-5;
+    				}
+                	else
+            		{
+            		if(panel.hasClass("visible") || panel2.hasClass("visible")){
+            		var marginLeft = (event.clientX - container.width())+panelWidth;
+            		}
+            		}
+                    }
+                if(screen.width>1280 && screen.width < 1367){
+                	if(event.clientX > (screen.width-900)){
+                		var marginLeft = (event.clientX - container.width())+panelWidth-5;
+    				}
+                	else
+            		{
+            		if(panel.hasClass("visible") || panel2.hasClass("visible")){
+            		var marginLeft = (event.clientX - container.width())+panelWidth;
+            		}
+            		}
+                    }
+                if(screen.width>1024 && screen.width < 1281){
+                	if(event.clientX > (screen.width-800)){
+                		var marginLeft = (event.clientX - container.width())+panelWidth-5;
+    				}
+                	else
+            		{
+            		if(panel.hasClass("visible") || panel2.hasClass("visible")){
+            		var marginLeft = (event.clientX - container.width())+panelWidth;
+            		}
+            		}
+                    }
+                if(screen.width < 1025){
+                	if(event.clientX > (screen.width-600)){
+                		var marginLeft = (event.clientX - container.width())+panelWidth-5;
+    				}
+                	else
+            		{
+            		if(panel.hasClass("visible") || panel2.hasClass("visible")){
+            		var marginLeft = (event.clientX - container.width())+panelWidth;
+            		}
+            		}
+                    }
+                
+                if($('#filterDataDiv').height()>0){
+                	if(event.clientY > (screen.height-500)){
+                		var marginTop =( (event.clientY) - container.height())+$('#filterDataDiv').height()+25;
+                	}
+                	else
+                		{
+                		var marginTop =( (event.clientY+ $('#filterDataDiv').height()))+35;
+                		}
+                }
+                else{
+                	if(event.clientY > (screen.height-500)){
+                		 var marginTop =(event.clientY - container.height())+25;
+                	}
+                }
+        	
+        	container.css('margin-left',marginLeft +'px');
+        	container.css('margin-top', marginTop +'px');
+            }
+            
+            /*function initLinkedHiddenNodes(){
+            	App_Find.Highlight.cachedResults.linkedHiddenNodes = $();
+            	console.log(App.frame.contents().find('span[style^="-sec-ix-hidden"]').length);
+				for(var j=0; j<App.frame.contents().find('span[style^="-sec-ix-hidden"]').length;j++){
+					var node = $(App.frame.contents().find('span[style^="-sec-ix-hidden"]')[j]);
+					var style = node.attr("style");
+					console.log(style);
+					//if((style.match("-sec-ix-hidden*"))){
+						style = style.substring(style.indexOf("-sec-ix-hidden"));
+	                	var id = style.substring(style.indexOf(":")+1);
+	                	if(id.indexOf(";")>-1){
+	                		id = id.substring(0,id.indexOf(";"));
+	                	}
+	                	var specialNode = [];
+	                	specialNode.push(id,node);
+	                	App_Find.Highlight.cachedResults.linkedHiddenNodes.push(specialNode);	
+					//}
+				}
+            }*/
+            
+            function wrapLinkedHidden(ele,node,cls,spanNode){
+            	if(App_Find.Highlight.cachedResults.linkedHiddenNodes.length>0){
+            		var id="";
+    				//var spanNodes = App.InlineDoc.getLinkedHiddenElements();
+    				spanNodes = App_Find.Highlight.cachedResults.linkedHiddenNodes;
+    				if(spanNodes){
+    					for(var i=0;i<spanNodes.length;i++){
+    						if(spanNodes[i][0].trim()==node.attr('id')){
+    							$(spanNodes[i][1][0]).addClass(cls);
+    							$(spanNodes[i][1][0]).addClass('sec-cbe-highlight-dashed');
+    							$(spanNodes[i][1][0]).on('click',function(evt){
+
+    								$('#about-modal').dialog("close");
+    								App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
+    								
+    								$(spanNode).addClass('sec-cbe-highlight-dashed');
+    								if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
+    									var index = $(spanNode).attr('data-result-index');
+    									App_Find.Results.highlightItem(index);  // highlight the result item
+    									
+    									$($(this)[0]).selectionHighlightHiddenNodes();
+    									
+    									$(spanNode).children(':first').each(function() {
+    										App_Find.Element.showSelectionDetail(node);
+    									});
+    									evt.stopPropagation();
+    								}
+    							
+    							}).on('mousemove', function(event) {
+    			                   		$(this).addClass('sec-cbe-highlight-content-selected');
+    			                    	if(App_Find.Element.enableTooltip=="enable"){
+    				                    	if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-dashed-highlight')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
+    				                    		$(spanNode).children(':first').each(function() {
+    				                    			getMouseOverDiv(ele,node,false);
+    				                    			
+    				                    		});
+    				                    	}
+    				        				placeMouseOverDiv(event);
+    			                    	}
+    			                    	event.stopPropagation();
+    			                    }).on('mouseout', function() {
+    			                      		$(this).removeClass('sec-cbe-highlight-content-selected');
+    			                    	var container = $('#selection-detail-container-mouseOver');
+    			                    	container.hide();
+    			                    });
+    							
+    						}
+    					}
+    			    }
+            	}
+            }
+            
+            function wrapInDashesTraditional(index,ele,highlightType,node) {
 				if (!node.parent().hasClass('sec-cbe-highlight-dashed')) {	
 					var spanNode = null;
 					var nodeName = node[0].nodeName.toLowerCase();
@@ -3085,7 +3441,6 @@ var App_Find = {
 									cls = 'sec-cbe-highlight-block';
 									return false; }});
 							if (cls == 'sec-cbe-highlight-inline') { // last ditch effort based on current display only
-								//console.log(node);
 								var text=" ";
 								if($(node).children().length>0){
 								}
@@ -3102,9 +3457,12 @@ var App_Find = {
 									if (rect.length > 1) { // it is drawn in two rectangles, it had to be a block.
 										cls = 'sec-cbe-highlight-block';
 									}
-										}}}}   	                            	    
+								}
+							}
+						}
+					}   	                            	    
 					var parentNode = node.parent()[0];
-					if (parentNode.nodeName.toLowerCase()=='span') //.search(App.InlineDoc.inlinePrefix)!=0
+					if (parentNode.nodeName.toLowerCase()=='span') //
 					{
 						var isonly = parentNode.childNodes.length == 1;                        
 						if (isonly) {
@@ -3118,917 +3476,132 @@ var App_Find = {
 					}
 
 					$(spanNode).addClass(cls);	
-
-					if(highlightType=="calculation" || highlightType=="amount" || highlightType=="sign" || highlightType=="hidden"){
-						for (var i=0, len=arrayOfImages.length; i<len; i++)
-						{
-							if(arrayOfImages[i].getAttribute('src')=="/ixviewer/images/orange-vertical-rectangle-md.png"){
-								arrayOfImages[i].style.visibility = "hidden";
-							}
-						}
-					}else{
-						if(nodeName == 'ix:nonnumeric'){
-							var positionTopNew="";
-							var positionBottom="";
-							if(ele.attr('continuedat')!=null){
-								var imageId=$(ele).attr('id')+"imageid";
-								var difference;
-								elem.setAttribute("id", imageId);
-								elem.setAttribute("width", "3");
-								elem.setAttribute("align", "left");
-								var nodeNew=""; 
-								var positionOfElementsNew=[];
-								var element=" ";
-								var positionTop = (allLinkedNodes[0][0]).offsetTop;
-								var parentNodeOfContinuation=" ";
-								var childNode="";
-								var positionTopRearranged="";
-								var lengthofContinuedNodes=allLinkedNodes.length;
-								var childrenOfsecondNode=" ";
-								var childrenOfsecondNodelength=" ";
-								var childrenOfTopNode=" ";
-								var childrenOfTopNodelength=" ";
-								var i=0;
-								var j=0;
-								/*for(i=0;i<allLinkedNodes.length;i++){
-									element = $(allLinkedNodes[i]).children();
-									for(j=0;j<element.length;j++){
-										nodeNew=$(element[j])[0].nodeName;
-										while(nodeNew !="TABLE"){
-											element[j] = $(element[j]).children();
-											if($(element[j]).children()[0]){
-												nodeNew =element[j][0].nodeName;
-											}
-											else{
-												break;
-											}
-										}
-										if(nodeNew.toLowerCase() =="table"){
-											$(element[j])[0].style.width="96%";
-											$(element[j])[0].style.marginLeft="0";
-											break;
-										}
-									}
-								}*/
-								for(i=0;i<allLinkedNodes.length;i++){
-									element = $(allLinkedNodes[i]).children().children();
-									for(j=0;j<element.length;j++){
-										nodeNew=$(element[j])[0].nodeName;
-										while(nodeNew !="TABLE"){
-											element[j] = $(element[j]).children();
-											if($(element[j]).children()[0]){
-												nodeNew =element[j][0].nodeName;
-												if(nodeNew.toLowerCase() =="table"){
-													(element[j])[0].style.width="96%";
-													(element[j])[0].style.marginLeft="0";
-												}
-											}
-											else{
-												break;
-											}
-										}
-										if(nodeNew.toLowerCase() =="table"){
-											$(element[j])[0].style.width="96%";
-											$(element[j])[0].style.marginLeft="0";
-										}
-									}
-								}
-								for(i=0;i<allLinkedNodes.length;i++){
-									positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
-								}
-								for(i=0;i<allLinkedNodes.length;i++){
-									parentNodeOfContinuation=allLinkedNodes[i].parent();
-									nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-									if(positionTop=='0' || positionTop=='1' ){
-										while(nodeN.toLowerCase() !="body"){
-											parentNodeOfContinuation = parentNodeOfContinuation.parent();
-											nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
-										}
-										childNode=parentNodeOfContinuation;
-										positionTopNew=$(childNode).position().top;
-										positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1][0]).position().top + $(allLinkedNodes[lengthofContinuedNodes-1][0]).outerHeight(true);
-										if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().length>0)
-										{
-											if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()[0].nodeName.toLowerCase()=="table"){
-												positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1]).children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().outerHeight(true);
-											}
-											if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().children()[0].nodeName.toLowerCase()=="table"){
-												positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().outerHeight(true);
-											}
-										}
-										if(positionBottom>positionTopNew){
-											difference=positionBottom-positionTopNew;
-										}
-										if($(allLinkedNodes[lengthofContinuedNodes-1]).parent().parent().parent()[0].nodeName.toLowerCase()=="div"){
-											setTimeout(function() {
-												positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1][0]).parent().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1][0]).parent().outerHeight(true);
-												difference=(positionBottom-positionTopNew)+25;
-												if(!checkIfImageAlreadyExists(imageId))	
-												{
-													elem.setAttribute("src", "/ixviewer/images/orange-vertical-rectangle-md.png");
-													elem.setAttribute("height", difference);
-													$(elem).insertBefore(childNode);
-												}
-											},10);
-										}
-										else{
-											setTimeout(function() {
-												if(!checkIfImageAlreadyExists(imageId)){
-													elem.setAttribute("src", "/ixviewer/images/orange-vertical-rectangle-md.png");
-													elem.setAttribute("height", difference);
-													$(elem).insertBefore(childNode);
-												}
-											},10);
-										}
-										break;
-									}
-									else{
-										setTimeout(function() {
-											positionBottom= $(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).outerHeight(true);
-											positionTopNew=$(allLinkedNodes[0][0]).position().top;
-											childrenOfsecondNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children().children();
-											childrenOfsecondNodelength=childrenOfsecondNode.length;
-											if($(childrenOfsecondNode[childrenOfsecondNodelength-1]).children().length>0){
-												if($(childrenOfsecondNode[childrenOfsecondNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
-													positionBottom=$(childrenOfsecondNode[childrenOfsecondNodelength-1]).position().top+ $(childrenOfsecondNode[childrenOfsecondNodelength-1]).outerHeight(true);
-												}
-											}
-
-											childrenOfTopNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
-											childrenOfTopNodelength=childrenOfTopNode.length;
-											if($(childrenOfTopNode[childrenOfTopNodelength-1]).children().length>0){
-
-												if($(childrenOfTopNode[childrenOfTopNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
-													positionBottom=$(childrenOfTopNode[childrenOfTopNodelength-1]).position().top+ $(childrenOfTopNode[childrenOfTopNodelength-1]).outerHeight(true);
-												}
-											}
-											difference=positionBottom-positionTopNew;
-											for (i = 0; i < positionOfElementsNew.length; i++)
-											{
-												for (j = i+1; j < positionOfElementsNew.length; j++)
-												{
-													if (positionOfElementsNew[j] < positionOfElementsNew[i])
-													{
-														positionTopRearranged=positionOfElementsNew[j];
-
-                    									}
-                    								}
-                    							}
-
-                    							if(positionTopRearranged !=""){
-                    								var min_of_array = Math.min.apply(Math, positionOfElementsNew);
-                    								var max_of_array = Math.max.apply(Math, positionOfElementsNew);
-                    								var newTopPositionNode="";
-                    								for(var j=0;j<allLinkedNodes.length;j++){
-                    									if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().length>0)
-                    									{
-                    										if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()[0].nodeName.toLowerCase()=="table"){
-                    											max_of_array=$(allLinkedNodes[lengthofContinuedNodes-1]).children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().outerHeight(true);
-                    										}
-
-													}
-													if($(allLinkedNodes[j]).position().top==min_of_array){
-														newTopPositionNode=$(allLinkedNodes[j]);
-													}
-												}
-												positionBottom=positionTopRearranged;
-												difference=max_of_array-min_of_array;
-												if(!checkIfImageAlreadyExists(imageId))	
-												{
-													elem.setAttribute("src", "/ixviewer/images/orange-vertical-rectangle-md.png");
-													elem.setAttribute("height", difference);
-													$(elem).insertBefore(newTopPositionNode);
-												}
-											} 
-											else{
-												setTimeout(function() {
-													if(!checkIfImageAlreadyExists(imageId))	
-													{
-														elem.setAttribute("src", "/ixviewer/images/orange-vertical-rectangle-md.png");
-														elem.setAttribute("height", difference);
-														$(elem).insertBefore(($(allLinkedNodes[0]))); 
-													}
-												}, 10);
-											}
-										}, 10
-										);
-									}
-									break;
-								}
-							}
-							else{
-							var dimensions=" ";
-								if($(spanNode).hasClass('sec-cbe-highlight-block')){
-								element = $(ele).children();
-										for(j=0;j<element.length;j++){
-											nodeNew=$(element[j])[0].nodeName;
-											while(nodeNew !="TABLE"){
-												element[j] = $(element[j]).children();
-												if($(element[j]).children()[0]){
-													nodeNew =element[j][0].nodeName;
-												}
-												else{
-													break;
-												}
-											}
-											if(nodeNew.toLowerCase() =="table"){
-												$(element[j])[0].style.width="96%";
-												$(element[j])[0].style.marginLeft="0";
-												
-											}
-											if($(element[j])[0]){
-												nodeNew=$(element[j])[0].nodeName;
-												$(element[j])[0].style.clear="none";
-												while(nodeNew.toLowerCase() != "body"){
-													element[j]=$(element[j]).parent();
-													$(element[j])[0].style.textIndent="0pt";
-													$(element[j])[0].style.clear="none";
-												    if($(element[j]).parent()[0]){
-														nodeNew =element[j][0].nodeName;
-													}
-													else
-													break;
-												}
-											}
-											
-										}
-									$(spanNode).addClass('sec-cbe-highlight-dashed-highlight');
-									dimensions = App_Find.Element.getDimensionsForElement(ele);
-										if(dimensions.length > 0){
-											imageId=dimensions[0].member+$(ele).attr('name')+"imageId";
-										}
-										else{
-											imageId=$(ele).attr('name')+"imageId";
-										}
-									setTimeout(function() {
-									    //var imageId=$(ele).attr('name')+imageId;
-										positionTopNew=$(spanNode).position().top;
-										positionBottom=$(spanNode).position().top+$(spanNode).outerHeight(true);
-										difference=positionBottom-positionTopNew;
-										if(!checkIfImageAlreadyExists(imageId))	
-										{
-											elem.setAttribute("src", "/ixviewer/images/orange-vertical-rectangle-md.png");
-											elem.setAttribute("height", difference);
-											elem.setAttribute("width", "3");
-											elem.setAttribute("id", imageId);
-											elem.setAttribute("align", "left");
-											$(elem).insertBefore($(ele)); 
-										}
-									}, 10);
-
-								}
-							}
-
-						}
+					
+					if(App_Find.Highlight.cachedResults.linkedHiddenNodes.length>0){
+	                    if(node.attr('id') && ele.isHidden()){
+	                    	wrapLinkedHidden(ele,node,cls,spanNode);
+	                    }
 					}
-					$(elem).on('click',function(evt){
-						$('#about-modal').dialog("close");
-						App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
-						arrayOfImages = App.frame.contents().find('img');
-						for (var i=0, len=arrayOfImages.length; i<len; i++)
-						{
-							if(arrayOfImages[i].getAttribute('src')==blueImagePath){
-								arrayOfImages[i].setAttribute("src", "/ixviewer/images/orange-vertical-rectangle-md.png");
-							}
-						}
-
-						if(nodeName == 'ix:nonnumeric'){
-							if(node.attr('continuedat')!=null){
-								$(spanNode).addClass('sec-cbe-highlight-dashed');
-							}
-						}
-						if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
-							var index = $(this).attr('data-result-index');
-							App_Find.Results.highlightItem(index);  // highlight the result item
-							//var allLinkedNodes=[];
-							if(nodeName == 'ix:nonnumeric'){
-								if((node).attr('continuedat')!=null){
-									$(spanNode).children(':first').selectionHighlightNodes();
-									arrayOfImages = App.frame.contents().find('img');
-									for(var i=0;i<allLinkedNodes.length;i++){
-
-										str = $(elem).attr('src');
-										str.replace("/ixviewer/images/blue-vertical-rectangle-md.png");
-										$(elem).attr("src", "/ixviewer/images/blue-vertical-rectangle-md.png");
-										elem.setAttribute("src", blueImagePath);
-									}
-									App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
-									App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected'); 
-									selectionHighlightClickNodes(allLinkedNodes); 
-								}
-
-								else if($(spanNode).hasClass('sec-cbe-highlight-block')){
-									$(spanNode).children(':first').selectionHighlightNodes();
-									App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
-									App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
-									$(spanNode).addClass('sec-cbe-highlight-filter-content-selected');
-									str = $(elem).attr('src');
-									str.replace("/ixviewer/images/blue-vertical-rectangle-md.png");
-									$(elem).attr("src", "/ixviewer/images/blue-vertical-rectangle-md.png");
-									elem.setAttribute("src", blueImagePath);
-								}
-								else{
-									$(spanNode).children(':first').selectionHighlight();
-								}
-
-								$(spanNode).children(':first').each(function() {
-									App_Find.Element.showSelectionDetail(node);
-								});
-							}
-
-							evt.stopPropagation();
-						}
-					}).on('mousemove', function(event) {
-						var allLinkedNodes=[];
-						if(nodeName == 'ix:nonnumeric'){
-							if(node.attr('continuedat')!=null){
-								node.removeClass('sec-cbe-highlight-dashed');
-								selectionHighlightNodes(allLinkedNodes); 
-							}
-						}
-						if(App_Find.Element.enableTooltip=="enable"){
-							if(nodeName == 'ix:nonnumeric'){
-								if(node.attr('continuedat')!=null){
-									$(spanNode).addClass('sec-cbe-highlight-dashed');
-								}
-							}
-							if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
-								$(spanNode).children(':first').each(function() {
-
-									var container = $('#selection-detail-container-mouseOver');
-									var maxValueTextLength = 50;
-									var id = ele.attr('name');
-									var xbrId = App_Utils.convertToXBRLId(id);
-
-									var container = $('#selection-detail-container-mouseOver');
-									container.find('[data-content="label"]').html('');
-									html = '<table class="table-framed-onHover">';
-
-									// xbrl value
-									var xbrlValue = 'N/A';
-									var nodeName = ele[0].nodeName.toLowerCase();
-									if (nodeName == 'ix:nonfraction') {
-
-										xbrlValue = ele.getXbrlValue();
-										if (ele.attr('format') && xbrlValue=="-") { xbrlValue =  App_Utils.applyFormat(ele); }
-										xbrlValue = App_Utils.addCommas(xbrlValue);                    
-									} else if (nodeName == 'ix:nonnumeric') {
-
-										xbrlValue = ele.htmlDecode(ele.text());
-										if (ele.attr('format')) { xbrlValue =  App_Utils.applyFormat(ele); }
-										if (xbrlValue.length > maxValueTextLength) {
-
-											xbrlValue = xbrlValue.trim().substring(0, maxValueTextLength) + '...';
+					
+					    
+				    $(spanNode).addClass('sec-cbe-highlight-dashed ');
+					if(nodeName == 'ix:nonnumeric'){
+						if($(spanNode).hasClass('sec-cbe-highlight-block')){
+							if($(ele).children()){
+						    	element = $(ele).children();
+						    	console.log(element);
+								for(j=0;j<element.length;j++){
+									
+									nodeNew=$(element[j])[0].nodeName;
+									$(element[j])[0].style.clear="none";
+									$(element[j])[0].style.textIndent="0pt";
+									while(nodeNew.toLowerCase() != "body"){
+										element[j]=$(element[j]).parent();
+										$(element[j])[0].style.textIndent="0pt";
+										$(element[j])[0].style.clear="none";
+									    if($(element[j]).parent()[0]){
+											nodeNew =$(element[j]).parent()[0].nodeName;
+											//console.log(nodeNew);
 										}
 									}
-									if(!xbrlValue){
-										var selectedlabelval = App.InlineDoc.getSelectedLabel(xbrId,this,null,function(value){
-
-		                                		container.find('[data-content="label"]').html(value);
-	                                        });
-		                                }else if(xbrlValue.length<15){
-		                                	if(node.attr('continuedat')!=null){
-		                                		var continuedAt = ele.attr('continuedAt');
-			                                	for(var i=0; i<App_Find.Highlight.cachedResults.continuedAt.length;i++){
-			                                		
-			                                		if(continuedAt==App_Find.Highlight.cachedResults.continuedAt[i].attr('id')){
-			                                			xbrlValue = xbrlValue + " "+ App_Find.Highlight.cachedResults.continuedAt[i].text();
-			                                			xbrlValue = xbrlValue.trim().substring(0, maxValueTextLength) + '...';
-			                                			container.find('[data-content="label"]').html(xbrlValue);
-			                                			break;
-			                                		}
-			                                				           			          			
-			                                    }
-		                                	}else{
-		                                		container.find('[data-content="label"]').html(xbrlValue);
-		                                	}
-		                                	
-		                                	
-		                                }else{
-		                                	container.find('[data-content="label"]').html(xbrlValue);
-		                                }
-		                                
-		                                if (!id) {
-		
-		                                    id = 'N/A';
-		                                }
-		                                var tag = ele.htmlDecode(id);
-		                                if (tag.substring(0,8) == "us-gaap:") {
-		                                tag = "<span style='white-space:nowrap;'>us-gaap:</span>"+tag.substring(8);
-		                                }
-		                                html += '<tr><td width="55px">Tag:</td><td><div class="wordBreakDiv">'+tag+'</div></td></tr>';
-		                                
-		                    			// calendar
-		                                var contextRef = ele.attr('contextRef');
-		                                if (!contextRef) {
-		
-		                                    contextRef = 'N/A';
-		                                } else {
-		
-		                                    var context = App.InlineDoc.getContext(contextRef);
-		                                    if (context.length == 1) {
-		
-		                                        contextRef = context.calendarFriendlyName();
-		                                    }
-		                                }
-		                                html += '<tr><td width="55px">Period:</td><td><div class="wordBreakDiv">'+ele.htmlDecode(contextRef)+'</div></td></tr>';
-		
-		                    			 // unit
-		                                var unit = 'N/A';
-		                                var unitRef = ele.attr('unitRef');
-		                                if (unitRef) {
-		                                    var u = App.InlineDoc.getUnitById(unitRef);
-		                                    if (u.length > 0) {
-		                                        unit = u.unitFriendlyName();
-		                                    }
-		                                }
-		                                if(unit !='N/A'){
-		                                html += '<tr><td width="55px">Measure:</td><td><div class="wordBreakDiv">'+unit+'</div></td></tr>';
-		                                }
-		                                if(ele.scaleFriendlyName() !='N/A'){
-		            					html += '<tr><td width="55px">Scale:</td><td><div class="wordBreakDiv">'+ele.scaleFriendlyName()+'</div></td></tr>';
-		                                }
-		                                if(ele.precisionFriendlyName() !='N/A'){
-		                                html += '<tr><td width="55px">Decimals:</td><td><div class="wordBreakDiv">'+ele.precisionFriendlyName()+'</div></td></tr>';
-		                                }
-		                                // type
-		                                var typeHTML = '';
-		                                html += '</table>';
-		                                $('#selection-detail-container-mouseOver').find('[data-content="attributes"]').html(html);        
-		                                container.show();
-		                    			
-		                    			//App_Find.Element.showSelectionDetailOnHover($(this),event);
-		                    		});
-		                    	}
-		                    	
-		        				
-		                    	 var container = $('#selection-detail-container-mouseOver');
-		                            var panel = $('#app-panel1');
-		                            var panel2 = $('#app-panel2');
-		                            var marginLeft = event.clientX;
-		                            var marginTop = event.clientY + 35;
-		                            var panelWidth=0;
-
-		                            if(panel.hasClass("visible") || panel2.hasClass("visible")){
-		                            	panelWidth = (30/100)*(screen.width);
-			        				}
-		                           
-		                          
-		                            if(screen.width>1600 && screen.width < 1921){
-			                    	if(event.clientX > (screen.width-1400)){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-			        				}
-			                    	else
-		                    		{
-		                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-		                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-		                    		}
-		                    		}
-		                            }
-		                            if(screen.width>1440 && screen.width < 1601){
-				                    	if(event.clientX > (screen.width-1200)){
-				                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-				        				}
-				                    	else
-				                    		{
-				                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-				                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-				                    		}
-				                    		}
-		                            	
-				                        }
-		                            if(screen.width>1366 && screen.width < 1441){
-
-				                    	if(event.clientX > (screen.width-1000)){
-				                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-				        				}
-				                    	else
-			                    		{
-			                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-			                    		}
-			                    		}
-				                        }
-		                            if(screen.width>1280 && screen.width < 1367){
-				                    	if(event.clientX > (screen.width-900)){
-				                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-				        				}
-				                    	else
-			                    		{
-			                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-			                    		}
-			                    		}
-				                        }
-		                            if(screen.width>1024 && screen.width < 1281){
-				                    	if(event.clientX > (screen.width-800)){
-				                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-				        				}
-				                    	else
-			                    		{
-			                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-			                    		}
-			                    		}
-				                        }
-		                            if(screen.width < 1025){
-				                    	if(event.clientX > (screen.width-600)){
-				                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-				        				}
-				                    	else
-			                    		{
-			                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-			                    		}
-			                    		}
-				                        }
-		                            
-		                            if($('#filterDataDiv').height()>0){
-		                            	if(event.clientY > (screen.height-500)){
-		                            		var marginTop =( (event.clientY) - container.height())+$('#filterDataDiv').height()+25;
-		                            	}
-		                            	else
-		                            		{
-		                            		var marginTop =( (event.clientY+ $('#filterDataDiv').height()))+35;
-		                            		}
-		                            }
-		                            else{
-		                            	if(event.clientY > (screen.height-500)){
-		                            		 var marginTop =(event.clientY - container.height())+25;
-		                            	}
-		                            }
-		                    	
-		                    	container.css('margin-left',marginLeft +'px');
-		                    	container.css('margin-top', marginTop +'px');
-		                    	event.stopPropagation();
-	                    	}
-	                    	
-	                    }).on('mouseout', function() {
-	                    	if(nodeName == 'ix:nonnumeric'){
-	                        	if(node.attr('continuedAt')!=null){
-	                        		allLinkedNodes=App_Find.Element.groupIxContinuation(node);
-	                        		//$(this).children(':first').removeHighlightHoverOverNodes();
-	                        		 $(this).removeHighlightNodes(allLinkedNodes);
-	                        		
-	                        		//resetSelectionHighlightNodesOnEnter(allLinkedNodes);
-	                        	}
-		
-	               		 }
-	                    	var container = $('#selection-detail-container-mouseOver');
-	                    	container.hide();
-	                    });
-						/*if(nodeName == 'ix:nonnumeric'){
-                    	if(node.attr('continuedat')!=null){
-                    		var elemNew = document.createElement("img");
-    						elemNew.setAttribute("src", "/ixviewer/images/orange-vertical-rectangle-md.png");
-    						elemNew.setAttribute("height", "15");
-    						elemNew.setAttribute("width", "3");
-    	               		elemNew.setAttribute("z-index", "-1");
-    	               		elemNew.setAttribute("position", "absolute");
-    	               		elemNew.setAttribute("left", "0px");
-    	               		elemNew.setAttribute("marginLeft", "50px");
-    	               		$(elemNew).insertBefore(spanNode);
-                    	}
-                 }*/
-					 /*var elemNew = document.createElement("img");
-						elemNew.setAttribute("src", "/ixviewer/images/NewImage.png");
-						elemNew.setAttribute("height", "15");
-						elemNew.setAttribute("width", "5");
-	               		elemNew.setAttribute("z-index", "-1");
-	               		elemNew.setAttribute("position", "absolute");
-	               		elemNew.setAttribute("left", "0px");
-	               		elemNew.setAttribute("marginLeft", "50px");
-	               		$(elemNew).insertBefore(spanNode);*/
-						if(nodeName == 'ix:nonnumeric'){
-	                    	if(node.attr('continuedat')!=null){
-	                    		$(spanNode).addClass('sec-cbe-highlight-dashed-highlight');
-	                    	}
-	                    	else{
-								$(spanNode).addClass('sec-cbe-highlight-dashed ');
-							}
-	                    	}
-						else{
-							$(spanNode).addClass('sec-cbe-highlight-dashed ');
-						}
-					
-                       $(spanNode).attr('data-result-index',index).on('click', function(evt) {
-                    	$('#about-modal').dialog("close");
-                    	//$(this).addClass('sec-cbe-highlight-dashed')
-                    	if(nodeName == 'ix:nonnumeric'){
-                        	if(node.attr('continuedat')!=null){
-                        		$(this).addClass('sec-cbe-highlight-dashed-highlight');
-                        	}
-                    	}
-					
-							for (var i=0, len=arrayOfImages.length; i<len; i++)
-							 {
-								if(arrayOfImages[i].getAttribute('src')==blueImagePath){
-									arrayOfImages[i].setAttribute("src", "/ixviewer/images/orange-vertical-rectangle-md.png");
 								}
-							 }
-                        if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).addClass('sec-cbe-highlight-dashed-highlight')||$(this).hasClass('sec-cbe-highlight-filter')) {
+						    }
+						}
+                    }
+					if(nodeName == 'ix:nonnumeric'){
+						if($(spanNode).hasClass('sec-cbe-highlight-block')){
+							$(spanNode).addClass('sec-cbe-highlight-dashed_block');
+						}
+                    }
+					
+                    $(spanNode).attr('data-result-index',index).on('click', function(evt) {
+                    	$('#about-modal').dialog("close");
+                    	
+                        if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-dashed-highlight')||$(this).hasClass('sec-cbe-highlight-filter')) {
+                        	App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected');
+                        	App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
                     	    var index = $(this).attr('data-result-index');
                     		App_Find.Results.highlightItem(index);  // highlight the result item
-                    		//$(this).children(':first').selectionHighlight(); // highlight the element
-                    		 
-                       		 //var allLinkedNodes=[];
                        		 if(nodeName == 'ix:nonnumeric'){
-                                	if(node.attr('continuedat')!=null){
-                                		$(this).children(':first').selectionHighlightNodes();
-                                		//allLinkedNodes=App_Find.Element.groupIxContinuation(node);
-                                		for(var i=0;i<allLinkedNodes.length;i++){
-                                				parentNodeOfContinuation=allLinkedNodes[i].parent();
-                                				nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-                                				if(positionTop=='0' || positionTop=='1' ){
-                                					while(nodeN.toLowerCase() !="body"){
-                                						parentNodeOfContinuation = parentNodeOfContinuation.parent();
-                                						if($(parentNodeOfContinuation).parent()[0]){
-                                							nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
-                                						}
-                                						else{
-                                							break;
-                                						}
-                                					}
-                                					var childNode=parentNodeOfContinuation;
-                                					if(($(childNode).prev()[0]) ){
-                                						if($(childNode).prev()[0].nodeName.toLowerCase()=="img"){
-                                							$(childNode).prev()[0].setAttribute("src", blueImagePath);
-                                						}
-                                					}
-                                				}
-                                			str = $(elem).attr('src');
-                                			str.replace("/ixviewer/images/blue-vertical-rectangle-md.png");
-                                			$(elem).attr("src", "/ixviewer/images/blue-vertical-rectangle-md.png");
-                                			elem.setAttribute("src", blueImagePath);
-                                		}
-                                		App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
-                                		App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected'); 
-                                		selectionHighlightClickNodes(allLinkedNodes); 
-                                		
-                                		}
-                                	else if($(spanNode).hasClass('sec-cbe-highlight-block')){
-                                		$(this).children(':first').selectionHighlightNodes();
-										App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
-                                		App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected'); 
-                                		$(this).addClass('sec-cbe-highlight-filter-content-selected');
-                                	elem.setAttribute("src", blueImagePath);
-                                	}
-                                	else{
-                                		$(this).children(':first').selectionHighlight();	
-                                	}
-                                	$(this).children(':first').each(function() {
-                            		    App_Find.Element.showSelectionDetail($(node));
-                            		});
+                       			if($(this).hasClass('sec-cbe-highlight-block')){
+                        			$(this).children(':first').selectionHighlightForBlock();
+                        			
+                        		}else if($(this).hasClass('sec-cbe-highlight-inline')){
+                        			App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+    								$(this).addClass('sec-cbe-highlight-filter-content-selected');
+                        			$(this).children(':first').selectionHighlight();
+                        		}
+                            	$(this).children(':first').each(function() {
+                        		    App_Find.Element.showSelectionDetail($(node));
+                        		});
                        		 }
                        		 else{
-							App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
-                       		$(this).children(':first').selectionHighlight();	 
-                    		$(this).children(':first').each(function() {
-                    		    App_Find.Element.showSelectionDetail($(this));
-                    		});
+								App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+    							$(this).addClass('sec-cbe-highlight-filter-content-selected');
+	                       		$(this).children(':first').selectionHighlight();	 
+	                    		$(this).children(':first').each(function() {
+	                    		    App_Find.Element.showSelectionDetail($(this));
+	                    		});
                        		 }
                     		evt.stopPropagation();
                     	}
                     }).on('mousemove', function(event) {
+                    	
                		 if(nodeName == 'ix:nonnumeric'){
-                        	if(node.attr('continuedat')!=null){
-                        		node.removeClass('sec-cbe-highlight-dashed');
-                        		selectionHighlightNodes(allLinkedNodes); 
-                        		}
+                        	if(($(this).hasClass('sec-cbe-highlight-block'))&& !($(this).hasClass('sec-cbe-highlight-content-selected'))){
+                          		$(this).addClass('sec-cbe-highlight-content-selected');
+                          	}
+                        	else if($(this).hasClass('sec-cbe-highlight-block')){
+                          		$(this).addClass('sec-cbe-highlight-content-selected');
+                          	}
+                        	 else {
+                           		$(this).addClass('sec-cbe-highlight-content-selected');
+                           	}
                		 }
+               		else {
+                   		$(this).addClass('sec-cbe-highlight-content-selected');
+                   	}
                     	if(App_Find.Element.enableTooltip=="enable"){
-                    		if(nodeName == 'ix:nonnumeric'){
-                            	if(node.attr('continuedat')!=null){
-                            		$(this).addClass('sec-cbe-highlight-dashed-highlight');
-                            	}
-                        	}
-	                    	if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).addClass('sec-cbe-highlight-dashed-highlight')||$(this).hasClass('sec-cbe-highlight-filter')) {
+                    		
+	                    	if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-dashed-highlight')||$(this).hasClass('sec-cbe-highlight-filter')) {
 	                    		$(this).children(':first').each(function() {
-	                    		    
-	                                var container = $('#selection-detail-container-mouseOver');
-	                                var maxValueTextLength = 50;
-	                                var id = ele.attr('name');
-	                                var xbrId = App_Utils.convertToXBRLId(id);
-	
-	                                var container = $('#selection-detail-container-mouseOver');
-	                                container.find('[data-content="label"]').html('');
-	                    			html = '<table class="table-framed-onHover">';
-	
-	                    			// xbrl value
-	                                var xbrlValue = 'N/A';
-	                                var nodeName = ele[0].nodeName.toLowerCase();
-	                                if (nodeName == 'ix:nonfraction') {
-	                                	
-	                                    xbrlValue = ele.getXbrlValue();
-	                                    if (ele.attr('format') && xbrlValue=="-") { xbrlValue =  App_Utils.applyFormat(ele); }
-	                                	xbrlValue = App_Utils.addCommas(xbrlValue);                    
-	                                } else if (nodeName == 'ix:nonnumeric') {
-	
-	                                    xbrlValue = ele.htmlDecode(ele.text());
-	                                    if (ele.attr('format')) { xbrlValue =  App_Utils.applyFormat(ele); }
-	                                    if (xbrlValue.length > maxValueTextLength) {
-	
-	                                        xbrlValue = xbrlValue.trim().substring(0, maxValueTextLength) + '...';
-	                                    }
-	                                }
-	                                
-	                                if(!xbrlValue){
-	                                	var selectedlabelval = App.InlineDoc.getSelectedLabel(xbrId,this,null,function(value){
-
-	                                		container.find('[data-content="label"]').html(value);
-                                        });
-	                                }else if(xbrlValue.length<15){
-	                                	if(node.attr('continuedat')!=null){
-	                                		var continuedAt = ele.attr('continuedAt');
-		                                	for(var i=0; i<App_Find.Highlight.cachedResults.continuedAt.length;i++){
-		                                		
-		                                		if(continuedAt==App_Find.Highlight.cachedResults.continuedAt[i].attr('id')){
-		                                			xbrlValue = xbrlValue + " "+ App_Find.Highlight.cachedResults.continuedAt[i].text();
-		                                			xbrlValue = xbrlValue.trim().substring(0, maxValueTextLength) + '...';
-		                                			container.find('[data-content="label"]').html(xbrlValue);
-		                                			break;
-		                                		}
-		                                				           			          			
-		                                    }
-	                                	}else{
-	                                		container.find('[data-content="label"]').html(xbrlValue);
-	                                	}
-	                                	
-	                                	
-	                                }else{
-	                                	container.find('[data-content="label"]').html(xbrlValue);
-	                                }
-	                                
-	                                if (!id) {
-	
-	                                    id = 'N/A';
-	                                }
-	                                var tag = ele.htmlDecode(id);
-	                                if (tag.substring(0,8) == "us-gaap:") {
-	                                tag = "<span style='white-space:nowrap;'>us-gaap:</span>"+tag.substring(8);
-	                                }
-	                                html += '<tr><td width="55px">Tag:</td><td><div class="wordBreakDiv">'+tag+'</div></td></tr>';
-	                                
-	                    			// calendar
-	                                var contextRef = ele.attr('contextRef');
-	                                if (!contextRef) {
-	
-	                                    contextRef = 'N/A';
-	                                } else {
-	
-	                                    var context = App.InlineDoc.getContext(contextRef);
-	                                    if (context.length == 1) {
-	
-	                                        contextRef = context.calendarFriendlyName();
-	                                    }
-	                                }
-	                                html += '<tr><td width="55px">Period:</td><td><div class="wordBreakDiv">'+ele.htmlDecode(contextRef)+'</div></td></tr>';
-	
-	                    			 // unit
-	                                var unit = 'N/A';
-	                                var unitRef = ele.attr('unitRef');
-	                                if (unitRef) {
-	                                    var u = App.InlineDoc.getUnitById(unitRef);
-	                                    if (u.length > 0) {
-	                                        unit = u.unitFriendlyName();
-	                                    }
-	                                }
-	                                if(unit !='N/A'){
-	                                html += '<tr><td width="55px">Measure:</td><td><div class="wordBreakDiv">'+unit+'</div></td></tr>';
-	                                }
-	                                if(ele.scaleFriendlyName() !='N/A'){
-	            					html += '<tr><td width="55px">Scale:</td><td><div class="wordBreakDiv">'+ele.scaleFriendlyName()+'</div></td></tr>';
-	                                }
-	                                if(ele.precisionFriendlyName() !='N/A'){
-	                                html += '<tr><td width="55px">Decimals:</td><td><div class="wordBreakDiv">'+ele.precisionFriendlyName()+'</div></td></tr>';
-	                                }
-	                                // type
-	                                var typeHTML = '';
-	                                html += '</table>';
-	                                $('#selection-detail-container-mouseOver').find('[data-content="attributes"]').html(html);        
-	                                container.show();
+	                    			getMouseOverDiv(ele,node,false);
 	                    			
-	                    			//App_Find.Element.showSelectionDetailOnHover($(this),event);
 	                    		});
 	                    	}
 	                    	
-	        				
-	                    	 var container = $('#selection-detail-container-mouseOver');
-	                            var panel = $('#app-panel1');
-	                            var panel2 = $('#app-panel2');
-	                            var marginLeft = event.clientX;
-	                            var marginTop = event.clientY + 35;
-	                            var panelWidth=0;
-
-	                            if(panel.hasClass("visible") || panel2.hasClass("visible")){
-	                            	panelWidth = (30/100)*(screen.width);
-		        				}
-	                           
-	                          
-	                            if(screen.width>1600 && screen.width < 1921){
-		                    	if(event.clientX > (screen.width-1400)){
-		                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-		        				}
-		                    	else
-	                    		{
-	                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-	                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-	                    		}
-	                    		}
-	                            }
-	                            if(screen.width>1440 && screen.width < 1601){
-			                    	if(event.clientX > (screen.width-1200)){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-			        				}
-			                    	else
-			                    		{
-			                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-			                    		}
-			                    		}
-	                            	
-			                        }
-	                            if(screen.width>1366 && screen.width < 1441){
-
-			                    	if(event.clientX > (screen.width-1000)){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-			        				}
-			                    	else
-		                    		{
-		                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-		                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-		                    		}
-		                    		}
-			                        }
-	                            if(screen.width>1280 && screen.width < 1367){
-			                    	if(event.clientX > (screen.width-900)){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-			        				}
-			                    	else
-		                    		{
-		                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-		                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-		                    		}
-		                    		}
-			                        }
-	                            if(screen.width>1024 && screen.width < 1281){
-			                    	if(event.clientX > (screen.width-800)){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-			        				}
-			                    	else
-		                    		{
-		                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-		                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-		                    		}
-		                    		}
-			                        }
-	                            if(screen.width < 1025){
-			                    	if(event.clientX > (screen.width-600)){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-			        				}
-			                    	else
-		                    		{
-		                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-		                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-		                    		}
-		                    		}
-			                        }
-	                            
-	                            if($('#filterDataDiv').height()>0){
-	                            	if(event.clientY > (screen.height-500)){
-	                            		var marginTop =( (event.clientY) - container.height())+$('#filterDataDiv').height()+25;
-	                            	}
-	                            	else
-	                            		{
-	                            		var marginTop =( (event.clientY+ $('#filterDataDiv').height()))+35;
-	                            		}
-	                            }
-	                            else{
-	                            	if(event.clientY > (screen.height-500)){
-	                            		 var marginTop =(event.clientY - container.height())+25;
-	                            	}
-	                            }
+	        				placeMouseOverDiv(event);
+	                    	 
 	                    	
-	                    	container.css('margin-left',marginLeft +'px');
-	                    	container.css('margin-top', marginTop +'px');
-	                    	event.stopPropagation();
                     	}
+                    	event.stopPropagation();
                     	
                     }).on('mouseout', function() {
                     	if(nodeName == 'ix:nonnumeric'){
                         	if(node.attr('continuedAt')!=null){
                         		 $(this).removeHighlightNodes(allLinkedNodes); 
-                        		}
-	
+                            }else if($(this).hasClass('sec-cbe-highlight-block')){
+                          		$(this).removeClass('sec-cbe-highlight-content-selected');
+                          	}
+                            else {
+                          		$(this).removeClass('sec-cbe-highlight-content-selected');
+                          	}
                		 }
+                    	else {
+                      		$(this).removeClass('sec-cbe-highlight-content-selected');
+                      	}
+                    	
                     	var container = $('#selection-detail-container-mouseOver');
                     	container.hide();
                     }).on('mouseenter', function(event) {
                  		 if(nodeName == 'ix:nonnumeric'){
                           	if(ele.attr('continuedat')!=null){
                           		ele.removeClass('sec-cbe-highlight-dashed');
+                          		ele.removeClass('sec-cbe-highlight-dashed_block');
                           		selectionHighlightNodes(allLinkedNodes); 
-                          		}
+                          	}else if($(this).hasClass('sec-cbe-highlight-block')){
+                          		$(this).addClass('sec-cbe-highlight-content-selected');
+                          	}
                  		 }
                     	if(App_Find.Element.enableTooltip=="enable"){
                     		
@@ -4136,104 +3709,622 @@ var App_Find = {
 	                    			//App_Find.Element.showSelectionDetailOnHover($(this),event);
 	                    		});
 	                    	}
-	                    	var container = $('#selection-detail-container-mouseOver');
-                            var panel = $('#app-panel1');
-                            var panel2 = $('#app-panel2');
-                            var marginLeft = event.clientX;
-                            var marginTop = event.clientY+35;
-                            
-                            var panelWidth=0;
-
-                            if(panel.hasClass("visible") || panel2.hasClass("visible")){
-                            	panelWidth = (30/100)*(screen.width);
-	        				}
-                            if(screen.width>1600 && screen.width < 1921){
-    	                    	if(event.clientX > (screen.width-1400)){
-    	                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-    	        				}
-    	                    	else
-                        		{
-                        		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-                        		var marginLeft = (event.clientX - container.width())+panelWidth;
-                        		}
-                        		}
-                                }
-                                if(screen.width>1440 && screen.width < 1601){
-                                	if(event.clientX > (screen.width-1200)){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-			        				}
-			                    	else
-			                    		{
-			                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-			                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-			                    		}
-			                    		}
-    		                        }
-                                if(screen.width>1366 && screen.width < 1441){
-
-    		                    	if(event.clientX > (screen.width-1000)){
-    		                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-    		        				}
-    		                    	else
-    	                    		{
-    	                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-    	                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-    	                    		}
-    	                    		}
-    		                        }
-                                if(screen.width>1280 && screen.width < 1367){
-    		                    	if(event.clientX > (screen.width-900)){
-    		                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-    		        				}
-    		                    	else
-    	                    		{
-    	                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-    	                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-    	                    		}
-    	                    		}
-    		                        }
-                                if(screen.width>1024 && screen.width < 1281){
-    		                    	if(event.clientX > (screen.width-800)){
-    		                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-    		        				}
-    		                    	else
-    	                    		{
-    	                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-    	                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-    	                    		}
-    	                    		}
-    		                        }
-                                if(screen.width < 1025){
-    		                    	if(event.clientX > (screen.width-600)){
-    		                    		var marginLeft = (event.clientX - container.width())+panelWidth-5;
-    		        				}
-    		                    	else
-    	                    		{
-    	                    		if(panel.hasClass("visible") || panel2.hasClass("visible")){
-    	                    		var marginLeft = (event.clientX - container.width())+panelWidth;
-    	                    		}
-    	                    		}
-    		                        }
-                        
-                                if($('#filterDataDiv').height()>0){
-                                	if(event.clientY > (screen.height-500)){
-                                		var marginTop =( (event.clientY) - container.height())+$('#filterDataDiv').height()+25;
-                                	}
-                                	else
-                                		{
-                                		var marginTop =( (event.clientY+ $('#filterDataDiv').height()))+35;
-                                		}
-                                }
-                                else{
-                                	if(event.clientY > (screen.height-500)){
-                                		 var marginTop =(event.clientY - container.height())+25;
-                                	}
-                                }
-	                    	container.css('margin-left',marginLeft +'px');
-	                    	container.css('margin-top', marginTop +'px');
+	                    	placeMouseOverDiv(event);
 	                    	event.stopPropagation();
                     	}
                     	
+                    });
+                }
+            }
+            
+             function insertImageForNonNumericNodes(imageId,difference,elem,nodeNew,positionOfElementsNew,element,positionTop,
+					parentNodeOfContinuation,childNode,positionTopRearranged,lengthofContinuedNodes,
+					childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes){
+            	//alert("inside insertImageForNonNumericNodes ");
+            	for(var i=0;i<allLinkedNodes.length;i++){
+					element = $(allLinkedNodes[i]).children().children();
+					for(var j=0;j<element.length;j++){
+						nodeNew=$(element[j])[0].nodeName;
+						while(nodeNew !="TABLE"){
+							element[j] = $(element[j]).children();
+							if($(element[j]).children()[0]){
+								nodeNew =element[j][0].nodeName;
+								if(nodeNew.toLowerCase() =="table"){
+									(element[j])[0].style.width="96%";
+									(element[j])[0].style.marginLeft="0";
+								}
+							}
+							else{
+								break;
+							}
+						}
+						if(nodeNew.toLowerCase() =="table"){
+							$(element[j])[0].style.width="96%";
+							$(element[j])[0].style.marginLeft="0";
+						}
+					}
+					positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
+				}
+            	for(var i=0;i<allLinkedNodes.length;i++){
+					parentNodeOfContinuation=allLinkedNodes[i].parent();
+					nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
+					if(positionTop=='0' || positionTop=='1' || positionTop=='12' || positionTop=='13'){
+						while(nodeN.toLowerCase() !="body"){
+							parentNodeOfContinuation = parentNodeOfContinuation.parent();
+							nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
+						}
+						childNode=parentNodeOfContinuation;
+						positionTopNew=$(childNode).position().top;
+						positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1][0]).position().top + $(allLinkedNodes[lengthofContinuedNodes-1][0]).outerHeight(true);
+						if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().length>0)
+						{
+							if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()[0].nodeName.toLowerCase()=="table"){
+								positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1]).children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().outerHeight(true);
+							}
+							if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().children()[0].nodeName.toLowerCase()=="table"){
+								positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().outerHeight(true);
+							}
+						}
+						childrenOfsecondNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children().children();
+						childrenOfsecondNodelength=childrenOfsecondNode.length;
+						if($(childrenOfsecondNode[childrenOfsecondNodelength-1]).children().length>0){
+							if($(childrenOfsecondNode[childrenOfsecondNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
+								positionBottom=$(childrenOfsecondNode[childrenOfsecondNodelength-1]).position().top+ $(childrenOfsecondNode[childrenOfsecondNodelength-1]).outerHeight(true);
+							}
+						}
+
+						childrenOfTopNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
+						childrenOfTopNodelength=childrenOfTopNode.length;
+						if($(childrenOfTopNode[childrenOfTopNodelength-1]).children().length>0){
+
+							if($(childrenOfTopNode[childrenOfTopNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
+								positionBottom=$(childrenOfTopNode[childrenOfTopNodelength-1]).position().top+ $(childrenOfTopNode[childrenOfTopNodelength-1]).outerHeight(true);
+							}
+						}
+						if(positionBottom>positionTopNew){
+							difference=positionBottom-positionTopNew;
+						}
+						if($(allLinkedNodes[lengthofContinuedNodes-1]).parent().parent().parent()[0].nodeName.toLowerCase()=="div"){
+							setTimeout(function() {
+								positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1][0]).parent().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1][0]).parent().outerHeight(true);
+								difference=(positionBottom-positionTopNew)+25;
+								if(!checkIfImageAlreadyExists(imageId))	
+								{
+									elem.setAttribute("src", srcImg);
+									elem.setAttribute("height", difference);
+									$(elem).insertBefore(childNode);
+								}
+								else{
+								elem.style.height=difference+"px";
+								}
+							},10);
+						}
+						else{
+							setTimeout(function() {
+								if(!checkIfImageAlreadyExists(imageId))
+								{
+									elem.setAttribute("src", srcImg);
+									elem.setAttribute("height", difference);
+									$(elem).insertBefore(childNode);
+								}
+								else{
+								elem.style.height=difference+"px";
+								}
+							},10);
+						}
+						break;
+					}
+					else{
+						setTimeout(function() {
+							positionBottom= $(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).outerHeight(true);
+							positionTopNew=$(allLinkedNodes[0][0]).position().top;
+							childrenOfLastNodeNodeName="";
+							childrenOfLastNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
+							if($(allLinkedNodes[lengthofContinuedNodes-1]).children()[0]){
+							childrenOfLastNodeNodeName=$(allLinkedNodes[lengthofContinuedNodes-1]).children()[0].nodeName.toLowerCase();
+							}
+							while(childrenOfLastNodeNodeName!="table"){
+								childrenOfLastNode=childrenOfLastNode.children();
+								if(childrenOfLastNode[0]){
+								childrenOfLastNodeNodeName=childrenOfLastNode[0].nodeName.toLowerCase();
+								}
+								else
+									break;
+							}
+							if(childrenOfLastNodeNodeName=="table"){
+							positionBottom=$(childrenOfLastNode).position().top+ $(childrenOfLastNode).outerHeight(true);
+							}
+							childrenOfsecondNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children().children();
+							childrenOfsecondNodelength=childrenOfsecondNode.length;
+							if($(childrenOfsecondNode[childrenOfsecondNodelength-1]).children().length>0){
+								if($(childrenOfsecondNode[childrenOfsecondNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
+									positionBottom=$(childrenOfsecondNode[childrenOfsecondNodelength-1]).position().top+ $(childrenOfsecondNode[childrenOfsecondNodelength-1]).outerHeight(true);
+								}
+							}
+
+							childrenOfTopNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
+							childrenOfTopNodelength=childrenOfTopNode.length;
+							if($(childrenOfTopNode[childrenOfTopNodelength-1]).children().length>0){
+
+								if($(childrenOfTopNode[childrenOfTopNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
+									positionBottom=$(childrenOfTopNode[childrenOfTopNodelength-1]).position().top+ $(childrenOfTopNode[childrenOfTopNodelength-1]).outerHeight(true);
+								}
+							}
+							difference=positionBottom-positionTopNew;
+							for (i = 0; i < positionOfElementsNew.length; i++)
+							{
+								for (j = i+1; j < positionOfElementsNew.length; j++)
+								{
+									if (positionOfElementsNew[j] < positionOfElementsNew[i])
+									{
+										positionTopRearranged=positionOfElementsNew[j];
+
+    									}
+    								}
+    							}
+
+    							if(positionTopRearranged !=""){
+    								var min_of_array = Math.min.apply(Math, positionOfElementsNew);
+    								var max_of_array = Math.max.apply(Math, positionOfElementsNew);
+    								var newTopPositionNode="";
+    								for(var j=0;j<allLinkedNodes.length;j++){
+    									if($(allLinkedNodes[j]).position().top==min_of_array){
+    										newTopPositionNode=$(allLinkedNodes[j]);
+    										break;
+    									}
+    								}
+    								var flag=false;
+    								for(var j=0;j<allLinkedNodes.length;j++){
+    									
+    									if(Math.floor(max_of_array)==Math.floor($(allLinkedNodes[j]).position().top)){
+    										flag=true;
+											childrenOfTopNode=$(allLinkedNodes[j]).children();
+											childrenOfTopNodelength=childrenOfTopNode.length;
+											if (($.browser.msie)){
+											if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()=="ix:continuation")
+	    			                    	{
+	    										max_of_array=$(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).outerHeight(true);
+
+	    			                    	}
+											}
+											if($(childrenOfTopNode[childrenOfTopNodelength-1]).children().length>0){
+												if($(childrenOfTopNode[childrenOfTopNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
+													max_of_array=$(childrenOfTopNode[childrenOfTopNodelength-1]).position().top+ $(childrenOfTopNode[childrenOfTopNodelength-1]).outerHeight(true);
+												}
+											}
+											break;
+                                        }
+                                       
+    								}
+    								if(flag==false){
+									if (($.browser.msie)){
+    										if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()=="ix:continuation")
+        			                    	{
+        										max_of_array=$(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).outerHeight(true);
+        			                    	}
+    				                    	}
+    									if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().length>0)
+    			                    	{
+    			                    		if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()[0].nodeName.toLowerCase()=="table"){
+    			                    		max_of_array=$(allLinkedNodes[lengthofContinuedNodes-1]).children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().outerHeight(true);
+    			                    		}
+
+    			                    	}
+    								}
+								difference=max_of_array-min_of_array;
+								if(!checkIfImageAlreadyExists(imageId))	
+								{
+									if(newTopPositionNode != ""){
+									elem.setAttribute("src", srcImg);
+									elem.setAttribute("position", "fixed");
+									elem.style.height=difference+"px";
+									$(elem).insertBefore(newTopPositionNode);
+									}
+									else {
+										difference=positionBottom-positionTopNew;
+										elem.setAttribute("src", srcImg);
+										elem.setAttribute("height", difference);
+										$(elem).insertBefore($(allLinkedNodes[0]));
+										}
+								}
+								else{
+								positionBottom= $(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).outerHeight(true)+10;
+									positionTopNew=$(allLinkedNodes[0][0]).position().top;
+									difference=positionBottom-positionTopNew;
+									elem.style.height=difference+"px";
+								}
+							} 
+							else{
+								setTimeout(function() {
+									if(!checkIfImageAlreadyExists(imageId))	
+									{
+										if($(allLinkedNodes[0]).parent().hasClass('sec-cbe-highlight-block')){
+											$(allLinkedNodes[0]).parent().removeClass('sec-cbe-highlight-block');
+											$(allLinkedNodes[0]).parent().addClass('sec-cbe-highlight-block-continuation');
+										}
+										elem.setAttribute("src", srcImg);
+										elem.setAttribute("height", difference);
+										$(elem).insertBefore(($(allLinkedNodes[0]))); 
+									}
+									else{
+									elem.setAttribute("height", difference);
+									}
+								}, 10);
+							}
+    							
+						}, 10
+						);
+					}
+					break;
+				}
+           // return elem;
+            }
+			function wrapInDashes(index,ele,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem) {
+				if (!node.parent().hasClass('sec-cbe-highlight-dashed')) {	
+					var spanNode = null;
+					var nodeName = node[0].nodeName.toLowerCase();
+					var cls = 'sec-cbe-highlight-inline'; // assume display:inline, work hard to make sure not a block
+					if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
+						xbrId = node.attr('name').split(':').join('_');
+						if (instance && instance.tag[xbrId].xbrlType == 'textBlockItemType') { // it was a textBlock
+							cls = 'sec-cbe-highlight-block';
+						} else { // does it have element descendants
+							$(node[0]).find('*').each(function() { // and there was a display:block in there
+								if ($(this).css('display')=='block') {
+									cls = 'sec-cbe-highlight-block';
+									return false; }});
+							if (cls == 'sec-cbe-highlight-inline') { // last ditch effort based on current display only
+								var text=" ";
+								if($(node).children().length>0){
+								}
+								else{
+							    text = $(node)[0].textContent;
+								}
+								var match = /\n/.exec(text);
+								if(match){
+									cls == 'sec-cbe-highlight-inline';
+								}
+								else{
+									rect = node[0].getClientRects();
+									//console.log(rect);
+									if (rect.length > 1) { // it is drawn in two rectangles, it had to be a block.
+										cls = 'sec-cbe-highlight-block';
+									}
+								}
+							}
+						}
+					}   	                            	    
+					var parentNode = node.parent()[0];
+					if (parentNode.nodeName.toLowerCase()=='span') //.search(App.InlineDoc.inlinePrefix)!=0
+					{
+						var isonly = parentNode.childNodes.length == 1;                        
+						if (isonly) {
+							spanNode = parentNode;
+						}  // no need to wrap.
+					}
+					if (spanNode == null) {
+						var nilPadding = '&#160;';
+						node.wrap('<span>'+((node.attr('xsi:nil')=='true')?nilPadding:'')+'</span>');
+						spanNode = node.parent()[0];
+					}
+
+					$(spanNode).addClass(cls);	
+					
+					if(App_Find.Highlight.cachedResults.linkedHiddenNodes.length>0){
+	                    if(node.attr('id') && ele.isHidden()){
+	                    	wrapLinkedHidden(ele,node,cls,spanNode);
+	                    }
+					}
+
+					
+					if(highlightType=="calculation" || highlightType=="amount" || highlightType=="sign" || highlightType=="hidden"){
+						for (var i=0, len=arrayOfImages.length; i<len; i++)
+						{
+							if(arrayOfImages[i].getAttribute('src')==srcImg){
+								arrayOfImages[i].style.visibility = "hidden";
+							}
+						}
+					}else{
+						if(nodeName == 'ix:nonnumeric'){
+							var positionTopNew="";
+							var positionBottom="";
+							if(ele.attr('continuedat')!=null){
+								var imageId=$(ele).attr('id')+"imageid";
+								var difference=0;
+								elem.setAttribute("id", imageId);
+								elem.setAttribute("width", "3");
+								elem.setAttribute("align", "left");
+								var nodeNew=""; 
+								var positionOfElementsNew=[];
+								var element=" ";
+								var positionTop = (allLinkedNodes[0][0]).offsetTop;
+								var parentNodeOfContinuation=" ";
+								var childNode="";
+								var positionTopRearranged="";
+								var lengthofContinuedNodes=allLinkedNodes.length;
+								var childrenOfsecondNode=" ";
+								var childrenOfsecondNodelength=" ";
+								var childrenOfTopNode=" ";
+								var childrenOfTopNodelength=" ";
+								$(document).ready(function() {
+								insertImageForNonNumericNodes(imageId,difference,elem,nodeNew,positionOfElementsNew,element,positionTop,
+										parentNodeOfContinuation,childNode,positionTopRearranged,lengthofContinuedNodes,
+										childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes);
+								$(window).resize(function() {
+									var positionTop = (allLinkedNodes[0][0]).offsetTop;
+									var positionOfElementsNew=[];
+									insertImageForNonNumericNodes(imageId,difference,elem,nodeNew,positionOfElementsNew,element,positionTop,
+											parentNodeOfContinuation,childNode,positionTopRearranged,lengthofContinuedNodes,
+											childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes);
+								});
+								});
+							}
+
+						}
+					}
+					$(elem).on('click',function(evt){
+						$('#about-modal').dialog("close");
+						App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
+						arrayOfImages = App.frame.contents().find('img');
+						for (var i=0, len=arrayOfImages.length; i<len; i++)
+						{
+							if(arrayOfImages[i].getAttribute('src')==blueImagePath){
+								arrayOfImages[i].setAttribute("src", srcImg);
+							}
+						}
+
+						if(nodeName == 'ix:nonnumeric'){
+							if(node.attr('continuedat')!=null){
+								$(spanNode).addClass('sec-cbe-highlight-dashed');
+							}
+							else{
+								if($(spanNode).hasClass('sec-cbe-highlight-block')){
+									$(spanNode).addClass('sec-cbe-highlight-dashed_block');
+								}
+							}
+						}
+						if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
+							var index = $(this).attr('data-result-index');
+							App_Find.Results.highlightItem(index);  // highlight the result item
+							//var allLinkedNodes=[];
+							if(nodeName == 'ix:nonnumeric'){
+								if((node).attr('continuedat')!=null){
+									$(spanNode).children(':first').selectionHighlightNodesOnClick();
+									arrayOfImages = App.frame.contents().find('img');
+									for(var i=0;i<allLinkedNodes.length;i++){
+
+										str = $(elem).attr('src');
+										str.replace("/ixviewer/images/blue-vertical-rectangle-md.png");
+										$(elem).attr("src", "/ixviewer/images/blue-vertical-rectangle-md.png");
+										elem.setAttribute("src", blueImagePath);
+									}
+									App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
+									App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected'); 
+									selectionHighlightClickNodes(allLinkedNodes); 
+								}
+
+								else if($(spanNode).hasClass('sec-cbe-highlight-block')){
+									$(spanNode).children(':first').selectionHighlightNodesOnClick();
+									App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
+									App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+									$(spanNode).addClass('sec-cbe-highlight-filter-content-selected');
+								}
+								else{
+									$(spanNode).children(':first').selectionHighlight();
+								}
+
+								$(spanNode).children(':first').each(function() {
+									App_Find.Element.showSelectionDetail(node);
+								});
+							}
+
+							evt.stopPropagation();
+						}
+					}).on('mousemove', function(event) {
+						var allLinkedNodes=[];
+						if(nodeName == 'ix:nonnumeric'){
+							if(node.attr('continuedat')!=null){
+							//App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+								node.removeClass('sec-cbe-highlight-dashed');
+								node.removeClass('sec-cbe-highlight-dashed_block');
+								selectionHighlightNodes(allLinkedNodes); 
+							}
+						}
+						if(App_Find.Element.enableTooltip=="enable"){
+							if(nodeName == 'ix:nonnumeric'){
+								if(node.attr('continuedat')!=null){
+									$(spanNode).addClass('sec-cbe-highlight-dashed');
+								}
+								else{
+									if($(spanNode).hasClass('sec-cbe-highlight-block')){
+										$(spanNode).addClass('sec-cbe-highlight-dashed_block');
+									}
+								}
+							}
+							if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
+								$(spanNode).children(':first').each(function() {
+									getMouseOverDiv(ele,node,false);
+								});
+		                    	}
+		                    	
+		        				
+							placeMouseOverDiv(event);
+		                    	event.stopPropagation();
+	                    	}
+	                    	
+	                    }).on('mouseout', function() {
+	                    	if(nodeName == 'ix:nonnumeric'){
+	                        	if(node.attr('continuedAt')!=null){
+	                        		allLinkedNodes=App_Find.Element.groupIxContinuation(node);
+	                        		 $(this).removeHighlightNodes(allLinkedNodes);
+	                        		
+	                        	}
+		
+	               		 }
+	                    	var container = $('#selection-detail-container-mouseOver');
+	                    	container.hide();
+	                    });
+						if(nodeName == 'ix:nonnumeric'){
+	                    	if(node.attr('continuedat')!=null){
+	                    		$(spanNode).addClass('sec-cbe-highlight-dashed-highlight');
+	                    	}
+	                    	else{
+								$(spanNode).addClass('sec-cbe-highlight-dashed ');
+								if($(spanNode).hasClass('sec-cbe-highlight-block')){
+									$(spanNode).addClass('sec-cbe-highlight-dashed_block');
+								}
+							}
+	                    	}
+						else{
+							$(spanNode).addClass('sec-cbe-highlight-dashed');
+						}
+					
+                       $(spanNode).attr('data-result-index',index).on('click', function(evt) {
+                    	$('#about-modal').dialog("close");
+                    	//$(this).addClass('sec-cbe-highlight-dashed')
+							for (var i=0, len=arrayOfImages.length; i<len; i++)
+							 {
+								if(arrayOfImages[i].getAttribute('src')==blueImagePath){
+									arrayOfImages[i].setAttribute("src", srcImg);
+								}
+							 }
+                        if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-dashed-highlight')||$(this).hasClass('sec-cbe-highlight-filter')) {
+						    App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected');
+                        	App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
+                        	App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+                    	    var index = $(this).attr('data-result-index');
+                    		App_Find.Results.highlightItem(index);  // highlight the result item
+                       		 if(nodeName == 'ix:nonnumeric'){
+                                	if(node.attr('continuedat')!=null){
+                                		$(this).children(':first').selectionHighlightNodesOnClick();
+                                		for(var i=0;i<allLinkedNodes.length;i++){
+                                				parentNodeOfContinuation=allLinkedNodes[i].parent();
+                                				nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
+                                				if(positionTop=='0' || positionTop=='1' ){
+                                					while(nodeN.toLowerCase() !="body"){
+                                						parentNodeOfContinuation = parentNodeOfContinuation.parent();
+                                						if($(parentNodeOfContinuation).parent()[0]){
+                                							nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
+                                						}
+                                						else{
+                                							break;
+                                						}
+                                					}
+                                					var childNode=parentNodeOfContinuation;
+                                					if(($(childNode).prev()[0]) ){
+                                						if($(childNode).prev()[0].nodeName.toLowerCase()=="img"){
+                                							$(childNode).prev()[0].setAttribute("src", blueImagePath);
+                                						}
+                                					}
+                                				}
+                                			str = $(elem).attr('src');
+                                			str.replace("/ixviewer/images/blue-vertical-rectangle-md.png");
+                                			$(elem).attr("src", "/ixviewer/images/blue-vertical-rectangle-md.png");
+                                			elem.setAttribute("src", blueImagePath);
+                                		}
+                                		App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
+                                		App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected'); 
+                                		selectionHighlightClickNodes(allLinkedNodes);
+                                		}
+                                	else{
+                                		if($(this).hasClass('sec-cbe-highlight-block')){
+                                			$(this).children(':first').selectionHighlightForBlock();
+                                			
+                                		}else if($(this).hasClass('sec-cbe-highlight-inline')){
+                                			App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+								$(this).addClass('sec-cbe-highlight-filter-content-selected');
+                                			$(this).children(':first').selectionHighlight();
+                                		}
+                                	}
+                                	$(this).children(':first').each(function() {
+									App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+								$(this).addClass('sec-cbe-highlight-filter-content-selected');
+                            		    App_Find.Element.showSelectionDetail($(node));
+                            		});
+                       		 }
+                       		 else{
+								App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+	                       		$(this).children(':first').selectionHighlight();	 
+	                    		$(this).children(':first').each(function() {
+	                    		    App_Find.Element.showSelectionDetail($(this));
+	                    		});
+                       		 }
+                    		evt.stopPropagation();
+                    	}
+                    }).on('mousemove', function(event) {
+                    	
+               		 if(nodeName == 'ix:nonnumeric'){
+                        	if(node.attr('continuedat')!=null){
+							//App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
+							//App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+                        		node.removeClass('sec-cbe-highlight-dashed');
+                        		node.removeClass('sec-cbe-highlight-dashed_block');
+                        		selectionHighlightNodes(allLinkedNodes); 
+                        	}else if(($(this).hasClass('sec-cbe-highlight-block'))&& !($(this).hasClass('sec-cbe-highlight-content-selected'))){
+                          		$(this).addClass('sec-cbe-highlight-content-selected');
+                          	}
+							else{
+               			$(this).addClass('sec-cbe-highlight-content-selected');
+               		 }
+               		 }
+					  else{
+               			$(this).addClass('sec-cbe-highlight-content-selected');
+               		 }
+                    	if(App_Find.Element.enableTooltip=="enable"){
+                    		if(nodeName == 'ix:nonnumeric'){
+                            	if(node.attr('continuedat')!=null){
+                            		$(this).addClass('sec-cbe-highlight-dashed-highlight');
+                            	}
+                        	}
+	                    	if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-dashed-highlight')||$(this).hasClass('sec-cbe-highlight-filter')) {
+	                    		$(this).children(':first').each(function() {
+	                    			getMouseOverDiv(ele, node,false);
+	                    		});
+	                    	}
+	                    	
+	        				
+	                    	placeMouseOverDiv(event);
+	                    	
+                    	}
+                    	event.stopPropagation();
+                    	
+                    }).on('mouseout', function() {
+                    	if(nodeName == 'ix:nonnumeric'){
+                        	if(node.attr('continuedAt')!=null){
+                        		 $(this).removeHighlightNodes(allLinkedNodes); 
+                            }else if($(this).hasClass('sec-cbe-highlight-block')){
+                          		$(this).removeClass('sec-cbe-highlight-content-selected');
+                          	}
+	                     else{
+                    			$(this).removeClass('sec-cbe-highlight-content-selected');
+                    		 }
+               		 }
+                    	 else{
+                    			$(this).removeClass('sec-cbe-highlight-content-selected');
+                    		 }
+                    	var container = $('#selection-detail-container-mouseOver');
+                    	container.hide();
+                    }).on('mouseenter', function(event) {
+                 		 if(nodeName == 'ix:nonnumeric'){
+                          	if(ele.attr('continuedat')!=null){
+                          		ele.removeClass('sec-cbe-highlight-dashed');
+                          		ele.removeClass('sec-cbe-highlight-dashed_block');
+                          		selectionHighlightNodes(allLinkedNodes); 
+                          	}else if($(this).hasClass('sec-cbe-highlight-block')){
+                          		$(this).addClass('sec-cbe-highlight-content-selected');
+                          	}
+                 		 }
+                    	if(App_Find.Element.enableTooltip=="enable"){
+                    		
+	                    	if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-filter')) {
+	                    		$(this).children(':first').each(function() {
+	                    			getMouseOverDiv(ele, node,false);
+	                    		});
+	                    	}
+	                    	placeMouseOverDiv(event);
+	                    	
+                    	}
+                    	event.stopPropagation();
                     });
                 }
             }
@@ -4246,308 +4337,193 @@ var App_Find = {
             }
             function calTotalContinuedNodes(index,element){
              App_Find.Highlight.cachedResults.continuedAt=App.InlineDoc.getContinuations();
-           }
+            }
             // if we have no filters or search filters then just show the results
             if (!filter.isFiltered() &&
                 search.searchStr == '') {
             	 calTotalContinuedNodes();
             	 calTotalRelationshipNodes();
             	 calTotalFootNoteNodes();
-            	 var highlightType = App_Find.Highlight.getSelected().value;
-            	 var blueImagePath="/ixviewer/images/blue-vertical-rectangle-md.png";
-            	 var arrayOfImages = App.frame.contents().find('img');
-         		for (var i=0, len=arrayOfImages.length; i<len; i++)
-         		{
-         			if(arrayOfImages[i].getAttribute('src')=="/ixviewer/images/orange-vertical-rectangle-md.png"){
-         				//arrayOfImages[i].setAttribute("height", "0px");
-         				//arrayOfImages[i].setAttribute("width", "0px");
-         				arrayOfImages[i].style.visibility = "visible";
-         			}
-         		}
-				results.each(function(index, element) {
-            		 var node = $(element);
-            		 var nodeName = node[0].nodeName.toLowerCase();
-            		 var allLinkedNodes=[];
-            		 var elem = document.createElement("img");
-            		 if(nodeName == 'ix:nonnumeric'){
-            			 App_Find.Highlight.cachedResults.nonnumericnodes.push(node);
-            		 }
-            		 if(nodeName == 'ix:nonnumeric'){
-            			 if(node.attr('continuedat')!=null){
-            				 allLinkedNodes=App_Find.Element.groupIxContinuation(node);
-            				 App_Find.Highlight.cachedResults.allData.push(allLinkedNodes);
-            			 }
-            		 }
-            		 wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
-            	 });
-            	 var continuedNodeId=" ";
-            	 var found=false;
-            	 var parentNode=" ";
-            	 var parentnodeId=" ";
-            	 var parentNodeOfContinuation=" ";
-            	 var positionOfElementsNew=[];
-            	 var parentNodeParent="";
-            	 var parentNodeParentNodeName=" ";
-            	 var nodeNew=" ";
-            	 for(var j=0;j< App_Find.Highlight.cachedResults.continuedAt.length;j++){
-            		 nodeNew=$(App_Find.Highlight.cachedResults.continuedAt[j]);
-            		 wrapInDashesForContinuationArray(nodeNew,blueImagePath,continuedNodeId,found,parentNode,parentnodeId,parentNodeOfContinuation,positionOfElementsNew,parentNodeParent,parentNodeParentNodeName);
+            	 if(App_Find.Highlight.cachedResults.continuedAt.length>0){
+                	 var highlightType = App_Find.Highlight.getSelected().value;
+                	 var blueImagePath="/ixviewer/images/blue-vertical-rectangle-md.png";
+                	 var arrayOfImages = App.frame.contents().find('img');
+             		for (var i=0, len=arrayOfImages.length; i<len; i++)
+             		{
+             			if(arrayOfImages[i].getAttribute('src')==srcImg){
+             				arrayOfImages[i].style.visibility = "visible";
+             			}
+             		}
+    				results.each(function(index, element) {
+                		 var node = $(element);
+                		 var nodeName = node[0].nodeName.toLowerCase();
+                		 var allLinkedNodes=[];
+                		 var elem = document.createElement("img");
+                		 if(nodeName == 'ix:nonnumeric'){
+                			 App_Find.Highlight.cachedResults.nonnumericnodes.push(node);
+                		 }
+                		 if(nodeName == 'ix:nonnumeric'){
+                			 if(node.attr('continuedat')!=null){
+                				 allLinkedNodes=App_Find.Element.groupIxContinuation(node);
+                				 App_Find.Highlight.cachedResults.allData.push(allLinkedNodes);
+                			 }
+                		 }
+                		 wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
+                	 });
+                	 var continuedNodeId=" ";
+                	 var found=false;
+                	 var parentNode=" ";
+                	 var parentnodeId=" ";
+                	 var parentNodeOfContinuation=" ";
+                	 var positionOfElementsNew=[];
+                	 var parentNodeParent="";
+                	 var parentNodeParentNodeName=" ";
+                	 var nodeNew=" ";
+                	 for(var j=0;j< App_Find.Highlight.cachedResults.continuedAt.length;j++){
+                		 nodeNew=$(App_Find.Highlight.cachedResults.continuedAt[j]);
+                		 wrapInDashesForContinuationArray(nodeNew,blueImagePath,continuedNodeId,found,parentNode,parentnodeId,parentNodeOfContinuation,positionOfElementsNew,parentNodeParent,parentNodeParentNodeName);
+                	 }
+                	 App_Find.Results.show(App_Find.Highlight.getResults());
+            	 }else{
+                	 var highlightType = App_Find.Highlight.getSelected().value;
+    				results.each(function(index, element) {
+                		 var node = $(element);
+                		 var nodeName = node[0].nodeName.toLowerCase();
+                		// var allLinkedNodes=[];
+                		 var elem = document.createElement("img");
+                		 
+                		 wrapInDashesTraditional(index,element,highlightType,node);
+                	 });
+                	 App_Find.Results.show(App_Find.Highlight.getResults());
             	 }
-            	 App_Find.Results.show(App_Find.Highlight.getResults());
+            	 
             } else {
-			    var arrayOfImages = App.frame.contents().find('img');
-    			for (var i=0, len=arrayOfImages.length; i<len; i++)
-    			{
-    				if(arrayOfImages[i].getAttribute('src')=="/ixviewer/images/orange-vertical-rectangle-md.png"){
-    					arrayOfImages[i].style.visibility = "visible";
-    				}
-    			}
-            	var highlightType = App_Find.Highlight.getSelected().value;
-            	var blueImagePath="/ixviewer/images/blue-vertical-rectangle-md.png";
-            	if(!filter.isFiltered() && (highlightType != 'none')){
-            		results.each(function(index, element) {
-            			var node = $(element);
-            			var nodeName = node[0].nodeName.toLowerCase();
-            			var allLinkedNodes=[];
-            			var elem = document.createElement("img");
-            			if(nodeName == 'ix:nonnumeric'){
-            				if(node.attr('continuedat')!=null){
-            					allLinkedNodes=App_Find.Element.groupIxContinuation(node);
-            				}
-            			}
-            			wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
-	                });
-            	}
-                var results = [];
-                App_Find.Highlight.getResults().each(function(index, element) {
-
-                    var isMatch = false;
-                    var ele = $(element);
-                    var node = $(element);
-            		var nodeName = node[0].nodeName.toLowerCase();
-            		var allLinkedNodes=[];
-        			if(nodeName == 'ix:nonnumeric'){
-        				if(node.attr('continuedat')!=null){
-        					allLinkedNodes=App_Find.Element.groupIxContinuation(node);
+            	if(App_Find.Highlight.cachedResults.continuedAt.length>0){
+            		var arrayOfImages = App.frame.contents().find('img');
+        			for (var i=0, len=arrayOfImages.length; i<len; i++)
+        			{
+        				if(arrayOfImages[i].getAttribute('src')==srcImg){
+        					arrayOfImages[i].style.visibility = "visible";
         				}
         			}
-        			var elem = document.createElement("img");
-                    if (filter.isFiltered()) {
+                	var highlightType = App_Find.Highlight.getSelected().value;
+                	var blueImagePath="/ixviewer/images/blue-vertical-rectangle-md.png";
+                	if(!filter.isFiltered() && (highlightType != 'none')){
+                		results.each(function(index, element) {
+                			var node = $(element);
+                			var nodeName = node[0].nodeName.toLowerCase();
+                			var allLinkedNodes=[];
+                			var elem = document.createElement("img");
+                			if(nodeName == 'ix:nonnumeric'){
+                				if(node.attr('continuedat')!=null){
+                					allLinkedNodes=App_Find.Element.groupIxContinuation(node);
+                				}
+                			}
+                			wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
+    	                });
+                	}
+                    var results = [];
+                    App_Find.Highlight.getResults().each(function(index, element) {
 
-                        if (ele.matchesFilter(filter, ele)) {
-                        	wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
-                            if (search.searchStr != '' &&
-                                ele.matchesSearch(search, ele)) {
-
-                                isMatch = true;
-                            } else if (search.searchStr == '') {
-
-                                isMatch = true;
-                            }
-                        }
-						else{
-                        	var nodeName = $(ele)[0].nodeName.toLowerCase();
-                        	if(nodeName == 'ix:nonnumeric'){
-                               	if($(ele).attr('continuedat')!=null){
-                               	 allLinkedNodes=App_Find.Element.groupIxContinuation($(ele));
-                               		var positionTop = (allLinkedNodes[0][0]).offsetTop;
-                           			for(var i=0;i<allLinkedNodes.length;i++){
-
-                           				var parentNodeOfContinuation=allLinkedNodes[i].parent();
-                           				nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-                           				if(positionTop=='0' || positionTop=='1' ){
-                           					while(nodeN.toLowerCase() !="body"){
-                           						parentNodeOfContinuation = parentNodeOfContinuation.parent();
-                           						if($(parentNodeOfContinuation).parent()[0]){
-                           							nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
-                           						}
-                           						else{
-                           							break;
-                           						}
-                           					}
-                           					var childNode=parentNodeOfContinuation;
-                           					if(($(childNode).prev()[0]) ){
-                           						if($(childNode).prev()[0].nodeName.toLowerCase()=="img"){
-                           							$(childNode).prev()[0].style.visibility = "hidden";
-                           						}
-                           				}
-                           			}
-                           				
-                           			else{
-                           				var positionOfElementsNew=[];
-                           				for(var i=0;i<allLinkedNodes.length;i++){
-                           					positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
-                           				}
-                           				var positionTopRearranged="";
-                           				for (i = 0; i < positionOfElementsNew.length; i++)
-                           				{
-                           					for (j = i+1; j < positionOfElementsNew.length; j++)
-                           					{
-                           						if (positionOfElementsNew[j] < positionOfElementsNew[i])
-                           						{
-                           							positionTopRearranged=positionOfElementsNew[j];
-
-                           						}
-                           					}
-                           				}
-                           				
-                           				if(positionTopRearranged !=""){
-                            				var min_of_array = Math.min.apply(Math, positionOfElementsNew);
-                            				var max_of_array = Math.max.apply(Math, positionOfElementsNew);
-                            				var newTopPositionNode="";
-                            				for(var j=0;j<allLinkedNodes.length;j++){
-                            					if($(allLinkedNodes[j]).position().top==min_of_array){
-                            						newTopPositionNode=$(allLinkedNodes[j]);
-                            					}
-                            				}
-                            				if( $(newTopPositionNode[0]).prev()[0] ){
-                            					if(($(newTopPositionNode[0]).prev()[0].nodeName.toLowerCase()=="img")){
-                            						$(newTopPositionNode[0]).prev()[0].style.visibility = "hidden";
-
-                            					}
-                            				}
-                            			} 
-                           				 if( $(allLinkedNodes[0]).prev()[0] ){
-                           					if($(allLinkedNodes[0]).prev()[0].nodeName.toLowerCase()=="img"){
-                           						$(allLinkedNodes[0]).prev()[0].style.visibility = "hidden";
-                           					}
-                           				}
-                           			}
-                          			}
-                               		}
-                               	
-                               		
-                               	}
-                        	if($(ele).parent().prev()[0]){
-                            	if($(ele).parent().prev()[0].nodeName.toLowerCase()=="img"){
-                            		$(ele).parent().prev()[0].style.visibility = "hidden";
-                            	}
-                            	}
-                            	else if($(ele).prev()[0]){
-                            		if($(ele).prev()[0].nodeName.toLowerCase()=="img"){
-                                		$(ele).prev()[0].style.visibility = "hidden";
-                                	}
-                            	}
-                            
-                        	
-                        	
-                        }
-                    } else if (search.searchStr != '' && ele.matchesSearch(search, ele)) {
-                            var searchstring = search.searchStr;
-                            isMatch = true;
-
-                    }
-                    if (isMatch) {
-                    	var highlightType = App_Find.Highlight.getSelected().value;
-                    	var blueImagePath="/ixviewer/images/blue-vertical-rectangle-md.png";
-                    	var node = $(ele);
-                 		var nodeName = node[0].nodeName.toLowerCase();
-                 		var allLinkedNodes=[];
-                 		var elem = document.createElement("img");
+                        var isMatch = false;
+                        var ele = $(element);
+                        var node = $(element);
+                		var nodeName = node[0].nodeName.toLowerCase();
+                		var allLinkedNodes=[];
+                		var imageId="";
+                		var imageNode="";
             			if(nodeName == 'ix:nonnumeric'){
             				if(node.attr('continuedat')!=null){
             					allLinkedNodes=App_Find.Element.groupIxContinuation(node);
             				}
             			}
-                        results.push(ele);
-                        ele.filterHighlight(results.length - 1);
-                        wrapInDashes(index,ele,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
-                        
-                    }
-                    else{
-                    	var nodeName = $(ele)[0].nodeName.toLowerCase();
-                    	//var imageId=$(ele).attr('id')+"imageid";
-                    	//console.log(imageId);
-                    	//var alreadyExistingImage=getAlreadyExistingImage(imageId);
-                    	//console.log(alreadyExistingImage);
-                    	if(nodeName == 'ix:nonnumeric'){
-                           	if($(ele).attr('continuedat')!=null){
-                           	 allLinkedNodes=App_Find.Element.groupIxContinuation($(ele));
-                           		var positionTop = (allLinkedNodes[0][0]).offsetTop;
-                       			for(var i=0;i<allLinkedNodes.length;i++){
+            			var elem = document.createElement("img");
+                        if (filter.isFiltered()) {
 
-                       				var parentNodeOfContinuation=allLinkedNodes[i].parent();
-                       				nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-                       				if(positionTop=='0' || positionTop=='1' ){
-                       					while(nodeN.toLowerCase() !="body"){
-                       						parentNodeOfContinuation = parentNodeOfContinuation.parent();
-                       						if($(parentNodeOfContinuation).parent()[0]){
-                       							nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
-                       						}
-                       						else{
-                       							break;
-                       						}
-                       					}
-                       					var childNode=parentNodeOfContinuation;
-                       					if(($(childNode).prev()[0]) ){
-                       						if($(childNode).prev()[0].nodeName.toLowerCase()=="img"){
-                       							$(childNode).prev()[0].style.visibility = "hidden";
-                       						}
-                       				}
-                       			}
-                       				
-                       			else{
-                       				var positionOfElementsNew=[];
-                       				for(var i=0;i<allLinkedNodes.length;i++){
-                       					positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
-                       				}
-                       				var positionTopRearranged="";
-                       				for (i = 0; i < positionOfElementsNew.length; i++)
-                       				{
-                       					for (j = i+1; j < positionOfElementsNew.length; j++)
-                       					{
-                       						if (positionOfElementsNew[j] < positionOfElementsNew[i])
-                       						{
-                       							positionTopRearranged=positionOfElementsNew[j];
+                            if (ele.matchesFilter(filter, ele)) {
+                            	wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
+                                if (search.searchStr != '' &&
+                                    ele.matchesSearch(search, ele)) {
+                                    isMatch = true;
+                                } else if (search.searchStr == '') {
 
-                       						}
-                       					}
-                       				}
-                       				
-                       				if(positionTopRearranged !=""){
-                        				var min_of_array = Math.min.apply(Math, positionOfElementsNew);
-                        				var max_of_array = Math.max.apply(Math, positionOfElementsNew);
-                        				var newTopPositionNode="";
-                        				for(var j=0;j<allLinkedNodes.length;j++){
-                        					if($(allLinkedNodes[j]).position().top==min_of_array){
-                        						newTopPositionNode=$(allLinkedNodes[j]);
-                        					}
-                        				}
-                        				if( $(newTopPositionNode[0]).prev()[0] ){
-                        					if(($(newTopPositionNode[0]).prev()[0].nodeName.toLowerCase()=="img")){
-                        						$(newTopPositionNode[0]).prev()[0].style.visibility = "hidden";
+                                    isMatch = true;
+                                }
+                            }
+    						else{
+    							if(nodeName == 'ix:nonnumeric'){
+    	                           	if($(ele).attr('continuedat')!=null){
+    	                           		imageId=$(ele).attr('id')+"imageid";
+    	        						imageNode=getAlreadyExistingImage(imageId);
+    	        						if(imageNode){
+    	        						imageNode.style.visibility = "hidden";
+    	                           		}
+    	                           	}
+    	                    	}
+                            }
+                        } else if (search.searchStr != '' && ele.matchesSearch(search, ele)) {
+                                var searchstring = search.searchStr;
+                                isMatch = true;
 
-                        					}
-                        				}
-                        			} 
-                       				 if( $(allLinkedNodes[0]).prev()[0] ){
-                       					if($(allLinkedNodes[0]).prev()[0].nodeName.toLowerCase()=="img"){
-                       						$(allLinkedNodes[0]).prev()[0].style.visibility = "hidden";
-                       					}
-                       				}
-                       			}
-                      			}
-                           		}
-                           	
-                           		
-                           	}
-                    	if($(ele).parent().prev()[0]){
-                        	if($(ele).parent().prev()[0].nodeName.toLowerCase()=="img"){
-                        		$(ele).parent().prev()[0].style.visibility = "hidden";
-                        	}
-                        	}
-                        	else if($(ele).prev()[0]){
-                        		if($(ele).prev()[0].nodeName.toLowerCase()=="img"){
-                            		$(ele).prev()[0].style.visibility = "hidden";
+                        }
+                        if (isMatch) {
+                            results.push(ele);
+                            ele.filterHighlight(results.length - 1);
+    						if(nodeName == 'ix:nonnumeric'){
+                            	if($(ele).attr('continuedat')!=null){
+                            		for(var i=0;i<allLinkedNodes.length;i++){
+                            			allLinkedNodes[i].filterHighlightLinkedNodes(allLinkedNodes[i]);
+                            		}
                             	}
-                        	}
-                        
-                    	
-                    	
-                    }
-                });
-                App_Find.Results.show(results);
-	            
+                            }
+                            wrapInDashes(index,ele,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
+                            
+                        }
+                    });
+                    App_Find.Results.show(results);
+            	}else{
+                	var highlightType = App_Find.Highlight.getSelected().value;
+                	if(!filter.isFiltered() && (highlightType != 'none')){
+                		results.each(function(index, element) {
+                			var node = $(element);
+                			var nodeName = node[0].nodeName.toLowerCase();
+                			//wrapInDashe(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
+                			wrapInDashesTraditional(index,element,highlightType,node);
+    	                });
+                	}
+                    var results = [];
+                    App_Find.Highlight.getResults().each(function(index, element) {
+
+                        var isMatch = false;
+                        var ele = $(element);
+                        var node = $(element);
+                		var nodeName = node[0].nodeName.toLowerCase();
+                        if (filter.isFiltered()) {
+
+                            if (ele.matchesFilter(filter, ele)) {
+                            	wrapInDashesTraditional(index,element,highlightType,node);
+                                if (search.searchStr != '' &&
+                                    ele.matchesSearch(search, ele)) {
+                                    isMatch = true;
+                                } else if (search.searchStr == '') {
+
+                                    isMatch = true;
+                                }
+                            }
+                        } else if (search.searchStr != '' && ele.matchesSearch(search, ele)) {
+                                var searchstring = search.searchStr;
+                                isMatch = true;
+
+                        }
+                        if (isMatch) {
+                            results.push(ele);
+                            ele.filterHighlight(results.length - 1);
+    						wrapInDashesTraditional(index,element,highlightType,node);
+                            
+                        }
+                    });
+                    App_Find.Results.show(results);
+            	}
             }
         },
         jsonlocation:function() {
@@ -4614,7 +4590,7 @@ var App_Find = {
 	                   xbrlValue = App_Utils.addCommas(xbrlValue);		               
 		           } else if (nodeName == 'ix:nonnumeric') {		
 		               xbrlValue = e.htmlDecode(e.text());
-		               // if (e.attr('format')) { xbrlValue = App_Utils.applyFormat(e); }
+		              if (e.attr('format')) { xbrlValue =  App_Utils.applyFormat(e); }
                        if (xbrlValue.length > maxValueTextLength) {
                            // some of the hidden items contain html entities which is being seen as text
                            // therefore in order to get the text we have to re-parse it as html and grab the text
@@ -4682,24 +4658,6 @@ var App_Find = {
 		        	   
 		           }
                    
-                   
-                   /*
-                   if ((e.isHidden())||(e.isCustom())){
-		               if((window.orientation) || (window.orientation=='0')){
-		                   if (!(Math.abs(window.orientation) === 90) && (screen.width > 640) && (screen.width < 769)) {
-						        if (finallabelresult.length > 12) { finallabelresult = finallabelresult.trim().substring(0, 12) + '...'; }
-						    } 
-						    else if((Math.abs(window.orientation) === 90) && (screen.width <= 640)){
-						    	if((e.isHidden())&&(e.isCustom())){
-						    		if (finallabelresult.length > 8) { finallabelresult = finallabelresult.trim().substring(0, 8) + '...'; }
-						    	}else{
-						    		if (finallabelresult.length > 12) { finallabelresult = finallabelresult.trim().substring(0, 12) + '...'; }
-						    	}
-						    }
-					   }
-		           }*/
-                   
-                   
                    resultHtml += '<br/> '+contextRef+ '<br/><span id="xbrlValueSpan">'+ xbrlValue + '</span>';
                    resultHtml +=  '</div></div>';   
                    var resultHtmlObj = $(resultHtml);
@@ -4714,7 +4672,6 @@ var App_Find = {
                           		}
                  		 }
                 	   App_Find.Results.selectItem($(this).attr('data-result-index'), true);});
-                	   
                    resultHtmlObj.on('keyup', function(e) {                  
                 	   var code = e.keyCode || e.which;                	   
                   		if((code == 13) || (code == 32)) {                   		
@@ -4733,7 +4690,7 @@ var App_Find = {
     Element:{
         labels:null,
         element:null,
-        enableTooltip:'enable',
+        enableTooltip:'disable',
         carouselItems:[
             { subTitle:'Attributes' },
             { subTitle:'Labels' },
@@ -4759,13 +4716,14 @@ var App_Find = {
             header.find('.btn-remove').on('click', function() {
 					var arrayOfImages = App.frame.contents().find('img');
 					var blueImagePath="/ixviewer/images/blue-vertical-rectangle-md.png";
+                    var srcImg = "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png";
 					for (var i=0, len=arrayOfImages.length; i<len; i++)
 					{
 						if(arrayOfImages[i].getAttribute('src')==blueImagePath){
-							arrayOfImages[i].setAttribute("src", "/ixviewer/images/orange-vertical-rectangle-md.png");
+							arrayOfImages[i].setAttribute("src", srcImg);
 						}
 					}
-if(screen.width>=768 && ((window.orientation) || (window.orientation=='0') || (window.orientation=='180'))){
+/*if(screen.width>=768 && ((window.orientation) || (window.orientation=='0') || (window.orientation=='180'))){
 
 
 
@@ -4777,11 +4735,12 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
 
 	$(".fixedMenuBar").css('position', 'absolute');
 
-}
+}*/
                 App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
                 App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
 
                 App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected');
+                App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
                 //$(this).parents('.selection-detail-container').hide('slide');
                 $(this).parents('.selection-detail-container').dialog("close");
                 App_Find.Results.resetHighlightColor();
@@ -4863,11 +4822,6 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
                 }
             container.draggable(draggableParams);
             
-            //container.show('slide', function() {
-			/*container.dialog("open", function() {
-                $('#selection-detail-carousel').carousel(0);
-                App_Find.Element.carouselGoTo(0);
-            });*/
         },
         
         carouselGoTo:function(index) {
@@ -4971,6 +4925,9 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
                     if (nodeName == 'ix:nonfraction') {
                         xbrlValue = ele.getXbrlValue();
                         if (ele.attr('format') && xbrlValue=="-") { xbrlValue =  App_Utils.applyFormat(ele); }
+						else if(ele.attr('format')=="ixt:zerodash" && xbrlValue=="NaN"){
+                        	xbrlValue =  App_Utils.applyFormat(ele);
+                        }
                     	xbrlValue = App_Utils.addCommas(xbrlValue);                    
                     } else if (nodeName == 'ix:nonnumeric') {
                         if(ele.attr('continuedAt') != null){
