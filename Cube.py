@@ -249,7 +249,7 @@ class Cube(object):
 
     def populateUnitPseudoaxis(self):
         giveMemGetPositionDict = {}
-        for i, unit in enumerate(sorted(self.unitAxis.values(), key = lambda thing : thing.sourceline)):
+        for i, unit in enumerate(sorted(self.unitAxis.values(), key = lambda thing : thing.sourceline or 0)):
             giveMemGetPositionDict[unit.id] = i
         self.axisAndMemberOrderDict['unit'] = (giveMemGetPositionDict, None)
 

@@ -894,7 +894,7 @@ class Report(object):
         for arelleFactSet in sortedListOfFactSets:
             # we need a fact for each unit, why?  because the type of the unit is actually in the element declaration
             # so we do all this just to pull the fact out and pass it to getUnitAndSymbolStr, which will probably call fact.unitSymbol()
-            for fact in sorted(arelleFactSet, key = lambda thing : thing.unit.sourceline):
+            for fact in sorted(arelleFactSet, key = lambda thing : thing.unit.sourceline or 0):
                 if fact.unit not in unitSet:
                     unitSet.add(fact.unit)
                     unitSymbolStr = Utils.getUnitAndSymbolStr(fact)
@@ -1108,7 +1108,7 @@ class Report(object):
                           ,'xsiNil':fact.xsiNil
                           ,'lang':fact.xmlLang
                           ,'decimals':fact.decimals
-                          ,'ancestors':[str(ancestor.qname) for ancestor in fact.iterancestors()]
+                          ,'ancestors':[str(getattr(ancestor,"qname",ancestor.tag)) for ancestor in fact.iterancestors()]
                           ,'reportCount':cubeCount
                           }
                         if reportSummary.firstAnchor is None:
