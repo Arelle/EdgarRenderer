@@ -55,7 +55,9 @@ def init(cntlr, reportsFolder): # returns browser root
         localserver.route('/<file:path>', 'GET', getlocalfile)
         # start local server on the port on a separate thread
         threading.Thread(target=localserver.run, 
-                         kwargs=dict(server='cherrypy', host='localhost', port=port, quiet=True), 
+                         # The wsgi server part of cherrypy was split into a new 'cheroot'
+                         #kwargs=dict(server='cherrypy', host='localhost', port=port, quiet=True), 
+                         kwargs=dict(server='cheroot', host='localhost', port=port, quiet=True), 
                          daemon=True).start()
         time.sleep(2) # allow other thread to run and start up
 
