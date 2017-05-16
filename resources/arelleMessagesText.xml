@@ -1744,11 +1744,23 @@ Axis $(dimension) in DRS role $(linkrole), missing targetrole consecutive relati
 </message>
 
 <!-- suggest adding $(namespaceConflicts) which lists the namespaces that conflict -->
-<message code="EFM.6.22.03"
+<message code="EFM.6.22.03.incompatibleTaxonomyVersions"
          level="error"
-         module="ValidateFiling.py" line="940"
+         module="ValidateFiling.py" line="1577"
          args="namespaceConflicts conflictClass">
-[cp-2203-Incompatible-Taxonomy-Versions]  $(refUrl) uses concepts from more than one version of the $(conflictClass) taxonomy.
+[cp-2203-Incompatible-Taxonomy-Versions]  $(modelObject) uses concepts from more than one version of the $(conflictClass) taxonomy.
+</message>
+<message code="incompatibleTaxonomyDocumentType"
+         level="error"
+         module="ValidateFiling.py" line="1582"
+         args="documentType conflictClass">
+[cp-2203-Incompatible-Taxonomy-DocumentType]  $(modelObject) documentType $(documentType) is incompatible with the $(conflictClass) taxonomy.
+</message>
+<message code="incompatibleTaxonomyDocumentType"
+         level="error"
+         module="ValidateFiling.py" line="1590"
+         args="documentType conflictClass">
+[cp-2203-Incompatible-Inline-DocumentType]  $(modelObject) documentType $(documentType) is incompatible with inline XBRL.
 </message>
 
 <message code="EFM.6.23.01"
