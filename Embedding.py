@@ -540,8 +540,8 @@ class Embedding(object):
 
         # tests to see if unit ordering from graph is complete or not, if not, print warning and return.
         if len(unitOrderDict) < len(self.unitsWeAreKeepingSet):
-            unitOrderingsFromPGStr = ', '.join(list(unitOrderDict))
-            missingUnitOrderingsStr = ', '.join(list(set(self.unitsWeAreKeepingSet) - set(unitOrderDict)))
+            unitOrderingsFromPGStr = ', '.join(sorted(list(unitOrderDict)))
+            missingUnitOrderingsStr = ', '.join(sorted(list(set(self.unitsWeAreKeepingSet) - set(unitOrderDict))))
             #message = ErrorMgr.getError('PRESENTATION_LINKBASE_UNIT_ORDERING_INCOMPLETE_WARNING').format(self.cube.shortName, unitOrderingsFromPGStr, missingUnitOrderingsStr)
             self.filing.modelXbrl.warning("EFM.6.12.09",
                     _('Units of measure %(foundMeasureSet)s were found in "%(linkroleName)s" but the facts presented use '
