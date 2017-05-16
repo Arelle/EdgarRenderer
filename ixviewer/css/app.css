@@ -287,7 +287,6 @@ label {
     border: 0px;
 }
 
-
 /** carousel **/
 .carousel {
     min-height: 150px;
@@ -365,7 +364,6 @@ label {
     border:1px solid #003768;
     width:350px;
 }
-
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
     .modal-content {
         border-radius: 0;
@@ -512,7 +510,6 @@ _:-moz-tree-row(hover), .selection-detail-container {
 	#instanceFileIELi{
 		display: none;
 	}
-	
 
 @media (-ms-high-contrast: active), (-ms-high-contrast: none) {
   #instanceFileLi{
@@ -689,7 +686,6 @@ _:-moz-tree-row(hover), .selection-detail-container {
         background-color:#808080;
     }
 }
-
 /*for Ipad and android devices*/
 @media only screen and (device-width: 768px), only screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)
  {
@@ -1022,6 +1018,11 @@ div[data-calendar-item] {
         -webkit-appearance: textfield
     }
 }
+_:-moz-tree-row(hover), #search-input {
+   height:22px;
+	padding-top: 0px;
+	padding-bottom:0px;
+}
 /*.clearable{
   background: #fff url(data:image/gif;base64,R0lGODlhBwAHAIAAAP///5KSkiH5BAAAAAAALAAAAAAHAAcAAAIMTICmsGrIXnLxuDMLADs=) no-repeat right -10px center;
   border-radius: 6px;
@@ -1130,6 +1131,13 @@ div[data-calendar-item] {
 #app-panel-help-container .panel-body, #app-panel-reports-container  .panel-body{
     font-size: .9em;
 }
+
+@media screen and (-ms-high-contrast:active), (-ms-high-contrast:none) {
+	#app-panel-help-container {	
+		padding: 1px;
+	}	
+}
+
 #reportSection{
     background-color: #FFF;
     color: #000;
@@ -1786,6 +1794,19 @@ i {
   .rightNavLinks {
 	width:96%;	
   }
+  .glyphposition {
+    top:3px;
+  }
+   .positionMenu {
+    top: 3px;
+  }	
+  .position {
+    top: 3px;
+  }	
+  .position-badge {
+    top: 2.5px;
+    position:relative;
+  }	
 }
 /* For IPhone Landscape*/  
 @media only screen and (max-device-width: 480px) and (orientation:landscape)
@@ -1814,7 +1835,16 @@ i {
   #search-btn {
     height: 19px;
 }
-}
+.positionMenu {
+    top: 2.5px;
+  }
+.position {
+		top: 3px;
+	}
+	.position-badge {
+		top: 2px;
+		position: relative;
+	}}
 /* For Android Landscape*/  
 @media only screen and (min-device-width: 321px) and (max-device-width: 640px) and (orientation:landscape)
 {
@@ -1836,6 +1866,33 @@ i {
   .rightNavLinks {
 	width:92%;	
   }
+  .positionMenu {
+    top: 3px;
+  }
+  .position {
+    top: 3px;
+  }	
+  .position-badge {
+    top: 2.5px;
+    position:relative;
+  }	
+}
+/* iPad Portrait view*/
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px)  and (orientation:portrait)
+{
+   .position-badge {
+    top: 1.5px;
+    position:relative;
+  }	
+}
+
+/* iPad landscape view*/
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) and (orientation:landscape)
+{
+	.position-badge {
+    top: 1.5px;
+    position:relative;
+  }	
 }
 /* For IPhone Portrait*/  
 @media only screen and (max-device-width: 320px) and (orientation:portrait)
@@ -1858,8 +1915,46 @@ i {
   .rightNavLinks {
 	width:96%;	
   }
+  .positionMenu {
+    top: 2.5px;
+  }
+  .position {
+    top: 3px;
+  }	
+  .position-badge {
+    top: 2px;
+    position:relative;
+  }	
 }
-
+/*For Nexus 6p*/
+/* For Nexus 6p Portrait*/  
+@media only screen and (min-device-width: 641px) and (max-device-width: 767px) and (orientation:portrait)
+{
+.positionMenu {
+    top: 3px;
+  }
+  .position {
+    top: 3px;
+  }	
+  .position-badge {
+    top: 2.5px;
+    position:relative;
+  }	
+}
+/* For nexus 6p Landscape*/  
+@media only screen and (min-device-width: 641px) and (max-device-width: 767px) and (orientation:landscape)
+{
+.positionMenu {
+    top: 3px;
+  }
+  .position {
+    top: 3px;
+  }	
+  .position-badge {
+    top: 2.5px;
+    position:relative;
+  }	
+}
  /* For IE*/   
 @media (-ms-high-contrast: active), (-ms-high-contrast: none) and (min-width: 768px)  and (max-device-width: 1280px) {
   #labelWithoutButtons {
@@ -2186,12 +2281,12 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
 }
 @media screen and (-moz-images-in-menus:0) and (min-width: 1601px)  and (max-device-width: 1920px){
 .close-icon {
-   right: 1410px;
+   right: 1430px;
 }
 }
 @media screen and (-moz-images-in-menus:0) and (min-width: 1441px)  and (max-device-width: 1600px){
 .close-icon {
-    right: 1090px;
+    right: 1110px;
 }
 }
 @media screen and (-moz-images-in-menus:0) and (min-width: 1367px)  and (max-device-width: 1440px){
@@ -2201,7 +2296,7 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
 }
 @media screen and (-moz-images-in-menus:0) and (min-width: 1281px)  and (max-device-width: 1366px){
 .close-icon {
-    right: 840px;
+    right: 860px;
 }
 }
 @media screen and (-moz-images-in-menus:0) and (min-width: 1153px)  and (max-device-width: 1280px){
@@ -2217,6 +2312,81 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
 @media screen and (-moz-images-in-menus:0) and (min-width: 768px)  and (max-device-width: 1024px){
 .close-icon {
     right: 545px;
+}
+}
+@media(max-width:1920px) {
+    _:-moz-tree-row(hover), .close-icon {
+   right: 1440px;
+   position:fixed;
+   z-index:100001;
+}
+_:-moz-tree-row(hover), .close-icon::after {
+    background-color: transparent;
+    border-radius: 50%;
+    color: black;
+    content: "X";
+    cursor: sw-resize;
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    height: 15px;
+    margin: inherit;
+    position: relative;
+    right: 1px;
+    text-align: -moz-left;
+    top: 2px;
+    width: 15px;
+    z-index: 999;
+}
+}
+@media(max-width:1600px) {
+    _:-moz-tree-row(hover), .close-icon {
+   right: 1135px;
+   position:fixed;
+   z-index:100001;
+}
+_:-moz-tree-row(hover), .close-icon::after {
+    background-color: transparent;
+    border-radius: 50%;
+    color: black;
+    content: "X";
+    cursor: sw-resize;
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    height: 15px;
+    margin: inherit;
+    position: relative;
+    right: 1px;
+    text-align: -moz-left;
+    top: 2px;
+    width: 15px;
+    z-index: 999;
+}
+}
+@media(max-width:1366px) {
+    _:-moz-tree-row(hover), .close-icon {
+   right: 870px;
+   position:fixed;
+   z-index:100001;
+}
+_:-moz-tree-row(hover), .close-icon::after {
+    background-color: transparent;
+    border-radius: 50%;
+    color: black;
+    content: "X";
+    cursor: sw-resize;
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    height: 15px;
+    margin: inherit;
+    position: relative;
+    right: 1px;
+    text-align: -moz-left;
+    top: 2px;
+    width: 15px;
+    z-index: 999;
 }
 }
 @media only screen and (max-device-width: 320px) and (orientation:portrait)
@@ -2257,7 +2427,7 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
 @media only screen and (min-device-width: 321px) and (max-device-width: 480px) and (orientation:portrait)
 {
 	#search-input {
-    height: 18px;
+    height: 21px;
     /*-webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;*/
@@ -2266,13 +2436,21 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
  .search-box {
     padding:0px 0px 0px 0px;
 	color:black;
+}
+ #search-btn {
+    height: 23px;
+}
+.searchIcon{
+    font-size: 11px;
+    margin-top: 6px;
+   
 }
 }
 /* For Android Landscape*/  
 @media only screen and (min-device-width: 321px) and (max-device-width: 640px) and (orientation:landscape)
 {
   #search-input {
-    height: 18px;
+    height: 21px;
     /*-webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;*/
@@ -2281,6 +2459,14 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
  .search-box {
     padding:0px 0px 0px 0px;
 	color:black;
+}
+#search-btn {
+    height: 23px;
+}
+.searchIcon{
+    font-size: 11px;
+    margin-top: 6px;
+    
 }
 }
 /*For Nexus 6p*/
@@ -2288,7 +2474,7 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
 @media only screen and (min-device-width: 641px) and (max-device-width: 767px) and (orientation:portrait)
 {
 	#search-input {
-    height: 18px;
+    height: 23px;
     /*-webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;*/
@@ -2297,13 +2483,18 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
  .search-box {
     padding:0px 0px 0px 0px;
 	color:black;
+}
+.searchIcon{
+    font-size: 11px;
+    margin-top: 6px;
+    
 }
 }
 /* For nexus 6p Landscape*/  
 @media only screen and (min-device-width: 641px) and (max-device-width: 767px) and (orientation:landscape)
 {
   #search-input {
-    height: 18px;
+    height: 23px;
     /*-webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;*/
@@ -2312,6 +2503,11 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
  .search-box {
     padding:0px 0px 0px 0px;
 	color:black;
+}
+.searchIcon{
+    font-size: 11px;
+    margin-top: 6px;
+    
 }
 }
 /* iPad Portrait view*/
@@ -2320,6 +2516,7 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
    .modal-dialog {
     margin: 30px 250px;
    }
+  
 }
 
 /* iPad landscape view*/
@@ -2328,6 +2525,7 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
     .modal-dialog {
     margin: 30px 445px;
     }
+	
 }
 /* For IPhone Portrait*/  
 @media only screen and (max-device-width: 320px) and (orientation:portrait)
@@ -2336,10 +2534,15 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
     margin: 30px 20px;
     }
   #search-input {
-		height: 20px;
+		height: 21px;
 	}
   #search-btn {
-    height: 20px;
+    height: 21px;
+}
+.searchIcon{
+    font-size: 11px;
+    margin-top: 0px;
+    
 }
 }
 /* For Android Portrait*/  
@@ -2348,6 +2551,7 @@ input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
 	.modal-dialog {
     margin: 30px 20px;
     }
+    
 }
 .radio-taggedFact{
     position: relative;

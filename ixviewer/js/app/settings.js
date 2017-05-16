@@ -8,6 +8,7 @@ var App_Settings = {
         initialHighlightColor:'#FFD700',
         focusHighlightColor:'#003768',
         focusHighlightSelectionColor:'#003768',
+		focusHighlightSelectionColorCode:'003768',
         elementBorderColor:'#FF6600',
         elementBorderColorCode:'ff6600',
         blockHighlightColor:'rgba(249,237,237,0.6)',
@@ -32,6 +33,8 @@ var App_Settings = {
                 } else if (input.prop('id') == 'setting-focus-highlight-color') {
 
                     App_Settings.save('focusHighlightColor', '#' + color);
+					App_Settings.save('focusHighlightSelectionColorCode', color.toLowerCase());
+                    window.location.reload();
                 } else if (input.prop('id') == 'setting-block-highlight-color'){
 
                     App_Settings.save('blockHighlightColor', '#' + color);
@@ -81,5 +84,26 @@ var App_Settings = {
             App_Settings.save(key, App_Settings.defaults[key]);
         }
         App_Settings[key].setColor(App_Settings.defaults[key]);
+    },
+	 /* this code is used to reset the left gutter image color to default value
+     * issue no. DE368 and DE369
+     * */
+    resetBorderColor:function(key) {
+        if (window.localStorage) {
+
+            App_Settings.save(key, App_Settings.defaults[key]);
+            App_Settings.save('elementBorderColorCode', 'ff6600');
+        }
+        App_Settings[key].setColor(App_Settings.defaults[key]);
+        window.location.reload();
+    },
+    resetHighlightColor:function(key) {
+        if (window.localStorage) {
+
+            App_Settings.save(key, App_Settings.defaults[key]);
+            App_Settings.save('focusHighlightSelectionColorCode', '003768');
+        }
+        App_Settings[key].setColor(App_Settings.defaults[key]);
+        window.location.reload();
     }
 };

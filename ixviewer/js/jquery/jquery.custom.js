@@ -21,10 +21,10 @@ jQuery.fn.selectionHighlightHiddenNodes = function() {
 };
 
 jQuery.fn.removeHighlightNodes = function(allLinkedNodes) {
-
+	var allLinkedNodesLength=allLinkedNodes.length;
+	var cls = 'sec-cbe-highlight-content-selected'; 
 	for(var i=0;i<allLinkedNodes.length;i++){
-    	var cls = 'sec-cbe-highlight-content-selected'; 
-    	if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:nonnumeric"){
+    	if(allLinkedNodes[i][0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonnumeric'){
     		$(allLinkedNodes[i]).parent().addClass('sec-cbe-highlight-dashed');
     		$(allLinkedNodes[i]).removeClass(cls);
     	}
@@ -42,10 +42,36 @@ jQuery.fn.removeHighlightNodes = function(allLinkedNodes) {
     		}
     		
     	}
-    	else if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:continuation"){
+    	else if(allLinkedNodes[i][0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
     		$(allLinkedNodes[i]).removeClass(cls);
     	}
         };
+		if(allLinkedNodes[allLinkedNodesLength-1]){
+        if(allLinkedNodes[allLinkedNodesLength-1].children()){
+            var lastNodeChildren=allLinkedNodes[allLinkedNodesLength-1].children();
+            var lastNodeChildrenLength=lastNodeChildren.length;
+            while(lastNodeChildrenLength>=1){
+            	if($(lastNodeChildren[lastNodeChildrenLength-1]).children()){
+            	lastNodeChildren=$(lastNodeChildren[lastNodeChildrenLength-1]).children();
+            	lastNodeChildrenLength=lastNodeChildren.length;
+            	}
+            	else
+            		break;
+            	}
+            if(lastNodeChildren){
+            if(lastNodeChildren.context.nodeName.toLowerCase()=="br"){
+        		var elem = document.createElement("br");
+        		if($(lastNodeChildren.context).parent().attr('id') == "wrapBr"){
+        			$(lastNodeChildren.context).parent().removeClass('sec-cbe-highlight-content-selected');
+        			$(lastNodeChildren.context).parent().children().removeClass('sec-cbe-highlight-content-selected');
+        			$(lastNodeChildren.context).parent().children().next().removeClass('sec-cbe-highlight-content-selected');
+        		}
+        		$(lastNodeChildren.context).parent().children().removeClass(cls);
+            	$(lastNodeChildren.context).parent().children().children().removeClass(cls);
+        	}
+            }
+            }
+        }
 	
 };
 
@@ -472,7 +498,7 @@ jQuery.fn.matchesSearch = function(search, ele) {
         
         
     }
-    if (search.includeDimensions && id && !isMatch) {
+     if (search.includeDimensions && id && !isMatch) {
         var contextRef = ele.attr('contextRef');
        	var axisStored = App.InlineDoc.getContextFromCacheForSearch(contextRef);
    	 	if(axisStored !=null){
@@ -481,14 +507,18 @@ jQuery.fn.matchesSearch = function(search, ele) {
 		        var count = 0;
 	        	for (var k in terms) {
 	        		if (search.matchCase) {
-	        			if(axisStored.indexOf(terms[k])>=0){
+	        			for(var i=0;i<axisStored.length;i++){
+	        			if(axisStored[i].indexOf(terms[k])>=0){
 	    	            	count++;
 	    	            }
+	        			}
     	            }
 	        		else{
-	        			if(axisStored.toLowerCase().indexOf(terms[k].toLowerCase())>=0){
+	        			for(var i=0;i<axisStored.length;i++){
+	        			if(axisStored[i].toLowerCase().indexOf(terms[k].toLowerCase())>=0){
 	    	            	count++;
 	    	            }
+	        			}
 	        		}
     	    		
 		        }
@@ -502,14 +532,18 @@ jQuery.fn.matchesSearch = function(search, ele) {
 	        	for (var k in terms) {
 	        		var found = false;
 	        		if (search.matchCase) {
-	        			if(axisStored.indexOf(terms[k])>=0){
+	        			for(var i=0;i<axisStored.length;i++){
+	        			if(axisStored[i].indexOf(terms[k])>=0){
 	    	            	count++;
 	    	            }
+	        			}
     	            }
 	        		else{
-	        			if(axisStored.toLowerCase().indexOf(terms[k].toLowerCase())>=0){
+	        			for(var i=0;i<axisStored.length;i++){
+	        			if(axisStored[i].toLowerCase().indexOf(terms[k].toLowerCase())>=0){
 	    	            	count++;
 	    	            }
+	        			}
 	        		}
     	    		
 		        }
@@ -524,16 +558,20 @@ jQuery.fn.matchesSearch = function(search, ele) {
     	            var terms = str.replace(/\s\|\s/g, "|").split('|');
     	        	for (var k in terms) {
     	        		if (search.matchCase) {
-    	        			if(axisStored.indexOf(terms[k])>=0){
+    	        			for(var i=0;i<axisStored.length;i++){
+    	        			if(axisStored[i].indexOf(terms[k])>=0){
     	        				isMatch = true;
     	        				return isMatch;
     	    	            }
+    	        			}
         	            }
     	        		else{
-    	        			if(axisStored.toLowerCase().indexOf(terms[k].toLowerCase())>=0){
+    	        			for(var i=0;i<axisStored.length;i++){
+    	        			if(axisStored[i].toLowerCase().indexOf(terms[k].toLowerCase())>=0){
     	        				isMatch = true;
     	        				return isMatch;
     	    	            }
+    	        			}
     	        		}
         	    		
     		        }
@@ -543,29 +581,37 @@ jQuery.fn.matchesSearch = function(search, ele) {
     	            var terms = str.replace(/\sOR\s/g, "OR").split('OR');
     	        	for (var k in terms) {
     	        		if (search.matchCase) {
-    	        			if(axisStored.indexOf(terms[k])>=0){
+    	        			for(var i=0;i<axisStored.length;i++){
+    	        			if(axisStored[i].indexOf(terms[k])>=0){
     	        				isMatch = true;
     	        				return isMatch;
     	    	            }
+    	        			}
         	            }
     	        		else{
-    	        			if(axisStored.toLowerCase().indexOf(terms[k].toLowerCase())>=0){
+    	        			for(var i=0;i<axisStored.length;i++){
+    	        			if(axisStored[i].toLowerCase().indexOf(terms[k].toLowerCase())>=0){
     	        				isMatch = true;
     	        				return isMatch;
     	    	            }
+    	        			}
     	        		}
         	    		
     		        }
     	        }else{
     	        	if (search.matchCase) {
-    	        		if (axisStored.indexOf(str)>=0) {
+    	        		for(var i=0;i<axisStored.length;i++){
+    	        		if (axisStored[i].indexOf(str)>=0) {
     	        			isMatch = true;
+    	        		}
     	        		}
     	        	}
     	        	else
     	        	{
-    	        		if (axisStored.toLowerCase().indexOf(str.toLowerCase())>=0) {
+    	        		for(var i=0;i<axisStored.length;i++){
+    	        		if (axisStored[i].toLowerCase().indexOf(str.toLowerCase())>=0) {
     	        			isMatch = true;
+    	        		}
     	        		}
     	        	}
     	        }
@@ -871,7 +917,9 @@ jQuery.fn.calendarFriendlyName = function() {
     	 start = this.find('startDate');
     }
     var instant = this.find(App.InlineDoc.instancePrefix + '\\:instant');
-
+    if(instant.length==0){
+    	instant = this.find('instant');
+    }
     if (start.length == 1) {
 
         var startDateAry = start.html().split('-');
@@ -1013,7 +1061,7 @@ jQuery.fn.getXbrlValue = function() {
     } else if (e.attr('xsi:nil')) {
 
         xbrlValue = 'nil';
-    } else if (this[0].nodeName.toLowerCase() == 'ix:nonfraction') {
+    } else if (this[0].nodeName.toLowerCase() == App.InlineDoc.inlinePrefix + ':nonfraction') {
 
         xbrlValue = e.text();
         if (e.attr('format')) {
@@ -1034,7 +1082,11 @@ jQuery.fn.getXbrlValue = function() {
 //            xbrlValue = App_Utils.rPad(xbrlValue/Math.pow(10, Math.abs(scale)), '0', Math.abs(scale));
 //            xbrlValue = (.235).toFixed(Math.abs(scale));
             var absScale = Math.abs(scale);
-            xbrlValue = (Number(Math.round(xbrlValue/100 + 'e' + absScale) + 'e-' + absScale)).toFixed(absScale);
+            //xbrlValue = (Number(Math.round(xbrlValue/100 + 'e' + absScale) + 'e-' + absScale)).toFixed(absScale);
+			if((xbrlValue).split(".")[1]){
+            var precision = (xbrlValue).split(".")[1].length+2;
+			xbrlValue =(xbrlValue/100).toFixed(precision);
+            }
         }
 
         if (this.attr('sign')) {

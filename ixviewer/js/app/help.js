@@ -13,6 +13,7 @@ var App_Help = {
         });
 
         $('#app-panel-help-container').find('[data-btn-remove]').on('click', function() {
+		$(window).resize();
 			if (screen.width < 641) {
 				$('#app-panel-help-container').hide('slide');
             	$('#app-panel1').removeClass('visible').animate({'margin-left':'-100%'});

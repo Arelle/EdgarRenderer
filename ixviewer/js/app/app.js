@@ -7,7 +7,7 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  * */
 var App = {
-    Version: '1.0.0.86',
+    Version: '1.0.0.89',
     InlineDoc:null,
     XMLInlineDoc:null,
     XBRLDoc:null,
@@ -286,19 +286,20 @@ var App = {
         var styleStr = '.sec-cbe-highlight-dashed { border-top: 2px solid ' + App_Settings.get('elementBorderColor') + '!important; cursor: pointer; border-bottom: 2px solid ' + App_Settings.get('elementBorderColor') + '!important ; cursor: pointer;}' + 
             '.sec-cbe-highlight-dashed-highlight { border: 0px !important; cursor: pointer; }' +
             '.sec-cbe-highlight-block { display:block;}' +
-            '.sec-cbe-highlight-dashed_block { display:block; border-left: 3px solid ' + App_Settings.get('elementBorderColor') + '!important; border-top:0px !important; border-bottom:0px !important;margin-left:6px;}' +
+            '.sec-cbe-highlight-dashed_block { border-left: 3px solid ' + App_Settings.get('elementBorderColor') + '!important; border-top:0px !important; border-bottom:0px !important;margin-left:6px;margin-bottom:3px;}' +
             '.sec-cbe-highlight-block-continuation { display:block;}' +
             '.sec-cbe-highlight-inline { display:inline }' +
             '.sec-cbe-highlight-hover-content {background-color:' + App_Settings.get('blockHighlightColor') + ' !important; cursor: pointer;border: 2px dotted ' + App_Settings.get('elementBorderColor') + '}' +
             '.sec-cbe-highlight-hover-over-content-selected {border: 2px solid ' + App_Settings.get('focusContentSelectionColor') + '!important; cursor: pointer;}' +
             '.sec-cbe-highlight-content-selected { background-color:' + App_Settings.get('blockHighlightColor') + ' !important ; cursor: pointer;}'+
+			'.sec-cbe-highlight-filter-block-content-selected { background-color:' + App_Settings.get('blockHighlightColor') + ' !important ; cursor: pointer;}'+
             '.sec-cbe-highlight-left-border {border-left: 2px dashed ' + App_Settings.get('focusHighlightColor') + ';}'+
             '.sec-cbe-highlight-filter { background-color:' + App_Settings.get('initialHighlightColor') + '!important; }' +
             '.sec-cbe-highlight-filter * { background-color:' + App_Settings.get('initialHighlightColor') + '!important; }' +
              '.sec-cbe-highlight-filter-selected { border: 3px solid ' + App_Settings.get('focusHighlightColor') + '!important; cursor: pointer; }' +
-             '.sec-cbe-highlight-filter-selected-block { border-left: 3px solid ' + App_Settings.get('focusHighlightColor') + '!important; background-color:' + App_Settings.get('blockHighlightColor') + ' !important ;cursor: pointer; }' +
+             '.sec-cbe-highlight-filter-selected-block { border-left: 3px solid ' + App_Settings.get('focusHighlightColor') + '!important; background-color:' + App_Settings.get('blockHighlightColor') + ' ;cursor: pointer; }' +
              '.sec-cbe-highlight-filter-selected-nodes { border: 0px solid ' + App_Settings.get('focusHighlightColor') + '!important; cursor: pointer; }' +
-             '.sec-cbe-highlight-filter-content-selected {background-color:' + App_Settings.get('blockHighlightColor') + ' !important; cursor: pointer;}' +
+             '.sec-cbe-highlight-filter-content-selected {background-color:' + App_Settings.get('blockHighlightColor') + ' ; cursor: pointer;}' +
            // '.sec-cbe-highlight-content-selected { background-color:#CDCDCD !important ; cursor: pointer;}'+
             '.sec-cbe-highlight-inline-block { display:inline}';
         if (style.length == 0) {
@@ -433,11 +434,10 @@ var App_RemoteDocs = {
      },
     initReferenceDocs:function(docBasePath) {
 
-        var ns = App.InlineDoc.nsLookupByKey("us-gaap");
+        var ns = App.InlineDoc.nsLookupByKey(App.InlineDoc.standardTaxonomy);
         if (ns) {
 
             var valAry = ns.split('/');
-            var refBaseFileName = 'us-gaap-' + valAry[valAry.length - 1];
 
             var refDocs = {
                 schema:undefined,
@@ -453,7 +453,7 @@ var App_RemoteDocs = {
     loadFilingDocs:function(docBasePath) {
     	App.showMessage("loadFilingDocs",null,null);alert("YOU.LOSE - loadFilingDocs");
         // check that this is a gaap document
-        if (App.InlineDoc.nsLookupByKey('us-gaap')) {
+        if (App.InlineDoc.nsLookupByKey(App.InlineDoc.standardTaxonomy)) {
 
             var schemaFilename = App.InlineDoc.getSchemaDocRef();
             if (schemaFilename) {

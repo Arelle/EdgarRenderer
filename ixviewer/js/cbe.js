@@ -53,7 +53,7 @@
 
                         var attribute = attributes[k];
                         if (typeof attribute == 'object' &&
-                            attribute.value == val) {
+                            attribute.value == val && attribute.name.lastIndexOf("xmlns:", 0)==0) {
 
                             if (prefixOnly) {
 
@@ -81,7 +81,7 @@
                     for(var k in attributes) {
 
                         var attribute = attributes[k];
-                        if (typeof attribute == 'object') {
+                        if (typeof attribute == 'object' && attribute.name.lastIndexOf("xmlns:", 0)==0) {
 
                             var nameAry = attribute.name.split(':');
                             if (nameAry.length == 2 && nameAry[1] == key) {
@@ -158,7 +158,6 @@
             		self.customPrefix = _cacheInstance.nsprefix;
             	}
             };
-
             var _setInstancePrefix = function() {
 
                 var prefix = self.nsLookupByValue(self.namespaces.xbrli, true);
@@ -171,7 +170,6 @@
             var _setInlinePrefix = function() {
 
                 for (var k in _namespaces.inline) {
-
                     var prefix = self.nsLookupByValue(_namespaces.inline[k], true);
                     if (prefix) {
 
@@ -179,6 +177,20 @@
                         self.inlineVersion = k;
                         break;
                     }
+                }
+            };
+            var _setStandardTaxonomyPrefix = function() {
+            	//self.standardTaxonomy=self.nsLookupByValue(self.getDocumentNamespaces()["us-gaap"],true);
+            	var inlineNameSpaceElements=Object.keys(self.getDocumentNamespaces());
+             	for (var k in inlineNameSpaceElements) {
+                    var prefix = self.nsLookupByKey(inlineNameSpaceElements[k]);
+                    var regex="^http://fasb.org/us-gaap/\\d{4}-\\d{2}-\\d{2}$";
+					if(prefix){
+                    if(prefix.match(regex)){
+                    	self.standardTaxonomy=inlineNameSpaceElements[k];
+                    	break;
+                    }
+					}
                 }
             };
 
@@ -205,7 +217,7 @@
                         } else if (nodeName == self.inlinePrefix + ':' + 'hidden') {
                         	_cache.hidden = node.children();
                         	_cache.hidden.each(function(index, element) {
-                                 if (element.nodeName.toLowerCase() == 'ix:footnote') {
+                                 if (element.nodeName.toLowerCase() == self.inlinePrefix + ':footnote') {
                                 	 _cache.footnotes.push($(element));
                                  }
                                  
@@ -222,6 +234,7 @@
                             }
                            
                         }
+                        
                         if (nodeName == self.inlinePrefix + ':' + 'relationship') {
                         	_cache.relationships.push(node);
                         }
@@ -334,7 +347,7 @@
             this.instancePrefix = '';
             this.inlinePrefix = '';
             this.inlineVersion = null;
-
+            this.standardTaxonomy="";
             this.getElements = function(includeHidden) {
 
                 var results = $.merge($(), _cache.elements);
@@ -553,8 +566,9 @@
                     	var id = element.attr('name');
                 		var xbrId = App_Utils.convertToXBRLId(id);
                     	var result = JSON.parse(_cacheMetaLinks);
+                    	var prefix = self.nsLookupByValue(self.namespaces.xbrli, true);
                         for(var z=0;z<result.MetaLinks_list.MetaLinks.elements.tag.length;z++){
-                            if((result.MetaLinks_list.MetaLinks.elements.tag[z]['-id'] == xbrId)&&(result.MetaLinks_list.MetaLinks.elements.tag[z]['-xbrltype']=='xbrli:monetaryItemType')){
+                            if((result.MetaLinks_list.MetaLinks.elements.tag[z]['-id'] == xbrId)&&(result.MetaLinks_list.MetaLinks.elements.tag[z]['-xbrltype']==prefix+':monetaryItemType')){
                                 count++;
                                 results.push(element);
                             }
@@ -668,13 +682,20 @@
 		    }
 		    
 		    this.getContextFromCacheForSearch = function(contextid) {
-				
-				var pos = $.inArray(contextid, _cache.contextIDsForSearch);
+				var dimensions=[];
+				$.each(_cache.contextIDsForSearch , function(pos, val) { 
+			        if(val === contextid){
+			        	dimensions.push(_cache.dimensionNameForSearch[pos]);
+			        }
+			
+			    });
+		    	return dimensions;
+				/*var pos = $.inArray(contextid, _cache.contextIDsForSearch);
 				if(pos == -1){
 					return null;
 				}else{
 					return _cache.dimensionNameForSearch[pos];
-				}
+				}*/
 		    }
 
             this.getSegmentsForContext = function(context) {
@@ -715,7 +736,10 @@
                 var items;
                 items = _cache.header.find('*').filter(function() {
 
+                     if(this.nodeName.toLowerCase() == self.instancePrefix + ":unit")
                     return this.nodeName.toLowerCase() == self.instancePrefix + ":unit";
+                    else
+                	return this.nodeName.toLowerCase() == "unit";
                 });
                 return items;
 
@@ -735,6 +759,7 @@
             	continuations=_cache.continuations;
 	        	return continuations;            
             };
+            
             this.getDocumentContent = function() {
 
                 return _inlineDoc;
@@ -767,6 +792,7 @@
 
                 var schemaRef = null;
                 var linkPrefix = self.nsLookupByValue(self.namespaces.link, true);
+                var prefix = self.nsLookupByValue(self.namespaces.xlink, true);
                 if (linkPrefix) {
 
                     _cache.header.find(self.inlinePrefix + "\\:references, references").children().each(function(index, element) {
@@ -774,7 +800,7 @@
                         var e = $(element);
                         if (element.nodeName.toLowerCase() == linkPrefix + ':schemaref') {
 
-                            schemaRef = e.attr('xlink:href');
+                            schemaRef = e.attr(prefix+':href');
                             return false;
                         }
                     });
@@ -958,8 +984,10 @@
             	var result = App.InlineDoc.getMetaLinks();
                 if (!result) return;
                 var resjson = null;
+                if(App.InlineDoc.getMetaData()){
                 if(App.InlineDoc.getMetaData().tag[idgiven]){
                 	resjson = App.InlineDoc.getMetaData().tag[idgiven].xbrltype;
+                }
                 }
         		if (resjson) {callback.apply(parent,[resjson]);};                  
             };
@@ -969,6 +997,7 @@
 
                 _inlineDoc = inlineDoc.contents().find('html');
                 _loadDocumentNamespaces();
+                _setStandardTaxonomyPrefix();
                 //_setDocumentCustomPrefix();
                 _setInstancePrefix();
                 _setInlinePrefix();
@@ -1085,15 +1114,15 @@
 
             // public //
             this.namespaces = _namespaces;
-
+            
             this.getLabelsForId = function(id, includeDoc) {
 
                 includeDoc = includeDoc == undefined ? true : includeDoc;
                 var items = $(), loc, labelId, arcs, arcId, labels;
                 var idPrefix = cbe.Utils.getPrefixFromId(id);
-
+                var prefix = self.nsLookupByValue(self.namespaces.xlink, true);
                 // get labels from filings label file
-                if ((idPrefix == 'us-gaap' || idPrefix == _customPrefix) && _filingDocs.label) {
+                if ((idPrefix == self.standardTaxonomy || idPrefix == _customPrefix) && _filingDocs.label) {
 
                     var locEleName = 'loc', labelArcEleName = 'labelArc', labelEleName = 'label';
                     var prefix = cbe.Utils.nsLookupByValue(_filingDocs.label.find(':root')[0], _namespaces.link, true);
@@ -1102,28 +1131,28 @@
                     loc = _filingDocs.label.find('*').filter(function() {
 
                         var idStr = '#' + id;
-                        var href = $(this).attr('xlink:href');
+                        var href = $(this).attr(prefix+':href');
                         return href &&
                             (this.nodeName == locEleName || this.nodeName == prefix + ':' + locEleName) &&
                             href.indexOf(idStr, href.length - idStr.length) !== -1;
                     });
-                    labelId = loc.attr('xlink:label');
+                    labelId = loc.attr(prefix+':label');
 
                     // find arc(s)
                     arcs = _filingDocs.label.find('*').filter(function() {
 
                         return (this.nodeName == labelArcEleName || this.nodeName == prefix + ':' + labelArcEleName) &&
-                            $(this).attr('xlink:from') == labelId;
+                            $(this).attr(prefix+':from') == labelId;
                     });
                     arcs.each(function(index, element) {
 
-                        arcId = $(element).attr('xlink:to');
+                        arcId = $(element).attr(prefix+':to');
 
                         // get the labels
                         labels = _filingDocs.label.find('*').filter(function() {
 
                             return (this.nodeName == labelEleName || this.nodeName == prefix + ':' + labelEleName) &&
-                                $(this).attr('xlink:label') == arcId;
+                                $(this).attr(prefix+':label') == arcId;
                         });
                         if (labels.length > 0) {
 
@@ -1143,24 +1172,24 @@
 
                 var item, loc, labelId, arcs, arcId, label;
                 var idPrefix = cbe.Utils.getPrefixFromId(id);
-
+                var prefix = self.nsLookupByValue(self.namespaces.xlink, true);
                 // get labels from filings label file
-                if ((idPrefix == 'us-gaap' || idPrefix == _customPrefix) && _filingDocs.label) {
+                if ((idPrefix == self.standardTaxonomy || idPrefix == _customPrefix) && _filingDocs.label) {
 
                     // find loc
-                    loc = _filingDocs.label.find('loc[xlink\\:href$="#' + id + '"]');
-                    labelId = loc.attr('xlink:label');
+                    loc = _filingDocs.label.find('loc['+prefix+'\\:href$="#' + id + '"]');
+                    labelId = loc.attr(prefix+':label');
 
                     // find arc(s)
-                    arcs = _filingDocs.label.find('labelArc[xlink\\:from="' + labelId + '"]');
+                    arcs = _filingDocs.label.find('labelArc['+prefix+'\\:from="' + labelId + '"]');
                     arcs.each(function(index, element) {
 
-                        arcId = $(element).attr('xlink:to');
+                        arcId = $(element).attr(prefix+':to');
 
                         // get the labels
-                        label = _filingDocs.label.find('label[xlink\\:label= "' + arcId + '"]').filter(function() {
+                        label = _filingDocs.label.find('label['+prefix+'\\:label= "' + arcId + '"]').filter(function() {
 
-                            return $(this).attr('xlink:role') == role;
+                            return $(this).attr(prefix+':role') == role;
                         });
                         if (label.length == 1) {
 

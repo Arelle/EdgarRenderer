@@ -5,7 +5,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 <html lang="en">
 <head>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
-    <meta id="viewport" name="viewport" content="user-scalable=no, initial-scale=0.90, maximum-scale=1.0, minimum-scale=0.90, width=device-width, height=device-height" />
+    <meta id="viewport" name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width, height=device-height" />
 	<script type="text/javascript">
    	 window.onload=function(){
 	    	var ie7 = navigator.appVersion.indexOf("MSIE 7");
@@ -28,32 +28,31 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 			}
 	    };
     </script>
-    <!-- Use these relative locations when there is no redirection from /ix to ixviewer/ix.html. -->
-    <link type="text/css" rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet" href="css/bootstrap/bootstrap-theme.min.css" />
-    <link type="text/css" rel="stylesheet" href="css/bootstrap/bootstrap-submenu.min.css" />
-    <link type="text/css" rel="stylesheet" href="css/app.css?v131" />
-    <link type="text/css" rel="stylesheet" href="css/rightNavigation.css?v131" />
-    <script type="text/javascript" src="js/jquery/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="js/jquery/jquery.browser.min.js"></script>
-    <script type="text/javascript" src="js/jquery/jquery.simple-color.min.js"></script>
-    <script type="text/javascript" src="js/jquery/jquery.custom.js?v131"></script>
-    <script type="text/javascript" src="js/jquery/jquery-ui.js"></script>
-    <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap/bootstrap-submenu.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap/tooltip.js"></script>
-    <script type="text/javascript" src="js/bootstrap/bootstrap-filestyle.js"></script>
-    <script type="text/javascript" src="js/jszip.min.js"></script>
-    <script type="text/javascript" src="js/FileSaver.js"></script>
-    <script type="text/javascript" src="js/slide-panel.js"></script>
-    <script type="text/javascript" src="js/cbe.js?v131"></script>
-    <script type="text/javascript" src="js/app/app.js?v131"></script>
-    <script type="text/javascript" src="js/app/find.js?v131"></script>
-    <script type="text/javascript" src="js/app/about.js?v131"></script>
-    <script type="text/javascript" src="js/app/settings.js?v131"></script>
-    <script type="text/javascript" src="js/app/help.js?v131"></script>
-    <script type="text/javascript" src="js/app/ixtFunctions.js"></script>
-    <script type="text/javascript" src="js/app/uri.js"></script>
+    <link type="text/css" rel="stylesheet" href="ixviewer/css/bootstrap/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="ixviewer/css/bootstrap/bootstrap-theme.min.css" />
+    <link type="text/css" rel="stylesheet" href="ixviewer/css/bootstrap/bootstrap-submenu.min.css" />
+    <link type="text/css" rel="stylesheet" href="ixviewer/css/app.css?v131" />
+    <link type="text/css" rel="stylesheet" href="ixviewer/css/rightNavigation.css?v131" />
+    <script type="text/javascript" src="ixviewer/js/jquery/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="ixviewer/js/jquery/jquery.browser.min.js"></script>
+    <script type="text/javascript" src="ixviewer/js/jquery/jquery.simple-color.min.js"></script>
+    <script type="text/javascript" src="ixviewer/js/jquery/jquery.custom.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/jquery/jquery-ui.js"></script>
+    <script type="text/javascript" src="ixviewer/js/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="ixviewer/js/bootstrap/bootstrap-submenu.min.js"></script>
+    <script type="text/javascript" src="ixviewer/js/bootstrap/tooltip.js"></script>
+    <script type="text/javascript" src="ixviewer/js/bootstrap/bootstrap-filestyle.js"></script>
+    <script type="text/javascript" src="ixviewer/js/jszip.min.js"></script>
+    <script type="text/javascript" src="ixviewer/js/FileSaver.js"></script>
+    <script type="text/javascript" src="ixviewer/js/slide-panel.js"></script>
+    <script type="text/javascript" src="ixviewer/js/cbe.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/app/app.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/app/find.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/app/about.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/app/settings.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/app/help.js?v131"></script>
+    <script type="text/javascript" src="ixviewer/js/app/ixtFunctions.js"></script>
+    <script type="text/javascript" src="ixviewer/js/app/uri.js"></script>
     <title>Inline XBRL Viewer</title>
 </head>
 <body id="sec-body">
@@ -65,17 +64,19 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						<button id="menuIcon" type="button" data-toggle="dropdown"
 							class="menuIcon" tabindex="1" aria-label="Expand Menu"
 						title="Expand Menu">
-							<span class="glyphicon glyphicon-align-justify"
+							<span class="positionMenu glyphicon glyphicon-align-justify"
 								style="color: #FFF;"></span> <font id="menu" class="hidden-xs">Menu</font>
 						</button>
 						<ul class="dropdown-menu" 
 							aria-labelledby="dropdownMenu1">
 							<li><a id="information" href="#" tabindex="1" data-toggle="panel-collapse"
 								data-target="#about-modal" >Information</a></li>
-							<li id="instanceFileLi"><a href="#" id="instanceFile" tabindex="1" download>Save XBRL Instance</a></li>
-							<li id="instanceFileIELi"><a href="javascript:void(0)" tabindex="1" id="instanceFileIE">Save XBRL Instance</a></li>
+							<li id="instanceFileLi"><a href="#" id="instanceFile" tabindex="1"
+								download>Save XBRL Instance</a></li>
+							<li id="instanceFileIELi"><a href="javascript:void(0)" tabindex="1"
+								id="instanceFileIE">Save XBRL Instance</a></li>
 							<li><a href="#" id="instanceAndCustomFile" tabindex="1">Save XBRL Zip File</a></li>
-							<li><a href="#" id="openAsHtml" onclick="window.open(this.href); return false;" tabindex="1" open>Open as HTML</a></li>							
+							<li><a href="#" id="openAsHtml" onclick="window.open(this.href); return false;" tabindex="1" open>Open as HTML</a></li>
 							<li id="taggedSectionsReport" class="visible-xs visible-sm hidden-md hidden-lg"><a
 								href="#" id="btn-reports" data-toggle="collapse"
 								data-target=".nav-collapse" tabindex="1">Tagged Sections</a></li>
@@ -96,7 +97,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						class="badge badge-Custom"></span>&nbsp;<span
 						class="glyphicon glyphicon-chevron-down menuIcon"
 						id="menuBtn-reports"
-						style="color: #FFF; vertical-align: middle; line-height: 15px;"
+						style="color: #FFF; vertical-align: middle;top: 0px; line-height: 15px;"
 						aria-label="Expand Tagged Sections"
 						title="Expand Tagged Sections" tabindex="2"></span></li>
 				</ul>
@@ -127,7 +128,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 							data-target="#highlight-data-modal" 
 							class="menuIcon" tabindex="6" aria-label="Expand Data Filter"
 						title="Expand Data Filter">
-							<span class="glyphicon glyphicon-list-alt" style="color: #FFF;"></span>
+							<span class="glyphicon glyphicon-list-alt" style="color: #FFF;top:2px;"></span>
 							Data
 						</button>
 					</li>
@@ -141,7 +142,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 							data-target="#highlight-concept-modal"
 							class="menuIcon" tabindex="7" aria-label="Expand Tags Filter"
 						title="Expand Tags Filter">
-							<span class="glyphicon glyphicon-tags" style="color: #FFF;"></span>
+							<span class="glyphicon glyphicon-tags" style="color: #FFF;top:2px;"></span>
 							Tags
 						</button>
 					</li>
@@ -154,7 +155,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						<button type="button" data-toggle="dropdown" 
 							class="menuIcon" tabindex="8" aria-label="Expand More Filters"
 						title="Expand More Filters">
-							<span class="glyphicon glyphicon-filter" style="color: #FFF;"></span>
+							<span class="position glyphicon glyphicon-filter" style="color: #FFF;"></span>
 							<font id="moreFilters" class="hidden-xs">More Filters</font>
 						</button>
 						<ul id="moreFiltersList" class="dropdown-menu" role="menu"
@@ -183,8 +184,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 					<li class="inline"><label class="hidden-xs menuIcon"
 						style="color: #FFF;"><span
 							id="factList" style="vertical-align: middle; line-height: 15px;">Facts </span></label>&nbsp;&nbsp;<span
-						id="results-count" class="badge badge-Custom"></span>&nbsp;<span
-						class="glyphicon glyphicon-chevron-down menuIcon" id="opener"
+						id="results-count" class="position-badge badge badge-Custom"></span>&nbsp;<span
+						class="position glyphicon glyphicon-chevron-down menuIcon" id="opener"
 						style="color: #FFF; vertical-align: middle; line-height: 15px;"
 						aria-label="Expand Facts"
 						title="Expand Facts" tabindex="9"></span></li>
@@ -610,7 +611,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 									<label style="font-size: 16px"><b>Highlight Colors</b></label><br />
 									<label for="setting-element-border-color">Tagged Data</label><br/>
 									<div  id="taggedDataResetColor" tabindex="0" aria-label="Tagged Data Color Selector"><input type="text" id="setting-element-border-color" class="setting-color-picker-container" /></div>
-									<a tabindex="0" href="javascript:App_Settings.resetColor('elementBorderColor');" aria-label="Tagged data reset to default">reset to default</a>									
+									<a tabindex="0" href="javascript:App_Settings.resetBorderColor('elementBorderColor');" aria-label="Tagged data reset to default">reset to default</a>									
 								</div>
 								<div class="form-group" role="application">
 									<label for="setting-initial-highlight-color" style="margin-top: 5px;margin-left: -25px;">Search Results</label><br/>
@@ -628,7 +629,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 										<input type="text" tabindex="0" id="setting-focus-highlight-color"
 											class="setting-color-picker-container" />
 									</div>
-									<a tabindex="0" href="javascript:App_Settings.resetColor('focusHighlightColor');" aria-label="Selected Fact reset to default"> reset
+									<a tabindex="0" href="javascript:App_Settings.resetHighlightColor('focusHighlightColor');" aria-label="Selected Fact reset to default"> reset
 											to default</a>
 								</div>
 								<div class="form-group" role="application">

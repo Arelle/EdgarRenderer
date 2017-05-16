@@ -138,7 +138,8 @@ $( "#prevCarousel1" ).mouseover(function() {
             continuedAt:$(),
 			allData:$(),
 			nonnumericnodes:$(),
-			linkedHiddenNodes:null
+			linkedHiddenNodes:null,
+			arrayOfImages:$(),
         },
         init:function() {
 
@@ -160,6 +161,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                     App.hideSpinner();
                 });
             });
+            
         },
         
         initLinkedHiddenNodes:function(){
@@ -215,13 +217,12 @@ $( "#prevCarousel1" ).mouseover(function() {
             modal.find('input[name="highlight-concepts"]:first').prop('checked', true);
         },
         highlight:function() {
- 
-            App.frame.contents().find('.sec-cbe-highlight-dashed').removeClass('sec-cbe-highlight-dashed');
-            App.frame.contents().find('.sec-cbe-highlight-dashed_block').removeClass('sec-cbe-highlight-dashed_block');
+		    App.frame.contents().find('.sec-cbe-highlight-dashed, .sec-cbe-highlight-dashed_block').removeClass('sec-cbe-highlight-dashed sec-cbe-highlight-dashed_block');
             var highlightType = App_Find.Highlight.getSelected().value;
             var results = App_Find.Highlight.getResults();
             var instance = App.InlineDoc.getMetaData();
-            
+            var node="";
+            var nodes="";
             if (highlightType != 'none') {
 
                 if (results.length == 0) {
@@ -231,13 +232,13 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                		for (id in tags) {
 	                			tag = tags[id];
 	                			if (tag.calculation) {
-	                				var nodes = App.InlineDoc.getElementByName(id.replace('_', ':'));
-	                				nodes.each(function (index, element) {
-	                                    var node = $(element);
+	                				nodes = App.InlineDoc.getElementByName(id.replace('_', ':'));
+	                				for(var i=0;i<nodes.length;i++){
+	                					node = $(nodes[i]);
 	                                    if (!node.hasDimensions()) {
 	                                        results.push(node);
 	                                    }
-	                				})
+	                				}
 	                			}
 	                		}
 	                	}
@@ -899,7 +900,9 @@ $( "#prevCarousel1" ).mouseover(function() {
                 var node = $(element);
                 var friendlyName = node.calendarFriendlyName();
                 var year = friendlyName.match(/\b\d{4}\b/gi);
+				if(year){
                 year = year[year.length - 1]; // if there are multiple years take the last one
+				}
                 var idx =  $.inArray(year, years);
                 if (idx == -1) {
 
@@ -948,7 +951,9 @@ $( "#prevCarousel1" ).mouseover(function() {
                 if (!foundCalendar) {
 
                     var year = friendlyName.match(/\b\d{4}\b/gi);
+					if(year){
                     year = year[year.length - 1];
+					}
                     content.find('div[data-calendar-year="' + year + '"]').after(
                         '<div class="checkbox" data-calendar-item="' + year + '">' +
                         '<label><input type="checkbox" value="' + normalizedPeriod + '" friendlyName="' + friendlyName + '">' + friendlyName + '</label>' +
@@ -1111,7 +1116,7 @@ $( "#prevCarousel1" ).mouseover(function() {
         },
         replaceNeeded:function(array, letter, str) {
         	for (var i in array) {
-                if (array[i].match(letter)) {
+                if (array[i].indexOf(letter)>-1) {
                 	array[i]=str;
                 }
             }
@@ -1125,7 +1130,7 @@ $( "#prevCarousel1" ).mouseover(function() {
         },
         doesExist:function(array, letter) {
         	for (var i in array) {
-                if (array[i].match(letter)) {
+                if (array[i].indexOf(letter)>-1) {
                 	return true;
                 }
             }
@@ -1385,8 +1390,8 @@ $( "#prevCarousel1" ).mouseover(function() {
             	App_Find.Breadcrumb.searchFor(_filterList, "Balance (");
             }else{
                 //$("#balanceDiv").css("display", "block");
-            	App_Find.Breadcrumb.replaceNeeded(_filterList, 'Balance', 'Balance (' +balanceItemsText+')');  
-            	if(!App_Find.Breadcrumb.doesExist(_filterList, "Balance"))
+            	App_Find.Breadcrumb.replaceNeeded(_filterList, 'Balance (', 'Balance (' +balanceItemsText+')');  
+            	if(!App_Find.Breadcrumb.doesExist(_filterList, "Balance ("))
             		_filterList.push('Balance ('+balanceItemsText+')');
             }
             if((label=="All")&&(conceptLabel=="All")&&(calItemsText=="All")&&(unitItemsText=="All")&&(axisItemsText=="All") &&(scaleItemsText=="All")&&(balanceItemsText=="All")){
@@ -1681,8 +1686,8 @@ $( "#prevCarousel1" ).mouseover(function() {
 			            	var ele = $(element);
 			                var pele = $(ele.parents()[2]);
 			                var contextId = pele.attr('id');
-			            	if($.inArray(contextId,contextValues) == -1){
-			                    contextValues.push(contextId);
+			            	//if($.inArray(contextId,contextValues) == -1){
+			                   // contextValues.push(contextId);
 			                    var axisLabel = ele.attr('dimension');
 				                var axislval = App.InlineDoc.getSelectedLabel(App_Utils.convertToXBRLId(axisLabel),this,null,function(value){
 				
@@ -1701,7 +1706,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 			                    });
 			                    var dimensionLabel = axisLabel+" &nbsp;&nbsp;"+memberLabel;
 			                    App.InlineDoc.updateContextAxisForSearch(contextId, dimensionLabel);
-			                }
+			                //}
 		            	});  
 		            	
 	                    App.hideSpinner();
@@ -1860,6 +1865,11 @@ $( "#prevCarousel1" ).mouseover(function() {
 				
             	App_Find.TaggedSection._cachescrollDestination = scrollDestination;
             	scrollDestination.scrollIntoView();
+				if ( navigator.userAgent.match(/iPad/i) ){
+				setTimeout(function() {	
+                       $(window).scrollTop(($(scrollDestination)[0].offsetTop)*0.70);
+					   },0);
+                }
             	if (showElementDetail){
             		App_Find.TaggedSection.highlightItemOperatingCo(index,showElementDetail); 
             	}else{
@@ -2071,8 +2081,10 @@ $( "#prevCarousel1" ).mouseover(function() {
          },
          
          getReportData:function(){
-         	
-           	var reports = App.InlineDoc.getMetaData().report;
+        	 var reports ="";
+         	if(App.InlineDoc.getMetaData()){
+           	reports = App.InlineDoc.getMetaData().report;
+         	}
            	var results = [];
 	        for (index in reports) {
 	        var report = reports[index];
@@ -2092,7 +2104,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	        var remoteElements = App.InlineDoc.getRemoteFileDetails();
 	        var containsUsGaap = false;
            	for (key in remoteElements) {
-		        if (remoteElements[key].indexOf("us-gaap")>0) {
+		        if (remoteElements[key].indexOf(App.InlineDoc.standardTaxonomy)>0) {
 		        	containsUsGaap = true;
 		            break;
 		        }
@@ -2132,7 +2144,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	        var remoteElements = App.InlineDoc.getRemoteFileDetails();
 	        var containsUsGaap = false;
            	for (key in remoteElements) {
-		        if (remoteElements[key].indexOf("us-gaap")>0) {
+		        if (remoteElements[key].indexOf(App.InlineDoc.standardTaxonomy)>0) {
 		        	containsUsGaap = true;
 		            break;
 		        }
@@ -2525,19 +2537,40 @@ $( "#prevCarousel1" ).mouseover(function() {
             }
             App_Find.Results.highlightItem(index);
             if(ele){
+			App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-block-content-selected, .sec-cbe-highlight-filter-content-selected, .sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-block-content-selected sec-cbe-highlight-filter-content-selected sec-cbe-highlight-filter-selected-block'); 
+            	if(App_Find.Highlight.cachedResults.arrayOfImages.length==1){
+           	    	App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
+           	     }
+        		for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
+				 {
+					if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')=="../../ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png"){
+						App_Find.Highlight.cachedResults.arrayOfImages[i].setAttribute("src", "../../ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png");
+					}
+				 }
             	ele.selectionHighlight();
 				var nodeName = $(ele)[0].nodeName.toLowerCase();
-                if(nodeName == 'ix:nonnumeric'){
-                   	if($(ele).attr('continuedat')!=null){
-                   	    allLinkedNodes=App_Find.Element.groupIxContinuation($(ele));
-                   		App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
-                   		App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected'); 
-                   		selectionHighlightClickNodes(allLinkedNodes); 
-                   		}
+                if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+                   	 
+	                   	if($(ele).attr('continuedat')!=null){
+	                   	    allLinkedNodes=App_Find.Element.groupIxContinuation($(ele));
+	                   		
+	                   		selectionHighlightClickNodes(allLinkedNodes); 
+	                   		var imageId=ele.attr('id')+"imageid";
+							imageNode=getAlreadyExistingImage(imageId);
+							if(imageNode){
+							imageNode.setAttribute("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
+	                   		}
+	                   		}
+	                   	else if($(ele).parent().hasClass('sec-cbe-highlight-block')){
+	                   		App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected');
+	                   		$(ele).selectionHighlightForBlock();
+	            		}
           		 }
                 if(ele.attr('id')){     				
-     				var spanNodes = App_Find.Highlight.cachedResults.linkedHiddenNodes;
-                    if(spanNodes){
+     				
+                 	//var spanNodes = App.InlineDoc.getLinkedHiddenElements();
+                	var spanNodes = App_Find.Highlight.cachedResults.linkedHiddenNodes;
+     				if(spanNodes){
      					for(var i=0;i<spanNodes.length;i++){
      						if(spanNodes[i][0]==ele.attr('id')){
      							var spanNode = spanNodes[i][1][0];
@@ -2550,7 +2583,7 @@ $( "#prevCarousel1" ).mouseover(function() {
      					}
      			    }
      			}
-            	if((window.orientation) || (window.orientation=='0')){
+            	/*if((window.orientation) || (window.orientation=='0')){
 	                    if ((screen.width > 640) && (screen.width < 769) && ($("#filterDataDiv").height()==0)) {
 	                	   ele.css({"padding-top": "30px"});
 					    } 
@@ -2570,9 +2603,14 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                	   ele.css({"padding-top": "145px"});
 					    } 
 					   
-				   }
+				   }*/
             	App_Find.Results._cachescrollDestination = ele[0];
             	ele[0].scrollIntoView();
+				if ( navigator.userAgent.match(/iPad/i) ){
+						 setTimeout(function() {	
+						 $(window).scrollTop(($('#app-inline-xbrl-doc').contents().find('body').find($(ele[0])).position().top) * 0.70);
+						  },0);   
+                }
 			}
             if (showElementDetail || $('#selection-detail-container').parent().css('display') == 'block') {
                 App_Find.Element.showSelectionDetail(ele);
@@ -2628,15 +2666,20 @@ $( "#prevCarousel1" ).mouseover(function() {
             
             var results = App_Find.Highlight.getResults();
             var instance = App.InlineDoc.getMetaData();
-
+			var instanceTag="";
+			if(instance){
+				instanceTag=instance.tag;
+			}
             selectionHighlightNodes = function(allLinkedNodes) {
             	
+            	
             	//alert("inside selectionhighlightnodes find");
+				if(allLinkedNodes){
             	var allLinkedNodesLength=allLinkedNodes.length;
             	var cls = 'sec-cbe-highlight-content-selected'; 
             	for(var i=0;i<allLinkedNodesLength;i++){
             	
-            	if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:nonnumeric"){
+            	if(allLinkedNodes[i][0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonnumeric'){
             		//$(allLinkedNodes[i]).parent().removeClass('sec-cbe-highlight-dashed');
             		$(allLinkedNodes[i]).addClass(cls);
             	}
@@ -2655,35 +2698,70 @@ $( "#prevCarousel1" ).mouseover(function() {
 						$(allLinkedNodes[i]).children().children().addClass(cls);
             		}
             	}
-            	else if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:continuation"){
+            	else if(allLinkedNodes[i][0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
             		$(allLinkedNodes[i]).addClass(cls);
             	}
             	
             };
-              if(allLinkedNodes[allLinkedNodesLength-1]){
-            if(allLinkedNodes[allLinkedNodesLength-1].children()){
-                var lastNodeChildren=allLinkedNodes[allLinkedNodesLength-1].children();
-                var lastNodeChildrenLength=lastNodeChildren.length;
-                if(lastNodeChildrenLength>0){
-                	if(lastNodeChildren[lastNodeChildrenLength-1].nodeName.toLowerCase()=="br"){
-                		var elem = document.createElement("br");
-                    	allLinkedNodes[allLinkedNodesLength-1].children().wrap('<div id="wrapBr" class="sec-cbe-highlight-content-selected wordBreakDiv" style="white-space: nowrap;  "></div>');
-                    	if (($.browser.msie)){
-                    	allLinkedNodes[allLinkedNodesLength-1].children().append(elem);
+			if(allLinkedNodes[0]){
+                if(allLinkedNodes[0].children()){
+                    var lastNodeChildren=allLinkedNodes[0].children();
+                    var lastNodeChildrenLength=lastNodeChildren.length;
+                    if(lastNodeChildrenLength>0){
+                    	if(lastNodeChildren[0].nodeName.toLowerCase()=="br"){
+                    		var elem = document.createElement("br");
+                        	allLinkedNodes[0].children().wrap('<div id="wrapBr" class="sec-cbe-highlight-content-selected"></div>');
+                        	if (($.browser.msie)){
+                        	allLinkedNodes[0].children().append(elem);
+                        	}
+                        	$(allLinkedNodes[0]).children().addClass(cls);
+                        	//$(allLinkedNodes[i]).children().children().addClass(cls);
                     	}
-                    	$(allLinkedNodes[i]).children().addClass(cls);
-                    	$(allLinkedNodes[i]).children().children().addClass(cls);
-                	}
+                    }
+                }
+                }
+             if(allLinkedNodes[allLinkedNodesLength-1]){
+                
+                if(allLinkedNodes[allLinkedNodesLength-1].children()){
+                    var lastNodeChildren=allLinkedNodes[allLinkedNodesLength-1].children();
+                    var lastNodeChildrenLength=lastNodeChildren.length;
+                    while(lastNodeChildrenLength>=1){
+                    	if($(lastNodeChildren[lastNodeChildrenLength-1]).children()){
+                    	lastNodeChildren=$(lastNodeChildren[lastNodeChildrenLength-1]).children();
+                    	lastNodeChildrenLength=lastNodeChildren.length;
+                    	}
+                    	else
+                    		break;
+                    	}
+                    if(lastNodeChildren){
+                    if(lastNodeChildren.context.nodeName.toLowerCase()=="br"){
+                		var elem = document.createElement("br");
+                		if($(lastNodeChildren.context).parent().attr('id') != "wrapBr"){
+                		if($(lastNodeChildren.context).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonnumeric' || $(lastNodeChildren.context).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
+                		$(lastNodeChildren.context).wrap('<div id="wrapBr" class="sec-cbe-highlight-content-selected wordBreakDiv" style="white-space: nowrap;  "></div>');
+                		if (($.browser.msie)){
+                			if($(lastNodeChildren.context).parent().parent()[0].nodeName.toLowerCase()!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
+                    		$(lastNodeChildren.context).parent().append(elem);
+                			}
+                    	}
+                			}
+                		}
+                		else{
+                			$(lastNodeChildren.context).parent().addClass('sec-cbe-highlight-content-selected');
+                		}
+                    }
+                    }
+                    }
+                
                 }
             }
             }
-            
-            }
             selectionHighlightClickNodes = function(allLinkedNodes) {
+			    var allLinkedNodesLength=allLinkedNodes.length;
 			    App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
             	for(var i=0;i<allLinkedNodes.length;i++){
             	var cls = 'sec-cbe-highlight-filter-content-selected'; 
-				if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:nonnumeric"){
+				if(allLinkedNodes[i][0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonnumeric'){
             		//$(allLinkedNodes[i]).parent().removeClass('sec-cbe-highlight-dashed');
             		$(allLinkedNodes[i]).addClass(cls);
             	}
@@ -2702,20 +2780,51 @@ $( "#prevCarousel1" ).mouseover(function() {
             		}
             		
             	}
-            	else if(allLinkedNodes[i][0].nodeName.toLowerCase()=="ix:continuation"){
+            	else if(allLinkedNodes[i][0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
             		$(allLinkedNodes[i]).addClass(cls);
             	}
             };
+			if(allLinkedNodes[allLinkedNodesLength-1]){
+                if(allLinkedNodes[allLinkedNodesLength-1].children()){
+                    var lastNodeChildren=allLinkedNodes[allLinkedNodesLength-1].children();
+                    var lastNodeChildrenLength=lastNodeChildren.length;
+                    while(lastNodeChildrenLength>=1){
+                    	if($(lastNodeChildren[lastNodeChildrenLength-1]).children()){
+                    	lastNodeChildren=$(lastNodeChildren[lastNodeChildrenLength-1]).children();
+                    	lastNodeChildrenLength=lastNodeChildren.length;
+                    	}
+                    	else
+                    		break;
+                    	}
+                    if(lastNodeChildren){
+                    if(lastNodeChildren.context.nodeName.toLowerCase()=="br"){
+                		var elem = document.createElement("br");
+                		if($(lastNodeChildren.context).parent().attr('id') != "wrapBr"){
+						if($(lastNodeChildren.context).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonnumeric' || $(lastNodeChildren.context).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
+                		$(lastNodeChildren.context).wrap('<div id="wrapBr" class="sec-cbe-highlight-filter-content-selected wordBreakDiv" style="white-space: nowrap;  "></div>');
+                		if (($.browser.msie)){
+                    		$(lastNodeChildren.context).parent().append(elem);
+                    	}
+						}
+                		}
+                		else{
+                			$(lastNodeChildren.context).parent().addClass('sec-cbe-highlight-filter-content-selected');
+                		}
+                	}
+                    }
+                    }
+                }
             }
 	     checkIfImageAlreadyExists= function(imageId){
-            	
-            	
-            	arrayOfImages = App.frame.contents().find('img');
+	    	    //if(App_Find.Highlight.cachedResults.arrayOfImages.length==0){
+        	    	App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
+        	     //}
+            	//arrayOfImages = App.frame.contents().find('img');
             	var arrImageId="";
-        		for (var i=0; i<arrayOfImages.length; i++)
+        		for (var i=0; i<App_Find.Highlight.cachedResults.arrayOfImages.length; i++)
         		{
-        			if(arrayOfImages[i].getAttribute('id')==imageId){
-        				arrImageId=arrayOfImages[i].getAttribute('id');
+        			if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('id')==imageId){
+        				arrImageId=App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('id');
         				break;
         			}
         			
@@ -2729,13 +2838,15 @@ $( "#prevCarousel1" ).mouseover(function() {
             }
 	     getAlreadyExistingImage= function(imageId){
          	
-         	
-         	arrayOfImages = App.frame.contents().find('img');
+	    	 // if(App_Find.Highlight.cachedResults.arrayOfImages.length==0){
+        	    	App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
+        	   //  }
+         	//arrayOfImages = App.frame.contents().find('img');
          	var arrImageId="";
-     		for (var i=0; i<arrayOfImages.length; i++)
+     		for (var i=0; i<App_Find.Highlight.cachedResults.arrayOfImages.length; i++)
      		{
-     			if(arrayOfImages[i].getAttribute('id')==imageId){
-     				arrImageId=arrayOfImages[i];
+     			if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('id')==imageId){
+     				arrImageId=App_Find.Highlight.cachedResults.arrayOfImages[i];
      				break;
      			}
      			
@@ -2772,24 +2883,27 @@ $( "#prevCarousel1" ).mouseover(function() {
             
             function wrapInDashesForContinuationArray(nodeNew,blueImagePath,continuedNodeId,found,parentNode,parentnodeId,parentNodeOfContinuation,positionOfElementsNew,parentNodeParent,parentNodeParentNodeName){
             	$(nodeNew).on('click', function(event) {
-				App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
-				App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
-            		App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
-            		arrayOfImages = App.frame.contents().find('img');
-					for (var j=0, len=arrayOfImages.length; j<len; j++)
+            	    App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected, .sec-cbe-highlight-filter-selected, .sec-cbe-highlight-filter-selected-block, .sec-cbe-highlight-filter-block-content-selected')
+            	    .removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected sec-cbe-highlight-filter-selected sec-cbe-highlight-filter-selected-block sec-cbe-highlight-filter-block-content-selected'); 
+            		//arrayOfImages = App.frame.contents().find('img');
+            	    //if(App_Find.Highlight.cachedResults.arrayOfImages.length==1){
+               	    App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
+            	    //}
+					for (var j=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; j<len; j++)
 					 {
-						if(arrayOfImages[j].getAttribute('src')==blueImagePath){
-							arrayOfImages[j].setAttribute("src", srcImg);
+						if(App_Find.Highlight.cachedResults.arrayOfImages[j].getAttribute('src')==blueImagePath){
+							App_Find.Highlight.cachedResults.arrayOfImages[j].setAttribute("src", srcImg);
 						}
 					 }
 					continuedNodeId=$(nodeNew).attr('id');
         		    parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-					if(parentnodeId.parent().parent()[0].nodeName.toLowerCase()!="ix:continuation"){
+					if(parentnodeId.parent().parent()[0].nodeName.toLowerCase()!=App.InlineDoc.inlinePrefix + ':continuation'){
+                	
                 	parentNodeParent=parentnodeId.parent();
                 	if($(parentnodeId).parent()[0]){
                 	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
                 	}
-                	while(parentNodeParentNodeName!="ix:continuation"){
+                	while(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
                 		parentNodeParent=parentNodeParent.parent();
                 		if($(parentNodeParent).parent()[0]){
                 		parentNodeParentNodeName=$(parentNodeParent).parent()[0].nodeName.toLowerCase();
@@ -2798,13 +2912,13 @@ $( "#prevCarousel1" ).mouseover(function() {
                 			break;
                 		}
                 	}
-                	if(parentNodeParentNodeName!="ix:continuation"){
-                		if(($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation")){
+                	if(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
+                		if(($(nodeNew).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')){
                 			parentNodeParent=parentnodeId.parent();
                         	if($(parentnodeId).parent()[0]){
                         	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
                         	}
-                        	while(parentNodeParentNodeName!="ix:nonnumeric"){
+                        	while(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
                         		parentNodeParent=parentNodeParent.parent();
                         		if($(parentNodeParent)[0]){
                         		parentNodeParentNodeName=$(parentNodeParent)[0].nodeName.toLowerCase();
@@ -2814,19 +2928,19 @@ $( "#prevCarousel1" ).mouseover(function() {
                         		}
                         	}
                         	
-                        	if(parentNodeParentNodeName!="ix:nonnumeric"){
+                        	if(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
                         		continuedNodeId=$(nodeNew).parent().attr('id');
                         		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
                         	}
                 		}
-                		else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()=="ix:continuation")){
+                		else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')){
     						continuedNodeId=$(nodeNew).parent().parent().attr('id');
     						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
     					}
                 		
                 	}
 					else{
-                		if($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation" && $(nodeNew).parent().children().length==1){
+                		if($(nodeNew).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation' && $(nodeNew).parent().children().length==1){
                 			var childNodes=$(nodeNew).parent().children();
                 			var childNodeLength=childNodes.length;
                 			var childNodeName="";
@@ -2834,7 +2948,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                 				if(childNodes[j][0]){
                 					childNodeName=childNodes[j][0].nodeName.toLowerCase();
                 				}
-                				while(childNodeName !="ix:nonnumeric"){
+                				while(childNodeName !=App.InlineDoc.inlinePrefix + ':nonnumeric'){
                 					childNodes[j] = $(childNodes[j]).children();
         							if($(childNodes[j])[0]){
         								childNodeName =childNodes[j][0].nodeName.toLowerCase();
@@ -2844,9 +2958,47 @@ $( "#prevCarousel1" ).mouseover(function() {
         							}
         						}
                 			}
-                			if(childNodeName.toLowerCase() =="ix:nonnumeric" || childNodeName.toLowerCase() =="ix:nonfraction" || childNodeName.toLowerCase() ==""){
-            					continuedNodeId=$(nodeNew).attr('id');
+                			if(childNodeName.toLowerCase() ==App.InlineDoc.inlinePrefix + ':nonnumeric' || childNodeName.toLowerCase() ==App.InlineDoc.inlinePrefix + ':nonfraction' || childNodeName.toLowerCase() ==""){
+                				continuedNodeId=$(nodeNew).attr('id');
                         		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+                				if(childNodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonfraction'){
+                					var parentOfNodeNew=$(nodeNew).parent();
+                					var parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
+                					while(parentOfNodeNewNodeName!="div"){
+                						parentOfNodeNew=parentOfNodeNew.parent();
+                						if(parentOfNodeNew[0]){
+                						parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
+                						}
+                						else{
+                							break;
+                						}
+                					}
+                					if(parentOfNodeNewNodeName=="div"){
+                						if(parentOfNodeNew.parent()[0]){
+                						if(parentOfNodeNew.parent()[0].nodeName.toLowerCase()!="body" && parentOfNodeNew.parent()[0].nodeName.toLowerCase()!="div"){
+                						continuedNodeId=$(nodeNew).parent().attr('id');
+                                		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+                						}
+                						}
+                					}
+                					
+                				}
+            					var childNodeOfCurrentNonNumericNode=parentnodeId.children();
+            					var childNodeOfCurrentNonNumericNodeNodeName="";
+            					if(childNodeOfCurrentNonNumericNode[0]){
+            					childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumericNode[0].nodeName.toLowerCase();
+            					}
+            					while(childNodeOfCurrentNonNumericNodeNodeName != "img"){
+            						childNodeOfCurrentNonNumericNode=childNodeOfCurrentNonNumericNode.children();
+            						if(childNodeOfCurrentNonNumericNode[0]){
+            						childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumericNode[0].nodeName.toLowerCase();
+            						}
+            						else
+            							break;
+            					}
+            					if(childNodeOfCurrentNonNumericNodeNodeName == "img"){
+            						parentnodeId=childNodeOfCurrentNonNumericNode.next();
+            					}
     						}
             				else{
             					continuedNodeId=$(nodeNew).parent().attr('id');
@@ -2855,6 +3007,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                 		}
                 		
                 	}
+              		
               		}
            			allLinkedNodes=App_Find.Element.groupIxContinuation(parentnodeId);
                     	selectionHighlightClickNodes(allLinkedNodes);
@@ -2868,7 +3021,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 
                				parentNodeOfContinuation=allLinkedNodes[i].parent();
                				nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-               				if(positionTop=='0' || positionTop=='1' ){
+               				if(positionTop=='0' || positionTop=='1' || positionTop=='2' ){
                					while(nodeN.toLowerCase() !="body"){
                						parentNodeOfContinuation = parentNodeOfContinuation.parent();
                						if($(parentNodeOfContinuation).parent()[0]){
@@ -2879,6 +3032,20 @@ $( "#prevCarousel1" ).mouseover(function() {
                						}
                					}
                					var childNode=parentNodeOfContinuation;
+								if($(childNode)[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
+        					    	parentNodeOfContinuation=allLinkedNodes[i].parent();
+        							nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
+        							while(nodeN.toLowerCase() !=App.InlineDoc.inlinePrefix + ':continuation'){
+        								parentNodeOfContinuation = parentNodeOfContinuation.parent();
+        								if($(parentNodeOfContinuation).parent()[0]){
+        								nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
+        								}
+        								else{
+        									break;
+        								}
+        							}
+        							childNode=parentNodeOfContinuation;
+        					    }
                					if(($(childNode).prev()[0]) ){
                						if($(childNode).prev()[0].nodeName.toLowerCase()=="img"){
                							$(childNode).prev()[0].setAttribute("src", blueImagePath);
@@ -2891,7 +3058,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                				{
                					for (j = i+1; j < positionOfElementsNew.length; j++)
                					{
-               						if (positionOfElementsNew[j] < positionOfElementsNew[i])
+               						if (positionOfElementsNew[j] <= positionOfElementsNew[i])
                						{
                							positionTopRearranged=positionOfElementsNew[j];
 
@@ -2900,22 +3067,35 @@ $( "#prevCarousel1" ).mouseover(function() {
                				}
                				
                				if(positionTopRearranged !=""){
+                				
                 				var min_of_array = Math.min.apply(Math, positionOfElementsNew);
-                				var max_of_array = Math.max.apply(Math, positionOfElementsNew);
                 				var newTopPositionNode="";
-                				for(var j=0;j<allLinkedNodes.length;j++){
-                					if($(allLinkedNodes[j]).position().top==min_of_array){
-                						newTopPositionNode=$(allLinkedNodes[j]);
-                					}
+                				var occurances = positionOfElementsNew.filter(function(val){
+                				    return val === min_of_array;
+                				}).length;
+                				
+                				if(occurances>1 && min_of_array==$(allLinkedNodes[0]).position().top){
+                					for(var j=0;j<allLinkedNodes.length;j++){
+                    					if($(allLinkedNodes[j]).position().top==min_of_array){
+                    						newTopPositionNode=$(allLinkedNodes[j]);
+                    					}
+                    				}
                 				}
-                			
+                					else{
+                						for(var j=0;j<allLinkedNodes.length;j++){
+                        					if($(allLinkedNodes[j]).position().top==min_of_array){
+                        						newTopPositionNode=$(allLinkedNodes[j]);
+        										break;
+                        					}
+                        				}
+                					}
+                				
+                				
                 				if(($(newTopPositionNode[0]).prev()[0]) ){
                 					if(($(newTopPositionNode[0]).prev()[0].nodeName.toLowerCase()=="img")){
                 						$(newTopPositionNode[0]).prev()[0].setAttribute("src", blueImagePath);
                 					}
-                				}
-                				
-                				
+                				}	
                 			} 
                				if(($(parentnodeId).parent().prev()[0]) ){
                					if(($(parentnodeId).parent().prev()[0].nodeName.toLowerCase()=="img")){
@@ -2932,126 +3112,247 @@ $( "#prevCarousel1" ).mouseover(function() {
                     	event.stopPropagation();
                 	
             	}).on('mousemove', function(event) {
-				//App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
-					continuedNodeId=$(nodeNew).attr('id');
-            		    parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-						if(parentnodeId.parent().parent()[0].nodeName.toLowerCase()!="ix:continuation"){
-                    	if(parentnodeId){
-                    		parentNodeParent=parentnodeId.parent();
-                        	if($(parentnodeId).parent()[0]){
-                        	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
-                        	}
-                        	while(parentNodeParentNodeName!="ix:continuation"){
-                        		parentNodeParent=parentNodeParent.parent();
-                        		if($(parentNodeParent).parent()[0]){
-                        		parentNodeParentNodeName=$(parentNodeParent).parent()[0].nodeName.toLowerCase();
-                        		}
-                        		else{
-                        			break;
-                        		}
-                        	}
-                        	if(parentNodeParentNodeName!="ix:continuation"){
-                		if(($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation")){
-                			parentNodeParent=parentnodeId.parent();
-                        	if($(parentnodeId).parent()[0]){
-                        	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
-                        	}
-                        	while(parentNodeParentNodeName!="ix:nonnumeric"){
-                        		parentNodeParent=parentNodeParent.parent();
-                        		if($(parentNodeParent)[0]){
-                        		parentNodeParentNodeName=$(parentNodeParent)[0].nodeName.toLowerCase();
-                        		}
-                        		else{
-                        			break;
-                        		}
-                        	}
-                        	
-                        	if(parentNodeParentNodeName!="ix:nonnumeric"){
-                        		continuedNodeId=$(nodeNew).parent().attr('id');
-                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-                        	}
-                		}
-                		else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()=="ix:continuation")){
-    						continuedNodeId=$(nodeNew).parent().parent().attr('id');
-    						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-    					}
-                		
-                	}
-					else{
-                		if($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation" && $(nodeNew).parent().children().length==1){
-                			var childNodes=$(nodeNew).parent().children();
-                			var childNodeLength=childNodes.length;
-                			var childNodeName="";
-                			for(var j=0;j<childNodeLength;j++){
-                				if(childNodes[j][0]){
-                					childNodeName=childNodes[j][0].nodeName.toLowerCase();
-                				}
-                				while(childNodeName !="ix:nonnumeric"){
-                					childNodes[j] = $(childNodes[j]).children();
-        							if($(childNodes[j])[0]){
-        								childNodeName =childNodes[j][0].nodeName.toLowerCase();
-        							}
-        							else{
-        								break;
-        							}
-        						}
-                			}
-                			if(childNodeName.toLowerCase() =="ix:nonnumeric" || childNodeName.toLowerCase() =="ix:nonfraction" || childNodeName.toLowerCase() ==""){
-            					continuedNodeId=$(nodeNew).attr('id');
-                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-    						}
-            				else{
-            					continuedNodeId=$(nodeNew).parent().attr('id');
-                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+				
+            		var flag=true;
+            		continuedNodeId=$(nodeNew).attr('id');
+            		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+            		if(parentnodeId){
+            			if($(parentnodeId).parent()){
+            				if($(parentnodeId).parent().parent()[0]){
+            					if($(parentnodeId).parent().parent()[0].nodeName.toLowerCase()!=App.InlineDoc.inlinePrefix + ':continuation'){	
+            						parentNodeParent=parentnodeId.parent();
+            						if($(parentnodeId).parent()[0]){
+            							parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
+            						}
+            						while(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
+            							parentNodeParent=parentNodeParent.parent();
+            							if($(parentNodeParent).parent()[0]){
+            								parentNodeParentNodeName=$(parentNodeParent).parent()[0].nodeName.toLowerCase();
+            							}
+            							else{
+            								break;
+            							}
+            						}
+            						if(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
+            							if(($(nodeNew).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')){
+            								parentNodeParent=parentnodeId.parent();
+            								if($(parentnodeId).parent()[0]){
+            									parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
+            								}
+            								while(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
+            									parentNodeParent=parentNodeParent.parent();
+            									if($(parentNodeParent)[0]){
+            										parentNodeParentNodeName=$(parentNodeParent)[0].nodeName.toLowerCase();
+            									}
+            									else{
+            										break;
+            									}
+            								}
+
+            								if(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
+            									continuedNodeId=$(nodeNew).parent().attr('id');
+            									parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+            								}
+            							}
+            							else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')){
+            								continuedNodeId=$(nodeNew).parent().parent().attr('id');
+            								parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+            							}
+
+            						}
+            						else{
+            							if($(nodeNew).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation' && $(nodeNew).parent().children().length==1){
+            								var childNodes=$(nodeNew).parent().children();
+            								var childNodeLength=childNodes.length;
+            								var childNodeName="";
+            								for(var j=0;j<childNodeLength;j++){
+            									if(childNodes[j][0]){
+            										childNodeName=childNodes[j][0].nodeName.toLowerCase();
+            									}
+            									while(childNodeName !=App.InlineDoc.inlinePrefix + ':nonnumeric'){
+            										childNodes[j] = $(childNodes[j]).children();
+            										if($(childNodes[j])[0]){
+            											childNodeName =childNodes[j][0].nodeName.toLowerCase();
+            										}
+            										else{
+            											break;
+            										}
+            									}
+            								}
+            								if(childNodeName.toLowerCase() ==App.InlineDoc.inlinePrefix + ':nonnumeric' || childNodeName.toLowerCase() ==App.InlineDoc.inlinePrefix + ':nonfraction' || childNodeName.toLowerCase() ==""){
+            									continuedNodeId=$(nodeNew).attr('id');
+            									parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+            									if(childNodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonfraction'){
+            										var parentOfNodeNew=$(nodeNew).parent();
+            										var parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
+            										while(parentOfNodeNewNodeName!="div"){
+            											parentOfNodeNew=parentOfNodeNew.parent();
+            											if(parentOfNodeNew[0]){
+            												parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
+            											}
+            											else{
+            												break;
+            											}
+            										}
+            										if(parentOfNodeNewNodeName=="div"){
+            											if(parentOfNodeNew.parent()[0]){
+            												if(parentOfNodeNew.parent()[0].nodeName.toLowerCase()!="body" && parentOfNodeNew.parent()[0].nodeName.toLowerCase()!="div"){
+            													continuedNodeId=$(nodeNew).parent().attr('id');
+            													parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+            												}
+            											}
+            										}
+
+            									}
+            									var childNodeOfCurrentNonNumericNode=$(parentnodeId).children();
+            									var childNodeOfCurrentNonNumericNodeNodeName="";
+            									if(childNodeOfCurrentNonNumericNode[0]){
+            										childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumericNode[0].nodeName.toLowerCase();
+            									}
+            									while(childNodeOfCurrentNonNumericNodeNodeName != "img"){
+            										childNodeOfCurrentNonNumericNode=childNodeOfCurrentNonNumericNode.children();
+            										if(childNodeOfCurrentNonNumericNode[0]){
+            											childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumericNode[0].nodeName.toLowerCase();
+            										}
+            										else
+            											break;
+            									}
+            									if(childNodeOfCurrentNonNumericNodeNodeName == "img"){
+            										parentnodeId=childNodeOfCurrentNonNumericNode.next();
+            									}
+            								}
+            								else{
+            									continuedNodeId=$(nodeNew).parent().attr('id');
+            									parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+            								}
+            							}
+
+            						}
+
+            					}
             				}
-                		}
-                		
-                	}
-                      		}
-							}
+            			}
+            		}
                    			allLinkedNodes=App_Find.Element.groupIxContinuation(parentnodeId);
     						selectionHighlightNodes(allLinkedNodes); 
     						
+        					var positionTop = (allLinkedNodes[0][0]).offsetTop;
+                        	var positionOfElementsNew=[];
+    						for(var i=0;i<allLinkedNodes.length;i++){
+                   					positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
+                   				}
+                   			for(var i=0;i<allLinkedNodes.length;i++){
+
+                   				parentNodeOfContinuation=allLinkedNodes[i].parent();
+                   				nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
+                   				if(positionTop=='0' || positionTop=='1' || positionTop=='2'){
+                   					while(nodeN.toLowerCase() !="body"){
+                   						parentNodeOfContinuation = parentNodeOfContinuation.parent();
+                   						if($(parentNodeOfContinuation).parent()[0]){
+                   							nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
+                   						}
+                   						else{
+                   							break;
+                   						}
+                   					}
+                   					var childNode=parentNodeOfContinuation;
+                   					if(($(childNode).prev()[0]) ){
+                   						if($(childNode).prev()[0].nodeName.toLowerCase()=="img"){
+                   							if($(childNode).prev()[0].style.visibility == "hidden"){
+                        						flag=false;
+                        					}
+                   						}
+                   				}
+                   			}
+                   			else{
+                   				var positionTopRearranged="";
+                   				for (i = 0; i < positionOfElementsNew.length; i++)
+                   				{
+                   					for (j = i+1; j < positionOfElementsNew.length; j++)
+                   					{
+                   						if (positionOfElementsNew[j] < positionOfElementsNew[i])
+                   						{
+                   							positionTopRearranged=positionOfElementsNew[j];
+
+                   						}
+                   					}
+                   				}
+                   				
+                   				if(positionTopRearranged !=""){
+                    				var min_of_array = Math.min.apply(Math, positionOfElementsNew);
+                    				var max_of_array = Math.max.apply(Math, positionOfElementsNew);
+                    				var newTopPositionNode="";
+                    				for(var j=0;j<allLinkedNodes.length;j++){
+                    					if($(allLinkedNodes[j]).position().top==min_of_array){
+                    						newTopPositionNode=$(allLinkedNodes[j]);
+                    						break;
+                    					}
+                    				}
+                    				if(($(newTopPositionNode[0]).prev()[0]) ){
+                    					if(($(newTopPositionNode[0]).prev()[0].nodeName.toLowerCase()=="img")){
+                    						if($(newTopPositionNode[0]).prev()[0].style.visibility == "hidden"){
+                        						flag=false;
+                        					}
+                    					}
+                    				}
+                    				
+                    				
+                    			} 
+                   				if(($(parentnodeId).parent().prev()[0]) ){
+                   					if(($(parentnodeId).parent().prev()[0].nodeName.toLowerCase()=="img")){
+                   						if($(parentnodeId).parent().prev()[0].style.visibility == "hidden"){
+                    						flag=false;
+                    					}
+                   					}
+                   				}
+                   				if(($(parentnodeId).prev()[0]) ){
+                   					if(($(parentnodeId).prev()[0].nodeName.toLowerCase()=="img")){
+                   						if($(parentnodeId).prev()[0].style.visibility == "hidden"){
+                    						flag=false;
+                    					}
+                   					}
+                   				}
+                   			}
+                   			}
+                   			if(flag==true){
     						if(App_Find.Element.enableTooltip=="enable"){
                              	 
                                 getMouseOverDiv(parentnodeId, null,true);
                     			
                                 placeMouseOverDiv(event);
-                    	
-                        	}
-                    	
-            		    
-               			
-               			 
-                     	//}
-               			
+    						}
+    						}
                			event.stopPropagation();
                 	
+                
                 }).on('mouseout', function(event) {
 					continuedNodeId=$(nodeNew).attr('id');
             		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-					if(parentnodeId.parent().parent()[0].nodeName.toLowerCase()!="ix:continuation"){
-            		if(parentnodeId){
-            			parentNodeParent=parentnodeId.parent();
-                    	if($(parentnodeId).parent()[0]){
-                    	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
-                    	}
-                    	while(parentNodeParentNodeName!="ix:continuation"){
-                    		parentNodeParent=parentNodeParent.parent();
-                    		if($(parentNodeParent).parent()[0]){
-                    		parentNodeParentNodeName=$(parentNodeParent).parent()[0].nodeName.toLowerCase();
-                    		}
-                    		else{
-                    			break;
-                    		}
-                    	}
-                    	if(parentNodeParentNodeName!="ix:continuation"){
-                		if(($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation")){
+					if(parentnodeId){
+                		if($(parentnodeId).parent()){
+                			if($(parentnodeId).parent().parent()[0]){	
+                				if($(parentnodeId).parent().parent()[0].nodeName.toLowerCase()!=App.InlineDoc.inlinePrefix + ':continuation'){
+            			
+                	parentNodeParent=parentnodeId.parent();
+                	if($(parentnodeId).parent()[0]){
+                	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
+                	}
+                	while(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
+                		parentNodeParent=parentNodeParent.parent();
+                		if($(parentNodeParent).parent()[0]){
+                		parentNodeParentNodeName=$(parentNodeParent).parent()[0].nodeName.toLowerCase();
+                		}
+                		else{
+                			break;
+                		}
+                	}
+                	if(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
+                		if(($(nodeNew).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')){
                 			parentNodeParent=parentnodeId.parent();
                         	if($(parentnodeId).parent()[0]){
                         	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
                         	}
-                        	while(parentNodeParentNodeName!="ix:nonnumeric"){
+                        	while(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
                         		parentNodeParent=parentNodeParent.parent();
                         		if($(parentNodeParent)[0]){
                         		parentNodeParentNodeName=$(parentNodeParent)[0].nodeName.toLowerCase();
@@ -3061,19 +3362,19 @@ $( "#prevCarousel1" ).mouseover(function() {
                         		}
                         	}
                         	
-                        	if(parentNodeParentNodeName!="ix:nonnumeric"){
+                        	if(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
                         		continuedNodeId=$(nodeNew).parent().attr('id');
                         		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
                         	}
                 		}
-                		else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()=="ix:continuation")){
+                		else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')){
     						continuedNodeId=$(nodeNew).parent().parent().attr('id');
     						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
     					}
                 		
                 	}
 					else{
-                		if($(nodeNew).parent()[0].nodeName.toLowerCase()=="ix:continuation" && $(nodeNew).parent().children().length==1){
+                		if($(nodeNew).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation' && $(nodeNew).parent().children().length==1){
                 			var childNodes=$(nodeNew).parent().children();
                 			var childNodeLength=childNodes.length;
                 			var childNodeName="";
@@ -3081,7 +3382,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                 				if(childNodes[j][0]){
                 					childNodeName=childNodes[j][0].nodeName.toLowerCase();
                 				}
-                				while(childNodeName !="ix:nonnumeric"){
+                				while(childNodeName !=App.InlineDoc.inlinePrefix + ':nonnumeric'){
                 					childNodes[j] = $(childNodes[j]).children();
         							if($(childNodes[j])[0]){
         								childNodeName =childNodes[j][0].nodeName.toLowerCase();
@@ -3091,9 +3392,47 @@ $( "#prevCarousel1" ).mouseover(function() {
         							}
         						}
                 			}
-                			if(childNodeName.toLowerCase() =="ix:nonnumeric" || childNodeName.toLowerCase() =="ix:nonfraction" || childNodeName.toLowerCase() ==""){
-            					continuedNodeId=$(nodeNew).attr('id');
+                			if(childNodeName.toLowerCase() ==App.InlineDoc.inlinePrefix + ':nonnumeric' || childNodeName.toLowerCase() ==App.InlineDoc.inlinePrefix + ':nonfraction' || childNodeName.toLowerCase() ==""){
+                				continuedNodeId=$(nodeNew).attr('id');
                         		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+                				if(childNodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonfraction'){
+                					var parentOfNodeNew=$(nodeNew).parent();
+                					var parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
+                					while(parentOfNodeNewNodeName!="div"){
+                						parentOfNodeNew=parentOfNodeNew.parent();
+                						if(parentOfNodeNew[0]){
+                						parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
+                						}
+                						else{
+                							break;
+                						}
+                					}
+                					if(parentOfNodeNewNodeName=="div"){
+                						if(parentOfNodeNew.parent()[0]){
+                						if(parentOfNodeNew.parent()[0].nodeName.toLowerCase()!="body" && parentOfNodeNew.parent()[0].nodeName.toLowerCase()!="div"){
+                						continuedNodeId=$(nodeNew).parent().attr('id');
+                                		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+                						}
+                						}
+                					}
+                					
+                				}
+            					var childNodeOfCurrentNonNumericNode=parentnodeId.children();
+            					var childNodeOfCurrentNonNumericNodeNodeName="";
+            					if(childNodeOfCurrentNonNumericNode[0]){
+            					childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumericNode[0].nodeName.toLowerCase();
+            					}
+            					while(childNodeOfCurrentNonNumericNodeNodeName != "img"){
+            						childNodeOfCurrentNonNumericNode=childNodeOfCurrentNonNumericNode.children();
+            						if(childNodeOfCurrentNonNumericNode[0]){
+            						childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumericNode[0].nodeName.toLowerCase();
+            						}
+            						else
+            							break;
+            					}
+            					if(childNodeOfCurrentNonNumericNodeNodeName == "img"){
+            						parentnodeId=childNodeOfCurrentNonNumericNode.next();
+            					}
     						}
             				else{
             					continuedNodeId=$(nodeNew).parent().attr('id');
@@ -3102,6 +3441,8 @@ $( "#prevCarousel1" ).mouseover(function() {
                 		}
                 		
                 	}
+              		}
+					}
                   		}
 						}
                			allLinkedNodes=App_Find.Element.groupIxContinuation(parentnodeId);
@@ -3144,13 +3485,16 @@ $( "#prevCarousel1" ).mouseover(function() {
     			// xbrl value
                 var xbrlValue = 'N/A';
                 var nodeName = ele[0].nodeName.toLowerCase();
-                if (nodeName == 'ix:nonfraction') {                	
+                if (nodeName == App.InlineDoc.inlinePrefix + ':nonfraction') {
+                	
                     xbrlValue = ele.getXbrlValue();
                     xbrlValue = App_Utils.addCommas(xbrlValue);
-                } else if (nodeName == 'ix:nonnumeric') {
+                } else if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
+
                     xbrlValue = ele.htmlDecode(ele.text());
                     if (ele.attr('format')) { xbrlValue =  App_Utils.applyFormat(ele); }
                     if (xbrlValue.length > maxValueTextLength) {
+
                         xbrlValue = xbrlValue.trim().substring(0, maxValueTextLength) + '...';
                     }
                 }
@@ -3202,8 +3546,8 @@ $( "#prevCarousel1" ).mouseover(function() {
                         id = 'N/A';
                     }
                     var tag = ele.htmlDecode(id);
-                    if (tag.substring(0,8) == "us-gaap:") {
-                    tag = "<span style='white-space:nowrap;'>us-gaap:</span>"+tag.substring(8);
+                    if (tag.substring(0,8) == App.InlineDoc.standardTaxonomy) {
+                    tag = "<span style='white-space:nowrap;'>"+App.InlineDoc.standardTaxonomy+":"+"</span>"+tag.substring(8);
                     }
                     html += '<tr><td width="55px">Tag:</td><td><div class="wordBreakDiv">'+tag+'</div></td></tr>';
                     
@@ -3215,10 +3559,12 @@ $( "#prevCarousel1" ).mouseover(function() {
                     } else {
 
                         var context = App.InlineDoc.getContext(contextRef);
+						if (context){
                         if (context.length == 1) {
 
                             contextRef = context.calendarFriendlyName();
                         }
+						}
                     }
                     html += '<tr><td width="55px">Period:</td><td><div class="wordBreakDiv">'+ele.htmlDecode(contextRef)+'</div></td></tr>';
 
@@ -3425,17 +3771,51 @@ $( "#prevCarousel1" ).mouseover(function() {
     			    }
             	}
             }
-            
-            function wrapInDashesTraditional(index,ele,highlightType,node) {
-				if (!node.parent().hasClass('sec-cbe-highlight-dashed')) {	
-					var spanNode = null;
-					var nodeName = node[0].nodeName.toLowerCase();
-					var cls = 'sec-cbe-highlight-inline'; // assume display:inline, work hard to make sure not a block
-					if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
-						xbrId = node.attr('name').split(':').join('_');
-						if (instance && instance.tag[xbrId].xbrlType == 'textBlockItemType') { // it was a textBlock
+             function identical(array) {
+                for(var i = 0; i < array.length - 1; i++) {
+                    if(array[i] !== array[i+1]) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+			function applyBackgroundcolrOnallChildNodes(node) {
+            	var childnodes=$(node).children();
+         		var childrenLength=childnodes.length;
+         		for(var i=0;i< childrenLength;i++){
+         			$(childnodes[i]).addClass('sec-cbe-highlight-content-selected');
+         			applyBackgroundcolrOnallChildNodes($(childnodes[i]));
+         		}
+             }
+             function applyBackgroundcolrOnallChildNodesOnClick(node) {
+             	var childnodes=$(node).children();
+          		var childrenLength=childnodes.length;
+          		for(var i=0;i< childrenLength;i++){
+          			$(childnodes[i]).addClass('sec-cbe-highlight-filter-block-content-selected');
+          			applyBackgroundcolrOnallChildNodesOnClick($(childnodes[i]));
+          		}
+              }
+             function removeBackgroundcolrFromallChildNodes(node) {
+             	var childnodes=$(node).children();
+          		var childrenLength=childnodes.length;
+          		for(var i=0;i< childrenLength;i++){
+          			$(childnodes[i]).removeClass('sec-cbe-highlight-content-selected');
+          			removeBackgroundcolrFromallChildNodes(childnodes[i]);
+          		}
+              }
+            function wrapInDashesTraditional(index,ele,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType) {
+				if (!$(spanNode).hasClass('sec-cbe-highlight-dashed')) {	
+					//var cls = 'sec-cbe-highlight-inline'; // assume display:inline, work hard to make sure not a block
+					if (nonNumericNode) {
+						//xbrId = node.attr('name').split(':').join('_');
+						if (instance && instanceXbrlType) { // it was a textBlock
 							cls = 'sec-cbe-highlight-block';
-						} else { // does it have element descendants
+						} 
+						//DE335 Fixed
+						//else if(instance.tag[xbrId].xbrltype == 'textBlockItemType'){
+							//cls = 'sec-cbe-highlight-block';
+						//}
+						else { // does it have element descendants
 							$(node[0]).find('*').each(function() { // and there was a display:block in there
 								if ($(this).css('display')=='block') {
 									cls = 'sec-cbe-highlight-block';
@@ -3443,6 +3823,13 @@ $( "#prevCarousel1" ).mouseover(function() {
 							if (cls == 'sec-cbe-highlight-inline') { // last ditch effort based on current display only
 								var text=" ";
 								if($(node).children().length>0){
+									var children=$(node).children();
+									var childrenLength=children.length;
+									var x = children[childrenLength-1].textContent;
+									if (x == '\xa0') { // Non-breakable space is char 0xa0 (160 dec)
+										var x = node[0].lastChild;
+										node[0].removeChild(x);
+										}
 								}
 								else{
 							    text = $(node)[0].textContent;
@@ -3452,44 +3839,65 @@ $( "#prevCarousel1" ).mouseover(function() {
 									cls == 'sec-cbe-highlight-inline';
 								}
 								else{
-									rect = node[0].getClientRects();
-									//console.log(rect);
-									if (rect.length > 1) { // it is drawn in two rectangles, it had to be a block.
+									rects = (node[0]).getClientRects();
+									var top=[];
+									var bottom=[];
+									for (i = 0; i < rects.length; i++) {
+										var rect = rects[i];
+										top.push(rect.top);
+										bottom.push(rect.bottom);
+									}
+									if (rects.length > 1 && !identical(top) && !identical(bottom)) { // it is drawn in two rectangles, it had to be a block.
 										cls = 'sec-cbe-highlight-block';
 									}
 								}
 							}
 						}
-					}   	                            	    
-					var parentNode = node.parent()[0];
-					if (parentNode.nodeName.toLowerCase()=='span') //
-					{
-						var isonly = parentNode.childNodes.length == 1;                        
-						if (isonly) {
-							spanNode = parentNode;
-						}  // no need to wrap.
 					}
-					if (spanNode == null) {
-						var nilPadding = '&#160;';
-						node.wrap('<span>'+((node.attr('xsi:nil')=='true')?nilPadding:'')+'</span>');
-						spanNode = node.parent()[0];
+                    if ( navigator.userAgent.match(/iPhone/i)) {
+                    setTimeout(function() {						
+					$(spanNode).addClass('sec-cbe-highlight-dashed');
+                    },0);					
+					if(cls==='sec-cbe-highlight-block'){
+						setTimeout(function() {					
+						$(spanNode).addClass('sec-cbe-highlight-block');
+						},0);
 					}
-
-					$(spanNode).addClass(cls);	
+					else{
+					setTimeout(function() {		
+						$(spanNode).addClass('sec-cbe-highlight-inline');
+						},0);
+					}
+					if(nonNumericNode){
+						if(cls==='sec-cbe-highlight-block'){
+						setTimeout(function() {	
+							$(spanNode).addClass('sec-cbe-highlight-dashed_block');
+							},0);
+						}
+                    }
 					
-					if(App_Find.Highlight.cachedResults.linkedHiddenNodes.length>0){
-	                    if(node.attr('id') && ele.isHidden()){
-	                    	wrapLinkedHidden(ele,node,cls,spanNode);
-	                    }
 					}
-					
-					    
-				    $(spanNode).addClass('sec-cbe-highlight-dashed ');
-					if(nodeName == 'ix:nonnumeric'){
-						if($(spanNode).hasClass('sec-cbe-highlight-block')){
+					else{
+					$(spanNode).addClass('sec-cbe-highlight-dashed');
+					if(cls==='sec-cbe-highlight-block'){
+					setTimeout(function() {
+						$(spanNode).addClass('sec-cbe-highlight-block');
+						},10);
+					}
+					else{
+						$(spanNode).addClass('sec-cbe-highlight-inline');
+					}
+					if(nonNumericNode){
+						if(cls==='sec-cbe-highlight-block'){
+							$(spanNode).addClass('sec-cbe-highlight-dashed_block');
+						}
+                    }
+					}
+					setTimeout(function() {
+					if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+						if(cls==='sec-cbe-highlight-block'){
 							if($(ele).children()){
 						    	element = $(ele).children();
-						    	console.log(element);
 								for(j=0;j<element.length;j++){
 									
 									nodeNew=$(element[j])[0].nodeName;
@@ -3501,31 +3909,31 @@ $( "#prevCarousel1" ).mouseover(function() {
 										$(element[j])[0].style.clear="none";
 									    if($(element[j]).parent()[0]){
 											nodeNew =$(element[j]).parent()[0].nodeName;
-											//console.log(nodeNew);
 										}
 									}
 								}
 						    }
 						}
                     }
-					if(nodeName == 'ix:nonnumeric'){
-						if($(spanNode).hasClass('sec-cbe-highlight-block')){
-							$(spanNode).addClass('sec-cbe-highlight-dashed_block');
-						}
-                    }
-					
+					},10);
+					if(App_Find.Highlight.cachedResults.linkedHiddenNodes.length>0){
+	                    if(node.attr('id') && ele.isHidden()){
+	                    	wrapLinkedHidden(ele,node,cls,spanNode);
+	                    }
+					}
                     $(spanNode).attr('data-result-index',index).on('click', function(evt) {
                     	$('#about-modal').dialog("close");
                     	
                         if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-dashed-highlight')||$(this).hasClass('sec-cbe-highlight-filter')) {
-                        	App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected');
-                        	App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
+                        	
+                        	App.frame.contents().find('.sec-cbe-highlight-filter-selected, .sec-cbe-highlight-filter-selected-block, .sec-cbe-highlight-filter-block-content-selected').
+                        	removeClass('sec-cbe-highlight-filter-selected sec-cbe-highlight-filter-selected-block sec-cbe-highlight-filter-block-content-selected');
                     	    var index = $(this).attr('data-result-index');
                     		App_Find.Results.highlightItem(index);  // highlight the result item
-                       		 if(nodeName == 'ix:nonnumeric'){
+                       		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
                        			if($(this).hasClass('sec-cbe-highlight-block')){
                         			$(this).children(':first').selectionHighlightForBlock();
-                        			
+                        			//applyBackgroundcolrOnallChildNodesOnClick(this);
                         		}else if($(this).hasClass('sec-cbe-highlight-inline')){
                         			App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
     								$(this).addClass('sec-cbe-highlight-filter-content-selected');
@@ -3536,8 +3944,8 @@ $( "#prevCarousel1" ).mouseover(function() {
                         		});
                        		 }
                        		 else{
-								App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
-    							$(this).addClass('sec-cbe-highlight-filter-content-selected');
+							    App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected');
+								$(this).addClass('sec-cbe-highlight-filter-content-selected');
 	                       		$(this).children(':first').selectionHighlight();	 
 	                    		$(this).children(':first').each(function() {
 	                    		    App_Find.Element.showSelectionDetail($(this));
@@ -3547,19 +3955,19 @@ $( "#prevCarousel1" ).mouseover(function() {
                     	}
                     }).on('mousemove', function(event) {
                     	
-               		 if(nodeName == 'ix:nonnumeric'){
-                        	if(($(this).hasClass('sec-cbe-highlight-block'))&& !($(this).hasClass('sec-cbe-highlight-content-selected'))){
+               		  if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+                        	if($(this).hasClass('sec-cbe-highlight-block')){
                           		$(this).addClass('sec-cbe-highlight-content-selected');
-                          	}
-                        	else if($(this).hasClass('sec-cbe-highlight-block')){
-                          		$(this).addClass('sec-cbe-highlight-content-selected');
+								//applyBackgroundcolrOnallChildNodes(this);
                           	}
                         	 else {
                            		$(this).addClass('sec-cbe-highlight-content-selected');
+								applyBackgroundcolrOnallChildNodes(this);
                            	}
                		 }
                		else {
                    		$(this).addClass('sec-cbe-highlight-content-selected');
+						applyBackgroundcolrOnallChildNodes(this);
                    	}
                     	if(App_Find.Element.enableTooltip=="enable"){
                     		
@@ -3577,24 +3985,27 @@ $( "#prevCarousel1" ).mouseover(function() {
                     	event.stopPropagation();
                     	
                     }).on('mouseout', function() {
-                    	if(nodeName == 'ix:nonnumeric'){
+                    	if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
                         	if(node.attr('continuedAt')!=null){
                         		 $(this).removeHighlightNodes(allLinkedNodes); 
                             }else if($(this).hasClass('sec-cbe-highlight-block')){
                           		$(this).removeClass('sec-cbe-highlight-content-selected');
+								 removeBackgroundcolrFromallChildNodes(this);
                           	}
                             else {
                           		$(this).removeClass('sec-cbe-highlight-content-selected');
+								 removeBackgroundcolrFromallChildNodes(this);
                           	}
                		 }
                     	else {
                       		$(this).removeClass('sec-cbe-highlight-content-selected');
+							 removeBackgroundcolrFromallChildNodes(this);
                       	}
                     	
                     	var container = $('#selection-detail-container-mouseOver');
                     	container.hide();
                     }).on('mouseenter', function(event) {
-                 		 if(nodeName == 'ix:nonnumeric'){
+                 		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
                           	if(ele.attr('continuedat')!=null){
                           		ele.removeClass('sec-cbe-highlight-dashed');
                           		ele.removeClass('sec-cbe-highlight-dashed_block');
@@ -3619,11 +4030,11 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                    			// xbrl value
 	                                var xbrlValue = 'N/A';
 	                                var nodeName = ele[0].nodeName.toLowerCase();
-	                                if (nodeName == 'ix:nonfraction') {
+	                                if (nodeName == App.InlineDoc.inlinePrefix + ':nonfraction') {
 	                                    xbrlValue = ele.getXbrlValue();
 	                                    if (ele.attr('format') && xbrlValue=="-") { xbrlValue =  App_Utils.applyFormat(ele); }
 	                                	xbrlValue = App_Utils.addCommas(xbrlValue);                    
-	                                } else if (nodeName == 'ix:nonnumeric') {
+	                                } else if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
 	
 	                                    xbrlValue = ele.htmlDecode(ele.text());
 	                                    if (ele.attr('format')) { xbrlValue =  App_Utils.applyFormat(ele); }
@@ -3662,8 +4073,8 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                                    id = 'N/A';
 	                                }
 	                                var tag = ele.htmlDecode(id);
-	                                if (tag.substring(0,8) == "us-gaap:") {
-	                                tag = "<span style='white-space:nowrap;'>us-gaap:</span>"+tag.substring(8);
+	                                if (tag.substring(0,8) == App.InlineDoc.standardTaxonomy) {
+	                                tag = "<span style='white-space:nowrap;'>"+App.InlineDoc.standardTaxonomy+":"+"</span>"+tag.substring(8);
 	                                }
 	                                html += '<tr><td width="55px">Tag</td><td><div class="wordBreakDiv">'+tag+'</div></td></tr>';
 	                                
@@ -3675,10 +4086,12 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                                } else {
 	
 	                                    var context = App.InlineDoc.getContext(contextRef);
+										if (context){
 	                                    if (context.length == 1) {
 	
 	                                        contextRef = context.calendarFriendlyName();
 	                                    }
+										}
 	                                }
 	                                html += '<tr><td width="55px">Period</td><td><div class="wordBreakDiv">'+ele.htmlDecode(contextRef)+'</div></td></tr>';
 	
@@ -3714,12 +4127,26 @@ $( "#prevCarousel1" ).mouseover(function() {
                     	}
                     	
                     });
-                }
+               }
             }
-            
+             function childrenOfLastNodeFunction(node) {
+            	var childnodes=$(node).children();
+         		var childrenLength=childnodes.length;
+         		if(childrenLength>"1"){
+         			childnodes=childrenOfLastNodeFunction((childnodes[childrenLength-1]));
+         		}
+         		else
+         			{
+         			return childnodes;
+         			}
+         		return childnodes;
+             }
              function insertImageForNonNumericNodes(imageId,difference,elem,nodeNew,positionOfElementsNew,element,positionTop,
 					parentNodeOfContinuation,childNode,positionTopRearranged,lengthofContinuedNodes,
-					childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes){
+					childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes,count,intId,timeout){
+					if($(allLinkedNodes[0]).parent()[0].nodeName.toLowerCase() != "img" && $(allLinkedNodes[0]).parent().parent()[0].nodeName.toLowerCase() == "div"){
+            		 $(allLinkedNodes[0]).parent().parent()[0].style.paddingLeft="0px";
+            	 }
             	//alert("inside insertImageForNonNumericNodes ");
             	for(var i=0;i<allLinkedNodes.length;i++){
 					element = $(allLinkedNodes[i]).children().children();
@@ -3730,8 +4157,35 @@ $( "#prevCarousel1" ).mouseover(function() {
 							if($(element[j]).children()[0]){
 								nodeNew =element[j][0].nodeName;
 								if(nodeNew.toLowerCase() =="table"){
-									(element[j])[0].style.width="96%";
 									(element[j])[0].style.marginLeft="0";
+									if ( navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/android/i) ) {
+										(element[j])[0].style.width="88%";
+				            			}
+				            		else if ( navigator.userAgent.match(/iPad/i)){
+				            			(element[j])[0].style.width="82%";
+				            			}
+									else{
+									(element[j])[0].style.wordBreak="break-all";
+									if($(document).width()>=1681){
+										(element[j])[0].style.width="92%";
+				            		}
+				            		else if($(document).width()>=1601 && $(document).width()<=1680){
+				            			(element[j])[0].style.width="90%";
+				            		}
+				            		else if($(document).width()>=1441 && $(document).width()<=1600){
+				            			(element[j])[0].style.width="88%";
+				            		}
+				            		else if($(document).width()>=1152 && $(document).width()<=1440){
+				            			(element[j])[0].style.width="86%";
+				            		}
+				            		
+				            		else if($(document).width()>=1024 && $(document).width()<1152){
+				            			(element[j])[0].style.width="84%";
+				            		}
+				            		else if($(document).width()<1024){
+				            			(element[j])[0].style.width="76%";
+				            		}
+									}
 								}
 							}
 							else{
@@ -3739,21 +4193,88 @@ $( "#prevCarousel1" ).mouseover(function() {
 							}
 						}
 						if(nodeNew.toLowerCase() =="table"){
-							$(element[j])[0].style.width="96%";
 							$(element[j])[0].style.marginLeft="0";
+							if ( navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/android/i) ) {
+								$(element[j])[0].style.width="88%";
+		            			}
+		            		else if ( navigator.userAgent.match(/iPad/i)){
+		            			$(element[j])[0].style.width="82%";
+		            			}
+		            		else{
+							$(element[j])[0].style.wordBreak="break-all";
+							if($(document).width()>=1681 && $(document).width()<=1920){
+								$(element[j])[0].style.width="92%";
+		            		}
+		            		else if($(document).width()>=1601 && $(document).width()<=1680){
+		            			$(element[j])[0].style.width="90%";
+		            		}
+		            		else if($(document).width()>=1441 && $(document).width()<=1600){
+		            			$(element[j])[0].style.width="88%";
+		            		}
+		            		else if($(document).width()>=1152 && $(document).width()<=1440){
+		            			$(element[j])[0].style.width="86%";
+		            		}
+		            		else if($(document).width()>=1024 && $(document).width()<1152){
+		            			$(element[j])[0].style.width="84%";
+		            		}
+		            		else if($(document).width()<1024){
+		            			$(element[j])[0].style.width="76%";
+		            		}
+		            		else if($(document).width()<768){
+		            			$(element[j])[0].style.width="76%";
+		            		}
+							
+						}
 						}
 					}
+					if ( navigator.userAgent.match(/iPhone/i) ){
+						positionOfElementsNew.push($(allLinkedNodes[i]).offsetTop);
+		                }
+					else{
 					positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
+					}
 				}
+				parentNodeOfContinuationNode=allLinkedNodes[0].parent();
+				nodeNameparentNodeOfContinuationNode = parentNodeOfContinuationNode[0].nodeName.toLowerCase();
+				while(nodeNameparentNodeOfContinuationNode.toLowerCase() !=App.InlineDoc.inlinePrefix + ':hidden'){
+					parentNodeOfContinuationNode = parentNodeOfContinuationNode.parent();
+					if($(parentNodeOfContinuationNode)[0]){
+					nodeNameparentNodeOfContinuationNode = $(parentNodeOfContinuationNode)[0].nodeName.toLowerCase();
+					}
+					else
+						break;
+				}
+				if(nodeNameparentNodeOfContinuationNode!=App.InlineDoc.inlinePrefix + ':hidden'){
             	for(var i=0;i<allLinkedNodes.length;i++){
 					parentNodeOfContinuation=allLinkedNodes[i].parent();
 					nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-					if(positionTop=='0' || positionTop=='1' || positionTop=='12' || positionTop=='13'){
+					if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
+						if($(allLinkedNodes[lengthofContinuedNodes-1])[0].textContent==""){
+							lengthofContinuedNodes=lengthofContinuedNodes-1;
+						}
+					}
+					if(positionTop=='0' || positionTop=='1' || positionTop=='2' || positionTop=='12' || positionTop=='13'){
 						while(nodeN.toLowerCase() !="body"){
 							parentNodeOfContinuation = parentNodeOfContinuation.parent();
 							nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
 						}
 						childNode=parentNodeOfContinuation;
+						if($(childNode)[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
+					    	parentNodeOfContinuation=allLinkedNodes[i].parent();
+							nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
+							while(nodeN.toLowerCase() !=App.InlineDoc.inlinePrefix + ':continuation'){
+								parentNodeOfContinuation = parentNodeOfContinuation.parent();
+								nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
+							}
+							childNode=parentNodeOfContinuation;
+					    }
+						count = 0;
+					    	
+						intId=setInterval(function () { 
+							count=count+1;
+					    	 if (count === 5){
+					    	clearInterval(intId);
+					    	 } 
 						positionTopNew=$(childNode).position().top;
 						positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1][0]).position().top + $(allLinkedNodes[lengthofContinuedNodes-1][0]).outerHeight(true);
 						if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().length>0)
@@ -3761,8 +4282,16 @@ $( "#prevCarousel1" ).mouseover(function() {
 							if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()[0].nodeName.toLowerCase()=="table"){
 								positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1]).children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().outerHeight(true);
 							}
-							if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().children()[0].nodeName.toLowerCase()=="table"){
-								positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().outerHeight(true);
+							if($(allLinkedNodes[lengthofContinuedNodes-1]).children()){
+								if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()){
+									if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children()){
+										if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().children()[0]){
+										if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().children()[0].nodeName.toLowerCase()=="table"){
+											positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().outerHeight(true);
+										}
+										}
+									}
+								}
 							}
 						}
 						childrenOfsecondNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children().children();
@@ -3781,13 +4310,38 @@ $( "#prevCarousel1" ).mouseover(function() {
 								positionBottom=$(childrenOfTopNode[childrenOfTopNodelength-1]).position().top+ $(childrenOfTopNode[childrenOfTopNodelength-1]).outerHeight(true);
 							}
 						}
+						var childrenNodeName="";
+							var childrenNode="";
+								if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
+									if($(allLinkedNodes[lengthofContinuedNodes-1]).children()){
+									
+									childrenNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
+									if($(childrenNode)[0]){
+										childrenNodeName=$(childrenNode)[0].nodeName.toLowerCase();
+									}
+									while(childrenNodeName==App.InlineDoc.inlinePrefix + ':continuation'){
+										childrenNode=childrenNode.children();
+										if($(childrenNode)[0]){
+										childrenNodeName=$(childrenNode)[0].nodeName.toLowerCase();
+										}
+										else
+											break;
+									}
+									}
+								}
+								if($(childrenNode)[0]){
+								positionBottom=$(childrenNode[0]).position().top + $(childrenNode[0]).outerHeight(true);
+								}
 						if(positionBottom>positionTopNew){
 							difference=positionBottom-positionTopNew;
 						}
 						if($(allLinkedNodes[lengthofContinuedNodes-1]).parent().parent().parent()[0].nodeName.toLowerCase()=="div"){
-							setTimeout(function() {
+							timeout=setTimeout(function() {
+								clearTimeout(timeout);
 								positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1][0]).parent().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1][0]).parent().outerHeight(true);
-								difference=(positionBottom-positionTopNew)+25;
+								if(positionBottom>positionTopNew){
+								//difference=(positionBottom-positionTopNew)+25;
+								}
 								if(!checkIfImageAlreadyExists(imageId))	
 								{
 									elem.setAttribute("src", srcImg);
@@ -3800,7 +4354,8 @@ $( "#prevCarousel1" ).mouseover(function() {
 							},10);
 						}
 						else{
-							setTimeout(function() {
+							timeout=setTimeout(function() {
+								clearTimeout(timeout);
 								if(!checkIfImageAlreadyExists(imageId))
 								{
 									elem.setAttribute("src", srcImg);
@@ -3812,27 +4367,60 @@ $( "#prevCarousel1" ).mouseover(function() {
 								}
 							},10);
 						}
+						},10);
 						break;
 					}
 					else{
-						setTimeout(function() {
+					count = 0;
+					    intId=setInterval(function () {  
+					    	count=count+1;
+					    	 if (count === 5){
+					    	clearInterval(intId);
+					    	 }    
+						timeout=setTimeout(function() {
+								clearTimeout(timeout);
 							positionBottom= $(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).outerHeight(true);
+							if($(allLinkedNodes[lengthofContinuedNodes-1]).children()){
+							allChildrenOfLastNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
+							if($(allChildrenOfLastNode[allChildrenOfLastNode.length-1]).position()){
+							positionBottom=$(allChildrenOfLastNode[allChildrenOfLastNode.length-1]).position().top+ $(allChildrenOfLastNode[allChildrenOfLastNode.length-1]).outerHeight(true);
+							}
+							}
+							//DE338 Fixed
+							if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation' && $(allLinkedNodes[lengthofContinuedNodes-1][0]).children().length=="1" && $(allLinkedNodes[lengthofContinuedNodes-1][0]).children().hasClass('sec-cbe-highlight-dashed')){
+								positionBottom= $(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().outerHeight(true);
+							}
+							//DE338 Fixed
 							positionTopNew=$(allLinkedNodes[0][0]).position().top;
-							childrenOfLastNodeNodeName="";
-							childrenOfLastNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
-							if($(allLinkedNodes[lengthofContinuedNodes-1]).children()[0]){
-							childrenOfLastNodeNodeName=$(allLinkedNodes[lengthofContinuedNodes-1]).children()[0].nodeName.toLowerCase();
-							}
-							while(childrenOfLastNodeNodeName!="table"){
-								childrenOfLastNode=childrenOfLastNode.children();
-								if(childrenOfLastNode[0]){
-								childrenOfLastNodeNodeName=childrenOfLastNode[0].nodeName.toLowerCase();
+							if ((($.browser.mozilla) || ($.browser.msie))){
+							var childrenNodesNew=childrenOfLastNodeFunction((allLinkedNodes[lengthofContinuedNodes-2]));
+								if($(allLinkedNodes[lengthofContinuedNodes-1]).next()[0]){
+								if (!$(allLinkedNodes[lengthofContinuedNodes-1]).text().length && $(allLinkedNodes[lengthofContinuedNodes-1]).next()[0].nodeName.toLowerCase()=="span" &&
+										($(childrenNodesNew)[0].textContent.trim().length !="0")) {
+									positionBottom=positionBottom-parseInt($(allLinkedNodes[lengthofContinuedNodes-1]).css('line-height'),16);
 								}
-								else
-									break;
-							}
-							if(childrenOfLastNodeNodeName=="table"){
-							positionBottom=$(childrenOfLastNode).position().top+ $(childrenOfLastNode).outerHeight(true);
+								/*else{
+									if (!$(allLinkedNodes[lengthofContinuedNodes-1]).text().length) {
+										positionBottom=positionBottom-parseInt($(allLinkedNodes[lengthofContinuedNodes-1]).css('line-height'),8);
+									}
+								}*/
+								}
+								else{
+									if($(childrenNodesNew)[0]){
+									if($(childrenNodesNew)[0].nodeName.toLowerCase()=="span"){
+									if (!$(allLinkedNodes[lengthofContinuedNodes-1]).text().length) {
+										positionBottom=positionBottom-parseInt($(allLinkedNodes[lengthofContinuedNodes-1]).css('line-height'),8);
+									}
+									}
+									else{
+										if($(childrenNodesNew)[0]){
+										if(!$(childrenNodesNew).parent().prev().prev()[0] && $(childrenNodesNew).parent()[0].nodeName.toLowerCase()=="div"){
+											positionBottom=positionBottom-parseInt($(allLinkedNodes[lengthofContinuedNodes-1]).css('line-height'),8);
+										}
+										}
+									}
+									}
+								}
 							}
 							childrenOfsecondNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children().children();
 							childrenOfsecondNodelength=childrenOfsecondNode.length;
@@ -3850,6 +4438,69 @@ $( "#prevCarousel1" ).mouseover(function() {
 									positionBottom=$(childrenOfTopNode[childrenOfTopNodelength-1]).position().top+ $(childrenOfTopNode[childrenOfTopNodelength-1]).outerHeight(true);
 								}
 							}
+							childrenOfLastNodeNodeName="";
+							childrenOfLastNodeNew=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
+							childrenOfLastNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
+							if($(allLinkedNodes[lengthofContinuedNodes-1]).children()[0]){
+							childrenOfLastNodeNodeName=$(allLinkedNodes[lengthofContinuedNodes-1]).children()[0].nodeName.toLowerCase();
+							}
+							while(childrenOfLastNodeNodeName!="table"){
+								childrenOfLastNode=childrenOfLastNode.children();
+								if(childrenOfLastNode[0]){
+								childrenOfLastNodeNodeName=childrenOfLastNode[0].nodeName.toLowerCase();
+								}
+								else
+									break;
+							}
+							if(childrenOfLastNodeNodeName=="table"){
+							positionBottom=$(childrenOfLastNode[childrenOfLastNode.length-1]).position().top+ $(childrenOfLastNode[childrenOfLastNode.length-1]).outerHeight(true);
+							}
+							else {
+								if(childrenOfLastNodeNew){
+									childrenOfLastNodeNewLength=childrenOfLastNodeNew.length;
+									var childrenOfLastNodeNewName="";
+									if($(childrenOfLastNodeNew)[0]){
+										childrenOfLastNodeNewName=$(childrenOfLastNodeNew)[0].nodeName.toLowerCase();
+										}
+									while(childrenOfLastNodeNewName!="div"){
+										childrenOfLastNodeNew=childrenOfLastNodeNew.children();
+										if(childrenOfLastNodeNew[0]){
+											childrenOfLastNodeNewName=childrenOfLastNodeNew[0].nodeName.toLowerCase();
+										}
+										else
+											break;
+									}
+									if(childrenOfLastNodeNewName=="div"){
+										positionBottom=$(childrenOfLastNodeNew).position().top+ $(childrenOfLastNodeNew).outerHeight(true);
+									}
+								}
+							}
+							var parentNode=$(allLinkedNodes[0]).parent();
+								var parentNodeName=$(allLinkedNodes[0]).parent()[0].nodeName.toLowerCase();
+								while(parentNodeName!="table"){
+									parentNode=parentNode.parent();
+									if($(parentNode).parent()[0]){
+										parentNodeName=$(parentNode).parent()[0].nodeName.toLowerCase();
+									}
+									else
+										break;
+								}
+								if(parentNodeName=="table"){
+									var childNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
+									var childNodeName=$(allLinkedNodes[lengthofContinuedNodes-1]).children()[0].nodeName.toLowerCase();
+									while(childNodeName!="table"){
+										childNode=childNode.children();
+										if($(childNode).children()[0]){
+											childNodeName=$(childNode).children()[0].nodeName.toLowerCase();
+										}
+										else
+											break;
+									}
+									if(childNodeName=="table"){
+										elem.style.position="absolute";
+										$(childNode).parent()[0].style.paddingLeft="58px";
+										}
+								}
 							difference=positionBottom-positionTopNew;
 							for (i = 0; i < positionOfElementsNew.length; i++)
 							{
@@ -3867,12 +4518,63 @@ $( "#prevCarousel1" ).mouseover(function() {
     								var min_of_array = Math.min.apply(Math, positionOfElementsNew);
     								var max_of_array = Math.max.apply(Math, positionOfElementsNew);
     								var newTopPositionNode="";
-    								for(var j=0;j<allLinkedNodes.length;j++){
-    									if($(allLinkedNodes[j]).position().top==min_of_array){
+    								
+									var allLinkedNodesOfRecentArray=[];
+									for(var i=0;i<allLinkedNodes.length;i++){
+										if ( navigator.userAgent.match(/iPhone/i)  || ($.browser.msie)){
+											if($(allLinkedNodes[i]).offsetTop){
+											allLinkedNodesOfRecentArray.push($(allLinkedNodes[i]).offsetTop);
+											}
+											else{
+												allLinkedNodesOfRecentArray.push($(allLinkedNodes[i]).position().top);
+											}
+											}
+										else{
+											allLinkedNodesOfRecentArray.push($(allLinkedNodes[i]).position().top);
+											}
+		               				}
+									for(var j=0;j<allLinkedNodes.length;j++){
+										min_of_array = Math.min.apply(Math, allLinkedNodesOfRecentArray);
+										if($(allLinkedNodes[j]).position().top==min_of_array){
     										newTopPositionNode=$(allLinkedNodes[j]);
     										break;
     									}
+									}
+									for(var j=0;j<allLinkedNodes.length;j++){
+										max_of_array = Math.max.apply(Math, allLinkedNodesOfRecentArray);
+										var occurances = allLinkedNodesOfRecentArray.filter(function(val){
+											return val === max_of_array;
+										}).length;
+										if(occurances>1){
+											max_of_array=positionBottom;
+										}
+										else{		
+											if($(allLinkedNodes[j]).position().top==max_of_array){
+												lastpositionTopNode=$(allLinkedNodes[j]);
+												var childrenNodesNew="";
+												if((lastpositionTopNode.children().length>0)){
+													childrenNodesNew=childrenOfLastNodeFunction(lastpositionTopNode);
+												}
+												else{
+													childrenNodesNew=lastpositionTopNode;
+												}
+												if($(childrenNodesNew)[0]){
+													if($(childrenNodesNew)[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation' && $(childrenNodesNew)[0].textContent.trim().length==0){
+														positionOfElements=allLinkedNodesOfRecentArray;
+														allLinkedNodesNew=allLinkedNodes;
+														var index=positionOfElements.indexOf(max_of_array);
+														positionOfElements.splice(index, 1);
+														max_of_array = Math.max.apply(Math, positionOfElements);
+													}
+
+												}
+
+												break;
+											}
+										}
+									
     								}
+									var childrenOfTopMostNode="";
     								var flag=false;
     								for(var j=0;j<allLinkedNodes.length;j++){
     									
@@ -3880,16 +4582,35 @@ $( "#prevCarousel1" ).mouseover(function() {
     										flag=true;
 											childrenOfTopNode=$(allLinkedNodes[j]).children();
 											childrenOfTopNodelength=childrenOfTopNode.length;
-											if (($.browser.msie)){
-											if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()=="ix:continuation")
-	    			                    	{
-	    										max_of_array=$(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).outerHeight(true);
-
-	    			                    	}
-											}
 											if($(childrenOfTopNode[childrenOfTopNodelength-1]).children().length>0){
 												if($(childrenOfTopNode[childrenOfTopNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
 													max_of_array=$(childrenOfTopNode[childrenOfTopNodelength-1]).position().top+ $(childrenOfTopNode[childrenOfTopNodelength-1]).outerHeight(true);
+												}
+											}
+											childrenOfTopMostNode=childrenOfLastNodeFunction($(allLinkedNodes[j]).children());
+											if($(childrenOfTopMostNode)[0]){
+												if($(childrenOfTopMostNode)[0].nodeName.toLowerCase()=="span"){
+													max_of_array=$(childrenOfTopMostNode).position().top+ $(childrenOfTopMostNode).outerHeight(true);
+												}
+    										}
+											else if($(childrenOfTopMostNode).context ){
+												if($(childrenOfTopMostNode).context.nodeName.toLowerCase()==App.InlineDoc.inlinePrefix +':continuation'){
+													if (($.browser.msie) || ($.browser.mozilla)){
+													max_of_array=$(childrenOfTopMostNode.context).position().top+ $(childrenOfTopMostNode.context).outerHeight(true);
+													//DE338 Fixed
+													var continuedat=$(childrenOfTopMostNode.context).attr('continuedAt');
+													for(var i=0; i<App_Find.Highlight.cachedResults.continuedAt.length;i++){
+						                        		
+						                        		if(continuedat==App_Find.Highlight.cachedResults.continuedAt[i].attr('id')){
+						                        			if($(childrenOfTopMostNode).closest('div').find(App_Find.Highlight.cachedResults.continuedAt[i].attr('id'))){
+																max_of_array=$(childrenOfTopMostNode.context).parent().position().top+ $(childrenOfTopMostNode.context).parent().outerHeight(true);
+																break;
+															}
+						                        			break;
+						                        		}
+						                        		}
+														//DE338 Fixed
+													}
 												}
 											}
 											break;
@@ -3897,19 +4618,25 @@ $( "#prevCarousel1" ).mouseover(function() {
                                        
     								}
     								if(flag==false){
-									if (($.browser.msie)){
-    										if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()=="ix:continuation")
+									
+									if (!($.browser.msie) && !($.browser.mozilla)){
+    										if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')
         			                    	{
         										max_of_array=$(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).outerHeight(true);
         			                    	}
-    				                    	}
-    									if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().length>0)
-    			                    	{
-    			                    		if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()[0].nodeName.toLowerCase()=="table"){
+									}
+									if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().length>0)
+									{
+										if($(allLinkedNodes[lengthofContinuedNodes-1]).parent().prev()[0]){
+										if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()[0].nodeName.toLowerCase()=="table" && $(allLinkedNodes[lengthofContinuedNodes-1]).parent().prev()[0].nodeName.toLowerCase()=="div"){
+										}
+										}
+										else
+											if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()[0].nodeName.toLowerCase()=="table"){
     			                    		max_of_array=$(allLinkedNodes[lengthofContinuedNodes-1]).children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().outerHeight(true);
     			                    		}
-
-    			                    	}
+									}
+    								
     								}
 								difference=max_of_array-min_of_array;
 								if(!checkIfImageAlreadyExists(imageId))	
@@ -3928,14 +4655,24 @@ $( "#prevCarousel1" ).mouseover(function() {
 										}
 								}
 								else{
-								positionBottom= $(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).outerHeight(true)+10;
-									positionTopNew=$(allLinkedNodes[0][0]).position().top;
-									difference=positionBottom-positionTopNew;
+								if(newTopPositionNode != ""){
+										difference=max_of_array-min_of_array;	
+										elem.style.height=difference+"px";
+									}
+									else{
+								    difference=positionBottom-positionTopNew;
+									if (!($.browser.msie)){
 									elem.style.height=difference+"px";
+									}
+									else
+									elem.setAttribute("height", difference);
+									}
+									
 								}
 							} 
 							else{
-								setTimeout(function() {
+								timeout=setTimeout(function() {
+								clearTimeout(timeout);
 									if(!checkIfImageAlreadyExists(imageId))	
 									{
 										if($(allLinkedNodes[0]).parent().hasClass('sec-cbe-highlight-block')){
@@ -3954,21 +4691,68 @@ $( "#prevCarousel1" ).mouseover(function() {
     							
 						}, 10
 						);
+						},10);
 					}
 					break;
 				}
+				}
            // return elem;
             }
-			function wrapInDashes(index,ele,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem) {
-				if (!node.parent().hasClass('sec-cbe-highlight-dashed')) {	
-					var spanNode = null;
-					var nodeName = node[0].nodeName.toLowerCase();
-					var cls = 'sec-cbe-highlight-inline'; // assume display:inline, work hard to make sure not a block
-					if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
-						xbrId = node.attr('name').split(':').join('_');
+			function wrapInDashes(index,ele,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId) {
+				if (!$(spanNode).hasClass('sec-cbe-highlight-dashed') && !$(spanNode).hasClass('sec-cbe-highlight-dashed-highlight')) {	
+					//var nodeName = node[0].nodeName.toLowerCase();
+					//var cls = 'sec-cbe-highlight-inline'; // assume display:inline, work hard to make sure not a block
+					if (nonNumericNode) {
+						//xbrId = node.attr('name').split(':').join('_');
 						if (instance && instance.tag[xbrId].xbrlType == 'textBlockItemType') { // it was a textBlock
 							cls = 'sec-cbe-highlight-block';
-						} else { // does it have element descendants
+						} 
+						else if(instance.tag[xbrId].xbrltype == 'textBlockItemType'){
+							
+							cls = 'sec-cbe-highlight-block';
+							var parentNode=$(node[0]).parent();
+							var parentNodeName=$(node[0]).parent()[0].nodeName.toLowerCase();
+							while(parentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
+								parentNode=parentNode.parent();
+								if($(parentNode)[0]){
+								parentNodeName=$(parentNode)[0].nodeName.toLowerCase();
+								}
+								else
+									break;
+							}
+							if(parentNodeName == App.InlineDoc.inlinePrefix + ':continuation'){
+								cls = 'sec-cbe-highlight-block';
+							}
+							else{
+							var parentNode=$(node[0]).parent();
+							var parentNodeName=$(node[0]).parent()[0].nodeName.toLowerCase();
+							while(parentNodeName!="div"){
+								parentNode=parentNode.parent();
+								if($(parentNode)[0]){
+								parentNodeName=$(parentNode)[0].nodeName.toLowerCase();
+								}
+								else
+									break;
+							}
+							if(parentNodeName == "div" && $(node[0]).children().length==0 ){
+									cls='sec-cbe-highlight-inline';
+							}
+							else if(parentNodeName == "div" && $(node[0]).children().length>=1 ){
+								if($(node[0]).children()[0]){
+									if($(node[0]).children()[0].nodeName.toLowerCase()=="span"){
+									cls='sec-cbe-highlight-inline';
+									}
+								}
+							}
+							else if(parentNodeName == "div" && $(node)[0].textContent.trim().length=="0"){
+								cls = 'sec-cbe-highlight-inline';
+							}
+								
+
+							}
+						
+						}
+						else { // does it have element descendants
 							$(node[0]).find('*').each(function() { // and there was a display:block in there
 								if ($(this).css('display')=='block') {
 									cls = 'sec-cbe-highlight-block';
@@ -3976,6 +4760,13 @@ $( "#prevCarousel1" ).mouseover(function() {
 							if (cls == 'sec-cbe-highlight-inline') { // last ditch effort based on current display only
 								var text=" ";
 								if($(node).children().length>0){
+									var children=$(node).children();
+									var childrenLength=children.length;
+									var x = children[childrenLength-1].textContent;
+									if (x == '\xa0') { // Non-breakable space is char 0xa0 (160 dec)
+										var x = node[0].lastChild;
+										node[0].removeChild(x);
+										}
 								}
 								else{
 							    text = $(node)[0].textContent;
@@ -3985,30 +4776,39 @@ $( "#prevCarousel1" ).mouseover(function() {
 									cls == 'sec-cbe-highlight-inline';
 								}
 								else{
-									rect = node[0].getClientRects();
-									//console.log(rect);
-									if (rect.length > 1) { // it is drawn in two rectangles, it had to be a block.
+									rects = (node[0]).getClientRects();
+									var top=[];
+									var bottom=[];
+									for (i = 0; i < rects.length; i++) {
+										var rect = rects[i];
+										top.push(rect.top);
+										bottom.push(rect.bottom);
+									}
+									if (rects.length > 1 && !identical(top) && !identical(bottom)) { // it is drawn in two rectangles, it had to be a block.
 										cls = 'sec-cbe-highlight-block';
 									}
+									/*if($(node[0]).parent().prev()[0] && $(node).parent().prev().prev()[0]){
+									if(($(node.context).parent().prev()[0].nodeName.toLowerCase()=="span" && !$(node.context).children()[0]) && ($(node)[0].textContent.trim().length !="0" 
+										&& $(node).parent()[0].textContent.trim().substring(0,1)==".") && ($(node).parent().prev().prev()[0].nodeName.toLowerCase() =="span")){
+										if($(node[0]).parent()[0].getClientRects().length>1){
+										cls = 'sec-cbe-highlight-block';
+										}
+									}
+									}*/
 								}
 							}
 						}
 					}   	                            	    
-					var parentNode = node.parent()[0];
-					if (parentNode.nodeName.toLowerCase()=='span') //.search(App.InlineDoc.inlinePrefix)!=0
-					{
-						var isonly = parentNode.childNodes.length == 1;                        
-						if (isonly) {
-							spanNode = parentNode;
-						}  // no need to wrap.
+					if(cls==='sec-cbe-highlight-block'){
+						setTimeout(function() {					
+						$(spanNode).addClass('sec-cbe-highlight-block');
+						},0);
 					}
-					if (spanNode == null) {
-						var nilPadding = '&#160;';
-						node.wrap('<span>'+((node.attr('xsi:nil')=='true')?nilPadding:'')+'</span>');
-						spanNode = node.parent()[0];
+					else{
+					setTimeout(function() {		
+						$(spanNode).addClass('sec-cbe-highlight-inline');
+					},0);
 					}
-
-					$(spanNode).addClass(cls);	
 					
 					if(App_Find.Highlight.cachedResults.linkedHiddenNodes.length>0){
 	                    if(node.attr('id') && ele.isHidden()){
@@ -4016,20 +4816,20 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                    }
 					}
 
-					
 					if(highlightType=="calculation" || highlightType=="amount" || highlightType=="sign" || highlightType=="hidden"){
-						for (var i=0, len=arrayOfImages.length; i<len; i++)
+                	    App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
+						for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
 						{
-							if(arrayOfImages[i].getAttribute('src')==srcImg){
-								arrayOfImages[i].style.visibility = "hidden";
+							if((App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==srcImg) || (App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath)){
+								App_Find.Highlight.cachedResults.arrayOfImages[i].style.visibility = "hidden";
 							}
 						}
 					}else{
-						if(nodeName == 'ix:nonnumeric'){
-							var positionTopNew="";
-							var positionBottom="";
+						
+						if(nonNumericNode){
 							if(ele.attr('continuedat')!=null){
-								var imageId=$(ele).attr('id')+"imageid";
+								//var imageId=$(ele).attr('continuedat')+"imageid";
+								var imageId=ele.attr('id')+"imageid";
 								var difference=0;
 								elem.setAttribute("id", imageId);
 								elem.setAttribute("width", "3");
@@ -4046,16 +4846,19 @@ $( "#prevCarousel1" ).mouseover(function() {
 								var childrenOfsecondNodelength=" ";
 								var childrenOfTopNode=" ";
 								var childrenOfTopNodelength=" ";
+								var count=0;
+								var intId=0;
+								var timeout=0;
 								$(document).ready(function() {
 								insertImageForNonNumericNodes(imageId,difference,elem,nodeNew,positionOfElementsNew,element,positionTop,
 										parentNodeOfContinuation,childNode,positionTopRearranged,lengthofContinuedNodes,
-										childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes);
+										childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes,count,intId,timeout);
 								$(window).resize(function() {
 									var positionTop = (allLinkedNodes[0][0]).offsetTop;
 									var positionOfElementsNew=[];
 									insertImageForNonNumericNodes(imageId,difference,elem,nodeNew,positionOfElementsNew,element,positionTop,
 											parentNodeOfContinuation,childNode,positionTopRearranged,lengthofContinuedNodes,
-											childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes);
+											childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes,count,intId,timeout);
 								});
 								});
 							}
@@ -4065,15 +4868,17 @@ $( "#prevCarousel1" ).mouseover(function() {
 					$(elem).on('click',function(evt){
 						$('#about-modal').dialog("close");
 						App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
-						arrayOfImages = App.frame.contents().find('img');
-						for (var i=0, len=arrayOfImages.length; i<len; i++)
+						if(App_Find.Highlight.cachedResults.arrayOfImages.length==1){
+                   	    App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
+						}
+						for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
 						{
-							if(arrayOfImages[i].getAttribute('src')==blueImagePath){
-								arrayOfImages[i].setAttribute("src", srcImg);
+							if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath){
+								App_Find.Highlight.cachedResults.arrayOfImages[i].setAttribute("src", srcImg);
 							}
 						}
 
-						if(nodeName == 'ix:nonnumeric'){
+						if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
 							if(node.attr('continuedat')!=null){
 								$(spanNode).addClass('sec-cbe-highlight-dashed');
 							}
@@ -4087,26 +4892,22 @@ $( "#prevCarousel1" ).mouseover(function() {
 							var index = $(this).attr('data-result-index');
 							App_Find.Results.highlightItem(index);  // highlight the result item
 							//var allLinkedNodes=[];
-							if(nodeName == 'ix:nonnumeric'){
+							if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
 								if((node).attr('continuedat')!=null){
 									$(spanNode).children(':first').selectionHighlightNodesOnClick();
-									arrayOfImages = App.frame.contents().find('img');
+									//arrayOfImages = App.frame.contents().find('img');
 									for(var i=0;i<allLinkedNodes.length;i++){
 
-										str = $(elem).attr('src');
-										str.replace("/ixviewer/images/blue-vertical-rectangle-md.png");
-										$(elem).attr("src", "/ixviewer/images/blue-vertical-rectangle-md.png");
+										$(elem).attr("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
 										elem.setAttribute("src", blueImagePath);
 									}
-									App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
-									App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected'); 
+									App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
 									selectionHighlightClickNodes(allLinkedNodes); 
 								}
 
 								else if($(spanNode).hasClass('sec-cbe-highlight-block')){
 									$(spanNode).children(':first').selectionHighlightNodesOnClick();
-									App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
-									App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+									App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
 									$(spanNode).addClass('sec-cbe-highlight-filter-content-selected');
 								}
 								else{
@@ -4122,7 +4923,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 						}
 					}).on('mousemove', function(event) {
 						var allLinkedNodes=[];
-						if(nodeName == 'ix:nonnumeric'){
+						if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
 							if(node.attr('continuedat')!=null){
 							//App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
 								node.removeClass('sec-cbe-highlight-dashed');
@@ -4131,7 +4932,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 							}
 						}
 						if(App_Find.Element.enableTooltip=="enable"){
-							if(nodeName == 'ix:nonnumeric'){
+							if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
 								if(node.attr('continuedat')!=null){
 									$(spanNode).addClass('sec-cbe-highlight-dashed');
 								}
@@ -4153,7 +4954,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                    	}
 	                    	
 	                    }).on('mouseout', function() {
-	                    	if(nodeName == 'ix:nonnumeric'){
+	                    	if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
 	                        	if(node.attr('continuedAt')!=null){
 	                        		allLinkedNodes=App_Find.Element.groupIxContinuation(node);
 	                        		 $(this).removeHighlightNodes(allLinkedNodes);
@@ -4164,43 +4965,52 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                    	var container = $('#selection-detail-container-mouseOver');
 	                    	container.hide();
 	                    });
-						if(nodeName == 'ix:nonnumeric'){
-	                    	if(node.attr('continuedat')!=null){
-	                    		$(spanNode).addClass('sec-cbe-highlight-dashed-highlight');
-	                    	}
-	                    	else{
-								$(spanNode).addClass('sec-cbe-highlight-dashed ');
-								if($(spanNode).hasClass('sec-cbe-highlight-block')){
-									$(spanNode).addClass('sec-cbe-highlight-dashed_block');
-								}
-							}
-	                    	}
-						else{
-							$(spanNode).addClass('sec-cbe-highlight-dashed');
+						setTimeout(function() {		
+						$(spanNode).addClass('sec-cbe-highlight-dashed');
+					},0);
+					if(nonNumericNode){
+
+						if(node.attr('continuedat')!=null){
+							setTimeout(function() {		
+								$(spanNode).addClass('sec-cbe-highlight-dashed-highlight');
+							},0);
 						}
+						else{
+
+							if(cls=='sec-cbe-highlight-block'){
+								setTimeout(function() {	
+									$(spanNode).addClass('sec-cbe-highlight-dashed_block');
+								},0);
+							}
+
+						}
+					}
 					
                        $(spanNode).attr('data-result-index',index).on('click', function(evt) {
                     	$('#about-modal').dialog("close");
                     	//$(this).addClass('sec-cbe-highlight-dashed')
-							for (var i=0, len=arrayOfImages.length; i<len; i++)
+                    	if(App_Find.Highlight.cachedResults.arrayOfImages.length==1){
+                	    	App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
+                	     }
+							for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
 							 {
-								if(arrayOfImages[i].getAttribute('src')==blueImagePath){
-									arrayOfImages[i].setAttribute("src", srcImg);
+								if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath){
+									App_Find.Highlight.cachedResults.arrayOfImages[i].setAttribute("src", srcImg);
 								}
 							 }
                         if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-dashed-highlight')||$(this).hasClass('sec-cbe-highlight-filter')) {
-						    App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected');
-                        	App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
-                        	App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+						    App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-selected, .sec-cbe-highlight-filter-selected-block, .sec-cbe-highlight-filter-block-content-selected, .sec-cbe-highlight-filter-content-selected')
+						    .removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-selected sec-cbe-highlight-filter-selected-block sec-cbe-highlight-filter-block-content-selected sec-cbe-highlight-filter-content-selected');
                     	    var index = $(this).attr('data-result-index');
+							applyBackgroundcolrOnallChildNodesOnClick($(this));
                     		App_Find.Results.highlightItem(index);  // highlight the result item
-                       		 if(nodeName == 'ix:nonnumeric'){
+                       		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
                                 	if(node.attr('continuedat')!=null){
                                 		$(this).children(':first').selectionHighlightNodesOnClick();
                                 		for(var i=0;i<allLinkedNodes.length;i++){
                                 				parentNodeOfContinuation=allLinkedNodes[i].parent();
                                 				nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-                                				if(positionTop=='0' || positionTop=='1' ){
+                                				if(positionTop=='0' || positionTop=='1' || positionTop=='2'){
                                 					while(nodeN.toLowerCase() !="body"){
                                 						parentNodeOfContinuation = parentNodeOfContinuation.parent();
                                 						if($(parentNodeOfContinuation).parent()[0]){
@@ -4217,13 +5027,14 @@ $( "#prevCarousel1" ).mouseover(function() {
                                 						}
                                 					}
                                 				}
-                                			str = $(elem).attr('src');
-                                			str.replace("/ixviewer/images/blue-vertical-rectangle-md.png");
-                                			$(elem).attr("src", "/ixviewer/images/blue-vertical-rectangle-md.png");
-                                			elem.setAttribute("src", blueImagePath);
+												str = $(elem).attr('src');
+                                				if(str){
+                                					elem.setAttribute("src", blueImagePath);
+                                				}
+                                			//$(elem).attr("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
+                                			//elem.setAttribute("src", blueImagePath);
                                 		}
-                                		App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
-                                		App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected'); 
+                                		App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
                                 		selectionHighlightClickNodes(allLinkedNodes);
                                 		}
                                 	else{
@@ -4232,18 +5043,17 @@ $( "#prevCarousel1" ).mouseover(function() {
                                 			
                                 		}else if($(this).hasClass('sec-cbe-highlight-inline')){
                                 			App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
-								$(this).addClass('sec-cbe-highlight-filter-content-selected');
+            								$(this).addClass('sec-cbe-highlight-filter-content-selected');
                                 			$(this).children(':first').selectionHighlight();
                                 		}
                                 	}
                                 	$(this).children(':first').each(function() {
-									App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
-								$(this).addClass('sec-cbe-highlight-filter-content-selected');
                             		    App_Find.Element.showSelectionDetail($(node));
                             		});
                        		 }
                        		 else{
-								App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+                       			App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+								$(this).addClass('sec-cbe-highlight-filter-content-selected');
 	                       		$(this).children(':first').selectionHighlight();	 
 	                    		$(this).children(':first').each(function() {
 	                    		    App_Find.Element.showSelectionDetail($(this));
@@ -4252,26 +5062,37 @@ $( "#prevCarousel1" ).mouseover(function() {
                     		evt.stopPropagation();
                     	}
                     }).on('mousemove', function(event) {
-                    	
-               		 if(nodeName == 'ix:nonnumeric'){
+                     var flag=true;	
+               		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
                         	if(node.attr('continuedat')!=null){
 							//App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
 							//App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
                         		node.removeClass('sec-cbe-highlight-dashed');
                         		node.removeClass('sec-cbe-highlight-dashed_block');
-                        		selectionHighlightNodes(allLinkedNodes); 
+                        		selectionHighlightNodes(allLinkedNodes);
+								var imageId=node.attr('id')+"imageid";
+            					imageNode=getAlreadyExistingImage(imageId);
+            					if(imageNode){
+            					if(imageNode.style.visibility == "hidden"){
+            						flag=false;
+            					}
+            					}								
                         	}else if(($(this).hasClass('sec-cbe-highlight-block'))&& !($(this).hasClass('sec-cbe-highlight-content-selected'))){
                           		$(this).addClass('sec-cbe-highlight-content-selected');
+								applyBackgroundcolrOnallChildNodes($(this));
                           	}
-							else{
+							 else{
                			$(this).addClass('sec-cbe-highlight-content-selected');
+						applyBackgroundcolrOnallChildNodes($(this));
                		 }
                		 }
 					  else{
                			$(this).addClass('sec-cbe-highlight-content-selected');
+						applyBackgroundcolrOnallChildNodes($(this));
                		 }
+					 if(flag==true){
                     	if(App_Find.Element.enableTooltip=="enable"){
-                    		if(nodeName == 'ix:nonnumeric'){
+                    		if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
                             	if(node.attr('continuedat')!=null){
                             		$(this).addClass('sec-cbe-highlight-dashed-highlight');
                             	}
@@ -4284,36 +5105,48 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                    	
 	        				
 	                    	placeMouseOverDiv(event);
-	                    	
+	                    	}
                     	}
                     	event.stopPropagation();
                     	
                     }).on('mouseout', function() {
-                    	if(nodeName == 'ix:nonnumeric'){
+                    	if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
                         	if(node.attr('continuedAt')!=null){
                         		 $(this).removeHighlightNodes(allLinkedNodes); 
                             }else if($(this).hasClass('sec-cbe-highlight-block')){
                           		$(this).removeClass('sec-cbe-highlight-content-selected');
+								removeBackgroundcolrFromallChildNodes($(this));
                           	}
-	                     else{
+	                         else{
                     			$(this).removeClass('sec-cbe-highlight-content-selected');
+								removeBackgroundcolrFromallChildNodes($(this));
                     		 }
                		 }
-                    	 else{
+                    	else{
                     			$(this).removeClass('sec-cbe-highlight-content-selected');
+								removeBackgroundcolrFromallChildNodes($(this));
                     		 }
                     	var container = $('#selection-detail-container-mouseOver');
                     	container.hide();
                     }).on('mouseenter', function(event) {
-                 		 if(nodeName == 'ix:nonnumeric'){
+					var flag=true;
+                 		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
                           	if(ele.attr('continuedat')!=null){
                           		ele.removeClass('sec-cbe-highlight-dashed');
                           		ele.removeClass('sec-cbe-highlight-dashed_block');
                           		selectionHighlightNodes(allLinkedNodes); 
+								var imageId=node.attr('id')+"imageid";
+            					imageNode=getAlreadyExistingImage(imageId);
+            					if(imageNode){
+            					if(imageNode.style.visibility == "hidden"){
+            						flag=false;
+            					}
+            					}
                           	}else if($(this).hasClass('sec-cbe-highlight-block')){
                           		$(this).addClass('sec-cbe-highlight-content-selected');
                           	}
                  		 }
+						 if(flag==true){
                     	if(App_Find.Element.enableTooltip=="enable"){
                     		
 	                    	if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-filter')) {
@@ -4322,7 +5155,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                    		});
 	                    	}
 	                    	placeMouseOverDiv(event);
-	                    	
+	                    	}
                     	}
                     	event.stopPropagation();
                     });
@@ -4341,34 +5174,149 @@ $( "#prevCarousel1" ).mouseover(function() {
             // if we have no filters or search filters then just show the results
             if (!filter.isFiltered() &&
                 search.searchStr == '') {
+				
             	 calTotalContinuedNodes();
             	 calTotalRelationshipNodes();
             	 calTotalFootNoteNodes();
             	 if(App_Find.Highlight.cachedResults.continuedAt.length>0){
+                	
+            		 var count=0;
+            		 hrtags=App.frame.contents().find('hr');
+		            	for(var i=0;i<hrtags.length;i++){
+		            		hrtags[i].style.width = 'auto';
+		            		hrtags[i].style.clear = 'none';
+		            	}
+            		App.frame.contents().find('*[style*="text-indent"]').each(
+					            function (index) {
+					            	this.style.textIndent="0pt";
+					            });
+            		 App.frame.contents().find('*[style*="clear"]').each(
+            				 function (index) {
+            					 this.style.clear="none";
+            				 });
+            		 App.frame.contents().find('*[style*="both"]').each(
+            				 function (index) {
+            					 this.style.clear="none";
+            				 });
+            		 App.frame.contents().find('*[style*="padding-left"]').each(
+            				 function (index) {
+            					 this.style.paddingLeft="0px";
+            				 });
+            		 App.frame.contents().find('*[style*="line-height"]').each(
+					            function (index) {
+					            	if(this.style.lineHeight=="120%")
+					            		this.style.lineHeight = '130%';
+					            });
+            		 tabletags=App.frame.contents().find('table');
+						for(var i=0;i<tabletags.length;i++){
+		            		
+		            		if(tabletags[i].style.width=="100%")
+		            		{
+								tabletags[i].style.marginLeft="0";
+		            		if ( navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/android/i) ) {
+		            			tabletags[i].style.width="88%";
+		            			}
+		            		else if ( navigator.userAgent.match(/iPad/i)){
+		            			tabletags[i].style.width="82%";
+		            			}
+		            		
+		            		else{
+		            			tabletags[i].style.wordBreak="break-all";
+		            			
+		            			if($(document).width()>=1681){
+		            				tabletags[i].style.width="92%";
+		            			}
+		            			else if($(document).width()>=1601 && $(document).width()<=1680){
+		            				tabletags[i].style.width="90%";
+		            			}
+		            			else if($(document).width()>=1441 && $(document).width()<=1600){
+		            				tabletags[i].style.width="88%";
+		            			}
+		            			else if($(document).width()>=1152 && $(document).width()<=1440){
+		            				tabletags[i].style.width="86%";
+		            			}
+
+		            			else if($(document).width()>=1024 && $(document).width()<1152){
+		            				tabletags[i].style.width="84%";
+		            			}
+
+		            			else if($(document).width()<1024){
+		            				tabletags[i].style.width="76%";
+		            			}
+		            		}
+		            		}
+		            	}
+            		 results.each(function(index, element) {
+            			 var node = $(element);
+                		 var nodeName = node[0].nodeName.toLowerCase();
+            			 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+            				  App_Find.Highlight.cachedResults.nonnumericnodes.push(node);
+            				 var att = document.createAttribute("id");  
+            				 if(node.attr('continuedat')!=null){
+    							 if(element.attr('id')==null){
+                                 		att.value = count + "imageId";              
+                                 		$(element)[0].setAttributeNode(att);
+                 						count++;
+                 					}
+            				 }
+            			 }
+            		 });
+            		 results.each(function(index, element) {
+            			 var node = $(element);
+                		 var spanNode=null;
+                		 var nilPadding = '&#160;';
+                		 var parentNode = node.parent()[0];
+                		 var isonly = parentNode.childNodes.length == 1;   
+                		 var parentNodeName=parentNode.nodeName.toLowerCase();
+                		 if (!node.parent().hasClass('sec-cbe-highlight-dashed') && !node.parent().hasClass('sec-cbe-highlight-dashed-highlight')) {
+                		 if (parentNodeName==='span') //
+                		 {
+                			 if (isonly) {
+                				spanNode = parentNode; 
+                			 }  // no need to wrap.
+                		 }
+                		 if (spanNode === null) {
+                			 node.wrap('<span>'+((node.attr('xsi:nil')==='true')?nilPadding:'')+'</span>');
+                			 spanNode = node.parent()[0];
+                		 }
+                		 }
+            		 });
                 	 var highlightType = App_Find.Highlight.getSelected().value;
-                	 var blueImagePath="/ixviewer/images/blue-vertical-rectangle-md.png";
-                	 var arrayOfImages = App.frame.contents().find('img');
-             		for (var i=0, len=arrayOfImages.length; i<len; i++)
+                	 var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
+                	 if(App_Find.Highlight.cachedResults.arrayOfImages.length==0){
+                	    	App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
+                	     }
+             		for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
              		{
-             			if(arrayOfImages[i].getAttribute('src')==srcImg){
-             				arrayOfImages[i].style.visibility = "visible";
+             			if((App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==srcImg) || (App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath)){
+             				App_Find.Highlight.cachedResults.arrayOfImages[i].style.visibility = "visible";
              			}
              		}
+					var count=0;
     				results.each(function(index, element) {
                 		 var node = $(element);
                 		 var nodeName = node[0].nodeName.toLowerCase();
+						 var att = document.createAttribute("id");  
                 		 var allLinkedNodes=[];
                 		 var elem = document.createElement("img");
-                		 if(nodeName == 'ix:nonnumeric'){
+                		 var cls = 'sec-cbe-highlight-inline';
+                		 var parentNode = node.parent()[0];
+                		 var spanNode = null;
+                		 var xbrId="";
+                		 var nonNumericNode=false;
+                		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
                 			 App_Find.Highlight.cachedResults.nonnumericnodes.push(node);
                 		 }
-                		 if(nodeName == 'ix:nonnumeric'){
+                		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+                			 nonNumericNode=true;
+                			 xbrId = node.attr('name').split(':').join('_');
                 			 if(node.attr('continuedat')!=null){
                 				 allLinkedNodes=App_Find.Element.groupIxContinuation(node);
                 				 App_Find.Highlight.cachedResults.allData.push(allLinkedNodes);
                 			 }
                 		 }
-                		 wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
+                		 spanNode=parentNode;
+                		 wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId);
                 	 });
                 	 var continuedNodeId=" ";
                 	 var found=false;
@@ -4384,42 +5332,85 @@ $( "#prevCarousel1" ).mouseover(function() {
                 		 wrapInDashesForContinuationArray(nodeNew,blueImagePath,continuedNodeId,found,parentNode,parentnodeId,parentNodeOfContinuation,positionOfElementsNew,parentNodeParent,parentNodeParentNodeName);
                 	 }
                 	 App_Find.Results.show(App_Find.Highlight.getResults());
+            	 
             	 }else{
-                	 var highlightType = App_Find.Highlight.getSelected().value;
+                	 results.each(function(index, element) {
+            			 var node = $(element);
+                		 var spanNode=null;
+                		 var nilPadding = '&#160;';
+                		 var parentNode = node.parent()[0];
+                		 var isonly = parentNode.childNodes.length == 1;   
+                		 var parentNodeName=parentNode.nodeName.toLowerCase();
+                		 if (!node.parent().hasClass('sec-cbe-highlight-dashed')) {
+                		 if (parentNodeName==='span') //
+                		 {
+                			 if (isonly) {
+                				 
+                			 }  // no need to wrap.
+                		 }
+                		 if (spanNode === null) {
+                			 node.wrap('<span>'+((node.attr('xsi:nil')==='true')?nilPadding:'')+'</span>');
+                			
+                		 }
+                		 }
+            		 });
     				results.each(function(index, element) {
                 		 var node = $(element);
                 		 var nodeName = node[0].nodeName.toLowerCase();
-                		// var allLinkedNodes=[];
-                		 var elem = document.createElement("img");
-                		 
-                		 wrapInDashesTraditional(index,element,highlightType,node);
+                		 var spanNode = null;
+                		 var cls = 'sec-cbe-highlight-inline';
+                		 var parentNode = node.parent()[0];
+                		 var nonNumericNode=false;
+						 var instanceXbrlType=false;
+						 var xbrId="";
+                		 if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
+                 			nonNumericNode=true;
+							xbrId = node.attr('name').split(':').join('_');
+							if(instanceTag){
+							if(instanceTag[xbrId].xbrlType == 'textBlockItemType' || instanceTag[xbrId].xbrltype == 'textBlockItemType'){
+							instanceXbrlType=true;
+							}
+							}
+                   		 }
+                		 spanNode=parentNode;
+                		 wrapInDashesTraditional(index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
                 	 });
                 	 App_Find.Results.show(App_Find.Highlight.getResults());
             	 }
             	 
             } else {
             	if(App_Find.Highlight.cachedResults.continuedAt.length>0){
-            		var arrayOfImages = App.frame.contents().find('img');
-        			for (var i=0, len=arrayOfImages.length; i<len; i++)
+            		if(App_Find.Highlight.cachedResults.arrayOfImages.length==0){
+            	    	App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
+            	     }
+        			for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
         			{
-        				if(arrayOfImages[i].getAttribute('src')==srcImg){
-        					arrayOfImages[i].style.visibility = "visible";
+        				if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==srcImg){
+        					App_Find.Highlight.cachedResults.arrayOfImages[i].style.visibility = "visible";
         				}
         			}
                 	var highlightType = App_Find.Highlight.getSelected().value;
-                	var blueImagePath="/ixviewer/images/blue-vertical-rectangle-md.png";
+                	var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
                 	if(!filter.isFiltered() && (highlightType != 'none')){
                 		results.each(function(index, element) {
                 			var node = $(element);
                 			var nodeName = node[0].nodeName.toLowerCase();
                 			var allLinkedNodes=[];
                 			var elem = document.createElement("img");
-                			if(nodeName == 'ix:nonnumeric'){
+							var cls = 'sec-cbe-highlight-inline';
+                			var parentNode = node.parent()[0];
+                			var spanNode = null;
+                			var xbrId="";
+							var nonNumericNode=false;
+                			if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+							nonNumericNode=true;
+                      			 xbrId = node.attr('name').split(':').join('_');
                 				if(node.attr('continuedat')!=null){
                 					allLinkedNodes=App_Find.Element.groupIxContinuation(node);
                 				}
                 			}
-                			wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
+                			spanNode=parentNode;
+                			wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId);
     	                });
                 	}
                     var results = [];
@@ -4432,7 +5423,15 @@ $( "#prevCarousel1" ).mouseover(function() {
                 		var allLinkedNodes=[];
                 		var imageId="";
                 		var imageNode="";
-            			if(nodeName == 'ix:nonnumeric'){
+						var cls = 'sec-cbe-highlight-inline';
+                		var imageNode="";
+                		var parentNode = node.parent()[0];
+                		var spanNode = null;
+                		var xbrId="";
+                		var nonNumericNode=false;
+            			if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+						nonNumericNode=true;
+                 			 xbrId = node.attr('name').split(':').join('_');
             				if(node.attr('continuedat')!=null){
             					allLinkedNodes=App_Find.Element.groupIxContinuation(node);
             				}
@@ -4441,7 +5440,8 @@ $( "#prevCarousel1" ).mouseover(function() {
                         if (filter.isFiltered()) {
 
                             if (ele.matchesFilter(filter, ele)) {
-                            	wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
+                            	spanNode=parentNode;
+                            	wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId);
                                 if (search.searchStr != '' &&
                                     ele.matchesSearch(search, ele)) {
                                     isMatch = true;
@@ -4451,9 +5451,10 @@ $( "#prevCarousel1" ).mouseover(function() {
                                 }
                             }
     						else{
-    							if(nodeName == 'ix:nonnumeric'){
+    							if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
     	                           	if($(ele).attr('continuedat')!=null){
-    	                           		imageId=$(ele).attr('id')+"imageid";
+    	                           		//imageId=$(ele).attr('continuedat')+"imageid";
+										var imageId=ele.attr('id')+"imageid";
     	        						imageNode=getAlreadyExistingImage(imageId);
     	        						if(imageNode){
     	        						imageNode.style.visibility = "hidden";
@@ -4468,15 +5469,18 @@ $( "#prevCarousel1" ).mouseover(function() {
                         }
                         if (isMatch) {
                             results.push(ele);
+							 if($('#search-input').val() != "") {
                             ele.filterHighlight(results.length - 1);
-    						if(nodeName == 'ix:nonnumeric'){
+    						if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
                             	if($(ele).attr('continuedat')!=null){
                             		for(var i=0;i<allLinkedNodes.length;i++){
                             			allLinkedNodes[i].filterHighlightLinkedNodes(allLinkedNodes[i]);
                             		}
                             	}
                             }
-                            wrapInDashes(index,ele,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
+							}
+                            spanNode=parentNode;
+                         	wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId);
                             
                         }
                     });
@@ -4487,21 +5491,53 @@ $( "#prevCarousel1" ).mouseover(function() {
                 		results.each(function(index, element) {
                 			var node = $(element);
                 			var nodeName = node[0].nodeName.toLowerCase();
+                			var spanNode = null;
+                			var cls = 'sec-cbe-highlight-inline';
+                			var parentNode = node.parent()[0];
+                			var nonNumericNode=false;
+							var instanceXbrlType=false;
+							 var xbrId="";
+							 if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
+								nonNumericNode=true;
+								xbrId = node.attr('name').split(':').join('_');
+								
+								if(instanceTag[xbrId].xbrlType == 'textBlockItemType' || instanceTag[xbrId].xbrltype == 'textBlockItemType'){
+								instanceXbrlType=true;
+								}
+							 }
+                			
+                    		spanNode=parentNode;
+                    		wrapInDashesTraditional(index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
                 			//wrapInDashe(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
-                			wrapInDashesTraditional(index,element,highlightType,node);
     	                });
                 	}
                     var results = [];
+                   
                     App_Find.Highlight.getResults().each(function(index, element) {
 
                         var isMatch = false;
                         var ele = $(element);
                         var node = $(element);
                 		var nodeName = node[0].nodeName.toLowerCase();
+            			var spanNode = null;
+            			var cls = 'sec-cbe-highlight-inline';
+            			var parentNode = node.parent()[0];
+            			var nonNumericNode=false;
+            			var instanceXbrlType=false;
+						 var xbrId="";
+                		 if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
+                 			nonNumericNode=true;
+							xbrId = node.attr('name').split(':').join('_');
+							
+							if(instanceTag[xbrId].xbrlType == 'textBlockItemType' || instanceTag[xbrId].xbrltype == 'textBlockItemType'){
+							instanceXbrlType=true;
+							}
+                   		 }
+                		spanNode=parentNode;
                         if (filter.isFiltered()) {
 
                             if (ele.matchesFilter(filter, ele)) {
-                            	wrapInDashesTraditional(index,element,highlightType,node);
+                            	wrapInDashesTraditional(index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
                                 if (search.searchStr != '' &&
                                     ele.matchesSearch(search, ele)) {
                                     isMatch = true;
@@ -4518,7 +5554,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                         if (isMatch) {
                             results.push(ele);
                             ele.filterHighlight(results.length - 1);
-    						wrapInDashesTraditional(index,element,highlightType,node);
+                            wrapInDashesTraditional(index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
                             
                         }
                     });
@@ -4584,11 +5620,11 @@ $( "#prevCarousel1" ).mouseover(function() {
                    var e = $(element);                   
                    var xbrlValue = 'N/A';
 		           var nodeName = e[0].nodeName.toLowerCase();
-		           if (nodeName == 'ix:nonfraction') {
+		           if (nodeName == App.InlineDoc.inlinePrefix + ':nonfraction') {
 		        	   xbrlValue = e.getXbrlValue();
 		        	   // if (e.attr('format') && xbrlValue=="-") { xbrlValue =  App_Utils.formatAsNumber(e); }
 	                   xbrlValue = App_Utils.addCommas(xbrlValue);		               
-		           } else if (nodeName == 'ix:nonnumeric') {		
+		           } else if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {		
 		               xbrlValue = e.htmlDecode(e.text());
 		              if (e.attr('format')) { xbrlValue =  App_Utils.applyFormat(e); }
                        if (xbrlValue.length > maxValueTextLength) {
@@ -4603,9 +5639,11 @@ $( "#prevCarousel1" ).mouseover(function() {
 		           if (!contextRef) { contextRef = 'N/A';
 		           } else {		
 		               var context = App.InlineDoc.getContext(contextRef);
+					    if(context){
 		               if (context.length == 1) { 
 		               		contextRef = context.calendarFriendlyName();
 		               }
+					   }
 		           }    
                    var resultHtml = '<div class="result-item" data-is-selected="false" data-result-index="' + index + '">'
                    //resultHtml += '<div class="rightNavLinks">';
@@ -4663,11 +5701,10 @@ $( "#prevCarousel1" ).mouseover(function() {
                    var resultHtmlObj = $(resultHtml);
                    resultHtmlObj.on('click', function() {
 				       var allLinkedNodes=[];
-                 		 if(nodeName == 'ix:nonnumeric'){
+                 		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
                           	if($(e).attr('continuedat')!=null){
                           		//allLinkedNodes=App_Find.Element.groupIxContinuation($(e));
-                          		App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
-                          		App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected'); 
+                          		App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
                           		selectionHighlightClickNodes(allLinkedNodes); 
                           		}
                  		 }
@@ -4714,16 +5751,19 @@ $( "#prevCarousel1" ).mouseover(function() {
             });
 
             header.find('.btn-remove').on('click', function() {
-					var arrayOfImages = App.frame.contents().find('img');
-					var blueImagePath="/ixviewer/images/blue-vertical-rectangle-md.png";
-                    var srcImg = "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png";
-					for (var i=0, len=arrayOfImages.length; i<len; i++)
-					{
-						if(arrayOfImages[i].getAttribute('src')==blueImagePath){
-							arrayOfImages[i].setAttribute("src", srcImg);
-						}
-					}
-/*if(screen.width>=768 && ((window.orientation) || (window.orientation=='0') || (window.orientation=='180'))){
+            	
+            	if(App_Find.Highlight.cachedResults.arrayOfImages.length==0){
+            		App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
+            	}
+            	var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
+            	var srcImg = "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png";
+            	for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
+            	{
+            		if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath){
+            			App_Find.Highlight.cachedResults.arrayOfImages[i].setAttribute("src", srcImg);
+            		}
+            	}
+            	/*if(screen.width>=768 && ((window.orientation) || (window.orientation=='0') || (window.orientation=='180'))){
 
 
 
@@ -4736,15 +5776,10 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
 	$(".fixedMenuBar").css('position', 'absolute');
 
 }*/
-                App.frame.contents().find('.sec-cbe-highlight-content-selected').removeClass('sec-cbe-highlight-content-selected'); 
-                App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
-
-                App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected');
-                App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
-                //$(this).parents('.selection-detail-container').hide('slide');
-                $(this).parents('.selection-detail-container').dialog("close");
-                App_Find.Results.resetHighlightColor();
-                //$(this).removeHighlightSelectionNodes(allLinkedNodes);
+            	App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected, .sec-cbe-highlight-filter-selected, .sec-cbe-highlight-filter-selected-block, .sec-cbe-highlight-filter-block-content-selected')
+            	.removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected sec-cbe-highlight-filter-selected sec-cbe-highlight-filter-selected-block sec-cbe-highlight-filter-block-content-selected'); 
+            	$(this).parents('.selection-detail-container').dialog("close");
+            	App_Find.Results.resetHighlightColor();
             });
             
          // change highlight type or concept type
@@ -4768,13 +5803,14 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
 			}
         },
         groupIxContinuation:function(node) {
-           	
+           	if(node){
      		var continuedAt = node.attr('continuedAt');
      		var allContinuedDependents = [];
      		var newContinuedAt="";
 
      		allContinuedDependents.push(node);
      		return App_Find.Element.findRelatedNodeAndUpdateMantainedList(continuedAt,allContinuedDependents,newContinuedAt);
+			}
         },
         findRelatedNodeAndUpdateMantainedList:function(continuedAt,allContinuedDependents,newContinuedAt){
         	for(var i=0; i<App_Find.Highlight.cachedResults.continuedAt.length;i++){
@@ -4893,11 +5929,8 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
                     var xbrId = App_Utils.convertToXBRLId(id);
 
                     var container = $('#selection-detail-container');
-
-
         			html = '<table class="table-framed">';
-
-
+                    
                      var selectedlabelval = App.InlineDoc.getSelectedLabel(xbrId,this,null,function(value){
 
                       container.find('[data-content="label"]').html(value);
@@ -4909,8 +5942,8 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
                         id = 'N/A';
                     }
                     var tag = ele.htmlDecode(id);
-                    if (tag.substring(0,8) == "us-gaap:") {
-                    tag = "<span style='white-space:nowrap;'>us-gaap:</span>"+tag.substring(8);
+                    if (tag.substring(0,8) == App.InlineDoc.standardTaxonomy) {
+                    tag = "<span style='white-space:nowrap;'>"+App.InlineDoc.standardTaxonomy+":"+"</span>"+tag.substring(8);
                     }
                     if(tag !='N/A')
                     	{
@@ -4922,14 +5955,14 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
         			// xbrl value
                     var xbrlValue = 'N/A';
                     var nodeName = ele[0].nodeName.toLowerCase();
-                    if (nodeName == 'ix:nonfraction') {
+                    if (nodeName == App.InlineDoc.inlinePrefix + ':nonfraction') {
                         xbrlValue = ele.getXbrlValue();
                         if (ele.attr('format') && xbrlValue=="-") { xbrlValue =  App_Utils.applyFormat(ele); }
 						else if(ele.attr('format')=="ixt:zerodash" && xbrlValue=="NaN"){
                         	xbrlValue =  App_Utils.applyFormat(ele);
                         }
                     	xbrlValue = App_Utils.addCommas(xbrlValue);                    
-                    } else if (nodeName == 'ix:nonnumeric') {
+                    } else if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
                         if(ele.attr('continuedAt') != null){
                         	var allLinkedNodes=[];
                         	allLinkedNodes=App_Find.Element.groupIxContinuation(ele);
@@ -4982,10 +6015,12 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
                     } else {
 
                         var context = App.InlineDoc.getContext(contextRef);
+						if(context){
                         if (context.length == 1) {
 
                             contextRef = context.calendarFriendlyName();
                         }
+						}
                     }
                     if(ele.htmlDecode(contextRef)!='N/A'){
                     html += '<tr><td width="35%">Period</td><td width="65%"><div class="wordBreakDiv">'+ele.htmlDecode(contextRef)+'</div></td></tr>';
@@ -5025,7 +6060,7 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
 
 					 // footnote
                     var signHtml = 'N/A';
-                    if (nodeName == 'ix:nonfraction') {
+                    if (nodeName == App.InlineDoc.inlinePrefix + ':nonfraction') {
                         if (ele.attr('sign') == '-') {
 	                        signHtml = "Negative";
 	                    }else{
@@ -5177,8 +6212,14 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
         		ref_parts = std_refs[ref_id];
         		for (ref_key in ref_parts) {
         			ref_value = ref_parts[ref_key];
+					
+        			if(ref_key != "URI"){
         			rows += '<tr>'+'<td width="35%">'+ ele.htmlDecode(ref_key)+ '</td>'+'<td width="65%"><div class="wordBreakDiv">';
-        			if (ref_key == "URI") {
+        			}else{
+        			rows += '<tr>'+'<td width="35%">'+ ele.htmlDecode(ref_key)+ '<br><p style="font-size:10px">(Will Leave SEC Website)'+ '</td>'+'<td width="65%"><div class="wordBreakDiv">';	
+        			}	
+				
+					if (ref_key == "URI") {
         				ref_value = '<a href = '+encodeURI(ref_value)+' target="_blank">'+ref_value+'</a>';
         			} 
         			rows += ref_value + '</div></td>'+'</tr>';
@@ -5257,11 +6298,12 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
                 labels.each(function(index, element) {
 
                     var node = $(element);
-                    if (node.attr('xlink:role') == App.XBRLDoc.namespaces.label.label) {
+                    var prefix = App.InlineDoc.nsLookupByValue(App.InlineDoc.namespaces.xlink, true);
+                    if (node.attr(prefix+':role') == App.XBRLDoc.namespaces.label.label) {
 
 
                         labelHTML = node.text();
-                        if (node.attr('xlink:label').split('_')[0] == App.InlineDoc.customPrefix) {
+                        if (node.attr(prefix+':label').split('_')[0] == App.InlineDoc.customPrefix) {
 
                             labelHTML = '*' + labelHTML;
                         }

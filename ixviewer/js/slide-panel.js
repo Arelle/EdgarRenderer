@@ -159,8 +159,16 @@ $(document).ready(function(){
 				$('#opener').attr("aria-label", "Expand Facts");
 				$('#opener').attr("title", "Expand Facts");
 				panel.removeClass('visible').animate({'margin-right':'-30%','width':'30%'});
-				//panel.css({'width':'100%'});
-	      		$('#app-inline-xbrl-doc').css({'width':'100%'});
+				$('#app-inline-xbrl-doc').css({'width':'100%'});
+				if(screen.width>=768 && (((window.orientation=='0') || (window.orientation=='180')))){
+					$('#app-inline-xbrl-doc').contents().find('body').css({'zoom':'100%'});
+				}
+				else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation=='-90')))){
+					$('#app-inline-xbrl-doc').contents().find('body').css({'zoom':'100%'});
+				}
+				/*if(!window.orientation){
+					$('#app-inline-xbrl-doc').css({'width':'100%'});
+				}*/
 			} else {
 				if($('#results-count').text()!=0){
 					panel.addClass('visible').animate({'margin-right':'0px','width':'30%'});
@@ -168,9 +176,36 @@ $(document).ready(function(){
 					$('#opener').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-right');
 					$('#opener').attr("aria-label", "Collapse Facts");
 					$('#opener').attr("title", "Collapse Facts");
-		      		$('#app-inline-xbrl-doc').css({'width':'70%','float':'left'});
+					$('#app-inline-xbrl-doc').css({'width':'70%','float':'left'});
+					if(screen.width>=768 && (((window.orientation=='0') || (window.orientation=='180')))){
+						//var width4=(70/100)*($(document).width());
+						$('#app-inline-xbrl-doc').contents().find('body').css({'zoom':'70%'});
+						$('#app-inline-xbrl-doc').css({'float':'left'});
+					}
+					if(screen.width>=768 && (((window.orientation=='90') || (window.orientation=='-90')))){
+						//var width2=(70/100)*($(document).width());
+						$('#app-inline-xbrl-doc').contents().find('body').css({'zoom':'70%'});
+						$('#app-inline-xbrl-doc').css({'float':'left'});
+					}		
+
+					window.addEventListener("orientationchange", function() {
+						if(screen.width>=768 && (((window.orientation=='0') || (window.orientation=='180')))){
+							//var width4=(70/100)*($(document).width());
+							$('#app-inline-xbrl-doc').contents().find('body').css({'zoom':'70%'});
+							$('#app-inline-xbrl-doc').css({'float':'left'});
+						}
+						if(screen.width>=768 && (((window.orientation=='90') || (window.orientation=='-90')))){
+							//var width2=(70/100)*($(document).width());
+							$('#app-inline-xbrl-doc').contents().find('body').css({'zoom':'70%'});
+							$('#app-inline-xbrl-doc').css({'float':'left'});
+						}
+					}, false);
+
+					if(!window.orientation){
+						$('#app-inline-xbrl-doc').css({'width':'70%','float':'left'});
+					}
 		      		if($('#app-panel1').hasClass("visible")) {
-						$('#app-panel1').removeClass('visible').animate({'margin-left':'-30%','width':'30%'});
+						$('#app-panel1').removeClass('visible').animate({'margin-left':'-40%','width':'30%'});
 					}
 					if($('#app-panel2').hasClass("visible")) {
 						$('#app-panel2').removeClass('visible').animate({'margin-left':'-30%','width':'30%'});
