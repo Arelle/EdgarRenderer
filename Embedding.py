@@ -395,9 +395,9 @@ class Embedding(object):
         # since this function is only for primary,  we get a list of tuples with a lookup. this is all
         # because periodStartLabel and periodEndLabel can have facts that expand into multiple facts, hence
         # the list.  this lookup has to work.
-        getMemberPositionsOnAxisDict = self.getMemberPositionsOnAxisDictOfDicts['primary']
+        getMemberPositionsOnAxisDict = self.getMemberPositionsOnAxisDictOfDicts.get('primary', {})
         factAxisMemberLabelList = []
-        for positionOnPrimaryAxis, labelRole in getMemberPositionsOnAxisDict[fact.qname]:
+        for positionOnPrimaryAxis, labelRole in getMemberPositionsOnAxisDict.get(fact.qname, ()):
             if not Utils.isPeriodStartOrEndLabel(labelRole) or periodStartEndLabel == labelRole:
                 factAxisMember = FactAxisMember('primary', fact.qname)
                 factAxisMember.axisMemberPositionTuple = (axisIndex, positionOnPrimaryAxis)
