@@ -171,36 +171,52 @@ class Filing(object):
         self.unusedFactSet = set()
         self.skippedFactsList = []
 
-        self.isRR = False
         self.hasEmbeddings = False
         self.disallowEmbeddings = True
-        self.isInvestTaxonomyInDTS = False
-        for namespace in self.modelXbrl.namespaceDocs:
-            if namespace is None: pass
-            elif re.compile('http://xbrl.(sec.gov|us)/rr/20.*').match(namespace):
-                self.isRR = True
-            elif re.compile('http://xbrl.sec.gov/invest/*').match(namespace):
-                self.isInvestTaxonomyInDTS = True
-        # These namespaces contain elements treated specially in some layouts.
-        self.stmNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('/us-gaap/20',n) is not None),None)
-        self.deiNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('/dei/20',n) is not None), None)
+        
+        # These namespaces contain elements treated specially in some ways.
+        self.rrNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('sec.gov/rr/20',n) is not None),None)
+        self.investNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('sec.gov/invest/20',n) is not None),None)
+        self.usgaapNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('fasb.org/us-gaap/20',n) is not None),None)
+        self.ifrsNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('ifrs.org/taxonomy/20.*/ifrs',n) is not None),None)
+        self.deiNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('sec.gov/dei/20',n) is not None), None)
+        self.srtNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('fasb.org/srt/20',n) is not None),None)
+        self.isRR = self.rrNamespace is not None
+        self.isInvestTaxonomyInDTS = self.investNamespace is not None
+        
         self.builtinEquityColAxes = [('dei',self.deiNamespace,'LegalEntityAxis'),
-                                     ('us-gaap',self.stmNamespace,'StatementEquityComponentsAxis'),
-                                     ('us-gaap',self.stmNamespace,'PartnerCapitalComponentsAxis'),
-                                     ('us-gaap',self.stmNamespace,'StatementClassOfStockAxis')]
-        self.builtinEquityRowAxes = [('us-gaap',self.stmNamespace,'CreationDateAxis'),
-                                     ('us-gaap',self.stmNamespace,'StatementScenarioAxis'),
-                                     ('us-gaap',self.stmNamespace,'AdjustmentsForNewAccountingPronouncementsAxis'),
-                                     ('us-gaap',self.stmNamespace,'AdjustmentsForChangeInAccountingPrincipleAxis'),
-                                     ('us-gaap',self.stmNamespace,'ErrorCorrectionsAndPriorPeriodAdjustmentsRestatementByRestatementPeriodAndAmountAxis')                                     ]
-        self.builtinAxisOrders = [(arelle.ModelValue.QName('us-gaap',self.stmNamespace,'StatementScenarioAxis'),
+                                     ('ifrs-full',self.ifrsNamespace,'ComponentsOfEquityAxis'),
+                                     ('us-gaap',self.usgaapNamespace,'StatementEquityComponentsAxis'),
+                                     ('us-gaap',self.usgaapNamespace,'PartnerCapitalComponentsAxis'),
+                                     ('us-gaap',self.usgaapNamespace,'StatementClassOfStockAxis')
+                                     ]
+        self.builtinEquityRowAxes = [('us-gaap',self.usgaapNamespace,'CreationDateAxis'),
+                                     ('us-gaap',self.usgaapNamespace,'StatementScenarioAxis'),
+                                     ('us-gaap',self.usgaapNamespace,'AdjustmentsForNewAccountingPronouncementsAxis'),
+                                     ('us-gaap',self.usgaapNamespace,'AdjustmentsForChangeInAccountingPrincipleAxis'),
+                                     ('us-gaap',self.usgaapNamespace,'ErrorCorrectionsAndPriorPeriodAdjustmentsRestatementByRestatementPeriodAndAmountAxis'),
+                                     ('ifrs-full',self.ifrsNamespace,'RetrospectiveApplicationAndRetrospectiveRestatementAxis')
+                                     ]
+        self.builtinAxisOrders = [(arelle.ModelValue.QName('us-gaap',self.usgaapNamespace,'StatementScenarioAxis'),
                                    ['ScenarioPreviouslyReportedMember',
                                     'RestatementAdjustmentMember',
                                     'ChangeInAccountingPrincipleMember'],
-                                   ['ScenarioUnspecifiedDomain'])]
-        self.builtinLineItems = [arelle.ModelValue.QName('us-gaap',self.stmNamespace,'StatementLineItems')]
+                                   ['ScenarioUnspecifiedDomain'])
+                                  ,(arelle.ModelValue.QName('ifrs-full',self.ifrsNamespace,'RetrospectiveApplicationAndRetrospectiveRestatementAxis')
+                                   ,['PreviouslyStatedMember'
+                                     ,'IncreaseDecreaseDueToChangesInAccountingPolicyAndCorrectionsOfPriorPeriodErrorsMember'
+                                     ,'FinancialEffectOfChangesInAccountingPolicyMember'
+                                     ,'IncreaseDecreaseDueToChangesInAccountingPolicyRequiredByIFRSsMember'
+                                     ,'IncreaseDecreaseDueToVoluntaryChangesInAccountingPolicyMember'
+                                     ,'FinancialEffectOfCorrectionsOfAccountingErrorsMember'
+                                     ]
+                                   ,['RestatedMember'])
+                                  ]
+        self.builtinLineItems = [arelle.ModelValue.QName('us-gaap',self.usgaapNamespace,'StatementLineItems')
+                                 ,arelle.ModelValue.QName('ifrs-full',self.ifrsNamespace,'StatementOfChangesInEquityLineItems')
+                                 ]
         self.segmentHeadingStopList = [arelle.ModelValue.QName(x,y,z) for x,y,z in self.builtinEquityRowAxes]
-        # TODO: change flags like isRR, isInvest to contain the actual namespace or None.
+        
         self.factToEmbeddingDict = {}
         self.factFootnoteDict = defaultdict(list)
         self.startEndContextDict = {}

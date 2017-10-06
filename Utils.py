@@ -36,7 +36,7 @@ def isTotalLabel(preferredLabel):
     return 'total' in preferredLabel.casefold()
 
 minNumber = -sys.maxsize - 1
-efmStandardAuthorities = ["sec.gov", "fasb.org", "xbrl.org", "xbrl.us", "w3.org"]
+efmStandardAuthorities = ["sec.gov", "fasb.org", "xbrl.org", "xbrl.us", "w3.org", "ifrs.org"]
 
 
 def isRate(fact, filing):

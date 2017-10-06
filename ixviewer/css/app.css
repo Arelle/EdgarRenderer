@@ -24,7 +24,18 @@
    float: right;
    height:100%;
 }
-#app-panel1, #app-panel2 {
+#app-panel1 {
+    position: fixed;
+    left:0;
+    border:0;
+    margin:0;
+    background-color: #D8D8D8;
+    width:30%;
+    margin-left:-30%;
+    float: left;
+    height:100%;
+}
+#app-panel2 {
     position: fixed;
     left:0;
     border:0;
@@ -153,8 +164,14 @@
 
 
 }
+/** toolbar spinner **/
+.toolbarSpinner {
+  width: 32px;
+  height: 32px;
 
-.double-bounce1, .double-bounce2 {
+
+}
+.double-bounce1, .double-bounce2 , .double-bounce3{
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -172,7 +189,11 @@
   -webkit-animation-delay: -1.0s;
   animation-delay: -1.0s;
 }
-
+.double-bounce3 {
+   opacity: 0.4;
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
 @-webkit-keyframes bounce {
   0%, 100% { -webkit-transform: scale(0.0) }
   50% { -webkit-transform: scale(1.0) }
@@ -1490,8 +1511,17 @@ i {
    margin-right: 10px;
 	
 }
-
+#documentTypeSingleLIDivIfrs{
+   margin-left:10px;
+   padding:3px;
+   margin-right: 10px;
+	
+}
 #usGaapTaggedSection{
+	padding-left: 5px;
+	
+}
+#ifrsTaggedSection{
 	padding-left: 5px;
 	
 }
@@ -2217,6 +2247,18 @@ i {
 }*/
 input[type=text]::-ms-clear {  display: none; width : 0; height: 0; }
 input[type=text]::-ms-reveal {  display: none; width : 0; height: 0; }
+
+#app-container {
+	width:98.7%;
+/* 	-ms-overflow-style: none; */
+    /*  overflow: auto; */ 
+}
+#app-panel1{
+	width:29.6%;
+}
+#app-panel2{
+	width:29.6%;
+}
 }
 
 @media screen and (-moz-images-in-menus:0) {

@@ -93,6 +93,9 @@ class Summary(object):
         self.footnotesReported = 0 < sum([s.footnoteCount for s in summaries])
         self.scenarioCount = sum([s.scenarioCount for s in summaries])
         self.hasRR = next((True for s in summaries if s.hasRR), False)
+        self.namespacesInUse = set()
+        for s in summaries:
+            self.namespacesInUse.update(s.namespacesInUseSet)
         dtsroots = []
         for s in summaries:  # collect a list in order, but skip duplicates if they should occur           
             for dtsroot in s.dtsroots:
@@ -199,7 +202,9 @@ class Summary(object):
         supplementalFilesEtree = SubElement(self.rootETree, 'SupplementalFiles')
         for file in self.controller.supplementalFileList:
             SubElement(supplementalFilesEtree, 'File').text = str(file)
-        SubElement(self.rootETree, 'BaseTaxonomies')
+        baseTaxonomiesEtree = SubElement(self.rootETree, 'BaseTaxonomies')
+        for ns in self.namespacesInUse:
+            SubElement(baseTaxonomiesEtree,'BaseTaxonomy').text = str(ns)
         hasPresentationLinkbase = next((True for s in self.instanceSummaryList
                                         if s.hasPresentationLinkbase), False)
         hasCalculationLinkbase = next((True for s in self.instanceSummaryList
@@ -382,8 +387,7 @@ class InstanceSummary(object):
                                   modelObject=doc, doctype=doc.xmlRootElement.localName, file=uri)
             self.dts[doctype][rl] += [f]
         self.dtsroots = self.instanceFiles + self.inlineFiles
-        
-
+                
 #         self.hasRR = next((True for n in modelXbrl.namespaceDocs.keys()
 #                            if 'http://xbrl.sec.gov/rr/' in n), False)
 #         for fileUri, doc in sorted(modelXbrl.urlDocs.items()):
@@ -518,6 +522,7 @@ class InstanceSummary(object):
                 roleDict = tag['calculation'] = {}
                 for calculation in calculations:
                     role = calculation.linkrole
+                    if not hasattr(calculation.fromModelObject,'attrib'): continue
                     parentTag =  calculation.fromModelObject.attrib['id']
                     weight = calculation.weight
                     order = calculation.order
@@ -557,6 +562,7 @@ class InstanceSummary(object):
                         langDict[lang]['role'][labelrole] = labeltext
         self.qnameInUseSet = {concept.qname.clarkNotation for concept in conceptInUseSet}
         self.conceptInUseSet = {concept.qname for concept in conceptInUseSet}
+        self.namespacesInUseSet = {qname.namespaceURI for qname in self.conceptInUseSet if Utils.isEfmStandardNamespace(qname.namespaceURI)}
         return  # from InstanceSummary initialization
    
 

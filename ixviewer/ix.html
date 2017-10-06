@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <!-- Created by staff of the U.S. Securities and Exchange Commission.
 Data and content created by government employees within the scope of their employment 
 are not subject to domestic copyright protection. 17 U.S.C. 105. -->
@@ -6,6 +5,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 <head>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
     <meta id="viewport" name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width, height=device-height" />
+
 	<script type="text/javascript">
    	 window.onload=function(){
 	    	var ie7 = navigator.appVersion.indexOf("MSIE 7");
@@ -28,36 +28,31 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 			}
 	    };
     </script>
-    <link type="text/css" rel="stylesheet" href="ixviewer/css/bootstrap/bootstrap.min.css" />
-    <link type="text/css" rel="stylesheet" href="ixviewer/css/bootstrap/bootstrap-theme.min.css" />
-    <link type="text/css" rel="stylesheet" href="ixviewer/css/bootstrap/bootstrap-submenu.min.css" />
-    <link type="text/css" rel="stylesheet" href="ixviewer/css/app.css?v131" />
-    <link type="text/css" rel="stylesheet" href="ixviewer/css/rightNavigation.css?v131" />
-    <script type="text/javascript" src="ixviewer/js/jquery/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="ixviewer/js/jquery/jquery.browser.min.js"></script>
-    <script type="text/javascript" src="ixviewer/js/jquery/jquery.simple-color.min.js"></script>
-    <script type="text/javascript" src="ixviewer/js/jquery/jquery.custom.js?v131"></script>
-    <script type="text/javascript" src="ixviewer/js/jquery/jquery-ui.js"></script>
-    <script type="text/javascript" src="ixviewer/js/bootstrap/bootstrap.min.js"></script>
-    <script type="text/javascript" src="ixviewer/js/bootstrap/bootstrap-submenu.min.js"></script>
-    <script type="text/javascript" src="ixviewer/js/bootstrap/tooltip.js"></script>
-    <script type="text/javascript" src="ixviewer/js/bootstrap/bootstrap-filestyle.js"></script>
-    <script type="text/javascript" src="ixviewer/js/jszip.min.js"></script>
-    <script type="text/javascript" src="ixviewer/js/FileSaver.js"></script>
-    <script type="text/javascript" src="ixviewer/js/slide-panel.js"></script>
-    <script type="text/javascript" src="ixviewer/js/cbe.js?v131"></script>
-    <script type="text/javascript" src="ixviewer/js/app/app.js?v131"></script>
-    <script type="text/javascript" src="ixviewer/js/app/find.js?v131"></script>
-    <script type="text/javascript" src="ixviewer/js/app/about.js?v131"></script>
-    <script type="text/javascript" src="ixviewer/js/app/settings.js?v131"></script>
-    <script type="text/javascript" src="ixviewer/js/app/help.js?v131"></script>
-    <script type="text/javascript" src="ixviewer/js/app/ixtFunctions.js"></script>
-    <script type="text/javascript" src="ixviewer/js/app/uri.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="css/bootstrap/bootstrap-theme.min.css" />
+    <link type="text/css" rel="stylesheet" href="css/bootstrap/bootstrap-submenu.min.css" />
+    <link type="text/css" rel="stylesheet" href="css/app.css?v131" />
+    <link type="text/css" rel="stylesheet" href="css/rightNavigation.css?v131" />
+    <script type="text/javascript" src="js/jquery/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery.browser.min.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery.simple-color.min.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery.custom.js?v131"></script>
+    <script type="text/javascript" src="js/jquery/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap/bootstrap-submenu.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap/tooltip.js"></script>
+    <script type="text/javascript" src="js/bootstrap/bootstrap-filestyle.js"></script>
+    <script type="text/javascript" src="js/jszip.min.js"></script>
+    <script type="text/javascript" src="js/FileSaver.js"></script>
+    <script type="text/javascript" src="js/cbe.js?v131"></script>
+    <script type="text/javascript" src="js/app/app.js?v131"></script>
+    <script type="text/javascript" src="js/app/find.js?v131"></script>
+    <script type="text/javascript" src="js/app/uri.js"></script>
     <title>Inline XBRL Viewer</title>
 </head>
 <body id="sec-body">
 	<div id="mainDiv">
-		<div class="fixedMenuBar">
+		<div class="fixedMenuBar" style="opacity:0.5";>
 			<div class="homeSection">
 				<ul class="nav">
 					<li id="menudropdown" class="dropdown">
@@ -75,7 +70,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 								download>Save XBRL Instance</a></li>
 							<li id="instanceFileIELi"><a href="javascript:void(0)" tabindex="1"
 								id="instanceFileIE">Save XBRL Instance</a></li>
-							<li><a href="#" id="instanceAndCustomFile" tabindex="1">Save XBRL Zip File</a></li>
+							<li><a href="#" id="instanceAndCustomFile" tabindex="1">Save XBRL Zip
+									File</a></li>
 							<li><a href="#" id="openAsHtml" onclick="window.open(this.href); return false;" tabindex="1" open>Open as HTML</a></li>
 							<li id="taggedSectionsReport" class="visible-xs visible-sm hidden-md hidden-lg"><a
 								href="#" id="btn-reports" data-toggle="collapse"
@@ -97,7 +93,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						class="badge badge-Custom"></span>&nbsp;<span
 						class="glyphicon glyphicon-chevron-down menuIcon"
 						id="menuBtn-reports"
-						style="color: #FFF; vertical-align: middle;top: 0px; line-height: 15px;"
+						style="color: #FFF; vertical-align: middle; top: 0px; line-height: 15px;"
 						aria-label="Expand Tagged Sections"
 						title="Expand Tagged Sections" tabindex="2"></span></li>
 				</ul>
@@ -106,10 +102,20 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 			<div class="searchSection">
 				<form role="search">
 					<div class="input-group" style="max-height: 16px;">
+						<!--  <input id="search-input" type="search" class="form-control" placeholder="Search" tabindex="4">
+	               <div class="input-group-btn" style="padding-left: 10px;">
+	                  <button id="search-btn" type="button" class="btn btn-default" title="Search" name="Search" value="Search" tabindex="5"><span class="glyphicon glyphicon-search searchIcon" title="Search"></span></button>
+	               </div>-->
+						<!--  <div class="search-wrapper">-->
+						<!--  <form>-->
 						<input id="search-input" type="text" name="focus" 
 							class="search-box form-control" placeholder="Search" tabindex="4" />
 						<button id="resetButton" class="close-icon" type="reset"
 							value="reset"></button>
+
+
+
+						<!--  </form>-->
 						<div class="input-group-btn">
 							<button id="search-btn" type="button" class="btn-new btn-default"
 								title="Search" name="Search" value="Search" tabindex="5">
@@ -192,6 +198,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 				</ul>
 			</div>
 		</div>
+
 		<div id="app-container" role="application">
 			<div id="app-panel-breadcrum-container" style="display: none;">
 				<div class="row">
@@ -216,9 +223,13 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 					</div>
 					<div class="panel-group" id="accordion">
 						<div class="panel panel-default" >
-							<div class="panel-heading">							
+							<div class="panel-heading">
+							
+								<!-- <h4  class="panel-title" role="heading"> -->
 									<a data-toggle="collapse"  aria-label=" Getting Started " tabindex="1" style="font-size: 16px; color: inherit; font-weight:500 ;" data-parent="#accordion"  
 										href="#collapseGettingStarted"> Getting Started </a>
+								<!-- </h4>-->
+								
 							</div>
 							<div id="collapseGettingStarted" class="panel-collapse collapse">
 								<div class="panel-body">
@@ -228,8 +239,10 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
+								<!-- <h4 class="panel-title"> -->
 									<a data-toggle="collapse" tabindex="1" style="font-size: 16px; color: inherit; font-weight:500 ;" data-parent="#accordion"
 										href="#collapseFactDisplay"> Fact Review Window </a>
+								<!-- </h4> -->
 							</div>
 							<div id="collapseFactDisplay" class="panel-collapse collapse">
 								<div class="panel-body">
@@ -245,20 +258,24 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 											information (as applicable) for the selected tag</li>
 										<li><b>Calculation</b> &#45; Balance and calculation
 											hierarchy details (numeric items only)</li>
-									</ul>									
+									</ul>
+									
 								</div>
 							</div>
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
+								<!--  <h4 class="panel-title">-->
 									<a data-toggle="collapse" tabindex="1" style="font-size: 16px; color: inherit; font-weight:500 ;" data-parent="#accordion"
 										href="#collapseSearch"> Search </a>
+								<!-- </h4> -->
 							</div>
 							<div id="collapseSearch" class="panel-collapse collapse">
 								<div class="panel-body">
 									<p>
 										The <i>Search</i> box can be used to find tagged facts matching entered keywords. By default, tag name, tag labels, and tagged content are included in Search.  To search tagged information, enter a keyword and select the magnifying glass icon to return matching results. Tagged facts matching the search criteria are shown with a yellow-colored (default) shading, while Tagged Sections are reduced to just those that included the entered search keywords (if expanded; see Tagged Sections for additional detail).  The content included in Search can be increased to included tag definitions, dimensions, and authoritative references.  See Settings for more information.
-									</p>									
+									</p>
+									
 									<p>Search operators &ldquo;and&rdquo; (via
 										&ldquo;AND&rdquo; or &ldquo;&&rdquo;) and &ldquo;or&rdquo;
 										(via &ldquo;OR&rdquo; or &ldquo;|&rdquo;) are available to
@@ -271,8 +288,10 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
+								<!--  <h4 class="panel-title" role="navigation">-->
 									<a data-toggle="collapse" tabindex="1" style="font-size: 16px; color: inherit; font-weight:500 ;" data-parent="#accordion"
 										href="#collapseHighlight"> Filter </a>
+								<!--</h4>-->
 							</div>
 							<div id="collapseHighlight" class="panel-collapse collapse">
 								<div class="panel-body">
@@ -289,6 +308,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 										<li><b>Text Only</b> &#45; Textual items only</li>
 										<li><b>Calculations Only</b> &#45; Numeric items
 											participating in a calculation</li>
+
 										<li><b>Negatives Only</b> &#45; Numeric items with the
 											Inline &ldquo;sign&rdquo; option</li>
 										<li><b>Additional Items Only</b> &#45; Tagged items with potentially
@@ -332,8 +352,10 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
+								<!--  <h4 class="panel-title" role="navigation">-->
 									<a data-toggle="collapse" tabindex="1" style="font-size: 16px; color: inherit; font-weight:500 ;" data-parent="#accordion"
 										href="#collapseFactResultList"> Facts Results List </a>
+								<!-- </h4>-->
 							</div>
 							<div id="collapseFactResultList" class="panel-collapse collapse">
 								<div class="panel-body">
@@ -360,8 +382,10 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
+								<!-- <h4 class="panel-title" role="navigation">-->
 									<a data-toggle="collapse" tabindex="1" style="font-size: 16px; color: inherit; font-weight:500 ;" data-parent="#accordion"
 										href="#collapseInformation"> Information </a>
+								<!--  </h4>-->
 							</div>
 							<div id="collapseInformation" class="panel-collapse collapse">
 								<div class="panel-body">
@@ -380,8 +404,10 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
+								<!--  <h4 class="panel-title" role="navigation">-->
 									<a data-toggle="collapse" tabindex="1" style="font-size: 16px; color: inherit; font-weight:500 ;" data-parent="#accordion"
 										href="#collapseTaggedSections"> Tagged Sections </a>
+								<!-- </h4> -->
 							</div>
 							<div id="collapseTaggedSections" class="panel-collapse collapse">
 								<div class="panel-body">
@@ -399,34 +425,56 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
+								<!-- <h4 class="panel-title" role="navigation"> -->
 									<a data-toggle="collapse" style="font-size: 16px; color: inherit; font-weight:500 ;" tabindex="1" data-parent="#accordion"
 										href="#collapseExport"> Save XBRL Instance </a>
+								<!--  </h4>-->
 							</div>
 							<div id="collapseExport" class="panel-collapse collapse">
 								<div class="panel-body">
 									<p>
 										The <i>Save XBRL Instance</i> menu item allows an XBRL instance document (*.xml) that&#8217;s extracted from the Inline document to be saved locally.
 									</p>
+									<!--  <ul>
+										<li><b>Instance </b> &#45; Save an XBRL instance document
+											file derived from the Inline document (.xml).</li>
+										<li><b>Instance and Custom Taxonomy</b> &#45; Save an
+											XBRL instance document file (.xml) file derived from the
+											Inline document, and the related XBRL custom taxonomy files
+											(.zip).</li>
+									</ul>-->
 								</div>
 							</div>
 						</div>
 							<div class="panel panel-default">
 							<div class="panel-heading">
+								<!--  <h4 class="panel-title" role="navigation">-->
 									<a data-toggle="collapse" style="font-size: 16px; color: inherit; font-weight:500 ;" tabindex="1" data-parent="#accordion"
 										href="#collapseExportZipFile"> Save XBRL Zip </a>
+								<!-- </h4> -->
 							</div>
 							<div id="collapseExportZipFile" class="panel-collapse collapse">
 								<div class="panel-body">
 									<p>
 										The <i>Save XBRL Zip</i> menu item allows a zip file (*.zip) that contains the as-provided XBRL instance document and related custom taxonomy files to be saved locally.
 									</p>
+									<!--  <ul>
+										<li><b>Instance </b> &#45; Save an XBRL instance document
+											file derived from the Inline document (.xml).</li>
+										<li><b>Instance and Custom Taxonomy</b> &#45; Save an
+											XBRL instance document file (.xml) file derived from the
+											Inline document, and the related XBRL custom taxonomy files
+											(.zip).</li>
+									</ul>-->
 								</div>
 							</div>
 						</div>
 						<div class="panel panel-default">
 							<div class="panel-heading">
+								<!--  <h4 class="panel-title" role="navigation">-->
 									<a data-toggle="collapse" style="font-size: 16px; color: inherit; font-weight:500 ;" tabindex="1" data-parent="#accordion"
 										href="#collapseSettings"> Settings </a>
+								<!--  </h4>-->
 							</div>
 							<div id="collapseSettings" class="panel-collapse collapse">
 								<div class="panel-body">
@@ -464,15 +512,36 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 								</div>
 							</div>
 						</div>
+							<!--<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a data-toggle="collapse" data-parent="#accordion"
+										href="#collapseTaggedFactHover"> Tagged Fact Hover </a>
+								</h4>
+							</div>
+							<div id="collapseTaggedFactHover" class="panel-collapse collapse">
+								<div class="panel-body">
+									<ul>
+										<li><b>Display</b> &#45; Displays the hover window for any tagged fact (default)</li>
+										<li><b>Hide</b> &#45; Hides the hover window from display for any tagged fact</li>
+									</ul>
+								</div>
+							</div>
+						</div>-->
 					</div>
 					<div class="toolbar">
 						<h6 id="version"></h6>
 					</div>
 				</div>
+				<!-- end of app panel help container -->
+				<!-- app panel container -->
 			</div>
+			<!-- end of panel -->
+
 			<div id="app-panel">
 				<div id="app-panel-container">
 					<div id="search-panel">
+						<!-- results -->
 						<div id="panel-section-results" class="panel-section">
 							 <div  id="results-header"  style="text-align:center;" class="clearfix" >
                        <span id="results-count"></span><span class="factResultLinks" style="float:left; margin-right: 3px" tabindex="0" alt="Previous Fact" aria-label="Previous Fact" title="Previous Fact">Prev </span>&nbsp;&nbsp;<span style="float:left;" class="factResultLinks" tabindex="0" alt="Next Fact" aria-label="Next Fact" title="Next Fact">Next</span>
@@ -493,8 +562,11 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 							</div>
 						</div>
 					</div>
+					<!-- end of search panel -->
 				</div>
+				<!-- end of app panel container -->
 			</div>
+
 			<div id="app-panel2">
 				<div id="app-panel-reports-container" style="display: none;">
 					<div class="toolbar">
@@ -504,6 +576,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 							data-dismiss="modal" data-btn-remove>close</button>
 					</div>
 					<div id="search-panel">
+						<!-- results -->
 						<div id="panel-section-results-reports" class="panel-section">
 							<div id="results-header-report-operating" class="clearfix">
 								<strong class="visible-xs visible-sm hidden-md hidden-lg">Sections:
@@ -513,7 +586,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 							<div id="results-header-report-mutualFund" class="clearfix">
 								<strong class="visible-xs visible-sm hidden-md hidden-lg">Sections:
 									<span id="results-count-reports"></span>
-								</strong> &nbsp;<a href="#" id="prevButton">Prev</a>&nbsp;&nbsp;<a
+								</strong>
+								<!--   &nbsp;<a href="#" id="prevButton">Prev</a>&nbsp;&nbsp;<a
 									href="#" id="nextButton">Next</a>
 								<div class="pull-right" id="vcrControls">
 									<span id="results-pages-reports"></span>&nbsp;&nbsp;&nbsp;
@@ -540,7 +614,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 												style="top: 0px; margin-right: 5px;"></span>
 										</button>
 									</div>
-								</div>
+								</div>-->
 							</div>
 							<div class="rightNavigation" id="operatingCompanyTaggedSection">
 								<ul class="list-unstyled" id="usGaapTaggedSection">
@@ -559,6 +633,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 										data-toggle="collapse" aria-label="Financial Statements" aria-title="Financial Statements" data-target="#statementType"
 										style="text-decoration: none;" tabindex="3">
 											<i class="glyphicon glyphicon-chevron-right" style="margin-right: 0px;"></i>
+											
 									</a>
 									</h5>
 										<ul class="list-unstyled collapse in" id="statementType"></ul>
@@ -567,7 +642,9 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 												Notes to the Financials <a href="#"
 										data-toggle="collapse" aria-label="Notes to the Financials" aria-title="Notes to the Financials" data-target="#disclosureType"
 										style="text-decoration: none;" tabindex="3">
-											<i class="glyphicon glyphicon-chevron-down" style="margin-right: 0px;"></i>
+											<i
+													class="glyphicon glyphicon-chevron-down" style="margin-right: 0px;"></i>
+											
 									</a></h5>
 										<ul class="list-unstyled collapse" role="application" id="disclosureType"></ul></li>
 									<li class="nav-header" id="disclosureLiDup"><h5 style="font-weight: bold;" role="application">
@@ -576,22 +653,70 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 										style="text-decoration: none;" tabindex="3">
 											<i class="glyphicon glyphicon-chevron-right" style="margin-right: 0px;"></i></a>
 											</h5>
+									
 										<ul class="list-unstyled collapse in"
 											id="disclosureTypeExpanded"></ul></li>
 								</ul>
 							</div>
 							<div id="mutualFundTaggedSection" class="rightNavigation"
 								style="overflow-y: auto; height: 700px;">
-								<div class="rightNavTop"></div>
+								<ul class="list-unstyled" id="ifrsTaggedSection">
+									<div id="documentTypeSingleLIDivIfrs"></div>
+									<div id="documentTypeMainLIDivIfrs">
+										<li class="nav-header" id="documentTypeMainLIIfrs">
+											<h5 style="font-weight: bold;"  role="application">Document and Entity Information
+											<a href="#" data-toggle="collapse" aria-label="Document and Entity Information" aria-title="Document and Entity Information" data-target="#documentTypeIfrs" style="text-decoration: none;" tabindex="3">
+												<i class="glyphicon glyphicon-chevron-right" style="margin-right: 0px;"></i>
+											</a></h5>
+											<ul class="list-unstyled collapse in" id="documentTypeIfrs"></ul>
+										</li>
+									</div>
+									<li class="nav-header" id="statementLiIfrs"><h5 style="font-weight: bold;" role="application">
+												Financial Statements <a href="#"
+										data-toggle="collapse" aria-label="Financial Statements" aria-title="Financial Statements" data-target="#statementTypeIfrs"
+										style="text-decoration: none;" tabindex="3">
+											<i class="glyphicon glyphicon-chevron-right" style="margin-right: 0px;"></i>
+											
+									</a>
+									</h5>
+										<ul class="list-unstyled collapse in" id="statementTypeIfrs"></ul>
+									</li>
+									<li class="nav-header"  id="disclosureLiIfrs"><h5 style="font-weight: bold;" role="application">
+												Notes to the Financials <a href="#"
+										data-toggle="collapse" aria-label="Notes to the Financials" aria-title="Notes to the Financials" data-target="#disclosureTypeIfrs"
+										style="text-decoration: none;" tabindex="3">
+											<i
+													class="glyphicon glyphicon-chevron-down" style="margin-right: 0px;"></i>
+											
+									</a></h5>
+										<ul class="list-unstyled collapse" role="application" id="disclosureTypeIfrs"></ul></li>
+									<li class="nav-header" id="disclosureLiDupIfrs"><h5 style="font-weight: bold;" role="application">
+												Notes to the Financials <a href="#"
+										data-toggle="collapse" aria-label="Notes to the Financials" aria-title="Notes to the Financials" data-target="#disclosureTypeExpandedIfrs"
+										style="text-decoration: none;" tabindex="3">
+											<i class="glyphicon glyphicon-chevron-right" style="margin-right: 0px;"></i></a>
+											</h5>
+									
+										<ul class="list-unstyled collapse in"
+											id="disclosureTypeExpandedIfrs"></ul></li>
+								</ul>
+								<!--  <div class="rightNavTop"></div>
 								<div id="results-reports"></div>
-								<div class="rightNavBottom"></div>
+								<div class="rightNavBottom"></div>-->
 							</div>
 						</div>
 					</div>
 					<div></div>
 				</div>
 			</div>
+
 		</div>
+		<!-- end of container -->
+
+
+		<!-- MODALS & POPOVERS -->
+
+		<!-- settings -->
 		<div id="settings-modal" class="modal fade" tabindex="-1"
 			role="dialog" aria-labelledby="settingsDialog" aria-hidden="true">
 			<div class="modal-dialog">
@@ -611,7 +736,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 									<label style="font-size: 16px"><b>Highlight Colors</b></label><br />
 									<label for="setting-element-border-color">Tagged Data</label><br/>
 									<div  id="taggedDataResetColor" tabindex="0" aria-label="Tagged Data Color Selector"><input type="text" id="setting-element-border-color" class="setting-color-picker-container" /></div>
-									<a tabindex="0" href="javascript:App_Settings.resetBorderColor('elementBorderColor');" aria-label="Tagged data reset to default">reset to default</a>									
+									<a tabindex="0" href="javascript:App_Settings.resetBorderColor('elementBorderColor');" aria-label="Tagged data reset to default">reset to default</a>
+									
 								</div>
 								<div class="form-group" role="application">
 									<label for="setting-initial-highlight-color" style="margin-top: 5px;margin-left: -25px;">Search Results</label><br/>
@@ -622,6 +748,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 										 <a tabindex="0"
 											href="javascript:App_Settings.resetColor('initialHighlightColor');" aria-label="Search results reset to default">reset
 											to default</a>
+									
 								</div>
 								<div class="form-group" role="application">
 									<label for="setting-focus-highlight-color" style="margin-top: 5px;margin-left: -25px;">Selected Fact</label><br/>
@@ -689,6 +816,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						                 <input
 											id="radio2" type="radio"  checked="checked" name="toolTip" value="disable" title="2 out of 2" tabindex="0" style="margin-left: 0px;"><label for="radio2" class="radio-inline-taggedFact">Hide</label>
 										</fieldset>
+										
 									</div>
 								</div>
 							</div>
@@ -696,8 +824,12 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 					</div>
 					<div class="modal-footer"></div>
 				</div>
+				<!-- /.modal-content -->
 			</div>
+			<!-- /.modal-dialog -->
 		</div>
+		<!-- /.modal -->
+
 		<div id="about-modal" class="about-modal">
 			<div class="about-header" style="cursor: move;">
 				<div class="modalTitleLeft"    tabindex="0"  id="about-header">
@@ -711,12 +843,15 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 			</div>
 			<div class="selection-detail-inner">
 				<div id="about-carousel" class="carousel slide">
-					<h4 ></h4>
+					<h4 ></h4>					
+					<!-- Document Information -->
 					<div class="carousel-inner"
 						style="height: 220px; overflow-y: auto;">
 						<div id="about1-modal" tabindex="0" class="item active" data-slide-index="0"
-							 style="padding-top: 15px; padding-right: 20px;">
+							 style="padding-top: 15px; padding-right: 20px;"onclick="this.blur();">
+
 							<div data-slide-content="companyInformation">
+								<!--  <div class="modal-content" style="width: 280px;">-->
 								<table border="1" style="width:100%" >
 									<tr>
 										<td style="padding: 3px;" width="40%">Company Name</td>
@@ -754,9 +889,13 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 									</tr>
 								</table>
 							</div>
+							<!-- </div> /.modal-content -->
 						</div>
+
+						<!-- Statistics -->
 						<div  id="about2-modal"  tabindex="0" class="item" data-slide-index="1"
-							style="padding-top: 20px; padding-right: 30px;">
+							style="padding-top: 20px; padding-right: 30px;" onclick="this.blur();">
+							<!--  <div class="modal-content" style="width: 280px;">-->
 							<div data-slide-content="tags" id="settingsModalBody">
 								<div id="AboutTable2">
 									<span><strong>Total Facts:</strong> <span
@@ -803,21 +942,34 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 										<td></td>
 									</tr>
 								</table>
+
 							</div>
+							<!-- </div> /.modal-content -->
 						</div>
+						<!-- /.modal -->
+
+						<!-- File In Use -->
 						<div  id="about4-modal"  tabindex="0" class="item" data-slide-index="2"
-							style="padding-top: 20px;">
+							style="padding-top: 20px;" onclick="this.blur();">
+							<!--  <div class="modal-content">-->
+
 							<div data-slide-content="files">
 								<div id="files-content"></div>
 							</div>
+							<!--  </div> /.modal-content -->
 						</div>
+						<!-- /.modal -->
+
 						<div  id="about5-modal"  tabindex="0" class="item" data-slide-index="3"
-							style="padding-top: 20px;">
+							style="padding-top: 20px;" onclick="this.blur();">
+							<!--  <div class="modal-content" style="width: 280px;">-->
 							<div data-slide-content="additionalTaggedData"
 								id="settingsModalBody">
 								<div id="hidden-items-content"></div>
 							</div>
+							<!-- </div> /.modal-content -->
 						</div>
+						<!-- /.modal -->
 					</div>
 					<div class="carousel-controls">
 						<a id="prevCarousel" class="left carousel-control glyphicon glyphicon-chevron-left" href="#about-carousel"
@@ -840,6 +992,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 				</div>
 			</div>
 		</div>
+		
 		<div class="modal fade" id="highlight-data-modal" tabindex="-1"
 			role="dialog" aria-labelledby="dataFilter" aria-hidden="true">
 			<div class="modal-dialog">
@@ -852,39 +1005,46 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 					<div class="modal-body">
 						<div class="radio">
 							<label> <input type="radio" name="highlight-elements"
-								value="both" id="allDataFilter" checked alt="1 out of 6">
+								value="both" id="allDataFilter" checked >
 								All
 							</label>
 						</div>
 						<div class="radio">
 							<label> <input type="radio" name="highlight-elements"
-								value="amount" alt="2 out of 6">Amounts Only
+								value="amount" >Amounts Only
 							</label>
 						</div>
 						<div class="radio">
 							<label> <input type="radio" name="highlight-elements"
-								value="text" alt="3 out of 6">Text Only
+								value="text" >Text Only
 							</label>
 						</div>
 						<div class="radio">
 							<label> <input type="radio" name="highlight-elements"
-								value="calculation" alt="4 out of 6">Calculations Only
+								value="calculation" >Calculations Only
+							</label>
+						</div>
+						<!-- <div class="radio">
+            		<label>
+                		<input type="radio" name="highlight-elements" value="negative">Negative Amounts Only
+            		</label>
+          		</div> -->
+						<div class="radio">
+							<label> <input type="radio" name="highlight-elements"
+								value="sign" >Negatives Only
 							</label>
 						</div>
 						<div class="radio">
 							<label> <input type="radio" name="highlight-elements"
-								value="sign" alt="5 out of 6">Negatives Only
-							</label>
-						</div>
-						<div class="radio">
-							<label> <input type="radio" name="highlight-elements"
-								value="hidden" alt="6 out of 6">Additional Items Only
+								value="hidden" >Additional Items Only
 							</label>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+
+		<!-- highlight Concept -->
 		<div id="highlight-concept-modal" class="modal fade" tabindex="-1"
 			role="dialog" aria-labelledby="tagsFilter" aria-hidden="true">
 			<div class="modal-dialog">
@@ -919,8 +1079,14 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 							</label>
 						</div>
 					</div>
-				</div>			</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
 		</div>
+		<!-- /.modal -->
+
+		<!-- filter period-->
 		<div id="filter-period-modal" class="modal fade" tabindex="-1"
 			role="dialog" aria-labelledby="periodFilter" aria-hidden="true"
 			data-prev-highlight-type="" data-contents-loaded="false">
@@ -948,8 +1114,14 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						</div>
 					</div>
 				</div>
+				<!-- /.modal-content -->
 			</div>
+			<!-- /.modal-dialog -->
 		</div>
+		<!-- /.modal -->
+
+
+		<!-- filter unit-->
 		<div id="filter-unit-modal" class="modal fade" tabindex="-1"
 			role="dialog" aria-labelledby="measureFilter" aria-hidden="true"
 			data-prev-highlight-type="" data-contents-loaded="false">
@@ -985,8 +1157,14 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						</div>
 					</div>
 				</div>
+				<!-- /.modal-content -->
 			</div>
+			<!-- /.modal-dialog -->
 		</div>
+		<!-- /.modal -->
+
+
+		<!-- filter Axis-->
 		<div id="filter-axis-modal" class="modal fade" tabindex="-1"
 			role="dialog" aria-labelledby="axisFilter" aria-hidden="true"
 			data-prev-highlight-type="" data-contents-loaded="false">
@@ -1022,8 +1200,13 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						</div>
 					</div>
 				</div>
+				<!-- /.modal-content -->
 			</div>
+			<!-- /.modal-dialog -->
 		</div>
+		<!-- /.modal -->
+
+		<!-- filter scale-->
 		<div id="filter-scale-modal" class="modal fade" tabindex="-1"
 			role="dialog" aria-labelledby="scaleFilter" aria-hidden="true"
 			data-prev-highlight-type="" data-contents-loaded="false">
@@ -1059,8 +1242,13 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						</div>
 					</div>
 				</div>
+				<!-- /.modal-content -->
 			</div>
+			<!-- /.modal-dialog -->
 		</div>
+		<!-- /.modal -->
+
+		<!-- filter balance-->
 		<div id="filter-balance-modal" class="modal fade" tabindex="-1"
 			role="dialog" aria-labelledby="balanceFilter" aria-hidden="true"
 			data-prev-highlight-type="" data-contents-loaded="false">
@@ -1111,8 +1299,13 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 						</div>
 					</div>
 				</div>
+				<!-- /.modal-content -->
 			</div>
+			<!-- /.modal-dialog -->
 		</div>
+		<!-- /.modal -->
+
+		<!-- progress dialog -->
 		<div class="progress-bak"></div>
 		<div class="progress-container">
 			<h3></h3>
@@ -1124,12 +1317,16 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 				</div>
 			</div>
 		</div>
+
+		<!-- message box -->
 		<div id="message-box-container">
 			<div class="message-btn">
 				<span class="glyphicon glyphicon-remove-circle"></span>
 			</div>
 			<div id="message-content"></div>
 		</div>
+
+		<!-- selection detail -->
 		<div id="selection-detail-container-mouseOver"
 			class="selection-detail-container-onHover">
 			<div class="selection-detail-header-onHover">
@@ -1143,6 +1340,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 				</div>
 			</div>
 		</div>
+
+
 		<div id="selection-detail-container"
 			class="selection-detail-container">
 			<div class="selection-detail-header" style="cursor: move;">
@@ -1161,12 +1360,12 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 					<div class="carousel-inner"
 						style="height: 210px; overflow-y: auto;">
 						<div id="div1" tabindex="0" class="item active" data-content="attributes"
-							data-slide-index="0"></div>
+							data-slide-index="0" onclick="this.blur();"></div>
 						<div id="div2" tabindex="0" class="item" data-content="labels"
-							data-slide-index="1"></div>
+							data-slide-index="1" onclick="this.blur();"></div>
 						<div id="div3" tabindex="0" class="item" data-content="reference"
-							data-slide-index="2"></div>
-						<div id="div4" tabindex="0" class="item" data-slide-index="3">
+							data-slide-index="2" onclick="this.blur();"></div>
+						<div id="div4" tabindex="0" class="item" data-slide-index="3" onclick="this.blur();">
 							<table class="table-framed">
 								<tr>
 									<td width="35%">Section</td>
@@ -1195,7 +1394,9 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 								</tr>
 							</table>
 						</div>
+						<!--  Fifth review window code <div class="item" id="div5" data-content="custom"  data-slide-index="4"></div>-->
 					</div>
+
 					<div class="carousel-controls">
 						<a id="prevCarousel1" class="left carousel-control glyphicon glyphicon-chevron-left" href="#selection-detail-carousel"
 							role="button" data-slide="prev" tabindex="0" aria-label="Previous" style="color: #003768;">
@@ -1209,6 +1410,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 								data-slide-to="2" tabindex="0" aria-label="References" title="References"></li>
 							<li id="lnk4" data-target="#selection-detail-carousel"
 								data-slide-to="3" tabindex="0" aria-label="Calculation" title="Calculation"></li>
+							<!--Fifth review window code  <li  id="lnk5" data-target="#selection-detail-carousel" data-slide-to="4" title="Custom"></li>-->
 						</ol>
 						<a id="nextCarousel1" class="right carousel-control glyphicon glyphicon-chevron-right"
 							href="#selection-detail-carousel" role="button" data-slide="next" tabindex="0" aria-label="Next" style="color: #003768;">
@@ -1217,6 +1419,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 				</div>
 			</div>
 		</div>
+
+	<!-- alert -->
 		<div id="alert-modal" class="modal" tabindex="-1" role="dialog"
 			aria-labelledby="Error:Browser Old" aria-hidden="true"
 			data-keyboard="false" data-backdrop="static">
@@ -1225,10 +1429,19 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 					<h3 style="text-align: center">
 						<b>Incompatible Browser</b>
 					</h3>
+					<!-- <div style="text-align: center"><strong>Your browser is not compatible with this application.  <br/> Please upgrade to the latest browser.</strong></div> -->
 					<div id="browser-compatibility"></div>
+					<!--  <div id="browser-compatibility-ie" style="text-align: center; display: none;"><br>Your browser is not compatible with this application. You are currently running Microsoft Internet Explorer.'<br>Please upgrade to a more current version of Microsoft Internet Explorer, Google Chrome or Mozilla Firefox in order to use the application.';</div> -->
 				</div>
+				<!-- /.modal-content -->
 			</div>
+			<!-- /.modal-dialog -->
 		</div>
+		<!-- END MODALS & POPOVERS -->
+
+		<!-- TEMPLATES -->
+
+		<!-- END TEMPLATES -->
 	</div>
 </body>
 </html>

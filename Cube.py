@@ -54,16 +54,18 @@ class Cube(object):
 
         # TO DO problem 2: searching from statement and equity, dumb
         lowerSN = self.shortName.casefold()
+        # filing.controller.logDebug('The Linkrole {} is going to be checked for being a Statement of Equity {} {}.'.format(self.shortName,filing.usgaapNamespace,filing.ifrsNamespace))
         if      (self.cubeType == 'statement'
                  and 'parenthetical' not in lowerSN
                  and '(table' not in lowerSN
                  and '(detail' not in lowerSN
                  and '(polic' not in lowerSN
-                 and filing.stmNamespace is not None):
+                 and not (filing.usgaapNamespace is None and filing.ifrsNamespace is None)):
+            # filing.controller.logDebug('The Linkrole {} might be a Statement of Equity.'.format(self.shortName))
             if      ('148600' == cNum or
                      '148610' == cNum or
-                    (('stockholder' in lowerSN or 'shareholder' in lowerSN or 'changes' in lowerSN) and ('equity' in lowerSN or 'deficit' in lowerSN)) or
-                    (('partners' in lowerSN or 'accounts' in lowerSN) and 'capital' in lowerSN) or
+                     (('stockholder' in lowerSN or 'shareholder' in lowerSN or 'changes' in lowerSN) and ('equity' in lowerSN or 'deficit' in lowerSN)) or
+                     (('partners' in lowerSN or 'accounts' in lowerSN) and 'capital' in lowerSN) or
                      #('statement' in lowerSN and 'capitalization' in lowerSN) or # TODO: do we want this for case WEC?
                      ('statement' in lowerSN and 'equity' in lowerSN)):
                 self.isStatementOfEquity = True

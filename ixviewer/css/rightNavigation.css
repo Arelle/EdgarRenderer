@@ -13,7 +13,7 @@
 .rightNavTop {
 	height:12px;
 	width:100%;
-	/*background-image:url(/ixviewer/images/leftNavTop.gif);*/
+	/*background-image:url(../images/leftNavTop.gif);*/
 	float:left;
 	_font-size:1px;
 }
@@ -22,7 +22,7 @@
 .rightNavBottom {
 	height:30px;
 	width:100%;
-	/*background-image:url(/ixviewer/images/leftNavBottom.gif);*/
+	/*background-image:url(../images/leftNavBottom.gif);*/
 	float:left;
 	_font-size:1px;
 }
@@ -70,7 +70,7 @@
 .rightNavLinksSeprator {
 	height:11px;
 	width:344px;
-	/*background-image:url(/ixviewer/images/leftNavLinksSeprator.gif);*/
+	/*background-image:url(../images/leftNavLinksSeprator.gif);*/
 	float:left;
 	_font-size:1px;
 }

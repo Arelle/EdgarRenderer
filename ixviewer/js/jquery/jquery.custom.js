@@ -23,32 +23,40 @@ jQuery.fn.selectionHighlightHiddenNodes = function() {
 jQuery.fn.removeHighlightNodes = function(allLinkedNodes) {
 	var allLinkedNodesLength=allLinkedNodes.length;
 	var cls = 'sec-cbe-highlight-content-selected'; 
-	for(var i=0;i<allLinkedNodes.length;i++){
-    	if(allLinkedNodes[i][0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonnumeric'){
-    		$(allLinkedNodes[i]).parent().addClass('sec-cbe-highlight-dashed');
-    		$(allLinkedNodes[i]).removeClass(cls);
+	var nonNumericNodeElement=App.InlineDoc.inlinePrefix + ':nonnumeric';
+	var continuationNodeElement=App.InlineDoc.inlinePrefix + ':continuation';
+	for(var i=0;i<allLinkedNodesLength;i++){
+		var allLinkedNodesLocal=allLinkedNodes[i];
+		var allLinkedNodesFirsLevelChildren=$(allLinkedNodes[i]).children();
+		var allLinkedNodesSecondLevelChildren=$(allLinkedNodes[i]).children().children();
+		var allLinkedNodesFourthLevelChildren=$(allLinkedNodes[i]).children().children().children().children();
+		var allLinkedNodesFifthLevelChildren=$(allLinkedNodes[i]).children().children().children().children().children();
+    	if(allLinkedNodes[i][0].nodeName.toLowerCase()==nonNumericNodeElement){
+    		$(allLinkedNodes[i]).parent().removeClass('sec-cbe-highlight-dashed');
+    		allLinkedNodesLocal.removeClass(cls);
     	}
-    	if ($(allLinkedNodes[i]).children().length > 0) { 
-    		$(allLinkedNodes[i]).children().removeClass(cls);
-    		if($(allLinkedNodes[i]).children().children().length >0){
-			    if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="span")){
-    				$(allLinkedNodes[i]).children().children().removeClass(cls);
-        		}else if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="div")){
-    				$(allLinkedNodes[i]).children().children().removeClass(cls);
+    	if (allLinkedNodesFirsLevelChildren.length > 0) { 
+    		allLinkedNodesFirsLevelChildren.removeClass(cls);
+    		if(allLinkedNodesSecondLevelChildren.length >0){
+			    if((allLinkedNodesSecondLevelChildren[0].nodeName.toLowerCase()=="span")){
+			    	allLinkedNodesSecondLevelChildren.removeClass(cls);
+        		}else if((allLinkedNodesSecondLevelChildren[0].nodeName.toLowerCase()=="div")){
+        			allLinkedNodesSecondLevelChildren.removeClass(cls);
         		}
-			   $(allLinkedNodes[i]).children().children().children().children().children().removeClass(cls);
-			   $(allLinkedNodes[i]).children().children().children().children().removeClass(cls);
-			   $(allLinkedNodes[i]).children().children().removeClass(cls);
+			   allLinkedNodesFifthLevelChildren.removeClass(cls);
+			   allLinkedNodesFourthLevelChildren.removeClass(cls);
+			   allLinkedNodesSecondLevelChildren.removeClass(cls);
     		}
     		
     	}
-    	else if(allLinkedNodes[i][0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
-    		$(allLinkedNodes[i]).removeClass(cls);
+    	else if(allLinkedNodesLocal[0].nodeName.toLowerCase()==continuationNodeElement){
+    		$(allLinkedNodesLocal).removeClass(cls);
     	}
         };
-		if(allLinkedNodes[allLinkedNodesLength-1]){
-        if(allLinkedNodes[allLinkedNodesLength-1].children()){
-            var lastNodeChildren=allLinkedNodes[allLinkedNodesLength-1].children();
+        var lastLinkedNode=allLinkedNodes[allLinkedNodesLength-1];
+		if(lastLinkedNode){
+        if(lastLinkedNode.children()){
+            var lastNodeChildren=lastLinkedNode.children();
             var lastNodeChildrenLength=lastNodeChildren.length;
             while(lastNodeChildrenLength>=1){
             	if($(lastNodeChildren[lastNodeChildrenLength-1]).children()){
@@ -58,16 +66,17 @@ jQuery.fn.removeHighlightNodes = function(allLinkedNodes) {
             	else
             		break;
             	}
+            var contextOfLastNodeChildren=$(lastNodeChildren.context);
             if(lastNodeChildren){
             if(lastNodeChildren.context.nodeName.toLowerCase()=="br"){
         		var elem = document.createElement("br");
-        		if($(lastNodeChildren.context).parent().attr('id') == "wrapBr"){
-        			$(lastNodeChildren.context).parent().removeClass('sec-cbe-highlight-content-selected');
-        			$(lastNodeChildren.context).parent().children().removeClass('sec-cbe-highlight-content-selected');
-        			$(lastNodeChildren.context).parent().children().next().removeClass('sec-cbe-highlight-content-selected');
+        		if(contextOfLastNodeChildren.parent().attr('id') == "wrapBr"){
+        			contextOfLastNodeChildren.parent().removeClass('sec-cbe-highlight-content-selected');
+        			contextOfLastNodeChildren.parent().children().removeClass('sec-cbe-highlight-content-selected');
+        			contextOfLastNodeChildren.parent().children().next().removeClass('sec-cbe-highlight-content-selected');
         		}
-        		$(lastNodeChildren.context).parent().children().removeClass(cls);
-            	$(lastNodeChildren.context).parent().children().children().removeClass(cls);
+        		contextOfLastNodeChildren.parent().children().removeClass(cls);
+        		contextOfLastNodeChildren.parent().children().children().removeClass(cls);
         	}
             }
             }
@@ -144,8 +153,9 @@ jQuery.fn.matchesFilter = function(filter) {
             // apply balance filter
             var balanceMatched = false;
             if (filter.balanceAreFiltered) {
-            
-            	var balanceStored = App.InlineDoc.getMetaData().tag[node.attr('name').replace(':', '_')].crdr;
+			var balanceStored ="";
+            if(App.InlineDoc.getMetaData().tag[node.attr('name').replace(':', '_')]){
+            	balanceStored = App.InlineDoc.getMetaData().tag[node.attr('name').replace(':', '_')].crdr;
 				if(balanceStored){
 	                
 	                for (var i = 0; i < filter.balanceChecked.length; i++) {
@@ -157,6 +167,7 @@ jQuery.fn.matchesFilter = function(filter) {
 	                    }
 	                }
 	            }
+				}
             }
 
             //apply axis filter
@@ -397,7 +408,13 @@ jQuery.fn.matchesSearch = function(search, ele) {
 	
     if (search.includeDefs && id && !isMatch) {
     	if (!App.InlineDoc.getMetaData()) return;
-        var roles = App.InlineDoc.getMetaData().tag[id].lang['en-US'].role;
+    	var roles=null;
+		if(App.InlineDoc.getMetaData().tag[id].lang['en-US']){
+        roles = App.InlineDoc.getMetaData().tag[id].lang['en-US'].role;
+		}
+       else{
+		 roles = App.InlineDoc.getMetaData().tag[id].lang['en'].role;
+		}
         var definition = roles['documentation'];
         if (str.match(/&/gi)) {
 	        var terms = str.replace(/\s&\s/g, "&").split('&');
@@ -498,7 +515,7 @@ jQuery.fn.matchesSearch = function(search, ele) {
         
         
     }
-     if (search.includeDimensions && id && !isMatch) {
+    if (search.includeDimensions && id && !isMatch) {
         var contextRef = ele.attr('contextRef');
        	var axisStored = App.InlineDoc.getContextFromCacheForSearch(contextRef);
    	 	if(axisStored !=null){
@@ -620,7 +637,13 @@ jQuery.fn.matchesSearch = function(search, ele) {
     }
     if (search.includeLabels && id && !isMatch) {
         if (!App.InlineDoc.getMetaData()) return;
-        var roles = App.InlineDoc.getMetaData().tag[id].lang['en-US'].role;
+        var roles=null;
+		if(App.InlineDoc.getMetaData().tag[id].lang['en-US']){
+        roles = App.InlineDoc.getMetaData().tag[id].lang['en-US'].role;
+		}
+		else{
+		roles = App.InlineDoc.getMetaData().tag[id].lang['en'].role;
+		}
         if (str.match(/&/gi)) {
 	        var terms = str.replace(/\s&\s/g, "&").split('&');
 	        var count = 0;
@@ -741,7 +764,56 @@ jQuery.fn.matchesSearch = function(search, ele) {
     
     if (search.includeReferences && id && !isMatch) {
         if (!App.InlineDoc.getMetaData()) return;
-        var auth_refArray = App.InlineDoc.getMetaData().tag[id].auth_ref;
+               var auth_refArrayNew = App.InlineDoc.getMetaData().tag[id].auth_ref;
+    	var auth_refArray=[];
+    	var auth_refArrayNew1=[];
+        var contextRef = ele.attr('contextRef');
+        var elementNew=App.InlineDoc.getContext(contextRef);
+        var axisLabel="";
+        var memberLabel ="";
+        items = elementNew.find('*').filter(function() {
+
+            var xbrlchek = (this.nodeName.toLowerCase()).replace('member','Member');
+
+            return xbrlchek == "xbrldi" + ":explicitMember";
+        });
+        items.each(function(index, element) {
+        	var ele = $(element);
+        	axisLabel = ele.attr('dimension').replace(':',('_'));
+        	auth_refArrayNew.push(App.InlineDoc.getMetaData().tag[axisLabel].auth_ref);
+        	memberLabel = ele.html().replace(':',('_'));
+        	auth_refArrayNew.push(App.InlineDoc.getMetaData().tag[memberLabel].auth_ref);
+    	});
+        for(var i=0;i<auth_refArrayNew.length;i++){
+        	if(auth_refArrayNew[i].length != 0){
+        		auth_refArrayNew1.push(auth_refArrayNew[i]);
+        	}
+        }
+        for(var index=0; index<=auth_refArrayNew1.length-1;index++){ 
+        	
+        	if( Object.prototype.toString.call( auth_refArrayNew1[index] ) !== '[object Array]' ) {
+        		pushtonewArr(auth_refArrayNew1[index]); 
+        	} 
+        	else/* if( Object.prototype.toString.call( auth_refArray[index] ) == '[object Array]' ) */{ 
+        		var inArr = auth_refArrayNew1[index]; 
+        	for(var j=0; j<=inArr.length-1;j++){ 
+        		pushtonewArr(inArr[j]);
+        		} 
+        	}
+
+        }
+        function pushtonewArr(element){
+        	var found=false;
+        	for(var i=0,max=auth_refArray.length;i<=max; i++){
+        		if(auth_refArray[i]== element){
+        			found=true; 
+        			break;
+        			}
+        		} 
+        	if(!found){
+        		auth_refArray.push(element)
+        	}
+        	}
     	var std_refs = App.InlineDoc.getMetaRefs();
     		
     		if (str.match(/&/gi)) {
@@ -895,13 +967,59 @@ jQuery.fn.matchesSearch = function(search, ele) {
 };
 
 jQuery.fn.normalizedPeriodString = function() {
-
     var result = this.prop('id');
-    var start = this.find(App.InlineDoc.instancePrefix + '\\:startDate');
-    var instant = this.find(App.InlineDoc.instancePrefix + '\\:instant');
-
+    var start ="";
+    for(var i=0;i<App.InlineDoc.instancePrefix.length;i++){
+    	if(this.find(App.InlineDoc.instancePrefix[i] + '\\:startDate')){
+    		start = this.find(App.InlineDoc.instancePrefix[i] + '\\:startDate');
+    		if(start.length==0){
+    			continue;
+    		}
+    		else
+    		{
+    			break;
+    		}
+    	}
+    }
+    if(start.length==0){
+    	start = this.find('startDate');
+    }
+    var instant = "";
+    for(var i=0;i<App.InlineDoc.instancePrefix.length;i++){
+    	if(this.find(App.InlineDoc.instancePrefix[i] + '\\:instant')){
+    		instant = this.find(App.InlineDoc.instancePrefix[i] + '\\:instant');
+    		if(instant.length==0){
+    			continue;
+    		}
+    		else
+    		{
+    			break;
+    		}
+    	}
+    }
+	 if(instant.length==0){
+    	instant = this.find('instant');
+    }
     if (start.length == 1) {
-        result = start.html() + "-" + this.find(App.InlineDoc.instancePrefix + '\\:endDate').html();
+		//DE564 : needs regression testing
+    	var end ="";
+	    for(var i=0;i<App.InlineDoc.instancePrefix.length;i++){
+	    	if(this.find(App.InlineDoc.instancePrefix[i] + '\\:endDate')){
+	    		end = this.find(App.InlineDoc.instancePrefix[i] + '\\:endDate');
+	    		if(end.length==0){
+	    			continue;
+	    		}
+	    		else
+	    		{
+	    			break;
+	    		}
+	    	}
+	    }
+	    if(end.length==0){
+	    	end = this.find('endDate');
+	    }
+    	//end
+        result = start.html() + "-" + end.html();
     } else if (instant.length == 1) {
 	result = instant.html();
     }
@@ -912,11 +1030,35 @@ jQuery.fn.normalizedPeriodString = function() {
 jQuery.fn.calendarFriendlyName = function() {
 
     var friendlyName = this.prop('id');
-    var start = this.find(App.InlineDoc.instancePrefix + '\\:startDate');
+    var start ="";
+    for(var i=0;i<App.InlineDoc.instancePrefix.length;i++){
+    if(this.find(App.InlineDoc.instancePrefix[i] + '\\:startDate')){
+    start = this.find(App.InlineDoc.instancePrefix[i] + '\\:startDate');
+    if(start.length==0){
+		continue;
+    }
+    else
+    	{
+    	break;
+    	}
+    }
+    }
 	if(start.length==0){
     	 start = this.find('startDate');
     }
-    var instant = this.find(App.InlineDoc.instancePrefix + '\\:instant');
+	var instant ="";
+	for(var i=0;i<App.InlineDoc.instancePrefix.length;i++){
+	 if(this.find(App.InlineDoc.instancePrefix[i] + '\\:instant')){
+		    instant = this.find(App.InlineDoc.instancePrefix[i] + '\\:instant');
+		    if(instant.length==0){
+				continue;
+		    }
+		    else
+		    	{
+		    	break;
+		    	}
+		    }
+		    }
     if(instant.length==0){
     	instant = this.find('instant');
     }
@@ -925,7 +1067,19 @@ jQuery.fn.calendarFriendlyName = function() {
         var startDateAry = start.html().split('-');
         var startDate = new Date(startDateAry[0], parseInt(startDateAry[1]) - 1, startDateAry[2]);
         //var endDateAry = this.find(App.InlineDoc.instancePrefix + '\\:endDate').html().split('-');
-		        var end=this.find(App.InlineDoc.instancePrefix + '\\:endDate');
+        var end="";
+        for(var i=0;i<App.InlineDoc.instancePrefix.length;i++){
+        if(this.find(App.InlineDoc.instancePrefix[i] + '\\:endDate')){
+		    end = this.find(App.InlineDoc.instancePrefix[i] + '\\:endDate');
+		    if(end.length==0){
+				continue;
+		    }
+		    else
+		    	{
+		    	break;
+		    	}
+		    }
+		    }
         if(end.length==0){
         	end = this.find('endDate');
        }
@@ -1025,17 +1179,18 @@ jQuery.fn.precisionFriendlyName = function() {
 };
 
 jQuery.fn.unitFriendlyName = function() {
-
     var label = this.attr('id');
-    if (this.find(App.InlineDoc.instancePrefix + '\\:measure, measure').length == 1) {
+    for(var i=0;i<App.InlineDoc.instancePrefix.length;i++){
+    if (this.find(App.InlineDoc.instancePrefix[i] + '\\:measure, measure').length == 1) {
 
-        var measureAry = this.find(App.InlineDoc.instancePrefix + '\\:measure, measure').text().split(':');
+        var measureAry = this.find(App.InlineDoc.instancePrefix[i] + '\\:measure, measure').text().split(':');
         label = measureAry.length == 1 ? measureAry[0] : measureAry[1];
-    } else if (this.find(App.InlineDoc.instancePrefix + '\\:divide, divide').length == 1) {
+    } else if (this.find(App.InlineDoc.instancePrefix[i] + '\\:divide, divide').length == 1) {
 
-        var numeratorAry = this.find(App.InlineDoc.instancePrefix + '\\:unitNumerator, unitNumerator').text().split(':');
-        var denominatorAry = this.find(App.InlineDoc.instancePrefix + '\\:unitDenominator, unitDenominator').text().split(':');
+        var numeratorAry = this.find(App.InlineDoc.instancePrefix[i] + '\\:unitNumerator, unitNumerator').text().split(':');
+        var denominatorAry = this.find(App.InlineDoc.instancePrefix[i] + '\\:unitDenominator, unitDenominator').text().split(':');
         label = (numeratorAry.length == 1 ? numeratorAry[0] : numeratorAry[1]) + ' / ' + (denominatorAry.length == 1 ? denominatorAry[0] : denominatorAry[1]);
+    }
     }
 
     return label;
@@ -1082,6 +1237,7 @@ jQuery.fn.getXbrlValue = function() {
 //            xbrlValue = App_Utils.rPad(xbrlValue/Math.pow(10, Math.abs(scale)), '0', Math.abs(scale));
 //            xbrlValue = (.235).toFixed(Math.abs(scale));
             var absScale = Math.abs(scale);
+			
             //xbrlValue = (Number(Math.round(xbrlValue/100 + 'e' + absScale) + 'e-' + absScale)).toFixed(absScale);
 			if((xbrlValue).split(".")[1]){
             var precision = (xbrlValue).split(".")[1].length+2;

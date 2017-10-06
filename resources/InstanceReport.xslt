@@ -118,29 +118,60 @@
         <!-- write the definition and reference lookup table -->
         <xsl:if test="$isOuterReport">
           <div style="display: none;">
-            <xsl:for-each select="//Row[generate-id(.) = generate-id(key('keyElement', ElementName)[1])]">
-              <xsl:sort order="ascending" select="ElementName"/>
-              <xsl:if test="string-length(ElementName) > 0">
-                <xsl:call-template name="authRefData"/>
-              </xsl:if>
-            </xsl:for-each>
-            <xsl:if test="$majorversion &lt; 3">
-              <xsl:for-each select="//Row[string-length(.//Label[@Id = 0]/@Key) > 0 and not(.//Label[@Id = 0]/@Key = following-sibling::Row/.//Label[@Id = 0]/@Key)]">
-                <xsl:sort order="ascending" select=".//Label[@Id = 0]/@Key"/>
-                <xsl:call-template name="authRefData">
-                  <xsl:with-param name="Name" select="translate(.//Label[@Id = 0]/@Key, ':', '=')"/>
-                </xsl:call-template>
-              </xsl:for-each>
-            </xsl:if>
-            <xsl:for-each select="
-                //Segment[IsDefaultForEntity != 'true']/DimensionInfo[
-                generate-id(.) = generate-id(key('keyDimension', concat(dimensionId, Id))[1])]">
-              <xsl:variable name="dim" select="translate(dimensionId, ':', '_')"/>
-              <xsl:variable name="mem" select="translate(Id, ':', '_')"/>
-              <xsl:call-template name="authRefData">
-                <xsl:with-param name="Name" select="concat($dim, '=', $mem)"/>
-              </xsl:call-template>
-            </xsl:for-each>
+		        <xsl:choose>
+		          <xsl:when test="/InstanceReport/HasEmbeddedReports = 'true'">
+		            <!--  when having embedded tables, use global //Row and //Segment per original design -->
+		            <xsl:for-each select="//Row[generate-id(.) = generate-id(key('keyElement', ElementName)[1])]">
+		              <xsl:sort order="ascending" select="ElementName"/>
+		              <xsl:if test="string-length(ElementName) > 0">
+		                <xsl:call-template name="authRefData"/>
+		              </xsl:if>
+		            </xsl:for-each>
+		            <xsl:if test="$majorversion &lt; 3">
+		              <xsl:for-each select="//Row[string-length(.//Label[@Id = 0]/@Key) > 0 and not(.//Label[@Id = 0]/@Key = following-sibling::Row/.//Label[@Id = 0]/@Key)]">
+		                <xsl:sort order="ascending" select=".//Label[@Id = 0]/@Key"/>
+		                <xsl:call-template name="authRefData">
+		                  <xsl:with-param name="Name" select="translate(.//Label[@Id = 0]/@Key, ':', '=')"/>
+		                </xsl:call-template>
+		              </xsl:for-each>
+		            </xsl:if>
+		            <xsl:for-each select="
+		              //Segment[IsDefaultForEntity != 'true']/DimensionInfo[
+		              generate-id(.) = generate-id(key('keyDimension', concat(dimensionId, Id))[1])]">
+		              <xsl:variable name="dim" select="translate(dimensionId, ':', '_')"/>
+		              <xsl:variable name="mem" select="translate(Id, ':', '_')"/>
+		              <xsl:call-template name="authRefData">
+		                <xsl:with-param name="Name" select="concat($dim, '=', $mem)"/>
+		              </xsl:call-template>
+		            </xsl:for-each>
+		          </xsl:when>
+		          <xsl:otherwise>
+		            <!--  when no embedded tables use full path for Row and Segment to prevent overflowing libxml select nodes limit -->
+		            <xsl:for-each select="/InstanceReport/Rows/Row[generate-id(.) = generate-id(key('keyElement', ElementName)[1])]">
+		              <xsl:sort order="ascending" select="ElementName"/>
+		              <xsl:if test="string-length(ElementName) > 0">
+		                <xsl:call-template name="authRefData"/>
+		              </xsl:if>
+		            </xsl:for-each>
+		            <xsl:if test="$majorversion &lt; 3">
+		              <xsl:for-each select="/InstanceReport/Rows/Row[string-length(.//Label[@Id = 0]/@Key) > 0 and not(.//Label[@Id = 0]/@Key = following-sibling::Row/.//Label[@Id = 0]/@Key)]">
+		                <xsl:sort order="ascending" select=".//Label[@Id = 0]/@Key"/>
+		                <xsl:call-template name="authRefData">
+		                  <xsl:with-param name="Name" select="translate(.//Label[@Id = 0]/@Key, ':', '=')"/>
+		                </xsl:call-template>
+		              </xsl:for-each>
+		            </xsl:if>
+		            <xsl:for-each select="
+		              /InstanceReport/Rows/Row/MCU/contextRef/Segments/Segment[IsDefaultForEntity != 'true']/DimensionInfo[
+		              generate-id(.) = generate-id(key('keyDimension', concat(dimensionId, Id))[1])]">
+		              <xsl:variable name="dim" select="translate(dimensionId, ':', '_')"/>
+		              <xsl:variable name="mem" select="translate(Id, ':', '_')"/>
+		              <xsl:call-template name="authRefData">
+		                <xsl:with-param name="Name" select="concat($dim, '=', $mem)"/>
+		              </xsl:call-template>
+		            </xsl:for-each>
+		          </xsl:otherwise>
+		        </xsl:choose>
           </div>
         </xsl:if>
       </xsl:when>

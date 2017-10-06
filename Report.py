@@ -1164,7 +1164,7 @@ class Report(object):
         yMin = 0.0
         for row in self.rowList:
             for fact in row.factList:
-                if      (re.compile('^http://xbrl\.(us/rr/2008-12-31|sec\.gov/rr/[0-9-]{10})$').match(fact.qname.namespaceURI) and
+                if      (re.compile('^http://xbrl\.(us|sec\.gov)/rr/.*').match(fact.qname.namespaceURI) and
                          re.compile('^AnnualReturn[0-9]{4}$').match(fact.qname.localName)):
                     year = fact.qname.localName.casefold().partition('annualreturn')[2]
                     if fact.isNil: 
@@ -1452,9 +1452,11 @@ class Row(object):
             if concept is not None:
                 typeQname = str(concept.typeQname)
                 simpleDataType = self.simpleDataType(concept)
-                thedoclabel = concept.label(preferredLabel=arelle.XbrlConst.documentationLabel, fallbackToQname=False,lang='en-US',linkrole=arelle.XbrlConst.defaultLinkRole)
-                if thedoclabel is not None:
-                    doclabel = thedoclabel
+                for lang in ('en-US','en','en-GB'): # WcH 7/14/2017 look for both languages
+                    thedoclabel = concept.label(preferredLabel=arelle.XbrlConst.documentationLabel, fallbackToQname=False,lang=lang,linkrole=arelle.XbrlConst.defaultLinkRole)
+                    if thedoclabel is not None:
+                        doclabel = thedoclabel
+                        break
                 references = []
                 relationshipList = concept.modelXbrl.relationshipSet(arelle.XbrlConst.conceptReference).fromModelObject(concept)
                 def arbitrarykey(x):

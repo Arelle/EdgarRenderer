@@ -1455,9 +1455,12 @@ $( "#prevCarousel1" ).mouseover(function() {
             contentFilter.attr('data-filter-content', 'false');
             contentFilter.html('');
             if(_filterList.length>1){     
-            
-	            var clearfilterNode = '<span style="display: block;float: left;clear: right;vertical-align: middle;"><span>Clear All &nbsp;</span>' ;
-	            clearfilterNode += '<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear All Filters" tabindex="8">' +
+				//DE451
+				var clearfilterNodeOnUI;
+	            var clearfilterNodeName = '<span style="display: block;float: left;clear: right;vertical-align: middle;"><span>Clear All &nbsp;</span>' ;
+	            clearfilterNodeName = $(clearfilterNodeName);
+				
+				clearfilterNode = '<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear All Filters" tabindex="8">' +
 			            '</span></span></span>';
 	            var clearAllObj = $(clearfilterNode);
 	           	clearAllObj.bind('keypress', function(e) {
@@ -1489,17 +1492,24 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                    App.hideSpinner();
 	                });
 	 	        });
-		  	    contentFilter.append(clearAllObj);   
+		  	    //contentFilter.append(clearAllObj);
+				//DE451
+				clearfilterNodeOnUI = clearfilterNodeName.append(clearAllObj);
+				contentFilter.append(clearfilterNodeOnUI);
 	  	    }
 	  	    
             for(var _index=0; _index < _filterList.length; _index++){
-            	var filterNode = '<span id="filterDiv" style="display: block;float: left;clear: right;vertical-align: middle;margin-right: -10px;">>&nbsp;&nbsp;' +
+            	//DE451
+				var filterTagNameNode = '<span id="filterDiv" style="display: block;float: left;clear: right;vertical-align: middle;margin-right: -10px;">>&nbsp;&nbsp;' +
 	                    '<span>' + _filterList[_index] + '&nbsp;</span>';
+				filterTagNameNode = $(filterTagNameNode);
+            	var filterNodeNew;
 	            
 	            var filterNodeObj;
 	            var button ='';
 	            if(_dataList.indexOf(_filterList[_index])!=-1){
-	            	filterNode +='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Data Filter" data-btn-removeHighlight>' +
+					//DE451
+	            	filterNode ='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Data Filter" data-btn-removeHighlight>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1510,7 +1520,8 @@ $( "#prevCarousel1" ).mouseover(function() {
 		                });
 	  	            });
 	            }else if(_tagList.indexOf(_filterList[_index])!=-1){
-	            	filterNode +='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Tags Filter" data-btn-removeConcepts>' +
+					//DE451
+	            	filterNode ='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Tags Filter" data-btn-removeConcepts>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1522,7 +1533,8 @@ $( "#prevCarousel1" ).mouseover(function() {
 	  	            	 
 	  	            });
 	            }else if(_filterList[_index].match("Periods")=="Periods"){
-	            	filterNode +='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Periods Filter" data-btn-removePeriods>' +
+					//DE451
+	            	filterNode ='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Periods Filter" data-btn-removePeriods>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1534,7 +1546,8 @@ $( "#prevCarousel1" ).mouseover(function() {
 	  	            	 
 	  	            });
 	            }else if(_filterList[_index].match("Measures")=="Measures"){
-	            	filterNode += '<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Measures Filter" data-btn-removeUnits>' +
+					//DE451
+	            	filterNode = '<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Measures Filter" data-btn-removeUnits>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1545,7 +1558,8 @@ $( "#prevCarousel1" ).mouseover(function() {
 		                });
 	  	            });
 	            }else if(_filterList[_index].match("Axes")=="Axes"){
-	            	filterNode +='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Axes Filter" data-btn-removeAxis>' +
+					//DE451
+	            	filterNode ='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Axes Filter" data-btn-removeAxis>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1556,7 +1570,8 @@ $( "#prevCarousel1" ).mouseover(function() {
 		                });
 	  	            });
 	            }else if (_filterList[_index].match("Scale")=="Scale"){
-	            	filterNode +='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Scale Filter" data-btn-removeScale>' +
+					//DE451
+	            	filterNode ='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Scale Filter" data-btn-removeScale>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1568,7 +1583,8 @@ $( "#prevCarousel1" ).mouseover(function() {
 	  	            	 
 	  	            });
 	            }else if (_filterList[_index].match("Balance")=="Balance"){
-	            	filterNode +='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Balance Filter" data-btn-removeBalance>' +
+					//DE451
+	            	filterNode ='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Balance Filter" data-btn-removeBalance>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1579,7 +1595,10 @@ $( "#prevCarousel1" ).mouseover(function() {
 		                });
 	  	            });
 	            }	
-	            contentFilter.append(filterNodeObj);
+	            //contentFilter.append(filterNodeObj);
+				//DE451
+				filterNodeNew = filterTagNameNode.append(filterNodeObj);
+				contentFilter.append(filterNodeNew);
 	            
             }
             if($("#filterDataDiv").height()==0){
@@ -1641,27 +1660,26 @@ $( "#prevCarousel1" ).mouseover(function() {
 			
 			var modal = $('#settings-modal'); 
             modal.find('input[type="radio"]').on('change', function() {
-
+				
                 App_Find.Filter.getUnitItemsChecked().each(function() {
-
-                    $(this).prop('checked', false);
+					//DE511: Reverseing False to True
+                    $(this).prop('checked', true);
                 });
-
                 App_Find.Filter.getCalendarItemsChecked(true).each(function() {
-
-                    $(this).prop('checked', false);
+					//DE511: Reverseing False to True
+                    $(this).prop('checked', true);
                 });
                 App_Find.Filter.getAxisItemsChecked(true).each(function() {
-
-                    $(this).prop('checked', false);
+					//DE511: Reverseing False to True
+                    $(this).prop('checked', true);
                 });
                 App_Find.Filter.getScaleItemsChecked(true).each(function() {
-
-                    $(this).prop('checked', false);
+					//DE511: Reverseing False to True
+                    $(this).prop('checked', true);
                 });
                 App_Find.Filter.getBalanceItemsChecked(true).each(function() {
-					
-                    $(this).prop('checked', false);
+					//DE511: Reverseing False to True
+                    $(this).prop('checked', true);
                 });
                 App_Find.Filter.updateSelectedCounts();
                 App_Find.Breadcrumb.refresh();
@@ -1675,11 +1693,14 @@ $( "#prevCarousel1" ).mouseover(function() {
             var isClicked = false;
             if(!isClicked){
 	            var modal = $('#settings-modal'); 
-	            modal.find('#search-include-dimensions').on('click', function() {
+				if (modal.find('#search-include-dimensions').is(':checked')) {
+	          //  modal.find('#search-include-dimensions').on('click', function() {
 		            App.showSpinner($('.modal-header'), function() {
 
 		            	isClicked = true;
-			            var items = App.InlineDoc.getAxis();
+						var items="";
+		            	if(App.InlineDoc){
+			            items = App.InlineDoc.getAxis();
 			
 			            var contextValues = [];
 			            items.each(function(index, element) {
@@ -1708,10 +1729,52 @@ $( "#prevCarousel1" ).mouseover(function() {
 			                    App.InlineDoc.updateContextAxisForSearch(contextId, dimensionLabel);
 			                //}
 		            	});  
-		            	
+		            	}
+	                    App.hideSpinner();
+	                });
+            	//});
+				}
+				//if (modal.find('#search-include-dimensions').is(':checked')) {
+	            modal.find('#search-include-dimensions').on('click', function() {
+		            App.showSpinner($('.modal-header'), function() {
+
+		            	isClicked = true;
+						var items="";
+		            	if(App.InlineDoc){
+			            items = App.InlineDoc.getAxis();
+			
+			            var contextValues = [];
+			            items.each(function(index, element) {
+			            	var ele = $(element);
+			                var pele = $(ele.parents()[2]);
+			                var contextId = pele.attr('id');
+			            	//if($.inArray(contextId,contextValues) == -1){
+			                   // contextValues.push(contextId);
+			                    var axisLabel = ele.attr('dimension');
+				                var axislval = App.InlineDoc.getSelectedLabel(App_Utils.convertToXBRLId(axisLabel),this,null,function(value){
+				
+				                    axisLabel = value + ' - ' + axisLabel;
+				                    return false;
+				
+				                });
+				
+				                // member label
+			                    var memberLabel = ele.html();
+			                    var memberlval = App.InlineDoc.getSelectedLabel(App_Utils.convertToXBRLId(memberLabel),this,null,function(value){
+			
+			                            memberLabel = value + ' - ' + memberLabel;
+			                            return false;
+			
+			                    });
+			                    var dimensionLabel = axisLabel+" &nbsp;&nbsp;"+memberLabel;
+			                    App.InlineDoc.updateContextAxisForSearch(contextId, dimensionLabel);
+			                //}
+		            	});  
+		            	}
 	                    App.hideSpinner();
 	                });
             	});
+				//}
             }
         }
     },
@@ -2163,9 +2226,99 @@ $( "#prevCarousel1" ).mouseover(function() {
          },
          
          show:function(results){
+         	
          	$("#operatingCompanyTaggedSection").css({'display':'none'});
          	$("#results-header-report-operating").css({'display':'none'});
-         	var searchReportsResult = $('#results-reports');
+         	var documentTypeIfrs = $('#documentTypeIfrs');
+         	var statementTypeIfrs = $('#statementTypeIfrs');
+         	var disclosureTypeIfrs = $('#disclosureTypeIfrs');
+         	var disclosureTypeExpandedIfrs = $('#disclosureTypeExpandedIfrs');
+			if (results) {
+			    documentTypeIfrs.html('');
+			    statementTypeIfrs.html('');
+			    disclosureTypeIfrs.html('');
+			    disclosureTypeExpandedIfrs.html('');
+			    $("#documentTypeSingleLIDivIfrs").html('');
+			    
+				$("#documentTypeMainLIDivIfrs").css({'display':'block'})
+				$("#documentTypeSingleLIDivIfrs").css({'display':'block'})
+		        $("#statementLiIfrs").css({'display':'block'})
+		        $("#disclosureLiIfrs").css({'display':'block'})
+		        $("#disclosureLiDupIfrs").css({'display':'block'})
+			
+			    App_Find.TaggedSection.results = null;
+			    App_Find.TaggedSection.results = $(results); // load
+			
+			}
+            $('#results-count-reports').html('' + App_Find.TaggedSection.results.length + '');
+            
+            var countDocumentType = 0;
+            var countStatementType = 0;
+            var countDisclosureType = 0;
+            
+            var resultHtmlObjs = [];
+            
+            for (var index in App_Find.TaggedSection.results) {
+            	var groupType =  App_Find.TaggedSection.results[index].groupType;
+            	if(groupType!=null && groupType.length>0){
+            		
+            		var label = App_Find.TaggedSection.results[index].shortName;
+                   	var resultHtml = '<li class="result-item" data-is-selected="false" tabindex="3" data-result-index="' + index + '" style="list-style-type: none;text-decoration: underline;cursor:pointer;" >' + $('<div/>').html(label).text()+'</li>';
+                   	var resultHtmlObj = $(resultHtml);
+                   	resultHtmlObj.on('click', function() {
+                	   	App_Find.TaggedSection.selectItem($(this).attr('data-result-index'),$(this));
+                   	});
+                   	
+                   	resultHtmlObj.on('keyup', function(e) {                  
+                	   var code = e.keyCode || e.which;                	   
+                  		if((code == 13) || (code == 32)) {                   		
+                	   		App_Find.TaggedSection.selectItem($(this).attr('data-result-index'),$(this));
+                	   }
+                  	});   
+                   	
+            		if(groupType == "document"){
+            			countDocumentType++;
+            			resultHtmlObjs.push(resultHtmlObj);
+            			
+            		}else if(groupType == "statement"){
+            			statementTypeIfrs.append(resultHtmlObj);
+            			countStatementType++;
+            			
+            		}else if(groupType == "disclosure"){
+            		
+            				disclosureTypeIfrs.append(resultHtmlObj);
+            				countDisclosureType++;
+            				$("#disclosureLiDupIfrs").css({'display':'none'});
+            			
+            		}
+            	}
+			}
+			if(countDocumentType>1){
+		        
+		        for(var i=0;i<resultHtmlObjs.length;i++)  {
+		        	documentType.append(resultHtmlObjs[i])
+		        }
+		        $("#documentTypeSingleLIDivIfrs").css({'display':'none'})
+			}else if((countDocumentType==1)&&(resultHtmlObjs[0].html()=="Document and Entity Information")){
+				$("#documentTypeSingleLIDivIfrs").append(resultHtmlObjs[0]);
+				//$("#documentTypeSingleLIDiv").css({'font-weight':'bold'});
+				$("#documentTypeMainLIDivIfrs").css({'display':'none'});
+			}else if((countDocumentType==1)&&(resultHtmlObjs[0].html()!="Document and Entity Information")){
+				documentTypeIfrs.append(resultHtmlObjs[0])
+				$("#documentTypeSingleLIDivIfrs").css({'display':'none'});
+			}else if(countDocumentType<1){
+				$("#documentTypeMainLIDivIfrs").css({'display':'none'});
+				$("#documentTypeSingleLIDivIfrs").css({'display':'none'});
+			}
+			if(countStatementType==0){
+		        $("#statementLi").css({'display':'none'});
+			}
+			
+			if(countDisclosureType==0){
+		        $("#disclosureLi").css({'display':'none'});
+		        $("#disclosureLiDup").css({'display':'none'});
+			}
+         	/*var searchReportsResult = $('#results-reports');
 			if (results) {
 			    searchReportsResult.html('');
 			
@@ -2203,7 +2356,8 @@ $( "#prevCarousel1" ).mouseover(function() {
                    });
                    searchReportsResult.append(resultHtmlObj);
                 }
-			}
+			}*/
+         
          },
          
          showNew:function(results,isFinanceExpand){
@@ -2251,7 +2405,7 @@ $( "#prevCarousel1" ).mouseover(function() {
             	if(groupType!=null && groupType.length>0){
             		
             		var label = App_Find.TaggedSection.results[index].shortName;
-                   	var resultHtml = '<li class="result-item" data-is-selected="false" tabindex="3" data-result-index="' + index + '" style="list-style-type: none;text-decoration: underline;cursor:pointer;" >' + $('<div/>').html(label).text()+'</li>';
+                   	var resultHtml = '<li class="result-item" data-is-selected="false" tabindex="3" data-result-index="' + index + '" aria-label="' + label + '" style="list-style-type: none;text-decoration: underline;cursor:pointer;" >' + $('<div/>').html(label).text()+'</li>';
                    	var resultHtmlObj = $(resultHtml);
                    	resultHtmlObj.on('click', function() {
                 	   	App_Find.TaggedSection.selectItem($(this).attr('data-result-index'),$(this));
@@ -2538,13 +2692,13 @@ $( "#prevCarousel1" ).mouseover(function() {
             App_Find.Results.highlightItem(index);
             if(ele){
 			App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-block-content-selected, .sec-cbe-highlight-filter-content-selected, .sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-block-content-selected sec-cbe-highlight-filter-content-selected sec-cbe-highlight-filter-selected-block'); 
-            	if(App_Find.Highlight.cachedResults.arrayOfImages.length==1){
-           	    	App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
-           	     }
-        		for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
+			App_Find.Highlight.cachedResults.arrayOfImages= App.frame.contents().find('img');
+		    var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+        		for (var i=0; i<arrayOfImagesLength; i++)
 				 {
-					if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')=="../../ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png"){
-						App_Find.Highlight.cachedResults.arrayOfImages[i].setAttribute("src", "../../ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png");
+        			var elementAtIthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[i];
+					if(elementAtIthPositionOfArrayOfImages.getAttribute('src')=="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png"){
+						elementAtIthPositionOfArrayOfImages.setAttribute("src", "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png");
 					}
 				 }
             	ele.selectionHighlight();
@@ -2564,6 +2718,11 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                   	else if($(ele).parent().hasClass('sec-cbe-highlight-block')){
 	                   		App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected');
 	                   		$(ele).selectionHighlightForBlock();
+	                   		var imageId=ele.attr('id')+"imageid";
+							imageNode=getAlreadyExistingImage(imageId);
+							if(imageNode){
+							imageNode.setAttribute("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
+							}
 	            		}
           		 }
                 if(ele.attr('id')){     				
@@ -2655,806 +2814,657 @@ $( "#prevCarousel1" ).mouseover(function() {
             });
         },
         load:function() {
+        	  var frameContentObject =App.frame.contents(); 
+              var srcImg = "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png";
+              var filter = App_Find.Filter.getSelected();
+              var search = App_Find.Search.getSelected();
+              
+              var results = App_Find.Highlight.getResults();
+              var instance = App.InlineDoc.getMetaData();
+  			var instanceTag="";
+        	
         	if(!App_Find.Highlight.cachedResults.linkedHiddenNodes){
             	App_Find.Highlight.initLinkedHiddenNodes();
         	}
         	
             App_Find.removeHighlightFilter();
-            var srcImg = "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png";
-            var filter = App_Find.Filter.getSelected();
-            var search = App_Find.Search.getSelected();
-            
-            var results = App_Find.Highlight.getResults();
-            var instance = App.InlineDoc.getMetaData();
-			var instanceTag="";
+          
 			if(instance){
 				instanceTag=instance.tag;
 			}
-            selectionHighlightNodes = function(allLinkedNodes) {
-            	
-            	
-            	//alert("inside selectionhighlightnodes find");
+			selectionHighlightNodes = function(allLinkedNodes) {
+				var nonNumericNode=App.InlineDoc.inlinePrefix + ':nonnumeric';
+				var continuationNode=App.InlineDoc.inlinePrefix + ':continuation';
 				if(allLinkedNodes){
-            	var allLinkedNodesLength=allLinkedNodes.length;
-            	var cls = 'sec-cbe-highlight-content-selected'; 
-            	for(var i=0;i<allLinkedNodesLength;i++){
-            	
-            	if(allLinkedNodes[i][0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonnumeric'){
-            		//$(allLinkedNodes[i]).parent().removeClass('sec-cbe-highlight-dashed');
-            		$(allLinkedNodes[i]).addClass(cls);
-            	}
-            	if ($(allLinkedNodes[i]).children().length > 0) { 
-        			$(allLinkedNodes[i]).children().addClass(cls);
-        			if($(allLinkedNodes[i]).children().children().length >0){
-					    if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="span")){
-            				(allLinkedNodes[i]).children().children().addClass(cls);
-                			}
-            			if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="div")){
-            				//alert("inside div");
-            				$(allLinkedNodes[i]).children().children().addClass(cls);
-                			}
-						$(allLinkedNodes[i]).children().children().children().children().children().addClass(cls);
-            			$(allLinkedNodes[i]).children().children().children().children().addClass(cls);
-						$(allLinkedNodes[i]).children().children().addClass(cls);
-            		}
-            	}
-            	else if(allLinkedNodes[i][0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
-            		$(allLinkedNodes[i]).addClass(cls);
-            	}
-            	
-            };
-			if(allLinkedNodes[0]){
-                if(allLinkedNodes[0].children()){
-                    var lastNodeChildren=allLinkedNodes[0].children();
-                    var lastNodeChildrenLength=lastNodeChildren.length;
-                    if(lastNodeChildrenLength>0){
-                    	if(lastNodeChildren[0].nodeName.toLowerCase()=="br"){
-                    		var elem = document.createElement("br");
-                        	allLinkedNodes[0].children().wrap('<div id="wrapBr" class="sec-cbe-highlight-content-selected"></div>');
-                        	if (($.browser.msie)){
-                        	allLinkedNodes[0].children().append(elem);
-                        	}
-                        	$(allLinkedNodes[0]).children().addClass(cls);
-                        	//$(allLinkedNodes[i]).children().children().addClass(cls);
-                    	}
-                    }
-                }
-                }
-             if(allLinkedNodes[allLinkedNodesLength-1]){
-                
-                if(allLinkedNodes[allLinkedNodesLength-1].children()){
-                    var lastNodeChildren=allLinkedNodes[allLinkedNodesLength-1].children();
-                    var lastNodeChildrenLength=lastNodeChildren.length;
-                    while(lastNodeChildrenLength>=1){
-                    	if($(lastNodeChildren[lastNodeChildrenLength-1]).children()){
-                    	lastNodeChildren=$(lastNodeChildren[lastNodeChildrenLength-1]).children();
-                    	lastNodeChildrenLength=lastNodeChildren.length;
-                    	}
-                    	else
-                    		break;
-                    	}
-                    if(lastNodeChildren){
-                    if(lastNodeChildren.context.nodeName.toLowerCase()=="br"){
-                		var elem = document.createElement("br");
-                		if($(lastNodeChildren.context).parent().attr('id') != "wrapBr"){
-                		if($(lastNodeChildren.context).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonnumeric' || $(lastNodeChildren.context).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
-                		$(lastNodeChildren.context).wrap('<div id="wrapBr" class="sec-cbe-highlight-content-selected wordBreakDiv" style="white-space: nowrap;  "></div>');
-                		if (($.browser.msie)){
-                			if($(lastNodeChildren.context).parent().parent()[0].nodeName.toLowerCase()!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                    		$(lastNodeChildren.context).parent().append(elem);
-                			}
-                    	}
-                			}
-                		}
-                		else{
-                			$(lastNodeChildren.context).parent().addClass('sec-cbe-highlight-content-selected');
-                		}
-                    }
-                    }
-                    }
-                
-                }
-            }
-            }
+					var allLinkedNodesLength=allLinkedNodes.length;
+					var cls = 'sec-cbe-highlight-content-selected'; 
+					for(var i=0;i<allLinkedNodesLength;i++){
+						var allLinkedNodesLocal=allLinkedNodes[i];
+						var allLinkedNodesLocalNodeName=allLinkedNodesLocal[0].nodeName.toLowerCase();
+						var allLinkedNodesLocalNode=$(allLinkedNodesLocal);
+						var firstLevelChildren=allLinkedNodesLocalNode.children();
+						var secondLevelChildren=allLinkedNodesLocalNode.children().children();
+						var fourthLevelChildren=allLinkedNodesLocalNode.children().children().children().children();
+						var fifthLevelChildren=allLinkedNodesLocalNode.children().children().children().children().children();
+						if(allLinkedNodesLocalNodeName==nonNumericNode){
+							allLinkedNodesLocalNode.addClass(cls);
+						}
+						if (firstLevelChildren.length > 0) { 
+							firstLevelChildren.addClass(cls);
+							if(secondLevelChildren.length >0){
+								if((secondLevelChildren[0].nodeName.toLowerCase()=="span")){
+									secondLevelChildren.addClass(cls);
+								}
+								if((secondLevelChildren[0].nodeName.toLowerCase()=="div")){
+									secondLevelChildren.addClass(cls);
+								}
+								fifthLevelChildren.addClass(cls);
+								fourthLevelChildren.addClass(cls);
+								secondLevelChildren.addClass(cls);
+							}
+						}
+						else if(allLinkedNodesLocalNodeName==continuationNode){
+							allLinkedNodesLocalNode.addClass(cls);
+						}
+
+					};
+
+					if(allLinkedNodes[0]){
+						if(allLinkedNodes[0].children()){
+							var lastNodeChildren=allLinkedNodes[0].children();
+							var lastNodeChildrenLength=lastNodeChildren.length;
+							if(lastNodeChildrenLength>0){
+								var lastNodeChildrenNodeName=lastNodeChildren[0].nodeName.toLowerCase();
+								if(lastNodeChildrenNodeName=="br"){
+									var elem = document.createElement("br");
+									lastNodeChildren.wrap('<div id="wrapBr" class="sec-cbe-highlight-content-selected"></div>');
+									if (($.browser.msie)){
+										lastNodeChildren=allLinkedNodes[0].children();
+										lastNodeChildren.append(elem);
+									}
+									$(allLinkedNodes[0]).children().addClass(cls);
+								}
+							}
+						}
+					}
+					if(allLinkedNodes[allLinkedNodesLength-1]){
+
+						if(allLinkedNodes[allLinkedNodesLength-1].children()){
+							var lastNodeChildren=allLinkedNodes[allLinkedNodesLength-1].children();
+							var lastNodeChildrenLength=lastNodeChildren.length;
+							while(lastNodeChildrenLength>=1){
+								if($(lastNodeChildren[lastNodeChildrenLength-1]).children()){
+									lastNodeChildren=$(lastNodeChildren[lastNodeChildrenLength-1]).children();
+									lastNodeChildrenLength=lastNodeChildren.length;
+								}
+								else
+									break;
+							}
+							if(lastNodeChildren){
+								var lastNodeChildrenNodeName=lastNodeChildren.context.nodeName.toLowerCase();
+								if(lastNodeChildrenNodeName=="br"){
+									var elem = document.createElement("br");
+									var lastNodeChildrenContext=$(lastNodeChildren.context);
+									var lastNodeChildrenContextParent=$(lastNodeChildren.context).parent();
+									var lastNodeChildrenContextParentNodeName=$(lastNodeChildren.context).parent()[0].nodeName.toLowerCase();
+									if(lastNodeChildrenContextParent.attr('id') != "wrapBr"){
+										if(lastNodeChildrenContextParentNodeName==nonNumericNode ||lastNodeChildrenContextParentNodeName==continuationNode){
+											lastNodeChildrenContext.wrap('<div id="wrapBr" class="sec-cbe-highlight-content-selected wordBreakDiv" style="white-space: nowrap;  "></div>');
+											lastNodeChildrenContextParent=$(lastNodeChildren.context).parent();
+											if (($.browser.msie)){
+												if($(lastNodeChildren.context).parent().parent()[0].nodeName.toLowerCase()!=nonNumericNode){
+													lastNodeChildrenContextParent.append(elem);
+												}
+											}
+										}
+									}
+									else{
+										lastNodeChildrenContextParent.addClass('sec-cbe-highlight-content-selected');
+									}
+								}
+							}
+						}
+					}
+				}
+			};
             selectionHighlightClickNodes = function(allLinkedNodes) {
 			    var allLinkedNodesLength=allLinkedNodes.length;
-			    App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
-            	for(var i=0;i<allLinkedNodes.length;i++){
+			    frameContentObject.find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
+			    var nonNumericNode=App.InlineDoc.inlinePrefix + ':nonnumeric';
+            	var continuationNode=App.InlineDoc.inlinePrefix + ':continuation';
+            	for(var i=0,max=allLinkedNodes.length;i<max;i++){
             	var cls = 'sec-cbe-highlight-filter-content-selected'; 
-				if(allLinkedNodes[i][0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonnumeric'){
-            		//$(allLinkedNodes[i]).parent().removeClass('sec-cbe-highlight-dashed');
-            		$(allLinkedNodes[i]).addClass(cls);
+            	var allLinkedNodesLocal=allLinkedNodes[i];
+            	var allLinkedNodesLocalNodeName=allLinkedNodesLocal[0].nodeName.toLowerCase();
+            	var allLinkedNodesLocalNode=$(allLinkedNodesLocal);
+            	var firstLevelChildren=allLinkedNodesLocalNode.children();
+            	var secondLevelChildren=allLinkedNodesLocalNode.children().children();
+            	var fourthLevelChildren=allLinkedNodesLocalNode.children().children().children().children();
+            	var fifthLevelChildren=allLinkedNodesLocalNode.children().children().children().children().children();
+				if(allLinkedNodesLocalNodeName==nonNumericNode){
+					allLinkedNodesLocalNode.addClass(cls);
             	}
-            	if ($(allLinkedNodes[i]).children().length > 0) { 
-            		$(allLinkedNodes[i]).children().addClass(cls);
-            		if($(allLinkedNodes[i]).children().children().length >0){
-					    if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="span")){
-            				$(allLinkedNodes[i]).children().children().addClass(cls);
+            	if (firstLevelChildren.length > 0) { 
+            		firstLevelChildren.addClass(cls);
+            		if(secondLevelChildren.length >0){
+					    if((secondLevelChildren[0].nodeName.toLowerCase()=="span")){
+					    	secondLevelChildren.addClass(cls);
                 			}
-            			if(($(allLinkedNodes[i]).children().children()[0].nodeName.toLowerCase()=="div")){
-            				$(allLinkedNodes[i]).children().children().addClass(cls);
+            			if((secondLevelChildren[0].nodeName.toLowerCase()=="div")){
+            				secondLevelChildren.addClass(cls);
                 			}
-						$(allLinkedNodes[i]).children().children().children().children().children().addClass(cls);
-            			$(allLinkedNodes[i]).children().children().children().children().addClass(cls);
-						$(allLinkedNodes[i]).children().children().addClass(cls);
+            			fifthLevelChildren.addClass(cls);
+            			fourthLevelChildren.addClass(cls);
+            			secondLevelChildren.addClass(cls);
             		}
             		
             	}
-            	else if(allLinkedNodes[i][0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
-            		$(allLinkedNodes[i]).addClass(cls);
+            	else if(allLinkedNodesLocalNodeName==continuationNode){
+            		allLinkedNodesLocalNode.addClass(cls);
             	}
             };
-			if(allLinkedNodes[allLinkedNodesLength-1]){
-                if(allLinkedNodes[allLinkedNodesLength-1].children()){
-                    var lastNodeChildren=allLinkedNodes[allLinkedNodesLength-1].children();
-                    var lastNodeChildrenLength=lastNodeChildren.length;
-                    while(lastNodeChildrenLength>=1){
-                    	if($(lastNodeChildren[lastNodeChildrenLength-1]).children()){
-                    	lastNodeChildren=$(lastNodeChildren[lastNodeChildrenLength-1]).children();
-                    	lastNodeChildrenLength=lastNodeChildren.length;
-                    	}
-                    	else
-                    		break;
-                    	}
-                    if(lastNodeChildren){
-                    if(lastNodeChildren.context.nodeName.toLowerCase()=="br"){
-                		var elem = document.createElement("br");
-                		if($(lastNodeChildren.context).parent().attr('id') != "wrapBr"){
-						if($(lastNodeChildren.context).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonnumeric' || $(lastNodeChildren.context).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
-                		$(lastNodeChildren.context).wrap('<div id="wrapBr" class="sec-cbe-highlight-filter-content-selected wordBreakDiv" style="white-space: nowrap;  "></div>');
-                		if (($.browser.msie)){
-                    		$(lastNodeChildren.context).parent().append(elem);
-                    	}
-						}
-                		}
-                		else{
-                			$(lastNodeChildren.context).parent().addClass('sec-cbe-highlight-filter-content-selected');
-                		}
-                	}
-                    }
-                    }
-                }
+            if(allLinkedNodes[allLinkedNodesLength-1]){
+            	if(allLinkedNodes[allLinkedNodesLength-1].children()){
+            		var lastNodeChildren=allLinkedNodes[allLinkedNodesLength-1].children();
+            		var lastNodeChildrenLength=lastNodeChildren.length;
+            		while(lastNodeChildrenLength>=1){
+            			if($(lastNodeChildren[lastNodeChildrenLength-1]).children()){
+            				lastNodeChildren=$(lastNodeChildren[lastNodeChildrenLength-1]).children();
+            				lastNodeChildrenLength=lastNodeChildren.length;
+            			}
+            			else
+            				break;
+            		}
+            		if(lastNodeChildren){
+            			var lastNodeChildrenNodeName=lastNodeChildren.context.nodeName.toLowerCase();
+            			if(lastNodeChildrenNodeName=="br"){
+            				var elem = document.createElement("br");
+            				var lastNodeChildrenContext=$(lastNodeChildren.context);
+            				var lastNodeChildrenContextParent=$(lastNodeChildren.context).parent();
+            				var lastNodeChildrenContextParentNodeName=$(lastNodeChildren.context).parent()[0].nodeName.toLowerCase();
+            				if(lastNodeChildrenContextParent.attr('id') != "wrapBr"){
+            					if(lastNodeChildrenContextParentNodeName==nonNumericNode || lastNodeChildrenContextParentNodeName==continuationNode){
+            						lastNodeChildrenContext.wrap('<div id="wrapBr" class="sec-cbe-highlight-filter-content-selected wordBreakDiv" style="white-space: nowrap;  "></div>');
+            						lastNodeChildrenContextParent=$(lastNodeChildren.context).parent();
+            						if (($.browser.msie)){
+            							lastNodeChildrenContextParent.append(elem);
+            						}
+            					}
+            				}
+            				else{
+            					$(lastNodeChildren.context).parent().addClass('sec-cbe-highlight-filter-content-selected');
+            				}
+            			}
+            		}
+            	}
             }
-	     checkIfImageAlreadyExists= function(imageId){
-	    	    //if(App_Find.Highlight.cachedResults.arrayOfImages.length==0){
-        	    	App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
-        	     //}
-            	//arrayOfImages = App.frame.contents().find('img');
+            };
+            checkIfImageAlreadyExists= function(imageId){
+            	App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
+   			    var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
             	var arrImageId="";
-        		for (var i=0; i<App_Find.Highlight.cachedResults.arrayOfImages.length; i++)
-        		{
-        			if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('id')==imageId){
-        				arrImageId=App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('id');
-        				break;
-        			}
-        			
-        		}
-        		if(arrImageId!=""){
-        			return true;
-        		}
-        		else
-        			return false;
-            	
-            }
-	     getAlreadyExistingImage= function(imageId){
-         	
-	    	 // if(App_Find.Highlight.cachedResults.arrayOfImages.length==0){
-        	    	App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
-        	   //  }
-         	//arrayOfImages = App.frame.contents().find('img');
-         	var arrImageId="";
-     		for (var i=0; i<App_Find.Highlight.cachedResults.arrayOfImages.length; i++)
-     		{
-     			if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('id')==imageId){
-     				arrImageId=App_Find.Highlight.cachedResults.arrayOfImages[i];
-     				break;
-     			}
-     			
-     		}
-     		if(arrImageId!=""){
-     			return arrImageId;
-     		}
-     		
-         	
-         }
+            	for (var i=0; i<arrayOfImagesLength; i++)
+            	{
+            		if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('id')==imageId){
+            			arrImageId=App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('id');
+            			break;
+            		}
+
+            	}
+            	if(arrImageId!=""){
+            		return true;
+            	}
+            	else
+            		return false;
+
+            };
+            getAlreadyExistingImage= function(imageId){
+            	App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
+   			    var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+            	var arrImageId="";
+            	for (var i=0; i<arrayOfImagesLength; i++)
+            	{
+            		if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('id')==imageId){
+            			arrImageId=App_Find.Highlight.cachedResults.arrayOfImages[i];
+            			break;
+            		}
+
+            	}
+            	if(arrImageId!=""){
+            		return arrImageId;
+            	}
+
+
+            };
 	     findParentIxNonnumericNode= function(eCatId,found,parentNode){
-	    	 var parentNode;
+	    	 var parentNode="";
+	    	 var appFindHighlighCachedResults=App_Find.Highlight.cachedResults;
+	    	 var nonnumericnodesLength=appFindHighlighCachedResults.nonnumericnodes.length;
+	    	 var continuedNodesLength=appFindHighlighCachedResults.continuedAt.length;
 	    	 if(found==false){
-	    		 for(var k=0;k<App_Find.Highlight.cachedResults.nonnumericnodes.length;k++){
-	    			 if(eCatId==App_Find.Highlight.cachedResults.nonnumericnodes[k].attr('continuedat')){
-	    				 parentNode=App_Find.Highlight.cachedResults.nonnumericnodes[k];
+	    		 for(var k=0;k<nonnumericnodesLength;k++){
+	    			 if(eCatId==appFindHighlighCachedResults.nonnumericnodes[k].attr('continuedat')){
+	    				 parentNode=appFindHighlighCachedResults.nonnumericnodes[k];
 	    				 found=true;
 	    				 break;
 	    			 }
 
 	    		 }
 	    	 }
-	    	 if(found==false){
-	    		 for(var l=0;l<App_Find.Highlight.cachedResults.continuedAt.length;l++){
-	    			 if(eCatId==App_Find.Highlight.cachedResults.continuedAt[l].attr('continuedat')){
-	    				 parentNode=findParentIxNonnumericNode(App_Find.Highlight.cachedResults.continuedAt[l].attr('id'),found);
+	    	if(found==false){
+	    		 for(var l=0;l<continuedNodesLength;l++){
+	    			 if(eCatId==appFindHighlighCachedResults.continuedAt[l].attr('continuedat')){
+	    				 parentNode=findParentIxNonnumericNode(appFindHighlighCachedResults.continuedAt[l].attr('id'),found);
 	    			 }
 	    		 }
 	    	 }
 	    	 return parentNode;
-	     }
+	     };
             
-            
+             findingParentNode=function(nodeNew,parentNode,found){
+	    	 var appInlineDoc=App.InlineDoc.inlinePrefix;
+             var nonNumericNode=appInlineDoc + ':nonnumeric';
+	    	 var continuationNode=appInlineDoc + ':continuation';
+	    	 var nonFractionNode=appInlineDoc + ':nonfraction';
+	    	 continuedNodeId=$(nodeNew).attr('id');
+	    	 parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+	    	 parentnodeIdCached=parentnodeId;
+	    	 var parentNodeIdParent=parentnodeId.parent();
+	    	 var parentNodeIdSecondParentNode=$(parentnodeId).parent().parent()[0];
+	    	 var parentNodeIdSecondParentNodeName=$(parentnodeId).parent().parent()[0].nodeName.toLowerCase();
+	    	 var nodeNewParent=$(nodeNew).parent();
+	    	 nodeNewParentParentnodeId=findParentIxNonnumericNode(nodeNewParent.attr('id'),found,parentNode);
+	    	 var nodeNewSecondLevelParent=$(nodeNew).parent().parent();
+	    	 var nodeNewParentNodeName=$(nodeNew).parent()[0].nodeName.toLowerCase();
+	    	 if(parentnodeId){
+	    		 if(parentNodeIdParent){
+	    			 if(parentNodeIdSecondParentNode){
+	    				 if(parentNodeIdSecondParentNodeName!=continuationNode){
+	    					 parentNodeParent=parentNodeIdParent;
+	    					 var parentNodeIdParentNode=$(parentnodeId).parent();
+	    					 if(parentNodeIdParentNode[0]){
+	    						 parentNodeParentNodeName=parentNodeIdParentNode[0].nodeName.toLowerCase();
+	    					 }
+	    					 while(parentNodeParentNodeName!=continuationNode){
+	    						 parentNodeParent=parentNodeParent.parent();
+	    						 var parentNodeParentParentNode=$(parentNodeParent).parent()[0];
+	    						 if(parentNodeParentParentNode){
+	    							 parentNodeParentNodeName=parentNodeParentParentNode.nodeName.toLowerCase();
+	    						 }
+	    						 else{
+	    							 break;
+	    						 }
+	    					 }
+	    					 if(parentNodeParentNodeName!=continuationNode){
+	    						 if((nodeNewParentNodeName==continuationNode)){
+	    							 parentNodeParent=parentnodeId.parent();
+	    							 var parentnodeIdParentNode=$(parentnodeId).parent()[0];
+	    							 if(parentnodeIdParentNode){
+	    								 parentNodeParentNodeName=parentnodeIdParentNode.nodeName.toLowerCase();
+	    							 }
+	    							 while(parentNodeParentNodeName!=nonNumericNode){
+	    								 parentNodeParent=parentNodeParent.parent();
+	    								 var parentNodeParentNode=$(parentNodeParent)[0];
+	    								 if(parentNodeParentNode){
+	    									 parentNodeParentNodeName=parentNodeParentNode.nodeName.toLowerCase();
+	    								 }
+	    								 else{
+	    									 break;
+	    								 }
+	    							 }
+
+	    							 if(parentNodeParentNodeName!=nonNumericNode){
+	    								 parentnodeId=nodeNewParentParentnodeId;
+	    							 }
+	    						 }
+	    						 else if((nodeNewSecondLevelParent[0].nodeName.toLowerCase()==continuationNode)){
+	    							 continuedNodeId=nodeNewSecondLevelParent.attr('id');
+	    							 parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
+	    						 }
+
+	    					 }
+	    					 else{
+	    						 if(nodeNewParentNodeName==continuationNode && nodeNewParent.children().length==1){
+	    							 var childNodes=nodeNewParent.children();
+	    							 var childNodeLength=childNodes.length;
+	    							 var childNodeName="";
+	    							 for(var j=0;j<childNodeLength;j++){
+	    								 var jthChildNode=childNodes[j][0];
+	    								 if(jthChildNode){
+	    									 childNodeName=jthChildNode.nodeName.toLowerCase();
+	    								 }
+	    								 while(childNodeName !=nonNumericNode){
+	    									 childNodes[j] = $(childNodes[j]).children();
+	    									 if($(childNodes[j])[0]){
+	    										 childNodeName =childNodes[j][0].nodeName.toLowerCase();
+	    									 }
+	    									 else{
+	    										 break;
+	    									 }
+	    								 }
+	    							 }
+	    							 if(childNodeName.toLowerCase() ==nonNumericNode || childNodeName.toLowerCase() ==nonFractionNode || childNodeName.toLowerCase() ==""){
+	    								 parentnodeId=parentnodeIdCached;
+	    								 if(childNodeName.toLowerCase()==nonFractionNode){
+	    									 var parentOfNodeNew=nodeNewParent;
+	    									 var parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
+	    									 while(parentOfNodeNewNodeName!="div"){
+	    										 parentOfNodeNew=parentOfNodeNew.parent();
+	    										 var parentOfNodeNewNode=parentOfNodeNew[0];
+	    										 if(parentOfNodeNewNode){
+	    											 parentOfNodeNewNodeName=parentOfNodeNewNode.nodeName.toLowerCase();
+	    										 }
+	    										 else{
+	    											 break;
+	    										 }
+	    									 }
+	    									 if(parentOfNodeNewNodeName=="div"){
+	    										 var parentOfNodeNewParentNode=parentOfNodeNew.parent()[0];
+	    										 var parentOfNodeNewParentNodeNodeName=parentOfNodeNew.parent()[0].nodeName.toLowerCase();
+	    										 if(parentOfNodeNewParentNode){
+	    											 if(parentOfNodeNewParentNodeNodeName!="body" && parentOfNodeNewParentNodeNodeName!="div"){
+	    												 parentnodeId=nodeNewParentParentnodeId;
+	    											 }
+	    										 }
+	    									 }
+
+	    								 }
+	    								 var childNodeOfCurrentNonNumericNode=parentnodeId.children();
+	    								 var childNodeOfCurrentNonNumeric=childNodeOfCurrentNonNumericNode[0];
+	    								 var childNodeOfCurrentNonNumericNodeNodeName="";
+	    								 if(childNodeOfCurrentNonNumeric){
+	    									 childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumeric.nodeName.toLowerCase();
+	    								 }
+	    								 while(childNodeOfCurrentNonNumericNodeNodeName != "img"){
+	    									 childNodeOfCurrentNonNumericNode=childNodeOfCurrentNonNumericNode.children();
+	    									 childNodeOfCurrentNonNumeric=childNodeOfCurrentNonNumericNode[0];
+	    									 if(childNodeOfCurrentNonNumeric){
+	    										 childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumeric.nodeName.toLowerCase();
+	    									 }
+	    									 else
+	    										 break;
+	    								 }
+	    								 if(childNodeOfCurrentNonNumericNodeNodeName == "img"){
+	    									 parentnodeId=childNodeOfCurrentNonNumericNode.next();
+	    								 }
+	    							 }
+	    							 else{
+	    								 parentnodeId=nodeNewParentParentnodeId;
+	    							 }
+	    						 }
+
+	    					 }
+
+	    				 }
+	    			 }
+	    		 }
+	    	 }
+	    	 allLinkedNodes=App_Find.Element.groupIxContinuation(parentnodeId);
+	    	 var positionOfElementsNew=[];
+	    	 var allLinkedNodesLength=allLinkedNodes.length;
+	    	 for(var i=0;i<allLinkedNodesLength;i++){
+	    		 positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
+	    	 }
+	    	 return {allLinkedNodes:allLinkedNodes,parentnodeId:parentnodeId,positionOfElementsNew:positionOfElementsNew};
+
+	     } ;
             
             function wrapInDashesForContinuationArray(nodeNew,blueImagePath,continuedNodeId,found,parentNode,parentnodeId,parentNodeOfContinuation,positionOfElementsNew,parentNodeParent,parentNodeParentNodeName){
             	$(nodeNew).on('click', function(event) {
-            	    App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected, .sec-cbe-highlight-filter-selected, .sec-cbe-highlight-filter-selected-block, .sec-cbe-highlight-filter-block-content-selected')
-            	    .removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected sec-cbe-highlight-filter-selected sec-cbe-highlight-filter-selected-block sec-cbe-highlight-filter-block-content-selected'); 
-            		//arrayOfImages = App.frame.contents().find('img');
-            	    //if(App_Find.Highlight.cachedResults.arrayOfImages.length==1){
-               	    App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
-            	    //}
-					for (var j=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; j<len; j++)
-					 {
-						if(App_Find.Highlight.cachedResults.arrayOfImages[j].getAttribute('src')==blueImagePath){
-							App_Find.Highlight.cachedResults.arrayOfImages[j].setAttribute("src", srcImg);
-						}
-					 }
-					continuedNodeId=$(nodeNew).attr('id');
-        		    parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-					if(parentnodeId.parent().parent()[0].nodeName.toLowerCase()!=App.InlineDoc.inlinePrefix + ':continuation'){
-                	
-                	parentNodeParent=parentnodeId.parent();
-                	if($(parentnodeId).parent()[0]){
-                	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
-                	}
-                	while(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
-                		parentNodeParent=parentNodeParent.parent();
-                		if($(parentNodeParent).parent()[0]){
-                		parentNodeParentNodeName=$(parentNodeParent).parent()[0].nodeName.toLowerCase();
-                		}
-                		else{
-                			break;
-                		}
-                	}
-                	if(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
-                		if(($(nodeNew).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')){
-                			parentNodeParent=parentnodeId.parent();
-                        	if($(parentnodeId).parent()[0]){
-                        	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
-                        	}
-                        	while(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                        		parentNodeParent=parentNodeParent.parent();
-                        		if($(parentNodeParent)[0]){
-                        		parentNodeParentNodeName=$(parentNodeParent)[0].nodeName.toLowerCase();
-                        		}
-                        		else{
-                        			break;
-                        		}
-                        	}
-                        	
-                        	if(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                        		continuedNodeId=$(nodeNew).parent().attr('id');
-                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-                        	}
-                		}
-                		else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')){
-    						continuedNodeId=$(nodeNew).parent().parent().attr('id');
-    						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-    					}
-                		
-                	}
-					else{
-                		if($(nodeNew).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation' && $(nodeNew).parent().children().length==1){
-                			var childNodes=$(nodeNew).parent().children();
-                			var childNodeLength=childNodes.length;
-                			var childNodeName="";
-                			for(var j=0;j<childNodeLength;j++){
-                				if(childNodes[j][0]){
-                					childNodeName=childNodes[j][0].nodeName.toLowerCase();
-                				}
-                				while(childNodeName !=App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                					childNodes[j] = $(childNodes[j]).children();
-        							if($(childNodes[j])[0]){
-        								childNodeName =childNodes[j][0].nodeName.toLowerCase();
-        							}
-        							else{
-        								break;
-        							}
-        						}
-                			}
-                			if(childNodeName.toLowerCase() ==App.InlineDoc.inlinePrefix + ':nonnumeric' || childNodeName.toLowerCase() ==App.InlineDoc.inlinePrefix + ':nonfraction' || childNodeName.toLowerCase() ==""){
-                				continuedNodeId=$(nodeNew).attr('id');
-                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-                				if(childNodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonfraction'){
-                					var parentOfNodeNew=$(nodeNew).parent();
-                					var parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
-                					while(parentOfNodeNewNodeName!="div"){
-                						parentOfNodeNew=parentOfNodeNew.parent();
-                						if(parentOfNodeNew[0]){
-                						parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
-                						}
-                						else{
-                							break;
-                						}
-                					}
-                					if(parentOfNodeNewNodeName=="div"){
-                						if(parentOfNodeNew.parent()[0]){
-                						if(parentOfNodeNew.parent()[0].nodeName.toLowerCase()!="body" && parentOfNodeNew.parent()[0].nodeName.toLowerCase()!="div"){
-                						continuedNodeId=$(nodeNew).parent().attr('id');
-                                		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-                						}
-                						}
-                					}
-                					
-                				}
-            					var childNodeOfCurrentNonNumericNode=parentnodeId.children();
-            					var childNodeOfCurrentNonNumericNodeNodeName="";
-            					if(childNodeOfCurrentNonNumericNode[0]){
-            					childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumericNode[0].nodeName.toLowerCase();
+            		
+            		frameContentObject.find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected, .sec-cbe-highlight-filter-selected, .sec-cbe-highlight-filter-selected-block, .sec-cbe-highlight-filter-block-content-selected')
+            		.removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected sec-cbe-highlight-filter-selected sec-cbe-highlight-filter-selected-block sec-cbe-highlight-filter-block-content-selected'); 
+            		App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
+					//DE462
+            		var continuationNode=App.InlineDoc.inlinePrefix + ':continuation';
+					
+					var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+            		for (var j=0; j<arrayOfImagesLength; j++)
+            		{
+            			var elementAtJthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[j];
+            			if(elementAtJthPositionOfArrayOfImages.getAttribute('src')==blueImagePath){
+            				elementAtJthPositionOfArrayOfImages.setAttribute("src", srcImg);
+            			}
+            		}
+            		var findingParentNodeNew=findingParentNode(nodeNew,parentNode,found);
+            		allLinkedNodes=findingParentNodeNew.allLinkedNodes;
+            		parentnodeId=findingParentNodeNew.parentnodeId;
+            		positionOfElementsNew=findingParentNodeNew.positionOfElementsNew;
+            		selectionHighlightClickNodes(allLinkedNodes);
+            		App_Find.Element.showSelectionDetail(parentnodeId);
+            		var positionTop = (allLinkedNodes[0][0]).offsetTop;
+            		for(var i=0,max=allLinkedNodes.length;i<max;i++){
+            			var allLinkedNodesLocal=allLinkedNodes[i];
+            			parentNodeOfContinuation=allLinkedNodesLocal.parent();
+            			nodeN = parentNodeOfContinuation[0].nodeName.toLowerCase(); 
+						parentNodeOfContinuation1=allLinkedNodesLocal.parent();
+            			nodeN1 = parentNodeOfContinuation[0].nodeName.toLowerCase();
+            			if(positionTop=='0' || positionTop=='1' || positionTop=='2'){
+							var childNode="";
+            				while(nodeN1.toLowerCase() !="td"){
+								parentNodeOfContinuation1 = parentNodeOfContinuation1.parent();
+								if($(parentNodeOfContinuation1).parent()[0]){
+									nodeN1 = $(parentNodeOfContinuation1).parent()[0].nodeName.toLowerCase();
+								}
+								else
+									break;
+							}
+							if($(parentNodeOfContinuation1.parent()).prev()[0]){
+								if($(parentNodeOfContinuation1.parent()).prev()[0].nodeName.toLowerCase()=="td"){
+									parentNodeOfContinuation1=$(parentNodeOfContinuation1.parent().prev()).children().next();
+									while($(parentNodeOfContinuation1)[0].nodeName.toLowerCase()!="div"){
+										parentNodeOfContinuation1=$(parentNodeOfContinuation1).next();
+									}
+									//DE565
+									childNode=parentNodeOfContinuation1;
+								}
+							}
+							/*if($(parentNodeOfContinuation1)[0].nodeName.toLowerCase()=="div"){
+								childNode=parentNodeOfContinuation1;
+							}*/
+							else{
+								while(nodeN.toLowerCase() !="body"){
+	            					parentNodeOfContinuation = parentNodeOfContinuation.parent();
+	            					var parentNodeOfContinuationParentNode=$(parentNodeOfContinuation).parent()[0];
+	            					if(parentNodeOfContinuationParentNode){
+	            						nodeN =parentNodeOfContinuationParentNode.nodeName.toLowerCase();
+	            					}
+	            					else{
+	            						break;
+	            					}
+	            				}
+	            				var childNode=parentNodeOfContinuation;
+	            				if($(childNode)[0].nodeName.toLowerCase()==continuationNode){
+	            					parentNodeOfContinuation=allLinkedNodesLocal.parent();
+	            					nodeN = parentNodeOfContinuation[0].nodeName.toLowerCase(); 
+	            					while(nodeN.toLowerCase() !=continuationNode){
+	            						parentNodeOfContinuation = parentNodeOfContinuation.parent();
+	            						var parentNodeOfContinuationParentNode=$(parentNodeOfContinuation).parent()[0];
+	            						if(parentNodeOfContinuationParentNode){
+	            							nodeN = parentNodeOfContinuationParentNode.nodeName.toLowerCase();
+	            						}
+	            						else{
+	            							break;
+	            						}
+	            					}
+	            					childNode=parentNodeOfContinuation;
+	            				}
+							}
+            				var previousOfChildNode=$(childNode).prev()[0];
+            				if((previousOfChildNode) ){
+            					if(previousOfChildNode.nodeName.toLowerCase()=="img"){
+            						previousOfChildNode.setAttribute("src", blueImagePath);
             					}
-            					while(childNodeOfCurrentNonNumericNodeNodeName != "img"){
-            						childNodeOfCurrentNonNumericNode=childNodeOfCurrentNonNumericNode.children();
-            						if(childNodeOfCurrentNonNumericNode[0]){
-            						childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumericNode[0].nodeName.toLowerCase();
-            						}
-            						else
-            							break;
-            					}
-            					if(childNodeOfCurrentNonNumericNodeNodeName == "img"){
-            						parentnodeId=childNodeOfCurrentNonNumericNode.next();
-            					}
-    						}
-            				else{
-            					continuedNodeId=$(nodeNew).parent().attr('id');
-                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
             				}
-                		}
-                		
-                	}
-              		
-              		}
-           			allLinkedNodes=App_Find.Element.groupIxContinuation(parentnodeId);
-                    	selectionHighlightClickNodes(allLinkedNodes);
-                    	App_Find.Element.showSelectionDetail(parentnodeId);
-                    	var positionTop = (allLinkedNodes[0][0]).offsetTop;
-                    	var positionOfElementsNew=[];
-						for(var i=0;i<allLinkedNodes.length;i++){
-               					positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
-               				}
-               			for(var i=0;i<allLinkedNodes.length;i++){
+            			}
+            			else{
+            				var positionTopRearranged="";
+            				for (i = 0,outMax=positionOfElementsNew.length; i <outMax ; i++)
+            				{
+            					for (j = i+1,inMax=positionOfElementsNew.length; j < inMax; j++)
+            					{
+            						var positionOfElementsNewJthElement=positionOfElementsNew[j];
+            						if (positionOfElementsNewJthElement <= positionOfElementsNew[i])
+            						{
+            							positionTopRearranged=positionOfElementsNewJthElement;
 
-               				parentNodeOfContinuation=allLinkedNodes[i].parent();
-               				nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-               				if(positionTop=='0' || positionTop=='1' || positionTop=='2' ){
-               					while(nodeN.toLowerCase() !="body"){
-               						parentNodeOfContinuation = parentNodeOfContinuation.parent();
-               						if($(parentNodeOfContinuation).parent()[0]){
-               							nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
-               						}
-               						else{
-               							break;
-               						}
-               					}
-               					var childNode=parentNodeOfContinuation;
-								if($(childNode)[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
-        					    	parentNodeOfContinuation=allLinkedNodes[i].parent();
-        							nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-        							while(nodeN.toLowerCase() !=App.InlineDoc.inlinePrefix + ':continuation'){
-        								parentNodeOfContinuation = parentNodeOfContinuation.parent();
-        								if($(parentNodeOfContinuation).parent()[0]){
-        								nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
-        								}
-        								else{
-        									break;
-        								}
-        							}
-        							childNode=parentNodeOfContinuation;
-        					    }
-               					if(($(childNode).prev()[0]) ){
-               						if($(childNode).prev()[0].nodeName.toLowerCase()=="img"){
-               							$(childNode).prev()[0].setAttribute("src", blueImagePath);
-               						}
-               				}
-               			}
-               			else{
-               				var positionTopRearranged="";
-               				for (i = 0; i < positionOfElementsNew.length; i++)
-               				{
-               					for (j = i+1; j < positionOfElementsNew.length; j++)
-               					{
-               						if (positionOfElementsNew[j] <= positionOfElementsNew[i])
-               						{
-               							positionTopRearranged=positionOfElementsNew[j];
-
-               						}
-               					}
-               				}
-               				
-               				if(positionTopRearranged !=""){
-                				
-                				var min_of_array = Math.min.apply(Math, positionOfElementsNew);
-                				var newTopPositionNode="";
-                				var occurances = positionOfElementsNew.filter(function(val){
-                				    return val === min_of_array;
-                				}).length;
-                				
-                				if(occurances>1 && min_of_array==$(allLinkedNodes[0]).position().top){
-                					for(var j=0;j<allLinkedNodes.length;j++){
-                    					if($(allLinkedNodes[j]).position().top==min_of_array){
-                    						newTopPositionNode=$(allLinkedNodes[j]);
-                    					}
-                    				}
-                				}
-                					else{
-                						for(var j=0;j<allLinkedNodes.length;j++){
-                        					if($(allLinkedNodes[j]).position().top==min_of_array){
-                        						newTopPositionNode=$(allLinkedNodes[j]);
-        										break;
-                        					}
-                        				}
-                					}
-                				
-                				
-                				if(($(newTopPositionNode[0]).prev()[0]) ){
-                					if(($(newTopPositionNode[0]).prev()[0].nodeName.toLowerCase()=="img")){
-                						$(newTopPositionNode[0]).prev()[0].setAttribute("src", blueImagePath);
-                					}
-                				}	
-                			} 
-               				if(($(parentnodeId).parent().prev()[0]) ){
-               					if(($(parentnodeId).parent().prev()[0].nodeName.toLowerCase()=="img")){
-               						$(parentnodeId).parent().prev()[0].setAttribute("src", blueImagePath);
-               					}
-               				}
-               				if(($(parentnodeId).prev()[0]) ){
-               					if(($(parentnodeId).prev()[0].nodeName.toLowerCase()=="img")){
-               						$(parentnodeId).prev()[0].setAttribute("src", blueImagePath);
-               					}
-               				}
-               			}
-               			}
-                    	event.stopPropagation();
-                	
-            	}).on('mousemove', function(event) {
-				
-            		var flag=true;
-            		continuedNodeId=$(nodeNew).attr('id');
-            		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-            		if(parentnodeId){
-            			if($(parentnodeId).parent()){
-            				if($(parentnodeId).parent().parent()[0]){
-            					if($(parentnodeId).parent().parent()[0].nodeName.toLowerCase()!=App.InlineDoc.inlinePrefix + ':continuation'){	
-            						parentNodeParent=parentnodeId.parent();
-            						if($(parentnodeId).parent()[0]){
-            							parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
             						}
-            						while(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
-            							parentNodeParent=parentNodeParent.parent();
-            							if($(parentNodeParent).parent()[0]){
-            								parentNodeParentNodeName=$(parentNodeParent).parent()[0].nodeName.toLowerCase();
+            					}
+            				}
+
+            				if(positionTopRearranged !=""){
+
+            					var min_of_array = Math.min.apply(Math, positionOfElementsNew);
+            					var newTopPositionNode="";
+            					var occurances = positionOfElementsNew.filter(function(val){
+            						return val === min_of_array;
+            					}).length;
+
+            					if(occurances>1 && min_of_array==$(allLinkedNodes[0]).position().top){
+            						for(var j=0,max=allLinkedNodes.length;j<max;j++){
+            							var allLinkedNodesForJthLoop=$(allLinkedNodes[j]);
+            							if(allLinkedNodesForJthLoop.position().top==min_of_array){
+            								newTopPositionNode=allLinkedNodesForJthLoop;
             							}
-            							else{
+            						}
+            					}
+            					else{
+            						for(var j=0,max=allLinkedNodes.length;j<max;j++){
+            							var allLinkedNodesForJthLoop=$(allLinkedNodes[j]);
+            							if(allLinkedNodesForJthLoop.position().top==min_of_array){
+            								newTopPositionNode=allLinkedNodesForJthLoop;
             								break;
             							}
             						}
-            						if(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
-            							if(($(nodeNew).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')){
-            								parentNodeParent=parentnodeId.parent();
-            								if($(parentnodeId).parent()[0]){
-            									parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
-            								}
-            								while(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
-            									parentNodeParent=parentNodeParent.parent();
-            									if($(parentNodeParent)[0]){
-            										parentNodeParentNodeName=$(parentNodeParent)[0].nodeName.toLowerCase();
-            									}
-            									else{
-            										break;
-            									}
-            								}
+            					}
 
-            								if(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
-            									continuedNodeId=$(nodeNew).parent().attr('id');
-            									parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-            								}
-            							}
-            							else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')){
-            								continuedNodeId=$(nodeNew).parent().parent().attr('id');
-            								parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-            							}
-
+            					var prevNodeOfNewTopPositionNode=$(newTopPositionNode[0]).prev()[0];
+            					if((prevNodeOfNewTopPositionNode) ){
+            						if((prevNodeOfNewTopPositionNode.nodeName.toLowerCase()=="img")){
+            							prevNodeOfNewTopPositionNode.setAttribute("src", blueImagePath);
             						}
-            						else{
-            							if($(nodeNew).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation' && $(nodeNew).parent().children().length==1){
-            								var childNodes=$(nodeNew).parent().children();
-            								var childNodeLength=childNodes.length;
-            								var childNodeName="";
-            								for(var j=0;j<childNodeLength;j++){
-            									if(childNodes[j][0]){
-            										childNodeName=childNodes[j][0].nodeName.toLowerCase();
-            									}
-            									while(childNodeName !=App.InlineDoc.inlinePrefix + ':nonnumeric'){
-            										childNodes[j] = $(childNodes[j]).children();
-            										if($(childNodes[j])[0]){
-            											childNodeName =childNodes[j][0].nodeName.toLowerCase();
-            										}
-            										else{
-            											break;
-            										}
-            									}
-            								}
-            								if(childNodeName.toLowerCase() ==App.InlineDoc.inlinePrefix + ':nonnumeric' || childNodeName.toLowerCase() ==App.InlineDoc.inlinePrefix + ':nonfraction' || childNodeName.toLowerCase() ==""){
-            									continuedNodeId=$(nodeNew).attr('id');
-            									parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-            									if(childNodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonfraction'){
-            										var parentOfNodeNew=$(nodeNew).parent();
-            										var parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
-            										while(parentOfNodeNewNodeName!="div"){
-            											parentOfNodeNew=parentOfNodeNew.parent();
-            											if(parentOfNodeNew[0]){
-            												parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
-            											}
-            											else{
-            												break;
-            											}
-            										}
-            										if(parentOfNodeNewNodeName=="div"){
-            											if(parentOfNodeNew.parent()[0]){
-            												if(parentOfNodeNew.parent()[0].nodeName.toLowerCase()!="body" && parentOfNodeNew.parent()[0].nodeName.toLowerCase()!="div"){
-            													continuedNodeId=$(nodeNew).parent().attr('id');
-            													parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-            												}
-            											}
-            										}
-
-            									}
-            									var childNodeOfCurrentNonNumericNode=$(parentnodeId).children();
-            									var childNodeOfCurrentNonNumericNodeNodeName="";
-            									if(childNodeOfCurrentNonNumericNode[0]){
-            										childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumericNode[0].nodeName.toLowerCase();
-            									}
-            									while(childNodeOfCurrentNonNumericNodeNodeName != "img"){
-            										childNodeOfCurrentNonNumericNode=childNodeOfCurrentNonNumericNode.children();
-            										if(childNodeOfCurrentNonNumericNode[0]){
-            											childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumericNode[0].nodeName.toLowerCase();
-            										}
-            										else
-            											break;
-            									}
-            									if(childNodeOfCurrentNonNumericNodeNodeName == "img"){
-            										parentnodeId=childNodeOfCurrentNonNumericNode.next();
-            									}
-            								}
-            								else{
-            									continuedNodeId=$(nodeNew).parent().attr('id');
-            									parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-            								}
-            							}
-
-            						}
-
+            					}	
+            				} 
+            				var prevNodeOfParentOfParentNodeId=$(parentnodeId).parent().prev()[0];
+            				var prevNodeOfParentNodeId=$(parentnodeId).prev()[0];
+            				if((prevNodeOfParentOfParentNodeId) ){
+            					if((prevNodeOfParentOfParentNodeId.nodeName.toLowerCase()=="img")){
+            						prevNodeOfParentOfParentNodeId.setAttribute("src", blueImagePath);
+            					}
+            				}
+            				if((prevNodeOfParentNodeId) ){
+            					if((prevNodeOfParentNodeId.nodeName.toLowerCase()=="img")){
+            						prevNodeOfParentNodeId.setAttribute("src", blueImagePath);
             					}
             				}
             			}
             		}
-                   			allLinkedNodes=App_Find.Element.groupIxContinuation(parentnodeId);
-    						selectionHighlightNodes(allLinkedNodes); 
-    						
-        					var positionTop = (allLinkedNodes[0][0]).offsetTop;
-                        	var positionOfElementsNew=[];
-    						for(var i=0;i<allLinkedNodes.length;i++){
-                   					positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
-                   				}
-                   			for(var i=0;i<allLinkedNodes.length;i++){
+            		event.stopPropagation();
 
-                   				parentNodeOfContinuation=allLinkedNodes[i].parent();
-                   				nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-                   				if(positionTop=='0' || positionTop=='1' || positionTop=='2'){
-                   					while(nodeN.toLowerCase() !="body"){
-                   						parentNodeOfContinuation = parentNodeOfContinuation.parent();
-                   						if($(parentNodeOfContinuation).parent()[0]){
-                   							nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
-                   						}
-                   						else{
-                   							break;
-                   						}
-                   					}
-                   					var childNode=parentNodeOfContinuation;
-                   					if(($(childNode).prev()[0]) ){
-                   						if($(childNode).prev()[0].nodeName.toLowerCase()=="img"){
-                   							if($(childNode).prev()[0].style.visibility == "hidden"){
-                        						flag=false;
-                        					}
-                   						}
-                   				}
-                   			}
-                   			else{
-                   				var positionTopRearranged="";
-                   				for (i = 0; i < positionOfElementsNew.length; i++)
-                   				{
-                   					for (j = i+1; j < positionOfElementsNew.length; j++)
-                   					{
-                   						if (positionOfElementsNew[j] < positionOfElementsNew[i])
-                   						{
-                   							positionTopRearranged=positionOfElementsNew[j];
-
-                   						}
-                   					}
-                   				}
-                   				
-                   				if(positionTopRearranged !=""){
-                    				var min_of_array = Math.min.apply(Math, positionOfElementsNew);
-                    				var max_of_array = Math.max.apply(Math, positionOfElementsNew);
-                    				var newTopPositionNode="";
-                    				for(var j=0;j<allLinkedNodes.length;j++){
-                    					if($(allLinkedNodes[j]).position().top==min_of_array){
-                    						newTopPositionNode=$(allLinkedNodes[j]);
-                    						break;
-                    					}
-                    				}
-                    				if(($(newTopPositionNode[0]).prev()[0]) ){
-                    					if(($(newTopPositionNode[0]).prev()[0].nodeName.toLowerCase()=="img")){
-                    						if($(newTopPositionNode[0]).prev()[0].style.visibility == "hidden"){
-                        						flag=false;
-                        					}
-                    					}
-                    				}
-                    				
-                    				
-                    			} 
-                   				if(($(parentnodeId).parent().prev()[0]) ){
-                   					if(($(parentnodeId).parent().prev()[0].nodeName.toLowerCase()=="img")){
-                   						if($(parentnodeId).parent().prev()[0].style.visibility == "hidden"){
-                    						flag=false;
-                    					}
-                   					}
-                   				}
-                   				if(($(parentnodeId).prev()[0]) ){
-                   					if(($(parentnodeId).prev()[0].nodeName.toLowerCase()=="img")){
-                   						if($(parentnodeId).prev()[0].style.visibility == "hidden"){
-                    						flag=false;
-                    					}
-                   					}
-                   				}
-                   			}
-                   			}
-                   			if(flag==true){
-    						if(App_Find.Element.enableTooltip=="enable"){
-                             	 
-                                getMouseOverDiv(parentnodeId, null,true);
-                    			
-                                placeMouseOverDiv(event);
-    						}
-    						}
-               			event.stopPropagation();
-                	
-                
-                }).on('mouseout', function(event) {
-					continuedNodeId=$(nodeNew).attr('id');
-            		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-					if(parentnodeId){
-                		if($(parentnodeId).parent()){
-                			if($(parentnodeId).parent().parent()[0]){	
-                				if($(parentnodeId).parent().parent()[0].nodeName.toLowerCase()!=App.InlineDoc.inlinePrefix + ':continuation'){
-            			
-                	parentNodeParent=parentnodeId.parent();
-                	if($(parentnodeId).parent()[0]){
-                	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
-                	}
-                	while(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
-                		parentNodeParent=parentNodeParent.parent();
-                		if($(parentNodeParent).parent()[0]){
-                		parentNodeParentNodeName=$(parentNodeParent).parent()[0].nodeName.toLowerCase();
-                		}
-                		else{
-                			break;
-                		}
-                	}
-                	if(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
-                		if(($(nodeNew).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')){
-                			parentNodeParent=parentnodeId.parent();
-                        	if($(parentnodeId).parent()[0]){
-                        	parentNodeParentNodeName=$(parentnodeId).parent()[0].nodeName.toLowerCase();
-                        	}
-                        	while(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                        		parentNodeParent=parentNodeParent.parent();
-                        		if($(parentNodeParent)[0]){
-                        		parentNodeParentNodeName=$(parentNodeParent)[0].nodeName.toLowerCase();
-                        		}
-                        		else{
-                        			break;
-                        		}
-                        	}
-                        	
-                        	if(parentNodeParentNodeName!=App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                        		continuedNodeId=$(nodeNew).parent().attr('id');
-                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-                        	}
-                		}
-                		else if(($(nodeNew).parent().parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')){
-    						continuedNodeId=$(nodeNew).parent().parent().attr('id');
-    						parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-    					}
-                		
-                	}
-					else{
-                		if($(nodeNew).parent()[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation' && $(nodeNew).parent().children().length==1){
-                			var childNodes=$(nodeNew).parent().children();
-                			var childNodeLength=childNodes.length;
-                			var childNodeName="";
-                			for(var j=0;j<childNodeLength;j++){
-                				if(childNodes[j][0]){
-                					childNodeName=childNodes[j][0].nodeName.toLowerCase();
-                				}
-                				while(childNodeName !=App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                					childNodes[j] = $(childNodes[j]).children();
-        							if($(childNodes[j])[0]){
-        								childNodeName =childNodes[j][0].nodeName.toLowerCase();
-        							}
-        							else{
-        								break;
-        							}
-        						}
-                			}
-                			if(childNodeName.toLowerCase() ==App.InlineDoc.inlinePrefix + ':nonnumeric' || childNodeName.toLowerCase() ==App.InlineDoc.inlinePrefix + ':nonfraction' || childNodeName.toLowerCase() ==""){
-                				continuedNodeId=$(nodeNew).attr('id');
-                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-                				if(childNodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':nonfraction'){
-                					var parentOfNodeNew=$(nodeNew).parent();
-                					var parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
-                					while(parentOfNodeNewNodeName!="div"){
-                						parentOfNodeNew=parentOfNodeNew.parent();
-                						if(parentOfNodeNew[0]){
-                						parentOfNodeNewNodeName=parentOfNodeNew[0].nodeName.toLowerCase();
-                						}
-                						else{
-                							break;
-                						}
-                					}
-                					if(parentOfNodeNewNodeName=="div"){
-                						if(parentOfNodeNew.parent()[0]){
-                						if(parentOfNodeNew.parent()[0].nodeName.toLowerCase()!="body" && parentOfNodeNew.parent()[0].nodeName.toLowerCase()!="div"){
-                						continuedNodeId=$(nodeNew).parent().attr('id');
-                                		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-                						}
-                						}
-                					}
-                					
-                				}
-            					var childNodeOfCurrentNonNumericNode=parentnodeId.children();
-            					var childNodeOfCurrentNonNumericNodeNodeName="";
-            					if(childNodeOfCurrentNonNumericNode[0]){
-            					childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumericNode[0].nodeName.toLowerCase();
-            					}
-            					while(childNodeOfCurrentNonNumericNodeNodeName != "img"){
-            						childNodeOfCurrentNonNumericNode=childNodeOfCurrentNonNumericNode.children();
-            						if(childNodeOfCurrentNonNumericNode[0]){
-            						childNodeOfCurrentNonNumericNodeNodeName=childNodeOfCurrentNonNumericNode[0].nodeName.toLowerCase();
-            						}
-            						else
-            							break;
-            					}
-            					if(childNodeOfCurrentNonNumericNodeNodeName == "img"){
-            						parentnodeId=childNodeOfCurrentNonNumericNode.next();
-            					}
-    						}
-            				else{
-            					continuedNodeId=$(nodeNew).parent().attr('id');
-                        		parentnodeId=findParentIxNonnumericNode(continuedNodeId,found,parentNode);
-            				}
-                		}
-                		
-                	}
-              		}
-					}
-                  		}
-						}
-               			allLinkedNodes=App_Find.Element.groupIxContinuation(parentnodeId);
-               			$(this).removeHighlightNodes(allLinkedNodes);
+            	}).on('mousemove', function(event) {
             		
-                    	 
-                	    var container = $('#selection-detail-container-mouseOver');
-                 	    container.hide();
-                 	    event.stopPropagation();
-                	
-                	
-                });
+            		var findingParentNodeNew=findingParentNode(nodeNew,parentNode,found);
+            		allLinkedNodes=findingParentNodeNew.allLinkedNodes;
+            		parentnodeId=findingParentNodeNew.parentnodeId;
+            		positionOfElementsNew=findingParentNodeNew.positionOfElementsNew;
+            		var flag=true;
+            		var positionTop = (allLinkedNodes[0][0]).offsetTop;
+            		selectionHighlightNodes(allLinkedNodes); 
+            		for(var i=0,max=allLinkedNodes.length;i<max;i++){
+            			var allLinkedNodesLocal=allLinkedNodes[i];
+            			parentNodeOfContinuation=allLinkedNodesLocal.parent();
+            			nodeN = parentNodeOfContinuation[0].nodeName.toLowerCase(); 
+            			if(positionTop=='0' || positionTop=='1' || positionTop=='2'){
+            				while(nodeN.toLowerCase() !="body"){
+            					parentNodeOfContinuation = parentNodeOfContinuation.parent();
+            					var parentNodeOfContinuationParentNode=$(parentNodeOfContinuation).parent()[0];
+            					if(parentNodeOfContinuationParentNode){
+            						nodeN = parentNodeOfContinuationParentNode.nodeName.toLowerCase();
+            					}
+            					else{
+            						break;
+            					}
+            				}
+            				var childNode=parentNodeOfContinuation;
+            				var previousOfChildNode=$(childNode).prev()[0];
+            				if((previousOfChildNode) ){
+            					if(previousOfChildNode.nodeName.toLowerCase()=="img"){
+            						if(previousOfChildNode.style.visibility == "hidden"){
+            							flag=false;
+            						}
+            					}
+            				}
+            			}
+            			else{
+            				var positionTopRearranged="";
+            				for (i = 0,outMax=positionOfElementsNew.length; i < outMax; i++)
+            				{
+            					for (j = i+1,inMax=positionOfElementsNew.length; j < inMax; j++)
+            					{
+            						var positionOfElementsNewJthElement=positionOfElementsNew[j];
+            						if (positionOfElementsNewJthElement < positionOfElementsNew[i])
+            						{
+            							positionTopRearranged=positionOfElementsNewJthElement;
+
+            						}
+            					}
+            				}
+
+            				if(positionTopRearranged !=""){
+            					var min_of_array = Math.min.apply(Math, positionOfElementsNew);
+            					var newTopPositionNode="";
+            					for(var j=0,max=allLinkedNodes.length;j<max;j++){
+            						var allLinkedNodesForJthLoop=$(allLinkedNodes[j]);
+            						if(allLinkedNodesForJthLoop.position().top==min_of_array){
+            							newTopPositionNode=allLinkedNodesForJthLoop;
+            							break;
+            						}
+            					}
+            					var prevNodeOfNewTopPositionNode=$(newTopPositionNode[0]).prev()[0];
+            					if((prevNodeOfNewTopPositionNode) ){
+            						if((prevNodeOfNewTopPositionNode.nodeName.toLowerCase()=="img")){
+            							if(prevNodeOfNewTopPositionNode.style.visibility == "hidden"){
+            								flag=false;
+            							}
+            						}
+            					}
+
+
+            				} 
+            				var prevNodeOfParentOfParentNodeId=$(parentnodeId).parent().prev()[0];
+            				var prevNodeOfParentNodeId=$(parentnodeId).prev()[0];
+            				if((prevNodeOfParentOfParentNodeId) ){
+            					if((prevNodeOfParentOfParentNodeId.nodeName.toLowerCase()=="img")){
+            						if(prevNodeOfParentOfParentNodeId.style.visibility == "hidden"){
+            							flag=false;
+            						}
+            					}
+            				}
+            				if((prevNodeOfParentNodeId) ){
+            					if((prevNodeOfParentNodeId.nodeName.toLowerCase()=="img")){
+            						if(prevNodeOfParentNodeId.style.visibility == "hidden"){
+            							flag=false;
+            						}
+            					}
+            				}
+            			}
+            		}
+            		if(flag==true){
+            			if(App_Find.Element.enableTooltip=="enable"){
+            				getMouseOverDiv(parentnodeId, null,true);
+            				placeMouseOverDiv(event);
+            			}
+            		}
+            		event.stopPropagation();
+
+            	}).on('mouseout', function(event) {
+            		var findingParentNodeNew=findingParentNode(nodeNew,parentNode,found);
+            		allLinkedNodes=findingParentNodeNew.allLinkedNodes;
+            		$(this).removeHighlightNodes(allLinkedNodes);
+            		var container = $('#selection-detail-container-mouseOver');
+            		container.hide();
+            		event.stopPropagation();
+            	});
             }	
             
             function getHTMLfromCache(xbrId,xbrlValue){
@@ -3508,7 +3518,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                 	if(!isContinuedAt){
                 		if(node.attr('continuedat')!=null){
                     		var continuedAt = ele.attr('continuedAt');
-                        	for(var i=0; i<App_Find.Highlight.cachedResults.continuedAt.length;i++){
+                        	for(var i=0,max=App_Find.Highlight.cachedResults.continuedAt.length; i<max;i++){
                         		
                         		if(continuedAt==App_Find.Highlight.cachedResults.continuedAt[i].attr('id')){
                         			xbrlValue = xbrlValue + " "+ App_Find.Highlight.cachedResults.continuedAt[i].text();
@@ -3522,7 +3532,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                     	}
                 	}else{
                 		var continuedAt = ele.attr('continuedAt');
-                    	for(var i=0; i<App_Find.Highlight.cachedResults.continuedAt.length;i++){
+                    	for(var i=0,max=App_Find.Highlight.cachedResults.continuedAt.length; i<max;i++){
                     		
                     		if(continuedAt==App_Find.Highlight.cachedResults.continuedAt[i].attr('id')){
                     			xbrlValue = xbrlValue + " "+ App_Find.Highlight.cachedResults.continuedAt[i].text();
@@ -3725,15 +3735,16 @@ $( "#prevCarousel1" ).mouseover(function() {
             		var id="";
     				//var spanNodes = App.InlineDoc.getLinkedHiddenElements();
     				spanNodes = App_Find.Highlight.cachedResults.linkedHiddenNodes;
+    				var spanNodesLength=spanNodes.length;
     				if(spanNodes){
-    					for(var i=0;i<spanNodes.length;i++){
+    					for(var i=0;i<spanNodesLength;i++){
     						if(spanNodes[i][0].trim()==node.attr('id')){
     							$(spanNodes[i][1][0]).addClass(cls);
     							$(spanNodes[i][1][0]).addClass('sec-cbe-highlight-dashed');
     							$(spanNodes[i][1][0]).on('click',function(evt){
 
     								$('#about-modal').dialog("close");
-    								App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
+    								frameContentObject.find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
     								
     								$(spanNode).addClass('sec-cbe-highlight-dashed');
     								if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
@@ -3772,7 +3783,8 @@ $( "#prevCarousel1" ).mouseover(function() {
             	}
             }
              function identical(array) {
-                for(var i = 0; i < array.length - 1; i++) {
+            	 var arraylength=array.length;
+                for(var i = 0; i < arraylength - 1; i++) {
                     if(array[i] !== array[i+1]) {
                         return false;
                     }
@@ -3783,63 +3795,63 @@ $( "#prevCarousel1" ).mouseover(function() {
             	var childnodes=$(node).children();
          		var childrenLength=childnodes.length;
          		for(var i=0;i< childrenLength;i++){
-         			$(childnodes[i]).addClass('sec-cbe-highlight-content-selected');
-         			applyBackgroundcolrOnallChildNodes($(childnodes[i]));
+         			var ithChildNode=$(childnodes[i]);
+         			ithChildNode.addClass('sec-cbe-highlight-content-selected');
+         			applyBackgroundcolrOnallChildNodes(ithChildNode);
          		}
              }
              function applyBackgroundcolrOnallChildNodesOnClick(node) {
              	var childnodes=$(node).children();
           		var childrenLength=childnodes.length;
           		for(var i=0;i< childrenLength;i++){
-          			$(childnodes[i]).addClass('sec-cbe-highlight-filter-block-content-selected');
-          			applyBackgroundcolrOnallChildNodesOnClick($(childnodes[i]));
+          			var ithChildNode=$(childnodes[i]);
+          			ithChildNode.addClass('sec-cbe-highlight-filter-block-content-selected');
+          			applyBackgroundcolrOnallChildNodesOnClick(ithChildNode);
           		}
               }
              function removeBackgroundcolrFromallChildNodes(node) {
              	var childnodes=$(node).children();
           		var childrenLength=childnodes.length;
           		for(var i=0;i< childrenLength;i++){
-          			$(childnodes[i]).removeClass('sec-cbe-highlight-content-selected');
-          			removeBackgroundcolrFromallChildNodes(childnodes[i]);
+          			var ithChildNode=$(childnodes[i]);
+          			ithChildNode.removeClass('sec-cbe-highlight-content-selected');
+          			removeBackgroundcolrFromallChildNodes(ithChildNode);
           		}
               }
-            function wrapInDashesTraditional(index,ele,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType) {
-				if (!$(spanNode).hasClass('sec-cbe-highlight-dashed')) {	
-					//var cls = 'sec-cbe-highlight-inline'; // assume display:inline, work hard to make sure not a block
+            function wrapInDashesTraditional(elem,blueImagePath,highlightType,index,ele,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType) {
+            	//var spanNodeTraditional=$(spanNode);
+            	var nodeTraditional=node[0];
+            	var nonNumericNodeElement=App.InlineDoc.inlinePrefix + ':nonnumeric';
+            	if (!node.parent().hasClass('sec-cbe-highlight-dashed')) {
 					if (nonNumericNode) {
-						//xbrId = node.attr('name').split(':').join('_');
 						if (instance && instanceXbrlType) { // it was a textBlock
 							cls = 'sec-cbe-highlight-block';
 						} 
-						//DE335 Fixed
-						//else if(instance.tag[xbrId].xbrltype == 'textBlockItemType'){
-							//cls = 'sec-cbe-highlight-block';
-						//}
 						else { // does it have element descendants
-							$(node[0]).find('*').each(function() { // and there was a display:block in there
+							$(nodeTraditional).find('*').each(function() { // and there was a display:block in there
 								if ($(this).css('display')=='block') {
 									cls = 'sec-cbe-highlight-block';
 									return false; }});
 							if (cls == 'sec-cbe-highlight-inline') { // last ditch effort based on current display only
 								var text=" ";
-								if($(node).children().length>0){
-									var children=$(node).children();
-									var childrenLength=children.length;
+								var children=$(node).children();
+								var childrenLength=children.length;
+								if(childrenLength>0){
 									var x = children[childrenLength-1].textContent;
 									if (x == '\xa0') { // Non-breakable space is char 0xa0 (160 dec)
-										var x = node[0].lastChild;
-										node[0].removeChild(x);
-										}
+										var x = nodeTraditional.lastChild;
+										nodeTraditional.removeChild(x);
+									}
 								}
-								else{
+								/*else{
 							    text = $(node)[0].textContent;
 								}
 								var match = /\n/.exec(text);
 								if(match){
 									cls == 'sec-cbe-highlight-inline';
 								}
-								else{
-									rects = (node[0]).getClientRects();
+								else{*/
+									rects = (nodeTraditional).getClientRects();
 									var top=[];
 									var bottom=[];
 									for (i = 0; i < rects.length; i++) {
@@ -3850,129 +3862,255 @@ $( "#prevCarousel1" ).mouseover(function() {
 									if (rects.length > 1 && !identical(top) && !identical(bottom)) { // it is drawn in two rectangles, it had to be a block.
 										cls = 'sec-cbe-highlight-block';
 									}
-								}
+								//}
 							}
 						}
 					}
-                    if ( navigator.userAgent.match(/iPhone/i)) {
-                    setTimeout(function() {						
-					$(spanNode).addClass('sec-cbe-highlight-dashed');
-                    },0);					
-					if(cls==='sec-cbe-highlight-block'){
-						setTimeout(function() {					
-						$(spanNode).addClass('sec-cbe-highlight-block');
-						},0);
-					}
-					else{
-					setTimeout(function() {		
-						$(spanNode).addClass('sec-cbe-highlight-inline');
-						},0);
-					}
-					if(nonNumericNode){
+					var parentNode = node.parent()[0];
+                    if (parentNode.nodeName.toLowerCase()=='span') //.search(App.InlineDoc.inlinePrefix)!=0
+                    {
+                        var isonly = parentNode.childNodes.length == 1;                        
+                        if (isonly) {
+                            spanNode = parentNode;
+                        }  // no need to wrap.
+                    }
+                    if (spanNode == null) {
+                        var nilPadding = '&#160;';
+                    	node.wrap('<span>'+((node.attr('xsi:nil')=='true')?nilPadding:'')+'</span>');
+                    	spanNode = node.parent()[0];
+                    }
+					if (navigator.userAgent.match(/iPhone/i)) {
+						setTimeout(function() {						
+							$(spanNode).addClass('sec-cbe-highlight-dashed');
+						},0);					
 						if(cls==='sec-cbe-highlight-block'){
-						setTimeout(function() {	
-							$(spanNode).addClass('sec-cbe-highlight-dashed_block');
+							setTimeout(function() {					
+								$(spanNode).addClass('sec-cbe-highlight-block');
 							},0);
 						}
-                    }
-					
-					}
-					else{
-					$(spanNode).addClass('sec-cbe-highlight-dashed');
-					if(cls==='sec-cbe-highlight-block'){
-					setTimeout(function() {
-						$(spanNode).addClass('sec-cbe-highlight-block');
-						},10);
-					}
-					else{
-						$(spanNode).addClass('sec-cbe-highlight-inline');
-					}
-					if(nonNumericNode){
-						if(cls==='sec-cbe-highlight-block'){
-							$(spanNode).addClass('sec-cbe-highlight-dashed_block');
+						else{
+							setTimeout(function() {		
+								$(spanNode).addClass('sec-cbe-highlight-inline');
+							},0);
 						}
-                    }
+						if(nonNumericNode){
+							if(cls==='sec-cbe-highlight-block'){
+								setTimeout(function() {	
+									$(spanNode).addClass('sec-cbe-highlight-dashed_block');
+								},0);
+							}
+						}
+
 					}
-					setTimeout(function() {
-					if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+					else{
+						setTimeout(function() {
+							$(spanNode).addClass('sec-cbe-highlight-dashed');
+						},10);
 						if(cls==='sec-cbe-highlight-block'){
-							if($(ele).children()){
-						    	element = $(ele).children();
-								for(j=0;j<element.length;j++){
-									
-									nodeNew=$(element[j])[0].nodeName;
-									$(element[j])[0].style.clear="none";
-									$(element[j])[0].style.textIndent="0pt";
-									while(nodeNew.toLowerCase() != "body"){
-										element[j]=$(element[j]).parent();
-										$(element[j])[0].style.textIndent="0pt";
-										$(element[j])[0].style.clear="none";
-									    if($(element[j]).parent()[0]){
-											nodeNew =$(element[j]).parent()[0].nodeName;
+							setTimeout(function() {
+								$(spanNode).addClass('sec-cbe-highlight-block');
+							},10);
+						}
+						else{
+							$(spanNode).addClass('sec-cbe-highlight-inline');
+						}
+						if(highlightType=="calculation" || highlightType=="amount" || highlightType=="sign" || highlightType=="hidden"){
+		           			 App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
+		           			 var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+		           			 for (var i=0; i<arrayOfImagesLength; i++)
+		           			 {
+		           				 var elementAtIthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[i];
+		           				 if((elementAtIthPositionOfArrayOfImages.getAttribute('src')==srcImg) || (elementAtIthPositionOfArrayOfImages.getAttribute('src')==blueImagePath)){
+		           					 elementAtIthPositionOfArrayOfImages.style.visibility = "hidden";
+		           				 }
+		           			 }
+		           		 }
+						else{
+						if(nonNumericNode){
+							if(cls==='sec-cbe-highlight-block'){
+								setTimeout(function() {
+									$(spanNode).addClass('sec-cbe-highlight-dashed_block');
+									 var imageId=ele.attr('id')+"imageid";
+									  if(!checkIfImageAlreadyExists(imageId)){
+		        					 elem.setAttribute("src", srcImg);
+		        					 elem.setAttribute("id", imageId);
+		        					 elem.setAttribute("width", "3");
+		        					 elem.setAttribute("height", "13");
+		        					 elem.setAttribute("align", "left");
+		        					 $(elem).insertBefore(node);
+									 }
+								},10);
+							}
+						}
+						}
+           		 }
+					setTimeout(function() {
+						if(nodeName == nonNumericNodeElement){
+							if(cls==='sec-cbe-highlight-block'){
+								if($(ele).children()){
+									element = $(ele).children();
+									var elementLength=element.length;
+									for(j=0;j<elementLength;j++){
+										var jthElementNode=$(element[j])[0];
+										nodeNew=jthElementNode.nodeName;
+										jthElementNode.style.clear="none";
+										jthElementNode.style.textIndent="0pt";
+										while(nodeNew.toLowerCase() != "body"){
+											element[j]=$(element[j]).parent();
+											jthElementNode=$(element[j])[0];
+											jthElementNode.style.textIndent="0pt";
+											jthElementNode.style.clear="none";
+											if($(element[j]).parent()[0]){
+												nodeNew =$(element[j]).parent()[0].nodeName;
+												//console.log(nodeNew);
+											}
 										}
 									}
 								}
-						    }
+							}
 						}
-                    }
 					},10);
+					 $(elem).on('click',function(evt){
+            			 $('#about-modal').dialog("close");
+            			 frameContentObject.find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
+            			 App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
+            			 var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+            			 for (var i=0; i<arrayOfImagesLength; i++)
+            			 {
+            				 var elementAtIthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[i];
+            				 if(elementAtIthPositionOfArrayOfImages.getAttribute('src')==blueImagePath){
+            					 elementAtIthPositionOfArrayOfImages.setAttribute("src", srcImg);
+            				 }
+            			 }
+
+            			 if(nodeName == nonNumericNodeElement){
+            					 if($(spanNode).hasClass('sec-cbe-highlight-block')){
+            						 $(spanNode).addClass('sec-cbe-highlight-dashed_block');
+            					 }
+            			 }
+            			 if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
+            				 var index = $(this).attr('data-result-index');
+            				 App_Find.Results.highlightItem(index);  // highlight the result item
+            				 //var allLinkedNodes=[];
+            				 if(nodeName == nonNumericNodeElement){
+            					 if($(spanNode).hasClass('sec-cbe-highlight-block')){
+            						 $(elem).attr("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
+									 elem.setAttribute("src", blueImagePath);
+            						 $(spanNode).children(':first').selectionHighlightNodesOnClick();
+            						 frameContentObject.find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
+            						 $(spanNode).addClass('sec-cbe-highlight-filter-content-selected');
+            					 }
+            					 else{
+            						 $(spanNode).children(':first').selectionHighlight();
+            					 }
+
+            					 $(spanNode).children(':first').each(function() {
+            						 App_Find.Element.showSelectionDetail(node);
+            					 });
+            				 }
+
+            				 evt.stopPropagation();
+            			 }
+            		 }).on('mousemove', function(event) {
+            			 if(App_Find.Element.enableTooltip=="enable"){
+            				 if(nodeName == nonNumericNodeElement){
+            						 if($(spanNode).hasClass('sec-cbe-highlight-block')){
+            							 $(spanNode).addClass('sec-cbe-highlight-dashed_block');
+            						 }
+            				 }
+            				 if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
+            					 $(spanNode).children(':first').each(function() {
+            						 getMouseOverDiv(ele,node,false);
+            					 });
+            				 }
+
+
+            				 placeMouseOverDiv(event);
+            				 event.stopPropagation();
+            			 }
+
+            		 }).on('mouseout', function() {
+            			 var container = $('#selection-detail-container-mouseOver');
+            			 container.hide();
+            		 });
 					if(App_Find.Highlight.cachedResults.linkedHiddenNodes.length>0){
 	                    if(node.attr('id') && ele.isHidden()){
 	                    	wrapLinkedHidden(ele,node,cls,spanNode);
 	                    }
 					}
-                    $(spanNode).attr('data-result-index',index).on('click', function(evt) {
-                    	$('#about-modal').dialog("close");
-                    	
-                        if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-dashed-highlight')||$(this).hasClass('sec-cbe-highlight-filter')) {
-                        	
-                        	App.frame.contents().find('.sec-cbe-highlight-filter-selected, .sec-cbe-highlight-filter-selected-block, .sec-cbe-highlight-filter-block-content-selected').
-                        	removeClass('sec-cbe-highlight-filter-selected sec-cbe-highlight-filter-selected-block sec-cbe-highlight-filter-block-content-selected');
-                    	    var index = $(this).attr('data-result-index');
-                    		App_Find.Results.highlightItem(index);  // highlight the result item
-                       		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                       			if($(this).hasClass('sec-cbe-highlight-block')){
-                        			$(this).children(':first').selectionHighlightForBlock();
-                        			//applyBackgroundcolrOnallChildNodesOnClick(this);
-                        		}else if($(this).hasClass('sec-cbe-highlight-inline')){
-                        			App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
-    								$(this).addClass('sec-cbe-highlight-filter-content-selected');
-                        			$(this).children(':first').selectionHighlight();
-                        		}
-                            	$(this).children(':first').each(function() {
-                        		    App_Find.Element.showSelectionDetail($(node));
-                        		});
-                       		 }
-                       		 else{
-							    App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected');
-								$(this).addClass('sec-cbe-highlight-filter-content-selected');
-	                       		$(this).children(':first').selectionHighlight();	 
-	                    		$(this).children(':first').each(function() {
-	                    		    App_Find.Element.showSelectionDetail($(this));
-	                    		});
-                       		 }
-                    		evt.stopPropagation();
-                    	}
-                    }).on('mousemove', function(event) {
-                    	
-               		  if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                        	if($(this).hasClass('sec-cbe-highlight-block')){
-                          		$(this).addClass('sec-cbe-highlight-content-selected');
-								//applyBackgroundcolrOnallChildNodes(this);
+					$(spanNode).attr('data-result-index',index).on('click', function(evt) {
+	                    	$('#about-modal').dialog("close");
+	                    	App_Find.Highlight.cachedResults.arrayOfImages= App.frame.contents().find('img');
+	           			    var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+	                    	//var srcImg = "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png";
+	                    	for (var i=0; i<arrayOfImagesLength; i++)
+	                    	{
+	                    		if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath){
+	                    			App_Find.Highlight.cachedResults.arrayOfImages[i].setAttribute("src", srcImg);
+	                    		}
+	                    	}
+	                    	var currentNode=$(this);
+	                        if (currentNode.hasClass('sec-cbe-highlight-dashed')||currentNode.hasClass('sec-cbe-highlight-dashed-highlight')||currentNode.hasClass('sec-cbe-highlight-filter')) {
+	                        	
+	                        	frameContentObject.find('.sec-cbe-highlight-filter-selected, .sec-cbe-highlight-filter-selected-block, .sec-cbe-highlight-filter-block-content-selected').
+	                        	removeClass('sec-cbe-highlight-filter-selected sec-cbe-highlight-filter-selected-block sec-cbe-highlight-filter-block-content-selected');
+	                    	    var index = currentNode.attr('data-result-index');
+	                    		App_Find.Results.highlightItem(index);  // highlight the result item
+	                       		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+	                       			if(currentNode.hasClass('sec-cbe-highlight-block')){
+	                       				currentNode.children(':first').selectionHighlightForBlock();
+	                       			  var str1=null;
+         							 if($(node).prev().attr('src')){
+         							 str1 = $(node).prev().attr('src');
+         							 if(str1){
+         								 $(node).prev()[0].setAttribute("src", blueImagePath);
+         							 }
+         							 }
+         							 else{
+         								 str1 = $(node).parent().prev().attr('src'); 
+         								 if(str1){
+         									 $(node).parent().prev()[0].setAttribute("src", blueImagePath);
+             							 }
+         							 }
+	                        		}else if(currentNode.hasClass('sec-cbe-highlight-inline')){
+	                        			frameContentObject.find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+	                        			currentNode.addClass('sec-cbe-highlight-filter-content-selected');
+	                        			currentNode.children(':first').selectionHighlight();
+	                        		}
+	                       			currentNode.children(':first').each(function() {
+	                        		    App_Find.Element.showSelectionDetail($(node));
+	                        		});
+	                       		 }
+	                       		 else{
+	                       			frameContentObject.find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected');
+								    currentNode.addClass('sec-cbe-highlight-filter-content-selected');
+								    currentNode.children(':first').selectionHighlight();	 
+								    currentNode.children(':first').each(function() {
+		                    		    App_Find.Element.showSelectionDetail($(this));
+		                    		});
+	                       		 }
+	                    		evt.stopPropagation();
+	                    	}
+	                    }).on('mousemove', function(event) {
+	                    	var nonNumericNodeElement=App.InlineDoc.inlinePrefix + ':nonnumeric';
+	                    	var currentNode=$(this);
+               		  if(nodeName == nonNumericNodeElement){
+                        	if(currentNode.hasClass('sec-cbe-highlight-block')){
+                        		currentNode.addClass('sec-cbe-highlight-content-selected');
                           	}
                         	 else {
-                           		$(this).addClass('sec-cbe-highlight-content-selected');
+                        		 currentNode.addClass('sec-cbe-highlight-content-selected');
 								applyBackgroundcolrOnallChildNodes(this);
                            	}
                		 }
                		else {
-                   		$(this).addClass('sec-cbe-highlight-content-selected');
+               			currentNode.addClass('sec-cbe-highlight-content-selected');
 						applyBackgroundcolrOnallChildNodes(this);
                    	}
                     	if(App_Find.Element.enableTooltip=="enable"){
                     		
-	                    	if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-dashed-highlight')||$(this).hasClass('sec-cbe-highlight-filter')) {
-	                    		$(this).children(':first').each(function() {
+	                    	if (currentNode.hasClass('sec-cbe-highlight-dashed')||currentNode.hasClass('sec-cbe-highlight-dashed-highlight')||currentNode.hasClass('sec-cbe-highlight-filter')) {
+	                    		currentNode.children(':first').each(function() {
 	                    			getMouseOverDiv(ele,node,false);
 	                    			
 	                    		});
@@ -3985,39 +4123,43 @@ $( "#prevCarousel1" ).mouseover(function() {
                     	event.stopPropagation();
                     	
                     }).on('mouseout', function() {
-                    	if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+                    	var currentNode=$(this);
+                    	var nonNumericNodeElement=App.InlineDoc.inlinePrefix + ':nonnumeric';
+                    	if(nodeName == nonNumericNodeElement){
                         	if(node.attr('continuedAt')!=null){
-                        		 $(this).removeHighlightNodes(allLinkedNodes); 
-                            }else if($(this).hasClass('sec-cbe-highlight-block')){
-                          		$(this).removeClass('sec-cbe-highlight-content-selected');
+                        		currentNode.removeHighlightNodes(allLinkedNodes); 
+                            }else if(currentNode.hasClass('sec-cbe-highlight-block')){
+                            	currentNode.removeClass('sec-cbe-highlight-content-selected');
 								 removeBackgroundcolrFromallChildNodes(this);
                           	}
                             else {
-                          		$(this).removeClass('sec-cbe-highlight-content-selected');
+                            	currentNode.removeClass('sec-cbe-highlight-content-selected');
 								 removeBackgroundcolrFromallChildNodes(this);
                           	}
                		 }
                     	else {
-                      		$(this).removeClass('sec-cbe-highlight-content-selected');
+                    		currentNode.removeClass('sec-cbe-highlight-content-selected');
 							 removeBackgroundcolrFromallChildNodes(this);
                       	}
                     	
                     	var container = $('#selection-detail-container-mouseOver');
                     	container.hide();
                     }).on('mouseenter', function(event) {
-                 		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+					var currentNode=$(this);
+                    	var nonNumericNodeElement=App.InlineDoc.inlinePrefix + ':nonnumeric';
+                 		 if(nodeName == nonNumericNodeElement){
                           	if(ele.attr('continuedat')!=null){
                           		ele.removeClass('sec-cbe-highlight-dashed');
                           		ele.removeClass('sec-cbe-highlight-dashed_block');
                           		selectionHighlightNodes(allLinkedNodes); 
-                          	}else if($(this).hasClass('sec-cbe-highlight-block')){
-                          		$(this).addClass('sec-cbe-highlight-content-selected');
+                          	}else if(currentNode.hasClass('sec-cbe-highlight-block')){
+                          		currentNode.addClass('sec-cbe-highlight-content-selected');
                           	}
                  		 }
                     	if(App_Find.Element.enableTooltip=="enable"){
                     		
-	                    	if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-filter')) {
-	                    		$(this).children(':first').each(function() {
+	                    	if (currentNode.hasClass('sec-cbe-highlight-dashed')||currentNode.hasClass('sec-cbe-highlight-filter')) {
+	                    		currentNode.children(':first').each(function() {
 	                    		    
 	                                var container = $('#selection-detail-container-mouseOver');
 	                                var maxValueTextLength = 50;
@@ -4034,7 +4176,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                                    xbrlValue = ele.getXbrlValue();
 	                                    if (ele.attr('format') && xbrlValue=="-") { xbrlValue =  App_Utils.applyFormat(ele); }
 	                                	xbrlValue = App_Utils.addCommas(xbrlValue);                    
-	                                } else if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
+	                                } else if (nodeName == nonNumericNode) {
 	
 	                                    xbrlValue = ele.htmlDecode(ele.text());
 	                                    if (ele.attr('format')) { xbrlValue =  App_Utils.applyFormat(ele); }
@@ -4143,651 +4285,328 @@ $( "#prevCarousel1" ).mouseover(function() {
              }
              function insertImageForNonNumericNodes(imageId,difference,elem,nodeNew,positionOfElementsNew,element,positionTop,
 					parentNodeOfContinuation,childNode,positionTopRearranged,lengthofContinuedNodes,
-					childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes,count,intId,timeout){
-					if($(allLinkedNodes[0]).parent()[0].nodeName.toLowerCase() != "img" && $(allLinkedNodes[0]).parent().parent()[0].nodeName.toLowerCase() == "div"){
-            		 $(allLinkedNodes[0]).parent().parent()[0].style.paddingLeft="0px";
-            	 }
-            	//alert("inside insertImageForNonNumericNodes ");
-            	for(var i=0;i<allLinkedNodes.length;i++){
-					element = $(allLinkedNodes[i]).children().children();
-					for(var j=0;j<element.length;j++){
-						nodeNew=$(element[j])[0].nodeName;
-						while(nodeNew !="TABLE"){
-							element[j] = $(element[j]).children();
-							if($(element[j]).children()[0]){
-								nodeNew =element[j][0].nodeName;
-								if(nodeNew.toLowerCase() =="table"){
-									(element[j])[0].style.marginLeft="0";
-									if ( navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/android/i) ) {
-										(element[j])[0].style.width="88%";
-				            			}
-				            		else if ( navigator.userAgent.match(/iPad/i)){
-				            			(element[j])[0].style.width="82%";
-				            			}
-									else{
-									(element[j])[0].style.wordBreak="break-all";
-									if($(document).width()>=1681){
-										(element[j])[0].style.width="92%";
-				            		}
-				            		else if($(document).width()>=1601 && $(document).width()<=1680){
-				            			(element[j])[0].style.width="90%";
-				            		}
-				            		else if($(document).width()>=1441 && $(document).width()<=1600){
-				            			(element[j])[0].style.width="88%";
-				            		}
-				            		else if($(document).width()>=1152 && $(document).width()<=1440){
-				            			(element[j])[0].style.width="86%";
-				            		}
-				            		
-				            		else if($(document).width()>=1024 && $(document).width()<1152){
-				            			(element[j])[0].style.width="84%";
-				            		}
-				            		else if($(document).width()<1024){
-				            			(element[j])[0].style.width="76%";
-				            		}
-									}
-								}
-							}
-							else{
-								break;
-							}
-						}
-						if(nodeNew.toLowerCase() =="table"){
-							$(element[j])[0].style.marginLeft="0";
-							if ( navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/android/i) ) {
-								$(element[j])[0].style.width="88%";
+					childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes,count,intId,timeout,userAgent,documentWidth,tdCount){ var hiddenNode=App.InlineDoc.inlinePrefix + ':hidden';
+	            	 var continuationNode=App.InlineDoc.inlinePrefix + ':continuation';
+	            	 var allLinkedNodesZerothElementLocal=$(allLinkedNodes[0]);
+		    		 var parentNodeOfCurrentNode=allLinkedNodesZerothElementLocal.parent();
+		    		 if(parentNodeOfCurrentNode[0]){
+		    			 parentNodeOfCurrentNodeName=parentNodeOfCurrentNode[0].nodeName.toLowerCase();
+		    		 }
+		    		 while(parentNodeOfCurrentNodeName!="div"){
+		    			 parentNodeOfCurrentNode=parentNodeOfCurrentNode.parent();
+		    			 if(parentNodeOfCurrentNode[0]){
+		    				 parentNodeOfCurrentNodeName=parentNodeOfCurrentNode[0].nodeName.toLowerCase();
+		    			 }
+		    			 else
+		    				 break;
+		    		 }
+	            	 if(allLinkedNodesZerothElementLocal.parent()[0].nodeName.toLowerCase() != "img" && parentNodeOfCurrentNodeName == "div"){
+	            		 if($(parentNodeOfCurrentNode)){
+	            		 $(parentNodeOfCurrentNode)[0].style.paddingLeft="0px";
+	            		 $(parentNodeOfCurrentNode)[0].style.textIndent="0pt";
+	            		 }
+	            	 }
+						for(var i=0;i<lengthofContinuedNodes;i++){
+							var allLinkedNodesLocal=$(allLinkedNodes[i]);
+							if(allLinkedNodesLocal[0].nodeName.toLowerCase()==continuationNode){
+		            			if(allLinkedNodesLocal.children()[0]){
+		            			if(allLinkedNodesLocal.children()[0].nodeName.toLowerCase()=="div"){
+		            				allLinkedNodesLocal.children()[0].style.textIndent="0pt";
 		            			}
-		            		else if ( navigator.userAgent.match(/iPad/i)){
-		            			$(element[j])[0].style.width="82%";
 		            			}
-		            		else{
-							$(element[j])[0].style.wordBreak="break-all";
-							if($(document).width()>=1681 && $(document).width()<=1920){
-								$(element[j])[0].style.width="92%";
-		            		}
-		            		else if($(document).width()>=1601 && $(document).width()<=1680){
-		            			$(element[j])[0].style.width="90%";
-		            		}
-		            		else if($(document).width()>=1441 && $(document).width()<=1600){
-		            			$(element[j])[0].style.width="88%";
-		            		}
-		            		else if($(document).width()>=1152 && $(document).width()<=1440){
-		            			$(element[j])[0].style.width="86%";
-		            		}
-		            		else if($(document).width()>=1024 && $(document).width()<1152){
-		            			$(element[j])[0].style.width="84%";
-		            		}
-		            		else if($(document).width()<1024){
-		            			$(element[j])[0].style.width="76%";
-		            		}
-		            		else if($(document).width()<768){
-		            			$(element[j])[0].style.width="76%";
+		            			if(allLinkedNodesLocal.parent()[0]){
+			            			if(allLinkedNodesLocal.parent()[0].nodeName.toLowerCase()=="div"){
+			            				allLinkedNodesLocal.parent()[0].style.textIndent="0pt";
+			            			}
+			            			}
 		            		}
 							
+							if ( userAgent.match(/iPhone/i) ){
+								positionOfElementsNew.push($(allLinkedNodes[i]).offsetTop);
+							}
+							else{
+								positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
+							}
 						}
+					parentNodeOfContinuationNode=allLinkedNodes[0].parent();
+					nodeNameparentNodeOfContinuationNode = parentNodeOfContinuationNode[0].nodeName.toLowerCase();
+					while(nodeNameparentNodeOfContinuationNode !=hiddenNode){
+						parentNodeOfContinuationNode = parentNodeOfContinuationNode.parent();
+						var parentNodeOfContinuation=$(parentNodeOfContinuationNode)[0];
+						if(parentNodeOfContinuation){
+						nodeNameparentNodeOfContinuationNode = parentNodeOfContinuation.nodeName.toLowerCase();
 						}
+						else
+							break;
 					}
-					if ( navigator.userAgent.match(/iPhone/i) ){
-						positionOfElementsNew.push($(allLinkedNodes[i]).offsetTop);
-		                }
-					else{
-					positionOfElementsNew.push($(allLinkedNodes[i]).position().top);
-					}
-				}
-				parentNodeOfContinuationNode=allLinkedNodes[0].parent();
-				nodeNameparentNodeOfContinuationNode = parentNodeOfContinuationNode[0].nodeName.toLowerCase();
-				while(nodeNameparentNodeOfContinuationNode.toLowerCase() !=App.InlineDoc.inlinePrefix + ':hidden'){
-					parentNodeOfContinuationNode = parentNodeOfContinuationNode.parent();
-					if($(parentNodeOfContinuationNode)[0]){
-					nodeNameparentNodeOfContinuationNode = $(parentNodeOfContinuationNode)[0].nodeName.toLowerCase();
-					}
-					else
-						break;
-				}
-				if(nodeNameparentNodeOfContinuationNode!=App.InlineDoc.inlinePrefix + ':hidden'){
-            	for(var i=0;i<allLinkedNodes.length;i++){
-					parentNodeOfContinuation=allLinkedNodes[i].parent();
-					nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-					if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
-						if($(allLinkedNodes[lengthofContinuedNodes-1])[0].textContent==""){
-							lengthofContinuedNodes=lengthofContinuedNodes-1;
-						}
-					}
-					if(positionTop=='0' || positionTop=='1' || positionTop=='2' || positionTop=='12' || positionTop=='13'){
-						while(nodeN.toLowerCase() !="body"){
-							parentNodeOfContinuation = parentNodeOfContinuation.parent();
-							nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
-						}
-						childNode=parentNodeOfContinuation;
-						if($(childNode)[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
-					    	parentNodeOfContinuation=allLinkedNodes[i].parent();
+					if(nodeNameparentNodeOfContinuationNode!=hiddenNode){
+						//var allLinkedNodesArrayLength=allLinkedNodes.length;	
+		            	for(var i=0;i<lengthofContinuedNodes;i++){
+		            		var allLinkedNodesLocal=allLinkedNodes[i];
+		            		var allLinkedNodesLocalParent=allLinkedNodesLocal.parent();
+		            		var allLinkedNodesLocalParentNodeName=allLinkedNodesLocalParent[0].nodeName.toLowerCase();
+							parentNodeOfContinuation1=allLinkedNodesLocalParent;
+							parentNodeOfContinuation=allLinkedNodesLocalParent;
+							nodeN1 = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
 							nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-							while(nodeN.toLowerCase() !=App.InlineDoc.inlinePrefix + ':continuation'){
-								parentNodeOfContinuation = parentNodeOfContinuation.parent();
-								nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
-							}
-							childNode=parentNodeOfContinuation;
-					    }
-						count = 0;
-					    	
-						intId=setInterval(function () { 
-							count=count+1;
-					    	 if (count === 5){
-					    	clearInterval(intId);
-					    	 } 
-						positionTopNew=$(childNode).position().top;
-						positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1][0]).position().top + $(allLinkedNodes[lengthofContinuedNodes-1][0]).outerHeight(true);
-						if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().length>0)
-						{
-							if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()[0].nodeName.toLowerCase()=="table"){
-								positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1]).children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().outerHeight(true);
-							}
-							if($(allLinkedNodes[lengthofContinuedNodes-1]).children()){
-								if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()){
-									if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children()){
-										if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().children()[0]){
-										if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().children()[0].nodeName.toLowerCase()=="table"){
-											positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().children().children().outerHeight(true);
-										}
-										}
-									}
+							if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()==continuationNode){
+								if($(allLinkedNodes[lengthofContinuedNodes-1])[0].textContent==""){
+									lengthofContinuedNodes=lengthofContinuedNodes-1;
 								}
 							}
-						}
-						childrenOfsecondNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children().children();
-						childrenOfsecondNodelength=childrenOfsecondNode.length;
-						if($(childrenOfsecondNode[childrenOfsecondNodelength-1]).children().length>0){
-							if($(childrenOfsecondNode[childrenOfsecondNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
-								positionBottom=$(childrenOfsecondNode[childrenOfsecondNodelength-1]).position().top+ $(childrenOfsecondNode[childrenOfsecondNodelength-1]).outerHeight(true);
-							}
-						}
-
-						childrenOfTopNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
-						childrenOfTopNodelength=childrenOfTopNode.length;
-						if($(childrenOfTopNode[childrenOfTopNodelength-1]).children().length>0){
-
-							if($(childrenOfTopNode[childrenOfTopNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
-								positionBottom=$(childrenOfTopNode[childrenOfTopNodelength-1]).position().top+ $(childrenOfTopNode[childrenOfTopNodelength-1]).outerHeight(true);
-							}
-						}
-						var childrenNodeName="";
-							var childrenNode="";
-								if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation'){
-									if($(allLinkedNodes[lengthofContinuedNodes-1]).children()){
-									
-									childrenNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
-									if($(childrenNode)[0]){
-										childrenNodeName=$(childrenNode)[0].nodeName.toLowerCase();
-									}
-									while(childrenNodeName==App.InlineDoc.inlinePrefix + ':continuation'){
-										childrenNode=childrenNode.children();
-										if($(childrenNode)[0]){
-										childrenNodeName=$(childrenNode)[0].nodeName.toLowerCase();
-										}
-										else
-											break;
-									}
-									}
-								}
-								if($(childrenNode)[0]){
-								positionBottom=$(childrenNode[0]).position().top + $(childrenNode[0]).outerHeight(true);
-								}
-						if(positionBottom>positionTopNew){
-							difference=positionBottom-positionTopNew;
-						}
-						if($(allLinkedNodes[lengthofContinuedNodes-1]).parent().parent().parent()[0].nodeName.toLowerCase()=="div"){
-							timeout=setTimeout(function() {
-								clearTimeout(timeout);
-								positionBottom=$(allLinkedNodes[lengthofContinuedNodes-1][0]).parent().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1][0]).parent().outerHeight(true);
-								if(positionBottom>positionTopNew){
-								//difference=(positionBottom-positionTopNew)+25;
-								}
-								if(!checkIfImageAlreadyExists(imageId))	
-								{
-									elem.setAttribute("src", srcImg);
-									elem.setAttribute("height", difference);
-									$(elem).insertBefore(childNode);
-								}
-								else{
-								elem.style.height=difference+"px";
-								}
-							},10);
-						}
-						else{
-							timeout=setTimeout(function() {
-								clearTimeout(timeout);
-								if(!checkIfImageAlreadyExists(imageId))
-								{
-									elem.setAttribute("src", srcImg);
-									elem.setAttribute("height", difference);
-									$(elem).insertBefore(childNode);
-								}
-								else{
-								elem.style.height=difference+"px";
-								}
-							},10);
-						}
-						},10);
-						break;
-					}
-					else{
-					count = 0;
-					    intId=setInterval(function () {  
-					    	count=count+1;
-					    	 if (count === 5){
-					    	clearInterval(intId);
-					    	 }    
-						timeout=setTimeout(function() {
-								clearTimeout(timeout);
-							positionBottom= $(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).outerHeight(true);
-							if($(allLinkedNodes[lengthofContinuedNodes-1]).children()){
-							allChildrenOfLastNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
-							if($(allChildrenOfLastNode[allChildrenOfLastNode.length-1]).position()){
-							positionBottom=$(allChildrenOfLastNode[allChildrenOfLastNode.length-1]).position().top+ $(allChildrenOfLastNode[allChildrenOfLastNode.length-1]).outerHeight(true);
-							}
-							}
-							//DE338 Fixed
-							if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation' && $(allLinkedNodes[lengthofContinuedNodes-1][0]).children().length=="1" && $(allLinkedNodes[lengthofContinuedNodes-1][0]).children().hasClass('sec-cbe-highlight-dashed')){
-								positionBottom= $(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().outerHeight(true);
-							}
-							//DE338 Fixed
-							positionTopNew=$(allLinkedNodes[0][0]).position().top;
-							if ((($.browser.mozilla) || ($.browser.msie))){
-							var childrenNodesNew=childrenOfLastNodeFunction((allLinkedNodes[lengthofContinuedNodes-2]));
-								if($(allLinkedNodes[lengthofContinuedNodes-1]).next()[0]){
-								if (!$(allLinkedNodes[lengthofContinuedNodes-1]).text().length && $(allLinkedNodes[lengthofContinuedNodes-1]).next()[0].nodeName.toLowerCase()=="span" &&
-										($(childrenNodesNew)[0].textContent.trim().length !="0")) {
-									positionBottom=positionBottom-parseInt($(allLinkedNodes[lengthofContinuedNodes-1]).css('line-height'),16);
-								}
-								/*else{
-									if (!$(allLinkedNodes[lengthofContinuedNodes-1]).text().length) {
-										positionBottom=positionBottom-parseInt($(allLinkedNodes[lengthofContinuedNodes-1]).css('line-height'),8);
-									}
-								}*/
-								}
-								else{
-									if($(childrenNodesNew)[0]){
-									if($(childrenNodesNew)[0].nodeName.toLowerCase()=="span"){
-									if (!$(allLinkedNodes[lengthofContinuedNodes-1]).text().length) {
-										positionBottom=positionBottom-parseInt($(allLinkedNodes[lengthofContinuedNodes-1]).css('line-height'),8);
-									}
-									}
-									else{
-										if($(childrenNodesNew)[0]){
-										if(!$(childrenNodesNew).parent().prev().prev()[0] && $(childrenNodesNew).parent()[0].nodeName.toLowerCase()=="div"){
-											positionBottom=positionBottom-parseInt($(allLinkedNodes[lengthofContinuedNodes-1]).css('line-height'),8);
-										}
-										}
-									}
-									}
-								}
-							}
-							childrenOfsecondNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children().children();
-							childrenOfsecondNodelength=childrenOfsecondNode.length;
-							if($(childrenOfsecondNode[childrenOfsecondNodelength-1]).children().length>0){
-								if($(childrenOfsecondNode[childrenOfsecondNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
-									positionBottom=$(childrenOfsecondNode[childrenOfsecondNodelength-1]).position().top+ $(childrenOfsecondNode[childrenOfsecondNodelength-1]).outerHeight(true);
-								}
-							}
-
-							childrenOfTopNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
-							childrenOfTopNodelength=childrenOfTopNode.length;
-							if($(childrenOfTopNode[childrenOfTopNodelength-1]).children().length>0){
-
-								if($(childrenOfTopNode[childrenOfTopNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
-									positionBottom=$(childrenOfTopNode[childrenOfTopNodelength-1]).position().top+ $(childrenOfTopNode[childrenOfTopNodelength-1]).outerHeight(true);
-								}
-							}
-							childrenOfLastNodeNodeName="";
-							childrenOfLastNodeNew=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
-							childrenOfLastNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
-							if($(allLinkedNodes[lengthofContinuedNodes-1]).children()[0]){
-							childrenOfLastNodeNodeName=$(allLinkedNodes[lengthofContinuedNodes-1]).children()[0].nodeName.toLowerCase();
-							}
-							while(childrenOfLastNodeNodeName!="table"){
-								childrenOfLastNode=childrenOfLastNode.children();
-								if(childrenOfLastNode[0]){
-								childrenOfLastNodeNodeName=childrenOfLastNode[0].nodeName.toLowerCase();
-								}
-								else
-									break;
-							}
-							if(childrenOfLastNodeNodeName=="table"){
-							positionBottom=$(childrenOfLastNode[childrenOfLastNode.length-1]).position().top+ $(childrenOfLastNode[childrenOfLastNode.length-1]).outerHeight(true);
-							}
-							else {
-								if(childrenOfLastNodeNew){
-									childrenOfLastNodeNewLength=childrenOfLastNodeNew.length;
-									var childrenOfLastNodeNewName="";
-									if($(childrenOfLastNodeNew)[0]){
-										childrenOfLastNodeNewName=$(childrenOfLastNodeNew)[0].nodeName.toLowerCase();
-										}
-									while(childrenOfLastNodeNewName!="div"){
-										childrenOfLastNodeNew=childrenOfLastNodeNew.children();
-										if(childrenOfLastNodeNew[0]){
-											childrenOfLastNodeNewName=childrenOfLastNodeNew[0].nodeName.toLowerCase();
-										}
-										else
-											break;
-									}
-									if(childrenOfLastNodeNewName=="div"){
-										positionBottom=$(childrenOfLastNodeNew).position().top+ $(childrenOfLastNodeNew).outerHeight(true);
-									}
-								}
-							}
-							var parentNode=$(allLinkedNodes[0]).parent();
-								var parentNodeName=$(allLinkedNodes[0]).parent()[0].nodeName.toLowerCase();
-								while(parentNodeName!="table"){
-									parentNode=parentNode.parent();
-									if($(parentNode).parent()[0]){
-										parentNodeName=$(parentNode).parent()[0].nodeName.toLowerCase();
+							if(positionTop=='0' || positionTop=='1' || positionTop=='2' || positionTop=='12' || positionTop=='13'){
+								
+								while(nodeN1.toLowerCase() !="td"){
+									parentNodeOfContinuation1 = parentNodeOfContinuation1.parent();
+									if($(parentNodeOfContinuation1).parent()[0]){
+										nodeN1 = $(parentNodeOfContinuation1).parent()[0].nodeName.toLowerCase();
 									}
 									else
 										break;
 								}
-								if(parentNodeName=="table"){
-									var childNode=$(allLinkedNodes[lengthofContinuedNodes-1]).children();
-									var childNodeName=$(allLinkedNodes[lengthofContinuedNodes-1]).children()[0].nodeName.toLowerCase();
-									while(childNodeName!="table"){
-										childNode=childNode.children();
-										if($(childNode).children()[0]){
-											childNodeName=$(childNode).children()[0].nodeName.toLowerCase();
-										}
-										else
-											break;
-									}
-									if(childNodeName=="table"){
-										elem.style.position="absolute";
-										$(childNode).parent()[0].style.paddingLeft="58px";
-										}
-								}
-							difference=positionBottom-positionTopNew;
-							for (i = 0; i < positionOfElementsNew.length; i++)
-							{
-								for (j = i+1; j < positionOfElementsNew.length; j++)
-								{
-									if (positionOfElementsNew[j] < positionOfElementsNew[i])
-									{
-										positionTopRearranged=positionOfElementsNew[j];
-
-    									}
-    								}
-    							}
-
-    							if(positionTopRearranged !=""){
-    								var min_of_array = Math.min.apply(Math, positionOfElementsNew);
-    								var max_of_array = Math.max.apply(Math, positionOfElementsNew);
-    								var newTopPositionNode="";
-    								
-									var allLinkedNodesOfRecentArray=[];
-									for(var i=0;i<allLinkedNodes.length;i++){
-										if ( navigator.userAgent.match(/iPhone/i)  || ($.browser.msie)){
-											if($(allLinkedNodes[i]).offsetTop){
-											allLinkedNodesOfRecentArray.push($(allLinkedNodes[i]).offsetTop);
+								if($(parentNodeOfContinuation1.parent()).prev()[0]){
+									if($(parentNodeOfContinuation1.parent()).prev()[0].nodeName.toLowerCase()=="td"){
+										parentNodeOfContinuation1=$(parentNodeOfContinuation1.parent().prev()).children(); 
+										parentNodeOfContinuation1NodeName=$(parentNodeOfContinuation1)[0].nodeName.toLowerCase();
+										while(parentNodeOfContinuation1NodeName!="div"){
+											parentNodeOfContinuation1=parentNodeOfContinuation1.children();
+											if($(parentNodeOfContinuation1)[0]){
+												parentNodeOfContinuation1NodeName=$(parentNodeOfContinuation1)[0].nodeName.toLowerCase();
 											}
-											else{
-												allLinkedNodesOfRecentArray.push($(allLinkedNodes[i]).position().top);
-											}
-											}
-										else{
-											allLinkedNodesOfRecentArray.push($(allLinkedNodes[i]).position().top);
-											}
-		               				}
-									for(var j=0;j<allLinkedNodes.length;j++){
-										min_of_array = Math.min.apply(Math, allLinkedNodesOfRecentArray);
-										if($(allLinkedNodes[j]).position().top==min_of_array){
-    										newTopPositionNode=$(allLinkedNodes[j]);
-    										break;
-    									}
-									}
-									for(var j=0;j<allLinkedNodes.length;j++){
-										max_of_array = Math.max.apply(Math, allLinkedNodesOfRecentArray);
-										var occurances = allLinkedNodesOfRecentArray.filter(function(val){
-											return val === max_of_array;
-										}).length;
-										if(occurances>1){
-											max_of_array=positionBottom;
-										}
-										else{		
-											if($(allLinkedNodes[j]).position().top==max_of_array){
-												lastpositionTopNode=$(allLinkedNodes[j]);
-												var childrenNodesNew="";
-												if((lastpositionTopNode.children().length>0)){
-													childrenNodesNew=childrenOfLastNodeFunction(lastpositionTopNode);
-												}
-												else{
-													childrenNodesNew=lastpositionTopNode;
-												}
-												if($(childrenNodesNew)[0]){
-													if($(childrenNodesNew)[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation' && $(childrenNodesNew)[0].textContent.trim().length==0){
-														positionOfElements=allLinkedNodesOfRecentArray;
-														allLinkedNodesNew=allLinkedNodes;
-														var index=positionOfElements.indexOf(max_of_array);
-														positionOfElements.splice(index, 1);
-														max_of_array = Math.max.apply(Math, positionOfElements);
-													}
-
-												}
-
+											else
 												break;
-											}
 										}
-									
-    								}
-									var childrenOfTopMostNode="";
-    								var flag=false;
-    								for(var j=0;j<allLinkedNodes.length;j++){
-    									
-    									if(Math.floor(max_of_array)==Math.floor($(allLinkedNodes[j]).position().top)){
-    										flag=true;
-											childrenOfTopNode=$(allLinkedNodes[j]).children();
-											childrenOfTopNodelength=childrenOfTopNode.length;
-											if($(childrenOfTopNode[childrenOfTopNodelength-1]).children().length>0){
-												if($(childrenOfTopNode[childrenOfTopNodelength-1]).children()[0].nodeName.toLowerCase()=="table"){
-													max_of_array=$(childrenOfTopNode[childrenOfTopNodelength-1]).position().top+ $(childrenOfTopNode[childrenOfTopNodelength-1]).outerHeight(true);
-												}
-											}
-											childrenOfTopMostNode=childrenOfLastNodeFunction($(allLinkedNodes[j]).children());
-											if($(childrenOfTopMostNode)[0]){
-												if($(childrenOfTopMostNode)[0].nodeName.toLowerCase()=="span"){
-													max_of_array=$(childrenOfTopMostNode).position().top+ $(childrenOfTopMostNode).outerHeight(true);
-												}
-    										}
-											else if($(childrenOfTopMostNode).context ){
-												if($(childrenOfTopMostNode).context.nodeName.toLowerCase()==App.InlineDoc.inlinePrefix +':continuation'){
-													if (($.browser.msie) || ($.browser.mozilla)){
-													max_of_array=$(childrenOfTopMostNode.context).position().top+ $(childrenOfTopMostNode.context).outerHeight(true);
-													//DE338 Fixed
-													var continuedat=$(childrenOfTopMostNode.context).attr('continuedAt');
-													for(var i=0; i<App_Find.Highlight.cachedResults.continuedAt.length;i++){
-						                        		
-						                        		if(continuedat==App_Find.Highlight.cachedResults.continuedAt[i].attr('id')){
-						                        			if($(childrenOfTopMostNode).closest('div').find(App_Find.Highlight.cachedResults.continuedAt[i].attr('id'))){
-																max_of_array=$(childrenOfTopMostNode.context).parent().position().top+ $(childrenOfTopMostNode.context).parent().outerHeight(true);
-																break;
-															}
-						                        			break;
-						                        		}
-						                        		}
-														//DE338 Fixed
-													}
-												}
-											}
-											break;
-                                        }
-                                       
-    								}
-    								if(flag==false){
-									
-									if (!($.browser.msie) && !($.browser.mozilla)){
-    										if($(allLinkedNodes[lengthofContinuedNodes-1])[0].nodeName.toLowerCase()==App.InlineDoc.inlinePrefix + ':continuation')
-        			                    	{
-        										max_of_array=$(allLinkedNodes[lengthofContinuedNodes-1]).position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).outerHeight(true);
-        			                    	}
+										//DE565
+										childNode=parentNodeOfContinuation1;
 									}
-									if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children().length>0)
-									{
-										if($(allLinkedNodes[lengthofContinuedNodes-1]).parent().prev()[0]){
-										if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()[0].nodeName.toLowerCase()=="table" && $(allLinkedNodes[lengthofContinuedNodes-1]).parent().prev()[0].nodeName.toLowerCase()=="div"){
-										}
+								}
+								/*if(parentNodeOfContinuation1NodeName=="div"){
+									childNode=parentNodeOfContinuation1;
+								}*/
+								else{
+									while(nodeN.toLowerCase() !="body"){
+										parentNodeOfContinuation = parentNodeOfContinuation.parent();
+										if($(parentNodeOfContinuation).parent()[0]){
+											nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
 										}
 										else
-											if($(allLinkedNodes[lengthofContinuedNodes-1]).children().children()[0].nodeName.toLowerCase()=="table"){
-    			                    		max_of_array=$(allLinkedNodes[lengthofContinuedNodes-1]).children().position().top+ $(allLinkedNodes[lengthofContinuedNodes-1]).children().outerHeight(true);
-    			                    		}
+											break;
 									}
-    								
-    								}
-								difference=max_of_array-min_of_array;
-								if(!checkIfImageAlreadyExists(imageId))	
-								{
-									if(newTopPositionNode != ""){
+									childNode=parentNodeOfContinuation;
+									if($(childNode)[0].nodeName.toLowerCase()==continuationNode){
+										parentNodeOfContinuation=allLinkedNodesLocalParent;
+										nodeN = allLinkedNodesLocalParentNodeName; 
+										while(nodeN !=continuationNode){
+											parentNodeOfContinuation = parentNodeOfContinuation.parent();
+											if($(parentNodeOfContinuation).parent()[0]){
+												nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
+											}
+										}
+										childNode=parentNodeOfContinuation;
+									}
+								}
+								if(!checkIfImageAlreadyExists(imageId))
+								{  
+									setTimeout(function() {
 									elem.setAttribute("src", srcImg);
-									elem.setAttribute("position", "fixed");
-									elem.style.height=difference+"px";
-									$(elem).insertBefore(newTopPositionNode);
-									}
-									else {
-										difference=positionBottom-positionTopNew;
-										elem.setAttribute("src", srcImg);
-										elem.setAttribute("height", difference);
-										$(elem).insertBefore($(allLinkedNodes[0]));
-										}
+									elem.setAttribute("height", "13px");
+									$(elem).insertBefore(childNode);
+								},10);
 								}
-								else{
-								if(newTopPositionNode != ""){
-										difference=max_of_array-min_of_array;	
-										elem.style.height=difference+"px";
-									}
-									else{
-								    difference=positionBottom-positionTopNew;
-									if (!($.browser.msie)){
-									elem.style.height=difference+"px";
-									}
-									else
-									elem.setAttribute("height", difference);
-									}
-									
-								}
-							} 
-							else{
-								timeout=setTimeout(function() {
-								clearTimeout(timeout);
-									if(!checkIfImageAlreadyExists(imageId))	
-									{
-										if($(allLinkedNodes[0]).parent().hasClass('sec-cbe-highlight-block')){
-											$(allLinkedNodes[0]).parent().removeClass('sec-cbe-highlight-block');
-											$(allLinkedNodes[0]).parent().addClass('sec-cbe-highlight-block-continuation');
-										}
-										elem.setAttribute("src", srcImg);
-										elem.setAttribute("height", difference);
-										$(elem).insertBefore(($(allLinkedNodes[0]))); 
-									}
-									else{
-									elem.setAttribute("height", difference);
-									}
-								}, 10);
+								break;
 							}
-    							
-						}, 10
-						);
-						},10);
+					else{
+						if($(allLinkedNodes[0]).parent().parent().parent()[0]){
+							if($(allLinkedNodes[0]).parent().parent().parent()[0].nodeName.toLowerCase()=="div" && $(allLinkedNodes[0]).parent().parent().parent().parent().prev()[0].nodeName.toLowerCase()!="div" && $(allLinkedNodes[0]).parent().parent()[0].nodeName.toLowerCase()=="span"){
+								$(allLinkedNodes[0]).parent()[0].style.display="inline";					
+							}
+						}
+					    		 var positionOfElementsNewLength=positionOfElementsNew.length;
+					    		 for (i = 0; i < positionOfElementsNewLength; i++)
+					    		 {
+					    			 for (var j = i+1; j < positionOfElementsNewLength; j++)
+					    			 {
+					    				 var positionOfElementsNewAtJthPosition=positionOfElementsNew[j];
+					    				 if (positionOfElementsNewAtJthPosition < positionOfElementsNew[i])
+					    				 {
+					    					 positionTopRearranged=positionOfElementsNewAtJthPosition;
+
+					    				 }
+					    			 }
+					    		 }
+
+					    		 if(positionTopRearranged !=""){
+					    			 var min_of_array = Math.min.apply(Math, positionOfElementsNew);
+					    			 var newTopPositionNode="";
+
+					    			 var allLinkedNodesOfRecentArray=[];
+					    			 for(var i=0;i<lengthofContinuedNodes;i++){
+					    				 var allLinkedNodesLocalElement=$(allLinkedNodes[i]);
+					    				 if (userAgent.match(/iPhone/i)  || ($.browser.msie)){
+					    					 if(allLinkedNodesLocalElement.offsetTop){
+					    						 allLinkedNodesOfRecentArray.push(allLinkedNodesLocalElement.offsetTop);
+					    					 }
+					    					 else{
+					    						 allLinkedNodesOfRecentArray.push(allLinkedNodesLocalElement.position().top);
+					    					 }
+					    				 }
+					    				 else{
+					    					 allLinkedNodesOfRecentArray.push(allLinkedNodesLocalElement.position().top);
+					    				 }
+					    			 }
+					    			 for(var j=0;j<lengthofContinuedNodes;j++){
+					    				 var allLinkedNodesLocalElement=$(allLinkedNodes[j]);
+					    				 min_of_array = Math.min.apply(Math, allLinkedNodesOfRecentArray);
+					    				 if(allLinkedNodesLocalElement.position().top==min_of_array){
+					    					 newTopPositionNode=allLinkedNodesLocalElement;
+					    					 break;
+					    				 }
+					    			 }
+					    			
+					    			 if(!checkIfImageAlreadyExists(imageId))	
+					    			 {
+					    				 if(newTopPositionNode != ""){
+					    					 elem.setAttribute("src", srcImg);
+					    					 elem.setAttribute("height", "13px");
+					    					 elem.setAttribute("position", "fixed");
+					    					 $(elem).insertBefore(newTopPositionNode);
+					    				 }
+					    				 else {
+					    					 elem.setAttribute("src", srcImg);
+					    					 elem.setAttribute("height", "13px");
+					    					 $(elem).insertBefore($(allLinkedNodes[0]));
+					    				 }
+					    			 }
+					    		 } 
+					    		 else{
+					    				 if(!checkIfImageAlreadyExists(imageId))	
+					    				 { setTimeout(function() {
+					    					 if($(allLinkedNodes[0]).parent().hasClass('sec-cbe-highlight-block')){
+					    						 $(allLinkedNodes[0]).parent().removeClass('sec-cbe-highlight-block');
+					    						 $(allLinkedNodes[0]).parent().addClass('sec-cbe-highlight-block-continuation');
+					    					 }
+					    					 elem.setAttribute("height", "13px");
+					    					 elem.setAttribute("src", srcImg);
+					    					 $(elem).insertBefore(($(allLinkedNodes[0]))); 
+					    				 },10);
+					    				 }
+					    		 }
+
 					}
 					break;
 				}
 				}
+				
            // return elem;
             }
-			function wrapInDashes(index,ele,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId) {
-				if (!$(spanNode).hasClass('sec-cbe-highlight-dashed') && !$(spanNode).hasClass('sec-cbe-highlight-dashed-highlight')) {	
-					//var nodeName = node[0].nodeName.toLowerCase();
-					//var cls = 'sec-cbe-highlight-inline'; // assume display:inline, work hard to make sure not a block
-					if (nonNumericNode) {
-						//xbrId = node.attr('name').split(':').join('_');
-						if (instance && instance.tag[xbrId].xbrlType == 'textBlockItemType') { // it was a textBlock
-							cls = 'sec-cbe-highlight-block';
-						} 
-						else if(instance.tag[xbrId].xbrltype == 'textBlockItemType'){
-							
-							cls = 'sec-cbe-highlight-block';
-							var parentNode=$(node[0]).parent();
-							var parentNodeName=$(node[0]).parent()[0].nodeName.toLowerCase();
-							while(parentNodeName!=App.InlineDoc.inlinePrefix + ':continuation'){
-								parentNode=parentNode.parent();
-								if($(parentNode)[0]){
-								parentNodeName=$(parentNode)[0].nodeName.toLowerCase();
-								}
-								else
-									break;
-							}
-							if(parentNodeName == App.InlineDoc.inlinePrefix + ':continuation'){
-								cls = 'sec-cbe-highlight-block';
-							}
-							else{
-							var parentNode=$(node[0]).parent();
-							var parentNodeName=$(node[0]).parent()[0].nodeName.toLowerCase();
-							while(parentNodeName!="div"){
-								parentNode=parentNode.parent();
-								if($(parentNode)[0]){
-								parentNodeName=$(parentNode)[0].nodeName.toLowerCase();
-								}
-								else
-									break;
-							}
-							if(parentNodeName == "div" && $(node[0]).children().length==0 ){
-									cls='sec-cbe-highlight-inline';
-							}
-							else if(parentNodeName == "div" && $(node[0]).children().length>=1 ){
-								if($(node[0]).children()[0]){
-									if($(node[0]).children()[0].nodeName.toLowerCase()=="span"){
-									cls='sec-cbe-highlight-inline';
-									}
-								}
-							}
-							else if(parentNodeName == "div" && $(node)[0].textContent.trim().length=="0"){
-								cls = 'sec-cbe-highlight-inline';
-							}
-								
+             function wrapInDashes(index,ele,highlightType,blueImagePath,node,nodeName,
+            		 allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId,xbrlArray,userAgent,documentWidth,tdCount) {
+            	 //var spanNodeContinuation=$(spanNode);
+            	 var nonNumericNodeElement=App.InlineDoc.inlinePrefix + ':nonnumeric';
+            	 var continuationNode=App.InlineDoc.inlinePrefix + ':continuation';
+            	 var nodeContinuation =node[0];
+            	 var nodeContinuationElement=$(nodeContinuation);
+				 //DE453
+				 var parentNodeCheck=nodeContinuationElement.parent();
+            	 if (!node.parent().hasClass('sec-cbe-highlight-dashed') && !node.parent().hasClass('sec-cbe-highlight-dashed-highlight')) {	
+            		 //var nodeName = node[0].nodeName.toLowerCase();
+            		 //var cls = 'sec-cbe-highlight-inline'; // assume display:inline, work hard to make sure not a block
+            		 if (nonNumericNode) {
+            			 //xbrId = node.attr('name').split(':').join('_');
+            			 if (instance && instance.tag[xbrId].xbrlType == 'textBlockItemType') { // it was a textBlock
+            				 cls = 'sec-cbe-highlight-block';
+            			 } 
+            			 else if(instance.tag[xbrId].xbrltype == 'textBlockItemType'){
 
-							}
-						
-						}
-						else { // does it have element descendants
-							$(node[0]).find('*').each(function() { // and there was a display:block in there
-								if ($(this).css('display')=='block') {
-									cls = 'sec-cbe-highlight-block';
-									return false; }});
-							if (cls == 'sec-cbe-highlight-inline') { // last ditch effort based on current display only
-								var text=" ";
-								if($(node).children().length>0){
-									var children=$(node).children();
-									var childrenLength=children.length;
-									var x = children[childrenLength-1].textContent;
-									if (x == '\xa0') { // Non-breakable space is char 0xa0 (160 dec)
-										var x = node[0].lastChild;
-										node[0].removeChild(x);
-										}
-								}
-								else{
-							    text = $(node)[0].textContent;
-								}
-								var match = /\n/.exec(text);
-								if(match){
-									cls == 'sec-cbe-highlight-inline';
-								}
-								else{
-									rects = (node[0]).getClientRects();
-									var top=[];
-									var bottom=[];
-									for (i = 0; i < rects.length; i++) {
-										var rect = rects[i];
-										top.push(rect.top);
-										bottom.push(rect.bottom);
-									}
-									if (rects.length > 1 && !identical(top) && !identical(bottom)) { // it is drawn in two rectangles, it had to be a block.
-										cls = 'sec-cbe-highlight-block';
-									}
-									/*if($(node[0]).parent().prev()[0] && $(node).parent().prev().prev()[0]){
+            				 cls = 'sec-cbe-highlight-block';
+            				 var parentNode=nodeContinuationElement.parent();
+            				 var parentNodeName=parentNode[0].nodeName.toLowerCase();
+            				 while(parentNodeName!=continuationNode){
+            					 parentNode=parentNode.parent();
+            					 var parentNodeElement=$(parentNode)[0];
+            					 if(parentNodeElement){
+            						 parentNodeName=parentNodeElement.nodeName.toLowerCase();
+            					 }
+            					 else
+            						 break;
+            				 }
+            				 if(parentNodeName == continuationNode){
+            					 cls = 'sec-cbe-highlight-block';
+            				 }
+							 //DE453 fix
+							 else if (parentNodeCheck[0].nodeName.toLowerCase() == 'p'){
+            					 //this if block is fix for DE453 issue 1
+								 cls = 'sec-cbe-highlight-block';
+            				 }
+            				 else{
+            					 var parentNode=nodeContinuationElement.parent();
+            					 var parentNodeName=parentNode[0].nodeName.toLowerCase();
+            					 while(parentNodeName!="div"){
+            						 parentNode=parentNode.parent();
+            						 var parentNodeElement=$(parentNode)[0];
+            						 if(parentNodeElement){
+            							 parentNodeName=parentNodeElement.nodeName.toLowerCase();
+            						 }
+            						 else
+            							 break;
+            					 }
+            					 if(parentNodeName == "div" && nodeContinuationElement.children().length==0 ){
+            						 cls='sec-cbe-highlight-inline';
+            					 }
+            					 else if(parentNodeName == "div" && nodeContinuationElement.children().length>=1 ){
+            						 if(nodeContinuationElement.children()[0]){
+            							 if((nodeContinuationElement).children()[0].nodeName.toLowerCase()=="span"){
+            								// cls='sec-cbe-highlight-inline';
+            								 // this change has been made for DE538,539,540.
+            								 cls = 'sec-cbe-highlight-block';
+            							 }
+            						 }
+            					 }
+            					 else if(parentNodeName == "div" && $(node)[0].textContent.trim().length=="0"){
+            						 cls = 'sec-cbe-highlight-inline';
+            					 }
+
+
+            				 }
+
+            			 }
+            			 else { // does it have element descendants
+            				 nodeContinuationElement.find('*').each(function() { // and there was a display:block in there
+            					 if ($(this).css('display')=='block') {
+            						 cls = 'sec-cbe-highlight-block';
+            						 return false; }});
+            				 if (cls == 'sec-cbe-highlight-inline') { // last ditch effort based on current display only
+            					 var text=" ";
+            					 var children=$(node).children();
+            					 var childrenLength=children.length;
+            					 if(childrenLength>0){
+            						 var x = children[childrenLength-1].textContent;
+            						 if (x == '\xa0') { // Non-breakable space is char 0xa0 (160 dec)
+            							 var x = nodeContinuation.lastChild;
+            							 nodeContinuation.removeChild(x);
+            						 }
+            					 }
+            					/* else{
+            						 text = $(node)[0].textContent;
+            					 }
+            					 var match = /\n/.exec(text);
+            					 if(match){
+            						 cls == 'sec-cbe-highlight-inline';
+            					 }
+            					 else{*/
+								  if(xbrlArray.indexOf(instance.tag[xbrId].xbrltype) < 0){
+            						 rects = (nodeContinuation).getClientRects();
+            						 var top=[];
+            						 var bottom=[];
+            						 for (i = 0; i < rects.length; i++) {
+            							 var rect = rects[i];
+            							 top.push(rect.top);
+            							 bottom.push(rect.bottom);
+            						 }
+            						 if (rects.length > 1 && !identical(top) && !identical(bottom)) { // it is drawn in two rectangles, it had to be a block.
+            							 cls = 'sec-cbe-highlight-block';
+            						 }
+            						 /*if($(node[0]).parent().prev()[0] && $(node).parent().prev().prev()[0]){
 									if(($(node.context).parent().prev()[0].nodeName.toLowerCase()=="span" && !$(node.context).children()[0]) && ($(node)[0].textContent.trim().length !="0" 
 										&& $(node).parent()[0].textContent.trim().substring(0,1)==".") && ($(node).parent().prev().prev()[0].nodeName.toLowerCase() =="span")){
 										if($(node[0]).parent()[0].getClientRects().length>1){
@@ -4795,373 +4614,423 @@ $( "#prevCarousel1" ).mouseover(function() {
 										}
 									}
 									}*/
-								}
-							}
-						}
-					}   	                            	    
-					if(cls==='sec-cbe-highlight-block'){
-						setTimeout(function() {					
-						$(spanNode).addClass('sec-cbe-highlight-block');
-						},0);
-					}
-					else{
-					setTimeout(function() {		
-						$(spanNode).addClass('sec-cbe-highlight-inline');
-					},0);
-					}
-					
-					if(App_Find.Highlight.cachedResults.linkedHiddenNodes.length>0){
-	                    if(node.attr('id') && ele.isHidden()){
-	                    	wrapLinkedHidden(ele,node,cls,spanNode);
-	                    }
-					}
+            					// }
+            				 }
+							 }
+            			 }
+            		 }   	
+            		 
+            		 if(cls==='sec-cbe-highlight-block'){
+            			 setTimeout(function() {					
+            				 $(spanNode).addClass('sec-cbe-highlight-block');
+            				 if(nonNumericNode){
+                				 if(ele.attr('continuedat')==null){
+            				 var imageId=ele.attr('id')+"imageid";
+							  if(!checkIfImageAlreadyExists(imageId)){
+        					 elem.setAttribute("src", srcImg);
+        					 elem.setAttribute("id", imageId);
+        					 elem.setAttribute("width", "3");
+        					 elem.setAttribute("height", "13");
+        					 elem.setAttribute("align", "left");
+        					 $(elem).insertBefore(node);
+							 }
+                				 }
+            				 }
+            			 },10);
+            		 }
+            		 else{
+            			 setTimeout(function() {		
+            				 $(spanNode).addClass('sec-cbe-highlight-inline');
+            			 },10);
+            		 }
 
-					if(highlightType=="calculation" || highlightType=="amount" || highlightType=="sign" || highlightType=="hidden"){
-                	    App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
-						for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
-						{
-							if((App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==srcImg) || (App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath)){
-								App_Find.Highlight.cachedResults.arrayOfImages[i].style.visibility = "hidden";
-							}
-						}
-					}else{
-						
-						if(nonNumericNode){
-							if(ele.attr('continuedat')!=null){
-								//var imageId=$(ele).attr('continuedat')+"imageid";
-								var imageId=ele.attr('id')+"imageid";
-								var difference=0;
-								elem.setAttribute("id", imageId);
-								elem.setAttribute("width", "3");
-								elem.setAttribute("align", "left");
-								var nodeNew=""; 
-								var positionOfElementsNew=[];
-								var element=" ";
-								var positionTop = (allLinkedNodes[0][0]).offsetTop;
-								var parentNodeOfContinuation=" ";
-								var childNode="";
-								var positionTopRearranged="";
-								var lengthofContinuedNodes=allLinkedNodes.length;
-								var childrenOfsecondNode=" ";
-								var childrenOfsecondNodelength=" ";
-								var childrenOfTopNode=" ";
-								var childrenOfTopNodelength=" ";
-								var count=0;
-								var intId=0;
-								var timeout=0;
-								$(document).ready(function() {
-								insertImageForNonNumericNodes(imageId,difference,elem,nodeNew,positionOfElementsNew,element,positionTop,
-										parentNodeOfContinuation,childNode,positionTopRearranged,lengthofContinuedNodes,
-										childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes,count,intId,timeout);
-								$(window).resize(function() {
-									var positionTop = (allLinkedNodes[0][0]).offsetTop;
-									var positionOfElementsNew=[];
-									insertImageForNonNumericNodes(imageId,difference,elem,nodeNew,positionOfElementsNew,element,positionTop,
-											parentNodeOfContinuation,childNode,positionTopRearranged,lengthofContinuedNodes,
-											childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes,count,intId,timeout);
-								});
-								});
-							}
+            		 if(App_Find.Highlight.cachedResults.linkedHiddenNodes.length>0){
+            			 if(node.attr('id') && ele.isHidden()){
+            				 wrapLinkedHidden(ele,node,cls,spanNode);
+            			 }
+            		 }
 
-						}
-					}
-					$(elem).on('click',function(evt){
-						$('#about-modal').dialog("close");
-						App.frame.contents().find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
-						if(App_Find.Highlight.cachedResults.arrayOfImages.length==1){
-                   	    App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
-						}
-						for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
-						{
-							if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath){
-								App_Find.Highlight.cachedResults.arrayOfImages[i].setAttribute("src", srcImg);
-							}
-						}
+            		 if(highlightType=="calculation" || highlightType=="amount" || highlightType=="sign" || highlightType=="hidden"){
+            			 App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
+            			 var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+            			 for (var i=0; i<arrayOfImagesLength; i++)
+            			 {
+            				 var elementAtIthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[i];
+            				 if((elementAtIthPositionOfArrayOfImages.getAttribute('src')==srcImg) || (elementAtIthPositionOfArrayOfImages.getAttribute('src')==blueImagePath)){
+            					 elementAtIthPositionOfArrayOfImages.style.visibility = "hidden";
+            				 }
+            			 }
+            		 }else{
 
-						if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-							if(node.attr('continuedat')!=null){
-								$(spanNode).addClass('sec-cbe-highlight-dashed');
-							}
-							else{
-								if($(spanNode).hasClass('sec-cbe-highlight-block')){
-									$(spanNode).addClass('sec-cbe-highlight-dashed_block');
-								}
-							}
-						}
-						if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
-							var index = $(this).attr('data-result-index');
-							App_Find.Results.highlightItem(index);  // highlight the result item
-							//var allLinkedNodes=[];
-							if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-								if((node).attr('continuedat')!=null){
-									$(spanNode).children(':first').selectionHighlightNodesOnClick();
-									//arrayOfImages = App.frame.contents().find('img');
-									for(var i=0;i<allLinkedNodes.length;i++){
+            			 if(nonNumericNode){
+            				 if(ele.attr('continuedat')!=null){
+            				
+            	            		
+            					 //var imageId=$(ele).attr('continuedat')+"imageid";
+            					 var imageId=ele.attr('id')+"imageid";
+            					 var difference=0;
+            					 elem.setAttribute("id", imageId);
+            					 elem.setAttribute("width", "3");
+            					 elem.setAttribute("align", "left");
+            					 var nodeNew=""; 
+            					 var positionOfElementsNew=[];
+            					 var element=" ";
+            					 var positionTop = (allLinkedNodes[0][0]).offsetTop;
+            					 var parentNodeOfContinuation=" ";
+            					 var childNode="";
+            					 var positionTopRearranged="";
+            					 var lengthofContinuedNodes=allLinkedNodes.length;
+            					 var childrenOfsecondNode=" ";
+            					 var childrenOfsecondNodelength=" ";
+            					 var childrenOfTopNode=" ";
+            					 var childrenOfTopNodelength=" ";
+            					 var count=0;
+            					 var intId=0;
+            					 var timeout=0;
+            					 $(document).ready(function() {
+ 
+            						 insertImageForNonNumericNodes(imageId,difference,elem,nodeNew,positionOfElementsNew,element,positionTop,
+            								 parentNodeOfContinuation,childNode,positionTopRearranged,lengthofContinuedNodes,
+            								 childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes,count,intId,timeout,userAgent,documentWidth,tdCount);
+ 
+            						 $(window).resize(function() {
+            							 var positionTop = (allLinkedNodes[0][0]).offsetTop;
+            							 var positionOfElementsNew=[];
+            							 insertImageForNonNumericNodes(imageId,difference,elem,nodeNew,positionOfElementsNew,element,positionTop,
+            									 parentNodeOfContinuation,childNode,positionTopRearranged,lengthofContinuedNodes,
+            									 childrenOfsecondNode,childrenOfsecondNodelength,childrenOfTopNode,childrenOfTopNodelength,allLinkedNodes,count,intId,timeout,userAgent,documentWidth,tdCount);
+            						 });
+            					 });
+            				 }
+            				 /*else{
+            					 if($(spanNode).hasClass('sec-cbe-highlight-block')){
+            					 var imageId=ele.attr('id')+"imageid";
+            					 elem.setAttribute("src", srcImg);
+            					 elem.setAttribute("id", imageId);
+            					 elem.setAttribute("width", "3");
+            					 elem.setAttribute("height", "13");
+            					 elem.setAttribute("align", "left");
+            					 $(elem).insertBefore(spanNode);
+            					 }
+            				 }*/
+
+            			 }
+
+            		 }
+            		 $(elem).on('click',function(evt){
+            			 $('#about-modal').dialog("close");
+            			 frameContentObject.find('.sec-cbe-highlight-filter-selected').removeClass('sec-cbe-highlight-filter-selected'); 
+            			 App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
+            			 var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+            			 for (var i=0; i<arrayOfImagesLength; i++)
+            			 {
+            				 var elementAtIthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[i];
+            				 if(elementAtIthPositionOfArrayOfImages.getAttribute('src')==blueImagePath){
+            					 elementAtIthPositionOfArrayOfImages.setAttribute("src", srcImg);
+            				 }
+            			 }
+
+            			 if(nodeName == nonNumericNodeElement){
+            				 if(node.attr('continuedat')!=null){
+            					 $(spanNode).addClass('sec-cbe-highlight-dashed');
+            				 }
+            				 else{
+            					 if($(spanNode).hasClass('sec-cbe-highlight-block')){
+            						 $(spanNode).addClass('sec-cbe-highlight-dashed');
+            						 $(spanNode).addClass('sec-cbe-highlight-dashed_block');
+            					 }
+            				 }
+            			 }
+            			 if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
+            				 var index = $(this).attr('data-result-index');
+            				 App_Find.Results.highlightItem(index);  // highlight the result item
+            				 //var allLinkedNodes=[];
+            				 if(nodeName == nonNumericNodeElement){
+            					 if((node).attr('continuedat')!=null){
+            						 $(spanNode).children(':first').selectionHighlightNodesOnClick();
+            						 var allLinkedNodesLength=allLinkedNodes.length;
+            						 for(var i=0;i<allLinkedNodesLength;i++){
 
 										$(elem).attr("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
 										elem.setAttribute("src", blueImagePath);
 									}
-									App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
+            						 frameContentObject.find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
 									selectionHighlightClickNodes(allLinkedNodes); 
 								}
 
-								else if($(spanNode).hasClass('sec-cbe-highlight-block')){
-									$(spanNode).children(':first').selectionHighlightNodesOnClick();
-									App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
-									$(spanNode).addClass('sec-cbe-highlight-filter-content-selected');
-								}
-								else{
-									$(spanNode).children(':first').selectionHighlight();
-								}
+            					 else if($(spanNode).hasClass('sec-cbe-highlight-block')){
+            						 $(spanNode).children(':first').selectionHighlightNodesOnClick();
+									 $(elem).attr("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
+									 elem.setAttribute("src", blueImagePath);
+            						 frameContentObject.find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
+            						 $(spanNode).addClass('sec-cbe-highlight-filter-content-selected');
+            						 selectionHighlightClickNodes(allLinkedNodes); 
+            					 }
+            					 else{
+            						 $(spanNode).children(':first').selectionHighlight();
+            					 }
 
-								$(spanNode).children(':first').each(function() {
-									App_Find.Element.showSelectionDetail(node);
-								});
-							}
+            					 $(spanNode).children(':first').each(function() {
+            						 App_Find.Element.showSelectionDetail(node);
+            					 });
+            				 }
 
-							evt.stopPropagation();
-						}
-					}).on('mousemove', function(event) {
-						var allLinkedNodes=[];
-						if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-							if(node.attr('continuedat')!=null){
-							//App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
-								node.removeClass('sec-cbe-highlight-dashed');
-								node.removeClass('sec-cbe-highlight-dashed_block');
-								selectionHighlightNodes(allLinkedNodes); 
-							}
-						}
-						if(App_Find.Element.enableTooltip=="enable"){
-							if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-								if(node.attr('continuedat')!=null){
-									$(spanNode).addClass('sec-cbe-highlight-dashed');
-								}
-								else{
-									if($(spanNode).hasClass('sec-cbe-highlight-block')){
-										$(spanNode).addClass('sec-cbe-highlight-dashed_block');
-									}
-								}
-							}
-							if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
-								$(spanNode).children(':first').each(function() {
-									getMouseOverDiv(ele,node,false);
-								});
-		                    	}
-		                    	
-		        				
-							placeMouseOverDiv(event);
-		                    	event.stopPropagation();
-	                    	}
-	                    	
-	                    }).on('mouseout', function() {
-	                    	if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-	                        	if(node.attr('continuedAt')!=null){
-	                        		allLinkedNodes=App_Find.Element.groupIxContinuation(node);
-	                        		 $(this).removeHighlightNodes(allLinkedNodes);
-	                        		
-	                        	}
-		
-	               		 }
-	                    	var container = $('#selection-detail-container-mouseOver');
-	                    	container.hide();
-	                    });
-						setTimeout(function() {		
-						$(spanNode).addClass('sec-cbe-highlight-dashed');
-					},0);
-					if(nonNumericNode){
+            				 evt.stopPropagation();
+            			 }
+            		 }).on('mousemove', function(event) {
+            			 var allLinkedNodes=[];
+            			 if(nodeName == nonNumericNodeElement){
+            				 if(node.attr('continuedat')!=null){
+            					 node.removeClass('sec-cbe-highlight-dashed sec-cbe-highlight-dashed_block');
+            					 selectionHighlightNodes(allLinkedNodes); 
+            				 }
+            			 }
+            			 if(App_Find.Element.enableTooltip=="enable"){
+            				 if(nodeName == nonNumericNodeElement){
+            					 if(node.attr('continuedat')!=null){
+            						 $(spanNode).addClass('sec-cbe-highlight-dashed');
+            					 }
+            					 else{
+            						 if($(spanNode).hasClass('sec-cbe-highlight-block')){
+            							 //$(spanNode).addClass('sec-cbe-highlight-dashed_block');
+            						 }
+            					 }
+            				 }
+            				 if ($(spanNode).hasClass('sec-cbe-highlight-dashed')||$(spanNode).hasClass('sec-cbe-highlight-filter')) {
+            					 $(spanNode).children(':first').each(function() {
+            						 getMouseOverDiv(ele,node,false);
+            					 });
+            				 }
 
-						if(node.attr('continuedat')!=null){
-							setTimeout(function() {		
-								$(spanNode).addClass('sec-cbe-highlight-dashed-highlight');
-							},0);
-						}
-						else{
 
-							if(cls=='sec-cbe-highlight-block'){
-								setTimeout(function() {	
-									$(spanNode).addClass('sec-cbe-highlight-dashed_block');
-								},0);
-							}
+            				 placeMouseOverDiv(event);
+            				 event.stopPropagation();
+            			 }
 
-						}
-					}
-					
-                       $(spanNode).attr('data-result-index',index).on('click', function(evt) {
-                    	$('#about-modal').dialog("close");
-                    	//$(this).addClass('sec-cbe-highlight-dashed')
-                    	if(App_Find.Highlight.cachedResults.arrayOfImages.length==1){
-                	    	App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
-                	     }
-							for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
-							 {
-								if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath){
-									App_Find.Highlight.cachedResults.arrayOfImages[i].setAttribute("src", srcImg);
-								}
-							 }
-                        if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-dashed-highlight')||$(this).hasClass('sec-cbe-highlight-filter')) {
-						    App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-selected, .sec-cbe-highlight-filter-selected-block, .sec-cbe-highlight-filter-block-content-selected, .sec-cbe-highlight-filter-content-selected')
-						    .removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-selected sec-cbe-highlight-filter-selected-block sec-cbe-highlight-filter-block-content-selected sec-cbe-highlight-filter-content-selected');
-                    	    var index = $(this).attr('data-result-index');
-							applyBackgroundcolrOnallChildNodesOnClick($(this));
-                    		App_Find.Results.highlightItem(index);  // highlight the result item
-                       		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                                	if(node.attr('continuedat')!=null){
-                                		$(this).children(':first').selectionHighlightNodesOnClick();
-                                		for(var i=0;i<allLinkedNodes.length;i++){
-                                				parentNodeOfContinuation=allLinkedNodes[i].parent();
-                                				nodeN = allLinkedNodes[i].parent()[0].nodeName.toLowerCase(); 
-                                				if(positionTop=='0' || positionTop=='1' || positionTop=='2'){
-                                					while(nodeN.toLowerCase() !="body"){
-                                						parentNodeOfContinuation = parentNodeOfContinuation.parent();
-                                						if($(parentNodeOfContinuation).parent()[0]){
-                                							nodeN = $(parentNodeOfContinuation).parent()[0].nodeName.toLowerCase();
-                                						}
-                                						else{
-                                							break;
-                                						}
-                                					}
-                                					var childNode=parentNodeOfContinuation;
-                                					if(($(childNode).prev()[0]) ){
-                                						if($(childNode).prev()[0].nodeName.toLowerCase()=="img"){
-                                							$(childNode).prev()[0].setAttribute("src", blueImagePath);
-                                						}
-                                					}
-                                				}
-												str = $(elem).attr('src');
-                                				if(str){
-                                					elem.setAttribute("src", blueImagePath);
-                                				}
-                                			//$(elem).attr("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
-                                			//elem.setAttribute("src", blueImagePath);
-                                		}
-                                		App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
-                                		selectionHighlightClickNodes(allLinkedNodes);
-                                		}
-                                	else{
-                                		if($(this).hasClass('sec-cbe-highlight-block')){
-                                			$(this).children(':first').selectionHighlightForBlock();
-                                			
-                                		}else if($(this).hasClass('sec-cbe-highlight-inline')){
-                                			App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
-            								$(this).addClass('sec-cbe-highlight-filter-content-selected');
-                                			$(this).children(':first').selectionHighlight();
-                                		}
-                                	}
-                                	$(this).children(':first').each(function() {
-                            		    App_Find.Element.showSelectionDetail($(node));
-                            		});
-                       		 }
-                       		 else{
-                       			App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
-								$(this).addClass('sec-cbe-highlight-filter-content-selected');
-	                       		$(this).children(':first').selectionHighlight();	 
-	                    		$(this).children(':first').each(function() {
-	                    		    App_Find.Element.showSelectionDetail($(this));
-	                    		});
-                       		 }
-                    		evt.stopPropagation();
-                    	}
-                    }).on('mousemove', function(event) {
-                     var flag=true;	
-               		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                        	if(node.attr('continuedat')!=null){
-							//App.frame.contents().find('.sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-filter-selected-block');
-							//App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
-                        		node.removeClass('sec-cbe-highlight-dashed');
-                        		node.removeClass('sec-cbe-highlight-dashed_block');
-                        		selectionHighlightNodes(allLinkedNodes);
-								var imageId=node.attr('id')+"imageid";
-            					imageNode=getAlreadyExistingImage(imageId);
-            					if(imageNode){
-            					if(imageNode.style.visibility == "hidden"){
-            						flag=false;
-            					}
-            					}								
-                        	}else if(($(this).hasClass('sec-cbe-highlight-block'))&& !($(this).hasClass('sec-cbe-highlight-content-selected'))){
-                          		$(this).addClass('sec-cbe-highlight-content-selected');
-								applyBackgroundcolrOnallChildNodes($(this));
-                          	}
-							 else{
-               			$(this).addClass('sec-cbe-highlight-content-selected');
-						applyBackgroundcolrOnallChildNodes($(this));
-               		 }
-               		 }
-					  else{
-               			$(this).addClass('sec-cbe-highlight-content-selected');
-						applyBackgroundcolrOnallChildNodes($(this));
-               		 }
-					 if(flag==true){
-                    	if(App_Find.Element.enableTooltip=="enable"){
-                    		if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                            	if(node.attr('continuedat')!=null){
-                            		$(this).addClass('sec-cbe-highlight-dashed-highlight');
-                            	}
-                        	}
-	                    	if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-dashed-highlight')||$(this).hasClass('sec-cbe-highlight-filter')) {
-	                    		$(this).children(':first').each(function() {
-	                    			getMouseOverDiv(ele, node,false);
-	                    		});
-	                    	}
-	                    	
-	        				
-	                    	placeMouseOverDiv(event);
-	                    	}
-                    	}
-                    	event.stopPropagation();
-                    	
-                    }).on('mouseout', function() {
-                    	if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                        	if(node.attr('continuedAt')!=null){
-                        		 $(this).removeHighlightNodes(allLinkedNodes); 
-                            }else if($(this).hasClass('sec-cbe-highlight-block')){
-                          		$(this).removeClass('sec-cbe-highlight-content-selected');
-								removeBackgroundcolrFromallChildNodes($(this));
-                          	}
-	                         else{
-                    			$(this).removeClass('sec-cbe-highlight-content-selected');
-								removeBackgroundcolrFromallChildNodes($(this));
-                    		 }
-               		 }
-                    	else{
-                    			$(this).removeClass('sec-cbe-highlight-content-selected');
-								removeBackgroundcolrFromallChildNodes($(this));
-                    		 }
-                    	var container = $('#selection-detail-container-mouseOver');
-                    	container.hide();
-                    }).on('mouseenter', function(event) {
-					var flag=true;
-                 		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                          	if(ele.attr('continuedat')!=null){
-                          		ele.removeClass('sec-cbe-highlight-dashed');
-                          		ele.removeClass('sec-cbe-highlight-dashed_block');
-                          		selectionHighlightNodes(allLinkedNodes); 
-								var imageId=node.attr('id')+"imageid";
-            					imageNode=getAlreadyExistingImage(imageId);
-            					if(imageNode){
-            					if(imageNode.style.visibility == "hidden"){
-            						flag=false;
-            					}
-            					}
-                          	}else if($(this).hasClass('sec-cbe-highlight-block')){
-                          		$(this).addClass('sec-cbe-highlight-content-selected');
-                          	}
-                 		 }
-						 if(flag==true){
-                    	if(App_Find.Element.enableTooltip=="enable"){
-                    		
-	                    	if ($(this).hasClass('sec-cbe-highlight-dashed')||$(this).hasClass('sec-cbe-highlight-filter')) {
-	                    		$(this).children(':first').each(function() {
-	                    			getMouseOverDiv(ele, node,false);
-	                    		});
-	                    	}
-	                    	placeMouseOverDiv(event);
-	                    	}
-                    	}
-                    	event.stopPropagation();
-                    });
-                }
-            }
-            
+            		 }).on('mouseout', function() {
+            			 if(nodeName == nonNumericNodeElement){
+            				 if(node.attr('continuedAt')!=null){
+            					 allLinkedNodes=App_Find.Element.groupIxContinuation(node);
+            					 $(this).removeHighlightNodes(allLinkedNodes);
+
+            				 }
+
+            			 }
+            			 var container = $('#selection-detail-container-mouseOver');
+            			 container.hide();
+            		 });
+					 setTimeout(function() {		
+                			 $(spanNode).addClass('sec-cbe-highlight-dashed');
+                		 },10);
+            		 if(nonNumericNode){
+            			 
+            			 if(node.attr('continuedat')!=null){
+            				
+            				 setTimeout(function() {		
+            					 $(spanNode).addClass('sec-cbe-highlight-dashed-highlight');
+            				 },10);
+            			 }
+            			 else{
+
+            				 if(cls=='sec-cbe-highlight-block'){
+            					 setTimeout(function() {	
+            						 $(spanNode).addClass('sec-cbe-highlight-dashed_block');
+            					 },10);
+            				 }
+
+            			 }
+            		 }
+
+            		 $(spanNode).attr('data-result-index',index).on('click', function(evt) {
+            			 $('#about-modal').dialog("close");
+            			 App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
+            			 var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+            			 for (var i=0; i<arrayOfImagesLength; i++)
+            			 {
+            				 var elementAtIthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[i];
+            				 if(elementAtIthPositionOfArrayOfImages.getAttribute('src')==blueImagePath){
+            					 elementAtIthPositionOfArrayOfImages.setAttribute("src", srcImg);
+            				 }
+            			 }
+            			 var currentNode=$(this);
+            			 if (currentNode.hasClass('sec-cbe-highlight-dashed')||currentNode.hasClass('sec-cbe-highlight-dashed-highlight')||currentNode.hasClass('sec-cbe-highlight-filter')) {
+            				 frameContentObject.find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-selected, .sec-cbe-highlight-filter-selected-block, .sec-cbe-highlight-filter-block-content-selected, .sec-cbe-highlight-filter-content-selected')
+            				 .removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-selected sec-cbe-highlight-filter-selected-block sec-cbe-highlight-filter-block-content-selected sec-cbe-highlight-filter-content-selected');
+            				 var index = currentNode.attr('data-result-index');
+            				 applyBackgroundcolrOnallChildNodesOnClick(currentNode);
+            				 App_Find.Results.highlightItem(index);  // highlight the result item
+            				 if(nodeName == nonNumericNodeElement){
+            					 if(node.attr('continuedat')!=null){
+            						 currentNode.children(':first').selectionHighlightNodesOnClick();
+            						 var allLinkedNodesLength=allLinkedNodes.length;
+            						 for(var i=0;i<allLinkedNodesLength;i++){
+            							 var allLinkedNodesLocalElement=allLinkedNodes[i];
+            							 parentNodeOfContinuation=allLinkedNodesLocalElement.parent();
+            							 nodeN = parentNodeOfContinuation[0].nodeName.toLowerCase(); 
+            							 if(positionTop=='0' || positionTop=='1' || positionTop=='2'){
+            								 while(nodeN.toLowerCase() !="body"){
+            									 parentNodeOfContinuation = parentNodeOfContinuation.parent();
+            									 var parentOfParentNodeOfContinuation=$(parentNodeOfContinuation).parent()[0];
+            									 if(parentOfParentNodeOfContinuation){
+            										 nodeN = parentOfParentNodeOfContinuation.nodeName.toLowerCase();
+            									 }
+            									 else{
+            										 break;
+            									 }
+            								 }
+            								 var childNode=parentNodeOfContinuation;
+            								 var prevOfChildNode=$(childNode).prev()[0];
+            								 if((prevOfChildNode) ){
+            									 if(prevOfChildNode.nodeName.toLowerCase()=="img"){
+            										 prevOfChildNode.setAttribute("src", blueImagePath);
+            									 }
+            								 }
+            							 }
+
+            							 str = $(elem).attr('src');
+            							 if(str){
+            								 elem.setAttribute("src", blueImagePath);
+            							 }
+            						 }
+            						 frameContentObject.find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
+            						 selectionHighlightClickNodes(allLinkedNodes);
+            					 }
+            					 else{
+            						 if(currentNode.hasClass('sec-cbe-highlight-block')){
+            							currentNode.children(':first').selectionHighlightForBlock();
+            							  var str1=null;
+            							 if($(node).prev().attr('src')){
+            							 str1 = $(node).prev().attr('src');
+            							 if(str1){
+            								 $(node).prev()[0].setAttribute("src", blueImagePath);
+            							 }
+            							 }
+            							 else{
+            								 str1 = $(node).parent().prev().attr('src'); 
+            								 if(str1){
+            									 $(node).parent().prev()[0].setAttribute("src", blueImagePath);
+                							 }
+            							 }
+
+            						 }else if(currentNode.hasClass('sec-cbe-highlight-inline')){
+            							 App.frame.contents().find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+            							 currentNode.addClass('sec-cbe-highlight-filter-content-selected');
+            							 currentNode.children(':first').selectionHighlight();
+            						 }
+            					 }
+            					 currentNode.children(':first').each(function() {
+            						 App_Find.Element.showSelectionDetail($(node));
+            					 });
+            				 }
+            				 else{
+            					 frameContentObject.find('.sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-filter-content-selected');
+            					 currentNode.addClass('sec-cbe-highlight-filter-content-selected');
+            					 currentNode.children(':first').selectionHighlight();	 
+            					 currentNode.children(':first').each(function() {
+            						 App_Find.Element.showSelectionDetail($(node));
+            					 });
+            				 }
+            				 evt.stopPropagation();
+            			 }
+            		 }).on('mousemove', function(event) {
+            			 var flag=true;	
+            			 var currentNode=$(this);
+            			 if(nodeName == nonNumericNodeElement){
+            				 if(node.attr('continuedat')!=null){
+            					 node.removeClass('sec-cbe-highlight-dashed sec-cbe-highlight-dashed_block');
+            					 selectionHighlightNodes(allLinkedNodes);
+            					 var imageId=node.attr('id')+"imageid";
+            					 imageNode=getAlreadyExistingImage(imageId);
+            					 if(imageNode){
+            						 if(imageNode.style.visibility == "hidden"){
+            							 flag=false;
+            						 }
+            					 }								
+            				 }else if((currentNode.hasClass('sec-cbe-highlight-block'))&& !(currentNode.hasClass('sec-cbe-highlight-content-selected'))){
+            					 currentNode.addClass('sec-cbe-highlight-content-selected');
+            					 applyBackgroundcolrOnallChildNodes($(this));
+            				 }
+            				 else{
+            					 currentNode.addClass('sec-cbe-highlight-content-selected');
+            					 applyBackgroundcolrOnallChildNodes($(this));
+            				 }
+            			 }
+            			 else{
+            				 currentNode.addClass('sec-cbe-highlight-content-selected');
+            				 applyBackgroundcolrOnallChildNodes($(this));
+            			 }
+            			 if(flag==true){
+            				 if(App_Find.Element.enableTooltip=="enable"){
+            					 if(nodeName == nonNumericNodeElement){
+            						 if(node.attr('continuedat')!=null){
+            							 currentNode.addClass('sec-cbe-highlight-dashed-highlight');
+            						 }
+            					 }
+            					 if (currentNode.hasClass('sec-cbe-highlight-dashed')||currentNode.hasClass('sec-cbe-highlight-dashed-highlight')||currentNode.hasClass('sec-cbe-highlight-filter')) {
+            						 currentNode.children(':first').each(function() {
+            							 getMouseOverDiv(ele, node,false);
+            						 });
+            					 }
+
+
+            					 placeMouseOverDiv(event);
+            				 }
+            			 }
+            			 event.stopPropagation();
+
+            		 }).on('mouseout', function() {
+            			 var currentNode=$(this);
+            			 if(nodeName == nonNumericNodeElement){
+            				 if(node.attr('continuedAt')!=null){
+            					 currentNode.removeHighlightNodes(allLinkedNodes); 
+            				 }else if(currentNode.hasClass('sec-cbe-highlight-block')){
+            					 currentNode.removeClass('sec-cbe-highlight-content-selected');
+            					 removeBackgroundcolrFromallChildNodes($(this));
+            				 }
+            				 else{
+            					 currentNode.removeClass('sec-cbe-highlight-content-selected');
+            					 removeBackgroundcolrFromallChildNodes($(this));
+            				 }
+            			 }
+            			 else{
+            				 currentNode.removeClass('sec-cbe-highlight-content-selected');
+            				 removeBackgroundcolrFromallChildNodes($(this));
+            			 }
+            			 var container = $('#selection-detail-container-mouseOver');
+            			 container.hide();
+            		 }).on('mouseenter', function(event) {
+            			 var currentNode=$(this);
+            			 var flag=true;
+            			 if(nodeName == nonNumericNodeElement){
+            				 if(ele.attr('continuedat')!=null){
+            					 ele.removeClass('sec-cbe-highlight-dashed sec-cbe-highlight-dashed_block');
+            					 selectionHighlightNodes(allLinkedNodes); 
+            					 var imageId=node.attr('id')+"imageid";
+            					 imageNode=getAlreadyExistingImage(imageId);
+            					 if(imageNode){
+            						 if(imageNode.style.visibility == "hidden"){
+            							 flag=false;
+            						 }
+            					 }
+            				 }else if(currentNode.hasClass('sec-cbe-highlight-block')){
+            					 currentNode.addClass('sec-cbe-highlight-content-selected');
+            				 }
+            			 }
+            			 if(flag==true){
+            				 if(App_Find.Element.enableTooltip=="enable"){
+
+            					 if (currentNode.hasClass('sec-cbe-highlight-dashed')||currentNode.hasClass('sec-cbe-highlight-filter')) {
+            						 currentNode.children(':first').each(function() {
+            							 getMouseOverDiv(ele, node,false);
+            						 });
+            					 }
+            					 placeMouseOverDiv(event);
+            				 }
+            			 }
+            			 event.stopPropagation();
+            		 });
+            	 }
+             }
             function calTotalRelationshipNodes(){
              App_Find.Highlight.cachedResults.relationship=App.InlineDoc.getRelationships();
             }
@@ -5172,95 +5041,30 @@ $( "#prevCarousel1" ).mouseover(function() {
              App_Find.Highlight.cachedResults.continuedAt=App.InlineDoc.getContinuations();
             }
             // if we have no filters or search filters then just show the results
-            if (!filter.isFiltered() &&
-                search.searchStr == '') {
-				
-            	 calTotalContinuedNodes();
-            	 calTotalRelationshipNodes();
-            	 calTotalFootNoteNodes();
-            	 if(App_Find.Highlight.cachedResults.continuedAt.length>0){
-                	
-            		 var count=0;
-            		 hrtags=App.frame.contents().find('hr');
-		            	for(var i=0;i<hrtags.length;i++){
-		            		hrtags[i].style.width = 'auto';
-		            		hrtags[i].style.clear = 'none';
-		            	}
-            		App.frame.contents().find('*[style*="text-indent"]').each(
-					            function (index) {
-					            	this.style.textIndent="0pt";
-					            });
-            		 App.frame.contents().find('*[style*="clear"]').each(
-            				 function (index) {
-            					 this.style.clear="none";
-            				 });
-            		 App.frame.contents().find('*[style*="both"]').each(
-            				 function (index) {
-            					 this.style.clear="none";
-            				 });
-            		 App.frame.contents().find('*[style*="padding-left"]').each(
-            				 function (index) {
-            					 this.style.paddingLeft="0px";
-            				 });
-            		 App.frame.contents().find('*[style*="line-height"]').each(
-					            function (index) {
-					            	if(this.style.lineHeight=="120%")
-					            		this.style.lineHeight = '130%';
-					            });
-            		 tabletags=App.frame.contents().find('table');
-						for(var i=0;i<tabletags.length;i++){
-		            		
-		            		if(tabletags[i].style.width=="100%")
-		            		{
-								tabletags[i].style.marginLeft="0";
-		            		if ( navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/android/i) ) {
-		            			tabletags[i].style.width="88%";
-		            			}
-		            		else if ( navigator.userAgent.match(/iPad/i)){
-		            			tabletags[i].style.width="82%";
-		            			}
-		            		
-		            		else{
-		            			tabletags[i].style.wordBreak="break-all";
-		            			
-		            			if($(document).width()>=1681){
-		            				tabletags[i].style.width="92%";
-		            			}
-		            			else if($(document).width()>=1601 && $(document).width()<=1680){
-		            				tabletags[i].style.width="90%";
-		            			}
-		            			else if($(document).width()>=1441 && $(document).width()<=1600){
-		            				tabletags[i].style.width="88%";
-		            			}
-		            			else if($(document).width()>=1152 && $(document).width()<=1440){
-		            				tabletags[i].style.width="86%";
-		            			}
-
-		            			else if($(document).width()>=1024 && $(document).width()<1152){
-		            				tabletags[i].style.width="84%";
-		            			}
-
-		            			else if($(document).width()<1024){
-		            				tabletags[i].style.width="76%";
-		            			}
-		            		}
-		            		}
-		            	}
-            		 results.each(function(index, element) {
-            			 var node = $(element);
-                		 var nodeName = node[0].nodeName.toLowerCase();
-            			 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-            				  App_Find.Highlight.cachedResults.nonnumericnodes.push(node);
-            				 var att = document.createAttribute("id");  
-            				 if(node.attr('continuedat')!=null){
-    							 if(element.attr('id')==null){
-                                 		att.value = count + "imageId";              
-                                 		$(element)[0].setAttributeNode(att);
-                 						count++;
-                 					}
-            				 }
-            			 }
-            		 });
+            if (!filter.isFiltered() && search.searchStr == '') {
+            	calTotalContinuedNodes();
+            	calTotalRelationshipNodes();
+            	calTotalFootNoteNodes();
+				var count=0;
+            	results.each(function(index, element) {
+       			 var node = $(element);
+           		 var nodeName = node[0].nodeName.toLowerCase();
+				   
+       			 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+       				  App_Find.Highlight.cachedResults.nonnumericnodes.push(node);
+       				 var att = document.createAttribute("id");  
+       				 //if(node.attr('continuedat')!=null){
+							 if(element.attr('id')==null){
+                            		att.value = count + "imageId";              
+                            		$(element)[0].setAttributeNode(att);
+            						count++;
+            					}
+       				// }
+       			 }
+       		 });
+            	var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
+            	if(App_Find.Highlight.cachedResults.continuedAt.length>0){
+				   
             		 results.each(function(index, element) {
             			 var node = $(element);
                 		 var spanNode=null;
@@ -5281,148 +5085,294 @@ $( "#prevCarousel1" ).mouseover(function() {
                 		 }
                 		 }
             		 });
-                	 var highlightType = App_Find.Highlight.getSelected().value;
-                	 var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
-                	 if(App_Find.Highlight.cachedResults.arrayOfImages.length==0){
-                	    	App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
-                	     }
-             		for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
-             		{
-             			if((App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==srcImg) || (App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath)){
-             				App_Find.Highlight.cachedResults.arrayOfImages[i].style.visibility = "visible";
-             			}
-             		}
-					var count=0;
-    				results.each(function(index, element) {
-                		 var node = $(element);
-                		 var nodeName = node[0].nodeName.toLowerCase();
-						 var att = document.createAttribute("id");  
-                		 var allLinkedNodes=[];
-                		 var elem = document.createElement("img");
-                		 var cls = 'sec-cbe-highlight-inline';
-                		 var parentNode = node.parent()[0];
-                		 var spanNode = null;
-                		 var xbrId="";
-                		 var nonNumericNode=false;
-                		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                			 App_Find.Highlight.cachedResults.nonnumericnodes.push(node);
-                		 }
-                		 if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-                			 nonNumericNode=true;
-                			 xbrId = node.attr('name').split(':').join('_');
-                			 if(node.attr('continuedat')!=null){
-                				 allLinkedNodes=App_Find.Element.groupIxContinuation(node);
-                				 App_Find.Highlight.cachedResults.allData.push(allLinkedNodes);
+            		var highlightType = App_Find.Highlight.getSelected().value;
+            		
+            		App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
+       			    var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+					if(highlightType=="both" || highlightType=="text"){
+            		for (var i=0; i<arrayOfImagesLength; i++)
+            		{
+            			var elementAtIthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[i];
+            			if(elementAtIthPositionOfArrayOfImages.getAttribute('src')==srcImg || elementAtIthPositionOfArrayOfImages.getAttribute('src')==blueImagePath){
+            				elementAtIthPositionOfArrayOfImages.style.visibility = "visible";
+            			}
+            		}
+					}
+					var xbrlArray=["booleanItemType","centralIndexKeyItemType","dateItemType","durationItemType","filerCategoryItemType","fiscalPeriodItemType","gMonthDayItemType","gYearItemType","normalizedStringItemType","submissionTypeItemType","yesNoItemType"];
+            		var time = 0;
+					var tdCount=0;
+					var userAgent=navigator.userAgent;
+	            	var documentWidth=$(document).width();
+	            	var incrementCount=0;
+	            	if (($.browser.msie)){
+	            		incrementCount=10;
+	            	}
+	            	else
+	            		incrementCount=0;
+					if(highlightType=="both" && !$('#filter-period-modal').hasClass('in') && !$('#filter-unit-modal').hasClass('in') && !$('#filter-axis-modal').hasClass('in') && !$('#filter-scale-modal').hasClass('in') && !$('#filter-balance-modal').hasClass('in')){
+            		results.each(function(index, element) {
+            			setTimeout(function() {
+            				var node = $(element);
+            				var nodeName = node[0].nodeName.toLowerCase();
+            				var allLinkedNodes=[];
+            				var elem = document.createElement("img");
+            				var cls = 'sec-cbe-highlight-inline';
+            				var spanNode = null;
+            				var xbrId="";
+            				var nonNumericNode=false;
+            				var nonNumericNodeElement=App.InlineDoc.inlinePrefix + ':nonnumeric';
+            				var parentNode = node.parent()[0];
+            				 if(nodeName == nonNumericNodeElement){
+                				 App_Find.Highlight.cachedResults.nonnumericnodes.push(node);
                 			 }
-                		 }
-                		 spanNode=parentNode;
-                		 wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId);
-                	 });
-                	 var continuedNodeId=" ";
-                	 var found=false;
-                	 var parentNode=" ";
-                	 var parentnodeId=" ";
-                	 var parentNodeOfContinuation=" ";
-                	 var positionOfElementsNew=[];
-                	 var parentNodeParent="";
-                	 var parentNodeParentNodeName=" ";
-                	 var nodeNew=" ";
-                	 for(var j=0;j< App_Find.Highlight.cachedResults.continuedAt.length;j++){
-                		 nodeNew=$(App_Find.Highlight.cachedResults.continuedAt[j]);
-                		 wrapInDashesForContinuationArray(nodeNew,blueImagePath,continuedNodeId,found,parentNode,parentnodeId,parentNodeOfContinuation,positionOfElementsNew,parentNodeParent,parentNodeParentNodeName);
-                	 }
-                	 App_Find.Results.show(App_Find.Highlight.getResults());
-            	 
-            	 }else{
-                	 results.each(function(index, element) {
-            			 var node = $(element);
-                		 var spanNode=null;
-                		 var nilPadding = '&#160;';
-                		 var parentNode = node.parent()[0];
-                		 var isonly = parentNode.childNodes.length == 1;   
-                		 var parentNodeName=parentNode.nodeName.toLowerCase();
-                		 if (!node.parent().hasClass('sec-cbe-highlight-dashed')) {
-                		 if (parentNodeName==='span') //
-                		 {
-                			 if (isonly) {
-                				 
-                			 }  // no need to wrap.
-                		 }
-                		 if (spanNode === null) {
-                			 node.wrap('<span>'+((node.attr('xsi:nil')==='true')?nilPadding:'')+'</span>');
-                			
-                		 }
-                		 }
-            		 });
-    				results.each(function(index, element) {
-                		 var node = $(element);
-                		 var nodeName = node[0].nodeName.toLowerCase();
-                		 var spanNode = null;
-                		 var cls = 'sec-cbe-highlight-inline';
-                		 var parentNode = node.parent()[0];
-                		 var nonNumericNode=false;
-						 var instanceXbrlType=false;
-						 var xbrId="";
-                		 if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
-                 			nonNumericNode=true;
-							xbrId = node.attr('name').split(':').join('_');
-							if(instanceTag){
-							if(instanceTag[xbrId].xbrlType == 'textBlockItemType' || instanceTag[xbrId].xbrltype == 'textBlockItemType'){
-							instanceXbrlType=true;
-							}
-							}
-                   		 }
-                		 spanNode=parentNode;
-                		 wrapInDashesTraditional(index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
-                	 });
-                	 App_Find.Results.show(App_Find.Highlight.getResults());
-            	 }
-            	 
+                			 if(nodeName == nonNumericNodeElement){
+                				 nonNumericNode=true;
+                				 xbrId = node.attr('name').split(':').join('_');
+                				 if(node.attr('continuedat')!=null){
+                					 allLinkedNodes=App_Find.Element.groupIxContinuation(node);
+                					 App_Find.Highlight.cachedResults.allData.push(allLinkedNodes);
+                				 }
+                			 }
+            				spanNode=parentNode;
+            				wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId,xbrlArray,userAgent,documentWidth,tdCount);
+            			},time);
+            			
+            			time +=incrementCount;
+            		});
+					}
+					else{
+	            		results.each(function(index, element) {
+	            				var node = $(element);
+	            				var nodeName = node[0].nodeName.toLowerCase();
+	            				var allLinkedNodes=[];
+	            				var elem = document.createElement("img");
+	            				var cls = 'sec-cbe-highlight-inline';
+	            				var spanNode = null;
+	            				var xbrId="";
+	            				var nonNumericNode=false;
+	            				var nonNumericNodeElement=App.InlineDoc.inlinePrefix + ':nonnumeric';
+	            				var parentNode = node.parent()[0];
+	            				 if(nodeName == nonNumericNodeElement){
+	                				 App_Find.Highlight.cachedResults.nonnumericnodes.push(node);
+	                			 }
+	                			 if(nodeName == nonNumericNodeElement){
+	                				 nonNumericNode=true;
+	                				 xbrId = node.attr('name').split(':').join('_');
+	                				 if(node.attr('continuedat')!=null){
+	                					 allLinkedNodes=App_Find.Element.groupIxContinuation(node);
+	                					 App_Find.Highlight.cachedResults.allData.push(allLinkedNodes);
+	                				 }
+	                			 }
+	            				spanNode=parentNode;
+	            				wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId,xbrlArray,userAgent,documentWidth,tdCount);
+	            		});
+	            	}
+					App_Find.Results.show(App_Find.Highlight.getResults());
+					
+            		var continuedNodeId=" ";
+            		var found=false;
+            		var parentNode=" ";
+            		var parentnodeId=" ";
+            		var parentNodeOfContinuation=" ";
+            		var positionOfElementsNew=[];
+            		var parentNodeParent="";
+            		var parentNodeParentNodeName=" ";
+            		var nodeNew=" ";
+            		for(var j=0;j< App_Find.Highlight.cachedResults.continuedAt.length;j++){
+            			nodeNew=$(App_Find.Highlight.cachedResults.continuedAt[j]);
+            			wrapInDashesForContinuationArray(nodeNew,blueImagePath,continuedNodeId,found,parentNode,parentnodeId,parentNodeOfContinuation,positionOfElementsNew,parentNodeParent,parentNodeParentNodeName);
+            		}
+            		frameContentObject.find('hr[style*="width"]').each(
+            				function (index) {
+            					$(this).addClass('applyhrstyles');
+
+            				});
+            		frameContentObject.find('div[style*="clear"], div[style*="line-height"], div[style*="CLEAR"]').each(
+            				function (index) {
+            					$(this).addClass('applydivstyles');
+            					if(this.style.lineHeight=="120%")
+            						this.style.lineHeight = '130%';
+            				});
+            		//added this code for fix of DE541
+            		frameContentObject.find('p[style*="text-indent"]').each(
+            				function (index) {
+            					if(this.style.textIndent=="-153pt" || this.style.textIndent=="-153.35pt" || this.style.textIndent=="-99pt"){
+            						this.style.marginLeft = '0pt';
+            						this.style.textIndent = '0pt';
+            					}
+            					//	
+
+            				});
+            		//end DE541
+            		
+                	/*tabletags = frameContentObject.find('table[style*="width"]').each(
+                	           function (index) {
+							    if(this.style.width=="100%"){
+                	        	   this.style.marginLeft = "0";
+                	   			if (userAgent.match(/iPhone/i) || userAgent.match(/android/i)) {
+                	   				this.style.width = "88%";
+                	   			} else if (userAgent.match(/iPad/i)) {
+                	   				this.style.width = "82%";
+                	   			}
+                	   			else {
+                	   				if (documentWidth >= 1681) {
+                	   					this.style.width = "92%";
+                	   				} else if (documentWidth >= 1601 && documentWidth <= 1680) {
+                	   					this.style.width = "90%";
+                	   				} else if (documentWidth >= 1441 && documentWidth <= 1600) {
+                	   					this.style.width = "88%";
+                	   				} else if (documentWidth >= 1152 && documentWidth <= 1440) {
+                	   					this.style.width = "86%";
+                	   				}
+                	   				else if (documentWidth >= 1024 && documentWidth < 1152) {
+                	   					this.style.width = "84%";
+                	   				}
+                	   				else if (documentWidth < 1024) {
+                	   					this.style.width = "76%";
+                	   				}
+                	   			}
+								}
+                	           });*/
+            		//setTimeout(function() {
+            			$(".fixedMenuBar").css('pointer-events', 'all');
+            			$(".fixedMenuBar").css('opacity', '1');
+            			App.hideToolbarSpinner();
+            		//},time);
+
+            	}else{
+            		var highlightType = App_Find.Highlight.getSelected().value;
+
+            		App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
+            		var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+            		if(highlightType=="both" || highlightType=="text"){
+            			for (var i=0; i<arrayOfImagesLength; i++)
+            			{
+            				var elementAtIthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[i];
+            				if(elementAtIthPositionOfArrayOfImages.getAttribute('src')==srcImg || elementAtIthPositionOfArrayOfImages.getAttribute('src')==blueImagePath){
+            					elementAtIthPositionOfArrayOfImages.style.visibility = "visible";
+            				}
+            			}
+            		}
+            		var time = 0;
+            		if(highlightType=="both"){
+            		results.each(function(index, element) {
+
+            			setTimeout(function() {
+            				var node = $(element);
+            				var nodeName = node[0].nodeName.toLowerCase();
+            				var spanNode = null;
+            				var cls = 'sec-cbe-highlight-inline';
+            				var elem = document.createElement("img");
+            				//var parentNode = node.parent()[0];
+            				var nonNumericNode=false;
+            				var instanceXbrlType=false;
+            				var xbrId="";
+            				if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
+            					nonNumericNode=true;
+            					xbrId = node.attr('name').split(':').join('_');
+            					if(instanceTag){
+            						if(instanceTag[xbrId].xbrlType == 'textBlockItemType' || instanceTag[xbrId].xbrltype == 'textBlockItemType'){
+            							instanceXbrlType=true;
+            						}
+            					}
+            				}
+            				wrapInDashesTraditional(elem,blueImagePath,highlightType,index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
+            			},time);
+            			time += 10;
+            		});
+            		}
+            		else{
+            			results.each(function(index, element) {
+
+                				var node = $(element);
+                				var nodeName = node[0].nodeName.toLowerCase();
+                				var spanNode = null;
+                				var cls = 'sec-cbe-highlight-inline';
+                				var elem = document.createElement("img");
+                				//var parentNode = node.parent()[0];
+                				var nonNumericNode=false;
+                				var instanceXbrlType=false;
+                				var xbrId="";
+                				if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
+                					nonNumericNode=true;
+                					xbrId = node.attr('name').split(':').join('_');
+                					if(instanceTag){
+                						if(instanceTag[xbrId].xbrlType == 'textBlockItemType' || instanceTag[xbrId].xbrltype == 'textBlockItemType'){
+                							instanceXbrlType=true;
+                						}
+                					}
+                				}
+                				wrapInDashesTraditional(elem,blueImagePath,highlightType,index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
+                		});
+            		}
+            		//setTimeout(function() {
+            			App_Find.Results.show(App_Find.Highlight.getResults());
+            			$(".fixedMenuBar").css('pointer-events', 'all');
+            			$(".fixedMenuBar").css('opacity', '1');
+            			App.hideToolbarSpinner();
+            		//},time);
+
+            	}
             } else {
             	if(App_Find.Highlight.cachedResults.continuedAt.length>0){
-            		if(App_Find.Highlight.cachedResults.arrayOfImages.length==0){
-            	    	App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
-            	     }
-        			for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
-        			{
-        				if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==srcImg){
-        					App_Find.Highlight.cachedResults.arrayOfImages[i].style.visibility = "visible";
-        				}
-        			}
-                	var highlightType = App_Find.Highlight.getSelected().value;
-                	var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
-                	if(!filter.isFiltered() && (highlightType != 'none')){
-                		results.each(function(index, element) {
-                			var node = $(element);
-                			var nodeName = node[0].nodeName.toLowerCase();
-                			var allLinkedNodes=[];
-                			var elem = document.createElement("img");
-							var cls = 'sec-cbe-highlight-inline';
-                			var parentNode = node.parent()[0];
-                			var spanNode = null;
-                			var xbrId="";
-							var nonNumericNode=false;
-                			if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-							nonNumericNode=true;
-                      			 xbrId = node.attr('name').split(':').join('_');
-                				if(node.attr('continuedat')!=null){
-                					allLinkedNodes=App_Find.Element.groupIxContinuation(node);
-                				}
-                			}
-                			spanNode=parentNode;
-                			wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId);
-    	                });
-                	}
-                    var results = [];
-                    App_Find.Highlight.getResults().each(function(index, element) {
+				var xbrlArray=["booleanItemType","centralIndexKeyItemType","dateItemType","durationItemType","filerCategoryItemType","fiscalPeriodItemType","gMonthDayItemType","gYearItemType","normalizedStringItemType","submissionTypeItemType","yesNoItemType"];
+				var userAgent=navigator.userAgent;
+				var tdCount=0;
+	            var documentWidth=$(document).width();
+	            App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
+				var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
+   			    var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+				var highlightType = App_Find.Highlight.getSelected().value;
+   			    if(highlightType =="both" || highlightType =="text"){
+            		for (var i=0; i<arrayOfImagesLength; i++)
+            		{
+            			var elementAtIthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[i];
+            			if(elementAtIthPositionOfArrayOfImages.getAttribute('src')==srcImg ||elementAtIthPositionOfArrayOfImages.getAttribute('src')==blueImagePath){
+            				elementAtIthPositionOfArrayOfImages.style.visibility = "visible";
+            			}
+            		}
+					}
+            	//DE573
+   			    else if(highlightType =="hidden" || highlightType =="sign"){
+	         		for (var i=0; i<arrayOfImagesLength; i++)
+	         		{
+	         			var elementAtIthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[i];
+	         			if(elementAtIthPositionOfArrayOfImages.getAttribute('src')==srcImg ||elementAtIthPositionOfArrayOfImages.getAttribute('src')==blueImagePath){
+	         				elementAtIthPositionOfArrayOfImages.style.visibility = "hidden";
+	         			}
+	         		}
+				}
+            		
+            		if(!filter.isFiltered() && (highlightType != 'none')){
+            			results.each(function(index, element) {
+            				var node = $(element);
+            				var nodeName = node[0].nodeName.toLowerCase();
+            				var allLinkedNodes=[];
+            				var elem = document.createElement("img");
+            				var cls = 'sec-cbe-highlight-inline';
+            				var parentNode = node.parent()[0];
+            				var spanNode = null;
+            				var xbrId="";
+            				var nonNumericNode=false;
+            				if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+            					nonNumericNode=true;
+            					xbrId = node.attr('name').split(':').join('_');
+            					if(node.attr('continuedat')!=null){
+            						allLinkedNodes=App_Find.Element.groupIxContinuation(node);
+            					}
+            				}
+            				spanNode=parentNode;
+            				wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId,xbrlArray,userAgent,documentWidth,tdCount);
+            			});
+            		}
+            		var results = [];
+            		App_Find.Highlight.getResults().each(function(index, element) {
 
                         var isMatch = false;
                         var ele = $(element);
                         var node = $(element);
                 		var nodeName = node[0].nodeName.toLowerCase();
                 		var allLinkedNodes=[];
-                		var imageId="";
-                		var imageNode="";
 						var cls = 'sec-cbe-highlight-inline';
                 		var imageNode="";
                 		var parentNode = node.parent()[0];
@@ -5441,7 +5391,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 
                             if (ele.matchesFilter(filter, ele)) {
                             	spanNode=parentNode;
-                            	wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId);
+                            	wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId,xbrlArray,userAgent,documentWidth,tdCount);
                                 if (search.searchStr != '' &&
                                     ele.matchesSearch(search, ele)) {
                                     isMatch = true;
@@ -5452,14 +5402,14 @@ $( "#prevCarousel1" ).mouseover(function() {
                             }
     						else{
     							if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
-    	                           	if($(ele).attr('continuedat')!=null){
+    	                           	//if($(ele).attr('continuedat')!=null){
     	                           		//imageId=$(ele).attr('continuedat')+"imageid";
 										var imageId=ele.attr('id')+"imageid";
     	        						imageNode=getAlreadyExistingImage(imageId);
     	        						if(imageNode){
     	        						imageNode.style.visibility = "hidden";
     	                           		}
-    	                           	}
+    	                           	//}
     	                    	}
                             }
                         } else if (search.searchStr != '' && ele.matchesSearch(search, ele)) {
@@ -5480,13 +5430,27 @@ $( "#prevCarousel1" ).mouseover(function() {
                             }
 							}
                             spanNode=parentNode;
-                         	wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId);
+                         	wrapInDashes(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem,cls,spanNode,nonNumericNode,xbrId,xbrlArray,userAgent,documentWidth,tdCount);
                             
                         }
                     });
                     App_Find.Results.show(results);
             	}else{
-                	var highlightType = App_Find.Highlight.getSelected().value;
+            		App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
+            		var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
+            		var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
+            		var highlightType = App_Find.Highlight.getSelected().value;
+            		console.log("hello");
+            		
+            		if(highlightType =="both" || highlightType =="text"){
+            			for (var i=0; i<arrayOfImagesLength; i++)
+            			{
+            				var elementAtIthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[i];
+            				if(elementAtIthPositionOfArrayOfImages.getAttribute('src')==srcImg ||elementAtIthPositionOfArrayOfImages.getAttribute('src')==blueImagePath){
+            					elementAtIthPositionOfArrayOfImages.style.visibility = "visible";
+            				}
+            			}
+            		}
                 	if(!filter.isFiltered() && (highlightType != 'none')){
                 		results.each(function(index, element) {
                 			var node = $(element);
@@ -5497,6 +5461,8 @@ $( "#prevCarousel1" ).mouseover(function() {
                 			var nonNumericNode=false;
 							var instanceXbrlType=false;
 							 var xbrId="";
+							 var elem = document.createElement("img");
+							var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
 							 if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
 								nonNumericNode=true;
 								xbrId = node.attr('name').split(':').join('_');
@@ -5507,14 +5473,15 @@ $( "#prevCarousel1" ).mouseover(function() {
 							 }
                 			
                     		spanNode=parentNode;
-                    		wrapInDashesTraditional(index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
+                    		wrapInDashesTraditional(elem,blueImagePath,highlightType,index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
                 			//wrapInDashe(index,element,highlightType,blueImagePath,node,nodeName,allLinkedNodes,elem);
     	                });
                 	}
                     var results = [];
                    
                     App_Find.Highlight.getResults().each(function(index, element) {
-
+                        var elem = document.createElement("img");
+						var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
                         var isMatch = false;
                         var ele = $(element);
                         var node = $(element);
@@ -5537,7 +5504,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                         if (filter.isFiltered()) {
 
                             if (ele.matchesFilter(filter, ele)) {
-                            	wrapInDashesTraditional(index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
+                            	wrapInDashesTraditional(elem,blueImagePath,highlightType,index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
                                 if (search.searchStr != '' &&
                                     ele.matchesSearch(search, ele)) {
                                     isMatch = true;
@@ -5545,6 +5512,15 @@ $( "#prevCarousel1" ).mouseover(function() {
 
                                     isMatch = true;
                                 }
+                            }
+                            else{
+                            if(nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric'){
+									var imageId=ele.attr('id')+"imageid";
+	        						imageNode=getAlreadyExistingImage(imageId);
+	        						if(imageNode){
+	        						imageNode.style.visibility = "hidden";
+	                           		}
+	                    	}
                             }
                         } else if (search.searchStr != '' && ele.matchesSearch(search, ele)) {
                                 var searchstring = search.searchStr;
@@ -5554,7 +5530,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                         if (isMatch) {
                             results.push(ele);
                             ele.filterHighlight(results.length - 1);
-                            wrapInDashesTraditional(index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
+                            wrapInDashesTraditional(elem,blueImagePath,highlightType,index,element,node,nodeName,spanNode,cls,nonNumericNode,xbrId,instanceXbrlType);
                             
                         }
                     });
@@ -5745,19 +5721,16 @@ $( "#prevCarousel1" ).mouseover(function() {
                 App_Find.Element.carouselGoTo(index);
             });
 
-            var header = $('#selection-detail-container > .selection-detail-header');
-            header.find('.btn-copy').on('click', function() {
+             $("#copyAllFRW").on('click', function() {
                 App_Find.Element.copyToClipboard();
             });
 
-            header.find('.btn-remove').on('click', function() {
-            	
-            	if(App_Find.Highlight.cachedResults.arrayOfImages.length==0){
-            		App_Find.Highlight.cachedResults.arrayOfImages=App.frame.contents().find('img');
-            	}
+            $("#closeFRW").on('click', function() {
+            	App_Find.Highlight.cachedResults.arrayOfImages= App.frame.contents().find('img');
+   			    var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
             	var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
             	var srcImg = "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png";
-            	for (var i=0, len=App_Find.Highlight.cachedResults.arrayOfImages.length; i<len; i++)
+            	for (var i=0; i<arrayOfImagesLength; i++)
             	{
             		if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath){
             			App_Find.Highlight.cachedResults.arrayOfImages[i].setAttribute("src", srcImg);
@@ -5767,15 +5740,15 @@ $( "#prevCarousel1" ).mouseover(function() {
 
 
 
-            $(".fixedMenuBar").css('position', 'absolute');
-        
-        
-}
-else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation=='-90')))){
+            		$(".fixedMenuBar").css('position', 'absolute');
 
-	$(".fixedMenuBar").css('position', 'absolute');
 
-}*/
+            	}
+            	else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation=='-90')))){
+
+            		$(".fixedMenuBar").css('position', 'absolute');
+
+            	}*/
             	App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected, .sec-cbe-highlight-filter-selected, .sec-cbe-highlight-filter-selected-block, .sec-cbe-highlight-filter-block-content-selected')
             	.removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected sec-cbe-highlight-filter-selected sec-cbe-highlight-filter-selected-block sec-cbe-highlight-filter-block-content-selected'); 
             	$(this).parents('.selection-detail-container').dialog("close");
@@ -5813,14 +5786,14 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
 			}
         },
         findRelatedNodeAndUpdateMantainedList:function(continuedAt,allContinuedDependents,newContinuedAt){
-        	for(var i=0; i<App_Find.Highlight.cachedResults.continuedAt.length;i++){
-        		
-        		if(continuedAt==App_Find.Highlight.cachedResults.continuedAt[i].attr('id')){
-        			allContinuedDependents.push(App_Find.Highlight.cachedResults.continuedAt[i]);
-        			if(null!=App_Find.Highlight.cachedResults.continuedAt[i].attr('continuedAt')){
-        			newContinuedAt=App_Find.Highlight.cachedResults.continuedAt[i].attr('continuedAt');
-        			//App_Find.Highlight.cachedResults.continuedAt.splice(i,1);
-        			break;
+        	var continuedAtLength=App_Find.Highlight.cachedResults.continuedAt.length;
+        	for(var i=0; i<continuedAtLength;i++){
+        		var ithElementOfContinuedAtArray=App_Find.Highlight.cachedResults.continuedAt[i];
+        		if(continuedAt==ithElementOfContinuedAtArray.attr('id')){
+        			allContinuedDependents.push(ithElementOfContinuedAtArray);
+        			if(null!=ithElementOfContinuedAtArray.attr('continuedAt')){
+        				newContinuedAt=ithElementOfContinuedAtArray.attr('continuedAt');
+        				break;
         			}
         				           			          			
             	}
@@ -6082,18 +6055,22 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
                             footnoteHtml = footnote.substring(0, maxValueTextLength) + '...';
                         }
                         else{
-                        	if(App_Find.Highlight.cachedResults.relationship.length>1){
-                        	    for(var i=0;i<App_Find.Highlight.cachedResults.relationship.length;i++){
-                        	    	var fromRefs=App_Find.Highlight.cachedResults.relationship[i].attr('fromRefs').split(" ");
+                        	var relationshipArrayLength=App_Find.Highlight.cachedResults.relationship.length;
+                        	var footnoteArrayLength=App_Find.Highlight.cachedResults.footnote.length;
+                        	if(relationshipArrayLength>1){
+                        	    for(var i=0;i<relationshipArrayLength;i++){
+                        	    	var ithElementOfRelationshipArray=App_Find.Highlight.cachedResults.relationship[i];
+                        	    	var fromRefs=ithElementOfRelationshipArray.attr('fromRefs').split(" ");
                         	    	for(var k=0;k<fromRefs.length;k++){
                         	    	if(fromRefs[k]==ele.attr('id'))
                         	    		{
-                        	    		var toRefs=App_Find.Highlight.cachedResults.relationship[i].attr('toRefs');
-                        	    		for(var j=0;j<App_Find.Highlight.cachedResults.footnote.length;j++){
-                        	    			if(App_Find.Highlight.cachedResults.footnote[j].attr('id')==toRefs){
-                        	    			if(App_Find.Highlight.cachedResults.footnote[j].attr('continuedAt')!=null){
+                        	    		var toRefs=ithElementOfRelationshipArray.attr('toRefs');
+                        	    		for(var j=0;j<footnoteArrayLength;j++){
+                        	    			var jthElementOfFootNoteArray=App_Find.Highlight.cachedResults.footnote[j];
+                        	    			if(jthElementOfFootNoteArray.attr('id')==toRefs){
+                        	    			if(jthElementOfFootNoteArray.attr('continuedAt')!=null){
                         	    				var allLinkedNodes=[];
-                        	    				allLinkedNodes=App_Find.Element.groupIxContinuation(App_Find.Highlight.cachedResults.footnote[j]);
+                        	    				allLinkedNodes=App_Find.Element.groupIxContinuation(jthElementOfFootNoteArray);
                         	    				var footnoteHtmlContinued=" ";
                         	    				for(var l=0;l<allLinkedNodes.length;l++){
                         	    					footnoteHtmlContinued=footnoteHtmlContinued.concat(allLinkedNodes[l].text());
@@ -6140,8 +6117,22 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
             var ele = App_Find.Element.element;
 	        var xbrlId = App_Utils.convertToXBRLId(ele.attr('name'));
 	        var rows = "";
-	        var roles = App.InlineDoc.getMetaData().tag[xbrlId].lang['en-US'].role;
-	        var definition = roles['documentation'];
+	        var definition=null;
+	        var roles=null;
+	        var languages = ['en-US','en'];
+	        for (var i=0;i<languages.length;i++) {
+	            l = languages[i];
+	            roleset = App.InlineDoc.getMetaData().tag[xbrlId].lang[l];
+	            if (roleset) {
+	        	roleset = roleset['role'];
+	        	if (roleset && definition == null) {
+	        	    definition = roleset['documentation']
+	        	}
+	        	if (l == 'en-US') {
+	        	    roles = roleset
+	        	}
+	            }
+	        }
 	        if (definition) {
 	            rows += '<tr><td width="35%">Definition</td><td width="65%"><div class="wordBreakDiv">'+ele.htmlDecode(definition)+'</div></td></tr>';
 	            html = '<table class="table-framed">' + rows + '</table>';
@@ -6196,11 +6187,62 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
         reference:{},
         refnum:[],
         updateReference:function(parent,callback){
+        	
         	var result = App.InlineDoc.getMetaLinks();
         	if (!result) return;
         	var ele = App_Find.Element.element;
         	var xbrlId = ele.convertNameToXBRLId();
-        	var auth_refArray = App.InlineDoc.getMetaData().tag[xbrlId].auth_ref;
+        	var auth_refArrayNew = App.InlineDoc.getMetaData().tag[xbrlId].auth_ref;			
+        	var auth_refArray=[];
+        	var auth_refArrayNew1=[];
+        	var contextRef = ele.attr('contextRef');
+            var elementNew=App.InlineDoc.getContext(contextRef);
+            items = elementNew.find('*').filter(function() {
+
+                var xbrlchek = (this.nodeName.toLowerCase()).replace('member','Member');
+
+                return xbrlchek == "xbrldi" + ":explicitMember";
+            });
+            var axisLabel="";
+            var memberLabel ="";
+            items.each(function(index, element) {
+            	var ele = $(element);
+            	axisLabel = ele.attr('dimension').replace(':',('_'));
+            	auth_refArrayNew.push(App.InlineDoc.getMetaData().tag[axisLabel].auth_ref);
+            	memberLabel = ele.html().replace(':',('_'));
+            	auth_refArrayNew.push(App.InlineDoc.getMetaData().tag[memberLabel].auth_ref);
+			
+        	});
+            for(var i=0;i<auth_refArrayNew.length;i++){
+            	if(auth_refArrayNew[i].length != 0){
+            		auth_refArrayNew1.push(auth_refArrayNew[i]);
+            	}
+            }
+            for(var index=0; index<=auth_refArrayNew1.length-1;index++){ 
+            	
+            	if( Object.prototype.toString.call( auth_refArrayNew1[index] ) !== '[object Array]' ) {
+            		pushtonewArr(auth_refArrayNew1[index]); 
+            	} 
+            	else/* if( Object.prototype.toString.call( auth_refArray[index] ) == '[object Array]' ) */{ 
+            		var inArr = auth_refArrayNew1[index]; 
+            	for(var j=0; j<=inArr.length-1;j++){ 
+            		pushtonewArr(inArr[j]);
+            		} 
+            	}
+
+            }
+            function pushtonewArr(element){
+            	var found=false;
+            	for(var i=0,max=auth_refArray.length;i<=max; i++){
+            		if(auth_refArray[i]== element){
+            			found=true; 
+            			break;
+            			}
+            		} 
+            	if(!found){
+            		auth_refArray.push(element)
+            	}
+            	}
         	var std_refs = App.InlineDoc.getMetaRefs();
         	var count = 0, rows = "";
         	for (var ref_idx in auth_refArray) {
@@ -6232,7 +6274,7 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
         		html = "<table class = 'table-framed'>"+rows+"</table><br/>";
         	}
         	$('.selection-detail-container').find('[data-content="reference"]').html(html);
-        	if(callback) callback.apply(this,[html]);
+        	if(callback) callback.apply(this,[html]);      
         },
         typeHTML:'',
         CustomJSON:{},
@@ -6465,7 +6507,18 @@ else if(screen.width>=768 && (((window.orientation=='90') || (window.orientation
 
             var myWindow = window.open("", "MsgWindow", "toolbar=no, scrollbars=yes, resizable=yes, top=200, left=500, width=400, height=400");
 			
-			myWindow.document.write("<html><head><title>Copy All</title></head><body><textarea id='popTxtArea' rows='25' cols='50'>"+clipboardText+"</textarea></body></html>");
+			//myWindow.document.write("<html><head><title>Copy All</title></head><body><textarea id='popTxtArea' rows='25' cols='50'>"+clipboardText+"</textarea></body></html>");
+			//DE560 IE FIX
+			if ($.browser.msie) {
+				myWindow.document
+						.write("<html><head><title>Copy All</title></head><body><textarea id='popTxtArea' rows='25' cols='50' style='width:98.7%'>"
+								+ clipboardText + "</textarea></body></html>");
+			} else {
+				myWindow.document
+						.write("<html><head><title>Copy All</title></head><body><textarea id='popTxtArea' rows='25' cols='50'>"
+								+ clipboardText + "</textarea></body></html>");
+			}
+			
 			myWindow.focus();
 			myWindow.document.getElementById("popTxtArea").focus();
 			myWindow.document.getElementById("popTxtArea").select();
