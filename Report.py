@@ -1187,6 +1187,7 @@ class Report(object):
         factList = sorted(factList, key=lambda thing: thing[0]) # sorts by year
 
         from matplotlib.pyplot import figure, cm
+        from matplotlib import __version__ as matplotlib__version__
 
         # Determine array sizes depending on input data set    
         topOfGradientColor = cm.colors.hex2color('#B5DBEF')
@@ -1200,6 +1201,7 @@ class Report(object):
         blugrd_r = cm.colors.LinearSegmentedColormap.from_list('blugrd_r',[bludk,blumd],256)
         redgrd = cm.colors.LinearSegmentedColormap.from_list('redgrd',[redmd,reddk],256)
         redgrd_r = cm.colors.LinearSegmentedColormap.from_list('redgrd_r',[reddk,redmd],256)
+    
 
         numYears = len(factList)
         if numYears > 20:
@@ -1225,7 +1227,8 @@ class Report(object):
         fig = figure(figsize = (numYears*0.5, 2.5))
 
         # Determine actual plot area and gradient and shading
-        subplot = fig.add_subplot(111, xlim=xLim, ylim=yLim, autoscale_on=False ,axisbg=wht)
+        subplot = fig.add_subplot(111, xlim=xLim, ylim=yLim, autoscale_on=False, 
+                                  **{("axisbg", "facecolor")[matplotlib__version__ >= "2"]: wht})
         subplot.imshow([[.7, .7],[.5,.5]], interpolation='bicubic', cmap=gradientColorMap, extent=(xLim[0], xLim[1], yLim[0], yLim[1]), alpha=1)
 
         xArray = [i + 0.25 for i in range(0, numYears)]
