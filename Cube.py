@@ -101,7 +101,9 @@ class Cube(object):
         if not cubeNumberIsANumber or '' in (hyphen, secondHyphen, cubeNumber, cubeType, cubeName):
             if not self.filing.validatedForEFM:
                 self.filing.modelXbrl.error("EFM.6.07.12", # use identical EFM message & parameters as Arelle Filing validation
-                    _("RoleType %(roleType)s definition \"%(definition)s\" must match {Sortcode} - {Type} - {Title}"),
+                    _("The definition ''%(definition)s'' of role %(roleType)s does not match the expected format. "
+                      "Please check that the definition matches {number} - {type} - {text}."),
+                    edgarCode="rq-0712-Role-Definition-Mismatch",
                     modelObject=self.filing.modelXbrl, roleType=self.linkroleUri, definition=self.definitionText)
             return ('', '', '', False, False, False)
 
@@ -273,9 +275,11 @@ class Cube(object):
             if len(sortedList)==0:
                 #message = ErrorMgr.getError('STATEMENT_OF_EQUITY_NO_COMPLETE_MOVEMENTS_WARNING').format(self.shortName)
                 self.filing.modelXbrl.warning("EFM.6.26.03",
-                    _("The presentation base set \"%(linkroleName)s\" is a statement of changes in equity, but it has "
-                      "no duration-type facts matching the instant-type facts shown.  Add duration-type facts that represent "
-                      "the changes from instant to instant, or do not label the presentation base set a statement of changes."),
+                    _("The presentation group ''%(linkroleName)s'' is a statement of changes in equity, "
+                      "but it has no duration-type facts matching the instant-type facts shown.  "
+                      "Add duration-type facts that represent the changes from instant to instant, "
+                      "or do not label the presentation group a statement of changes."),
+                    edgarCode="rq-2603-No-Matching-Durations",
                     modelObject=self.filing.modelXbrl, linkrole=self.linkroleUri, linkroleDefinition=self.definitionText,
                     linkroleName=self.shortName)
                 self.isStatementOfEquity = False # no movements, warn the user it is probably not what they wanted                

@@ -575,7 +575,7 @@ Invalid entity identifier $(entityIdentifierName): $(entityIdentifer)
          level="error"
          module="ValidateFiling.py" line="197"
          args="context content count">
-[cp-0505-Segment-Child-Not-Explicit-Member] There must be no segments with non-explicitDimension content, but $(count) was(were) found: $(context).
+[cp-0505-Segment-Child-Not-Explicit-Member] There must be no segments with non-explicitDimension content, but $(count) was(were) found: $(content).
 </message>
 
 <!-- note arelle identifies the duplicate context, original text didn't identify the other which was a duplicate -->
@@ -1748,19 +1748,31 @@ Axis $(dimension) in DRS role $(linkrole), missing targetrole consecutive relati
          level="error"
          module="ValidateFiling.py" line="1577"
          args="namespaceConflicts conflictClass">
-[cp-2203-Incompatible-Taxonomy-Versions]  References for conflicting standard taxonomies $(conflictClass) are not allowed in same DTS $(modelObject)
+[cp-2203-Incompatible-Schemas]  References for conflicting standard taxonomies $(conflictClass) are not allowed in same DTS $(namespaceConflicts)
 </message>
-<message code="incompatibleTaxonomyDocumentType"
+<message code="EFM.6.22.03.incompatibleTaxonomyDocumentType"
          level="error"
          module="ValidateFiling.py" line="1582"
          args="documentType conflictClass">
-[cp-2203-Incompatible-Taxonomy-DocumentType]  $(modelObject) documentType $(documentType) is incompatible with the $(conflictClass) taxonomy.
+[cp-2203-Incompatible-Taxonomy-DocumentType]  DocumentType $(documentType) is incompatible with the $(conflictClass) taxonomy.
 </message>
-<message code="incompatibleTaxonomyDocumentType"
+<message code="EFM.6.22.03.incompatibleInlineDocumentType"
          level="error"
          module="ValidateFiling.py" line="1590"
          args="documentType conflictClass">
-[cp-2203-Incompatible-Inline-DocumentType]  $(modelObject) documentType $(documentType) is incompatible with inline XBRL.
+[cp-2203-Incompatible-Inline-DocumentType]  DocumentType $(documentType) is incompatible with inline XBRL.
+</message>
+<message code="EFM.6.05.40.srtConceptsForIFRSConcepts"
+         level="error"
+         module="ValidateFiling.py" line="1590"
+         args="ifrsSrtConceptsUsed">
+[cp-0540-SRT-Concepts-For-IFRS-Concepts]  Taxonomy axis concepts from the SRT taxonomy should be used for the following IFRS axis concepts: $(ifrsSrtConceptsUsed).
+</message>
+<message code="EFM.6.05.40.srtMembersForSRTAxes"
+         level="error"
+         module="ValidateFiling.py" line="1590"
+         args="ifrsSrtConceptsUsed">
+[cp-0540-SRT-Members-For-SRT-Axes]  Taxonomy axes from the SRT taxonomy should use SRT or extension members for the following IFRS member concepts: $(ifrsSrtConceptsUsed).
 </message>
 
 <message code="EFM.6.23.01"

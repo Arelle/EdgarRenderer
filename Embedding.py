@@ -149,9 +149,10 @@ class Embedding(object):
                             printThisTextIfTrue = ' or by an embedded command'
                         #message = ErrorMgr.getError('DIMENSION_AXIS_ORDER_WARNING').format(self.cube.shortName, errorStr, str(axisQname), printThisTextIfTrue)
                         self.filing.modelXbrl.warning("EFM.6.26.06",
-                                _('In "%(linkroleName)s", the embedded report created by the fact %(fact)s with context %(contextID)s, '
-                                  'the axis %(axis)s was not given an order in the presentation base set %(linkroleDefinition)s. The '
-                                  'axes are being sorted by their labels.'),
+                                _("In ''%(linkroleName)s'', the embedded report created by the fact %(fact)s with context %(contextID)s, "
+                                  "the axis %(axis)s was not given an order in the presentation group %(linkroleDefinition)s. "
+                                  "The axes are being sorted by their labels."),
+                                edgarCode="rq-2606-Axis-Has-No-Order",
                                 modelObject=self.factThatContainsEmbeddedCommand,
                                 fact=self.factThatContainsEmbeddedCommand.qname, contextID=self.factThatContainsEmbeddedCommand.contextID,
                                 linkrole=self.cube.linkroleUri, linkroleDefinition=self.cube.definitionText, linkroleName=self.cube.shortName,
@@ -623,9 +624,10 @@ class Command(object):
             errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.embedding.factThatContainsEmbeddedCommand)
             #message = ErrorMgr.getError('ELEMENTS_USED_PRIMARY_ON_COLUMNS_WARNING').format(self.cube.shortName, errorStr)
             self.filing.modelXbrl.warning("EFM.6.26.09",
-                    _('In "%(linkroleName)s" the embedded report created by the fact %(fact)s with context %(contextID)s '
-                      'contains an iterator "column primary" even though the definition text of '
-                      '%(linkrole)s contains the "{Elements}" qualifier. The primary axis will remain on the rows.'),
+                    _("In ''$(linkroleName)'' the embedded report created by the fact %(fact)s with context %(contextID)s "
+                      "contains an iterator \"column primary\" even though the definition text of %(linkroleDefinition)s "
+                      "contains the \"{Elements}\" qualifier. The primary axis will remain on the rows."),
+                    edgarCode="rq-2609-Primary-Axis-On-Rows",
                     modelObject=self.embedding.factThatContainsEmbeddedCommand, fact=self.embedding.factThatContainsEmbeddedCommand, contextID=self.embedding.factThatContainsEmbeddedCommand.contextID,
                     linkrole=self.cube.linkroleUri, linkroleDefinition=self.cube.definitionText,
                     linkroleName=self.cube.shortName)

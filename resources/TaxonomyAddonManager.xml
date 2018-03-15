@@ -119,6 +119,15 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
+      <Taxonomy>dei-2018-01-31.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>dei-doc-2018-01-31.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>dei-ref-2018-01-31.xml</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>exch-2011-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>exch-doc-2011-01-31.xml</string>
@@ -181,6 +190,15 @@
         <string>exch-ref-2017-01-31.xml</string>
       </ReferenceFiles>
     </TaxonomyAddon>	
+    <TaxonomyAddon>
+      <Taxonomy>exch-2018-01-31.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>exch-doc-2018-01-31.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>exch-ref-2018-01-31.xml</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
     <TaxonomyAddon>
       <Taxonomy>invest-2011-01-31.xsd</Taxonomy>
       <DefinitionFiles>
@@ -248,6 +266,15 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
+      <Taxonomy>rr-2018-01-31.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>rr-doc-2018-01-31.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>rr-ref-2018-01-31.xml</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>sic-2009-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>sic-doc-2009-01-31.xml</string>
@@ -272,6 +299,13 @@
       <Taxonomy>stpr-2011-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>stpr-doc-2011-01-31.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles/>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>stpr-2018-01-31.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>stpr-doc-2018-01-31.xml</string>
       </DefinitionFiles>
       <ReferenceFiles/>
     </TaxonomyAddon>
@@ -330,6 +364,33 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
+	<Taxonomy>us-gaap-2017-01-31.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>us-gaap-doc-2017-01-31.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>us-gaap-ref-2017-01-31.xml</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+	<Taxonomy>us-gaap-2018-01-31.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>us-gaap-doc-2018-01-31.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>us-gaap-ref-2018-01-31.xml</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+	<Taxonomy>srt-2018-01-31.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>srt-doc-2018-01-31.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>srt-ref-2018-01-31.xml</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>full_ifrs-cor_2016-03-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>labels/doc_full_ifrs-en_2016-03-31.xml</string>
@@ -378,15 +439,6 @@
         <string>linkbases/sic_27/ref_sic_27_2016-03-31.xml</string>
         <string>linkbases/sic_29/ref_sic_29_2016-03-31.xml</string>
         <string>http://www.xbrl.org/lrr/role/reference-2009-12-16.xsd</string>
-      </ReferenceFiles>
-    </TaxonomyAddon>
-    <TaxonomyAddon>
-	<Taxonomy>us-gaap-2017-01-31.xsd</Taxonomy>
-      <DefinitionFiles>
-        <string>us-gaap-doc-2017-01-31.xml</string>
-      </DefinitionFiles>
-      <ReferenceFiles>
-        <string>us-gaap-ref-2017-01-31.xml</string>
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>

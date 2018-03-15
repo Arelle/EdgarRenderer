@@ -373,7 +373,9 @@ class Filing(object):
                     elif fact.isTuple:
                         if not self.validatedForEFM:
                             self.modelXbrl.error("EFM.6.07.19", # use standard Arelle message for this
-                                _("Concept %(concept)s is a tuple"),
+                                _("You provided an extension concept which is a tuple, %(concept)s.  "
+                                  "Please remove tuples and check your submission."),
+                                edgarCode="cp-0719-No-Tuple-Element",
                                 modelObject=fact, concept=qname)
                         break
                     elif fact.concept.type is None:
@@ -430,11 +432,14 @@ class Filing(object):
 
         for context in self.modelXbrl.contexts.values():
             if context.scenario is not None and not self.validatedForEFM:
-                childTags = ", ".join([child.prefixedName for child in context.scenario.iterchildren()
-                                       if isinstance(child,ModelObject)])
+                _childTagNames = [child.prefixedName for child in context.scenario.iterchildren()
+                                  if isinstance(child,ModelObject)]
+                childTags = ", ".join(_childTagNames)
                 self.modelXbrl.error("EFM.6.05.05", # use standard arelle message
-                                _("%(elementName)s of context Id %(context)s has disallowed content: %(content)s"),
-                                modelObject=context, context=context.id, content=childTags, 
+                                _("There must be no segments with non-explicitDimension content, but %(count)s was(were) "
+                                  "found: %(content)s."),
+                                edgarCode="cp-0505-Segment-Child-Not-Explicit-Member",
+                                modelObject=context, context=context.id, content=childTags, count=len(_childTagNames),
                                 elementName="segment")
 
         for fact in facts:
@@ -611,8 +616,10 @@ class Filing(object):
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_TOKEN_NOT_ROW_OR_COLUMN_ERROR').format(token0, tokenCounter, errorStr)
                 self.modelXbrl.error("EFM.6.26.04.embeddingCmdMalformedDirectionToken",
-                                     _("In \"%(linkrole)s\", the embedded report created by the fact %(fact)s with the context %(contextID)s, "
-                                       "the token %(token)s, at position %(position)s in the list of tokens, is malformed. Each iterator can only start with ‘row’ or ‘column’."),
+                                     _("In ''%(linkroleName)s'', the embedded report created by the fact %(fact)s with the context "
+                                       "%(contextID)s, the token %(token)s, at position %(position)s in the list of tokens, is malformed. "
+                                       "Each iterator can only start with 'row' or 'column'."),
+                                     edgarCode="rq-2604-Embedding-Command-Malformed-Direction-Token",
                                      modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
                                      linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri), 
                                      token=token0, position=tokenCounter)
@@ -656,9 +663,11 @@ class Filing(object):
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_FIRST_TOKEN_ERROR').format(token1, tokenCounter, errorStr)
                 self.modelXbrl.error("EFM.6.26.04.embeddingCmdMalformedAxis",
-                                     _("In \"%(linkrole)s\", the embedded report created by the fact %(fact)s with the context %(contextID)s, "
-                                       "the token %(token)s at position %(position)s in the list of tokens is malformed. "
-                                       "This token can only be 'period', 'unit', 'primary' or identify an Axis by its namespace prefix, underscore, and element name."),
+                                    _("In ''%(linkroleName)s'', the embedded report created by the fact %(fact)s with the context "
+                                      "%(contextID)s, the token %(token)s, at position %(position)s in the list of tokens, is malformed. "
+                                      "This token can only be 'period', 'unit', 'primary' or identify an Axis by its namespace prefix, "
+                                      "underscore, and element name."),
+                                    edgarCode="rq-2604-Embedding-Command-Malformed-Axis",
                                     modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
                                     linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri), 
                                     token=token1, position=tokenCounter)
@@ -689,8 +698,9 @@ class Filing(object):
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_SECOND_TOKEN_ERROR').format(token2, tokenCounter, errorStr)
                 self.modelXbrl.error("EFM.6.26.04.embeddingCmdMalformedStyleToken",
-                                     _(" In \"%(linkrole)s\", the embedded report created by the fact %(fact)s with the context %(contextID)s, "
-                                       "the style keyword %(style)s is not one of ‘compact’ or ‘nodisplay’."),
+                                     _("In ''%(linkroleName)s'', the embedded report created by the fact %(fact)s, with the context "
+                                       "%(contextID)s, the style keyword %(style)s is not one of 'compact' or 'nodisplay'."),
+                                     edgarCode="rq-2604-Embedding-Command-Malformed-Style-Token",
                                      modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
                                      linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri), 
                                      style=token2)
@@ -720,8 +730,10 @@ class Filing(object):
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_MEMBER_NAME_ERROR').format(tokenMember, tokenCounter, errorStr)
                 self.modelXbrl.error("EFM.6.26.04.embeddingCmdMalformedMember",
-                                     _("In \"%(linkrole)s\", the embedded report created by the fact %(fact)s with the context %(contextID)s, "
-                                       "the keywords %(tokenlist)s is not '*', a valid member qname or list of valid member qnames."),
+                                     _("In ''%(linkroleName)s'', the embedded report created by the fact %(fact)s with the context "
+                                       "%(contextID)s, the keyword(s) %(tokenlist)s is not '*', a valid member qname or list of "
+                                       "valid member qnames."),
+                                     edgarCode="rq-2604-Embedding-Command-Malformed-Member",
                                      modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
                                      linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri), 
                                      tokenlist=", ".join(invalidTokens))
@@ -1010,6 +1022,7 @@ class Filing(object):
                 cube.embeddingList[0].hasElements = elementQnamesThatWillBeKeptProvidingThatWeHideTheseCols # update hasElements, might have less now
                 for col in columnsToKill:
                     col.hide()
+                    #print("cube {} removing col {}".format(cube.shortName,col.__dict__))
 
                 self.modelXbrl.info("info",
                                     _("In \"%(presentationGroup)s\", column(s) %(columns)s are contained in other reports, so were removed by flow through suppression."),
