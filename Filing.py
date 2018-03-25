@@ -1020,6 +1020,8 @@ class Filing(object):
 
             if 0 < len(columnsToKill) < report.numVisibleColumns:
                 cube.embeddingList[0].hasElements = elementQnamesThatWillBeKeptProvidingThatWeHideTheseCols # update hasElements, might have less now
+                # TODO: that is a bug; subsequent flow through tests the following property, not just the .hasElements property. -wch
+                cube.embeddingList[0].hasElementsAndElementMemberPairs = elementQnamesThatWillBeKeptProvidingThatWeHideTheseCols;
                 for col in columnsToKill:
                     col.hide()
                     #print("cube {} removing col {}".format(cube.shortName,col.__dict__))
@@ -1027,7 +1029,7 @@ class Filing(object):
                 self.modelXbrl.info("info",
                                     _("In \"%(presentationGroup)s\", column(s) %(columns)s are contained in other reports, so were removed by flow through suppression."),
                                     modelObject=self.modelXbrl.modelDocument, presentationGroup=cube.shortName, 
-                                    columns=', '.join([str(col.index + 1) for col in columnsToKill]))
+                                    columns=', '.join([str(col.index + 1)+"("+col.context.id+")" for col in columnsToKill]))
                 Utils.hideEmptyRows(report.rowList)
 
 
