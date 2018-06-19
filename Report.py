@@ -1129,14 +1129,12 @@ class Report(object):
     def writeXmlFile(self, baseNameBeforeExtension, tree, reportSummary):
         baseName = baseNameBeforeExtension + '.xml'
         reportSummary.xmlFileName = baseName
-
+        xmlText = treeToString(tree, xml_declaration=True, encoding='utf-8', pretty_print=True)
         if self.filing.reportZip:
-            self.filing.reportZip.writestr(baseName, 
-                treeToString(tree, xml_declaration=True, encoding='utf-8', pretty_print=True));
+            self.filing.reportZip.writestr(baseName, xmlText)
             self.controller.renderedFiles.add(baseName)
         elif self.filing.fileNameBase is not None:
-            fileName = os.path.join(self.filing.fileNameBase, baseName)
-            tree.write(fileName, xml_declaration=True, encoding='utf-8', pretty_print=True)
+            self.controller.writeFile(os.path.join(self.filing.fileNameBase, baseName). xmlText)
             self.controller.renderedFiles.add(baseName)
 
     def writeHtmlFile(self, baseNameBeforeExtension, tree, reportSummary):
@@ -1146,13 +1144,12 @@ class Report(object):
         _startedAt = time.time()
         result = self.filing.transform(tree, asPage=XSLT.strparam('true'))
         self.controller.logDebug("R{} htm XSLT {:.3f} secs.".format(self.cube.fileNumber, time.time() - _startedAt))
+        htmlText = treeToString(result,method='html',with_tail=False,pretty_print=True,encoding='us-ascii')
         if self.filing.reportZip:
-            self.filing.reportZip.writestr(baseName, 
-                treeToString(result,method='html',with_tail=False,pretty_print=True,encoding='us-ascii'));
+            self.filing.reportZip.writestr(baseName, htmlText)
             self.controller.renderedFiles.add(baseName)
         elif self.filing.fileNameBase is not None:
-            fileName = os.path.join(self.filing.fileNameBase, baseName)
-            result.write(fileName,method='html',with_tail=False,pretty_print=True,encoding='us-ascii')
+            self.controller.writeFile(os.path.join(self.filing.fileNameBase, baseName), htmlText)
             self.controller.renderedFiles.add(baseName)
 
 
@@ -1810,20 +1807,17 @@ class Cell(object):
 
                 self.filing.controller.logDebug('Writing Figures= ' + pngname)
 
-                if self.filing.reportZip:
+                if self.filing.reportZip or self.filing.fileNameBase is not None:
                     file = io.BytesIO()
-                elif self.filing.fileNameBase is not None:
-                    file = os.path.join(self.filing.fileNameBase, pngname)
-                else:
-                    file = None
-                if file is not None:
                     self.filing.controller.renderedFiles.add(pngname)
                     fig.savefig(file, bbox_inches='tight', dpi=150)
+                    file.seek(0)
                     if self.filing.reportZip:
-                        file.seek(0)
                         self.filing.reportZip.writestr(pngname, file.read())
-                        file.close()
-                        del file  # dereference
+                    else:
+                        self.filing.controller.writeFile(os.path.join(self.filing.fileNameBase, pngname), file.read())
+                    file.close()
+                    del file  # dereference
                 from matplotlib import pyplot
                 pyplot.close(fig)
                 self.filing.controller.logDebug('Barchart {} inserted into {} Generated Figures={}'.format(

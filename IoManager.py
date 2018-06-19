@@ -46,17 +46,19 @@ def absPathOnPythonPath(controller, filename):  # if filename is relative, find 
     controller.logDebug("No such location {} found in sys path dirs {}.".format(filename, pathdirs))
     return None
     
-def writeXmlDoc(etree, reportZip, reportFolder, filename):  
+def writeXmlDoc(filing, etree, reportZip, reportFolder, filename):  
+    xmlText = treeToString(etree.getroottree(), method='xml', with_tail=False, pretty_print=True, encoding='utf-8', xml_declaration=True)
     if reportZip:
-        reportZip.writestr(filename, treeToString(etree.getroottree(), method='xml', with_tail=False, pretty_print=True, encoding='utf-8', xml_declaration=True))  
+        reportZip.writestr(filename, xmlText)  
     elif reportFolder is not None:
-        etree.getroottree().write(os.path.join(reportFolder, filename), method='xml', with_tail=False, pretty_print=True, encoding='utf-8', xml_declaration=True)   
+        filing.writeFile(os.path.join(reportFolder, filename), xmlText)
     
-def writeHtmlDoc(root, reportZip, reportFolder, filename):  
+def writeHtmlDoc(filing, root, reportZip, reportFolder, filename):
+    htmlText =  treeToString(root, method='html', with_tail=False, pretty_print=True, encoding='utf-8')
     if reportZip:
-        reportZip.writestr(filename, treeToString(root, method='html', with_tail=False, pretty_print=True, encoding='utf-8'))  
+        reportZip.writestr(filename, htmlText)  
     elif reportFolder is not None:
-        root.write(os.path.join(reportFolder, filename), method='html', with_tail=False, pretty_print=True, encoding='utf-8')
+        filing.writeFile(os.path.join(reportFolder, filename), htmlText)
     
 def writeJsonDoc(lines, pathOrStream):
     if isinstance(pathOrStream, str):

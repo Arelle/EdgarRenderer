@@ -58,19 +58,18 @@ class XlWriter(object):
     def save(self):
         if len(self.wb.worksheets)>1:
             self.wb.remove_sheet(self.wb.worksheets[0])
-        if self.controller.reportZip:
-            import io
-            file = io.BytesIO()
-        elif self.outputFolderName is not None:
-            file = os.path.join(self.outputFolderName, OUTPUT_FILE_NAME)
-        else:
+        if not (self.controller.reportZip or self.outputFolderName is not None):
             return # no report output (just validation)
+        import io
+        file = io.BytesIO()
         self.wb.save(file)
+        file.seek(0)
         if self.controller.reportZip:
-            file.seek(0)
             self.controller.reportZip.writestr(OUTPUT_FILE_NAME, file.read())
-            file.close()
-            del file  # dereference
+        else:
+            self.controller.writeFile(os.path.join(self.outputFolderName, OUTPUT_FILE_NAME), file.read())
+        file.close()
+        del file  # dereference
         self.controller.renderedFiles.add(OUTPUT_FILE_NAME)
         self.controller.logDebug('Excel output saved {}'.format(self.controller.entrypoint),file=os.path.basename(__file__))
 

@@ -278,17 +278,18 @@ class Summary(object):
                     numList.sort()
                     tagAa['auth_ref'] = ['r'+str(num) for num in numList]
                 root['tag'] = s.tagDict           
-            if self.controller.reportZip:
+            if self.controller.reportZip or self.controller.reportsFolder is not None:
                 file = io.StringIO()
-            elif self.controller.reportsFolder is not None:
-                file = os.path.join(self.controller.reportsFolder, EJson)
             else:
                 file = None
             IoManager.writeJsonDoc(roots,file)
             self.controller.renderedFiles.add(EJson)
-            if self.controller.reportZip:
+            if file is not None:
                 file.seek(0)
-                self.controller.reportZip.writestr(EJson, file.read().encode("utf-8"))
+                if self.controller.reportZip:
+                    self.controller.reportZip.writestr(EJson, file.read().encode("utf-8"))
+                else:
+                    self.controller.writeFile(os.path.join(self.controller.reportsFolder, EJson), file.read())
                 file.close()
                 del file  # dereference
         innerWriteMetaFiles() # if exception is raised, must be caught by caller in EdgarRenderer.filingEnd()

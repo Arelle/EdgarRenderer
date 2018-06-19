@@ -651,6 +651,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # start a (mult-iinstance) filing
         filing.edgarRenderer = self
         self.reportZip = filing.reportZip
+        self.writeFile = filing.writeFile
         # Set default config params; overwrite with command line args if necessary
         self.retrieveDefaultREConfigParams(options)
         # Initialize the folders and objects required in both modes.
@@ -724,7 +725,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
         self.loopnum = getattr(self, "loopnum", 0) + 1
         try:
-            Inline.saveTargetDocumentIfNeeded(self,options,modelXbrl)
+            Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing)
             success = Filing.mainFun(self, modelXbrl, self.reportsFolder)
         except Utils.RenderingException as ex:
             success = False # error message provided at source where exception was raised
@@ -825,8 +826,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         elif self.reportsFolder is not None:
                             target = join(self.reportsFolder, filename)
                             if exists(target): remove(target)
-                            with open(target, 'wb') as f:
-                                f.write(file.read())
+                            filing.writeFile(target, file.read())
             
                 self.logDebug("Instance post-processing complete {:.3f} secs.".format(time.time() - _startedAt))
                 
@@ -847,7 +847,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 summary = Summary.Summary(self)  
                 rootETree = summary.buildSummaryETree()
                 if self.reportZip or self.reportsFolder is not None:
-                    IoManager.writeXmlDoc(rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
+                    IoManager.writeXmlDoc(filing, rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
                     self.renderedFiles.add("FilingSummary.xml")
                     if self.summaryXslt and len(self.summaryXslt) > 0 :
                         _startedAt = time.time()
@@ -856,7 +856,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                                    accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")),
                                                    resourcesFolder="'{}'".format(self.resourcesFolder.replace("\\","/")))
                         self.logDebug("FilingSummary XSLT transform {:.3f} secs.".format(time.time() - _startedAt))
-                        IoManager.writeHtmlDoc(result, self.reportZip, self.reportsFolder, 'FilingSummary.htm')
+                        IoManager.writeHtmlDoc(filing, result, self.reportZip, self.reportsFolder, 'FilingSummary.htm')
                         self.renderedFiles.add("FilingSummary.htm")
                     self.logDebug("Write filing summary complete")
                     if self.auxMetadata or filing.hasInlineReport: 
@@ -867,11 +867,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                             _fileName = filing.accessionNumber + "-xbrl.zip"
                         else:
                             _fileName = os.path.splitext(os.path.basename(filing.entrypointfiles[0]["file"]))[0] + ".zip"
-                        if not self.reportZip:
-                            xbrlZip = zipfile.ZipFile(os.path.join(self.reportsFolder, _fileName), mode='w', compression=zipfile.ZIP_DEFLATED, allowZip64=False)
-                        else:
-                            zipStream = io.BytesIO()
-                            xbrlZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
+                        zipStream = io.BytesIO()
+                        xbrlZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
                         for report in filing.reports:
                             _xbrldir = os.path.dirname(report.filepath)
                             for reportedFile in sorted(report.reportedFiles):
@@ -885,10 +882,12 @@ class EdgarRenderer(Cntlr.Cntlr):
                                     file.close()
                             filesource.close()
                         xbrlZip.close()
+                        zipStream.seek(0)
                         if self.reportZip:
-                            zipStream.seek(0)
                             self.reportZip.writestr(_fileName, zipStream.read())
-                            zipStream.close()
+                        else:
+                            self.writeFile(os.path.join(self.reportsFolder, _fileName), zipStream.read())
+                        zipStream.close()
                         self.logDebug("Write {} complete".format(_fileName))
                 
                 if "EdgarRenderer/__init__.py#filingEnd" in filing.arelleUnitTests:
@@ -919,6 +918,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         if not self.success and self.isDaemon: # not successful
             self.postprocessFailure(filing.options)
     
+    '''
     def postprocessInstance(self, options, modelXbrl):
         Inline.saveTargetDocumentIfNeeded(self,options,modelXbrl)
         del modelXbrl.duplicateFactSet
@@ -997,7 +997,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                     self.logError(_("Failure: Post-processing I/O or OS error: {}").format(err))
         if self.deleteProcessedFilings:
             for folder in self.createdFolders: shutil.rmtree(folder,ignore_errors=True) 
-            
+    '''
     
     def postprocessFailure(self, options):
         if self.isSingles:
@@ -1117,7 +1117,6 @@ def edgarRendererGuiViewMenuExtender(cntlr, viewMenu, *args, **kwargs):
     cntlr.showTablesMenu.trace("w", setShowTablesMenu)
     erViewMenu.add_checkbutton(label=_("Show Tables Menu"), underline=0, variable=cntlr.showTablesMenu, onvalue=True, offvalue=False)
 
-        
 def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
     """ run EdgarRenderer using GUI interactions for a single instance or testcases """
     if cntlr.hasGui:
@@ -1190,6 +1189,11 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
                 if cntx is not None and not cntx.hasSegment and f.xValue:
                     report.documentType = f.xValue # find document type for mustard menu
                     break
+        def guiWriteFile(filepath, data):
+            with io.open(filepath, "wb" if isinstance(data, bytes) else "wt") as fh:
+                fh.write(data)
+        def guiReadFile(filepath, binary):
+            return modelXbrl.fileSource.file(filepath, binary)
         filing = PythonUtil.attrdict( # simulate filing
             filesource = modelXbrl.fileSource,
             reportZip = None,
@@ -1197,7 +1201,9 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             renderedFiles = set(),
             reports = [report],
             hasInlineReport = report.isInline,
-            arelleUnitTests = {}
+            arelleUnitTests = {},
+            writeFile=guiWriteFile,
+            readFile=guiReadFile
             )
         edgarRendererFilingStart(cntlr, options, {}, filing)
         edgarRenderer = filing.edgarRenderer

@@ -76,7 +76,7 @@ def markFactLocations(modelXbrl):
 
         
 
-def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext=".xml"):   
+def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm.", iext=".xml"):  
     if (modelXbrl is None): return
     if not (isinstance(modelXbrl.modelDocument, ModelInlineXbrlDocumentSet) or
             modelXbrl.modelDocument.type == Type.INLINEXBRL):
@@ -127,14 +127,14 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
          if cntlr.reportZip:
              filingZip = cntlr.reportZip
 
-    saveTargetDocument(modelXbrl, targetFilename, targetSchemaRefs
+    saveTargetDocument(filing, modelXbrl, targetFilename, targetSchemaRefs
                         , outputZip=filingZip, filingFiles=filingFiles, suffix=suffix, iext=iext)
         
     if options.saveTargetFiling:
         instDir = os.path.dirname(modelDocument.uri)  # TODO: will this work if the modelDocument was remote?
         for refFile in filingFiles:
             if refFile.startswith(instDir):
-                fileStream = modelXbrl.fileSource.file(refFile, binary=True)[0]  # returned in a tuple
+                fileStream = filing.readFile(refFile, binary=True)[0]  # returned in a tuple
                 filingZip.writestr(modelDocument.relativeUri(refFile), fileStream.read())
                 fileStream.close()
      
@@ -145,7 +145,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, suffix="_htm.", iext="
         cntlr.reportZip.writestr(saveTargetPath, zipStream.read())
         zipStream.close()
      
-def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRefs
+def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocumentSchemaRefs
                        , outputZip=None, filingFiles=None
                        , suffix=DEFAULT_DISTINGUISHING_SUFFIX, iext=DEFAULT_INSTANCE_EXT):
     sourceDir = os.path.dirname(modelXbrl.modelDocument.filepath)
@@ -157,7 +157,7 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                     if attrValue: # ignore anchor references to base document
                         attrValue = os.path.normpath(attrValue) # change url path separators to host separators
                         file = os.path.join(sourceDir,attrValue)
-                        if modelXbrl.fileSource.isInArchive(file, checkExistence=True) or os.path.exists(file):
+                        if modelXbrl.fileSource.isInArchive(file, checkExistence=True) or modelXbrl.fileSource.exists(file):
                             filingFiles.add(file)
     targetUrlParts = targetDocumentFilename.rpartition(".")
     targetUrl = targetUrlParts[0] + suffix + targetUrlParts[2]
@@ -277,7 +277,11 @@ def saveTargetDocument(modelXbrl, targetDocumentFilename, targetDocumentSchemaRe
                         for elt in footnoteHtml.iter():
                             addLocallyReferencedFile(elt,filingFiles)
             
-    targetInstance.saveInstance(overrideFilepath=targetUrl, outputZip=outputZip, updateFileHistory=False, xmlcharrefreplace=True)
+    fh = io.StringIO();
+    targetInstance.saveInstance(overrideFilepath=targetUrl, outputZip=outputZip, outputFile=fh, updateFileHistory=False, xmlcharrefreplace=True)
+    fh.seek(0)
+    filing.writeFile(targetUrl, fh.read())
+    fh.close()
     if getattr(modelXbrl, "isTestcaseVariation", False):
         modelXbrl.extractedInlineInstance = True # for validation comparison
     modelXbrl.modelManager.showStatus(_("Saved extracted instance"), clearAfter=5000)       
