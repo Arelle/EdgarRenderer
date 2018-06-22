@@ -7,11 +7,12 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  * */
 var App = {
-    Version: '1.0.0.91',
+    Version: '1.0.0.92',
     InlineDoc:null,
     XMLInlineDoc:null,
     XBRLDoc:null,
     frame:null,
+    urlDocumentPath: '',
     fileNames:{
         filing: {
             inline: '',
@@ -353,43 +354,37 @@ var App_RemoteDocs = {
         };
         xbrlStr = queryAry['xbrl'];
         //var docPath = "../documents/"+query;
-        var docPath = query;
+        var docPath = query;      
+        var regexReturnsFalseIfRelativeUrl = new RegExp('^(?:[a-z]+:)?//', 'i');
+        
+        if(regexReturnsFalseIfRelativeUrl.test(query)) {        	 
+        	{
+    			if(query.startsWith(window.location.origin)) {
+    				//these url's are "safe and from the same origin" and allowed to proceed with the iframe
+    			} else {
+		        	$('#app-inline-xbrl-doc').remove();
+		        	$('.fixedMenuBar').remove();
+		        	$('.toolbarSpinner').remove();
+		        	App.showMessage('The protocol, host name and port number of the \'doc\' field ('+query+'), if provided, must be identical to that of the Inline XBRL viewer('+window.location.origin+')');
+		        	App.hideLoadingDialog();
+		        	throw new CustomCORSError(null, window.location.origin, query);
+    			}
+    		}
+        	docPath =query;
+        } else {
+        	//relative url, allowed to pass        	
+        	docPath = query;
+        }
         query = URI(query);
         var docBasePath = query.filename();
         App.frame = $('#app-inline-xbrl-doc');
-        /*App.frame.on('load', function(event) {
 
-            // get an InlineDoc instance so we can query it
-            App.InlineDoc = new cbe.InlineDoc(App.frame);
-
-            // add some basic styling available to the document.
-            // note - this is as minimal as possible
-            App.updateDocStyle();
-            
-            if (!App.fileSelect.inlineLoaded) {
-            	//App.InlineDoc.getMetaLinks();
-            	App.hideLoadingDialog();
-            }
-            
-            $($('#app-inline-xbrl-doc').contents()).on('click', function(e){            	
-               $("#mainDiv li").removeClass( "dropdown open" ).addClass( "dropdown" )
-            });
-			$(".fixedMenuBar").css('pointer-events', 'none');
-            $(".fixedMenuBar").css('opacity', '0.5');
-			//App.showToolbarSpinner($('#mainDiv'), function() {
-           // });
-            // highlight the tagged elements
-			//setTimeout(function() {
-            //App_Find.Highlight.highlight();
-			//},10000);
-            
-        });*/
         if (docPath && docPath != '') {
 
             var filename = docBasePath;
             App.fileNames.filing.inline = filename.substring(0, filename.indexOf('.'));
-            App.frame.attr('src', docPath);
-			 App.showToolbarSpinner($('#mainDiv'), function() {
+            App.urlDocumentPath = docPath;
+            App.showToolbarSpinner($('#mainDiv'), function() {
             });
         } else {
 
@@ -870,24 +865,64 @@ var htmlEnDeCode = (function() {
 })();
 
 $(window).load(function() {
-	App.frame = $('#app-inline-xbrl-doc');
-	App.frame.on('load', function(event) {
-		// get an InlineDoc instance so we can query it
-		App.InlineDoc = new cbe.InlineDoc(App.frame);
+	/* 
+	 * Due to the iframe functionality being used 
+	 * We need to accomplish a 'sanity check'
+	 * First we check the HEAD of the document the user has requested
+	 * If that is successful, we continue,
+	 * Otherwise we throw an error to the user, saying we can not find
+	 * The requested file
+	 */	
+	(function(ApplicationObject) {
+		// we need to wait until the Event Loop has the opportunity to finish it's non-callback functions 
+		// so we know that the urlDocumentPath path has been set
+		setTimeout(function() {
+			if (ApplicationObject.urlDocumentPath) {
+				var urlToSanityCheck = ApplicationObject.urlDocumentPath;
+		        $.ajax({
+		            url : urlToSanityCheck,
+		            type: 'HEAD',
+		            async : true,
+		            error : function(requestObject, error, errorThrown) {
+		            	
+			        	$('#app-inline-xbrl-doc').remove();
+			        	$('.fixedMenuBar').remove();
+			        	$('.toolbarSpinner').remove();
+			        	App.hideLoadingDialog();
+		            	App.showMessage('Can not find file (' + urlToSanityCheck + ').');
+			        	throw new CustomNotFoundError(null, urlToSanityCheck);
+			        	return;
+			        	
+		            },
+		            success : function(requestObject) {
+		            	
+		            	//we have successfully 'found' the URL, begin the iFrame functionality
+		            	App.frame.attr('src', ApplicationObject.urlDocumentPath);
+		            	App.frame = $('#app-inline-xbrl-doc');
+		            	App.frame.on('load', function(event) {
 
-		// add some basic styling available to the document.
-		// note - this is as minimal as possible
-		App.updateDocStyle();
-
-		if (!App.fileSelect.inlineLoaded) {
-			App.InlineDoc.getMetaLinks();
-			App.hideLoadingDialog();
-		}
-
-		$($('#app-inline-xbrl-doc').contents()).on('click', function(e){            	
-			$("#mainDiv li").removeClass( "dropdown open" ).addClass( "dropdown" )
+		            		// get an InlineDoc instance so we can query it
+		            		App.InlineDoc = new cbe.InlineDoc(App.frame);
+		        
+		            		// add some basic styling available to the document.
+		            		// note - this is as minimal as possible
+		            		App.updateDocStyle();
+		        
+		            		if (!App.fileSelect.inlineLoaded) {
+		            			App.InlineDoc.getMetaLinks();
+		            			App.hideLoadingDialog();
+		            		}
+		        
+		            		$($('#app-inline-xbrl-doc').contents()).on('click', function(e){
+		            			$("#mainDiv li").removeClass( "dropdown open" ).addClass( "dropdown" )
+		            		});
+		            	});
+		            }
+		        });
+			}
 		});
-	});
+	})(App);
+	
     if (($.browser.msie && $.browser.versionNumber >= 10) ||
         ($.browser.mozilla && $.browser.versionNumber >= 22) ||
         ($.browser.chrome && $.browser.versionNumber >= 27) ||

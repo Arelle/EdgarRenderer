@@ -57,7 +57,7 @@ class XlWriter(object):
 
     def save(self):
         if len(self.wb.worksheets)>1:
-            self.wb.remove_sheet(self.wb.worksheets[0])
+            self.wb.remove(self.wb.worksheets[0])
         if not (self.controller.reportZip or self.outputFolderName is not None):
             return # no report output (just validation)
         import io

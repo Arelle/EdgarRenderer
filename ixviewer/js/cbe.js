@@ -251,7 +251,40 @@
 		        var queryAry = URI.parseQuery(uri.query());
 		        var dir;
 		        var docUrl;
-		        var metalinksUrl;		        
+		        var metalinksUrl;
+		        var permittedUrl = true;
+		        var queryThatIsNotPermitted = '';
+		        
+		        Object.keys(queryAry).forEach( function( currentElement ) {
+		        	var regexReturnsFalseIfRelativeUrl = new RegExp('^(?:[a-z]+:)?//', 'i');
+
+		        	if ( !regexReturnsFalseIfRelativeUrl.test(queryAry[currentElement]) ) {
+		        	
+		        		permittedUrl = true;
+		        		
+		        	} else {
+		        		if ( queryAry[currentElement].startsWith('https://sec.gov/') ||
+		        			 queryAry[currentElement].startsWith('http://sec.gov/') ||
+		        			 queryAry[currentElement].startsWith('https://www.sec.gov/') || 
+		        		     queryAry[currentElement].startsWith('http://www.sec.gov/')) {
+		        			permittedUrl = false; 
+		        		} else {
+		        			queryThatIsNotPermitted = queryAry[currentElement];
+			        		permittedUrl = queryAry[currentElement].startsWith(window.location.origin);
+		        		}
+		        	}
+		        	
+		        });
+		        if(!permittedUrl) {
+
+		        	$('#app-inline-xbrl-doc').remove();
+		        	$('.fixedMenuBar').remove();
+		        	$('.toolbarSpinner').remove();
+		        	App.showMessage("The Filing you are looking for is not there, please search here <a href='https://www.sec.gov/edgar/searchedgar/companysearch.html'>EDGAR</a>.");
+		        	App.hideLoadingDialog();
+		        	throw new CustomCORSError(null, window.location.origin, queryThatIsNotPermitted);
+		        	return;
+		        }	        
 		        if (queryAry['metalinks']) {
 		        	metalinksUrl = queryAry['metalinks'].toString();
 		        	metalinksUrl.replace('interpretedFormat=true','interpretedFormat=false');
@@ -277,15 +310,26 @@
 		        	filename = docURI.filename();
 		        	metalinksUrl = docURI.filename('MetaLinks.json').toString();
 		        }
-		        //metalinksUrl = "../documents/"+metalinksUrl;
+
+		        
+		        var regexReturnsFalseIfRelativeUrl = new RegExp('^(?:[a-z]+:)?//', 'i');
+
+		        if(regexReturnsFalseIfRelativeUrl.test(metalinksUrl)) {
+		        	metalinksUrl = metalinksUrl;
+		        } else {
+		        	metalinksUrl = metalinksUrl;
+		        }
+		        
 		        $.ajax({
 			        url:  metalinksUrl,
 			        dataType: "json", 
 			        async: true,
 			        cache: false,
 			        error: function(requestObject, error, errorThrown) {
-			            App.showMessage("The <a href='"+metalinksUrl+"'>metadata</a> file could not be found.");
-			            App.hideLoadingDialog();
+			        	$('.toolbarSpinner').remove();
+			        	App.hideLoadingDialog();
+			        	App.showMessage('Inline XBRL viewing features are disabled because no supporting file was found at (' + metalinksUrl + ').');
+			        	throw new CustomNotFoundError(null, metalinksUrl);
 			        },
 			        success: function (requestObject,status,xhr,data) {
 			        	_cacheMetaLinks = requestObject;
@@ -297,6 +341,7 @@
 		            		_setDocumentCustomPrefix();
 		            		
 			        	} else {
+			        		
 			        		App.showMessage("Object found was not a MetaLinks version 2.0 file");
 			        	}
 			        }
@@ -1048,9 +1093,13 @@
                 	for(var i = 0; i < nodes.length; i++){
                 	     nodes[i].disabled = true;
                 	}
-                	App.showMessage("<a href='"+fallback+"' >"+fallback+"</a> was not an inline document.");
-                	App.hideLoadingDialog();
-
+		        	$('#app-inline-xbrl-doc').remove();
+		        	$('.fixedMenuBar').remove();
+		        	$('.toolbarSpinner').remove();
+		        	App.hideLoadingDialog();
+                	App.showMessage('Can not find file (' + fallback + ').');
+		        	throw new CustomNotFoundError(null, fallback);
+		        	
                 } else {
                 	_initCache();
                 	//_initCacheNew();
