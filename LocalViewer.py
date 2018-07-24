@@ -16,6 +16,13 @@ def init(cntlr, reportsFolder): # returns browser root
     global port
     if port is None: # already initialized
     
+        # verify imports are available
+        try:
+            import cheroot, cherrypy
+        except:
+            cntlr.addToLog(_("Local viewer requires importing cheroot and cherrypy.  Please use the pip utility to verify the installation of these modules."), messageCode="localViewer:missingLibraries",level=logging.ERROR)    
+            return None
+        
         # find available port
         import socket
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
