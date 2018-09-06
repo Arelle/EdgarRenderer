@@ -1082,6 +1082,293 @@ FootnoteLink $(footnoteLinkNumber) has disallowed role $(linkrole)</message>
          args="contextID">
 [du-0538-Context-Has-Period-Forever] Context $(contextID)s uses period &lt;xbrli:forever>. Please remove it and resubmit.</message>
 
+<message code="EFM.6.05.40.currentFiscalYearEndDateValue"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="808"
+         args="edgarCode submissionValue deiValue cik">
+[dq-0540-Current-Fiscal-Year-End-Date-Value] The official fiscal year end date $(submissionValue) for CIK $(cik), is not the same month and day as the value $(deiValue) in the Required Context.  Please correct dei:CurrentFiscalYearEndDate. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.documentPeriodEndDateValue"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="801"
+         args="edgarCode submissionValue deiValue">
+[dq-0540-Document-Period-End-Date-Value] dei:DocumentPeriodEndDate value $(deiValue) does not agree with periodOfReport value $(submissionValue). $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityEmergingGrowthCompanyMissing"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="973"
+         args="edgarCode submissionType">
+[dq-0540-EmergingGrowth-Company-Missing] Submission type $(submissionType) should have a value for dei:EntityEmergingGrowthCompany in the Required Context. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityEmergingGrowthCompanyUnexpected"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="961"
+         args="edgarCode submissionType">
+[dq-0540-Entity-Emerging-Growth-Company-Unexpected] Submission type $(submissionType) should not have dei:EntityEmergingGrowthCompany. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityEmergingGrowthCompanyValue"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="968"
+         args="edgarCode submissionValue deiValue">
+[dq-0540-Entity-EmergingGrowth-Company-Value] dei:EntityEmergingGrowthCompany value  $(deiValue) does not agree with the submission Emerging Growth company flag value $(submissionValue). $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityExTransitionPeriodMissing"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="997"
+         args="edgarCode submissionType">
+[dq-0540-Entity-Ex-Transition-Period-Missing] Submission type $(submissionType) should have a value for dei:EntityExTransitionPeriod in the Required Context. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityExTransitionPeriodUnexpected"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="985"
+         args="edgarCode submissionType">
+[dq-0540-Entity-Ex-Transition-Period-Unexpected] Submission type $(submissionType) should not have dei:EntityExTransitionPeriod. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityExTransitionPeriodValue"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="992"
+         args="edgarCode submissionValue deiValue">
+[dq-0540-Entity-Ex-Transition-Period-Value] dei:EntityExTransitionPeriod value $(deiValue) in the Required Context is incompatible with the submission exTransitionPeriodFlag value $(submissionValue). $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityFilerCategorySmall"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="921"
+         args="edgarCode">
+[dq-0540-Entity-Filer-Category-Small] dei:EntityFilerCategory in the Required Context is 'Smaller Reporting Company', use 'Non-Accelerated Filer' instead and set dei:EntitySmallBusinessFlag equal to true. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityFilerCategorySmallAccelerated"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="926"
+         args="edgarCode">
+[dq-0540-Entity-Filer-Category-Small-Accelerated] dei:EntityFilerCategory in the Required Context is 'Smaller Reporting Accelerated Filer', use 'Accelerated Filer' instead and set dei:EntitySmallBusinessFlag equal to true. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityFilerCategoryUnexpected"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="907"
+         args="edgarCode submissionType">
+[dq-0540-Entity-Filer-Category-Unexpected] Submission type $(submissionType) should not have dei:EntityFilerCategory in the Required Context. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityFilerCategoryValue"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="896"
+         args="edgarCode submissionValue deiValue">
+[dq-0540-Entity-Filer-Category-Value] dei:EntityFilerCategory value $(deiValue) in the Required Context is inconsistent with the submission Accelerated Filer Status value $(submissionValue). $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityInvCompanyTypeMissing"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="879"
+         args="edgarCode submissionType">
+[dq-0540-Entity-Inv-Company-Type-Missing] Submission type $(submissionType) requires a value for dei:EntityInvCompanyType in the Required Context. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityInvCompanyTypeUnexpected"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="884"
+         args="edgarCode submissionType">
+[dq-0540-Entity-Inv-Company-Type-Unexpected] Submission type $(submissionType) should not have dei:EntityInvCompanyType in the Required Context. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityInvCompanyTypeValue"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="874"
+         args="edgarCode submissionValue deiValue">
+[dq-0540-Entity-Inv-Company-Type-Value] dei:EntityInvCompanyType value $(deiValue) in the Required Context is incompatible with the submission Investment Company Type value $(submissionValue). $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityShellCompanyMissing"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="857"
+         args="edgarCode submissionType">
+[dq-0540-Entity-Shell-Company-Missing] Submission type $(submissionType) should have a value for dei:EntityShellCompany in the Required Context. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityShellCompanyUnexpected"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="867"
+         args="edgarCode submissionType">
+[dq-0540-Entity-Shell-Company-Unexpected] Submission type $(submissionType) should not have dei:EntityShellCompany in the Required Context. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityShellCompanyValue"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="851"
+         args="edgarCode modelXbrl submissionValue deiValue">
+[dq-0540-Entity-Shell-Company-Value] dei:EntityShellCompany value $(deiValue) does not agree with submission shell company flag value $(submissionValue). $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entitySmallBusinessFilerCategoryConsistency"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="915"
+         args="edgarCode submissionValue deiValue">
+[dq-0540-Entity-Small-Business-Filer-Category-Consistency] dei:EntityFilerCategory value $(deiValue) in the Required Context is inconsistent with the $(submissionValue) of smallBusinessFlag in the Submission. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entitySmallBusinessMissing"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="949"
+         args="edgarCode submissionType">
+[dq-0540-Entity-Small-Business-Missing] Submission type $(submissionType) should have a value for dei:EntitySmallBusiness in the Required Context. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entitySmallBusinessUnexpected"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="937"
+         args="edgarCode submissionType">
+[dq-0540-Entity-Small-Business-Unexpected] Submission type $(submissionType) should not have dei:EntitySmallBusiness. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entitySmallBusinessValue"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="944"
+         args="edgarCode submissionValue deiValue">
+[dq-0540-Entity-Small-Business-Value] dei:EntitySmallBusiness value $(deiValue) does not agree with the submission Small business flag value $(submissionValue). $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityVoluntaryFilersUnexpected"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="827"
+         args="edgarCode submissionType">
+[dq-0540-Entity-Voluntary-Filers-Unexpected] Submission type $(submissionType) should not have dei:EntityVoluntaryFilers. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityVoluntaryFilersValue"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="817"
+         args="edgarCode submissionValue deiValue">
+[dq-0540-Entity-Voluntary-Filers-Value] dei:EntityVoluntaryFilers value $(deiValue) does not agree with submission voluntary filer flag value $(submissionValue). $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityWellKnownSeasonedIssuerUnexpected"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="844"
+         args="edgarCode submissionType">
+[dq-0540-Entity-Well-Known-Seasoned-Issuer-Unexpected] Submission type $(submissionType) should not have dei:EntityWellKnownSeasonedIssuer in the Required Context. $(refSources)
+</message>
+
+<message code="EFM.6.05.40.entityWellKnownSeasonedIssuerValue"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="834"
+         args="edgarCode submissionValue deiValue">
+[dq-0540-Entity-Well-Known-Seasoned-Issuer-Value] dei:EntityWellKnownSeasonedIssuer value $(deiValue) in the Required Context does not agree with submission voluntary filer flag value $(submissionValue). $(refSources)
+</message>
+
+<message code="EFM.6.05.40.submissionUnexpectedAcceleratedFilerStatus"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="901"
+         args="edgarCode submissionType">
+[dq-0540-Submission-Unexpected-Accelerated-Filer-Status] Submission has unexpected &quot;acceleratedFilerStatus&quot; element in submission type $(submissionType).
+</message>
+
+<message code="EFM.6.05.40.submissionUnexpectedEmergingGrowthCompanyFlag"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="956"
+         args="edgarCode submissionType">
+[dq-0540-Submission-Unexpected-Emerging-Growth-Company-Flag] Submission has unexpected &quot;emergingGrowthCompanyFlag&quot; element in submission type $(submissionType)
+</message>
+
+<message code="EFM.6.05.40.submissionUnexpectedExTransitionPeriodFlag"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="980"
+         args="edgarCode submissionType">
+[dq-0540-Submission-Unexpected-Ex-Transition-Period-Flag] Submission has unexpected &quot;exTransitionPeriodFlag&quot; element in submission type $(submissionType)
+</message>
+
+<message code="EFM.6.05.40.submissionUnexpectedInvCompanyType"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="889"
+         args="edgarCode submissionType">
+[dq-0540-Submission-Unexpected-Inv-Company-Type] Submission has unexpected &quot;invCompanyType&quot; element in submission type $(submissionType).
+</message>
+
+<message code="EFM.6.05.40.submissionUnexpectedPeriodOfReport"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="795"
+         args="edgarCode submissionType">
+[dq-0540-Submission-Unexpected-Period] Submission has unexpected periodOfReport element in submission type $(submissionType).
+</message>
+
+<message code="EFM.6.05.40.submissionUnexpectedShellCompanyFlag"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="862"
+         args="edgarCode submissionType">
+[dq-0540-Submission-Unexpected-Shell-Company-Flag] Submission has unexpected &quot;shellCompanyFlag&quot; element in submission type $(submissionType).
+</message>
+
+<message code="EFM.6.05.40.submissionUnexpectedSmallBusinessFlag"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="932"
+         args="edgarCode submissionType">
+[dq-0540-Submission-Unexpected-Small-Business-Flag] Submission has unexpected &quot;smallBusinessFlag&quot; element in submission type $(submissionType)
+</message>
+
+<message code="EFM.6.05.40.submissionUnexpectedVoluntaryFilerFlag"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="822"
+         args="edgarCode submissionType">
+[dq-0540-Submission-Unexpected-Voluntary-Filer-Flag] Submission has unexpected &quot;voluntaryFilerFlag&quot; element in submission type $(submissionType).
+</message>
+
+<message code="EFM.6.05.40.submissionUnexpectedWellKnownSeasonedIssuerFlag"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="839"
+         args="edgarCode submissionType">
+[dq-0540-Submission-Unexpected-Well-Known-Seasoned-Issuer-Flag] Submission has unexpected &quot;wellKnownSeasonedIssuerFlag&quot; element in submission type $(submissionType).
+</message>
+
+<message code="EFM.6.05.41.seriesIdMemberNotAxisMember"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="1036"
+         args="edgarCode seriesIdMember submissionType">
+[dq-0541-Series-Id-Member-Not-Axis-Member] Submission type $(submissionType) should have $(seriesIdMember) as a member of the Legal Entity Axis. $(refSources)
+</message>
+
+<message code="EFM.6.05.41.seriesIdMemberNotInContext"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="1051"
+         args="edgarCode seriesIdMember submissionType">
+[dq-0541-Series-Id-Member-Not-In-Context] Submission type $(submissionType) should have a context with $(seriesIdMember) as a member of the Legal Entity Axis. $(refSources)
+</message>
+
+<message code="EFM.6.05.41.seriesIdMemberNotDeclared"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="1031"
+         args="edgarCode seriesIdMember submissionType">
+[dq-0541-Series-Id-Member-Not-Declared] Submission type $(submissionType) should have $(seriesIdMember) declared as a domainItemType element. $(refSources)
+</message>
+
+<message code="EFM.6.05.42"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="682"
+         args="edgarCode element count date version1 version2">
+[dq-0542-Deprecated-Concept] Concept $(element) in $(version1) used in $(count) facts was deprecated in $(version2) as of $(date) and should not be used. $(refSources)
+</message>
+
+<message code="EFM.6.05.43"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="407"
+         args="edgarCode element taxonomy value context">
+[dq-0543-Negative-Fact-Value] Concept $(element) in $(taxonomy) has a negative value $(value) in context $(context).  Correct the sign, use a more appropriate concept, or change the context. $(refSources)
+</message>
+
+<message code="EFM.6.05.44.customAxis"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="301"
+         args="edgarCode dimension namespace axis taxonomy contextIDs">
+[dq-0544-Custom-Axis] Contexts $(contextIDs) use dimension $(dimension) in namespace $(namespace) but $(axis) in $(taxonomy) is preferred. $(refSources)
+</message>
+
 <message code="EFM.6.07.01"
          level="error"
          module="ValidateFilingDTS.py" line="49"
@@ -1178,7 +1465,13 @@ RoleType $(roleType) should end with /role/{LC3name}
          module="ValidateFilingDTS.py" line="451"
          args="roleType definition">
 [rq-0712-Role-Definition-Mismatch]  The definition "$(definition)" of role $(roleType) does not match the expected format, in $(refSource). Please check that the definition matches {number} - {type} - {text}.
+</message>
 
+<message code="EFM.6.07.12.presentationBaseSetOrder"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="1898"
+         args="edgarCode descriptionX levelX descriptionY levelY">
+[dq-0712-Presentation-Base-Set-Order] Role '$(descriptionX)', a level $(levelX) role, appears before '$(descriptionY)', a level $(levelY) role. $(refSources)
 </message>
 
 <message code="EFM.6.07.13"

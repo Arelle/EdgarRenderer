@@ -89,8 +89,11 @@ class XlWriter(object):
 
         # if there are duplicate names, disambiguate them.  we use casefold() because excel's sheet names aren't case sensitive, so
         # it thinks 'Dog' and 'dog' are the same sheet.
-        if sheetName.casefold() in self.sheetNames:
-            sheetName = sheetName[:31 - len(str(reportNum))] + str(reportNum) # this can overshoot, won't cause an array out of index error
+        sheetDupNbr = 1
+        while sheetName.casefold() in self.sheetNames:
+            sheetDupNbr += 1 # second sheet title is blahblah_2, 3rd is blahblah_3, _ needed because some sheets end in year numbers
+            sheetDupNbrStr = str(sheetDupNbr)
+            sheetName = sheetName[:30 - len(sheetDupNbrStr)] + "_" + sheetDupNbrStr # this can overshoot, won't cause an array out of index error
 
         self.sheetNames.add(sheetName.casefold())
         self.workSheet = self.wb.create_sheet(title=sheetName)

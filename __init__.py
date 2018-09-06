@@ -795,7 +795,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                         target = join(self.reportsFolder, filename)
                         if not exists(target):
                             os.makedirs(self.reportsFolder, exist_ok=True)
-                            shutil.copyfile(source, target)
+                            file = filesource.file(source, binary=True)[0]  # returned in a tuple
+                            filing.writeFile(target, file.read()) # shutil.copyfile(source, target)
                             self.renderedFiles.add(filename)
                 _startedAt = time.time()
                 if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:

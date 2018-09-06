@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+ <xs:element name="FilingSummary">
+  <xs:complexType>
+   <xs:all>
+    <xs:element ref="Version"/>
+    <xs:element ref="ProcessingTime" minOccurs="0"/>
+    <xs:element ref="ReportFormat" minOccurs="0"/>
+    <xs:element ref="ReportType" minOccurs="0"/>
+    <xs:element ref="ContextCount" minOccurs="0"/>
+    <xs:element ref="ElementCount" minOccurs="0"/>
+    <xs:element ref="EntityCount" minOccurs="0"/>
+    <xs:element ref="FootnotesReported" minOccurs="0"/>
+    <xs:element ref="SegmentCount" minOccurs="0"/>
+    <xs:element ref="ScenarioCount" minOccurs="0"/>
+    <xs:element ref="TuplesReported" minOccurs="0"/>
+    <xs:element ref="UnitCount" minOccurs="0"/>
+    <xs:element ref="MyReports" minOccurs="0"/>
+    <xs:element ref="Logs" minOccurs="0"/>
+    <xs:element ref="InputFiles" minOccurs="0"/>
+    <xs:element ref="SupplementalFiles" minOccurs="0"/>
+    <xs:element ref="ContextSummary" minOccurs="0"/>
+    <xs:element ref="BaseTaxonomies" minOccurs="0"/>
+    <xs:element ref="HasPresentationLinkbase" minOccurs="0"/>
+    <xs:element ref="HasCalculationLinkbase" minOccurs="0"/>
+   </xs:all>
+  </xs:complexType>
+ </xs:element>
+ <xs:element name="Version" type="xs:string"/>
+ <xs:element name="ReportFormat" type="xs:string"/>
+ <xs:element name="ContextCount" type="xs:nonNegativeInteger"/>
+ <xs:element name="ElementCount" type="xs:nonNegativeInteger"/>
+ <xs:element name="EntityCount" type="xs:nonNegativeInteger"/>
+ <xs:element name="FootnotesReported" type="xs:boolean"/>
+ <xs:element name="SegmentCount" type="xs:integer"/>
+ <xs:element name="ScenarioCount" type="xs:integer"/>
+ <xs:element name="TuplesReported" type="xs:boolean"/>
+ <xs:element name="UnitCount" type="xs:nonNegativeInteger"/>
+ <xs:element name="MyReports">
+  <xs:complexType>
+   <xs:sequence>
+    <xs:element maxOccurs="unbounded" ref="Report"/>
+   </xs:sequence>
+  </xs:complexType>
+ </xs:element>
+ <xs:element name="Report">
+  <xs:complexType>
+   <xs:all>
+    <xs:element ref="IsDefault"/>
+    <xs:element ref="ContainEmbeddedReports" minOccurs="0"/>
+    <xs:element ref="HasEmbeddedReports" minOccurs="0"/>
+    <xs:element ref="HtmlFileName" minOccurs="0"/>
+    <xs:element ref="LongName" minOccurs="0"/>
+    <xs:element ref="ReportType" minOccurs="0"/>
+    <xs:element ref="Role" minOccurs="0"/>
+    <xs:element ref="XmlFileName" minOccurs="0"/>
+    <xs:element ref="ShortName" minOccurs="0"/>
+    <xs:element ref="MenuCategory" minOccurs="0"/>
+    <xs:element ref="Position" minOccurs="0"/>
+   </xs:all>
+   <xs:attribute name="instance" type="FILENAME"/>
+  </xs:complexType>
+ </xs:element>
+ <xs:element name="IsDefault" type="xs:boolean"/>
+ <xs:element name="ContainEmbeddedReports" type="xs:boolean"/>
+ <xs:element name="HasEmbeddedReports" type="xs:boolean"/>
+ <xs:element name="HtmlFileName" type="FILENAME"/>
+ <xs:element name="LongName" type="xs:string"/>
+ <xs:element name="Role" type="xs:anyURI"/>
+ <xs:element name="XmlFileName" type="FILENAME"/>
+ <xs:element name="ShortName" type="xs:string"/>
+ <xs:element name="MenuCategory">
+  <xs:simpleType>
+   <xs:restriction base="xs:string">
+    <xs:enumeration value=""/>
+    <xs:enumeration value="Cover"/>
+    <xs:enumeration value="Notes"/>
+    <xs:enumeration value="Tables"/>
+    <xs:enumeration value="Details"/>
+    <xs:enumeration value="Policies"/>
+    <xs:enumeration value="Statements"/>
+    <xs:enumeration value="Uncategorized"/>
+   </xs:restriction>
+  </xs:simpleType>
+ </xs:element>
+ <xs:element name="Position" type="xs:positiveInteger"/>
+ <xs:element name="Logs">
+  <xs:complexType>
+   <xs:sequence>
+    <xs:element minOccurs="0" maxOccurs="unbounded" ref="Log"/>
+   </xs:sequence>
+  </xs:complexType>
+ </xs:element>
+ <xs:element name="Log">
+  <xs:complexType>
+   <xs:simpleContent>
+    <xs:extension base="xs:string">
+     <xs:attribute name="type">
+      <xs:simpleType>
+       <xs:restriction base="xs:string">
+        <xs:enumeration value="Info"/>
+        <xs:enumeration value="Warning"/>
+        <xs:enumeration value="Error"/>
+       </xs:restriction>
+      </xs:simpleType>
+     </xs:attribute>
+    </xs:extension>
+   </xs:simpleContent>
+  </xs:complexType>
+ </xs:element>
+ <xs:element name="ContextSummary">
+  <xs:complexType>
+   <xs:choice>
+    <xs:element name="ContextSummary" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:sequence>
+     <xs:element name="ContextName"/>
+     <xs:element name="ElementCount"/>
+    </xs:sequence>
+   </xs:choice>
+  </xs:complexType>
+ </xs:element>
+ <xs:element name="InputFiles">
+  <xs:complexType>
+   <xs:sequence>
+    <xs:element maxOccurs="unbounded" ref="File"/>
+   </xs:sequence>
+  </xs:complexType>
+ </xs:element>
+ <xs:element name="SupplementalFiles">
+  <xs:complexType>
+   <xs:sequence>
+    <xs:element minOccurs="0" maxOccurs="unbounded" ref="File"/>
+   </xs:sequence>
+  </xs:complexType>
+ </xs:element>
+ <xs:element name="BaseTaxonomies">
+  <xs:complexType>
+   <xs:sequence>
+    <xs:element ref="BaseTaxonomy" minOccurs="0" maxOccurs="unbounded"/>
+   </xs:sequence>
+  </xs:complexType>
+ </xs:element>
+ <xs:element name="BaseTaxonomy" type="xs:string"/>
+ <xs:element name="HasPresentationLinkbase" type="xs:boolean"/>
+ <xs:element name="HasCalculationLinkbase" type="xs:boolean"/>
+ <xs:element name="ReportType" type="xs:string"/>
+ <xs:element name="File">
+  <xs:complexType>
+   <xs:simpleContent>
+    <xs:extension base="FILENAME">
+     <xs:attribute name="original" type="xs:string"/>
+     <xs:attribute name="doctype" type="xs:string"/>
+    </xs:extension>
+   </xs:simpleContent>
+  </xs:complexType>
+ </xs:element>
+ <xs:element name="ProcessingTime" type="xs:string"/>
+ <xs:element name="ContextName" type="xs:string"/>
+ <xs:simpleType name="FILENAME">
+  <xs:restriction base="xs:string">
+   <xs:maxLength value="32"/>
+  </xs:restriction>
+ </xs:simpleType>
+</xs:schema>

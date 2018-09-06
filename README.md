@@ -27,4 +27,4 @@ To use this plugin securely without leaving any xbrl files on a server (such as 
 	(--logFile specifies a name for a log file to return inside the zip and whether .txt or .xml)
 
 
-Further notes on usage are in the [__init__.py module comments](https://github.com/Arelle/EdgarRenderer/blob/edgr154/__init__.py).
+Further notes on usage are in the [__init__.py module comments](https://github.com/Arelle/EdgarRenderer/blob/edgr183/__init__.py).

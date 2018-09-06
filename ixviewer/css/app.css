@@ -3,6 +3,14 @@
  * Data and content created by government employees within the scope of their employment 
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  * */
+.modal-icon {
+	margin-top: 3px;
+	margin-right: 3px;
+}
+.sidepanel-container-height {
+	height: calc(100vh - 80px);
+	overflow: auto;
+}
 #app-container {
     position: absolute;
     width:100%;
@@ -315,10 +323,6 @@ label {
 
 .carousel-control.left, .carousel-control.right {
     width: 5%;
-}
-
-.carousel-control .glyphicon {
-    color: #003768;
 }
 
 .carousel-inner .item {
@@ -1010,13 +1014,6 @@ div[data-calendar-item] {
     width:37px;
 }
 
-.searchIcon{
-    font-size: 11px;
-    margin-top: 3px;
-    /*margin-left: 4px;
-    margin-bottom: 1px;*/
-}
-
 @media(max-width:767px) {
     #search-btn {
         height: 20px;
@@ -1044,14 +1041,7 @@ _:-moz-tree-row(hover), #search-input {
 	padding-top: 0px;
 	padding-bottom:0px;
 }
-/*.clearable{
-  background: #fff url(data:image/gif;base64,R0lGODlhBwAHAIAAAP///5KSkiH5BAAAAAAALAAAAAAHAAcAAAIMTICmsGrIXnLxuDMLADs=) no-repeat right -10px center;
-  border-radius: 6px;
-  transition: background 0.4s;
-}
-.clearable.x  { background-position: right 5px center; }
-.clearable.onX{ cursor: pointer; }
-*/
+
 #panel-section-results .btn-container .btn {
     background: transparent;
     border: 0;

@@ -2,10 +2,10 @@
 <xbrl
   xmlns="http://www.xbrl.org/2003/instance"
   xmlns:bst="http://www.brightstar.com/20160930"
-  xmlns:dei="http://xbrl.sec.gov/dei/2014-01-31"
+  xmlns:dei="http://xbrl.sec.gov/dei/2018-01-31"
   xmlns:iso4217="http://www.xbrl.org/2003/iso4217"
   xmlns:link="http://www.xbrl.org/2003/linkbase"
-  xmlns:us-gaap="http://fasb.org/us-gaap/2016-01-31"
+  xmlns:us-gaap="http://fasb.org/us-gaap/2018-01-31"
   xmlns:xbrldi="http://xbrl.org/2006/xbrldi"
   xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -1059,7 +1059,8 @@
       contextRef="BalanceAsOf_2015-09-30"
       decimals="-3"
       unitRef="iso4217_USD">374404000</us-gaap:CashAndCashEquivalentsAtCarryingValue>
-    <us-gaap:OrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock contextRef="NineMonthsEnded_2016-09-30">&lt;p style="line-height: normal; margin-left: 0in; margin-right: 0in; margin-top: 6.0pt"&gt;
+    <us-gaap:OrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock contextRef="NineMonthsEnded_2016-09-30">
+        &lt;p style="line-height: normal; margin-left: 0in; margin-right: 0in; margin-top: 6.0pt"&gt;
           &lt;span style="text-decoration: underline"&gt;
             &lt;span style="font-size: 10.0pt;"&gt;Note 1 - Basis of Presentation&lt;/span&gt;
           &lt;/span&gt;
@@ -1072,8 +1073,10 @@
         &lt;/p&gt;
         &lt;p style="line-height: normal; margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;
           &lt;span style="font-size: 10.0pt;"&gt;In the opinion of management, all adjustments necessary for a fair presentation of the Company's financial results for the interim periods have been made. These adjustments are of a normal recurring nature. The results of operations for the nine month period ended September 30, 2016 are not necessarily indicative of results for the entire year. The Company has evaluated subsequent events through the date the financial statements covered by this quarterly report were issued. &lt;/span&gt;
-        &lt;/p&gt;</us-gaap:OrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock>
-    <us-gaap:SegmentReportingDisclosureTextBlock contextRef="NineMonthsEnded_2016-09-30">&lt;p style="line-height: normal; margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;
+        &lt;/p&gt;
+      </us-gaap:OrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock>
+    <us-gaap:SegmentReportingDisclosureTextBlock contextRef="NineMonthsEnded_2016-09-30">
+        &lt;p style="line-height: normal; margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;
           &lt;span style="text-decoration: underline"&gt;
             &lt;span style="font-size: 10.0pt;"&gt;Note 2 - Segment Information&lt;/span&gt;
           &lt;/span&gt;
@@ -2136,8 +2139,10 @@
         
         &lt;p style="line-height: normal; margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;
           &lt;span style="font-size: 10.0pt;"&gt;Net sales by segment exclude the effect of certain discounts, incentives and freight billed to customers. The line item "Other" represents the net effect of the discounts, incentives and freight billed to customers, which is reported as a component of net sales in the Company's condensed consolidated statements of income and comprehensive income. &lt;/span&gt;
-        &lt;/p&gt;</us-gaap:SegmentReportingDisclosureTextBlock>
-    <us-gaap:ScheduleOfSegmentReportingInformationBySegmentTextBlock contextRef="NineMonthsEnded_2016-09-30">&lt;p style="line-height: normal; margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;
+        &lt;/p&gt;
+      </us-gaap:SegmentReportingDisclosureTextBlock>
+    <us-gaap:ScheduleOfSegmentReportingInformationBySegmentTextBlock contextRef="NineMonthsEnded_2016-09-30">
+          &lt;p style="line-height: normal; margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;
             &lt;span style="font-size: 10.0pt;"&gt;&#160;&lt;/span&gt;
           &lt;/p&gt;
           &lt;div style="text-align: center"&gt;
@@ -3190,7 +3195,8 @@
           &lt;/div&gt;
           &lt;p style="line-height: normal; margin-left: 0in; margin-right: 0in; margin-top: 2.0pt"&gt;
             &lt;span style="font-size: 10.0pt;"&gt;&#160;&lt;/span&gt;
-          &lt;/p&gt;</us-gaap:ScheduleOfSegmentReportingInformationBySegmentTextBlock>
+          &lt;/p&gt;
+        </us-gaap:ScheduleOfSegmentReportingInformationBySegmentTextBlock>
     <us-gaap:SalesRevenueNet
       contextRef="Mainline_P3m20160930"
       decimals="-3"
@@ -3431,7 +3437,8 @@
       contextRef="NineMonthsEnded-2015-09-30"
       decimals="-3"
       unitRef="iso4217_USD">690306000</us-gaap:IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest>
-    <us-gaap:DescriptionOfNewAccountingPronouncementsNotYetAdopted contextRef="NineMonthsEnded_2016-09-30">&lt;p style="line-height: normal; margin-left: 0in; margin-right: 0in; margin-top: 6.0pt"&gt;
+    <us-gaap:DescriptionOfNewAccountingPronouncementsNotYetAdopted contextRef="NineMonthsEnded_2016-09-30">
+        &lt;p style="line-height: normal; margin-left: 0in; margin-right: 0in; margin-top: 6.0pt"&gt;
           &lt;span style="text-decoration: underline"&gt;
             &lt;span style="font-size: 10.0pt;"&gt;Note 3 - Recent Accounting Pronouncements&lt;/span&gt;
           &lt;/span&gt;
@@ -3500,5 +3507,6 @@
             and early adoption is permitted. The&#160;Company is currently
             evaluating the impact of ASU No.&#160;2016-09 on its condensed
             consolidated financial statements.&lt;/span&gt;
-        &lt;/p&gt;</us-gaap:DescriptionOfNewAccountingPronouncementsNotYetAdopted>
+        &lt;/p&gt;
+      </us-gaap:DescriptionOfNewAccountingPronouncementsNotYetAdopted>
 </xbrl>

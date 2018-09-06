@@ -1669,8 +1669,10 @@ class Cell(object):
         if IsNumeric:
             IsRatio = Utils.isRate(fact, self.filing) # Rename to DisplayAsPercent
             NumericAmount = valueStr
-        else:
+        elif fact.concept.isTextBlock:
             self.NonNumericText = valueStr
+        else: # don't allow anything else to look like tags.
+            self.NonNumericText = valueStr.replace('<','&lt;')
         SubElement(cellETree, 'IsNumeric').text = str(IsNumeric).casefold()
         SubElement(cellETree, 'IsRatio').text = str(IsRatio).casefold()
 

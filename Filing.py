@@ -1098,7 +1098,11 @@ class StartEndContext(object):
             self.endTimePretty = endDateTime.strftime('%Y-%m-%dT%H:%M:%S')
 
     def startEndContextInMonths(self):
-        modifiedEndTime = self.endTime + datetime.timedelta(days=15) # we add to it because it rounds down
+        modifiedEndTime = self.endTime
+        try:
+            modifiedEndTime = self.endTime + datetime.timedelta(days=15) # we add to it because it rounds down
+        except OverflowError:
+            modifiedEndTime = datetime.datetime(datetime.MAXYEAR,12,31,0,0)
         delta = dateutil.relativedelta.relativedelta(modifiedEndTime, self.startTime)
         return delta.years * 12 + delta.months
     

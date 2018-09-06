@@ -1,9 +1,12 @@
 /*
- * App_Find
- * The Find object handles everything in the left pane that is used to find things. (Highlight, Filter, Search etc)
  * Created by staff of the U.S. Securities and Exchange Commission.
  * Data and content created by government employees within the scope of their employment 
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
+ */
+
+/*
+ * App_Find
+ * The Find object handles everything in the left pane that is used to find things. (Highlight, Filter, Search etc)
  * */
 var _filterList = [];
 var _dataList = ['Amounts Only', 'Text Only', 'Calculations Only', 'Negatives Only', 'Additional Items Only'];
@@ -13,6 +16,13 @@ var _htmlHover = {
         xbrlValue:"",
         html:""
     };
+
+function getImagePath() {
+	var _find_js_url = $('script[src*="find.js"]').attr('src').split('?')[0].split('find.js')[0];
+	var a = document.createElement('a');
+	a.href = _find_js_url+'../../images/';
+	return a.href;
+}
 
 var _lazyLoadTaggedSection = false;
 var _lazyLoadResults = false;
@@ -424,7 +434,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                         var node = $(this);
                         var year = node.parents('div[data-calendar-year]');
                         year = year.attr('data-calendar-year');
-                        if (node.hasClass('glyphicon-plus')) {
+                        if (node.hasClass('icon-plus-black')) {
 
                             App_Find.Filter.showCalendarTree(year);
                         } else {
@@ -473,7 +483,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                         var node = $(this);
                         var year = node.parents('div[data-calendar-year]');
                         year = year.attr('data-calendar-year');
-                        if (node.hasClass('glyphicon-plus')) {
+                        if (node.hasClass('icon-plus-black')) {
 
                             App_Find.Filter.showCalendarTree(year);
                         } else {
@@ -515,7 +525,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                         var node = $(this);
                         var year = node.parents('div[data-calendar-year]');
                         year = year.attr('data-calendar-year');
-                        if (node.hasClass('glyphicon-plus')) {
+                        if (node.hasClass('icon-plus-black')) {
 
                             App_Find.Filter.showCalendarTree(year);
                         } else {
@@ -551,7 +561,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                     var node = $(this);
                     var year = node.parents('div[data-calendar-year]');
                     year = year.attr('data-calendar-year');
-                    if (node.hasClass('glyphicon-plus')) {
+                    if (node.hasClass('icon-plus-black')) {
 
                         App_Find.Filter.showCalendarTree(year);
                     } else {
@@ -591,7 +601,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                         var node = $(this);
                         var year = node.parents('div[data-calendar-year]');
                         year = year.attr('data-calendar-year');
-                        if (node.hasClass('glyphicon-plus')) {
+                        if (node.hasClass('icon-plus-black')) {
 
                             App_Find.Filter.showCalendarTree(year);
                         } else {
@@ -917,7 +927,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                 var year = years[i];
                 var yearNode = $(
                                 '<div class="checkbox" data-calendar-year="' + year + '">' +
-                                '<span class="glyphicon glyphicon-minus"></span>' +
+                                '<span class="icon-as-img icon-minus-black"></span>' +
                                 '<label><input type="checkbox" />' + year + '</label>' +
                                 '</div>'
                 );
@@ -995,14 +1005,14 @@ $( "#prevCarousel1" ).mouseover(function() {
             var span = divYear.find('span');
             if (isCollapsed) {
 
-                span.removeClass('glyphicon-minus');
-                span.addClass('glyphicon-plus');
+                span.removeClass('icon-minus-black');
+                span.addClass('icon-plus-black');
                 span.attr("tabindex", "0");
                 span.attr("aria-label", "Expand");
             } else {
 
-                span.removeClass('glyphicon-plus');
-                span.addClass('glyphicon-minus');
+                span.removeClass('icon-plus-black');
+                span.addClass('icon-minus-black');
                 span.attr("tabindex", "0");
                 span.attr("aria-label", "Collapse");
             }
@@ -1460,7 +1470,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	            var clearfilterNodeName = '<span style="display: block;float: left;clear: right;vertical-align: middle;"><span>Clear All &nbsp;</span>' ;
 	            clearfilterNodeName = $(clearfilterNodeName);
 				
-				clearfilterNode = '<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear All Filters" tabindex="8">' +
+				clearfilterNode = '<span class="icon-as-img icon-close-circle-white" title="Clear All Filters" tabindex="8">' +
 			            '</span></span></span>';
 	            var clearAllObj = $(clearfilterNode);
 	           	clearAllObj.bind('keypress', function(e) {
@@ -1509,7 +1519,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	            var button ='';
 	            if(_dataList.indexOf(_filterList[_index])!=-1){
 					//DE451
-	            	filterNode ='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Data Filter" data-btn-removeHighlight>' +
+	            	filterNode ='<span class="icon-as-img icon-close-circle-white" title="Clear Data Filter" data-btn-removeHighlight>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1521,7 +1531,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	  	            });
 	            }else if(_tagList.indexOf(_filterList[_index])!=-1){
 					//DE451
-	            	filterNode ='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Tags Filter" data-btn-removeConcepts>' +
+	            	filterNode ='<span class="icon-as-img icon-close-circle-white" title="Clear Tags Filter" data-btn-removeConcepts>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1534,7 +1544,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	  	            });
 	            }else if(_filterList[_index].match("Periods")=="Periods"){
 					//DE451
-	            	filterNode ='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Periods Filter" data-btn-removePeriods>' +
+	            	filterNode ='<span class="icon-as-img icon-close-circle-white" title="Clear Periods Filter" data-btn-removePeriods>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1547,7 +1557,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	  	            });
 	            }else if(_filterList[_index].match("Measures")=="Measures"){
 					//DE451
-	            	filterNode = '<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Measures Filter" data-btn-removeUnits>' +
+	            	filterNode = '<span class="icon-as-img icon-close-circle-white" title="Clear Measures Filter" data-btn-removeUnits>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1559,7 +1569,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	  	            });
 	            }else if(_filterList[_index].match("Axes")=="Axes"){
 					//DE451
-	            	filterNode ='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Axes Filter" data-btn-removeAxis>' +
+	            	filterNode ='<span class="icon-as-img icon-close-circle-white" title="Clear Axes Filter" data-btn-removeAxis>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1571,7 +1581,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	  	            });
 	            }else if (_filterList[_index].match("Scale")=="Scale"){
 					//DE451
-	            	filterNode ='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Scale Filter" data-btn-removeScale>' +
+	            	filterNode ='<span class="icon-as-img icon-close-circle-white" title="Clear Scale Filter" data-btn-removeScale>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1584,7 +1594,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	  	            });
 	            }else if (_filterList[_index].match("Balance")=="Balance"){
 					//DE451
-	            	filterNode ='<span class="glyphicon glyphicon-remove-circle" style="line-height: 25px;vertical-align: bottom; margin-bottom: -2px;" title="Clear Balance Filter" data-btn-removeBalance>' +
+	            	filterNode ='<span class="icon-as-img icon-close-circle-white" title="Clear Balance Filter" data-btn-removeBalance>' +
 		            '</span>&nbsp;&nbsp;</span>';
 	            	filterNodeObj = $(filterNode);
 	            	filterNodeObj.on('click', function() {
@@ -1983,14 +1993,14 @@ $( "#prevCarousel1" ).mouseover(function() {
         },
     	init:function(){  
     		$('[data-toggle=collapse]').click(function(){
-			  	// toggle icon
-			  	$(this).find("i").toggleClass("glyphicon-chevron-right glyphicon-chevron-down");
+			  	// toggle icon-image
+    			$(this).find('.icon-as-img').toggleClass('icon-expand-less-black icon-expand-more-black');
 			});
             
             $('[data-toggle=collapse]').bind('keypress', function(e) {
 				var code = e.keyCode || e.which;
 				if((code == 13) || (code == 32)) { //Enter keycode
-					// toggle icon
+					// toggle icon-image
 				  	e.preventDefault();
 				  	$(this).click();
 				}
@@ -2318,45 +2328,6 @@ $( "#prevCarousel1" ).mouseover(function() {
 		        $("#disclosureLi").css({'display':'none'});
 		        $("#disclosureLiDup").css({'display':'none'});
 			}
-         	/*var searchReportsResult = $('#results-reports');
-			if (results) {
-			    searchReportsResult.html('');
-			
-			    App_Find.TaggedSection.totalPages = Math.ceil(results.length/App_Find.TaggedSection.resultsPerPage);
-			    App_Find.TaggedSection.results = null;
-			    App_Find.TaggedSection.results = $(results); // load
-			
-			    if (results.length == 0) {
-			
-			        App_Find.TaggedSection.currentPage = 0;
-			    }
-			}
-		
-            if (App_Find.TaggedSection.totalPages == 0) {
-
-                App_Find.TaggedSection.currentPage = 0;
-            }
-		
-            $('#results-pages-reports').html(App_Find.TaggedSection.currentPage + ' of ' + App_Find.TaggedSection.totalPages);
-            $('#results-count-reports').html('' + App_Find.TaggedSection.results.length + '');
-            
-            
-            for (var index in App_Find.TaggedSection.results) {
-            	
-                if (index < (App_Find.TaggedSection.currentPage * App_Find.TaggedSection.resultsPerPage) &&
-                   index >= ((App_Find.TaggedSection.currentPage * App_Find.TaggedSection.resultsPerPage) - App_Find.TaggedSection.resultsPerPage)) {
-                   var label = App_Find.TaggedSection.results[index].shortName;
-                   
-                   
-                   var resultHtml = '<div class="result-item" data-is-selected="false" data-result-index="' + index + '" >' +
-                                                   '<div tabindex="3" class="rightNavLinks" style="float:none">'+$('<div/>').html(label).text()+'</div></div>';
-                   var resultHtmlObj = $(resultHtml);
-                   resultHtmlObj.on('click', function() {
-                	   App_Find.TaggedSection.selectItem($(this).attr('data-result-index'));
-                   });
-                   searchReportsResult.append(resultHtmlObj);
-                }
-			}*/
          
          },
          
@@ -2693,12 +2664,13 @@ $( "#prevCarousel1" ).mouseover(function() {
             if(ele){
 			App.frame.contents().find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-block-content-selected, .sec-cbe-highlight-filter-content-selected, .sec-cbe-highlight-filter-selected-block').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-block-content-selected sec-cbe-highlight-filter-content-selected sec-cbe-highlight-filter-selected-block'); 
 			App_Find.Highlight.cachedResults.arrayOfImages= App.frame.contents().find('img');
+			imagePath = getImagePath();
 		    var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
         		for (var i=0; i<arrayOfImagesLength; i++)
 				 {
         			var elementAtIthPositionOfArrayOfImages=App_Find.Highlight.cachedResults.arrayOfImages[i];
-					if(elementAtIthPositionOfArrayOfImages.getAttribute('src')=="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png"){
-						elementAtIthPositionOfArrayOfImages.setAttribute("src", "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png");
+					if(elementAtIthPositionOfArrayOfImages.getAttribute('src')==imagePath+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png"){
+						elementAtIthPositionOfArrayOfImages.setAttribute("src", imagePath+App_Settings.get('elementBorderColorCode')+"_img.png");
 					}
 				 }
             	ele.selectionHighlight();
@@ -2712,7 +2684,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                   		var imageId=ele.attr('id')+"imageid";
 							imageNode=getAlreadyExistingImage(imageId);
 							if(imageNode){
-							imageNode.setAttribute("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
+							imageNode.setAttribute("src", imagePath+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
 	                   		}
 	                   		}
 	                   	else if($(ele).parent().hasClass('sec-cbe-highlight-block')){
@@ -2721,7 +2693,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                   		var imageId=ele.attr('id')+"imageid";
 							imageNode=getAlreadyExistingImage(imageId);
 							if(imageNode){
-							imageNode.setAttribute("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
+							imageNode.setAttribute("src", imagePath+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
 							}
 	            		}
           		 }
@@ -2815,7 +2787,7 @@ $( "#prevCarousel1" ).mouseover(function() {
         },
         load:function() {
         	  var frameContentObject =App.frame.contents(); 
-              var srcImg = "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png";
+              var srcImg = getImagePath()+App_Settings.get('elementBorderColorCode')+"_img.png";
               var filter = App_Find.Filter.getSelected();
               var search = App_Find.Search.getSelected();
               
@@ -3710,25 +3682,6 @@ $( "#prevCarousel1" ).mouseover(function() {
         	container.css('margin-top', marginTop +'px');
             }
             
-            /*function initLinkedHiddenNodes(){
-            	App_Find.Highlight.cachedResults.linkedHiddenNodes = $();
-            	console.log(App.frame.contents().find('span[style^="-sec-ix-hidden"]').length);
-				for(var j=0; j<App.frame.contents().find('span[style^="-sec-ix-hidden"]').length;j++){
-					var node = $(App.frame.contents().find('span[style^="-sec-ix-hidden"]')[j]);
-					var style = node.attr("style");
-					console.log(style);
-					//if((style.match("-sec-ix-hidden*"))){
-						style = style.substring(style.indexOf("-sec-ix-hidden"));
-	                	var id = style.substring(style.indexOf(":")+1);
-	                	if(id.indexOf(";")>-1){
-	                		id = id.substring(0,id.indexOf(";"));
-	                	}
-	                	var specialNode = [];
-	                	specialNode.push(id,node);
-	                	App_Find.Highlight.cachedResults.linkedHiddenNodes.push(specialNode);	
-					//}
-				}
-            }*/
             
             function wrapLinkedHidden(ele,node,cls,spanNode){
             	if(App_Find.Highlight.cachedResults.linkedHiddenNodes.length>0){
@@ -3962,7 +3915,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 											jthElementNode.style.clear="none";
 											if($(element[j]).parent()[0]){
 												nodeNew =$(element[j]).parent()[0].nodeName;
-												//console.log(nodeNew);
+
 											}
 										}
 									}
@@ -3994,7 +3947,7 @@ $( "#prevCarousel1" ).mouseover(function() {
             				 //var allLinkedNodes=[];
             				 if(nodeName == nonNumericNodeElement){
             					 if($(spanNode).hasClass('sec-cbe-highlight-block')){
-            						 $(elem).attr("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
+            						 $(elem).attr("src", getImagePath+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
 									 elem.setAttribute("src", blueImagePath);
             						 $(spanNode).children(':first').selectionHighlightNodesOnClick();
             						 frameContentObject.find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
@@ -4042,7 +3995,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 	                    	$('#about-modal').dialog("close");
 	                    	App_Find.Highlight.cachedResults.arrayOfImages= App.frame.contents().find('img');
 	           			    var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
-	                    	//var srcImg = "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png";
+	                    	//var srcImg = getImagePath()+App_Settings.get('elementBorderColorCode')+"_img.png";
 	                    	for (var i=0; i<arrayOfImagesLength; i++)
 	                    	{
 	                    		if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath){
@@ -4746,12 +4699,13 @@ $( "#prevCarousel1" ).mouseover(function() {
             				 App_Find.Results.highlightItem(index);  // highlight the result item
             				 //var allLinkedNodes=[];
             				 if(nodeName == nonNumericNodeElement){
+            					 var imagePath = getImagePath();
             					 if((node).attr('continuedat')!=null){
             						 $(spanNode).children(':first').selectionHighlightNodesOnClick();
             						 var allLinkedNodesLength=allLinkedNodes.length;
             						 for(var i=0;i<allLinkedNodesLength;i++){
 
-										$(elem).attr("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
+										$(elem).attr("src", imagePath+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
 										elem.setAttribute("src", blueImagePath);
 									}
             						 frameContentObject.find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
@@ -4760,7 +4714,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 
             					 else if($(spanNode).hasClass('sec-cbe-highlight-block')){
             						 $(spanNode).children(':first').selectionHighlightNodesOnClick();
-									 $(elem).attr("src", "/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
+									 $(elem).attr("src", imagePath+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png");
 									 elem.setAttribute("src", blueImagePath);
             						 frameContentObject.find('.sec-cbe-highlight-content-selected, .sec-cbe-highlight-filter-content-selected').removeClass('sec-cbe-highlight-content-selected sec-cbe-highlight-filter-content-selected'); 
             						 $(spanNode).addClass('sec-cbe-highlight-filter-content-selected');
@@ -5062,7 +5016,7 @@ $( "#prevCarousel1" ).mouseover(function() {
        				// }
        			 }
        		 });
-            	var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
+            	var blueImagePath=getImagePath()+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
             	if(App_Find.Highlight.cachedResults.continuedAt.length>0){
 				   
             		 results.each(function(index, element) {
@@ -5320,7 +5274,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 				var tdCount=0;
 	            var documentWidth=$(document).width();
 	            App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
-				var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
+				var blueImagePath=getImagePath()+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
    			    var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
 				var highlightType = App_Find.Highlight.getSelected().value;
    			    if(highlightType =="both" || highlightType =="text"){
@@ -5437,10 +5391,9 @@ $( "#prevCarousel1" ).mouseover(function() {
                     App_Find.Results.show(results);
             	}else{
             		App_Find.Highlight.cachedResults.arrayOfImages=frameContentObject.find('img');
-            		var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
+            		var blueImagePath=getImagePath()+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
             		var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
             		var highlightType = App_Find.Highlight.getSelected().value;
-            		console.log("hello");
             		
             		if(highlightType =="both" || highlightType =="text"){
             			for (var i=0; i<arrayOfImagesLength; i++)
@@ -5462,7 +5415,7 @@ $( "#prevCarousel1" ).mouseover(function() {
 							var instanceXbrlType=false;
 							 var xbrId="";
 							 var elem = document.createElement("img");
-							var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
+							var blueImagePath=getImagePath()+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
 							 if (nodeName == App.InlineDoc.inlinePrefix + ':nonnumeric') {
 								nonNumericNode=true;
 								xbrId = node.attr('name').split(':').join('_');
@@ -5481,7 +5434,7 @@ $( "#prevCarousel1" ).mouseover(function() {
                    
                     App_Find.Highlight.getResults().each(function(index, element) {
                         var elem = document.createElement("img");
-						var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
+						var blueImagePath=getImagePath()+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
                         var isMatch = false;
                         var ele = $(element);
                         var node = $(element);
@@ -5574,13 +5527,13 @@ $( "#prevCarousel1" ).mouseover(function() {
 				if(panel.hasClass("visible")){
 				if(screen.width<641)
 					{
-					$('#opener').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down');
+					$('#opener').removeClass('icon-expand-more').addClass('icon-expand-less');
 					$('#opener').attr("title", "Expand Facts");
 					panel.removeClass('visible').animate({'margin-right':'-100%','width':'100%'});
 		      		$('#app-inline-xbrl-doc').css({'width':'100%'});
 					}
 				else{
-					$('#opener').removeClass('glyphicon-chevron-right').addClass('glyphicon-chevron-down');
+					$('#opener').removeClass('icon-expand-more').addClass('icon-expand-less');
 					$('#opener').attr("title", "Expand Facts");
 					panel.removeClass('visible').animate({'margin-right':'-30%','width':'30%'});
 					panel.css({'width':'100%'});
@@ -5728,8 +5681,8 @@ $( "#prevCarousel1" ).mouseover(function() {
             $("#closeFRW").on('click', function() {
             	App_Find.Highlight.cachedResults.arrayOfImages= App.frame.contents().find('img');
    			    var arrayOfImagesLength=App_Find.Highlight.cachedResults.arrayOfImages.length;
-            	var blueImagePath="/ixviewer/images/"+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
-            	var srcImg = "/ixviewer/images/"+App_Settings.get('elementBorderColorCode')+"_img.png";
+            	var blueImagePath=getImagePath()+App_Settings.get('focusHighlightSelectionColorCode')+"_img.png";
+            	var srcImg = getImagePath()+App_Settings.get('elementBorderColorCode')+"_img.png";
             	for (var i=0; i<arrayOfImagesLength; i++)
             	{
             		if(App_Find.Highlight.cachedResults.arrayOfImages[i].getAttribute('src')==blueImagePath){

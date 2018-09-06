@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <schema targetNamespace="http://www.brightstar.com/20160930" xmlns="http://www.w3.org/2001/XMLSchema"
-xmlns:dei="http://xbrl.sec.gov/dei/2014-01-31"
+xmlns:dei="http://xbrl.sec.gov/dei/2018-01-31"
+xmlns:srt="http://fasb.org/srt/2018-01-31"
+
 xmlns:link="http://www.xbrl.org/2003/linkbase"
 xmlns:nonnum="http://www.xbrl.org/dtr/type/non-numeric"
 xmlns:num="http://www.xbrl.org/dtr/type/numeric"
@@ -8,8 +10,8 @@ xmlns:xbrldt="http://xbrl.org/2005/xbrldt"
 xmlns:xbrli="http://www.xbrl.org/2003/instance"
 xmlns:xlink="http://www.w3.org/1999/xlink" attributeFormDefault="unqualified" elementFormDefault="qualified"
 xmlns:bst="http://www.brightstar.com/20160930"
-xmlns:us-gaap="http://fasb.org/us-gaap/2016-01-31"
-xmlns:us-types="http://fasb.org/us-types/2016-01-31">
+xmlns:us-gaap="http://fasb.org/us-gaap/2018-01-31"
+xmlns:us-types="http://fasb.org/us-types/2018-01-31">
 <annotation>
 <appinfo>
 <link:linkbaseRef xlink:type="simple" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase" xlink:href="bst-20160930_pre.xml" xlink:role="http://www.xbrl.org/2003/role/presentationLinkbaseRef" />
@@ -81,11 +83,11 @@ xmlns:us-types="http://fasb.org/us-types/2016-01-31">
 <import schemaLocation="http://www.xbrl.org/2003/xbrl-instance-2003-12-31.xsd" namespace="http://www.xbrl.org/2003/instance" />
 <import schemaLocation="http://www.xbrl.org/2003/xbrl-linkbase-2003-12-31.xsd" namespace="http://www.xbrl.org/2003/linkbase" />
 <import schemaLocation="http://www.xbrl.org/2005/xbrldt-2005.xsd" namespace="http://xbrl.org/2005/xbrldt" />
-<import schemaLocation="http://xbrl.fasb.org/us-gaap/2016/elts/us-types-2016-01-31.xsd" namespace="http://fasb.org/us-types/2016-01-31" />
+<import schemaLocation="http://xbrl.fasb.org/us-gaap/2018/elts/us-types-2018-01-31.xsd" namespace="http://fasb.org/us-types/2018-01-31" />
 <import schemaLocation="http://www.xbrl.org/dtr/type/numeric-2009-12-16.xsd" namespace="http://www.xbrl.org/dtr/type/numeric" />
 <import schemaLocation="http://www.xbrl.org/dtr/type/nonNumeric-2009-12-16.xsd" namespace="http://www.xbrl.org/dtr/type/non-numeric" />
-<import schemaLocation="http://xbrl.fasb.org/us-gaap/2016/elts/us-gaap-2016-01-31.xsd" namespace="http://fasb.org/us-gaap/2016-01-31" />
-<import schemaLocation="http://xbrl.sec.gov/dei/2014/dei-2014-01-31.xsd" namespace="http://xbrl.sec.gov/dei/2014-01-31" />
+<import schemaLocation="http://xbrl.fasb.org/us-gaap/2018/elts/us-gaap-2018-01-31.xsd" namespace="http://fasb.org/us-gaap/2018-01-31" />
+<import schemaLocation="https://xbrl.sec.gov/dei/2018/dei-2018-01-31.xsd" namespace="http://xbrl.sec.gov/dei/2018-01-31" />
 <element name="DocumentAndEntityInformationAbstract" id="bst_DocumentAndEntityInformationAbstract" xbrli:periodType="duration" abstract="true" nillable="true" substitutionGroup="xbrli:item" type="xbrli:stringItemType" />
 <element name="CargoMember" id="bst_CargoMember" xbrli:periodType="duration" abstract="true" nillable="true" substitutionGroup="xbrli:item" type="nonnum:domainItemType" />
 <element name="OtherMember" id="bst_OtherMember" xbrli:periodType="duration" abstract="true" nillable="true" substitutionGroup="xbrli:item" type="nonnum:domainItemType" />
