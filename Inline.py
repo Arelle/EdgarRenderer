@@ -277,11 +277,14 @@ def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocument
                         for elt in footnoteHtml.iter():
                             addLocallyReferencedFile(elt,filingFiles)
             
-    fh = io.StringIO();
-    targetInstance.saveInstance(overrideFilepath=targetUrl, outputZip=outputZip, outputFile=fh, updateFileHistory=False, xmlcharrefreplace=True)
-    fh.seek(0)
-    filing.writeFile(targetUrl, fh.read())
-    fh.close()
+    if outputZip:
+        targetInstance.saveInstance(overrideFilepath=targetUrl, outputZip=outputZip, updateFileHistory=False, xmlcharrefreplace=True)
+    else:
+        fh = io.StringIO();
+        targetInstance.saveInstance(overrideFilepath=targetUrl, outputFile=fh, updateFileHistory=False, xmlcharrefreplace=True)
+        fh.seek(0)
+        filing.writeFile(targetUrl, fh.read())
+        fh.close()
     if getattr(modelXbrl, "isTestcaseVariation", False):
         modelXbrl.extractedInlineInstance = True # for validation comparison
     modelXbrl.modelManager.showStatus(_("Saved extracted instance"), clearAfter=5000)       
