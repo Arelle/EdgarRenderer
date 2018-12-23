@@ -224,7 +224,7 @@ def handleDuration(valueStr):
     return re.sub(re.compile(beforeT + TAndAfter), durationPrettyPrint, valueStr.strip()) 
 
 
-def strFactValue(fact, preferredLabel=None, filing=None):
+def strFactValue(fact, preferredLabel=None, filing=None, report=None):
     if fact.isNil:
         return ''
     valueStr = fact.value
@@ -244,6 +244,10 @@ def strFactValue(fact, preferredLabel=None, filing=None):
     if filing is not None:
         try:
             qnameToGetTheLabelOf = filing.factToQlabelDict[fact]
+            if not preferredLabel and report is not None:
+                # check for declared preferred label
+                if qnameToGetTheLabelOf in report.cube.labelDict:
+                    return report.cube.labelDict[qnameToGetTheLabelOf]
             return filing.modelXbrl.qnameConcepts[qnameToGetTheLabelOf].label(preferredLabel)
         except KeyError:
             pass

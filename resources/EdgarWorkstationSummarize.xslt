@@ -508,6 +508,33 @@
         </xsl:if>
       </xsl:when>
       <xsl:when test="$isrr">
+        <xsl:if test="$instance != $prev_instance">
+          <xsl:variable name="doctype">
+            <xsl:value-of select="(/FilingSummary/InputFiles/File[.=$instance]/@doctype)"/>
+          </xsl:variable>
+          <xsl:variable name="original">
+            <xsl:value-of select="(/FilingSummary/InputFiles/File[.=$instance]/@original)"/>
+          </xsl:variable>
+          <xsl:variable name="instance_is_inline">
+            <xsl:value-of select="translate(substring($instance,string-length($instance)-3),'HTM','htm') = '.htm'"/>
+          </xsl:variable>
+          <xsl:if test="$original != ''">
+            <li class="accordion ">
+              <xsl:choose>
+	          <xsl:when test="$instance_is_inline = 'true'">
+	            <xsl:comment>EDGAR workstation requires escaped database query for document retrieval</xsl:comment>
+	            <xsl:variable name="htmUrl" select="concat($fetch_ix_prefixquoted,$accessionNumber,$fetchsuffixquoted,$original)"/>
+	            <xsl:variable name="metalinksUrl" select="concat($fetch_ix_prefixquoted,$accessionNumber,$fetchsuffixquoted,'MetaLinks.json')"/>
+	            <a href="ixviewer/ix.html?xbrl=true&amp;doc={$htmUrl}&amp;metalinks={$metalinksUrl}"><xsl:value-of select="$doctype"/></a>
+	          </xsl:when>
+	          <xsl:otherwise>
+	            <xsl:variable name="htmUrl" select="concat($fetchprefix,$accessionNumber,$fetchsuffix,$original)"/>
+	            <a href="{$htmUrl}"><xsl:value-of select="$doctype"/></a>
+	          </xsl:otherwise>
+              </xsl:choose>             
+            </li>              
+          </xsl:if>
+        </xsl:if>  
         <li class="accordion">
           <a id="menu_cat0" href="#">Risk Return Reports</a>
           <ul>

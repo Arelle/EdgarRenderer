@@ -34,32 +34,33 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
 	};
 </script>
 <link type="text/css" rel="stylesheet"
-  href="css/bootstrap/bootstrap.min.css?v93">
+  href="css/bootstrap/bootstrap.min.css?v95">
 <link type="text/css" rel="stylesheet"
-  href="css/bootstrap/bootstrap-theme.min.css?v93">
+  href="css/bootstrap/bootstrap-theme.min.css?v95">
 <link type="text/css" rel="stylesheet"
-  href="css/bootstrap/bootstrap-submenu.min.css?v93">
+  href="css/bootstrap/bootstrap-submenu.min.css?v95">
 <link type="text/css" rel="stylesheet" 
-  href="css/app.css?v93">
+  href="css/app.css?v95">
 <link type="text/css" rel="stylesheet" 
-  href="css/rightNavigation.css?v93">
+  href="css/rightNavigation.css?v95">
 <link type="text/css" rel="stylesheet" 
-  href="css/icon-as-img.css?v93">
-<script type="text/javascript" src="js/jquery/jquery-2.1.1.min.js?v93"></script>
-<script type="text/javascript" src="js/jquery/jquery.browser.min.js?v93"></script>
-<script type="text/javascript" src="js/jquery/jquery.simple-color.min.js?v93"></script>
-<script type="text/javascript" src="js/jquery/jquery.custom.js?v93"></script>
-<script type="text/javascript" src="js/jquery/jquery-ui.js?v93"></script>
-<script type="text/javascript" src="js/bootstrap/bootstrap.min.js?v93"></script>
-<script type="text/javascript" src="js/bootstrap/bootstrap-submenu.min.js?v93"></script>
-<script type="text/javascript" src="js/bootstrap/tooltip.js?v93"></script>
-<script type="text/javascript" src="js/bootstrap/bootstrap-filestyle.js?v93"></script>
-<script type="text/javascript" src="js/app/errors.js?v93"></script>
-<script type="text/javascript" src="js/app/polyfills.js?v93"></script>
-<script type="text/javascript" src="js/cbe.js?v93"></script>
-<script type="text/javascript" src="js/app/app.js?v93"></script>
-<script type="text/javascript" src="js/app/find.js?v93"></script>
-<script type="text/javascript" src="js/app/uri.js?v93"></script>
+  href="css/icon-as-img.css?v95">
+<script type="text/javascript" src="js/jquery/jquery-2.1.1.min.js?v95"></script>
+<script type="text/javascript" src="js/jquery/jquery.browser.min.js?v95"></script>
+<script type="text/javascript" src="js/jquery/jquery.simple-color.min.js?v95"></script>
+<script type="text/javascript" src="js/jquery/jquery.custom.js?v95"></script>
+<script type="text/javascript" src="js/jquery/jquery-ui.js?v95"></script>
+<script type="text/javascript" src="js/bootstrap/bootstrap.min.js?v95"></script>
+<script type="text/javascript" src="js/bootstrap/bootstrap-submenu.min.js?v95"></script>
+<script type="text/javascript" src="js/bootstrap/tooltip.js?v95"></script>
+<script type="text/javascript" src="js/bootstrap/bootstrap-filestyle.js?v95"></script>
+<script type="text/javascript" src="js/app/errors.js?v95"></script>
+<script type="text/javascript" src="js/app/polyfills.js?v95"></script>
+<script type="text/javascript" src="js/cbe.js?v95"></script>
+<script type="text/javascript" src="js/app/app.js?v95"></script>
+<script type="text/javascript" src="js/app/find.js?v95"></script>
+<script type="text/javascript" src="js/app/uri.js?v95"></script>
+<script type="text/javascript" src="js/app/additional-forms.js?v95"></script>
 <title>Inline XBRL Viewer</title>
 </head>
 <body id="sec-body">
@@ -186,10 +187,27 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
                 href="#">Scale</a></li>
               <li><a data-toggle="modal"
                 data-target="#filter-balance-modal" href="#">Balance</a></li>
+              <li>
+              	<a data-toggle="modal"
+              	data-target="#filter-source-documents" href="#">Source Documents</a>
+              </li>
             </ul>
           </li>
         </ul>
       </div>
+      <!--
+      <div class="moreFiltersSection hidden" id="additionalFormsListSection">
+		<ul class="nav">
+			<li class="dropdown">
+				<button type="button" data-toggle="dropdown" class="menuIcon" tabindex="8" aria-label="Select Other Forms">
+					<font id="otherForms" class="hidden-xs"><span class="caret mr-3"></span>Additional Forms</font>
+				</button>
+				<ul id="additionalFormsList" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+            	</ul>
+			</li>
+		</ul>
+      </div>
+      -->
       <div class="factsSection">
         <ul class="nav">
           <li class="inline">
@@ -473,6 +491,50 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
                 </div>
               </div>
             </div>
+           
+           
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <a data-toggle="collapse" tabindex="1"
+                  style="font-size: 16px; color: inherit; font-weight: 500;"
+                  data-parent="#accordion" href="#collapseRRSummaries">
+                  RR Summaries </a>
+              </div>
+              <div id="collapseRRSummaries" class="panel-collapse collapse">
+                <div class="panel-body">
+                  <p>
+                    The <i>RR Summaries</i> toolbar/menu item provides a
+                    listing of the RR Summaries of the Inline document. By
+                    selecting a section item in the listing, the document will
+                    navigate to that section. 
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+             <div class="panel panel-default">
+              <div class="panel-heading">
+                <a data-toggle="collapse" tabindex="1"
+                  style="font-size: 16px; color: inherit; font-weight: 500;"
+                  data-parent="#accordion" href="#collapseMultiHtm">
+                  Multi Htm Support </a>
+              </div>
+              <div id="collapseMultiHtm" class="panel-collapse collapse">
+                <div class="panel-body">
+                  <p>
+                  The<i> Multi Htm Support</i> allows navigation from an iXBRL file 
+                  through an href to another iXBRL file in the same submission without leaving the viewer.
+                  User can also see all inline documents available under More Filters and Source Documents.
+                  The <i>Tagged Sections</i> will show icon, if it is not belong to 
+                  current htm page.By selecting a section item in the listing with icon, 
+                  the document will navigate to that section of htm file.
+                  </p>
+                </div>
+              </div>
+            </div>
+           
+           
+           
             <div class="panel panel-default">
               <div class="panel-heading">
                 <a data-toggle="collapse"
@@ -665,9 +727,25 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
                     </h5>
                     <ul class="list-unstyled collapse in" id="statementType"></ul>
                   </li>
+                  
+                   <li class="nav-header" id="rrLi"><h5
+                      style="font-weight: bold;" role="application">
+                      RR Summaries 
+                      <a href="#" data-toggle="collapse"
+                         aria-label="RR_Summaries"
+                         aria-title="RR_Summaries"
+                         data-target="#RR_Summaries"
+                         style="text-decoration: none;" tabindex="3"> 
+                         <span class="icon-as-img icon-expand-less-black"></span>
+                      </a>
+                    </h5>
+                    <ul class="list-unstyled collapse in" id="RR_Summaries"></ul>
+                  </li>
+                  
+                  
                   <li class="nav-header" id="disclosureLi"><h5
                       style="font-weight: bold;" role="application">
-                      Notes to the Financials 
+                      Notes to the Financials
                       <a href="#" data-toggle="collapse"
                          aria-label="Notes to the Financials"
                          aria-title="Notes to the Financials"
@@ -679,20 +757,6 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
                     <ul class="list-unstyled collapse" role="application"
                       id="disclosureType"></ul>
                   </li>
-                  <li class="nav-header" id="disclosureLiDup"><h5
-                      style="font-weight: bold;" role="application">
-                      Notes to the Financials 
-                      <a href="#" data-toggle="collapse"
-                        aria-label="Notes to the Financials"
-                        aria-title="Notes to the Financials"
-                        data-target="#disclosureTypeExpanded"
-                        style="text-decoration: none;" tabindex="3"> 
-                        <span class="icon-as-img icon-expand-more-black"></span>
-                      </a>
-                    </h5>
-                    <ul class="list-unstyled collapse in"
-                      id="disclosureTypeExpanded"></ul>
-                   </li>
                 </ul>
               </div>
               <div id="mutualFundTaggedSection" class="rightNavigation"
@@ -729,9 +793,22 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
                     </h5>
                     <ul class="list-unstyled collapse in" id="statementTypeIfrs"></ul>
                   </li>
-                  <li class="nav-header" id="disclosureLiIfrs"><h5
+                  <li class="nav-header" id="rrLiIfrs"><h5
                       style="font-weight: bold;" role="application">
-                      Notes to the Financials 
+                      RR Summaries 
+                      <a href="#" data-toggle="collapse"
+                         aria-label="RR_Summaries"
+                         aria-title="RR_Summaries"
+                         data-target="#RR_SummariesIfrs"
+                         style="text-decoration: none;" tabindex="3"> 
+                         <span class="icon-as-img icon-expand-less-black"></span>
+                      </a>
+                    </h5>
+                    <ul class="list-unstyled collapse in" id="RR_SummariesIfrs"></ul>
+                  </li>
+                   <li class="nav-header" id="disclosureLiIfrs"><h5
+                      style="font-weight: bold;" role="application">
+                      Notes to the Financials
                       <a href="#" data-toggle="collapse"
                         aria-label="Notes to the Financials"
                         aria-title="Notes to the Financials"
@@ -742,20 +819,6 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
                     </h5>
                     <ul class="list-unstyled collapse" role="application"
                       id="disclosureTypeIfrs"></ul>
-                  </li>
-                  <li class="nav-header" id="disclosureLiDupIfrs"><h5
-                      style="font-weight: bold;" role="application">
-                      Notes to the Financials 
-                      <a href="#" data-toggle="collapse"
-                        aria-label="Notes to the Financials"
-                        aria-title="Notes to the Financials"
-                        data-target="#disclosureTypeExpandedIfrs"
-                        style="text-decoration: none;" tabindex="3">
-                        <span class="icon-as-img icon-expand-more-black"></span>
-                      </a>
-                    </h5>
-                    <ul class="list-unstyled collapse in"
-                      id="disclosureTypeExpandedIfrs"></ul>
                   </li>
                 </ul>
               </div>
@@ -983,9 +1046,14 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
               <!--  <div class="modal-content" style="width: 280px;">-->
               <div data-slide-content="tags" id="settingsModalBody">
                 <div id="AboutTable2">
-                  <span><strong>Total Facts:</strong> <span
-                    id="total-number-facts"></span></span> <span class="pull-right"><strong>Inline
-                      Version:</strong> <span id="inline-version"></span></span>
+                  <span>
+                  	<strong>Total Facts:</strong>
+                  	<span id="total-number-facts"></span>
+                  </span> 
+                  <span class="pull-right">
+                  	<strong>Inline Version:</strong>
+                  	<span id="inline-version"></span>
+                  </span>
                 </div>
                 <table id="ele-table">
                   <tr>
@@ -1373,6 +1441,42 @@ are not subject to domestic copyright protection. 17 U.S.C. 105. -->
       <!-- /.modal-dialog -->
     </div>
     <!-- /.modal -->
+    
+    <div id="filter-source-documents" class="modal fade" tabindex="-1"
+      role="dialog" aria-labelledby="balanceFilter" aria-hidden="true"
+      data-prev-highlight-type="" data-contents-loaded="false">
+      <div class="modal-dialog">
+        <div class="modal-content" style="width: 280px;">
+          <div class="modal-header" style="cursor: move;">
+            <button type="button" alt="Close" class="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title" id="balanceFilter">Source Documents</h4>
+          </div>
+          <div class="modal-body" style="padding: 0;">
+            <div style="background-color: #B8B8B8; padding: 5px;">
+              <div class="row">
+                <div class="col-sm-12">
+                  <h5 class="modal-title">
+                    Total: <span id="totalSourceDocumentsCount"></span>
+                  </h5>
+                </div>
+              </div>
+            </div>
+            <div class="container-fluid"
+              style="height: 100px; overflow-y: auto; overflow-x: hidden;">
+              <div class="row">
+                <div class="col-sm-12">
+                	<ol id="additionalFormsList" class="pl-10"></ol>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
     <!-- progress dialog -->
     <div class="progress-bak"></div>
     <div class="progress-container">

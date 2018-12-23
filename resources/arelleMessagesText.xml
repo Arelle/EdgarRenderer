@@ -42,7 +42,7 @@ note: The special substitution $local-name() strips a prefix, if any, from a QNa
          level="error"
          module="ModelDocument.py" line="50"
          args="url blockedIndicator referringUrl">
-[cp-2200-Prohibited-Href-Or-Schema-Location] File "$(url)" referenced in $(refUrl) is not supported. Please see http://www.sec.gov/info/edgar/edgartaxonomies.shtml for a listing of supported files.
+[cp-2202-Prohibited-Href-Or-Schema-Location] File "$(url)" referenced in $(refUrl) is not supported. Please see http://www.sec.gov/info/edgar/edgartaxonomies.shtml for a listing of supported files.
 </message>
 
 <message code="EFM.6.05.15"
@@ -448,6 +448,27 @@ Disallowed entity code $(text) in file $(file) line $(line) column $(column)
 [ix-0514-Hidden-Fact-Not-Found] The value of the -sec-ix-hidden style property, $(id), does not correspond to the id of any hidden fact.
 </message>
 
+<message code="EFM.6.03.02.sdrHasNonSdrExhibit"
+         level="error"
+         module="EFM/__init__.py" line="309"
+         args="documentType exhibitType">
+[cp-0302-Sdr-Has-Non-Sdr-Exhibit] An SDR filing contains non-SDR exhibit type $(exhibitType) document type $(documentType).
+</message>
+
+<message code="EFM.6.03.02.sdrMissingFiles"
+         level="error"
+         module="EFM/__init__.py" line="297"
+         args="docType missingFiles">
+[cp-0302-Sdr-Missing-Files] $(docType) report missing files: $(missingFiles).
+</message>
+
+<message code="EFM.6.03.02.sdrMissingStandardSchema"
+         level="error"
+         module="EFM/__init__.py" line="303"
+         args="docType missingFiles">
+[cp-0302-Sdr-Missing-Standard-Schema] $(documentType) submission must use a US GAAP standard schema.
+</message>
+
 <!--WcH 6.03.03 would be caught by EDGARLink but is useful for offline validation -->
 <!-- the 6.03.03 messages are not indicative of the nature of the problems.  this whole section needs attention. -->
 <message code="EFM.6.03.03"
@@ -526,6 +547,13 @@ Href $(elementHref) may only have shorthand xpointers
 [cp-0308-More-Than-One-Ins] The submission contains more than one instance for exhibit type $(exhibitType).  Remove all but one or change the exhibit types.
 </message>
 
+<message code="EFM.6.03.08.sdrHasMultipleKreports"
+         level="error"
+         module="EFM/__init__.py" line="268"
+         args="exhibitType">
+[cp-0308-Sdr-Has-Multiple-K-Reports] "SDR filing has multiple K SDR reports for $(entities)."
+</message>
+
 <!-- had inconsistent file/line number text order -->
 <message code="EFM.6.03.11"
          level="error"
@@ -545,7 +573,7 @@ Fact $(fact) of context $(contextID) has an XBRL error
          level="error"
          module="ValidateFiling.py" line="125"
          args="scheme context identifier">
-[cp-0501-Entity-Identifier-Scheme] Your identifier for the CIK code, $(identifier), or scheme $(scheme), in context $(context), did not adhere to the standard naming convention of &lt;identifier scheme="http://www.sec.gov/CIK">xxxxxxxxxx&lt;/identifier>".  Please recheck your submission and comply with the standard naming convention.
+[cp-0501-Entity-Identifier-Scheme] Your identifier for the CIK code, $(identifier), or scheme $(scheme), in context $(context), did not adhere to the standard naming convention of &lt;identifier scheme="http://www.sec.gov/CIK">xxxxxxxxxx&lt;/identifier>.  Please recheck your submission and comply with the standard naming convention.
 </message>
 
 <!--
@@ -968,7 +996,7 @@ FootnoteLink $(footnoteLinkNumber) has disallowed role $(linkrole)</message>
          level="error"
          module="ValidateFiling.py" line="764"
          args="xlinkLabel">
-[du-0528-Footnote-Custom-Footnote-Role] Footnote $(xlinkLabel) is missing a role. Please provide the default footnote role.
+[du-0528-Footnote-Role-Missing] Footnote $(xlinkLabel) is missing a role. Please provide the default footnote role.
 </message>
 
 <message code="EFM.6.05.28"
@@ -1066,7 +1094,7 @@ FootnoteLink $(footnoteLinkNumber) has disallowed role $(linkrole)</message>
          level="error"
          module="ValidateFiling.py" line="474"
          args="unitID measure length">
-[du-0536-name-length-limit] Unit $(unitID) contains a measure element whose local-name in UTF-8 has more than 200 bytes.  Shorten the measure name.
+[du-0536-Name-Length-Limit] Unit $(unitID) contains a measure element whose local-name in UTF-8 has more than 200 bytes.  Shorten the measure name.
 </message>
 
 <message code="EFM.6.05.37"
@@ -1081,6 +1109,13 @@ FootnoteLink $(footnoteLinkNumber) has disallowed role $(linkrole)</message>
          module="ValidateFiling.py" line="262"
          args="contextID">
 [du-0538-Context-Has-Period-Forever] Context $(contextID)s uses period &lt;xbrli:forever>. Please remove it and resubmit.</message>
+
+<message code="EFM.6.05.39"
+         level="error"
+         module="ValidateFiling.py" line="313"
+         args="contextIDs dimensions">
+[cp-0539-Typed-Dimension-Not-Standard] Typed dimensions must be defined in standard taxonomy schemas, contexts: $(contextIDs) dimensions: $(dimensions).
+</message>
 
 <message code="EFM.6.05.40.currentFiscalYearEndDateValue"
          level="warning"
@@ -1260,8 +1295,8 @@ FootnoteLink $(footnoteLinkNumber) has disallowed role $(linkrole)</message>
 <message code="EFM.6.05.40.entityWellKnownSeasonedIssuerValue"
          level="warning"
          module="plugin/validate/EFM/Filing.py" line="834"
-         args="edgarCode submissionValue deiValue">
-[dq-0540-Entity-Well-Known-Seasoned-Issuer-Value] dei:EntityWellKnownSeasonedIssuer value $(deiValue) in the Required Context does not agree with submission voluntary filer flag value $(submissionValue). $(refSources)
+         args="edgarCode wellKnownSeasonedIssuerValue deiValue">
+[dq-0540-Entity-Well-Known-Seasoned-Issuer-Value] dei:EntityWellKnownSeasonedIssuer value $(deiValue) in the Required Context does not agree with well known seasoned issuer flag value $(wellKnownSeasonedIssuerValue). $(refSources)
 </message>
 
 <message code="EFM.6.05.40.submissionUnexpectedAcceleratedFilerStatus"
@@ -1594,14 +1629,14 @@ ArcroleType $(arcroleType) should end with /arcrole/{LC3name}
          level="error"
          module="ValidateXbrlDTS.py" line="453"
          args="element name length">
-[du-0729-name-length-limit] Shorten this declaration name to 200 bytes or fewer in UTF-8: $(name)
+[du-0729-Name-Length-Limit] Shorten this declaration name to 200 bytes or fewer in UTF-8: $(name)
 </message>
 
 <message code="EFM.6.07.30"
          level="error"
          module="ValidateXbrlDTS.py" line="297 522"
          args="length attribute roleURI targetNamespace value">
-[du-0730-uri-length-limit]  Shorten this declaration URI to 255 bytes or fewer in UTF-8: $(value).
+[du-0730-Uri-Length-Limit]  Shorten this declaration URI to 255 bytes or fewer in UTF-8: $(value).
 </message>
 
 <message code="EFM.6.07.31"
@@ -1764,7 +1799,7 @@ A label linkbase is required but was not found
          level="error"
          module="ValidateFiling.py" line="1320"
          args="concept role lang">
-Concept $(concept) has duplicated labels for role $(role) lang $(lang).
+[cp-1002-Element-Used-Has-Duplicate-Label] Concept $(concept) has duplicated labels for role $(role) lang $(lang).
 </message>
 
 <!-- removed label linkbase file name, there may be multipls such files -->
@@ -2026,7 +2061,7 @@ Axis $(dimension) in DRS role $(linkrole), missing targetrole consecutive relati
          level="error"
          module="ValidateFiling.py" line="846"
          args="concept text xml">
-[cp-1801-Custom-Element-Has-Reference] Your filing provides a reference, "$(xml)", for an custom concept in extension taxonomy, $(concept).  Please remove this reference.
+[cp-1801-Custom-Element-Has-Reference] Your filing provides a reference, "$(xml)", for a custom concept in extension taxonomy, $(concept).  Please remove this reference.
 </message>
 
 <message code="EFM.6.18.02"

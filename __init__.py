@@ -145,6 +145,7 @@ PythonUtil.noop(0)  # Get rid of warning on PythonUtil import
 from arelle import (Cntlr, FileSource, ModelDocument, XmlUtil, Version, ModelValue, Locale, PluginManager, WebCache, ModelFormulaObject,
                     ViewFileFactList, ViewFileFactTable, ViewFileConcepts, ViewFileFormulae,
                     ViewFileRelationshipSet, ViewFileTests, ViewFileRssFeed, ViewFileRoleTypes)
+from arelle.PluginManager import pluginClassMethods
 from . import RefManager, IoManager, Inline, Utils, Filing, Summary
 import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os, re, io, tempfile
 from lxml import etree
@@ -205,7 +206,7 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     parser.add_option("--summaryXslt", dest="summaryXslt", help=_("Path and name of Stylesheet, if any, for producing filing summary html."))
     parser.add_option("--excelXslt", dest="excelXslt", help=_("Path and name of Stylesheet, if any, for producing Excel 2007 xlsx output."))
     parser.add_option("--auxMetadata", action="store_true", dest="auxMetadata", help=_("Set flag to generate inline xbrl auxiliary files"))
-    Inline.saveTargetDocumentCommandLineOptionExtender(parser)
+    # saveTarget* paraameters are added by inlineXbrlDocumentSet.py plugin
     parser.add_option("--sourceList", action="store", dest="sourceList", help=_("Comma-separated triples of instance file, doc type and source file."))
     parser.add_option("--copyInlineFilesToOutput", action="store_true", dest="copyInlineFilesToOutput", help=_("Set flag to copy all inline files to the output folder or zip."))
     parser.add_option("--copyXbrlFilesToOutput", action="store_true", dest="copyXbrlFilesToOutput", help=_("Set flag to copy all source xbrl files to the output folder or zip."))
@@ -627,7 +628,12 @@ class EdgarRenderer(Cntlr.Cntlr):
             if filesource.isOpen:
                 self.processingFolder = os.path.dirname(filesource.basefile)
             else:
-                self.processingFolder = os.path.dirname(filesource.url)
+                _url = filesource.url
+                #filesource.url may have an inline document set, trim it off
+                for pluginXbrlMethod in pluginClassMethods("InlineDocumentSet.Url.Separator"):
+                    inlineDocSetSeparator = pluginXbrlMethod()
+                    _url = _url.partition(inlineDocSetSeparator)[0]
+                self.processingFolder = os.path.dirname(_url)
         if entryPointFile and os.path.exists(entryPointFile): # for testcase, is different than filesource, which points to testcase
             if not (filesource and filesource.isOpen and filesource.isArchive and entryPointFile.startswith(filesource.basefile)):
                 self.processingFolder = os.path.dirname(entryPointFile)   
@@ -692,7 +698,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             else:
                     self.logInfo(_("Ignoring {} Validation errors because abortOnMajorError is not set.").format(errorCountDuringValidation))
         modelXbrl.profileActivity()
-        self.setProcessingFolder(modelXbrl.fileSource, report.entryPoint.get("file"))
+        self.setProcessingFolder(modelXbrl.fileSource, report.filepaths[0]) # use first of possibly multi-doc IXDS files
         # if not reportZip and reportsFolder is relative, make it relative to source file location (on first report)
         if not filing.reportZip and self.initialReportsFolder and len(filing.reports) == 1:
             if not os.path.isabs(self.initialReportsFolder):
@@ -708,19 +714,20 @@ class EdgarRenderer(Cntlr.Cntlr):
                         self.reportsFolder = tempfile.mkdtemp(prefix="EdgarRenderer_") # Mac or Windows temp directory
             IoManager.handleFolder(self, self.reportsFolder, True, self.totalClean)
         self.renderedFiles = report.renderedFiles # report-level rendered files
-        if report.isInline:
-            if report.basename not in self.inlineList:
-                self.inlineList.append(report.basename)
-        elif report.basename.endswith(".xml"):
-            if report.basename not in self.instanceList:          
-                self.instanceList.append(report.basename)
+        for basename in report.basenames:
+            if report.isInline:
+                if basename not in self.inlineList:
+                    self.inlineList.append(basename)
+            elif basename.endswith(".xml"):
+                if basename not in self.instanceList:          
+                    self.instanceList.append(basename)
         for reportedFile in sorted(report.reportedFiles):
             if Utils.isImageFilename(reportedFile):
                 self.supplementalFileList.append(reportedFile)
                 self.supplementList.append(reportedFile)
             #elif reportedFile.endswith(".htm"): # the non-inline primary document isn't known to Arelle yet in EDGAR
             #    self.inlineList.append(reportedFile)
-            elif reportedFile != report.basename:
+            elif reportedFile not in report.basenames:
                 self.otherXbrlList.append(reportedFile)
         RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
         self.loopnum = getattr(self, "loopnum", 0) + 1
@@ -741,7 +748,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.renderedFiles = filing.renderedFiles # filing-level rendered files
         if not success:
             self.success = False   
-        modelXbrl.profileStat(_("EdgarRenderer process instance {}").format(report.basename))
+        modelXbrl.profileStat(_("EdgarRenderer process instance {}").format(report.basenames[0]))
             
     def loadLogMessageText(self):         
         self.logMessageText = {}
@@ -773,6 +780,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         return _text
                 
     def filingEnd(self, cntlr, options, filesource, filing, sourceZipStream=None, *args, **kwargs):
+        # note that filesource is None if there were no instances
         if self.abortedDueToMajorError:
             self.success = False # major errors detected
         
@@ -793,7 +801,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         self.reportZip.write(source, filename)
                     elif self.reportsFolder is not None:
                         target = join(self.reportsFolder, filename)
-                        if not exists(target):
+                        if not exists(target) and filesource is not None:
                             os.makedirs(self.reportsFolder, exist_ok=True)
                             file = filesource.file(source, binary=True)[0]  # returned in a tuple
                             filing.writeFile(target, file.read()) # shutil.copyfile(source, target)
@@ -812,8 +820,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                 if options.copyXbrlFilesToOutput:
                     for report in filing.reports:
                         inputsToCopyToOutputList += report.reportedFiles                
-                if inputsToCopyToOutputList and filing.entrypointfiles:
-                    _xbrldir = os.path.dirname(filing.entrypointfiles[0]["file"])
+                if inputsToCopyToOutputList and filing.entrypointfiles: # filesource will be not None
+                    _xbrldir = os.path.dirname(filing.entrypointfiles[0]["file"].partition('#')[0])  # strip any # or IXDS suffix
                     # files to copy are in zip archive
                     for filename in set(inputsToCopyToOutputList): # set() to deduplicate if multiple references
                         _filepath = os.path.join(_xbrldir, filename)
@@ -834,16 +842,18 @@ class EdgarRenderer(Cntlr.Cntlr):
                 # temporary work-around to create SDR summaryDict
                 if not self.sourceDict and any(
                         report.documentType # HF: believe condition wrong: and report.documentType.endswith(" SDR") 
-                        for report in filing.reports):
+                        for report in filing.reports): # filesource will not be None
                     for report in filing.reports:
-                        if report.isInline:
-                            self.sourceDict[report.basename] = (report.documentType, report.basename)
-                        else:
-                            for ext in (".htm", ".txt"):
-                                sourceFilepath = report.filepath.rpartition(".")[0] + ext
-                                if filesource.exists(sourceFilepath):
-                                    self.sourceDict[report.basename] = (report.documentType, os.path.basename(sourceFilepath))
-                                    break
+                        for i, basename in enumerate(report.basenames): # has multiple entries for multi-document IXDS
+                            filepath = report.filepaths[i]
+                            if report.isInline:
+                                self.sourceDict[basename] = (report.documentType, basename)
+                            else:
+                                for ext in (".htm", ".txt"):
+                                    sourceFilepath = filepath.rpartition(".")[0] + ext
+                                    if filesource.exists(sourceFilepath):
+                                        self.sourceDict[basename] = (report.documentType, os.path.basename(sourceFilepath))
+                                        break
                 
                 summary = Summary.Summary(self)  
                 rootETree = summary.buildSummaryETree()
@@ -866,21 +876,24 @@ class EdgarRenderer(Cntlr.Cntlr):
                     if self.zipXbrlFilesToOutput and (hasattr(filing, "accessionNumber") or filing.entrypointfiles):
                         if hasattr(filing, "accessionNumber"):
                             _fileName = filing.accessionNumber + "-xbrl.zip"
+                        elif filing.reports and filing.reports[0].basenames: # handles inline document set contents
+                            _fileName = os.path.splitext(filing.reports[0].basenames[0])[0] + ".zip"
                         else:
-                            _fileName = os.path.splitext(os.path.basename(filing.entrypointfiles[0]["file"]))[0] + ".zip"
+                            _fileName = os.path.splitext(os.path.basename(filing.entrypointfiles[0]["file"].partition('#')[0]))[0] + ".zip"
                         zipStream = io.BytesIO()
                         xbrlZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
                         for report in filing.reports:
-                            _xbrldir = os.path.dirname(report.filepath)
-                            for reportedFile in sorted(report.reportedFiles):
-                                if reportedFile not in xbrlZip.namelist():
-                                    _filepath = os.path.join(_xbrldir, reportedFile)
-                                    if sourceZipStream is not None:
-                                        file = FileSource.openFileSource(_filepath, cntlr, sourceZipStream).file(_filepath, binary=True)[0]      
-                                    else:
-                                        file = filesource.file(_filepath, binary=True)[0]  # returned in a tuple
-                                    xbrlZip.writestr(reportedFile, file.read())
-                                    file.close()
+                            for filepath in report.filepaths: # may be multi-document IXDS (even in different directories)
+                                _xbrldir = os.path.dirname(filepath)
+                                for reportedFile in sorted(report.reportedFiles):
+                                    if reportedFile not in xbrlZip.namelist():
+                                        _filepath = os.path.join(_xbrldir, reportedFile)
+                                        if sourceZipStream is not None:
+                                            file = FileSource.openFileSource(_filepath, cntlr, sourceZipStream).file(_filepath, binary=True)[0]      
+                                        else:
+                                            file = filesource.file(_filepath, binary=True)[0]  # returned in a tuple
+                                        xbrlZip.writestr(reportedFile, file.read())
+                                        file.close()
                             filesource.close()
                         xbrlZip.close()
                         zipStream.seek(0)
@@ -1162,11 +1175,23 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             )
         if modelXbrl.modelDocument.type in ModelDocument.Type.TESTCASETYPES:
             modelXbrl.efmOptions = options  # save options in testcase's modelXbrl
-        if modelXbrl.modelDocument.type not in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INSTANCE):
+        if modelXbrl.modelDocument.type not in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INSTANCE, ModelDocument.Type.INLINEXBRLDOCUMENTSET):
             return
-        reportedFiles = {modelXbrl.modelDocument.basename} | referencedFiles(modelXbrl)
+        reportedFiles = set()
+        if modelXbrl.modelDocument.type == ModelDocument.Type.INLINEXBRLDOCUMENTSET:
+            for ixDoc in modelXbrl.modelDocument.referencesDocument.keys():
+                if ixDoc.type == ModelDocument.Type.INLINEXBRL:
+                    reportedFiles.add(ixDoc.basename)
+        else:
+            reportedFiles.add(modelXbrl.modelDocument.basename)
+        reportedFiles |= referencedFiles(modelXbrl)
         sourceDir = modelXbrl.modelDocument.filepathdir
         def addRefDocs(doc):
+            if doc.type == ModelDocument.Type.INLINEXBRLDOCUMENTSET:
+                for ixDoc in doc.referencesDocument.keys():
+                    if ixDoc.type == ModelDocument.Type.INLINEXBRL:
+                        addRefDocs(ixDoc)
+                return
             for refDoc in doc.referencesDocument.keys():
                 if refDoc.filepath and refDoc.filepath.startswith(sourceDir):
                     reportedFile = refDoc.filepath[len(sourceDir)+1:]
@@ -1174,16 +1199,21 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
                         reportedFiles.add(reportedFile)
                         addRefDocs(refDoc)
         addRefDocs(modelXbrl.modelDocument)
+        instDocs = ([modelXbrl.modelDocument] if modelXbrl.modelDocument.type != ModelDocument.Type.INLINEXBRLDOCUMENTSET
+                         else [])+ [ixDoc
+                                    for ixDoc in sorted(modelXbrl.modelDocument.referencesDocument.keys(), key=lambda d: d.objectIndex)
+                                    if ixDoc.type == ModelDocument.Type.INLINEXBRL]
         report = PythonUtil.attrdict( # simulate report
-            isInline = modelXbrl.modelDocument.type == ModelDocument.Type.INLINEXBRL,
+            isInline = modelXbrl.modelDocument.type in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INLINEXBRLDOCUMENTSET),
             reportedFiles = reportedFiles,
             renderedFiles = set(),
             entryPoint = {"file": modelXbrl.modelDocument.uri},
             url = modelXbrl.modelDocument.uri,
-            filepath = modelXbrl.modelDocument.filepath,
-            basename = modelXbrl.modelDocument.basename,
+            filepaths = [doc.filepath for doc in instDocs],
+            basenames = [doc.basename for doc in instDocs],
             documentType = None
             )
+        del instDocs # dereference
         for concept in modelXbrl.nameConcepts["DocumentType"]:
             for f in modelXbrl.factsByQname[concept.qname]:
                 cntx = f.context
@@ -1265,6 +1295,8 @@ def testcaseVariationExpectedSeverity(modelTestcaseVariation, *args, **kwargs):
         return _severity.upper()
     return None
 
+def savesTargetInstance(*args, **kwargs): # EdgarRenderer implements its own target instance saver
+    return True
 
 __pluginInfo__ = {
     'name': 'Edgar Renderer',
@@ -1273,7 +1305,7 @@ __pluginInfo__ = {
     'license': 'Apache-2',
     'author': 'U.S. SEC Employees and Mark V Systems Limited',
     'copyright': '(c) Portions by SEC Employees not subject to domestic copyright, otherwise (c) Copyright 2015 Mark V Systems Limited, All rights reserved.',
-    'import': ('validate/EFM', ), # import dependent modules
+    'import': ('validate/EFM_EER230', 'inlineXbrlDocumentSet'), # import dependent modules
     # add Edgar Renderer options to command line & web service options
     'CntlrCmdLine.Options': edgarRendererCmdLineOptionExtender,
     # startup for Daemon mode (polls for filings folder's oldest input zip file)
@@ -1289,5 +1321,7 @@ __pluginInfo__ = {
     # GUI operation, add View -> EdgarRenderer submenu for GUI options
     'CntlrWinMain.Menu.View': edgarRendererGuiViewMenuExtender,
     # identify expected severity of test cases for EdgarRenderer testcases processing
-    'ModelTestcaseVariation.ExpectedSeverity': testcaseVariationExpectedSeverity
+    'ModelTestcaseVariation.ExpectedSeverity': testcaseVariationExpectedSeverity,
+    # handles IXDS target saving
+    'InlineDocumentSet.SavesTargetInstance': savesTargetInstance
 }

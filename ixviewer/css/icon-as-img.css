@@ -7,19 +7,17 @@
  * Data and content created by government employees within the scope of their employment 
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  * */
-
-   
 .icon-as-img {
 	position: relative;
-    display: inline-block;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    cursor: pointer;
-    height: 16px;
-    width: 16px;
-    background-repeat: no-repeat;
-    background-position: center;
+	display: inline-block;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	cursor: pointer;
+	height: 16px;
+	width: 16px;
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .icon-close {
@@ -43,28 +41,28 @@
 
 .icon-expand-more {
 	background-image: url('../images/font-images/down-white.png');
-    background-size: 15px 10px;
-    top: 3px;
+	background-size: 15px 10px;
+	top: 3px;
 }
 
 .icon-expand-more-black {
 	background-image: url('../images/font-images/down-black.png');
-    background-size: 15px 10px;
-    top: 6px;
+	background-size: 15px 10px;
+	top: 6px;
 }
 
 .icon-expand-less {
 	background-repeat: no-repeat;
 	background-image: url('../images/font-images/right-white.png');
 	background-size: 10px 15px;
-    top: 3px;
+	top: 3px;
 }
 
 .icon-expand-less-black {
 	background-image: url('../images/font-images/right-black.png');
 	background-size: 10px 15px;
-    left: 2px;
-    top: 4px;
+	left: 2px;
+	top: 4px;
 }
 
 .icon-data {
@@ -81,7 +79,7 @@
 
 .icon-filter {
 	background-repeat: no-repeat;
-	background-image: url('../images/font-images/filter-white.png');	
+	background-image: url('../images/font-images/filter-white.png');
 	background-size: 15px 15px;
 	top: 3px;
 }
@@ -96,25 +94,25 @@
 .icon-first-black {
 	background-image: url('../images/font-images/first-black.png');
 	background-size: 12px 12px;
-    top: 4px;
+	top: 4px;
 }
 
 .icon-last-black {
 	background-image: url('../images/font-images/last-black.png');
 	background-size: 12px 12px;
-    top: 4px;
+	top: 4px;
 }
 
 .icon-previous-black {
 	background-image: url('../images/font-images/previous-black.png');
 	background-size: 12px 12px;
-    top: 4px;
+	top: 4px;
 }
 
 .icon-next-black {
 	background-image: url('../images/font-images/next-black.png');
 	background-size: 12px 12px;
-    top: 4px;
+	top: 4px;
 }
 
 .icon-copy {
@@ -124,27 +122,33 @@
 
 .icon-left-blue {
 	background-image: url('../images/font-images/left-blue.png');
-    background-size: 12px 16px;
-    top: -2px;
+	background-size: 12px 16px;
+	top: -2px;
 }
 
 .icon-right-blue {
 	background-image: url('../images/font-images/right-blue.png');
 	background-size: 12px 16px;
-    top: -2px;
+	top: -2px;
 }
 
 .icon-plus-black {
 	background-image: url('../images/font-images/plus-black.png');
 	background-size: 15px 15px;
-    top: 3px;
-    margin-right: 3px;
+	top: 3px;
+	margin-right: 3px;
 }
 
 .icon-minus-black {
 	background-image: url('../images/font-images/minus-black.png');
-    background-size: 16px 4px;
-    top: 3px;
-    margin-right: 3px;
-    background-position: center;
+	background-size: 16px 4px;
+	top: 3px;
+	margin-right: 3px;
+	background-position: center;
+}
+
+.icon-reload-form-black {
+	background-image: url('../images/font-images/reload-form-black.png');
+	background-size: 18px 18px;
+	top: 2px;
 }

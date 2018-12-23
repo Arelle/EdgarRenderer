@@ -364,32 +364,62 @@
 			    async : true,
 			    cache : false,
 			    error : function(requestObject, error, errorThrown) {
-				$('.toolbarSpinner').remove();
-				App.hideLoadingDialog();
-				App
-					.showMessage('Inline XBRL viewing features are disabled because no supporting file was found at ('
-						+ metalinksUrl + ').');
-				throw new CustomNotFoundError(null,
-					metalinksUrl);
+			       $('.toolbarSpinner').remove();
+			       App.hideLoadingDialog();
+			       App.showMessage(
+			           'Inline XBRL viewing features are disabled because no supporting file was found at ('
+			           + metalinksUrl + ').'
+			       );
+			       throw new CustomNotFoundError(
+			           null,
+			           metalinksUrl
+			       );
 			    },
 			    success : function(requestObject, status, xhr, data) {
-				_cacheMetaLinks = requestObject;
-				if (requestObject.version == "2.0") {
-				    _cacheInstance = _cacheMetaLinks.instance[filename];
-				    _cacheMetaRefs = _cacheMetaLinks.std_ref;
-				    App_Find.Highlight.highlight();
-				    App_Find.Settings.init();
-				    _setDocumentCustomPrefix();
+			      
+			      _cacheMetaLinks = requestObject;
+			      if (requestObject.version == "2.0" || requestObject.version == "2.1") {
+			        Object.keys(_cacheMetaLinks.instance).forEach(
+			            function (current, index, array) {
+			              if (current.indexOf(filename) > -1) {
+			                _cacheInstance = _cacheMetaLinks.instance[current];
+			                _cacheMetaRefs = _cacheMetaLinks.std_ref;
+			                App_Find.Highlight.highlight();
+			                App_Find.Settings.init();
+			                _setDocumentCustomPrefix();
+			                
+			                if (_cacheInstance && _cacheInstance['dts'] && _cacheInstance['dts']['inline']) {
+			                  Additional_Forms.init(
+			                      _cacheInstance['dts']['inline'], 
+			                      filename
+			                  );
+			                }
+			              } else {
+			                $('.toolbarSpinner').remove();
+			                App.hideLoadingDialog();
+			                App.showMessage(
+			                    'Inline XBRL viewing features are disabled because no supporting file was found at ('
+			                    + metalinksUrl + ').'
+			                );
+			                throw new CustomNotFoundError(
+			                    null,
+			                    metalinksUrl
+			                );
+			              }
+          
+			            });
 
-				} else {
 
-				    App
-					    .showMessage("Object found was not a MetaLinks version 2.0 file");
-				}
+			      } else {
+
+			        App.showMessage(
+			            "Object found was not a MetaLinks version 2.0 or 2.1 file"
+			        );
+			      }
 			    }
 			});
-	    };
-	    var _initCacheNewMore = function(parent, cnamegetting, callback) {
+	  };
+	  var _initCacheNewMore = function(parent, cnamegetting, callback) {
 		var uri = URI(window.location.href);
 		var queryAry = URI.parseQuery(uri.query());
 		var dir;
@@ -1197,18 +1227,18 @@
 		var fallback = (new RegExp("(doc|file)=([^&]*)", "i")
 			.exec(window.location.search))[2];
 		if (self.inlinePrefix == "" && self.instancePrefix == "") {
-		    var nodes = document.getElementById("mainDiv")
-			    .getElementsByTagName('*');
-		    for (var i = 0; i < nodes.length; i++) {
-			nodes[i].disabled = true;
-		    }
-		    $('#app-inline-xbrl-doc').remove();
-		    $('.fixedMenuBar').remove();
-		    $('.toolbarSpinner').remove();
-		    App.hideLoadingDialog();
-		    App.showMessage('Can not find file (' + fallback + ').');
-		    throw new CustomNotFoundError(null, fallback);
-
+			window.location.assign(fallback);
+//		    var nodes = document.getElementById("mainDiv")
+//			    .getElementsByTagName('*');
+//		    for (var i = 0; i < nodes.length; i++) {
+//			nodes[i].disabled = true;
+//		    }
+//		    $('#app-inline-xbrl-doc').remove();
+//		    $('.fixedMenuBar').remove();
+//		    $('.toolbarSpinner').remove();
+//		    App.hideLoadingDialog();
+//		    App.showMessage('Can not find file (' + fallback + ').');
+//		    throw new CustomNotFoundError(null, fallback);
 		} else {
 		    _initCache();
 		    if (!self.inlineVersion) {

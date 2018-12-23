@@ -1101,6 +1101,9 @@ class Report(object):
                     if cell is not None and not getattr(cell.column,'isHidden',False): fact = cell.fact
                     if (fact is not None and fact.xValid and \
                         (qnIXbrl11Hidden not in fact.ancestorQnames)):
+                        doc = fact.document
+                        ref = None
+                        if (doc is not None): ref = doc.basename
                         anchor = \
                         { 'contextRef':fact.contextID
                           ,'name':str(fact.qname)
@@ -1110,6 +1113,7 @@ class Report(object):
                           ,'decimals':fact.decimals
                           ,'ancestors':[str(getattr(ancestor,"qname",ancestor.tag)) for ancestor in fact.iterancestors()]
                           ,'reportCount':cubeCount
+                          ,'baseRef': ref
                           }
                         if reportSummary.firstAnchor is None:
                             reportSummary.firstAnchor = anchor
@@ -1665,7 +1669,7 @@ class Cell(object):
         IsNumeric = fact.isNumeric
         IsRatio = False
         NumericAmount = ''
-        valueStr = Utils.strFactValue(fact, preferredLabel=self.preferredLabel, filing=self.filing)
+        valueStr = Utils.strFactValue(fact, preferredLabel=self.preferredLabel, filing=self.filing, report=report)
         if IsNumeric:
             IsRatio = Utils.isRate(fact, self.filing) # Rename to DisplayAsPercent
             NumericAmount = valueStr

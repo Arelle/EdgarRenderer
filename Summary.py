@@ -8,11 +8,11 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 
 import sys, traceback, os.path, re, math, io, logging
 from collections import defaultdict
-from lxml.etree import Element, SubElement
-import arelle.ModelDtsObject, arelle.XbrlConst
+from lxml.etree import Element, SubElement, ElementDepthFirstIterator
+import arelle.ModelDocument, arelle.ModelDtsObject, arelle.XbrlConst
 from . import IoManager, Utils
 
-metaversion = "2.0"
+metaversion = "2.1"
 EJson = 'MetaLinks' + ".json"
 SFile = 'FilingSummary' + ".xml"
 
@@ -191,7 +191,7 @@ class Summary(object):
         for l in [self.controller.instanceList, self.controller.inlineList, self.controller.otherXbrlList]:
             for file in l:
                 s = SubElement(inputFilesEtree, 'File')
-                if file in sourceDict: 
+                if file in sourceDict and sourceDict[file][0] is not None and sourceDict[file][1] is not None: 
                     (doctype, original) = sourceDict[file]
                     s.set('doctype', doctype)
                     s.set('original', original)
@@ -215,14 +215,14 @@ class Summary(object):
 
     def writeMetaFiles(self):
         def innerWriteMetaFiles():
-            roots = {'version' : metaversion}            
+            roots = {'version' : metaversion}
             refs = roots['std_ref'] = {}
             pairs = [(i, ref) for ref, i in self.referencePositionDict.items()]  
             pairs.sort(key=lambda x: x[0]) 
             for pair in pairs:                
                 i, ref = pair
                 rDict = refs['r'+str(i)] = {}
-                for (att, val) in ref:  rDict[att] = val        
+                for (att, val) in ref:  rDict[att] = val
             roots['instance'] = {}
             for s in self.summaryList:
                 root = roots['instance'][' '.join(s.dtsroots)] = {}                
@@ -241,34 +241,41 @@ class Summary(object):
                 root['entityCount'] = s.entityCount
                 root['segmentCount'] = s.segmentCount
                 root['elementCount'] = len(s.conceptInUseSet)
-                root['unitCount'] = sum(s.unitCountDict.values())                
+                root['unitCount'] = sum(s.unitCountDict.values())
                 reportDict = root['report'] = {}
                 isDefault = True
-                for i,r in enumerate(s.reportSummaryList):
-                    f = r.htmlFileName if r.htmlFileName is not None else r.xmlFileName
-                    report = reportDict[f[:-4]] = {}
-                    report['role']=r.role
-                    report['longName'] = r.longName
-                    report['shortName'] = r.shortName
-                    report['isDefault'] = str(isDefault).casefold()
-                    isDefault = False
-                    groupType = ''
-                    if isDisclosure(r.longName): groupType = 'disclosure'
-                    elif isStatement(r.longName): groupType = 'statement'
-                    elif isDocument(r.longName): groupType = 'document'
-                    report['groupType'] = groupType
-                    subGroupType = ''
-                    if isParenthetical(r.longName): subGroupType = 'parenthetical'
-                    elif isPolicy(r.longName): subGroupType = 'policies'
-                    elif isTable(r.longName): subGroupType = 'tables'
-                    elif isDetail(r.longName): subGroupType = 'details'
-                    elif isUncategorized(r.longName): subGroupType = 'Uncategorized'
-                    report['subGroupType'] = subGroupType
-                    report['firstAnchor'] = r.firstAnchor
-                    report['uniqueAnchor'] = r.uniqueAnchor
-                    for (qname,context,lang,atts) in r.htmlAnchors:
-                        if ('htmlAnchors' not in report): report['htmlAnchors'] = []
-                        report['htmlAnchors'] += [{'qname':qname,'context':context,'lang':lang,'attributes':atts}]
+                if hasattr(s, 'rrSectionFacts'):
+                    for i, anchor in enumerate(s.rrSectionFacts):
+                        if (isDefault):
+                            anchor['isDefault'] = 'true'
+                            isDefault = False
+                        reportDict['S' + str(i+1)] = anchor
+                if True: # change this line to "else:" to not clutter rr inline outputs.
+                    for i,r in enumerate(s.reportSummaryList):
+                        f = r.htmlFileName if r.htmlFileName is not None else r.xmlFileName
+                        report = reportDict[f[:-4]] = {}
+                        report['role']=r.role
+                        report['longName'] = r.longName
+                        report['shortName'] = r.shortName
+                        report['isDefault'] = str(isDefault).casefold()
+                        isDefault = False
+                        groupType = ''
+                        if isDisclosure(r.longName): groupType = 'disclosure'
+                        elif isStatement(r.longName): groupType = 'statement'
+                        elif isDocument(r.longName): groupType = 'document'
+                        report['groupType'] = groupType
+                        subGroupType = ''
+                        if isParenthetical(r.longName): subGroupType = 'parenthetical'
+                        elif isPolicy(r.longName): subGroupType = 'policies'
+                        elif isTable(r.longName): subGroupType = 'tables'
+                        elif isDetail(r.longName): subGroupType = 'details'
+                        elif isUncategorized(r.longName): subGroupType = 'Uncategorized'
+                        report['subGroupType'] = subGroupType
+                        report['firstAnchor'] = r.firstAnchor
+                        report['uniqueAnchor'] = r.uniqueAnchor
+                        for (qname,context,lang,atts) in r.htmlAnchors:
+                            if ('htmlAnchors' not in report): report['htmlAnchors'] = []
+                            report['htmlAnchors'] += [{'qname':qname,'context':context,'lang':lang,'attributes':atts}]
                         
                 for tagAa in s.tagDict.values():
                     qname = '{' + tagAa['nsuri'] + '}' + tagAa['localname']
@@ -277,7 +284,7 @@ class Summary(object):
                         numList += [self.referencePositionDict[r]]
                     numList.sort()
                     tagAa['auth_ref'] = ['r'+str(num) for num in numList]
-                root['tag'] = s.tagDict           
+                root['tag'] = s.tagDict
             if self.controller.reportZip or self.controller.reportsFolder is not None:
                 file = io.StringIO()
             else:
@@ -347,6 +354,8 @@ class InstanceSummary(object):
         self.dts = defaultdict(lambda: defaultdict(list)) # self.dts['instance']['local'] returns a list
         self.hasRR = False
         for uri,doc in sorted(modelXbrl.urlDocs.items()):
+            if doc.type == arelle.ModelDocument.Type.INLINEXBRLDOCUMENTSET:
+                continue # ignore ixds manifest
             isLocal = uri.startswith(filing.controller.processingFolder)
             (f,rl) = (uri,'remote')
             if isLocal: (f,rl) = (os.path.basename(uri),'local')
@@ -437,7 +446,8 @@ class InstanceSummary(object):
                 segmentsInUseSet.add(segment)
                 memberInUseSet.add(segment.memberQname)
                 axisInUseSet.add(segment.dimensionQname)
-        
+                
+
         self.contextCount = len(contextSet)
         self.contextInUseCount = len(contextsInUseSet)
         self.segmentCount = len(segmentSet)
@@ -448,7 +458,7 @@ class InstanceSummary(object):
         self.tupleCount = 0  # likewise
                 
         for unit in unitsInUseSet:
-            self.unitsInUseCountDict[Utils.hasCustomNamespace(unit)] += 1        
+            self.unitsInUseCountDict[Utils.hasCustomNamespace(unit)] += 1
         for unit in unitSet: 
             self.unitCountDict[Utils.hasCustomNamespace(unit)] += 1
         for member in memberInUseSet: 
@@ -564,6 +574,104 @@ class InstanceSummary(object):
         self.qnameInUseSet = {concept.qname.clarkNotation for concept in conceptInUseSet}
         self.conceptInUseSet = {concept.qname for concept in conceptInUseSet}
         self.namespacesInUseSet = {qname.namespaceURI for qname in self.conceptInUseSet if Utils.isEfmStandardNamespace(qname.namespaceURI)}
+
+        #/ hasRR = self.hasRR = next((True for n in modelXbrl.namespaceDocs.keys() if 'http://xbrl.sec.gov/rr/' in n), False)
+        if (self.hasRR and hasattr(modelXbrl,'ixdsHtmlElements')): # RR summaries have "S1" "S2" entries.
+            # the array is constructed by walking the entire inline XBRL document
+            # for each unique combination of document information members and legal entity (series) members
+            # the first fact found having one of those combinations becomes the unique anchor of that section
+            rrSectionDimsHashDict = dict()
+            for context in contextsInUseSet:
+                if (context.dimsHash not in rrSectionDimsHashDict):
+                    isInRrSection = True
+                    for segment in context.qnameDims.values():
+                        if ('://xbrl.sec.gov/dei/' not in segment.dimensionQname.namespaceURI):
+                            isInRrSection = False
+                            break
+                        if (segment.dimensionQname.localName not in ('DocumentInformationDocumentAxis', 'LegalEntityAxis')):
+                            isInRrSection = False
+                            break
+                    if (isInRrSection):                
+                        rrSectionDimsHashDict[context.dimsHash] = ()
+
+            for h in modelXbrl.ixdsHtmlElements:
+                hiddenQname = None
+                for e in ElementDepthFirstIterator(h):
+                    if (e.prefix == 'ix'):
+                        if (e.localName =='hidden'):
+                            hiddenQname = e. elementQname
+                        elif ('contextRef' in e.attrib):
+                            if (not e.parentQname == hiddenQname):
+                                context = e.context
+                                hash = context.dimsHash
+                                if (hash in rrSectionDimsHashDict):
+                                     if (len(rrSectionDimsHashDict[hash]) == 0):
+                                         rrSectionDimsHashDict[hash] = (e.objectIndex+1,e)
+            rrSections = sorted(rrSectionDimsHashDict.values())
+            rrSections = [pair for pair in rrSections if len(pair) == 2]
+            self.rrSectionFacts = []
+            isDefault = True
+            for section,(objectIndex, fact) in enumerate(rrSections):
+                doc = fact.document
+                name = str(fact.qname)
+                shortName = name
+                longName = '{:09} - Disclosure - '.format(objectIndex)
+                lang = 'en-US' if (fact.xmlLang is None) else fact.xmlLang
+                ancestors = [str(getattr(ancestor,"qname",ancestor.tag)) for ancestor in fact.iterancestors()]
+                ref = None if (doc is None) else doc.basename
+                anchor = \
+                    { 'ancestors': ancestors
+                     ,'baseRef': ref
+                     ,'contextRef':fact.contextID
+                     ,'decimals':fact.decimals
+                      ,'lang':lang
+                      ,'name':name
+                      ,'reportCount': 1
+                      ,'unitRef':fact.unitID
+                      ,'xsiNil':fact.xsiNil
+                          }                
+                _memberDocument = None
+                _memberSeries = None
+                for axis,dim in fact.context.qnameDims.items():
+                    _labels = {}
+                    if (axis.namespaceURI.startswith('http://xbrl.sec.gov/dei/')):
+                        if (axis.localName == 'DocumentInformationDocumentAxis'):                            
+                            try:
+                                _labels = self.tagDict[dim.member.id]['lang']['en-US']['role']
+                                if ('terseLabel' in _labels):
+                                    _memberDocument = _labels['terseLabel']
+                                elif ('label' in _labels):
+                                    _memberDocument = _labels['label']
+                            except:
+                                pass
+                        elif (axis.localName == 'LegalEntityAxis'):
+                            try:
+                                _labels = self.tagDict[dim.member.id]['lang']['en-US']['role']
+                                if ('terseLabel' in _labels):
+                                    _memberSeries = _labels['terseLabel']
+                                elif ('label' in _labels):
+                                    _memberSeries = _labels['label']
+                            except:
+                                pass
+                _fragments = [x for x in [_memberDocument,_memberSeries] if x is not None]
+                if (len(_fragments) == 0):
+                    shortName = 'Document and Entity Information'
+                else:
+                    shortName = ", ".join(_fragments)
+                longName = longName + shortName
+                
+                self.rrSectionFacts.append( \
+                    { 'firstAnchor': anchor
+                        ,'groupType':'RR_Summaries'
+                        ,'isDefault': str(isDefault).casefold()
+                        ,'longName': longName
+                        ,'section' : section
+                        ,'shortName': shortName
+                        ,'subGroupType': ""
+                        ,'uniqueAnchor': anchor
+                        }) 
+                isDefault = False
+
         return  # from InstanceSummary initialization
    
 
