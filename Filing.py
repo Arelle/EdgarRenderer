@@ -247,7 +247,7 @@ class Filing(object):
         if controller.summaryXslt:
             _xsltStartedAt = time.time()
             self.summary_transform = lxml.etree.XSLT(lxml.etree.parse(controller.summaryXslt))
-            self.controller.logDebug("Summary XSLT transform {:.3f} secs.".format(time.time() - _xsltStartedAt))
+            self.controller.logDebug("Summary XSLT transforms {:.3f} secs.".format(time.time() - _xsltStartedAt))
         self.reportSummaryList = []
 
         self.rowSeparatorStr = ' | '

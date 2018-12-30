@@ -7,6 +7,8 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
   <xsl:output encoding="UTF-8" indent="yes" method="html" doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"/>
   <xsl:param name="xslt">/include/InstanceReport.xslt</xsl:param>
+  <!-- set processXsltInBrowser='true' to transform report logs in browser hf 12/29/18 -->
+  <xsl:param name="processXsltInBrowser">false</xsl:param>
   <xsl:key name="keyParent" match="Report" use="ParentRole"/>
   <xsl:variable name="majorversion" select="substring-before(/FilingSummary/Version,'.')"/>
   <xsl:variable name="nreports" select="count(/FilingSummary/MyReports/Report)"/>
@@ -137,11 +139,20 @@
           <xsl:text>var InstanceReportXslt = "</xsl:text>
           <xsl:value-of select="$xslt"/>
           <xsl:text>"; var InstanceReportXsltDoc = null; </xsl:text>
+          <xsl:text>var processXsltInBrowser = "</xsl:text><xsl:value-of select="$processXsltInBrowser"/><xsl:text>";</xsl:text>
           <xsl:text>var reports = new Array();</xsl:text>
           <xsl:apply-templates mode="reportarray" select="MyReports/Report"/>
           <xsl:if test="$nlogs > 0"><xsl:text>
         reports[</xsl:text><xsl:value-of select="$nreports + $nlogs "/>
-                        <xsl:text>]="FilingSummary.xml";</xsl:text></xsl:if><![CDATA[
+            <xsl:choose>
+               <xsl:when test="$processXsltInBrowser = 'true'">
+                 <xsl:text>]="FilingSummary.xml";</xsl:text>
+               </xsl:when>
+               <xsl:otherwise>
+                 <xsl:text>]="RenderingLogs.htm";</xsl:text>
+               </xsl:otherwise>
+            </xsl:choose>
+          </xsl:if><![CDATA[
           var parentreport = new Array();//]]>
                     <xsl:apply-templates mode="parentreportarray" select="MyReports/Report"/>                    
                     <xsl:text disable-output-escaping="yes"><![CDATA[  
@@ -196,7 +207,7 @@
                   .find('img').attr('src', function(i, val) { return fixSrcAttr(val);}).end();
               }
           });            
-      } else {
+      } else if (processXsltInBrowser == 'true') {
           $.ajax({
           type: "GET",
           url: url,
@@ -216,6 +227,7 @@
                    	 doc.loadXML(data);
                      xslproc.input = doc;
                      xslproc.addParameter("source", path );
+                     xslproc.addParameter("asPage", "true" );
                      xslproc.transform();
                      // Find all images and prepend the base URL to the src attribute
                      jQuery('#reportDiv').append(jQuery(xslproc.output)
@@ -227,8 +239,9 @@
                   // code for other browsers
                   else if (document.implementation && document.implementation.createDocument) {
                      xsltProcessor=new XSLTProcessor();
-                     xsltProcessor.importStylesheet(loadXmlDoc(xsl_url));                     
+                     xsltProcessor.importStylesheet(loadXmlDoc(xsl_url));                  
                      xsltProcessor.setParameter(null,"source",path);
+                     xsltProcessor.setParameter(null,"asPage","true");
                      parser = new DOMParser();
                      xmlDoc = parser.parseFromString(data, "text/xml");
                      var rpt = xsltProcessor.transformToFragment(xmlDoc, document);

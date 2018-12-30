@@ -62,6 +62,8 @@
   <xsl:output encoding="UTF-8" indent="yes" method="html" doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"/>
   <xsl:param name="xslt">http://www.sec.gov/include/InstanceReport.xslt</xsl:param>
   <!-- wch 5/20/2016 parameterized stylesheet -->
+  <!-- set processXsltInBrowser='true' to transform report logs in browser hf 12/29/18 -->
+  <xsl:param name="processXsltInBrowser">false</xsl:param>
   <xsl:param name="accessionNumber">PROVIDED-BY-ARELLE-FILE-ARGUMENT-OBJECT</xsl:param>
   <xsl:variable name="fetchprefix"><![CDATA[DisplayDocument.do?step=docOnly&accessionNumber=]]></xsl:variable>
   <xsl:variable name="fetch_ix_prefixquoted"><![CDATA[../DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D]]></xsl:variable>
@@ -200,11 +202,21 @@
           <xsl:text>var accessionNumber = "</xsl:text><xsl:value-of select="$accessionNumber"/><xsl:text>";</xsl:text>
           <xsl:text>var fetchprefix = "</xsl:text><xsl:value-of select="$fetchprefix"/><xsl:text>";</xsl:text>
           <xsl:text>var fetchsuffix = "</xsl:text><xsl:value-of select="$fetchsuffix"/><xsl:text>";</xsl:text>
+          <xsl:text>var fetchraw = "</xsl:text><xsl:value-of select="$fetchraw"/><xsl:text>";</xsl:text>
+          <xsl:text>var processXsltInBrowser = "</xsl:text><xsl:value-of select="$processXsltInBrowser"/><xsl:text>";</xsl:text>
           <xsl:text>var reports = new Array();</xsl:text>
           <xsl:apply-templates mode="reportarray" select="MyReports/Report"/>
           <xsl:if test="$nlogs > 0"><xsl:text>
         reports[</xsl:text><xsl:value-of select="$nreports + $nlogs "/>
-                        <xsl:text>]="FilingSummary.xml";</xsl:text></xsl:if><![CDATA[
+            <xsl:choose>
+               <xsl:when test="$processXsltInBrowser = 'true'">
+                 <xsl:text>]="FilingSummary.xml";</xsl:text>
+               </xsl:when>
+               <xsl:otherwise>
+                 <xsl:text>]="RenderingLogs.htm";</xsl:text>
+               </xsl:otherwise>
+            </xsl:choose>
+          </xsl:if><![CDATA[
           var parentreport = new Array();//]]>
                     <xsl:apply-templates mode="parentreportarray" select="MyReports/Report"/>                    
                     <xsl:text disable-output-escaping="yes"><![CDATA[  
@@ -264,8 +276,8 @@
           success: function (data) { jQuery('#reportDiv').append(data)
                   .find('img').attr('src', function(i, val) { return fixSrcAttr(val);}).end();
               }
-          });            
-      } else {
+          });       
+      } else if (processXsltInBrowser == 'true') {
 	  _url = fetchprefix + accessionNumber + fetchraw + url; //causes HTML wrapping of XML
           $.ajax({
           type: "GET",
@@ -294,6 +306,7 @@
                    	 doc.loadXML(data);
                      xslproc.input = doc;
                      xslproc.addParameter("source", path );
+                     xslproc.addParameter("asPage", "true" );
                      xslproc.transform();
                      // Find all images and prepend the base URL to the src attribute
                      jQuery('#reportDiv').append(jQuery(xslproc.output)
@@ -307,6 +320,7 @@
                      xsltProcessor=new XSLTProcessor();
                      xsltProcessor.importStylesheet(loadXmlDoc(xsl_url));                     
                      xsltProcessor.setParameter(null,"source",path);
+                     xsltProcessor.setParameter(null,"asPage","true");
                      parser = new DOMParser();
                      xmlDoc = parser.parseFromString(data, "text/xml");
                      var rpt = xsltProcessor.transformToFragment(xmlDoc, document);

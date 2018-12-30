@@ -13,6 +13,10 @@
   <summaryXslt>Summarize.xslt</summaryXslt>
   <!-- excelXslt: transform r.xml into Excel 2007 xlsx output, or empty if no Excel output desired -->
   <excelXslt />
+  <!--  Optional to transform rendering logs for browser reference (when browsers may no longer have XSLT Processors) -->
+  <renderingLogsXslt>RenderingLogs.xslt</renderingLogsXslt>
+  <!--  Optional to transform rendering logs in browser (if False, logs are transformed on server and htm file provided to browser) -->
+  <processXsltInBrowser>False</processXsltInBrowser>
   <!-- The following are various application settings that are used by RE to manage the processing of XBBRL filings: -->
   <!-- renderingService: Multiple options...{Instance: one time rendering || Daemon: background processing} -->
   <renderingService>Instance</renderingService>

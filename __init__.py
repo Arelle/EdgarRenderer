@@ -204,6 +204,7 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     
     parser.add_option("--reportXslt", dest="reportXslt", help=_("Path and name of Stylesheet for producing a report file."))
     parser.add_option("--summaryXslt", dest="summaryXslt", help=_("Path and name of Stylesheet, if any, for producing filing summary html."))
+    parser.add_option("--renderingLogsXslt", dest="renderingLogsXslt", help=_("Path and name of Stylesheet, if any, for producing filing rendering logs html."))
     parser.add_option("--excelXslt", dest="excelXslt", help=_("Path and name of Stylesheet, if any, for producing Excel 2007 xlsx output."))
     parser.add_option("--auxMetadata", action="store_true", dest="auxMetadata", help=_("Set flag to generate inline xbrl auxiliary files"))
     # saveTarget* paraameters are added by inlineXbrlDocumentSet.py plugin
@@ -213,6 +214,8 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     parser.add_option("--zipXbrlFilesToOutput", action="store_true", dest="zipXbrlFilesToOutput", help=_("Set flag to zip all source xbrl files to the an accession-number-xbrl.zip in reports folder or zip when an accession number parameter is available."))
     parser.add_option("--includeLogsInSummary", action="store_true", dest="includeLogsInSummary", help=_("Set flag to copy log entries into <logs> in FilingSummary.xml."))    
     parser.add_option("--noLogsInSummary", action="store_false", dest="includeLogsInSummary", help=_("Unset flag to copy log entries into <logs> in FilingSummary.xml."))    
+    parser.add_option("--processXsltInBrowser", action="store_true", dest="processXsltInBrowser", help=_("Set flag to process XSLT transformation in browser (e.g., rendering logs)."))
+    parser.add_option("--noXsltInBrowser", action="store_false", dest="processXsltInBrowser", help=_("Unset flag to process XSLT transformation in browser (e.g., rendering logs)."))
     parser.add_option("--noEquity", action="store_true", dest="noEquity", help=_("Set flag to suppress special treatment of Equity Statements. "))
         
     parser.add_option("--showErrors", action="store_true", dest="showErrors",
@@ -289,6 +292,8 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['noEquity'] = str(False)
         self.defaultValueDict['processingFolder'] = 'Processing'
         self.defaultValueDict['processingFrequency'] = '10'
+        self.defaultValueDict['processXsltInBrowser'] = str(False)
+        self.defaultValueDict['renderingLogsXslt'] = None
         self.defaultValueDict['renderingService'] = 'Instance'
         self.defaultValueDict['reportFormat'] = 'Html'
         self.defaultValueDict['reportsFolder'] = 'Reports'
@@ -377,6 +382,8 @@ class EdgarRenderer(Cntlr.Cntlr):
         options.copyXbrlFilesToOutput = setFlag('copyXbrlFilesToOutput', options.copyXbrlFilesToOutput)
         options.zipXbrlFilesToOutput = setFlag('zipXbrlFilesToOutput', options.zipXbrlFilesToOutput)
         options.includeLogsInSummary = setFlag('includeLogsInSummary', options.includeLogsInSummary)
+        options.processXsltInBrowser = setFlag('processXsltInBrowser', options.processXsltInBrowser)
+        self.summaryHasLogEntries = False
         options.saveTargetInstance = setFlag('saveTargetInstance',options.saveTargetInstance)
         options.saveTargetFiling = setFlag('saveTargetFiling',options.saveTargetFiling)      
         # note that delete processed filings is only relevant when the input had to be unzipped.
@@ -448,6 +455,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # Summary XSLT is optional, but do report if you can't find it.
         #setResourceFile('summaryXslt', options.summaryXslt, 'INVALID_CONFIG_SUMMARYXSLT')
         options.summaryXslt = setResourceFile('summaryXslt', options.summaryXslt, "Cannot find summary xslt {}")
+        options.renderingLogsXslt = setResourceFile('renderingLogsXslt', options.renderingLogsXslt, "Cannot find rendering logs xslt {}")
 
         # Excel XSLT is optional, but do report if you can't find it.
         #setResourceFile('excelXslt', options.excelXslt, 'INVALID_CONFIG_EXCELXSLT')  
@@ -489,11 +497,13 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.copyXbrlFilesToOutput = options.copyXbrlFilesToOutput
         self.zipXbrlFilesToOutput = options.zipXbrlFilesToOutput
         self.includeLogsInSummary = options.includeLogsInSummary
+        self.processXsltInBrowser = options.processXsltInBrowser
+        self.summaryHasLogEntries = False
         self.saveTargetInstance = options.saveTargetInstance
         self.saveTargetFiling = options.saveTargetFiling   
         # note that delete processed filings is only relevant when the input had to be unzipped.
         self.deleteProcessedFilings = options.deleteProcessedFilings
-        self.debugMode = options.debugMode       
+        self.debugMode = options.debugMode     
         # These flags have to be passed back to arelle via the options object.
         # inherited flag: options.validate = setFlag('validate', options.validate)
         self.validate = options.validate
@@ -519,6 +529,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # Summary XSLT is optional, but do report if you can't find it.
         #setResourceFile('summaryXslt', options.summaryXslt, 'INVALID_CONFIG_SUMMARYXSLT')
         self.summaryXslt = options.summaryXslt
+        self.renderingLogsXslt = options.renderingLogsXslt
 
         # Excel XSLT is optional, but do report if you can't find it.
         #setResourceFile('excelXslt', options.excelXslt, 'INVALID_CONFIG_EXCELXSLT')  
@@ -810,7 +821,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:
                     copyResourceToReportFolder("Show.js")
                     copyResourceToReportFolder("report.css")
-                if self.summaryXslt and len(self.summaryXslt) > 0 :
+                if self.summaryXslt and len(self.summaryXslt) > 0 and self.processXsltInBrowser:
                     copyResourceToReportFolder("RenderingLogs.xslt")  # TODO: This will go away
                     self.renderedFiles.add("RenderingLogs.xslt")
                 # TODO: At this point would be nice to call out any files not loaded in any instance DTS
@@ -860,12 +871,20 @@ class EdgarRenderer(Cntlr.Cntlr):
                 if self.reportZip or self.reportsFolder is not None:
                     IoManager.writeXmlDoc(filing, rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
                     self.renderedFiles.add("FilingSummary.xml")
+                    if self.renderingLogsXslt and self.summaryHasLogEntries and not self.processXsltInBrowser:
+                        _startedAt = time.time()
+                        logs_transform = etree.XSLT(etree.parse(self.renderingLogsXslt))
+                        result = logs_transform(rootETree, asPage=etree.XSLT.strparam('true'))
+                        self.logDebug("RenderingLogs XSLT transform {:.3f} secs.".format(time.time() - _startedAt))
+                        IoManager.writeHtmlDoc(filing, result, self.reportZip, self.reportsFolder, 'RenderingLogs.htm')
+                        self.renderedFiles.add("RenderingLogs.htm")
                     if self.summaryXslt and len(self.summaryXslt) > 0 :
                         _startedAt = time.time()
                         summary_transform = etree.XSLT(etree.parse(self.summaryXslt))
                         result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'),
                                                    accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")),
-                                                   resourcesFolder="'{}'".format(self.resourcesFolder.replace("\\","/")))
+                                                   resourcesFolder="'{}'".format(self.resourcesFolder.replace("\\","/")),
+                                                   processXsltInBrowser=etree.XSLT.strparam(str(self.processXsltInBrowser).lower()))
                         self.logDebug("FilingSummary XSLT transform {:.3f} secs.".format(time.time() - _startedAt))
                         IoManager.writeHtmlDoc(filing, result, self.reportZip, self.reportsFolder, 'FilingSummary.htm')
                         self.renderedFiles.add("FilingSummary.htm")
@@ -879,7 +898,12 @@ class EdgarRenderer(Cntlr.Cntlr):
                         elif filing.reports and filing.reports[0].basenames: # handles inline document set contents
                             _fileName = os.path.splitext(filing.reports[0].basenames[0])[0] + ".zip"
                         else:
-                            _fileName = os.path.splitext(os.path.basename(filing.entrypointfiles[0]["file"].partition('#')[0]))[0] + ".zip"
+                            _entrypoint = filing.entrypointfiles[0]
+                            if "ixds" in _entrypoint:
+                                _fileName = _entrypoint["ixds"][0]["file"]
+                            else:
+                                _fileName = _entrypoint["file"]
+                            _fileName = os.path.splitext(os.path.basename(_fileName.partition('#')[0]))[0] + ".zip"
                         zipStream = io.BytesIO()
                         xbrlZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
                         for report in filing.reports:
@@ -1122,6 +1146,9 @@ def edgarRendererGuiViewMenuExtender(cntlr, viewMenu, *args, **kwargs):
     def setShowTablesMenu(self, *args):
         cntlr.config["edgarRendererShowTablesMenu"] = cntlr.showTablesMenu.get()
         cntlr.saveConfig()
+    def setValidateBeforeRendering(self, *args):
+        cntlr.config["edgarRendererValidateBeforeRendering"] = cntlr.showTablesMenu.get()
+        cntlr.saveConfig()
     erViewMenu = Menu(cntlr.menubar, tearoff=0)
     viewMenu.add_cascade(label=_("Edgar Renderer"), menu=erViewMenu, underline=0)
     cntlr.showFilingData = BooleanVar(value=cntlr.config.get("edgarRendererShowFilingData", True))
@@ -1130,6 +1157,9 @@ def edgarRendererGuiViewMenuExtender(cntlr, viewMenu, *args, **kwargs):
     cntlr.showTablesMenu = BooleanVar(value=cntlr.config.get("edgarRendererShowTablesMenu", True))
     cntlr.showTablesMenu.trace("w", setShowTablesMenu)
     erViewMenu.add_checkbutton(label=_("Show Tables Menu"), underline=0, variable=cntlr.showTablesMenu, onvalue=True, offvalue=False)
+    cntlr.validateBeforeRendering = BooleanVar(value=cntlr.config.get("edgarRendererValidateBeforeRendering", True))
+    cntlr.validateBeforeRendering.trace("w", setShowTablesMenu)
+    erViewMenu.add_checkbutton(label=_("Validate Before Rendering"), underline=0, variable=cntlr.validateBeforeRendering, onvalue=True, offvalue=False)
 
 def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
     """ run EdgarRenderer using GUI interactions for a single instance or testcases """
@@ -1151,7 +1181,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             copyInlineFilesToOutput = True, # needed for ixviewer
             copyXbrlFilesToOutput = None,
             zipXbrlFilesToOutput = None,
-            includeLogsInSummary = None, # for GUI logger does not have buffered messages available, always no logs in output
+            includeLogsInSummary = True, # for GUI logger now validates with log buffer
+            processXsltInBrowser = False, # both options can work with GUI, unsure about future browser XSLT support
             saveTargetInstance = None,
             saveTargetFiling = None,
             deleteProcessedFilings = None,
@@ -1169,6 +1200,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             reportXslt = ('InstanceReport.xslt', 'InstanceReportTable.xslt')[_combinedReports],
             summaryXslt = ('Summarize.xslt', '')[_combinedReports], # no FilingSummary.htm for Rall.htm production
                               # "LocalSummarize.xslt", # takes resources parameter for include dir
+            renderingLogsXslt = ('RenderingLogs.xslt', None)[_combinedReports],
             excelXslt = ('InstanceReport_XmlWorkbook.xslt', None)[_combinedReports],
             logMessageTextFile = None,
             logFile = None # from cntlrCmdLine but need to simulate for GUI operation
@@ -1236,11 +1268,15 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             writeFile=guiWriteFile,
             readFile=guiReadFile
             )
+        cntlr.logHandler.startLogBuffering() # accumulate validation and rendering warnings and errors
         edgarRendererFilingStart(cntlr, options, {}, filing)
+        if cntlr.validateBeforeRendering.get():
+            cntlr.modelManager.validate()
         edgarRenderer = filing.edgarRenderer
         edgarRendererXbrlRun(cntlr, options, modelXbrl, filing, report)
         reportsFolder = edgarRenderer.reportsFolder
         edgarRendererFilingEnd(cntlr, options, modelXbrl.fileSource, filing)
+        cntlr.logHandler.endLogBuffering() # block other GUI processes from using log buffer 
         '''
         The usual "mustard menu" output uses jquery to locally load the R files.
         It does not seem to work in local browsers.

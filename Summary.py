@@ -179,6 +179,7 @@ class Summary(object):
                 if logRec.levelno > logging.INFO:
                     if numShownMessages == 0:
                         logs = SubElement(self.rootETree, 'Logs')
+                        self.controller.summaryHasLogEntries = True
                     if numShownMessages == 100:
                         SubElement(logs, 'Log', type='Info').text = "There are more than 100 warnings or errors, only 100 will be displayed."
                         break
