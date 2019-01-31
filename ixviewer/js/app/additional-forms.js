@@ -5,11 +5,17 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 var Additional_Forms = {
+  
+  initialURL : null,
+  
   init : function (input, initial) {
-    Additional_Forms.fixLinks(input['local']);
+    console.log('in the init!');
+    Additional_Forms.initialURL = initial;
+    Additional_Forms.fixLinks(input['local'], initial);
     initial = initial || null;
     $('#totalSourceDocumentsCount').html(input['local'].length);
     var additionalForms = '';
+    
     input['local'].forEach(function (current, index, array) {
       
       var hrefLink = window.location.href.replace(initial, current);
@@ -29,6 +35,16 @@ var Additional_Forms = {
       Additional_Forms.sendUserToResultIndex();
       
     }
+  },
+  
+  quickLinkFixForSections : function (baseref, resultIndex) {
+    // we remove the potentially original 'result-index' param
+    var newUrl = window.location.href.split('&');
+    if (newUrl[newUrl.length - 1].indexOf('result-index') >= 0) {
+      newUrl.pop();
+    }
+    newUrl.join('');
+    return newUrl[0].replace(Additional_Forms.initialURL, baseref) + '&result-index=' + resultIndex;
   },
   
   anchorTag : function () {
@@ -51,40 +67,36 @@ var Additional_Forms = {
     App_Find.TaggedSection.selectItem(params);
   },
   
-  fixLinks : function (input) {
+  fixLinks : function (input, initial) {
     var discoveredLinks = $('#app-inline-xbrl-doc').contents().find('a');
     var discoveredLinksArray = Array.prototype.slice.call(discoveredLinks);
     discoveredLinksArray.forEach(function (current) {
       if (current['href']) {
         var urlSegment = current['href'].substr(current['href'].lastIndexOf('/') + 1);
-        if (input.indexOf(urlSegment) >= 0) {
-          current.setAttribute('original-href', current.getAttribute('href'));
-          current.setAttribute('onClick', 'parent.Additional_Forms.clickEvent(event,this);');
-        } else {
-          // we need to fix all the other links to take the user to wherever
-          // they want to go
-          
-          // we want to avoid changing the anchor tags, unless necessary
-          if (urlSegment.indexOf('#') >= 0) {
-            var currentUrl = window.location.href.substr(window.location.href.lastIndexOf('/') + 1).replace(/\#$/, '');
-            
-            if (currentUrl === urlSegment.split('#')[0]) {
-              // we leave this alone, to be a current file anchortag
-            } else {
-              current.setAttribute('original-href', current.getAttribute('href'));
-              current.setAttribute('onClick', 'parent.Additional_Forms.clickEvent(event, this);');
-              current.addEventListener('click', function (event) {
-                event.preventDefault();
-                return false;
-              });
-              current.style.cursor = 'pointer';
-              current.style.textDecoration = 'underline';
-              current.style.color = 'rgb(0, 0, 255)';
-            }
+        var hrefLink = window.location.href.replace(initial, urlSegment);
+        
+        if (input.indexOf(urlSegment.split('#')[0]) >= 0) {
+          // we want to keep the user in the viewer
+          if (urlSegment.split('#')[0] === initial) {
+            // we are just jumping to a specific anchor/some kind of url param,
+            // no url change
+            // for example <a href="#some-anchor">test</a>
           } else {
-            current.setAttribute('original-href', current.getAttribute('href'));
-            current.setAttribute('onClick', 'parent.Additional_Forms.clickEventExternal(event, this);');
+            if (current['href'].split('#').length > 1) {
+              // we are just jumping to a specific anchor/some kind of url
+              // param, url change
+              current['href'] = hrefLink;
+            } else {
+              // we are jumping to another form
+              current['href'] = hrefLink.split('#')[0];
+            }
+            // we add the onclick event to ensure the user stays in the viewer
+            current.setAttribute('onClick', 'parent.Additional_Forms.clickEvent(event,this);');
           }
+        } else {
+          // we send the user to whatever the href is for example
+          // https://www.google.com
+          current.setAttribute('onClick', 'parent.Additional_Forms.clickEventExternal(event,this);');
         }
       }
       
@@ -95,10 +107,7 @@ var Additional_Forms = {
     var controlKey = event.ctrlKey || (event.which === 17);
     if (!controlKey) {
       event.preventDefault();
-      var newUrl = window.location.href.split('/');
-      newUrl.pop();
-      newUrl = newUrl.join('/') + '/' + element.getAttribute('original-href');
-      window.location.href = newUrl;
+      window.location.href = element.getAttribute('href');
     }
   },
   
@@ -106,7 +115,7 @@ var Additional_Forms = {
     var controlKey = event.ctrlKey || (event.which === 17);
     if (!controlKey) {
       event.preventDefault();
-      window.location.href = element.getAttribute('original-href');
+      window.location.href = element.getAttribute('href');
     }
   },
   
@@ -114,7 +123,12 @@ var Additional_Forms = {
     if (input) {
       var urlSegment = window.location.href.substr(window.location.href.lastIndexOf('/') + 1).replace('#', '').replace(
           new RegExp('[?&]result-index=[0-9]+'), '');
-      return (input !== urlSegment);
+      var re = new RegExp(input, 'gi');
+      var res = urlSegment.match(re);
+      if (res)
+        return false;
+      else
+        return true;
     }
     return false;
   },
@@ -124,33 +138,12 @@ var Additional_Forms = {
     newUrl.pop();
     newUrl = newUrl.join('/') + '/' + input.getAttribute('baseref');
     newUrl += '&result-index=' + input.getAttribute('data-result-index');
-    window.location.href = newUrl;
+    // return newUrl;
+    // console.log(newUrl);
+    // window.location.href = newUrl;
   },
   
   scrollLocalElementIntoView : function (input) {
     App_Find.TaggedSection.selectItem($(input).attr('data-result-index'), $(input));
-  },
-  
-  sectionsClickEvent : function (event) {
-    if (event.getAttribute('baseref') && event.getAttribute('baseref') !== 'undefined') {
-      if (Additional_Forms.isBaseRefDifferentThanCurrent(event.getAttribute('baseref'))) {
-        Additional_Forms.reloadApplicationWithTaxonomyInformation(event);
-      } else {
-        Additional_Forms.scrollLocalElementIntoView(event);
-      }
-    } else {
-      Additional_Forms.scrollLocalElementIntoView(event);
-    }
-  },
-  
-  sectionsKeyUpEvent : function (event) {
-    var code = event.keyCode || event.which;
-    if ((code == 13) || (code == 32)) {
-      if (Additional_Forms.isBaseRefDifferentThanCurrent(event.getAttribute('baseref'))) {
-        Additional_Forms.reloadApplicationWithTaxonomyInformation(event);
-      } else {
-        Additional_Forms.scrollLocalElementIntoView(event);
-      }
-    }
   },
 }

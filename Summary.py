@@ -72,7 +72,8 @@ def analyzeFactsInCubes(filing): # void
 class Summary(object):
     def __init__(self, controller):
         self.controller = controller
-        self.rootETree = None   
+        self.rootETree = None
+        self.eTreeLogsElement = None
         self.reportFormat = controller.reportFormat
         self.instanceSummaryList = controller.instanceSummaryList
         self.reportsFolder = controller.reportsFolder # may be null when no optput is desired
@@ -175,7 +176,7 @@ class Summary(object):
             '''
             logHandler = self.controller.cntlr.logHandler
             numShownMessages = 0
-            for logRec in getattr(logHandler, "logRecordBuffer", ()): # non buffered handlers don't keep log records (e.g., log to print handler)
+            for logRec in getattr(logHandler, "logRecordBuffer") or (): # non buffered handlers don't keep log records (e.g., log to print handler)
                 if logRec.levelno > logging.INFO:
                     if numShownMessages == 0:
                         logs = SubElement(self.rootETree, 'Logs')
@@ -186,6 +187,7 @@ class Summary(object):
                     _text = self.controller.formatLogMessage(logRec)
                     SubElement(logs, 'Log', type=logRec.levelname.title()).text = _text
                     numShownMessages += 1
+                    self.eTreeLogsElement = logs # for removal on dissem pass if needed
 
         inputFilesEtree = SubElement(self.rootETree, 'InputFiles')
         sourceDict = self.controller.sourceDict
@@ -195,10 +197,10 @@ class Summary(object):
                 if file in sourceDict and sourceDict[file][0] is not None and sourceDict[file][1] is not None: 
                     (doctype, original) = sourceDict[file]
                     s.set('doctype', doctype)
-                    s.set('original', original)
+                    s.set('original', os.path.basename(original))
                 elif file in self.controller.inlineList:
                     s.set('doctype','(Source)')
-                    s.set('original', file)
+                    s.set('original', os.path.basename(file))
                 s.text = str(os.path.basename(file))
         supplementalFilesEtree = SubElement(self.rootETree, 'SupplementalFiles')
         for file in self.controller.supplementalFileList:
@@ -213,6 +215,10 @@ class Summary(object):
         SubElement(self.rootETree, 'HasPresentationLinkbase').text = str(hasPresentationLinkbase).casefold()
         SubElement(self.rootETree, 'HasCalculationLinkbase').text = str(hasCalculationLinkbase).casefold()
 
+    def removeSummaryLogs(self):
+        if self.eTreeLogsElement is not None:
+            self.rootETree.remove(self.eTreeLogsElement)
+            self.eTreeLogsElement = None # dereference
 
     def writeMetaFiles(self):
         def innerWriteMetaFiles():
@@ -686,7 +692,7 @@ class InstanceSummary(object):
                 state = self.classifyReportFiniteStateMachine(state, reportSummary.longName)
                 parentRole = self.getReportParentIfExists(reportSummary, state)
             reportETree = SubElement(myReportsEtree, 'Report')
-            reportETree.set('instance',(self.instanceFiles+self.inlineFiles)[0])
+            reportETree.set('instance',os.path.basename((self.instanceFiles+self.inlineFiles)[0]))
             SubElement(reportETree, 'IsDefault').text = str(isFirstInstance and i == 1).casefold()         
             SubElement(reportETree, 'HasEmbeddedReports').text = str(reportSummary.hasEmbeddedReports).casefold()
             if reportSummary.htmlFileName is not None:

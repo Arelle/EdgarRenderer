@@ -1954,7 +1954,7 @@ var App_Find = {
             }, 0);
           }
         }
-
+        
         if (showElementDetail) {
           App_Find.TaggedSection.highlightItemOperatingCo(index, showElementDetail);
         } else {
@@ -2313,44 +2313,38 @@ var App_Find = {
         var groupType = App_Find.TaggedSection.results[index].groupType;
         if (groupType != null && groupType.length > 0) {
           
-        	var label = App_Find.TaggedSection.results[index].shortName;
-        	 var baseref = App_Find.TaggedSection.results[index]['firstAnchor']['baseRef'];
-             
-             var clickingWillReloadApp = Additional_Forms.isBaseRefDifferentThanCurrent(baseref);
-             
-             var resultHtml = '<li onclick="Additional_Forms.sectionsClickEvent(this)" onkeyup="Additional_Forms.sectionsKeyUpEvent(this)" class="result-item" baseref="'
-                 + baseref
-                 + '"data-is-selected="false" tabindex="3" data-result-index="'
-                 + index
-                 + '" aria-label="'
-                 + label + '" style="list-style-type: none;text-decoration: underline;cursor:pointer;" >';
-             if (clickingWillReloadApp) {
-               resultHtml += '<span title="Your application will reload with the associated Source Document." class="mr-3 icon-as-img icon-paperclip-black"></span>';
-             }
-             
-             resultHtml += $('<div/>').html(label).text() + '</li>';
-           
-        	
-        	
+          var label = App_Find.TaggedSection.results[index].shortName;
+          var baseref = App_Find.TaggedSection.results[index]['firstAnchor']['baseRef'];
           
-      //    var resultHtml = '<li class="result-item" data-is-selected="false" tabindex="3" data-result-index="' + index
-      //        + '" style="list-style-type: none;text-decoration: underline;cursor:pointer;" >'
-     //         + $('<div/>').html(label).text() + '</li>';
+          var clickingWillReloadApp = Additional_Forms.isBaseRefDifferentThanCurrent(baseref);
+          
+          var resultHtml = '<li class="result-item" baseref="' + baseref
+              + '"data-is-selected="false" tabindex="3" data-result-index="' + index + '" aria-label="' + label
+              + '" style="list-style-type: none;text-decoration: underline;cursor:pointer;" >';
+          if (clickingWillReloadApp) {
+            resultHtml += '<span title="Select to open an associated source document." class="mr-3 icon-as-img icon-reload-form-black"></span>';
+            resultHtml += '<a href="' + Additional_Forms.quickLinkFixForSections(baseref, index) + '">'
+                + $('<div/>').html(label).text() + '</a></li>';
+          } else {
+            resultHtml += $('<div/>').html(label).text() + '</li>';
+          }
           
           var resultHtmlObj = $(resultHtml);
-        //  resultHtmlObj.on('click', function () {
-      //      App_Find.TaggedSection.selectItem($(this).attr('data-result-index'), $(this));
-     //     });
+          if (!clickingWillReloadApp) {
+            resultHtmlObj.on('click', function () {
+              App_Find.TaggedSection.selectItem($(this).attr('data-result-index'), $(this));
+            });
+            
+            resultHtmlObj.on('keyup', function (e) {
+              var code = e.keyCode || e.which;
+              if ((code == 13) || (code == 32)) {
+                App_Find.TaggedSection.selectItem($(this).attr('data-result-index'), $(this));
+              }
+            });
+          }
           
-     //     resultHtmlObj.on('keyup', function (e) {
-     //       var code = e.keyCode || e.which;
-     //       if ((code == 13) || (code == 32)) {
-     //         App_Find.TaggedSection.selectItem($(this).attr('data-result-index'), $(this));
-     //       }
-     //     });
-          
-         if (groupType == "document") {
-           countDocumentType++;
+          if (groupType == "document") {
+            countDocumentType++;
             resultHtmlObjs.push(resultHtmlObj);
             
           } else if (groupType == "statement") {
@@ -2383,9 +2377,9 @@ var App_Find = {
       if (countDocumentType > 1) {
         
         for (var i = 0; i < resultHtmlObjs.length; i++) {
-          documentType.append(resultHtmlObjs[i])
+            $("#documentTypeSingleLIDivIfrs").append(resultHtmlObjs[i])
         }
-        $("#documentTypeSingleLIDivIfrs").css({
+          $("#documentTypeMainLIDivIfrs").css({
           'display' : 'none'
         })
       } else if ((countDocumentType == 1) && (resultHtmlObjs[0].html() == "Document and Entity Information")) {
@@ -2501,18 +2495,30 @@ var App_Find = {
           
           var clickingWillReloadApp = Additional_Forms.isBaseRefDifferentThanCurrent(baseref);
           
-          var resultHtml = '<li onclick="Additional_Forms.sectionsClickEvent(this)" onkeyup="Additional_Forms.sectionsKeyUpEvent(this)" class="result-item" baseref="'
-              + baseref
-              + '"data-is-selected="false" tabindex="3" data-result-index="'
-              + index
-              + '" aria-label="'
-              + label + '" style="list-style-type: none;text-decoration: underline;cursor:pointer;" >';
+          var resultHtml = '<li class="result-item" baseref="' + baseref
+              + '"data-is-selected="false" tabindex="3" data-result-index="' + index + '" aria-label="' + label
+              + '" style="list-style-type: none;text-decoration: underline;cursor:pointer;" >';
           if (clickingWillReloadApp) {
             resultHtml += '<span title="Select to open an associated source document." class="mr-3 icon-as-img icon-reload-form-black"></span>';
+            resultHtml += '<a href="' + Additional_Forms.quickLinkFixForSections(baseref, index) + '">'
+                + $('<div/>').html(label).text() + '</a></li>';
+          } else {
+            resultHtml += $('<div/>').html(label).text() + '</li>';
           }
           
-          resultHtml += $('<div/>').html(label).text() + '</li>';
           var resultHtmlObj = $(resultHtml);
+          if (!clickingWillReloadApp) {
+            resultHtmlObj.on('click', function () {
+              App_Find.TaggedSection.selectItem($(this).attr('data-result-index'), $(this));
+            });
+            
+            resultHtmlObj.on('keyup', function (e) {
+              var code = e.keyCode || e.which;
+              if ((code == 13) || (code == 32)) {
+                App_Find.TaggedSection.selectItem($(this).attr('data-result-index'), $(this));
+              }
+            });
+          }
           
           if (groupType == "document") {
             countDocumentType++;

@@ -137,7 +137,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.10.0.1'
+VERSION = '3.19.1'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -203,7 +203,9 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     parser.add_option("--failFile", dest="failFile", help=_("Relative path and name of fail file. "))
     
     parser.add_option("--reportXslt", dest="reportXslt", help=_("Path and name of Stylesheet for producing a report file."))
+    parser.add_option("--reportXsltDissem", dest="reportXsltDissem", help=_("Path and name of Stylesheet for producing second report file for dissemination."))
     parser.add_option("--summaryXslt", dest="summaryXslt", help=_("Path and name of Stylesheet, if any, for producing filing summary html."))
+    parser.add_option("--summaryXsltDissem", dest="summaryXsltDissem", help=_("Path and name of Stylesheet, if any, for producing second filing summary html for dissemination."))
     parser.add_option("--renderingLogsXslt", dest="renderingLogsXslt", help=_("Path and name of Stylesheet, if any, for producing filing rendering logs html."))
     parser.add_option("--excelXslt", dest="excelXslt", help=_("Path and name of Stylesheet, if any, for producing Excel 2007 xlsx output."))
     parser.add_option("--auxMetadata", action="store_true", dest="auxMetadata", help=_("Set flag to generate inline xbrl auxiliary files"))
@@ -213,6 +215,7 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     parser.add_option("--copyXbrlFilesToOutput", action="store_true", dest="copyXbrlFilesToOutput", help=_("Set flag to copy all source xbrl files to the output folder or zip."))
     parser.add_option("--zipXbrlFilesToOutput", action="store_true", dest="zipXbrlFilesToOutput", help=_("Set flag to zip all source xbrl files to the an accession-number-xbrl.zip in reports folder or zip when an accession number parameter is available."))
     parser.add_option("--includeLogsInSummary", action="store_true", dest="includeLogsInSummary", help=_("Set flag to copy log entries into <logs> in FilingSummary.xml."))    
+    parser.add_option("--includeLogsInSummaryDissem", action="store_true", dest="includeLogsInSummaryDissem", help=_("Set flag to copy log entries into <logs> in FilingSummary.xml for dissemination."))    
     parser.add_option("--noLogsInSummary", action="store_false", dest="includeLogsInSummary", help=_("Unset flag to copy log entries into <logs> in FilingSummary.xml."))    
     parser.add_option("--processXsltInBrowser", action="store_true", dest="processXsltInBrowser", help=_("Set flag to process XSLT transformation in browser (e.g., rendering logs)."))
     parser.add_option("--noXsltInBrowser", action="store_false", dest="processXsltInBrowser", help=_("Unset flag to process XSLT transformation in browser (e.g., rendering logs)."))
@@ -280,6 +283,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['copyXbrlFilesToOutput'] = str(False)
         self.defaultValueDict['zipXbrlFilesToOutput'] = str(False)
         self.defaultValueDict['includeLogsInSummary'] = str(False)
+        self.defaultValueDict['includeLogsInSummaryDissem'] = str(False)
         self.defaultValueDict['deleteProcessedFilings'] = str(True)
         self.defaultValueDict['deliveryFolder'] = 'Delivery'
         self.defaultValueDict['debugMode'] = str(False)
@@ -298,11 +302,13 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['reportFormat'] = 'Html'
         self.defaultValueDict['reportsFolder'] = 'Reports'
         self.defaultValueDict['reportXslt'] = 'InstanceReport.xslt'
+        self.defaultValueDict['reportXsltDissem'] = None
         self.defaultValueDict['resourcesFolder'] = "resources"
         self.defaultValueDict['saveTargetInstance'] = str(True)
         self.defaultValueDict['saveTargetFiling'] = str(False)
         self.defaultValueDict['sourceList'] = ''
         self.defaultValueDict['summaryXslt'] = None
+        self.defaultValueDict['summaryXsltDissem'] = None
         self.defaultValueDict['totalClean'] = str(False)
         self.defaultValueDict['utrValidate'] = str(False)
         self.defaultValueDict['validate'] = str(False)
@@ -382,6 +388,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         options.copyXbrlFilesToOutput = setFlag('copyXbrlFilesToOutput', options.copyXbrlFilesToOutput)
         options.zipXbrlFilesToOutput = setFlag('zipXbrlFilesToOutput', options.zipXbrlFilesToOutput)
         options.includeLogsInSummary = setFlag('includeLogsInSummary', options.includeLogsInSummary)
+        options.includeLogsInSummaryDissem = setFlag('includeLogsInSummaryDissem', options.includeLogsInSummaryDissem)
         options.processXsltInBrowser = setFlag('processXsltInBrowser', options.processXsltInBrowser)
         self.summaryHasLogEntries = False
         options.saveTargetInstance = setFlag('saveTargetInstance',options.saveTargetInstance)
@@ -448,6 +455,7 @@ class EdgarRenderer(Cntlr.Cntlr):
        
         #setResourceFile('reportXslt', options.reportXslt, 'INVALID_CONFIG_REPORTXSLT')
         options.reportXslt = setResourceFile('reportXslt', options.reportXslt, "Cannot find report xslt {}")
+        options.reportXsltDissem = setResourceFile('reportXsltDissem', options.reportXsltDissem, "Cannot find dissemination report xslt {}")
         # Report XSLT is required when reportFormat contains 'Html'.     
         if self.reportXslt is None and 'html' in self.reportFormat.casefold():
             raise Exception('No {} specified when {}={} requires it.'.format('reportXslt', 'reportFormat', self.reportFormat))
@@ -455,6 +463,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # Summary XSLT is optional, but do report if you can't find it.
         #setResourceFile('summaryXslt', options.summaryXslt, 'INVALID_CONFIG_SUMMARYXSLT')
         options.summaryXslt = setResourceFile('summaryXslt', options.summaryXslt, "Cannot find summary xslt {}")
+        options.summaryXsltDissem = setResourceFile('summaryXsltDissem', options.summaryXsltDissem, "Cannot find dissemination summary xslt {}")
         options.renderingLogsXslt = setResourceFile('renderingLogsXslt', options.renderingLogsXslt, "Cannot find rendering logs xslt {}")
 
         # Excel XSLT is optional, but do report if you can't find it.
@@ -497,6 +506,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.copyXbrlFilesToOutput = options.copyXbrlFilesToOutput
         self.zipXbrlFilesToOutput = options.zipXbrlFilesToOutput
         self.includeLogsInSummary = options.includeLogsInSummary
+        self.includeLogsInSummaryDissem = options.includeLogsInSummaryDissem
         self.processXsltInBrowser = options.processXsltInBrowser
         self.summaryHasLogEntries = False
         self.saveTargetInstance = options.saveTargetInstance
@@ -522,6 +532,7 @@ class EdgarRenderer(Cntlr.Cntlr):
        
         #setResourceFile('reportXslt', options.reportXslt, 'INVALID_CONFIG_REPORTXSLT')
         self.reportXslt = options.reportXslt
+        self.reportXsltDissem = options.reportXsltDissem
         # Report XSLT is required when reportFormat contains 'Html'.     
         if self.reportXslt is None and 'html' in self.reportFormat.casefold():
             raise Exception('No {} specified when {}={} requires it.'.format('reportXslt', 'reportFormat', self.reportFormat))
@@ -529,6 +540,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # Summary XSLT is optional, but do report if you can't find it.
         #setResourceFile('summaryXslt', options.summaryXslt, 'INVALID_CONFIG_SUMMARYXSLT')
         self.summaryXslt = options.summaryXslt
+        self.summaryXsltDissem = options.summaryXsltDissem
         self.renderingLogsXslt = options.renderingLogsXslt
 
         # Excel XSLT is optional, but do report if you can't find it.
@@ -870,6 +882,14 @@ class EdgarRenderer(Cntlr.Cntlr):
                 rootETree = summary.buildSummaryETree()
                 if self.reportZip or self.reportsFolder is not None:
                     IoManager.writeXmlDoc(filing, rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
+                    # if there's a dissem directory and no logs, remove summary logs
+                    if self.summaryXslt and len(self.summaryXslt) > 0 and (self.summaryXsltDissem or self.reportXsltDissem):
+                        dissemReportsFolder = os.path.join(self.reportsFolder, "dissem")
+                        if not os.path.exists(dissemReportsFolder):
+                            os.mkdir(dissemReportsFolder)
+                    if (self.summaryXsltDissem or self.reportXsltDissem) and not self.includeLogsInSummaryDissem and self.summaryHasLogEntries:
+                        summary.removeSummaryLogs() # produce filing summary without logs
+                        IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml')                        
                     self.renderedFiles.add("FilingSummary.xml")
                     if self.renderingLogsXslt and self.summaryHasLogEntries and not self.processXsltInBrowser:
                         _startedAt = time.time()
@@ -880,13 +900,19 @@ class EdgarRenderer(Cntlr.Cntlr):
                         self.renderedFiles.add("RenderingLogs.htm")
                     if self.summaryXslt and len(self.summaryXslt) > 0 :
                         _startedAt = time.time()
-                        summary_transform = etree.XSLT(etree.parse(self.summaryXslt))
-                        result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'),
-                                                   accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")),
-                                                   resourcesFolder="'{}'".format(self.resourcesFolder.replace("\\","/")),
-                                                   processXsltInBrowser=etree.XSLT.strparam(str(self.processXsltInBrowser).lower()))
+                        for _xsltFile, _reportsFolder, _includeLogs in (
+                                ((self.summaryXslt, self.reportsFolder, True),) + (
+                                ((self.summaryXsltDissem, dissemReportsFolder, self.includeLogsInSummaryDissem),)
+                                 if self.summaryXsltDissem else ())):
+                            if not _xsltFile: continue
+                            summary_transform = etree.XSLT(etree.parse(_xsltFile))
+                            result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'),
+                                                       accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")),
+                                                       resourcesFolder="'{}'".format(self.resourcesFolder.replace("\\","/")),
+                                                       processXsltInBrowser=etree.XSLT.strparam(str(self.processXsltInBrowser).lower()),
+                                                       includeLogs=etree.XSLT.strparam(str(_includeLogs).lower()))
+                            IoManager.writeHtmlDoc(filing, result, self.reportZip, _reportsFolder, "FilingSummary.htm")
                         self.logDebug("FilingSummary XSLT transform {:.3f} secs.".format(time.time() - _startedAt))
-                        IoManager.writeHtmlDoc(filing, result, self.reportZip, self.reportsFolder, 'FilingSummary.htm')
                         self.renderedFiles.add("FilingSummary.htm")
                     self.logDebug("Write filing summary complete")
                     if self.auxMetadata or filing.hasInlineReport: 
@@ -1165,6 +1191,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
     """ run EdgarRenderer using GUI interactions for a single instance or testcases """
     if cntlr.hasGui:
         from arelle.ValidateFilingText import referencedFiles
+        parameters = modelXbrl.modelManager.formulaOptions.parameterValues
         _combinedReports = not cntlr.showTablesMenu.get() # use mustard menu
         # may use GUI mode to process a single instance or test suite
         options = PythonUtil.attrdict(# simulate options that CntlrCmdLine provides
@@ -1181,7 +1208,10 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             copyInlineFilesToOutput = True, # needed for ixviewer
             copyXbrlFilesToOutput = None,
             zipXbrlFilesToOutput = None,
-            includeLogsInSummary = True, # for GUI logger now validates with log buffer
+            includeLogsInSummary = (True if "includeLogsInSummary" in parameters else
+                                    False if "noLogsInSummary" in parameters else
+                                    True), # default for GUI logger now validates with log buffer
+            includeLogsInSummaryDissem = True if "includeLogsInSummaryDissem" in parameters else False,
             processXsltInBrowser = False, # both options can work with GUI, unsure about future browser XSLT support
             saveTargetInstance = None,
             saveTargetFiling = None,
@@ -1197,9 +1227,12 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             noReportOutput = None if cntlr.showFilingData.get() else True,
             reportInZip = None,
             resourcesFolder = None,
-            reportXslt = ('InstanceReport.xslt', 'InstanceReportTable.xslt')[_combinedReports],
-            summaryXslt = ('Summarize.xslt', '')[_combinedReports], # no FilingSummary.htm for Rall.htm production
-                              # "LocalSummarize.xslt", # takes resources parameter for include dir
+            reportXslt = (parameters["reportXslt"][1] if "reportXslt" in parameters else
+                          ('InstanceReport.xslt', 'InstanceReportTable.xslt')[_combinedReports]),
+            reportXsltDissem = parameters["reportXsltDissem"][1] if "reportXsltDissem" in parameters else None,
+            summaryXslt = (parameters["summaryXslt"][1] if "summaryXslt" in parameters else
+                           ('Summarize.xslt', '')[_combinedReports]), # no FilingSummary.htm for Rall.htm production
+            summaryXsltDissem = parameters["summaryXslt"][1] if "summaryXslt" in parameters else None,
             renderingLogsXslt = ('RenderingLogs.xslt', None)[_combinedReports],
             excelXslt = ('InstanceReport_XmlWorkbook.xslt', None)[_combinedReports],
             logMessageTextFile = None,
@@ -1268,6 +1301,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             writeFile=guiWriteFile,
             readFile=guiReadFile
             )
+        if "accessionNumber" in parameters:
+            filing.accessionNumber = parameters["accessionNumber"][1]
         cntlr.logHandler.startLogBuffering() # accumulate validation and rendering warnings and errors
         edgarRendererFilingStart(cntlr, options, {}, filing)
         if cntlr.validateBeforeRendering.get():

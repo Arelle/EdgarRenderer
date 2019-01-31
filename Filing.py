@@ -230,12 +230,19 @@ class Filing(object):
         self.fileNamePrefix = 'R'
         if controller.reportZip:
             self.fileNameBase = None
+            self.dissemFileNameBase = None
             self.reportZip = controller.reportZip
         elif outputFolderName is not None:
             # self.fileNameBase = os.path.normpath(os.path.join(os.path.dirname(controller.webCache.normalizeUrl(modelXbrl.fileSource.basefile)) ,outputFolderName))
             self.fileNameBase = outputFolderName
             if not os.path.exists(self.fileNameBase):  # This is usually the Reports subfolder.
                 os.mkdir(self.fileNameBase)
+            if controller.reportXsltDissem:
+                self.dissemFileNameBase = os.path.join(self.fileNameBase, "dissem")
+                if not os.path.exists(self.dissemFileNameBase):
+                    os.mkdir(self.dissemFileNameBase)
+            else:
+                self.dissemFileNameBase = None
             self.reportZip = None
         else:
             self.fileNameBase = self.reportZip = None
@@ -243,11 +250,17 @@ class Filing(object):
         if controller.reportXslt:
             _xsltStartedAt = time.time()
             self.transform = lxml.etree.XSLT(lxml.etree.parse(controller.reportXslt))
+            if controller.reportXsltDissem:
+                self.transformDissem = lxml.etree.XSLT(lxml.etree.parse(controller.reportXsltDissem))
+            else:
+                self.transformDissem = None
             self.controller.logDebug("Excel XSLT transform {:.3f} secs.".format(time.time() - _xsltStartedAt))
+        ''' HF: this is not used ??
         if controller.summaryXslt:
             _xsltStartedAt = time.time()
             self.summary_transform = lxml.etree.XSLT(lxml.etree.parse(controller.summaryXslt))
-            self.controller.logDebug("Summary XSLT transforms {:.3f} secs.".format(time.time() - _xsltStartedAt))
+            self.controller.logDebug("Summary XSLT transform {:.3f} secs.".format(time.time() - _xsltStartedAt))
+        '''
         self.reportSummaryList = []
 
         self.rowSeparatorStr = ' | '

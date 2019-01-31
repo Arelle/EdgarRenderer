@@ -9,6 +9,7 @@
   <xsl:param name="xslt">/include/InstanceReport.xslt</xsl:param>
   <!-- set processXsltInBrowser='true' to transform report logs in browser hf 12/29/18 -->
   <xsl:param name="processXsltInBrowser">false</xsl:param>
+  <xsl:param name="includeLogs">true</xsl:param>
   <xsl:key name="keyParent" match="Report" use="ParentRole"/>
   <xsl:variable name="majorversion" select="substring-before(/FilingSummary/Version,'.')"/>
   <xsl:variable name="nreports" select="count(/FilingSummary/MyReports/Report)"/>
@@ -17,7 +18,7 @@
   <xsl:variable name="isrr" select="0 &lt; count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'sec.gov/rr/20')]) + count(/FilingSummary/MyReports/Report[contains(Role,'http://xbrl.sec.gov/rr')])"/>
   <xsl:variable name="nlogs">
     <xsl:choose>
-      <xsl:when test="count(/FilingSummary/Logs/*) > 0">1</xsl:when>
+      <xsl:when test="count(/FilingSummary/Logs/*) > 0 and $includeLogs = 'true'">1</xsl:when>
       <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
@@ -410,6 +411,7 @@
     <xsl:param name="menucat"/>
     <xsl:param name="prev_instance"/>
     <xsl:variable name="instance">
+      <!--  HF: instance must be file name only without directory or URL -->
       <xsl:value-of select="(MyReports/Report[position()=$position]/@instance)" />
     </xsl:variable>
     <xsl:choose>

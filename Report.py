@@ -1144,17 +1144,20 @@ class Report(object):
     def writeHtmlFile(self, baseNameBeforeExtension, tree, reportSummary):
         baseName = baseNameBeforeExtension + '.htm'
         reportSummary.htmlFileName = baseName     
-
-        _startedAt = time.time()
-        result = self.filing.transform(tree, asPage=XSLT.strparam('true'))
-        self.controller.logDebug("R{} htm XSLT {:.3f} secs.".format(self.cube.fileNumber, time.time() - _startedAt))
-        htmlText = treeToString(result,method='html',with_tail=False,pretty_print=True,encoding='us-ascii')
-        if self.filing.reportZip:
-            self.filing.reportZip.writestr(baseName, htmlText)
-            self.controller.renderedFiles.add(baseName)
-        elif self.filing.fileNameBase is not None:
-            self.controller.writeFile(os.path.join(self.filing.fileNameBase, baseName), htmlText)
-            self.controller.renderedFiles.add(baseName)
+        for _transform, _fileNameBase in (
+            ((self.filing.transform, self.filing.fileNameBase),) + (
+            ((self.filing.transformDissem, self.filing.dissemFileNameBase),) if self.filing.transformDissem else ())):
+            _startedAt = time.time()
+            result = _transform(tree, asPage=XSLT.strparam('true'))
+            self.controller.logDebug("R{} htm XSLT {:.3f} secs.".format(self.cube.fileNumber, time.time() - _startedAt))
+            htmlText = treeToString(result,method='html',with_tail=False,pretty_print=True,encoding='us-ascii')
+            if self.filing.reportZip:
+                self.filing.reportZip.writestr(baseName, htmlText)
+                self.controller.renderedFiles.add(baseName)
+            elif _fileNameBase is not None:
+                self.controller.writeFile(os.path.join(_fileNameBase, baseName), htmlText)
+                if _fileNameBase == self.filing.fileNameBase: # first non-dissem only
+                    self.controller.renderedFiles.add(baseName)
 
 
     def generateBarChart(self):

@@ -64,6 +64,7 @@
   <!-- wch 5/20/2016 parameterized stylesheet -->
   <!-- set processXsltInBrowser='true' to transform report logs in browser hf 12/29/18 -->
   <xsl:param name="processXsltInBrowser">false</xsl:param>
+  <xsl:param name="includeLogs">true</xsl:param>
   <xsl:param name="accessionNumber">PROVIDED-BY-ARELLE-FILE-ARGUMENT-OBJECT</xsl:param>
   <xsl:variable name="fetchprefix"><![CDATA[DisplayDocument.do?step=docOnly&accessionNumber=]]></xsl:variable>
   <xsl:variable name="fetch_ix_prefixquoted"><![CDATA[../DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D]]></xsl:variable>
@@ -77,7 +78,7 @@
   <xsl:variable name="isrr" select="0 &lt; count(/FilingSummary/MyReports/Report[contains(Role,'http://xbrl.sec.gov/rr')])"/>
   <xsl:variable name="nlogs">
     <xsl:choose>
-        <xsl:when test="count(/FilingSummary/Logs/*) > 0">1</xsl:when>
+        <xsl:when test="count(/FilingSummary/Logs/*) > 0 and $includeLogs = 'true'">1</xsl:when>
         <xsl:otherwise>0</xsl:otherwise>
     </xsl:choose>
   </xsl:variable>
