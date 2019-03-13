@@ -572,7 +572,7 @@ class InstanceSummary(object):
                     lang = rel.toModelObject.xmlLang 
                     label = rel.toModelObject
                     if label is not None:
-                        labelrole = label.role.split('/')[-1:][0]
+                        labelrole = (label.role or "").split('/')[-1:][0]
                         labeltext = ''
                         if label.text is not None:
                             labeltext = label.text.strip().replace("&", "&amp;").replace("<", "&lt;")

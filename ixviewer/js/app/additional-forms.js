@@ -9,7 +9,7 @@ var Additional_Forms = {
   initialURL : null,
   
   init : function (input, initial) {
-    console.log('in the init!');
+    
     Additional_Forms.initialURL = initial;
     Additional_Forms.fixLinks(input['local'], initial);
     initial = initial || null;
@@ -138,9 +138,7 @@ var Additional_Forms = {
     newUrl.pop();
     newUrl = newUrl.join('/') + '/' + input.getAttribute('baseref');
     newUrl += '&result-index=' + input.getAttribute('data-result-index');
-    // return newUrl;
-    // console.log(newUrl);
-    // window.location.href = newUrl;
+   
   },
   
   scrollLocalElementIntoView : function (input) {

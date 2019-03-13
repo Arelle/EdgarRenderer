@@ -1859,8 +1859,12 @@ var App_Find = {
       var uniqueAnchor = report.uniqueAnchor;
       var hasUniqueAnchor = uniqueAnchor && uniqueAnchor.name && uniqueAnchor.contextRef && true;
       function retrieve (node, fact) {
-        var query = '[name="' + fact.name + '"]';
-        var found = node.find(query).first();
+       
+        var query = '[name="'+ fact.name + '"]';
+        var query1 = '[contextref="' + fact.contextRef + '"]';
+        var found = node.find(query);
+        found = found.filter(query1);
+        
         return found;
       }
       var found = null;
@@ -2468,6 +2472,8 @@ var App_Find = {
           'display' : 'block'
         })
 
+		$("#disclosureLiDup").css({'display':'block'})
+		
         $("#rrLi").css({
           'display' : 'block'
         })
@@ -2544,6 +2550,7 @@ var App_Find = {
             } else {
               disclosureType.append(resultHtmlObj);
               countDisclosureType++;
+			  $("#disclosureLiDup").css({'display':'none'});
             }
             
           }
@@ -2599,6 +2606,7 @@ var App_Find = {
         $("#disclosureLi").css({
           'display' : 'none'
         });
+		 $("#disclosureLiDup").css({'display':'none'});
       }
     }
   },

@@ -118,7 +118,7 @@ class XlWriter(object):
             for tableElt in rdoc.iter(tag="table"):
                 # handle only top level table of class 'report'
                 if (tableElt.xpath("count(ancestor::table)") == 0 and tableElt.xpath("count(ancestor-or-self::table[@class='report'])")>0):
-                    def populateCell(col,row,text,tag,fontBold):
+                    def populateCell(col,row,classAttr,text,tag,fontBold):
                         # TODO Just cut off the text at 32767 the biggest string Excel 2010 can handle.
                         colLetter = openpyxl.utils.get_column_letter(col)
                         if colLetter not in colsWithCustomDimensions:
@@ -137,7 +137,7 @@ class XlWriter(object):
                         elif datePattern.match(text):
                             try: cell.value = datetime.date(text)
                             except: cell.value = text
-                        elif numberPattern.match(text):
+                        elif numberPattern.match(text) and classAttr in ("num", "nump"):
                             if ',' in text:
                                 text = text.replace(',', '')
                             isNeg = False
@@ -234,7 +234,7 @@ class XlWriter(object):
                                     text = textNodes
                                 if not text == '':
                                     isBold = any(True for ignore in trTdElt.iterdescendants('strong','b'))
-                                    ignore = populateCell(col,row,text,trTdElt.tag,isBold)
+                                    ignore = populateCell(col,row,trTdElt.get("class"),text,trTdElt.tag,isBold)
                                 elif rowspan > 1 or colspan > 1:
                                     ws.cell(row=row,column=col)
                                 if colspan > 1 or rowspan > 1:

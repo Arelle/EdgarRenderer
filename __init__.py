@@ -887,9 +887,6 @@ class EdgarRenderer(Cntlr.Cntlr):
                         dissemReportsFolder = os.path.join(self.reportsFolder, "dissem")
                         if not os.path.exists(dissemReportsFolder):
                             os.mkdir(dissemReportsFolder)
-                    if (self.summaryXsltDissem or self.reportXsltDissem) and not self.includeLogsInSummaryDissem and self.summaryHasLogEntries:
-                        summary.removeSummaryLogs() # produce filing summary without logs
-                        IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml')                        
                     self.renderedFiles.add("FilingSummary.xml")
                     if self.renderingLogsXslt and self.summaryHasLogEntries and not self.processXsltInBrowser:
                         _startedAt = time.time()
@@ -914,6 +911,9 @@ class EdgarRenderer(Cntlr.Cntlr):
                             IoManager.writeHtmlDoc(filing, result, self.reportZip, _reportsFolder, "FilingSummary.htm")
                         self.logDebug("FilingSummary XSLT transform {:.3f} secs.".format(time.time() - _startedAt))
                         self.renderedFiles.add("FilingSummary.htm")
+                    if (self.summaryXsltDissem or self.reportXsltDissem) and not self.includeLogsInSummaryDissem and self.summaryHasLogEntries:
+                        summary.removeSummaryLogs() # produce filing summary without logs
+                        IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml')                        
                     self.logDebug("Write filing summary complete")
                     if self.auxMetadata or filing.hasInlineReport: 
                         summary.writeMetaFiles()
@@ -1187,6 +1187,12 @@ def edgarRendererGuiViewMenuExtender(cntlr, viewMenu, *args, **kwargs):
     cntlr.validateBeforeRendering.trace("w", setShowTablesMenu)
     erViewMenu.add_checkbutton(label=_("Validate Before Rendering"), underline=0, variable=cntlr.validateBeforeRendering, onvalue=True, offvalue=False)
 
+def edgarRendererGuiStartLogging(modelXbrl, mappedUri, normalizedUri, filepath, isEntry=False, namespace=None, **kwargs):
+    """ start logging for EdgarRenderer when using GUI """
+    if isEntry and modelXbrl.modelManager.cntlr.hasGui:
+        modelXbrl.modelManager.cntlr.logHandler.startLogBuffering() # accumulate validation and rendering warnings and errors
+    return False # called for class 'ModelDocument.IsPullLoadable'
+
 def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
     """ run EdgarRenderer using GUI interactions for a single instance or testcases """
     if cntlr.hasGui:
@@ -1303,7 +1309,6 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             )
         if "accessionNumber" in parameters:
             filing.accessionNumber = parameters["accessionNumber"][1]
-        cntlr.logHandler.startLogBuffering() # accumulate validation and rendering warnings and errors
         edgarRendererFilingStart(cntlr, options, {}, filing)
         if cntlr.validateBeforeRendering.get():
             cntlr.modelManager.validate()
@@ -1387,6 +1392,8 @@ __pluginInfo__ = {
     'EdgarRenderer.Xbrl.Run': edgarRendererXbrlRun,
     # finish processing a filing after instances have been processed
     'EdgarRenderer.Filing.End': edgarRendererFilingEnd,
+    # GUI operation start log buffering
+    'ModelDocument.IsPullLoadable': edgarRendererGuiStartLogging,
     # GUI operation startup (renders all reports of an input instance or test suite)
     'CntlrWinMain.Xbrl.Loaded': edgarRendererGuiRun,
     # GUI operation, add View -> EdgarRenderer submenu for GUI options
