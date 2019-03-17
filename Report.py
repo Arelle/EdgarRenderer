@@ -1138,7 +1138,7 @@ class Report(object):
             self.filing.reportZip.writestr(baseName, xmlText)
             self.controller.renderedFiles.add(baseName)
         elif self.filing.fileNameBase is not None:
-            self.controller.writeFile(os.path.join(self.filing.fileNameBase, baseName). xmlText)
+            self.controller.writeFile(os.path.join(self.filing.fileNameBase, baseName), xmlText)
             self.controller.renderedFiles.add(baseName)
 
     def writeHtmlFile(self, baseNameBeforeExtension, tree, reportSummary):

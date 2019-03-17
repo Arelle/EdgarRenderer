@@ -385,8 +385,8 @@ $(deprecation) of facts $(fact) in context $(contextID) value $(value) was depre
 <message code="EFM.5.01.01"
          level="error"
          module="ValidateFilingDTS.py" line="67"
-         args="filename">
-Document file name $(filename) must start with a-z or 0-9, contain lower case letters, ., -, _, and end with .xsd or .xml.
+         args="filename suffix">
+[cp-0501-File-Name] Document file name $(filename) must start with a-z or 0-9, contain lower case letters, ., -, _, and end with $(suffix).
 </message>
 
 <!--WcH.5.02.02.06 would be caught by EDGARLink but is useful for offline validation -->
@@ -394,7 +394,7 @@ Document file name $(filename) must start with a-z or 0-9, contain lower case le
          level="error"
          module="ValidateFilingDTS.py" line="63"
          args="filename">
-Document file name $(filename) must not exceed 32 characters.
+[cp-0501-File-Name-Length] Document file name $(filename) must not exceed 32 characters.
 </message>
 
 <!--WcH 5.02.02.06 would be caught by EDGARLink but is useful for offline validation -->
@@ -402,7 +402,7 @@ Document file name $(filename) must not exceed 32 characters.
          level="error"
          module="ValidateFilingText.py" line="403"
          args="modelDocument text file line column">
-Disallowed character '$(text)' in file $(file) at line $(line) col $(column)
+[cp-0501-File-Character] Disallowed character '$(text)' in file $(file) at line $(line) col $(column)
 </message>
 
 <!--WcH 5.02.02.06 would be caught by EDGARLink but is useful for offline validation -->
@@ -410,7 +410,7 @@ Disallowed character '$(text)' in file $(file) at line $(line) col $(column)
          level="error"
          module="ValidateFilingText.py" line="399"
          args="modelDocument text file line column">
-Disallowed entity code $(text) in file $(file) line $(line) column $(column)
+[cp-0502-File-Entity-Code] Disallowed entity code $(text) in file $(file) line $(line) column $(column)
 </message>
 
 <message code="EFM.5.02.05.standardNamespacePrefix"
@@ -537,7 +537,7 @@ Invalid linkbase file name: $(filename), expected $(expectedFilename)
          level="error"
          module="ValidateXbrlDTS.py" line="90"
          args="elementHref">
-Href $(elementHref) may only have shorthand xpointers
+[cp-0306-Href-Xpointers] Href $(elementHref) may only have shorthand xpointers
 </message>
 
 <message code="EFM.6.03.08.moreThanOneIns"
@@ -551,7 +551,14 @@ Href $(elementHref) may only have shorthand xpointers
          level="error"
          module="EFM/__init__.py" line="268"
          args="exhibitType">
-[cp-0308-Sdr-Has-Multiple-K-Reports] "SDR filing has multiple K SDR reports for $(entities)."
+[cp-0308-Sdr-Has-Multiple-K-Reports] SDR filing has multiple K SDR reports for $(entities).
+</message>
+
+<message code="EFM.6.03.10"
+         level="error"
+         module="EFM/Filing.py" line="1925"
+         args="documentType">
+[cp-0310-Missing-Schema] The submission is missing required schema attachment $(documentType).
 </message>
 
 <!-- had inconsistent file/line number text order -->
@@ -566,7 +573,7 @@ Href $(elementHref) may only have shorthand xpointers
          level="error"
          module="ValidateFiling.py" line="339"
          args="fact contextID">
-Fact $(fact) of context $(contextID) has an XBRL error
+[fs-0403-Fact-Xbrl-Error] Fact $(fact) of context $(contextID) has an XBRL error
 </message>
 
 <message code="EFM.6.05.01"
@@ -796,7 +803,7 @@ $(elementName) is in the default context is incorrect '$(date)'
          level="error"
          module="ValidateFiling.py" line="1609"
          args="contextID documentType namespace">
-[cp-0520-Document-Type-Namespace-Inconsistency] DocumentType $(documentType) is not consistent with standard namespace $(namespace).
+[cp-0520-Document-Type-Namespace-Inconsistency] DocumentType $(documentType) of context $(contextID) is not consistent with standard namespace $(namespace).
 </message>
 
 <message code="EFM.6.05.21.EntityCentralIndexKey"
@@ -1430,7 +1437,7 @@ FootnoteLink $(footnoteLinkNumber) has disallowed role $(linkrole)</message>
          level="error"
          module="ValidateFilingDTS.py" line="131"
          args="schema targetNamespace">
-Taxonomy schema $(schema) namespace $(targetNamespace) must be a valid URI with a valid authority for the namespace.
+[du-0705-Namespace-Authority] Taxonomy schema $(schema) namespace $(targetNamespace) must be a valid URI with a valid authority for the namespace.
 </message>
 
 <!--WcH this makes no sense to test and should be removed from EFM
@@ -1643,7 +1650,7 @@ ArcroleType $(arcroleType) should end with /arcrole/{LC3name}
          level="error"
          module="ValidateFilingDTS.py" line="276"
          args="concept">
-[du-0731-Fraction-Item-Type] Element $(concept) is declared as a fraction item type.  Change or remove the declaration.
+[du-0731-Fraction-Item-Type] Element $(concept) is declared as a fraction item type.  Change or remove the declaration and resubmit.
 </message>
 
 <message code="EFM.6.07.32"
