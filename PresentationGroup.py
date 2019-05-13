@@ -101,7 +101,7 @@ class PresentationGroup(object):
             # because the way this function is called by the filing class, it is ok if it goes over the same relationship
             # twice.  however, if it goes over the same relationship twice on it's way to the root, then there is a cycle.
             # in fact, this will catch every possible cycle in our subgraph, we don't care about cycles outside of our subgraph.
-            if relationship in localRelationshipSet:
+            if relationship in localRelationshipSet and concept is not None:
                 if not self.filing.validatedForEFM:
                     #message = ErrorMgr.getError('PRESENTATION_GROUP_DIRECTED_CYCLE_ERROR').format(self.cube.shortName)
                     self.filing.modelXbrl.error("xbrl.5.2.4.2",
@@ -109,7 +109,8 @@ class PresentationGroup(object):
                         modelObject=relationship, cycle="directed", arcrole=arelle.XbrlConst.parentChild, arcname=arelle.XbrlConst.qnLinkPresentationArc, linkname=arelle.XbrlConst.qnLinkPresentationLink,
                         path = str(concept.qname) + " " + " - ".join(
                             "{0}:{1} {2}".format(rel.modelDocument.basename, rel.sourceline, rel.toModelObject.qname)
-                            for rel in reversed(localRelationshipSet)),
+                            for rel in reversed(localRelationshipSet)
+                            if rel.toModelObject is not None),
                         linkrole=self.cube.linkroleUri)
                 raise Utils.RenderingException("xbrl.5.2.4.2", "Presentation group {} contains a directed cycle".format(self.cube.shortName))
             localRelationshipSet.append(relationship)
@@ -309,5 +310,5 @@ class PresentationGroup(object):
                                           modelObject=kid.arelleConcept, tabs=tabString, 
                                           concept=kid.arelleConcept.qname, order=kid.arelleRelationship.order, label=kid.arelleRelationship.preferredLabel)
             else: # it's a Member or default
-                self.filing.controller.logTrace(tabString + str(kid.arelleConcept.qname))
+                self.filing.controller.logTrace(tabString + (str(kid.arelleConcept.qname) if kid.arelleConcept is not None else "(missing concept)"))
             self.recursivePrint(kid, tabString + '\t')

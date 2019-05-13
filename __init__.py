@@ -137,7 +137,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.19.1'
+VERSION = '3.19.2'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -163,6 +163,8 @@ MODULENAME = os.path.basename(os.path.dirname(__file__))
 
 
 ###############
+
+logParamEscapePattern = re.compile("{{([^}]*)}(?!})") # match a java {{xxx} pattern to connvert to python escaped {{xxx}}
 
 def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     parser.add_option("-o", "--output", dest="zipOutputFile",
@@ -793,9 +795,13 @@ class EdgarRenderer(Cntlr.Cntlr):
                 fileLines[href.partition("#")[0]].add(ref.get("sourceLine", 0))
         _text = logHandler.format(logRec) # sets logRec.file
         try:
-            _text = self.logMessageText[logRec.messageCode] % logRec.args
+            _text = logParamEscapePattern.sub(r"{{\1}}", # substitute java {{x} into py {{x}}} but leave {{x}} as it was
+                        self.logMessageText[logRec.messageCode]
+                    ).format(**logRec.args) # now uses {...} parameters in arelleMessagesText
         except KeyError:
             pass # not replacable messageCode or a %(xxx)s format arg was not in the logRec arcs or it's a $() java function reference
+        except ValueError as err: # error inn { ... } parameters specification
+            self.logDebug("Message format string error {} in string {}".format(err, logRec.messageCode))
         if hasattr(logHandler.formatter, "fileLines"):
             _fileLines = logHandler.formatter.fileLines(logRec)
             if _fileLines:
@@ -1381,7 +1387,7 @@ __pluginInfo__ = {
     'license': 'Apache-2',
     'author': 'U.S. SEC Employees and Mark V Systems Limited',
     'copyright': '(c) Portions by SEC Employees not subject to domestic copyright, otherwise (c) Copyright 2015 Mark V Systems Limited, All rights reserved.',
-    'import': ('validate/EFM', 'inlineXbrlDocumentSet'), # import dependent modules
+    'import': ('validate/EFM_19_2', 'inlineXbrlDocumentSet'), # import dependent modules
     # add Edgar Renderer options to command line & web service options
     'CntlrCmdLine.Options': edgarRendererCmdLineOptionExtender,
     # startup for Daemon mode (polls for filings folder's oldest input zip file)

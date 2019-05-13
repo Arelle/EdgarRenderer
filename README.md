@@ -11,7 +11,7 @@ End user support is by e-mail direct to SEC at: StructuredData@sec.gov
 
 Developer issue management is by the Jira Edgar Renderer project: https://arelle.atlassian.net/projects/ER
 
-This is the edgr191 branch with additional updates for the next version.  Branch edgr191 represents EDGAR Release 19.1, in production March 13, 2019, except for ixviewer which will be in production TBD. 
+This is the edgr191 branch with preview of updates for the next version (19.2).  Branch edgr191 represents EDGAR Release 19.1, in production March 13, 2019.  Release 19.2 is planned for production on June 10, 2019.
 
 To debug under eclipse, check this project out under arelle's plugin directory or soft link from EdgarRenderer to the Arelle project src/arelle/plugin directory, e.g., under MacOS/Linux:
     ln -s {path to here}/EdgarRenderer {path to arelle project}/src/arelle/plugin

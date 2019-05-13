@@ -399,7 +399,7 @@ class Report(object):
             durationRowOrColList = []
             while len(tempRowOrColList) > 0 and previousCoordinateListWithoutPeriodAndUnit == tempRowOrColList[0].coordinateListWithoutUnitPeriod:
                 rowOrCol = tempRowOrColList.pop(0)
-                if not rowOrCol.isHidden:
+                if not rowOrCol.isHidden and rowOrCol.startEndContext is not None:
                     if rowOrCol.startEndContext.periodTypeStr == 'instant':
                         instantRowOrColList += [rowOrCol]
                     else:

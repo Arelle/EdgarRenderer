@@ -512,12 +512,12 @@ class Filing(object):
                     startEndTuple = (None, con.instantDatetime)
                 else: # is a startEndContext
                     startEndTuple = (con.startDatetime, con.endDatetime)
-                try:
-                    startEndContext = self.startEndContextDict[startEndTuple]
-                except KeyError:
-                    startEndContext = StartEndContext(con, startEndTuple)
-                    self.startEndContextDict[startEndTuple] = startEndContext
-                axisMemberLookupDict['period'] = startEndContext
+                if startEndTuple[1] is not None: # updated to allow facts without dates to work (#835)
+                    startEndContext = self.startEndContextDict.get(startEndTuple)
+                    if startEndContext is None:
+                        startEndContext = StartEndContext(con, startEndTuple)
+                        self.startEndContextDict[startEndTuple] = startEndContext
+                    axisMemberLookupDict['period'] = startEndContext
 
             if fact.unit is not None:
                 axisMemberLookupDict['unit'] = fact.unit.id
