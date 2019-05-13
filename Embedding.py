@@ -624,7 +624,7 @@ class Command(object):
             errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.embedding.factThatContainsEmbeddedCommand)
             #message = ErrorMgr.getError('ELEMENTS_USED_PRIMARY_ON_COLUMNS_WARNING').format(self.cube.shortName, errorStr)
             self.filing.modelXbrl.warning("EFM.6.26.09",
-                    _("In ''$(linkroleName)'' the embedded report created by the fact %(fact)s with context %(contextID)s "
+                    _("In ''%(linkroleName)s'' the embedded report created by the fact %(fact)s with context %(contextID)s "
                       "contains an iterator \"column primary\" even though the definition text of %(linkroleDefinition)s "
                       "contains the \"{Elements}\" qualifier. The primary axis will remain on the rows."),
                     edgarCode="rq-2609-Primary-Axis-On-Rows",
