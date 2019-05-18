@@ -828,11 +828,14 @@ class Report(object):
             elif pseudoAxisName == 'unit':
                 self.generateAndAddUnitHeadings(rowOrCol, rowOrColStr)
             elif pseudoAxisName == 'period':
-                numMonths = rowOrCol.startEndContext.numMonths
-                if (numMonths > 0):
-                    monthsEndedText = '{!s} Months Ended'.format(numMonths)
-                if self.embedding.columnPeriodPosition != -1:
-                    headingList += [rowOrCol.startEndContext.label]
+                try:
+                    numMonths = rowOrCol.startEndContext.numMonth
+                    if (numMonths > 0):
+                        monthsEndedText = '{!s} Months Ended'.format(numMonths)
+                    if self.embedding.columnPeriodPosition != -1:
+                        headingList += [rowOrCol.startEndContext.label]
+                except AttributeError:
+                    pass # incomplete or forever context
             elif verboseHeadings:
                 headingList += [factAxisMember.memberLabel]
             elif not factAxisMember.memberIsDefault:
@@ -1022,7 +1025,7 @@ class Report(object):
     def emitContextRef(self, mcuETree, factAxisMemberList, context):
         contextRefETree = SubElement(mcuETree, 'contextRef')
 
-        if context is not None:
+        if context is not None and not context.isForeverPeriod:
             SubElement(contextRefETree, 'ContextID').text = context.id
             SubElement(contextRefETree, 'EntitySchema').text = context.entityIdentifier[0]
             SubElement(contextRefETree, 'EntityValue').text = context.entityIdentifier[1]
@@ -1554,7 +1557,7 @@ class Column(object):
         self.factList = []
         self.elementQnameMemberForColHidingSet = set()
         self.context = factAxisMemberGroup.fact.context
-        if self.context == None: # wch added this check.
+        if self.context is None: # wch added this check.
             errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(report.embedding.factThatContainsEmbeddedCommand)
             #message = ErrorMgr.getError('COLUMN_WITHOUT_CONTEXT_WARNING').format(report.cube.shortName, errorStr, self.index)
             filing.modelXbrl.debug("debug",
@@ -1562,6 +1565,13 @@ class Column(object):
                                     modelObject=factAxisMemberGroup.fact, 
                                     cube=report.cube.shortName, error=errorStr, column=self.index)
         self.startEndContext = startEndContext
+        if self.startEndContext is None:
+            errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(report.embedding.factThatContainsEmbeddedCommand)
+            #message = ErrorMgr.getError('COLUMN_WITHOUT_CONTEXT_WARNING').format(report.cube.shortName, errorStr, self.index)
+            filing.modelXbrl.debug("debug",
+                                   _('In "%(cube)s%(error)s, column %(column)s has no startEndContext.'),
+                                    modelObject=factAxisMemberGroup.fact, 
+                                    cube=report.cube.shortName, error=errorStr, column=self.index)
         self.unitTypeToFactSetDefaultDict = defaultdict(set)
         if report.embedding.columnPrimaryPosition != -1 and factAxisMemberGroup.preferredLabel is not None:
             self.preferredLabel = factAxisMemberGroup.preferredLabel.rpartition('/')[2]

@@ -38,11 +38,11 @@ note: The special substitution $local-name() strips a prefix, if any, from a QNa
 
 <!-- general comment, those messages not providing reference to source lines should consider {refSources} -->
 
-<message code="EFM.6.22.02"
+<message code="EFM.6.22.00"
          level="error"
          module="ModelDocument.py" line="50"
          args="url blockedIndicator referringUrl">
-[cp-2202-Prohibited-Href-Or-Schema-Location] File "{url}" referenced in {refUrl} is not supported. Please see http://www.sec.gov/info/edgar/edgartaxonomies.shtml for a listing of supported files.
+[cp-2200-Prohibited-Href-Or-Schema-Location] File "{url}" referenced in {refUrl} is not supported. Please see http://www.sec.gov/info/edgar/edgartaxonomies.shtml for a listing of supported files.
 </message>
 
 <message code="EFM.6.05.15"
@@ -2147,9 +2147,9 @@ Please ensure that you comply with the document type and naming provided.
 <message code="dq-{efmSection}-{nameOfTag}-{value}">In submission type {submissionType}, {nameOfTag} value {severityVerb} have {value} in the {context}. {refSources}</message>
 <message code="dq-{efmSection}-{nameOfTag}-Value">In submission type {submissionType}, {nameOfTag} value {severityVerb} have {value} in the {context}. {refSources}</message>
 <message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTag}">In submission type {submissionType}, {nameOfTag} value {severityVerb} have value &quot;{value}&quot; in the same context as {nameOfOtherTag}, {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTag}-Missing">In submission type {submissionType}, {nameOfTag} requires {nameOfOtherTag} the same context, {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-Value-{nameOfOtherTag}-Missing">In submission type {submissionType}, {nameOfTag} value &quot;{value}&quot; requires {nameOfOtherTag} the same context, {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTags}-Missing">In submission type {submissionType}, {nameOfTag} requires a non-empty value for at least one of  {nameOfOtherTags} the same context, {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTag}-Missing">In submission type {submissionType}, {nameOfTag} requires {nameOfOtherTag} in the same context, {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{nameOfTag}-Value-{nameOfOtherTag}-Missing">In submission type {submissionType}, {nameOfTag} value &quot;{value}&quot; requires {nameOfOtherTag} in the same context, {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTags}-Missing">In submission type {submissionType}, {nameOfTag} requires a non-empty value for at least one of {nameOfOtherTags} in the same context, {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTag}-Exclusive">In submission type {submissionType}, either {nameOfTag} or {nameOfOtherTag} {severityVerb} have a value, but not both. {refSources}</message>
 <message code="dq-{efmSection}-{nameOfTags}-Exclusive">In submission type {submissionType}, exactly one of {nameOfTags} {severityVerb} have value a value, but not both. {refSources}</message>
 <message code="dq-{efmSection}-{nameOfTags}-Exclusive-Value">In submission type {submissionType}, exactly one of {nameOfTags} {severityVerb} have value &quot;{value}&quot;. {refSources}</message>
