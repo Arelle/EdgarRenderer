@@ -20,7 +20,7 @@ from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
 
 def mainFun(controller, modelXbrl, outputFolderName):
     if "EdgarRenderer/Filing.py#mainFun" in modelXbrl.arelleUnitTests:
-        raise arelle.PythonUtil.pyNamedObject(modelXbrl.arelleUnitTests["EdgarRenderer/Filing.py#mainFun"])
+        raise arelle.PythonUtil.pyNamedObject(modelXbrl.arelleUnitTests["EdgarRenderer/Filing.py#mainFun"], "EdgarRenderer/Filing.py#mainFun")
     _funStartedAt = time.time()
     filing = Filing(controller, modelXbrl, outputFolderName)
     controller.logDebug("Filing initialized {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
@@ -338,14 +338,17 @@ class Filing(object):
                 # as another fact.  Also, keep the first fact with an 'en-US' language, or if there is none, keep the first fact.
                 # the others need to be proactively added to the set of unused facts.
                 if len(factSet) > 1:
-                    def factSortKey (thing):
-                        if thing.isNil: discriminator = float("INF") # Null values always last
-                        elif thing.isNumeric and thing.decimals is None: discriminator = 0 # Can happen with invalid xbrl
-                        elif thing.isNumeric:  discriminator = 0 - float(thing.decimals) # Larger decimal values come first
-                        elif thing.xmlLang == 'en-US': discriminator = 'aa-AA' # en-US comes first
-                        elif thing.xmlLang is None: discriminator = 'aa-AA' # no lang means en-US
-                        else: discriminator = thing.xmlLang # followed by all others
-                        return (thing.contextID,discriminator,thing.sourceline) # sourceLine is the tiebreaker              
+                    def factSortKey (fact):
+                        if fact.isNumeric:
+                            if fact.isNil: discriminator = float("INF") # Null values always last
+                            elif fact.decimals is None: discriminator = 0 # Can happen with invalid xbrl
+                            else:  discriminator = 0 - float(fact.decimals) # Larger decimal values come first
+                        else: # non-numeric
+                            if fact.isNil: discriminator = '\uffff' # Null values always last (highest 2-byte unicode character)
+                            elif fact.xmlLang == 'en-US': discriminator = 'aa-AA' # en-US comes first
+                            elif fact.xmlLang is None: discriminator = 'aa-AA' # no lang means en-US
+                            else: discriminator = fact.xmlLang # followed by all others
+                        return (fact.contextID,discriminator,fact.sourceline) # sourceLine is the tiebreaker              
                     sortedFactList = sorted(factSet, key = factSortKey)
                     while len(sortedFactList) > 0:
                         firstFact = sortedFactList.pop(0)

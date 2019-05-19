@@ -954,7 +954,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         self.logDebug("Write {} complete".format(_fileName))
 
                 if "EdgarRenderer/__init__.py#filingEnd" in filing.arelleUnitTests:
-                    raise arelle.PythonUtil.pyNamedObject(filing.arelleUnitTests["EdgarRenderer/__init__.py#filingEnd"])
+                    raise arelle.PythonUtil.pyNamedObject(filing.arelleUnitTests["EdgarRenderer/__init__.py#filingEnd"], "EdgarRenderer/__init__.py#filingEnd")
 
                 if self.isDaemon: # save file in Archives
                     try:
