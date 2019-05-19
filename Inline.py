@@ -101,16 +101,6 @@ def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocument
                        outputZip=None, filingFiles=None,
                        suffix=DEFAULT_DISTINGUISHING_SUFFIX, iext=DEFAULT_INSTANCE_EXT):
     sourceDir = os.path.dirname(modelXbrl.modelDocument.filepath)
-    def addLocallyReferencedFile(elt,filingFiles):
-        if elt.tag in ("a", "img"):
-            for attrTag, attrValue in elt.items():
-                if attrTag in ("href", "src") and not isHttpUrl(attrValue) and not os.path.isabs(attrValue):
-                    attrValue = attrValue.partition('#')[0] # remove anchor
-                    if attrValue: # ignore anchor references to base document
-                        attrValue = os.path.normpath(attrValue) # change url path separators to host separators
-                        file = os.path.join(sourceDir,attrValue)
-                        if modelXbrl.fileSource.isInArchive(file, checkExistence=True) or modelXbrl.fileSource.exists(file):
-                            filingFiles.add(file)
     targetUrlParts = targetDocumentFilename.rpartition(".")
     targetUrl = targetUrlParts[0] + suffix + targetUrlParts[2]
     modelXbrl.modelManager.showStatus(_("Extracting instance ") + os.path.basename(targetUrl))
