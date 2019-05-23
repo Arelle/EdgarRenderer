@@ -829,7 +829,7 @@ class Report(object):
                 self.generateAndAddUnitHeadings(rowOrCol, rowOrColStr)
             elif pseudoAxisName == 'period':
                 try:
-                    numMonths = rowOrCol.startEndContext.numMonth
+                    numMonths = rowOrCol.startEndContext.numMonths
                     if (numMonths > 0):
                         monthsEndedText = '{!s} Months Ended'.format(numMonths)
                     if self.embedding.columnPeriodPosition != -1:
@@ -1029,11 +1029,13 @@ class Report(object):
             SubElement(contextRefETree, 'ContextID').text = context.id
             SubElement(contextRefETree, 'EntitySchema').text = context.entityIdentifier[0]
             SubElement(contextRefETree, 'EntityValue').text = context.entityIdentifier[1]
-            startEndContext = self.filing.startEndContextDict[(context.startDatetime, context.endDatetime)]
-            SubElement(contextRefETree, 'PeriodType').text = startEndContext.periodTypeStr
-            if startEndContext.startTimePretty is not None:
-                SubElement(contextRefETree, 'PeriodStartDate').text = startEndContext.startTimePretty
-            SubElement(contextRefETree, 'PeriodEndDate').text = startEndContext.endTimePretty
+            
+            startEndContext = self.filing.startEndContextDict.get((context.startDatetime, context.endDatetime))
+            if startEndContext is not None:
+                SubElement(contextRefETree, 'PeriodType').text = startEndContext.periodTypeStr
+                if startEndContext.startTimePretty is not None:
+                    SubElement(contextRefETree, 'PeriodStartDate').text = startEndContext.startTimePretty
+                SubElement(contextRefETree, 'PeriodEndDate').text = startEndContext.endTimePretty
 
         realAxisList = [factAxisMember for factAxisMember in factAxisMemberList if factAxisMember.pseudoAxisName not in {'primary', 'period', 'unit'}]
         if len(realAxisList) > 0:
@@ -1653,7 +1655,11 @@ class Cell(object):
                  (fact.concept.isMonetary or Utils.isFactTypeEqualToOrDerivedFrom(fact, Utils.isPerShareItemTypeQname))):
 
             # we do this weird call here because we know the type is either perShareDerivedType or monetaryDerivedType.  either way, we know numerator is monetary.
-            self.currencyCode = fact.unit.measures[0][0].localName
+            numeratorMeasures = fact.unit.measures[0]
+            if numeratorMeasures: # unit may be improperly formed
+                self.currencyCode = numeratorMeasures[0].localName
+            else:
+                self.currencyCode = "" # unit may be improperly formed
             self.unitID = fact.unitID
             currencySymbol = fact.unitSymbol() or self.currencyCode
             if Utils.isFactTypeEqualToOrDerivedFrom(fact, Utils.isPerShareItemTypeQname):

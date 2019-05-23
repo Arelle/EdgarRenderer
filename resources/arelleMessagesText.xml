@@ -2140,30 +2140,33 @@ Please ensure that you comply with the document type and naming provided.
 [rq-2609-Primary-Axis-On-Rows] In ''{linkroleName}'' the embedded report created by the fact {fact} with context {contextID} contains an iterator "column primary" even though the definition text of {linkroleDefinition} contains the "{{Elements}" qualifier. The primary axis will remain on the rows.
 </message>
 
-<!--  Templated messages -->
-<message code="dq-{efmSection}-{nameOfTag}-Missing">Submission type {submissionType} {severityVerb} have a non-empty value for {nameOfTag} in {context} {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTags}-Missing">Submission type {submissionType} {severityVerb} have a non-empty value for at least one of {nameOfTags} in {context} {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-Unexpected">Submission type {submissionType} {severityVerb} not have a value for {nameOfTag} in the {context}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-{value}">In submission type {submissionType}, {nameOfTag} value {severityVerb} have {value} in the {context}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-Value">In submission type {submissionType}, {nameOfTag} value {severityVerb} have {value} in the {context}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTag}">In submission type {submissionType}, {nameOfTag} value {severityVerb} have value &quot;{value}&quot; in the same context as {nameOfOtherTag}, {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTag}-Missing">In submission type {submissionType}, {nameOfTag} requires {nameOfOtherTag} in the same context, {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-Value-{nameOfOtherTag}-Missing">In submission type {submissionType}, {nameOfTag} value &quot;{value}&quot; requires {nameOfOtherTag} in the same context, {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTags}-Missing">In submission type {submissionType}, {nameOfTag} requires a non-empty value for at least one of {nameOfOtherTags} in the same context, {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTag}-Exclusive">In submission type {submissionType}, either {nameOfTag} or {nameOfOtherTag} {severityVerb} have a value, but not both. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTags}-Exclusive">In submission type {submissionType}, exactly one of {nameOfTags} {severityVerb} have value a value, but not both. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTags}-Exclusive-Value">In submission type {submissionType}, exactly one of {nameOfTags} {severityVerb} have value &quot;{value}&quot;. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTags}-Inclusive">In submission type {submissionType}, at least one of {nameOfTags} {severityVerb} have a value. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTags}-Both">In submission type {submissionType}, both or neither of {nameOfTags} {severityVerb} have a value. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTag}-Dependency">In submission type {submissionType}, {nameOfTag} {severityVerb} have a value if and only if {nameOfOtherTag} has a value in context {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTag}-Dependent-Value">In submission type {submissionType}, {nameOfTag} {severityVerb} be provided if and only if {nameOfOtherTag} has value &quot;{value}&quot; in context {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-{nameOfOtherTag}-Inclusive">In submission type {submissionType}, Either {nameOfTag} or {nameOfOtherTag} should have a value, or both. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTags}-{nameOfOtherTag}-Exclusive-Dependency">In submission type {submissionType}, one of {nameOfTags} {severityVerb} have a value if and only if {nameOfOtherTag} has a value in context {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{nameOfTag}-Security-Axes">In submission type {submissionType}, {nameOfTag} {severityVerb} have values without axes if a single non-ADR member, otherwise in separate contexts by axis member, but not both, in contexts {contextIDs}. {refSources}</message>
-<message code="dq-{efmSection}-20F-ReportType">In submission type {submissionType}, exactly one of Annual, Transition, or Shell Company Report {severityVerb} have value &quot;true&quot; in the Required Context and the others must have &quot;false&quot;. {refSources}</message>
-<message code="dq-0514-Hidden-Cover-Page-Fact-Not-Referenced">Submission type {submissionType} has {n} cover page fact(s) in ix:hidden that were not referenced by any -sec-ix-hidden style property: (namesOfTags) {refSources}</message>
-<message code="dq-0540-{nameOfTag}-Value">In submission type {submissionType}, {nameOfTag} value &quot;{value}&quot;, is not equivalent to header element {nameOfEloElement} value &quot;{valueOfEloElement}&quot; in the {context}.  {refSources}</message>
-<message code="dq-0540-{nameOfEloElement}-Unexpected">In submission type {submissionType}, header element {nameOfEloElement} value &quot;{valueOfEloElement}&quot; is not expected.  {refSources}</message>
+<!--  Templated messages 
+Example:
+    <message code="dq-{efmSection}-{nameOfTag}-Blah-Blah">Submission type {submissionType} {severityVerb} blah blah blah in {context}. {refSources}</message>
+--> 
+<message code="dq-{efmSection}-{tag}-Missing">Submission type {subType} {severityVerb} have a non-empty value for {tag} in {context}. {refSources}</message>
+<message code="dq-{efmSection}-{tags}-Missing">Submission type {subType} {severityVerb} have a non-empty value for at least one of {tags} in {context}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-Unexpected">Submission type {subType} {severityVerb} not have a value for {tag} in the {context}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{value}">In submission type {subType}, {tag} value {severityVerb} have {value} in the {context}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-Value">In submission type {subType}, {tag} value {severityVerb} have {value} in the {context}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTag}">In submission type {subType}, {tag} value {severityVerb} have value &quot;{value}&quot; in the same context as {otherTag}, {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTag}-Missing">In submission type {subType}, {tag} requires {otherTag} in the same context, {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-Value-{otherTag}-Missing">In submission type {subType}, {tag} value &quot;{value}&quot; requires {otherTag} in the same context, {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTags}-Missing">In submission type {subType}, {tag} requires a non-empty value for at least one of {otherTags} in the same context, {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTag}-Exclusive">In submission type {subType}, either {tag} or {otherTag} {severityVerb} have a value, but not both, in context, {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tags}-Exclusive">In submission type {subType}, only one of {tags} {severityVerb} have a value, but not both, in context, {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tags}-Exclusive-Value">In submission type {subType}, exactly one of {tags} {severityVerb} have value &quot;{value}&quot;. {refSources}</message>
+<message code="dq-{efmSection}-{tags}-Inclusive">In submission type {subType}, at least one of {tags} {severityVerb} have a value. {refSources}</message>
+<message code="dq-{efmSection}-{tags}-Both">In submission type {subType}, both or neither of {tags} {severityVerb} have a value. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTag}-Dependency">In submission type {subType}, {tag} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTag}-Dependent-Value">In submission type {subType}, {tag} {severityVerb} be provided if and only if {otherTag} has value &quot;{value}&quot; in context {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTag}-Inclusive">In submission type {subType}, either {tag} or {otherTag} should have a value, or both. {refSources}</message>
+<message code="dq-{efmSection}-{tags}-{otherTag}-Exclusive-Dependency">In submission type {subType}, one of {tags} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tags}-{otherTags}-Exclusive-Dependency">In submission type {subType}, one of {tags} {severityVerb} have a value if and only if one of {otherTags} has a value in context {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-Security-Axes">In submission type {subType}, {tag} {severityVerb} have values without axes if a single non-ADR member, otherwise in separate contexts by axis member, but not both, in contexts {contextIDs}. {refSources}</message>
+<message code="dq-0514-Hidden-Cover-Page-Fact-Not-Referenced">Submission type {subType} has {n} cover page fact(s) in ix:hidden that were not referenced by any -sec-ix-hidden style property: (namesOfTags). {refSources}</message>
+<message code="dq-0540-{tag}-Value">In submission type {subType}, {tag} value &quot;{value}&quot;, is not equivalent to header element {headerTag} value &quot;{valueOfHeaderTag}&quot; in the {context}. {refSources}</message>
+<message code="dq-0540-{headerTag}-Unexpected">In submission type {subType}, header element {headerTag} value &quot;{valueOfHeaderTag}&quot; is not expected." {refSources}</message>
 
 <!-- these need attention
 <message code="EFM.N/A"

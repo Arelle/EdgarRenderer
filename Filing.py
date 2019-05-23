@@ -401,7 +401,7 @@ class Filing(object):
                                                     "Element will be ignored."),
                                                    modelObject=fact, fact=qname)
                         break
-                    elif fact.context is None:
+                    elif fact.context is None or (not fact.context.isForeverPeriod and fact.context.endDatetime is None):
                         continue # don't break, still might be good facts. we print the error if a context is broken later 
 
                     self.elementDict[qname] = Element(fact.concept)
