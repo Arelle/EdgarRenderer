@@ -360,7 +360,7 @@ class InstanceSummary(object):
         # do not hang on to filing or modelXbrl, just collect the statistics.        
         self.dts = defaultdict(lambda: defaultdict(list)) # self.dts['instance']['local'] returns a list
         self.hasRR = False
-        for uri,doc in sorted(modelXbrl.urlDocs.items()):
+        for uri,doc in sorted(modelXbrl.urlDocs.items(), key=lambda i: i[1].objectIndex):
             if doc.type == arelle.ModelDocument.Type.INLINEXBRLDOCUMENTSET:
                 continue # ignore ixds manifest
             isLocal = uri.startswith(filing.controller.processingFolder)
