@@ -2155,7 +2155,7 @@ Example:
 <message code="dq-{efmSection}-{tag}-{otherTags}-Missing">In submission type {subType}, {tag} requires a non-empty value for at least one of {otherTags} in the same context, {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Exclusive">In submission type {subType}, either {tag} or {otherTag} {severityVerb} have a value, but not both, in context, {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-Exclusive">In submission type {subType}, only one of {tags} {severityVerb} have a value, but not both, in context, {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{tags}-Exclusive-Value">In submission type {subType}, exactly one of {tags} {severityVerb} have value &quot;{value}&quot;. {refSources}</message>
+<message code="dq-{efmSection}-{tags}-Exclusive-Value">In submission type {subType}, exactly one of {tags} {severityVerb} have the value &quot;{value}&quot; and the others {severityVerb} have the value &quot;{otherValue}&quot;.</message>
 <message code="dq-{efmSection}-{tags}-Inclusive">In submission type {subType}, at least one of {tags} {severityVerb} have a value. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-Both">In submission type {subType}, both or neither of {tags} {severityVerb} have a value. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Dependency">In submission type {subType}, {tag} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
