@@ -1131,6 +1131,7 @@ class Report(object):
 
     def writeHtmlAndOrXmlFiles(self, reportSummary):
         baseNameBeforeExtension = self.filing.fileNamePrefix + str(self.cube.fileNumber)
+        reportSummary.baseNameBeforeExtension = baseNameBeforeExtension
         tree = self.rootETree.getroottree()
         if self.filing.reportXmlFormat: self.writeXmlFile(baseNameBeforeExtension, tree, reportSummary)
         if self.filing.reportHtmlFormat: self.writeHtmlFile(baseNameBeforeExtension, tree, reportSummary)

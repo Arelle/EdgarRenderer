@@ -259,8 +259,7 @@ class Summary(object):
                         reportDict['S' + str(i+1)] = anchor
                 if True: # change this line to "else:" to not clutter rr inline outputs.
                     for i,r in enumerate(s.reportSummaryList):
-                        f = r.htmlFileName if r.htmlFileName is not None else r.xmlFileName
-                        report = reportDict[f[:-4]] = {}
+                        report = reportDict[r.baseNameBeforeExtension] = {}
                         report['role']=r.role
                         report['longName'] = r.longName
                         report['shortName'] = r.shortName

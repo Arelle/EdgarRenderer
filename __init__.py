@@ -193,7 +193,7 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
                       help=_("Type of HTML report...Complete: asPage rendering = True, or Fragment: asPage rendering = False."))
 
     parser.add_option("--reportFormat", dest="reportFormat",
-                      help=_("One of Xml, Html, or HtmlAndXml."))
+                      help=_("One of Xml, Html, HtmlAndXml or None."))
 
     parser.add_option("--failFile", dest="failFile", help=_("Relative path and name of fail file. "))
 
@@ -346,7 +346,7 @@ class EdgarRenderer(Cntlr.Cntlr):
 
         # options applicable to rendering in either mode: 
         options.renderingService = setProp('renderingService', options.renderingService, rangeList=['Instance','Daemon'])
-        options.reportFormat = setProp('reportFormat', options.reportFormat, rangeList=['Html', 'Xml', 'HtmlAndXml'])
+        options.reportFormat = setProp('reportFormat', options.reportFormat, rangeList=['Html', 'Xml', 'HtmlAndXml', 'None'])
         options.htmlReportFormat = setProp('htmlReportFormat', options.htmlReportFormat, rangeList=['Complete','Fragment'])
         options.zipOutputFile = setProp('zipOutputFile', options.zipOutputFile,cs=True)
         options.sourceList = " ".join(setProp('sourceList', options.sourceList,cs=True).split()).split(',')
@@ -688,7 +688,9 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.createdFolders.extend(options.daemonCreatedFolders)
             del options.daemonCreatedFolders # don't pass to any subsequent independent filing if any
         mdlMgr = cntlr.modelManager
-        self.validatedForEFM = not cntlr.hasGui and mdlMgr.validateDisclosureSystem and getattr(mdlMgr.disclosureSystem, "EFMplugin", False)
+        self.validatedForEFM = ("esma" in mdlMgr.disclosureSystem.names or # prevent EFM validation messages for "esma" validations
+                                (not cntlr.hasGui and mdlMgr.validateDisclosureSystem and getattr(mdlMgr.disclosureSystem, "EFMplugin", False))
+                                )
         self.instanceSummaryList = []
         self.instanceList = []
         self.inlineList = []
@@ -1198,11 +1200,13 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
         from arelle.ValidateFilingText import referencedFiles
         parameters = modelXbrl.modelManager.formulaOptions.parameterValues
         _combinedReports = not cntlr.showTablesMenu.get() # use mustard menu
+        isNonEFMorGFMinline = (not getattr(cntlr.modelManager.disclosureSystem, "EFMplugin", False) and
+                               modelXbrl.modelDocument.type in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INLINEXBRLDOCUMENTSET))
         # may use GUI mode to process a single instance or test suite
         options = PythonUtil.attrdict(# simulate options that CntlrCmdLine provides
             configFile = os.path.join(os.path.dirname(__file__), 'conf', 'config_for_instance.xml'),
             renderingService = 'Instance',
-            reportFormat = 'Html', # for Rall temporarily override report format to force only xml file output
+            reportFormat = "None" if isNonEFMorGFMinline else "Html", # for Rall temporarily override report format to force only xml file output
             htmlReportFormat = None,
             zipOutputFile = None,
             sourceList = None, # after initialization this is an iterable string, not a None
@@ -1291,6 +1295,9 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
                     report.documentType = f.xValue # find document type for mustard menu
                     break
         def guiWriteFile(filepath, data):
+            outdir = os.path.dirname(filepath)
+            if not os.path.exists(outdir): # may be a subdirectory of out dir
+                os.makedirs(outdir)
             with io.open(filepath, "wb" if isinstance(data, bytes) else "wt") as fh:
                 fh.write(data)
         def guiReadFile(filepath, binary):
@@ -1360,8 +1367,16 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
                 from . import LocalViewer
                 _localhost = LocalViewer.init(cntlr, reportsFolder)
                 import webbrowser
-                webbrowser.open(url="{}/{}".format(_localhost,
-                                                   ("FilingSummary.htm", "Rall.htm")[_combinedReports]))
+                openingUrl = None
+                if isNonEFMorGFMinline: # for non-EFM/GFM open ix viewer directly
+                    filingSummaryTree = etree.parse(os.path.join(edgarRenderer.reportsFolder, "FilingSummary.xml"))
+                    for reportElt in filingSummaryTree.iter(tag="Report"):
+                        if reportElt.get("instance"):
+                            openingUrl = "ix.html?doc={}&xbrl=true".format(reportElt.get("instance"))
+                            break
+                if not openingUrl: # open SEC Mustard Menu
+                    openingUrl = ("FilingSummary.htm", "Rall.htm")[_combinedReports]
+                webbrowser.open(url="{}/{}".format(_localhost, openingUrl))
 
 def testcaseVariationExpectedSeverity(modelTestcaseVariation, *args, **kwargs):
     # allow severity to appear on any variation sub-element (such as result)

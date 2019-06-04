@@ -446,7 +446,7 @@
             <xsl:value-of select="(/FilingSummary/InputFiles/File[.=$instance]/@original)"/>
           </xsl:variable>
           <xsl:variable name="instance_is_inline">
-            <xsl:value-of select="translate(substring($instance,string-length($instance)-3),'HTM','htm') = '.htm'"/>
+            <xsl:value-of select="translate(substring($instance,string-length($instance)-3),'HTM','htm') = '.htm' or substring($instance,string-length($instance)-5) = '.xhtml'"/>
           </xsl:variable>
           <xsl:if test="$original != ''">
             <li class="accordion ">
@@ -509,7 +509,7 @@
             <xsl:value-of select="(/FilingSummary/InputFiles/File[.=$instance]/@original)"/>
           </xsl:variable>
           <xsl:variable name="instance_is_inline">
-            <xsl:value-of select="translate(substring($instance,string-length($instance)-3),'HTM','htm') = '.htm'"/>
+            <xsl:value-of select="translate(substring($instance,string-length($instance)-3),'HTM','htm') = '.htm' or substring($instance,string-length($instance)-5) = '.xhtml'"/>
           </xsl:variable>
           <xsl:if test="$original != ''">
               <li class="accordion octave">
