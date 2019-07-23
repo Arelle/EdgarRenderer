@@ -852,6 +852,12 @@ class EdgarRenderer(Cntlr.Cntlr):
                         if sourceZipStream is not None:
                             file = FileSource.openFileSource(_filepath, cntlr, sourceZipStream).file(_filepath, binary=True)[0]
                         else:
+                            if filesource.isArchive and filesource.baseurl == _xbrldir:
+                                # filename may not include parent directories within the zip
+                                for f in filesource.dir:
+                                    if f.endswith(filename): # use this dir in the zip
+                                        _filepath = os.path.join(_xbrldir, f)
+                                        break
                             file = filesource.file(_filepath, binary=True)[0]  # returned in a tuple
                         if self.reportZip:
                             if filename not in self.reportZip.namelist():
@@ -938,7 +944,10 @@ class EdgarRenderer(Cntlr.Cntlr):
                                 _xbrldir = os.path.dirname(filepath)
                                 for reportedFile in sorted(report.reportedFiles):
                                     if reportedFile not in xbrlZip.namelist():
-                                        _filepath = os.path.join(_xbrldir, reportedFile)
+                                        if filesource.isArchive and reportedFile in filesource.dir:
+                                            _filepath = os.path.join(filesource.baseurl, reportedFile)
+                                        else:
+                                            _filepath = os.path.join(_xbrldir, reportedFile)
                                         if sourceZipStream is not None:
                                             file = FileSource.openFileSource(_filepath, cntlr, sourceZipStream).file(_filepath, binary=True)[0]
                                         else:
