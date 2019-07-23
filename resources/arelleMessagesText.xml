@@ -1724,6 +1724,7 @@ Axis {dimension} in DRS role {linkrole}, missing targetrole consecutive relation
 [cp-0540-SRT-Members-For-SRT-Axes]  Taxonomy axes from the SRT taxonomy should use SRT or extension members for the following IFRS member concepts: {ifrsSrtConceptsUsed}.
 </message>
 
+<!-- Note: EFM 6.23 is not currently in effect.  WcH comments nested in here have been stripped of xml comment markup.
 <message code="EFM.6.23.01"
          level="error"
          module="ValidateFiling.py" line="104"
@@ -1741,7 +1742,8 @@ EX-2.01.PRE - XBRL Taxonomy Extension Presentation Linkbase document *.xml
 Please ensure that you comply with the document type and naming provided.
 </message>
 
-<!--WcH 6.23.01.noLinkElement would be caught by EDGARLink but is useful for offline validation -->
+Note: WcH comments are not xml commented to allow whole section to be commented out
+WcH 6.23.01.noLinkElement would be caught by EDGARLink but is useful for offline validation
 <message code="EFM.6.23.01.noLinkElement"
          level="error"
          module="ValidateFilingDTS.py" line="610"
@@ -1749,7 +1751,7 @@ Please ensure that you comply with the document type and naming provided.
 [rxd-2301-EX-2.01-Valid-File-Extension] Invalid linkbase file name: {filename}, has no extended link element, cannot determine link type.
 </message>
 
-<!-- NOTE THAT EFM.6.23.02 can only be detected in Edgar, as Arelle will only load a single INS -->
+NOTE THAT EFM.6.23.02 can only be detected in Edgar, as Arelle will only load a single INS
 
 <message code="EFM.6.23.03"
          level="error"
@@ -2042,6 +2044,7 @@ Please ensure that you comply with the document type and naming provided.
          args="context value">
 [rxd-2344- Country-Value] The value of rxd:Co in context {context}, {value}, is not in the domain of rxd:CountryAxis. Change the value of rxd:Co or add it {value} to the Country Axis.
 </message>
+-->
 
 <message code="EFM.6.26.01"
          level="warning"
@@ -2159,10 +2162,11 @@ Example:
 <message code="dq-{efmSection}-{tags}-Inclusive">In submission type {subType}, at least one of {tags} {severityVerb} have a value. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-Both">In submission type {subType}, both or neither of {tags} {severityVerb} have a value. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Dependency">In submission type {subType}, {tag} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTags}-Dependency">In submission type {subType}, {tag} {severityVerb} have a value if one of {otherTags} has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Dependent-Value">In submission type {subType}, {tag} {severityVerb} be provided if and only if {otherTag} has value &quot;{value}&quot; in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Inclusive">In submission type {subType}, either {tag} or {otherTag} should have a value, or both. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-{otherTag}-Exclusive-Dependency">In submission type {subType}, one of {tags} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{tags}-{otherTags}-Exclusive-Dependency">In submission type {subType}, one of {tags} {severityVerb} have a value if and only if one of {otherTags} has a value in context {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tags}-{otherTags}-Exclusive-Dependency">In submission type {subType}, one of {tags} {severityVerb} have a value if one of {otherTags} has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-Security-Axes">In submission type {subType}, {tag} {severityVerb} have values without axes if a single non-ADR member, otherwise in separate contexts by axis member, but not both, in contexts {contextIDs}. {refSources}</message>
 <message code="dq-0514-Hidden-Cover-Page-Fact-Not-Referenced">Submission type {subType} has {n} cover page fact(s) in ix:hidden that were not referenced by any -sec-ix-hidden style property: (namesOfTags). {refSources}</message>
 <message code="dq-0540-{tag}-Value">In submission type {subType}, {tag} value &quot;{value}&quot;, is not equivalent to header element {headerTag} value &quot;{valueOfHeaderTag}&quot; in the {context}. {refSources}</message>
