@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+
+<xs:schema targetNamespace="http://muestra/20171231"
+xmlns:dei="http://xbrl.sec.gov/dei/2014-01-31"
+xmlns:link="http://www.xbrl.org/2003/linkbase"
+xmlns:nonnum="http://www.xbrl.org/dtr/type/non-numeric"
+xmlns:num="http://www.xbrl.org/dtr/type/numeric"
+xmlns:xbrldt="http://xbrl.org/2005/xbrldt"
+xmlns:xbrli="http://www.xbrl.org/2003/instance"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" elementFormDefault="qualified"
+xmlns:currency="http://xbrl.sec.gov/currency/2017-01-31"
+xmlns:ifrs-full="http://xbrl.ifrs.org/taxonomy/2017-03-09/ifrs-full"
+xmlns:muestra="http://muestra/20171231"
+xmlns:ref="http://www.xbrl.org/2006/ref"
+xmlns:srt="http://muestra.elts.srt/20180131"
+xmlns:srt-types="http://muestra.types.srt/20180131"
+xmlns:us-types="http://muestra.types.us/20180131">
+<xs:annotation>
+<xs:appinfo>
+<link:linkbaseRef xlink:href="muestra-20171231_pre.xml" xlink:type="simple" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase" xlink:role="http://www.xbrl.org/2003/role/presentationLinkbaseRef" />
+<link:linkbaseRef xlink:href="muestra-20171231_cal.xml" xlink:type="simple" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase" xlink:role="http://www.xbrl.org/2003/role/calculationLinkbaseRef" />
+<link:linkbaseRef xlink:href="muestra-20171231_def.xml" xlink:type="simple" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase" xlink:role="http://www.xbrl.org/2003/role/definitionLinkbaseRef" />
+<link:linkbaseRef xlink:href="muestra-20171231_lab.xml" xlink:type="simple" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase" xlink:role="http://www.xbrl.org/2003/role/labelLinkbaseRef" />
+<link:roleType id="EntityInformation" roleURI="http://muestra/role/EntityInformation">
+<link:definition>110000 - Document - Entity Information</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="ConsolidatedStatementOfFinancialPosition" roleURI="http://muestra/role/ConsolidatedStatementOfFinancialPosition">
+<link:definition>210000 - Statement - Consolidated Statement of Financial Position</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="ConsolidatedStatementOfIncomeByFunction" roleURI="http://muestra/role/ConsolidatedStatementOfIncomeByFunction">
+<link:definition>310000 - Statement - Consolidated Statement of Income, by Function</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="ConsolidatedStatementOfComprehensiveIncome" roleURI="http://muestra/role/ConsolidatedStatementOfComprehensiveIncome">
+<link:definition>420000 - Statement - Consolidated Statement of Comprehensive Income</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="ConsolidatedStatementOfCashFlowsDirectMethod" roleURI="http://muestra/role/ConsolidatedStatementOfCashFlowsDirectMethod">
+<link:definition>710000 - Statement - Consolidated Statement of Cash Flows, Direct Method</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="ConsolidatedStatementOfChangesInEquity" roleURI="http://muestra/role/ConsolidatedStatementOfChangesInEquity">
+<link:definition>610000 - Statement - Consolidated Statement of Changes in Equity</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="GeneralInformation" roleURI="http://muestra/role/GeneralInformation">
+<link:definition>811001 - Disclosure - Note 1, General Information</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="DimensionDefaults" roleURI="http://muestra/role/DimensionDefaults">
+<link:definition>999999 - Document - Dimension Defaults</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="ControllingNonControllingCalcluation" roleURI="http://muestra/role/ControllingNonControllingCalculation">
+<link:definition>900000 - Document - Controlling / Non-controlling Interest</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="GeneralInformationNarrativeDetails" roleURI="http://muestra/role/GeneralInformationNarrativeDetails">
+<link:definition>814001 - Disclosure - Note 1, General Information - Narrative (Details)</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="CashAndCashEquivalents" roleURI="http://muestra/role/CashAndCashEquivalents">
+<link:definition>811006 - Disclosure - Note 3, Cash and Cash Equivalents</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="CashAndCashEquivalentsTable" roleURI="http://muestra/role/CashAndCashEquivalentsTable">
+<link:definition>813006 - Disclosure - Note 3, Cash and Cash Equivalents (Table)</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="SummaryOfSignificantAccountingPolicies" roleURI="http://muestra/role/SummaryOfSignificantAccountingPolicies">
+<link:definition>811002 - Disclosure - Note 2, Summary of Significant Accounting Policies</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="SummaryOfSignificantAccountingPoliciesPolicies" roleURI="http://muestra/role/SummaryOfSignificantAccountingPoliciesPolicies">
+<link:definition>812002 - Disclosure - Note 2, Summary of Significant Accounting Policies (Policies)</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="CashAndCashEquivalentsDetails" roleURI="http://muestra/role/CashAndCashEquivalentsDetails">
+<link:definition>814006 - Disclosure - Note 3, Cash and Cash Equivalents (Details)</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="ConsolidationScheduleDetails" roleURI="http://muestra/role/ConsolidationScheduleDetails">
+<link:definition>814038 - Disclosure - Note 4, Consolidation Schedule (Details)</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="ConsolidationScheduleTable" roleURI="http://muestra/role/ConsolidationScheduleTable">
+<link:definition>813038 - Disclosure - Note 4, Consolidation Schedule (Table)</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="ConsolidationSchedule" roleURI="http://muestra/role/ConsolidationSchedule">
+<link:definition>811038 - Disclosure - Note 4, Consolidation Schedule</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+<link:roleType id="CashAndCashEquivalentsByCurrencyDetails" roleURI="http://muestra/role/CashAndCashEquivalentsByCurrencyDetails">
+<link:definition>814006 - Disclosure - Note 3, Cash and Cash Equivalents by Currency (Details)</link:definition>
+<link:usedOn>link:presentationLink</link:usedOn>
+<link:usedOn>link:calculationLink</link:usedOn>
+<link:usedOn>link:definitionLink</link:usedOn>
+</link:roleType>
+</xs:appinfo>
+</xs:annotation>
+<xs:import schemaLocation="http://www.xbrl.org/2003/xbrl-instance-2003-12-31.xsd" namespace="http://www.xbrl.org/2003/instance" />
+<xs:import schemaLocation="http://xbrl.sec.gov/dei/2014/dei-2014-01-31.xsd" namespace="http://xbrl.sec.gov/dei/2014-01-31" />
+<xs:import schemaLocation="http://xbrl.sec.gov/invest/2013/invest-2013-01-31.xsd" namespace="http://xbrl.sec.gov/invest/2013-01-31" />
+<xs:import schemaLocation="http://www.xbrl.org/dtr/type/nonNumeric-2009-12-16.xsd" namespace="http://www.xbrl.org/dtr/type/non-numeric" />
+<xs:import schemaLocation="http://www.xbrl.org/2005/xbrldt-2005.xsd" namespace="http://xbrl.org/2005/xbrldt" />
+<xs:import schemaLocation="http://www.xbrl.org/dtr/type/numeric-2009-12-16.xsd" namespace="http://www.xbrl.org/dtr/type/numeric" />
+<xs:import schemaLocation="http://xbrl.ifrs.org/taxonomy/2017-03-09/full_ifrs/full_ifrs-cor_2017-03-09.xsd" namespace="http://xbrl.ifrs.org/taxonomy/2017-03-09/ifrs-full" />
+<xs:import schemaLocation="http://www.xbrl.org/lrr/role/negated-2009-12-16.xsd" namespace="http://www.xbrl.org/2009/role/negated" />
+<xs:import schemaLocation="http://xbrl.sec.gov/currency/2017/currency-2017-01-31.xsd" namespace="http://xbrl.sec.gov/currency/2017-01-31" />
+<xs:import schemaLocation="muestra_srt-20180131.xsd" namespace="http://muestra.elts.srt/20180131" />
+<xs:element name="GeneralInformationAbstract" id="muestra_GeneralInformationAbstract" type="xbrli:stringItemType" xbrli:periodType="duration" abstract="true" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="MajorityShareholderOwnershipPercentage" id="muestra_MajorityShareholderOwnershipPercentage" type="num:percentItemType" xbrli:periodType="instant" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="TransactionsWithShareholdersAbstract" id="muestra_TransactionsWithShareholdersAbstract" type="xbrli:stringItemType" xbrli:periodType="duration" abstract="true" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="SummaryOfSignificantAccountingPoliciesAbstract" id="muestra_SummaryOfSignificantAccountingPoliciesAbstract" type="xbrli:stringItemType" xbrli:periodType="duration" abstract="true" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="OtherCurrenciesMember" id="muestra_OtherCurrenciesMember" type="nonnum:domainItemType" xbrli:periodType="duration" abstract="true" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="DisclosureOfCashAndCashEquivalentsTableTextBlock" id="muestra_DisclosureOfCashAndCashEquivalentsTableTextBlock" type="nonnum:textBlockItemType" xbrli:periodType="duration" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="DisclosureOfCashAndCashEquivalentsByCurrencyTableTextBlock" id="muestra_DisclosureOfCashAndCashEquivalentsByCurrencyTableTextBlock" type="nonnum:textBlockItemType" xbrli:periodType="duration" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="OvernightBankBalances" id="muestra_OvernightBankBalances" type="xbrli:monetaryItemType" xbrli:periodType="instant" nillable="true" substitutionGroup="xbrli:item" xbrli:balance="debit" />
+<xs:element name="CondensedFinancialStatementsAbstract" id="muestra_CondensedFinancialStatementsAbstract" type="xbrli:stringItemType" xbrli:periodType="duration" abstract="true" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="CondensedBalanceSheetTableTextBlock" id="muestra_CondensedBalanceSheetTableTextBlock" type="nonnum:textBlockItemType" xbrli:periodType="duration" nillable="true" substitutionGroup="xbrli:item" />
+</xs:schema>

@@ -776,7 +776,7 @@ class InstanceSummary(object):
         Tables = 'Tables'
         Details = 'Details'
         Uncategorized = 'Uncategorized'
-        if currentState == '':
+        if currentState == '' or currentState == Uncategorized:
             if isUncategorized(longName):
                 return Uncategorized
             elif isParenthetical(longName):

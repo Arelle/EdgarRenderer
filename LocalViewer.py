@@ -28,8 +28,6 @@ def init(cntlr, reportsFolder): # returns browser root
         def getlocalfile(file=None, relpath=None):
             cntlr.addToLog("http://localhost:{}/{}".format(port,file), messageCode="localViewer:get",level=logging.DEBUG)
             # print ("GET file={}".format(file))
-            if not file and relpath:
-                print("relpath=" + relpath)
             if file == 'favicon.ico':
                 return static_file("arelle.ico", root=cntlr.imagesDir, mimetype='image/vnd.microsoft.icon')
             _report, _sep, _file = file.partition("/")

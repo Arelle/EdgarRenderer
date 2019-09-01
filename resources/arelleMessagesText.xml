@@ -2158,19 +2158,24 @@ Example:
 <message code="dq-{efmSection}-{tag}-{otherTags}-Missing">In submission type {subType}, {tag} requires a non-empty value for at least one of {otherTags} in the same context, {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Exclusive">In submission type {subType}, either {tag} or {otherTag} {severityVerb} have a value, but not both, in context, {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-Exclusive">In submission type {subType}, only one of {tags} {severityVerb} have a value, but not both, in context, {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{tags}-Exclusive-Value">In submission type {subType}, exactly one of {tags} {severityVerb} have the value &quot;{value}&quot; and the others {severityVerb} have the value &quot;{otherValue}&quot;.</message>
+<message code="dq-{efmSection}-{tags}-Exclusive-Values">In submission type {subType}, exactly one of {tags} {severityVerb} have the value &quot;{value}&quot; and the others {severityVerb} have the value &quot;{otherValue}&quot;.</message>
+<message code="dq-{efmSection}-{tags}-Exclusive-Value">In submission type {subType}, only one of {tags} {severityVerb} have a value {value}.</message>
 <message code="dq-{efmSection}-{tags}-Inclusive">In submission type {subType}, at least one of {tags} {severityVerb} have a value. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-Both">In submission type {subType}, both or neither of {tags} {severityVerb} have a value. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Dependency">In submission type {subType}, {tag} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTags}-Dependency">In submission type {subType}, {tag} {severityVerb} have a value if one of {otherTags} has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Dependent-Value">In submission type {subType}, {tag} {severityVerb} be provided if and only if {otherTag} has value &quot;{value}&quot; in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Inclusive">In submission type {subType}, either {tag} or {otherTag} should have a value, or both. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTag}-Exclusive-Dependency">In submission type {subType}, {tag} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-{otherTag}-Exclusive-Dependency">In submission type {subType}, one of {tags} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-{otherTags}-Exclusive-Dependency">In submission type {subType}, one of {tags} {severityVerb} have a value if one of {otherTags} has a value in context {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{headerTag}-Dependency">In submission type {subType}, {tag} {severityVerb} have a value if and only if header element {headerTag} is provided." {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{headerTag}-Dependent-Value">In submission type {subType}, when {tag} has a value &quot;{value}&quot;, header element {headerTag} {severityVerb} have a value &quot;{otherValue}&quot;. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-Security-Axes">In submission type {subType}, {tag} {severityVerb} have values without axes if a single non-ADR member, otherwise in separate contexts by axis member, but not both, in contexts {contextIDs}. {refSources}</message>
 <message code="dq-0514-Hidden-Cover-Page-Fact-Not-Referenced">Submission type {subType} has {n} cover page fact(s) in ix:hidden that were not referenced by any -sec-ix-hidden style property: (namesOfTags). {refSources}</message>
 <message code="dq-0540-{tag}-Value">In submission type {subType}, {tag} value &quot;{value}&quot;, is not equivalent to header element {headerTag} value &quot;{valueOfHeaderTag}&quot; in the {context}. {refSources}</message>
-<message code="dq-0540-{headerTag}-Unexpected">In submission type {subType}, header element {headerTag} value &quot;{valueOfHeaderTag}&quot; is not expected." {refSources}</message>
+<message code="dq-0540-{headerTag}-Unexpected">Header element {headerTag} value &quot;{value}&quot; is not applicable for {subType} submission type." {refSources}</message>
+
 
 <!-- these need attention
 <message code="EFM.N/A"
