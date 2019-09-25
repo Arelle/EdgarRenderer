@@ -1,0 +1,1983 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xbrl
+  xmlns="http://www.xbrl.org/2003/instance"
+  xmlns:dei="http://xbrl.sec.gov/dei/2018-01-31"
+  xmlns:dry="http://dry.com/20130529"
+  xmlns:iso4217="http://www.xbrl.org/2003/iso4217"
+  xmlns:link="http://www.xbrl.org/2003/linkbase"
+  xmlns:rr="http://xbrl.sec.gov/rr/2018-01-31"
+  xmlns:xbrldi="http://xbrl.org/2006/xbrldi"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+    <link:schemaRef xlink:href="dry-20130529.xsd" xlink:type="simple"/>
+    <context id="default">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+        </entity>
+        <period>
+            <startDate>2013-06-19</startDate>
+            <endDate>2013-06-19</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000113Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000113Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000113Member_C000000257Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000113Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000257Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000098Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000098Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000098Member_C000000163Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000098Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000163Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000326Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000326Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000326Member_C000000807Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000326Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000807Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000331Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000331Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000331Member_C000000821Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000331Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000821Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000021482Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000021482Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000021482Member_C000061431Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000021482Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000061431Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000018Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000018306Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000018306Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000018306Member_C000050496Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000018306Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000050496Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Agency_Shares_ProspectusMember_S000000018Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Agency_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000018Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Agency_Shares_ProspectusMember_S000000018Member_C000053664Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Agency_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000018Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000053664Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Agency_Shares_ProspectusMember_S000000128Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Agency_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000128Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Agency_Shares_ProspectusMember_S000000128Member_C000053659Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Agency_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000128Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000053659Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Agency_Shares_ProspectusMember_S000000129Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Agency_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000129Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Agency_Shares_ProspectusMember_S000000129Member_C000053660Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Agency_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000129Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000053660Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Agency_Shares_ProspectusMember_S000000112Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Agency_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Agency_Shares_ProspectusMember_S000000112Member_C000053665Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Agency_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000053665Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000018Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000027Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Agency_Shares_ProspectusMember_S000000113Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Agency_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000113Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Agency_Shares_ProspectusMember_S000000113Member_C000053666Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Agency_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000113Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000053666Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Agency_Shares_ProspectusMember_S000000326Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Agency_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000326Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Agency_Shares_ProspectusMember_S000000326Member_C000053663Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Agency_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000326Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000053663Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000018Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000018Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000018Member_C000000025Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000018Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000025Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000128Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000128Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000128Member_C000000287Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000128Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000287Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000129Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000129Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000129Member_C000000291Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000129Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000291Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000128Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000112Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000112Member_C000000251Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000251Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000113Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000113Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000113Member_C000000255Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000113Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000255Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000098Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000098Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000098Member_C000000161Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000098Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000161Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000326Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000326Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000326Member_C000000805Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000326Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000805Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000331Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000331Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000000331Member_C000000819Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000331Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000819Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000128Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000288Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000021482Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000021482Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000061427Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000018306Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000018306Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000018306Member_C000050495Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000018306Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000050495Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000018Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000018Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000018Member_C000000026Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000018Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000026Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000128Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000128Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000128Member_C000000286Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000128Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000286Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000129Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000129Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000129Member_C000000290Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000129Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000290Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000129Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000129Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000112Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000112Member_C000000252Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000252Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000113Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000113Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000113Member_C000000256Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000113Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000256Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000098Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000098Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000098Member_C000000162Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000098Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000162Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000326Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000326Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000326Member_C000000806Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000326Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000806Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000331Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000331Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000000331Member_C000000820Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000331Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000820Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000129Member_C000000292Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000129Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000292Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000021482Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000021482Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000021482Member_C000061428Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000021482Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000061428Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000018306Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000018306Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000018306Member_C000050497Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000018306Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000050497Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000018Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000018Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000018Member_C000000028Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000018Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000028Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000128Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000128Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000128Member_C000000289Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000128Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000289Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000129Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000129Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000129Member_C000000293Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000129Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000293Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000112Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000112Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000112Member_C000000254Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000254Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000113Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000113Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000113Member_C000000258Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000113Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000258Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000098Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000098Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000098Member_C000000164Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000098Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000164Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000326Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000326Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000326Member_C000000808Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000326Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000808Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000331Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000331Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000000331Member_C000000822Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000331Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000822Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Administrative_Shares_ProspectusMember_S000000112Member_C000000253Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Administrative_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000000253Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000018306Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000018306Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Participant_Shares_ProspectusMember_S000018306Member_C000050498Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Participant_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000018306Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000050498Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Premier_Shares_ProspectusMember_S000000112Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Premier_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Premier_Shares_ProspectusMember_S000000112Member_C000053675Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Premier_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000053675Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Select_Shares_ProspectusMember_S000000112Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Select_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Select_Shares_ProspectusMember_S000000112Member_C000050494Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Select_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000050494Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Service_Shares_ProspectusMember_S000000112Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Service_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Service_Shares_ProspectusMember_S000000112Member_C000050493Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0001314612</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">dry:doc_Service_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">dry:S000000112Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">dry:C000050493Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2013-01-31</startDate>
+            <endDate>2013-01-31</endDate>
+        </period>
+    </context>
+    <unit id="usd">
+        <measure>iso4217:USD</measure>
+    </unit>
+    <unit id="pure">
+        <measure>pure</measure>
+    </unit>
+    <dei:EntityCentralIndexKey contextRef="default" id="nn001">0001314612</dei:EntityCentralIndexKey>
+    <rr:ExpenseExampleWithRedemptionTableTextBlock
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member"
+      id="nn002">~ http://dry.com/20130529/role/ScheduleExpenseExampleTransposed20002 column dei_DocumentInformationDocumentAxis compact dry_doc_Administrative_Shares_ProspectusMember column dei_LegalEntityAxis compact dry_S000000018Member row primary compact * ~</rr:ExpenseExampleWithRedemptionTableTextBlock>
+    <rr:AnnualFundOperatingExpensesTableTextBlock
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member"
+      id="nn003">~ http://dry.com/20130529/role/ScheduleAnnualFundOperatingExpenses20001 column dei_DocumentInformationDocumentAxis compact dry_doc_Administrative_Shares_ProspectusMember column dei_LegalEntityAxis compact dry_S000000018Member row primary compact * ~</rr:AnnualFundOperatingExpensesTableTextBlock>
+    <rr:BarChartTableTextBlock
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member"
+      id="nn004">~ http://dry.com/20130529/role/ScheduleAnnualTotalReturnsBarChart20003 column dei_DocumentInformationDocumentAxis compact dry_doc_Administrative_Shares_ProspectusMember column dei_LegalEntityAxis compact dry_S000000018Member column rr_ProspectusShareClassAxis compact dry_C000000027Member row primary compact * ~</rr:BarChartTableTextBlock>
+    <rr:PerformanceTableTextBlock
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member"
+      id="nn005">~ http://dry.com/20130529/role/ScheduleAverageAnnualReturnsTransposed20004 column dei_DocumentInformationDocumentAxis compact dry_doc_Administrative_Shares_ProspectusMember column dei_LegalEntityAxis compact dry_S000000018Member column rr_PerformanceMeasureAxis compact * row primary compact * ~</rr:PerformanceTableTextBlock>
+    <rr:AnnualReturn2003
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0092</rr:AnnualReturn2003>
+    <rr:AnnualReturn2004
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0110</rr:AnnualReturn2004>
+    <rr:AnnualReturn2005
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0300</rr:AnnualReturn2005>
+    <rr:AnnualReturn2006
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0487</rr:AnnualReturn2006>
+    <rr:AnnualReturn2007
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0514</rr:AnnualReturn2007>
+    <rr:AnnualReturn2008
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0283</rr:AnnualReturn2008>
+    <rr:AnnualReturn2009
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0043</rr:AnnualReturn2009>
+    <rr:AnnualReturn2010
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0005</rr:AnnualReturn2010>
+    <rr:AnnualReturn2011
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0001</rr:AnnualReturn2011>
+    <rr:AnnualReturn2012
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0001</rr:AnnualReturn2012>
+    <rr:BarChartHighestQuarterlyReturnDate
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member"
+      id="nn006">2006-09-30</rr:BarChartHighestQuarterlyReturnDate>
+    <rr:BarChartLowestQuarterlyReturnDate
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member"
+      id="nn007">2011-09-30</rr:BarChartLowestQuarterlyReturnDate>
+    <rr:AnnualReturn2003
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0096</rr:AnnualReturn2003>
+    <rr:AnnualReturn2004
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0107</rr:AnnualReturn2004>
+    <rr:AnnualReturn2005
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0294</rr:AnnualReturn2005>
+    <rr:AnnualReturn2006
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0479</rr:AnnualReturn2006>
+    <rr:AnnualReturn2007
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0493</rr:AnnualReturn2007>
+    <rr:AnnualReturn2008
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0219</rr:AnnualReturn2008>
+    <rr:AnnualReturn2009
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0015</rr:AnnualReturn2009>
+    <rr:AnnualReturn2010
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0000</rr:AnnualReturn2010>
+    <rr:AnnualReturn2011
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0000</rr:AnnualReturn2011>
+    <rr:AnnualReturn2012
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0001</rr:AnnualReturn2012>
+    <rr:BarChartHighestQuarterlyReturnDate
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member"
+      id="nn008">2006-12-31</rr:BarChartHighestQuarterlyReturnDate>
+    <rr:BarChartLowestQuarterlyReturnDate
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member"
+      id="nn009">2011-12-31</rr:BarChartLowestQuarterlyReturnDate>
+    <rr:AnnualFundOperatingExpensesTableTextBlock
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member"
+      id="nn010">~ http://dry.com/20130529/role/ScheduleAnnualFundOperatingExpenses20007 column dei_DocumentInformationDocumentAxis compact dry_doc_Administrative_Shares_ProspectusMember column dei_LegalEntityAxis compact dry_S000000128Member row primary compact * ~</rr:AnnualFundOperatingExpensesTableTextBlock>
+    <rr:ExpenseExampleWithRedemptionTableTextBlock
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member"
+      id="nn011">~ http://dry.com/20130529/role/ScheduleExpenseExampleTransposed20008 column dei_DocumentInformationDocumentAxis compact dry_doc_Administrative_Shares_ProspectusMember column dei_LegalEntityAxis compact dry_S000000128Member row primary compact * ~</rr:ExpenseExampleWithRedemptionTableTextBlock>
+    <rr:BarChartTableTextBlock
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member"
+      id="nn012">~ http://dry.com/20130529/role/ScheduleAnnualTotalReturnsBarChart20009 column dei_DocumentInformationDocumentAxis compact dry_doc_Administrative_Shares_ProspectusMember column dei_LegalEntityAxis compact dry_S000000128Member column rr_ProspectusShareClassAxis compact dry_C000000288Member row primary compact * ~</rr:BarChartTableTextBlock>
+    <rr:PerformanceTableTextBlock
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member"
+      id="nn013">~ http://dry.com/20130529/role/ScheduleAverageAnnualReturnsTransposed20010 column dei_DocumentInformationDocumentAxis compact dry_doc_Administrative_Shares_ProspectusMember column dei_LegalEntityAxis compact dry_S000000128Member column rr_PerformanceMeasureAxis compact * row primary compact * ~</rr:PerformanceTableTextBlock>
+    <dei:AmendmentFlag contextRef="default" id="nn014">false</dei:AmendmentFlag>
+    <dei:DocumentPeriodEndDate contextRef="default" id="nn015">2013-06-19</dei:DocumentPeriodEndDate>
+    <dei:DocumentType contextRef="default">485BPOS</dei:DocumentType>
+    <dei:EntityRegistrantName contextRef="default">  Walter Hamscher Co Number Three, Dreyfus Treasury &amp; Agency Cash Management  </dei:EntityRegistrantName>
+    <dei:DocumentEffectiveDate contextRef="default">2013-06-01</dei:DocumentEffectiveDate>
+    <rr:ProspectusDate contextRef="default">2013-06-01</rr:ProspectusDate>
+    <dei:TradingSymbol contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member">DACXX</dei:TradingSymbol>
+    <dei:TradingSymbol contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member">DAGXX</dei:TradingSymbol>
+    <rr:RiskReturnHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+
+Fund Summary-
+
+
+
+Dreyfus Cash Management
+
+
+</rr:RiskReturnHeading>
+    <rr:ObjectiveHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">Investment Objective</rr:ObjectiveHeading>
+    <rr:ObjectivePrimaryTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;The fund seeks as high a level of current income as is consistent with the preservation of capital and the maintenance of liquidity.&lt;/span&gt;
+&lt;/p&gt;
+</rr:ObjectivePrimaryTextBlock>
+    <rr:ExpenseHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+
+
+Fees and Expenses
+
+
+</rr:ExpenseHeading>
+    <rr:ExpenseNarrativeTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;This table describes the fees and expenses that you may pay if you buy and hold shares of the fund.&lt;/span&gt;
+&lt;/p&gt;
+</rr:ExpenseNarrativeTextBlock>
+    <rr:OperatingExpensesCaption contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+
+
+Annual Fund Operating Expenses&#160;
+
+(expenses that you pay each year as a percentage of the value of your investment)
+
+</rr:OperatingExpensesCaption>
+    <rr:ManagementFeesOverAssets
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0020</rr:ManagementFeesOverAssets>
+    <rr:DistributionAndService12b1FeesOverAssets
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0010</rr:DistributionAndService12b1FeesOverAssets>
+    <rr:OtherExpensesOverAssets
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0001</rr:OtherExpensesOverAssets>
+    <rr:ExpensesOverAssets
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0031</rr:ExpensesOverAssets>
+    <rr:ExpenseExampleHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+
+
+Example
+
+
+</rr:ExpenseExampleHeading>
+    <rr:ExpenseExampleNarrativeTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;The Example is intended to help you compare the cost of investing in the fund with the cost of investing in other mutual funds. The Example assumes that you invest $10,000 in the fund for the time periods indicated and then redeem all of your shares at the end of those periods. The Example also assumes that your investment has a 5% return each year and that the fund's operating expenses remain the same. Although your actual costs may be higher or lower, based on these assumptions your costs would be:&lt;/span&gt;
+&lt;/p&gt;
+</rr:ExpenseExampleNarrativeTextBlock>
+    <rr:ExpenseExampleYear01
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="0"
+      unitRef="usd">32</rr:ExpenseExampleYear01>
+    <rr:ExpenseExampleYear03
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="0"
+      unitRef="usd">100</rr:ExpenseExampleYear03>
+    <rr:ExpenseExampleYear05
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="0"
+      unitRef="usd">174</rr:ExpenseExampleYear05>
+    <rr:ExpenseExampleYear10
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="0"
+      unitRef="usd">393</rr:ExpenseExampleYear10>
+    <rr:StrategyHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+
+
+Principal Investment Strategy
+
+
+</rr:StrategyHeading>
+    <rr:StrategyNarrativeTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;As a money market fund, the fund is subject to the maturity, quality, liquidity and diversification requirements of Rule 2a-7 under the Investment Company Act of 1940, as amended, which are designed to help money market funds maintain a stable share price of $1.00. To pursue its goal, the fund normally invests in a diversified portfolio of high quality, short-term, dollar-denominated debt securities, including: securities issued or guaranteed as to principal and interest by the U.S. government or its agencies or instrumentalities; certificates of deposit, time deposits, bankers' acceptances and other short-term securities issued by domestic or foreign banks or thrifts or their subsidiaries or branches; repurchase agreements, including tri-party repurchase agreements; asset-backed securities; domestic and dollar-denominated foreign commercial paper and other short-term corporate obligations, including those with floating or variable rates of interest; and dollar-denominated obligations issued or guaranteed by one or more foreign governments or any of their political subdivisions or agencies.&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Normally, the fund invests at least 25% of its net assets in domestic or dollar-denominated foreign bank obligations.&lt;/span&gt;
+&lt;/p&gt;
+</rr:StrategyNarrativeTextBlock>
+    <rr:RiskHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+
+
+Principal Risks
+
+
+</rr:RiskHeading>
+    <rr:RiskNarrativeTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;
+An investment in the fund is not insured or guaranteed by the Federal Deposit Insurance Corporation (FDIC) or any other government agency.
+Although the fund seeks to preserve the value of your investment at $1.00 per share, it is possible to lose money by investing in the fund.
+&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;The fund's yield will fluctuate as the short-term securities in its portfolio mature and the proceeds are reinvested in securities with different interest rates. Additionally, while the fund has maintained a constant share price since inception, and will continue to try to do so, neither The Dreyfus Corporation nor its affiliates are required to make a capital infusion, enter into a capital support agreement or take other actions to prevent the fund's share price from falling below $1.00. The following are the principal risks that could reduce the fund's income level and/or share price:&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Interest rate risk.&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#160;This risk refers to the decline in the prices of fixed-income securities that may accompany a rise in the overall level of interest rates. A sharp and unexpected rise in interest rates could cause a money market fund's share price to drop below a dollar.&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Credit risk.&#160;&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Failure of an issuer to make timely interest or principal payments, or a decline or perception of a decline in the credit quality of a security, can cause the security's price to fall, potentially lowering the fund's share price. Although the fund invests only in high quality debt securities, any of the fund's holdings could have its credit rating downgraded or could default. The credit quality of the securities held by the fund can change rapidly in certain market environments, and the default of a single holding could have the potential to cause significant deterioration of the fund's net asset value.&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Liquidity risk.&#160;&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;When there is little or no active trading market for specific types of securities, it can become more difficult to sell the securities at or near their perceived value. In such a market, the value of such securities may fall dramatically, potentially lowering the fund's share price, even during periods of declining interest rates. Also, during such periods, redemptions by a few large investors in the fund may have a significant adverse effect on the fund's net asset value and remaining fund shareholders.&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Banking industry risk.&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#160;The risks generally associated with concentrating investments in the banking industry, such as interest rate risk, credit risk, and regulatory developments relating to the banking industry.&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Foreign investment risk.&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#160;The risks generally associated with dollar-denominated foreign investments, such as economic and political developments, seizure or nationalization of deposits, imposition of taxes or other restrictions on payment of principal and interest.&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Government securities risk.&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#160;Not all obligations of the U.S. government, its agencies and instrumentalities are backed by the full faith and credit of the U.S. Treasury. Some obligations are backed only by the credit of the issuing agency or instrumentality, and in some cases there may be some risk of default by the issuer. Any guarantee by the U.S. government or its agencies or instrumentalities of a security held by the fund does not apply to the market value of such security or to shares of the fund itself.&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;U.S. Treasury securities risk.&#160;&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;A security backed by the U.S. Treasury or the full faith and credit of the United States is guaranteed only as to the timely payment of interest and principal when held to maturity, but the market prices for such securities are not guaranteed and will fluctuate.&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Repurchase agreement counterparty risk&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;. The risk that a counterparty in a repurchase agreement could fail to honor the terms of its agreement.&lt;/span&gt;
+&lt;/p&gt;
+</rr:RiskNarrativeTextBlock>
+    <rr:RiskNotInsuredDepositoryInstitution contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">An investment in the fund is not insured or guaranteed by the Federal Deposit Insurance Corporation (FDIC) or any other government agency.</rr:RiskNotInsuredDepositoryInstitution>
+    <rr:RiskMoneyMarketFund contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">Although the fund seeks to preserve the value of your investment at $1.00 per share, it is possible to lose money by investing in the fund.</rr:RiskMoneyMarketFund>
+    <rr:BarChartAndPerformanceTableHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+
+
+Performance
+
+
+</rr:BarChartAndPerformanceTableHeading>
+    <rr:PerformanceNarrativeTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;
+The following bar chart and table provide some indication of the risks of investing in the fund. The bar chart shows changes in the performance of the fund's Administrative shares from year to year. The table shows the average annual total returns of the fund's Administrative shares over time. The fund's past performance (before and after taxes) is not necessarily an indication of how the fund will perform in the future. More recent performance information may be available at&#160;
+&lt;span style="text-decoration: underline"&gt;www.dry.com&lt;/span&gt;
+.&lt;/span&gt;
+&lt;/p&gt;
+</rr:PerformanceNarrativeTextBlock>
+    <rr:PerformanceInformationIllustratesVariabilityOfReturns contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">The following bar chart and table provide some indication of the risks of investing in the fund.</rr:PerformanceInformationIllustratesVariabilityOfReturns>
+    <rr:PerformancePastDoesNotIndicateFuture contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">The fund's past performance (before and after taxes) is not necessarily an indication of how the fund will perform in the future.</rr:PerformancePastDoesNotIndicateFuture>
+    <rr:PerformanceAvailabilityWebSiteAddress contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+www.dry.com
+</rr:PerformanceAvailabilityWebSiteAddress>
+    <rr:BarChartHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+
+
+Year-by-Year Total Returns&#160;
+
+as of 12/31 each year (%)
+
+</rr:BarChartHeading>
+    <rr:BarChartClosingTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+&lt;p style="line-height: normal; margin-left: 4.0pt"&gt;
+&lt;b&gt;
+
+&lt;span style="font-size: 10.0pt;"&gt;Best Quarter&lt;/span&gt;
+
+&lt;/b&gt;
+&lt;span style="font-size: 10.0pt;"&gt;
+&lt;br/&gt;
+&lt;span style="-sec-ix-hidden:nn006;"&gt;Q3, 2006:&lt;/span&gt; 1.29%&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal"&gt;
+&lt;b&gt;
+
+&lt;span style="font-size: 10.0pt;"&gt;Worst Quarter&lt;/span&gt;
+
+&lt;/b&gt;
+&lt;span style="font-size: 10.0pt;"&gt;
+&lt;br/&gt;
+&lt;span style="-sec-ix-hidden:nn007;"&gt;Q3, 2011&lt;/span&gt;: 0.00%&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal"&gt;
+&lt;i&gt;
+&lt;span style="font-size: 9.0pt;"&gt;
+The year-to-date total return of the fund's Administrative shares as of 3/31/13 was 0.00%.&lt;/span&gt;
+&lt;/i&gt;
+&lt;/p&gt;
+</rr:BarChartClosingTextBlock>
+    <rr:HighestQuarterlyReturnLabel contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+Best Quarter
+</rr:HighestQuarterlyReturnLabel>
+    <rr:BarChartHighestQuarterlyReturn
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member"
+      decimals="INF"
+      unitRef="pure">0.0129</rr:BarChartHighestQuarterlyReturn>
+    <rr:LowestQuarterlyReturnLabel contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+Worst Quarter
+</rr:LowestQuarterlyReturnLabel>
+    <rr:BarChartLowestQuarterlyReturn
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member"
+      decimals="INF"
+      unitRef="pure">0.0000</rr:BarChartLowestQuarterlyReturn>
+    <rr:YearToDateReturnLabel contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">The year-to-date total return of the fund's Administrative shares</rr:YearToDateReturnLabel>
+    <rr:BarChartYearToDateReturnDate contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">2013-03-31</rr:BarChartYearToDateReturnDate>
+    <rr:BarChartYearToDateReturn
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member"
+      decimals="INF"
+      unitRef="pure">0.0000</rr:BarChartYearToDateReturn>
+    <rr:AverageAnnualReturnCaption contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+
+
+Average Annual Total Returns&#160;
+
+as of 12/31/12
+
+</rr:AverageAnnualReturnCaption>
+    <rr:AverageAnnualReturnYear01
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0001</rr:AverageAnnualReturnYear01>
+    <rr:AverageAnnualReturnYear05
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0066</rr:AverageAnnualReturnYear05>
+    <rr:AverageAnnualReturnYear10
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member_C000000027Member"
+      decimals="INF"
+      unitRef="pure">0.0182</rr:AverageAnnualReturnYear10>
+    <rr:PerformanceTableClosingTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">
+&lt;p style="line-height: normal; margin-left: 4.5pt; text-indent: -.2pt"&gt;
+&lt;i&gt;
+&lt;span style="font-size: 9.0pt;"&gt;For the current yield for Administrative shares call toll-free 1-800-346-3621. Individuals or entities for whom institutions may purchase or redeem shares should call the institution directly.&lt;/span&gt;
+&lt;/i&gt;
+&lt;/p&gt;
+</rr:PerformanceTableClosingTextBlock>
+    <rr:MoneyMarketSevenDayYieldPhone contextRef="doc_Administrative_Shares_ProspectusMember_S000000018Member">1-800-346-3621</rr:MoneyMarketSevenDayYieldPhone>
+    <rr:RiskReturnHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+
+Fund Summary-
+
+
+
+Dreyfus Government Cash Management
+
+
+</rr:RiskReturnHeading>
+    <rr:ObjectiveHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">Investment Objective</rr:ObjectiveHeading>
+    <rr:ObjectivePrimaryTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+&lt;p style="line-height: normal; margin-left: 4.0pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;The fund seeks as high a level of current income as is consistent with the preservation of capital and the maintenance of liquidity.&lt;/span&gt;
+&lt;/p&gt;
+</rr:ObjectivePrimaryTextBlock>
+    <rr:ExpenseHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+
+
+Fees and Expenses
+
+
+</rr:ExpenseHeading>
+    <rr:ExpenseNarrativeTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;This table describes the fees and expenses that you may pay if you buy and hold shares of the fund.&lt;/span&gt;
+&lt;/p&gt;
+</rr:ExpenseNarrativeTextBlock>
+    <rr:OperatingExpensesCaption contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+
+
+Annual Fund Operating Expenses&#160;
+
+(expenses that you pay each year as a percentage of the value of your investment)
+
+</rr:OperatingExpensesCaption>
+    <rr:ManagementFeesOverAssets
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0020</rr:ManagementFeesOverAssets>
+    <rr:DistributionAndService12b1FeesOverAssets
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0010</rr:DistributionAndService12b1FeesOverAssets>
+    <rr:OtherExpensesOverAssets
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0001</rr:OtherExpensesOverAssets>
+    <rr:ExpensesOverAssets
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0031</rr:ExpensesOverAssets>
+    <rr:ExpenseExampleHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+
+
+Example
+
+
+</rr:ExpenseExampleHeading>
+    <rr:ExpenseExampleNarrativeTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;The Example is intended to help you compare the cost of investing in the fund with the cost of investing in other mutual funds. The Example assumes that you invest $10,000 in the fund for the time periods indicated and then redeem all of your shares at the end of those periods. The Example also assumes that your investment has a 5% return each year and that the fund's operating expenses remain the same. Although your actual costs may be higher or lower, based on these assumptions your costs would be:&lt;/span&gt;
+&lt;/p&gt;
+</rr:ExpenseExampleNarrativeTextBlock>
+    <rr:ExpenseExampleYear01
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="0"
+      unitRef="usd">32</rr:ExpenseExampleYear01>
+    <rr:ExpenseExampleYear03
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="0"
+      unitRef="usd">100</rr:ExpenseExampleYear03>
+    <rr:ExpenseExampleYear05
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="0"
+      unitRef="usd">174</rr:ExpenseExampleYear05>
+    <rr:ExpenseExampleYear10
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="0"
+      unitRef="usd">393</rr:ExpenseExampleYear10>
+    <rr:StrategyHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+
+
+Principal Investment Strategy
+
+
+</rr:StrategyHeading>
+    <rr:StrategyNarrativeTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;As a money market fund, the fund is subject to the maturity, quality, liquidity and diversification requirements of Rule 2a-7 under the Investment Company Act of 1940, as amended, which are designed to help money market funds maintain a stable share price of $1.00. To pursue its goal, the fund invests in securities issued or guaranteed as to principal and interest by the U.S. government or its agencies or instrumentalities, and repurchase agreements (including tri-party repurchase agreements). The securities in which the fund invests include those backed by the full faith and credit of the U.S. government and those that are neither insured nor guaranteed by the U.S. government.&lt;/span&gt;
+&lt;/p&gt;
+</rr:StrategyNarrativeTextBlock>
+    <rr:RiskHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+
+
+Principal Risks
+
+
+</rr:RiskHeading>
+    <rr:RiskNarrativeTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;
+An investment in the fund is not insured or guaranteed by the Federal Deposit Insurance Corporation (FDIC) or any other government agency.
+Although the fund seeks to preserve the value of your investment at $1.00 per share, it is possible to lose money by investing in the fund.
+&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;The fund's yield will fluctuate as the short-term securities in its portfolio mature and the proceeds are reinvested in securities with different interest rates. Additionally, while the fund has maintained a constant share price since inception, and will continue to try to do so, neither The Dreyfus Corporation nor its affiliates are required to make a capital infusion, enter into a capital support agreement or take other actions to prevent the fund's share price from falling below $1.00. The following are the principal risks that could reduce the fund's income level and/or share price:&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Interest rate risk.&#160;&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;This risk refers to the decline in the prices of fixed-income securities that may accompany a rise in the overall level of interest rates. A sharp and unexpected rise in interest rates could cause a money market fund's share price to drop below a dollar.&lt;/span&gt;
+&lt;span style="font-size: 12.0pt;"&gt;&#160;&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Government securities risk&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;. Not all obligations of the U.S. government, its agencies and instrumentalities are backed by the full faith and credit of the U.S. Treasury. Some obligations are backed only by the credit of the issuing agency or instrumentality, and in some cases there may be some risk of default by the issuer. Any guarantee by the U.S. government or its agencies or instrumentalities of a security held by the fund does not apply to the market value of such security or to shares of the fund itself.&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;U.S. Treasury securities risk.&#160;&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;A security backed by the U.S. Treasury or the full faith and credit of the United States is guaranteed only as to the timely payment of interest and principal when held to maturity, but the market prices for such securities are not guaranteed and will fluctuate.&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Liquidity risk.&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#160;When there is little or no active trading market for specific types of securities, it can become more difficult to sell the securities at or near their perceived value. In such a market, the value of such securities may fall dramatically, potentially lowering the fund's share price, even during periods of declining interest rates. Also, during such periods, redemptions by a few large investors in the fund may have a significant adverse effect on the fund's net asset value and remaining fund shareholders.&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+&lt;i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;Repurchase agreement counterparty risk&lt;/span&gt;
+&lt;/i&gt;
+&lt;span style="font-size: 10.0pt;"&gt;. The risk that a counterparty in a repurchase agreement could fail to honor the terms of its agreement.&lt;/span&gt;
+&lt;/p&gt;
+</rr:RiskNarrativeTextBlock>
+    <rr:RiskNotInsuredDepositoryInstitution contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">An investment in the fund is not insured or guaranteed by the Federal Deposit Insurance Corporation (FDIC) or any other government agency.</rr:RiskNotInsuredDepositoryInstitution>
+    <rr:RiskMoneyMarketFund contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">Although the fund seeks to preserve the value of your investment at $1.00 per share, it is possible to lose money by investing in the fund.</rr:RiskMoneyMarketFund>
+    <rr:BarChartAndPerformanceTableHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+
+
+Performance
+
+
+</rr:BarChartAndPerformanceTableHeading>
+    <rr:PerformanceNarrativeTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+&lt;p style="line-height: normal"&gt;
+&lt;span style="font-size: 10.0pt;"&gt;
+The following bar chart and table provide some indication of the risks of investing in the fund. The bar chart shows changes in the performance of the fund's Administrative shares from year to year. The table shows the average annual total returns of the fund's Administrative shares over time. The fund's past performance (before and after taxes) is not necessarily an indication of how the fund will perform in the future. More recent performance information may be available at&#160;
+&lt;span style="text-decoration: underline"&gt;www.dry.com&lt;/span&gt;
+.&lt;/span&gt;
+&lt;/p&gt;
+</rr:PerformanceNarrativeTextBlock>
+    <rr:PerformanceInformationIllustratesVariabilityOfReturns contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">The following bar chart and table provide some indication of the risks of investing in the fund.</rr:PerformanceInformationIllustratesVariabilityOfReturns>
+    <rr:PerformancePastDoesNotIndicateFuture contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">The fund's past performance (before and after taxes) is not necessarily an indication of how the fund will perform in the future.</rr:PerformancePastDoesNotIndicateFuture>
+    <rr:PerformanceAvailabilityWebSiteAddress contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+www.dry.com
+</rr:PerformanceAvailabilityWebSiteAddress>
+    <rr:BarChartHeading contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+
+
+Year-by-Year Total Returns&#160;
+
+as of 12/31 each year (%)
+
+</rr:BarChartHeading>
+    <rr:BarChartClosingTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+&lt;table style="border:none;width: 100.0%"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style="padding: 1.5pt 1.5pt 1.5pt 1.5pt" valign="top"&gt;
+&lt;p style="line-height: normal; margin-left: 4.0pt"&gt;
+&lt;b&gt;
+
+&lt;span style="font-size: 10.0pt;"&gt;Best Quarter&lt;/span&gt;
+
+&lt;/b&gt;
+&lt;span style="font-size: 10.0pt;"&gt;
+&lt;br/&gt;
+Q4, &lt;span style="-sec-ix-hidden:nn008;"&gt;2006&lt;/span&gt;: 1.27%&lt;/span&gt;
+&lt;/p&gt;
+&lt;p style="line-height: normal; margin-left: 4.0pt"&gt;
+&lt;b&gt;
+
+&lt;span style="font-size: 10.0pt;"&gt;Worst Quarter&lt;/span&gt;
+
+&lt;/b&gt;
+&lt;span style="font-size: 10.0pt;"&gt;
+&lt;br/&gt;
+  Q4, &lt;span style="-sec-ix-hidden:nn009;"&gt;2011&lt;/span&gt;: 0.00%&lt;/span&gt;
+&lt;/p&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p style="line-height: normal"&gt;
+&lt;i&gt;
+&lt;span style="font-size: 9.0pt;"&gt;
+The year-to-date total return of the fund's Administrative shares as of 3/31/13 was 0.00%.&lt;/span&gt;
+&lt;/i&gt;
+&lt;/p&gt;
+</rr:BarChartClosingTextBlock>
+    <rr:HighestQuarterlyReturnLabel contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+Best Quarter
+</rr:HighestQuarterlyReturnLabel>
+    <rr:BarChartHighestQuarterlyReturn
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member"
+      decimals="INF"
+      unitRef="pure">0.0127</rr:BarChartHighestQuarterlyReturn>
+    <rr:LowestQuarterlyReturnLabel contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+Worst Quarter
+</rr:LowestQuarterlyReturnLabel>
+    <rr:BarChartLowestQuarterlyReturn
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member"
+      decimals="INF"
+      unitRef="pure">0.0000</rr:BarChartLowestQuarterlyReturn>
+    <rr:YearToDateReturnLabel contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">The year-to-date total return of the fund's Administrative shares</rr:YearToDateReturnLabel>
+    <rr:BarChartYearToDateReturnDate contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">2013-03-31</rr:BarChartYearToDateReturnDate>
+    <rr:BarChartYearToDateReturn
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member"
+      decimals="INF"
+      unitRef="pure">0.0000</rr:BarChartYearToDateReturn>
+    <rr:AverageAnnualReturnCaption contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+
+
+Average Annual Total Returns&#160;
+
+as of 12/31/12
+
+</rr:AverageAnnualReturnCaption>
+    <rr:AverageAnnualReturnYear01
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0001</rr:AverageAnnualReturnYear01>
+    <rr:AverageAnnualReturnYear05
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0047</rr:AverageAnnualReturnYear05>
+    <rr:AverageAnnualReturnYear10
+      contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member_C000000288Member"
+      decimals="INF"
+      unitRef="pure">0.0169</rr:AverageAnnualReturnYear10>
+    <rr:PerformanceTableClosingTextBlock contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">
+&lt;p style="line-height: normal; margin-left: 4.5pt; text-indent: -.2pt"&gt;
+&lt;i&gt;
+&lt;span style="font-size: 9.0pt;"&gt;For the current yield for Administrative shares call toll-free 1-800-346-3621. Individuals or entities for whom institutions may purchase or redeem shares should call the institution directly.&lt;/span&gt;
+&lt;/i&gt;
+&lt;/p&gt;
+</rr:PerformanceTableClosingTextBlock>
+    <rr:MoneyMarketSevenDayYieldPhone contextRef="doc_Administrative_Shares_ProspectusMember_S000000128Member">1-800-346-3621</rr:MoneyMarketSevenDayYieldPhone>
+</xbrl>

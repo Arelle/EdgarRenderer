@@ -1,0 +1,4508 @@
+{
+ "instance": {
+  "bst-20160930.htm": {
+   "axisCustom": 0,
+   "axisStandard": 1,
+   "contextCount": 29,
+   "dts": {
+    "calculationLink": {
+     "local": [
+      "bst-20160930_cal.xml"
+     ]
+    },
+    "definitionLink": {
+     "local": [
+      "bst-20160930_def.xml"
+     ],
+     "remote": [
+      "http://xbrl.fasb.org/srt/2018/elts/srt-eedm1-def-2018-01-31.xml",
+      "http://xbrl.fasb.org/us-gaap/2018/elts/us-gaap-eedm-def-2018-01-31.xml"
+     ]
+    },
+    "inline": {
+     "local": [
+      "bst-20160930.htm"
+     ]
+    },
+    "labelLink": {
+     "local": [
+      "bst-20160930_lab.xml"
+     ],
+     "remote": [
+      "http://xbrl.fasb.org/us-gaap/2018/elts/us-gaap-doc-2018-01-31.xml",
+      "https://xbrl.sec.gov/dei/2018/dei-doc-2018-01-31.xml"
+     ]
+    },
+    "presentationLink": {
+     "local": [
+      "bst-20160930_pre.xml"
+     ]
+    },
+    "referenceLink": {
+     "remote": [
+      "http://xbrl.fasb.org/us-gaap/2018/elts/us-gaap-ref-2018-01-31.xml",
+      "https://xbrl.sec.gov/dei/2018/dei-ref-2018-01-31.xml"
+     ]
+    },
+    "schema": {
+     "local": [
+      "bst-20160930.xsd"
+     ],
+     "remote": [
+      "http://www.xbrl.org/2003/xbrl-instance-2003-12-31.xsd",
+      "http://www.xbrl.org/2003/xbrl-linkbase-2003-12-31.xsd",
+      "http://www.xbrl.org/2003/xl-2003-12-31.xsd",
+      "http://www.xbrl.org/2003/xlink-2003-12-31.xsd",
+      "http://www.xbrl.org/2005/xbrldt-2005.xsd",
+      "http://www.xbrl.org/2006/ref-2006-02-27.xsd",
+      "http://www.xbrl.org/dtr/type/nonNumeric-2009-12-16.xsd",
+      "http://www.xbrl.org/dtr/type/numeric-2009-12-16.xsd",
+      "http://www.xbrl.org/lrr/role/deprecated-2009-12-16.xsd",
+      "http://www.xbrl.org/lrr/role/negated-2009-12-16.xsd",
+      "http://www.xbrl.org/lrr/role/reference-2009-12-16.xsd",
+      "http://xbrl.fasb.org/srt/2018/elts/srt-2018-01-31.xsd",
+      "http://xbrl.fasb.org/srt/2018/elts/srt-roles-2018-01-31.xsd",
+      "http://xbrl.fasb.org/srt/2018/elts/srt-types-2018-01-31.xsd",
+      "http://xbrl.fasb.org/us-gaap/2018/elts/us-gaap-2018-01-31.xsd",
+      "http://xbrl.fasb.org/us-gaap/2018/elts/us-parts-codification-2018-01-31.xsd",
+      "http://xbrl.fasb.org/us-gaap/2018/elts/us-roles-2018-01-31.xsd",
+      "http://xbrl.fasb.org/us-gaap/2018/elts/us-types-2018-01-31.xsd",
+      "http://xbrl.sec.gov/country/2017/country-2017-01-31.xsd",
+      "https://xbrl.sec.gov/dei/2018/dei-2018-01-31.xsd"
+     ]
+    }
+   },
+   "elementCount": 113,
+   "entityCount": 1,
+   "hidden": {
+    "http://fasb.org/us-gaap/2018-01-31": 2,
+    "http://xbrl.sec.gov/dei/2018-01-31": 6,
+    "total": 8
+   },
+   "keyCustom": 3,
+   "keyStandard": 84,
+   "memberCustom": 3,
+   "memberStandard": 2,
+   "nsprefix": "bst",
+   "nsuri": "http://www.brightstar.com/20160930",
+   "report": {
+    "R1": {
+     "firstAnchor": {
+      "ancestors": [
+       "span",
+       "b",
+       "p",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": null,
+      "name": "dei:DocumentType",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     },
+     "groupType": "document",
+     "isDefault": "true",
+     "longName": "101 - Document - Document and Entity Information",
+     "role": "http://www.brightstar.com/taxonomy/role/DocumentandEntityInformation",
+     "shortName": "Document and Entity Information",
+     "subGroupType": "",
+     "uniqueAnchor": {
+      "ancestors": [
+       "span",
+       "b",
+       "p",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": null,
+      "name": "dei:DocumentType",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     }
+    },
+    "R10": {
+     "firstAnchor": {
+      "ancestors": [
+       "span",
+       "p",
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "ThreeMonthsEnded_2016-09-30",
+      "decimals": "-3",
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:SalesRevenueNet",
+      "reportCount": 1,
+      "unitRef": "iso4217_USD",
+      "xsiNil": "false"
+     },
+     "groupType": "disclosure",
+     "isDefault": "false",
+     "longName": "121 - Disclosure - Segment Information (Detail)",
+     "role": "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation",
+     "shortName": "Segment Information (Detail)",
+     "subGroupType": "details",
+     "uniqueAnchor": {
+      "ancestors": [
+       "span",
+       "p",
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "us-gaap:ScheduleOfSegmentReportingInformationBySegmentTextBlock",
+       "us-gaap:SegmentReportingDisclosureTextBlock",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "ThreeMonthsEnded_2016-09-30",
+      "decimals": "-3",
+      "lang": null,
+      "name": "us-gaap:OperatingIncomeLoss",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": "iso4217_USD",
+      "xsiNil": "false"
+     }
+    },
+    "R2": {
+     "firstAnchor": {
+      "ancestors": [
+       "span",
+       "p",
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "BalanceAsOf_2016-09-30",
+      "decimals": "-3",
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:CashAndCashEquivalentsAtCarryingValue",
+      "reportCount": 1,
+      "unitRef": "iso4217_USD",
+      "xsiNil": "false"
+     },
+     "groupType": "statement",
+     "isDefault": "false",
+     "longName": "103 - Statement - Condensed Consolidated Balance Sheets",
+     "role": "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified",
+     "shortName": "Condensed Consolidated Balance Sheets",
+     "subGroupType": "",
+     "uniqueAnchor": {
+      "ancestors": [
+       "span",
+       "p",
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "BalanceAsOf_2016-09-30",
+      "decimals": "-3",
+      "lang": null,
+      "name": "us-gaap:AccountsNotesAndLoansReceivableNetCurrent",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": "iso4217_USD",
+      "xsiNil": "false"
+     }
+    },
+    "R3": {
+     "firstAnchor": {
+      "ancestors": [
+       "span",
+       "p",
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "BalanceAsOf_2016-09-30",
+      "decimals": "-3",
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:AllowanceForDoubtfulAccountsReceivableCurrent",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": "iso4217_USD",
+      "xsiNil": "false"
+     },
+     "groupType": "statement",
+     "isDefault": "false",
+     "longName": "104 - Statement - Condensed Consolidated Balance Sheets (Parenthetical)",
+     "role": "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassifiedParenthetical",
+     "shortName": "Condensed Consolidated Balance Sheets (Parenthetical)",
+     "subGroupType": "parenthetical",
+     "uniqueAnchor": {
+      "ancestors": [
+       "span",
+       "p",
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "BalanceAsOf_2016-09-30",
+      "decimals": "-3",
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:AllowanceForDoubtfulAccountsReceivableCurrent",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": "iso4217_USD",
+      "xsiNil": "false"
+     }
+    },
+    "R4": {
+     "firstAnchor": {
+      "ancestors": [
+       "span",
+       "p",
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "ThreeMonthsEnded_2016-09-30",
+      "decimals": "-3",
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:SalesRevenueNet",
+      "reportCount": 1,
+      "unitRef": "iso4217_USD",
+      "xsiNil": "false"
+     },
+     "groupType": "statement",
+     "isDefault": "false",
+     "longName": "105 - Statement - Condensed Consolidated Statements of Income and Comprehensive Income",
+     "role": "http://www.brightstar.com/taxonomy/role/StatementOfIncome",
+     "shortName": "Condensed Consolidated Statements of Income and Comprehensive Income",
+     "subGroupType": "",
+     "uniqueAnchor": {
+      "ancestors": [
+       "span",
+       "p",
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "ThreeMonthsEnded_2016-09-30",
+      "decimals": "-3",
+      "lang": null,
+      "name": "us-gaap:CostOfGoodsSold",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": "iso4217_USD",
+      "xsiNil": "false"
+     }
+    },
+    "R5": {
+     "firstAnchor": {
+      "ancestors": [
+       "span",
+       "p",
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": "-3",
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:ProfitLoss",
+      "reportCount": 1,
+      "unitRef": "iso4217_USD",
+      "xsiNil": "false"
+     },
+     "groupType": "statement",
+     "isDefault": "false",
+     "longName": "106 - Statement - Condensed Consolidated Statements of Cash Flows",
+     "role": "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect",
+     "shortName": "Condensed Consolidated Statements of Cash Flows",
+     "subGroupType": "",
+     "uniqueAnchor": {
+      "ancestors": [
+       "span",
+       "p",
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": "-3",
+      "lang": null,
+      "name": "us-gaap:ShareBasedCompensation",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": "iso4217_USD",
+      "xsiNil": "false"
+     }
+    },
+    "R6": {
+     "firstAnchor": {
+      "ancestors": [
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:OrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     },
+     "groupType": "disclosure",
+     "isDefault": "false",
+     "longName": "107 - Disclosure - Basis of Presentation",
+     "role": "http://www.brightstar.com/taxonomy/role/NotesToFinancialStatementsOrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock",
+     "shortName": "Basis of Presentation",
+     "subGroupType": "",
+     "uniqueAnchor": {
+      "ancestors": [
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:OrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     }
+    },
+    "R7": {
+     "firstAnchor": {
+      "ancestors": [
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:SegmentReportingDisclosureTextBlock",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     },
+     "groupType": "disclosure",
+     "isDefault": "false",
+     "longName": "108 - Disclosure - Segment Information",
+     "role": "http://www.brightstar.com/taxonomy/role/NotesToFinancialStatementsSegmentReportingDisclosureTextBlock",
+     "shortName": "Segment Information",
+     "subGroupType": "",
+     "uniqueAnchor": {
+      "ancestors": [
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:SegmentReportingDisclosureTextBlock",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     }
+    },
+    "R8": {
+     "firstAnchor": {
+      "ancestors": [
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:DescriptionOfNewAccountingPronouncementsNotYetAdopted",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     },
+     "groupType": "disclosure",
+     "isDefault": "false",
+     "longName": "109 - Disclosure - Recent Accounting Pronouncements",
+     "role": "http://www.brightstar.com/taxonomy/role/RecentAccountingPronouncements",
+     "shortName": "Recent Accounting Pronouncements",
+     "subGroupType": "",
+     "uniqueAnchor": {
+      "ancestors": [
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:DescriptionOfNewAccountingPronouncementsNotYetAdopted",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     }
+    },
+    "R9": {
+     "firstAnchor": {
+      "ancestors": [
+       "us-gaap:SegmentReportingDisclosureTextBlock",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:ScheduleOfSegmentReportingInformationBySegmentTextBlock",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     },
+     "groupType": "disclosure",
+     "isDefault": "false",
+     "longName": "117 - Disclosure - Segment Information (Tables)",
+     "role": "http://www.brightstar.com/taxonomy/role/NotesToFinancialStatementsSegmentReportingDisclosureTextBlockTables",
+     "shortName": "Segment Information (Tables)",
+     "subGroupType": "tables",
+     "uniqueAnchor": {
+      "ancestors": [
+       "us-gaap:SegmentReportingDisclosureTextBlock",
+       "div",
+       "body",
+       "html"
+      ],
+      "contextRef": "NineMonthsEnded_2016-09-30",
+      "decimals": null,
+      "first": true,
+      "lang": null,
+      "name": "us-gaap:ScheduleOfSegmentReportingInformationBySegmentTextBlock",
+      "reportCount": 1,
+      "unique": true,
+      "unitRef": null,
+      "xsiNil": "false"
+     }
+    }
+   },
+   "segmentCount": 5,
+   "tag": {
+    "bst_CargoMember": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Cargo.",
+        "label": "Cargo [Member]",
+        "terseLabel": "Cargo [Member]"
+       }
+      }
+     },
+     "localname": "CargoMember",
+     "nsuri": "http://www.brightstar.com/20160930",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "domainItemType"
+    },
+    "bst_DocumentAndEntityInformationAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Document And Company Information [Abstract]",
+        "label": "Document And Entity Information [Abstract]",
+        "terseLabel": "Document And Entity Information [Abstract]"
+       }
+      }
+     },
+     "localname": "DocumentAndEntityInformationAbstract",
+     "nsuri": "http://www.brightstar.com/20160930",
+     "xbrltype": "stringItemType"
+    },
+    "bst_GoodwillAndIntangibleAssetsLessAccumulatedAmortization": {
+     "auth_ref": [],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.06,
+       "parentTag": "us-gaap_Assets",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Goodwill and intangible assets, less accumulated amortization.",
+        "label": "Goodwill And Intangible Assets Less Accumulated Amortization",
+        "terseLabel": "Goodwill and other intangibles, less accumulated amortization"
+       }
+      }
+     },
+     "localname": "GoodwillAndIntangibleAssetsLessAccumulatedAmortization",
+     "nsuri": "http://www.brightstar.com/20160930",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "bst_HeavyEquipmentMember": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Heavy equipment.",
+        "label": "Heavy Equipment [Member]",
+        "terseLabel": "Heavy Equipment [Member]"
+       }
+      }
+     },
+     "localname": "HeavyEquipmentMember",
+     "nsuri": "http://www.brightstar.com/20160930",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "domainItemType"
+    },
+    "bst_OtherMember": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Other.",
+        "label": "Other [Member]",
+        "terseLabel": "Other [Member]"
+       }
+      }
+     },
+     "localname": "OtherMember",
+     "nsuri": "http://www.brightstar.com/20160930",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "domainItemType"
+    },
+    "bst_PaymentsForShareBasedAwardsExercisedNetOfTaxesPaid": {
+     "auth_ref": [],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.13,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInFinancingActivities",
+       "weight": -1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Payments for share based awards exercised net of taxes paid.",
+        "label": "Payments For Share Based Awards Exercised Net Of Taxes Paid",
+        "negatedLabel": "Share-based awards exercised, net of taxes paid"
+       }
+      }
+     },
+     "localname": "PaymentsForShareBasedAwardsExercisedNetOfTaxesPaid",
+     "nsuri": "http://www.brightstar.com/20160930",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "bst_PaymentsToAcquireBusinessesNetOfCashAcquiredAndEquityMethodInvestments": {
+     "auth_ref": [],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.09,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInInvestingActivities",
+       "weight": -1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Payments to acquire businesses net of cash acquired and equity method investments.",
+        "label": "Payments To Acquire Businesses Net Of Cash Acquired And Equity Method Investments",
+        "negatedLabel": "Acquisitions and other investing activities"
+       }
+      }
+     },
+     "localname": "PaymentsToAcquireBusinessesNetOfCashAcquiredAndEquityMethodInvestments",
+     "nsuri": "http://www.brightstar.com/20160930",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "dei_AmendmentFlag": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "If the value is true, then the document is an amendment to previously-filed/accepted document.",
+        "label": "Amendment Flag",
+        "terseLabel": "Amendment Flag"
+       }
+      }
+     },
+     "localname": "AmendmentFlag",
+     "nsuri": "http://xbrl.sec.gov/dei/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DocumentandEntityInformation"
+     ],
+     "xbrltype": "booleanItemType"
+    },
+    "dei_CurrentFiscalYearEndDate": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "End date of current fiscal year in the format --MM-DD.",
+        "label": "Current Fiscal Year End Date",
+        "terseLabel": "Current Fiscal Year End Date"
+       }
+      }
+     },
+     "localname": "CurrentFiscalYearEndDate",
+     "nsuri": "http://xbrl.sec.gov/dei/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DocumentandEntityInformation"
+     ],
+     "xbrltype": "gMonthDayItemType"
+    },
+    "dei_DocumentFiscalPeriodFocus": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "This is focus fiscal period of the document report. For a first quarter 2006 quarterly report, which may also provide financial information from prior periods, the first fiscal quarter should be given as the fiscal period focus. Values: FY, Q1, Q2, Q3, Q4, H1, H2, M9, T1, T2, T3, M8, CY.",
+        "label": "Document Fiscal Period Focus",
+        "terseLabel": "Document Fiscal Period Focus"
+       }
+      }
+     },
+     "localname": "DocumentFiscalPeriodFocus",
+     "nsuri": "http://xbrl.sec.gov/dei/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DocumentandEntityInformation"
+     ],
+     "xbrltype": "fiscalPeriodItemType"
+    },
+    "dei_DocumentFiscalYearFocus": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "This is focus fiscal year of the document report in CCYY format. For a 2006 annual report, which may also provide financial information from prior periods, fiscal 2006 should be given as the fiscal year focus. Example: 2006.",
+        "label": "Document Fiscal Year Focus",
+        "terseLabel": "Document Fiscal Year Focus"
+       }
+      }
+     },
+     "localname": "DocumentFiscalYearFocus",
+     "nsuri": "http://xbrl.sec.gov/dei/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DocumentandEntityInformation"
+     ],
+     "xbrltype": "gYearItemType"
+    },
+    "dei_DocumentPeriodEndDate": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The end date of the period reflected on the cover page if a periodic report. For all other reports and registration statements containing historical data, it is the date up through which that historical data is presented.  If there is no historical data in the report, use the filing date. The format of the date is CCYY-MM-DD.",
+        "label": "Document Period End Date",
+        "terseLabel": "Document Period End Date"
+       }
+      }
+     },
+     "localname": "DocumentPeriodEndDate",
+     "nsuri": "http://xbrl.sec.gov/dei/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DocumentandEntityInformation"
+     ],
+     "xbrltype": "dateItemType"
+    },
+    "dei_DocumentType": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The type of document being provided (such as 10-K, 10-Q, 485BPOS, etc). The document type is limited to the same value as the supporting SEC submission type, or the word 'Other'.",
+        "label": "Document Type",
+        "terseLabel": "Document Type"
+       }
+      }
+     },
+     "localname": "DocumentType",
+     "nsuri": "http://xbrl.sec.gov/dei/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DocumentandEntityInformation"
+     ],
+     "xbrltype": "submissionTypeItemType"
+    },
+    "dei_EntityCentralIndexKey": {
+     "auth_ref": [
+      "r123"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "A unique 10-digit SEC-issued value to identify entities that have filed disclosures with the SEC. It is commonly abbreviated as CIK.",
+        "label": "Entity Central Index Key",
+        "terseLabel": "Entity Central Index Key"
+       }
+      }
+     },
+     "localname": "EntityCentralIndexKey",
+     "nsuri": "http://xbrl.sec.gov/dei/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DocumentandEntityInformation"
+     ],
+     "xbrltype": "centralIndexKeyItemType"
+    },
+    "dei_EntityCommonStockSharesOutstanding": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Indicate number of shares or other units outstanding of each of registrant's classes of capital or common stock or other ownership interests, if and as stated on cover of related periodic report. Where multiple classes or units exist define each class/interest by adding class of stock items such as Common Class A [Member], Common Class B [Member] or Partnership Interest [Member] onto the Instrument [Domain] of the Entity Listings, Instrument.",
+        "label": "Entity Common Stock Shares Outstanding",
+        "terseLabel": "Entity Common Stock, Shares Outstanding"
+       }
+      }
+     },
+     "localname": "EntityCommonStockSharesOutstanding",
+     "nsuri": "http://xbrl.sec.gov/dei/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DocumentandEntityInformation"
+     ],
+     "xbrltype": "sharesItemType"
+    },
+    "dei_EntityFilerCategory": {
+     "auth_ref": [
+      "r123"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Indicate whether the registrant is one of the following: (1) Large Accelerated Filer, (2) Accelerated Filer, (3) Non-accelerated Filer, (4) Smaller Reporting Company (Non-accelerated), (5) Smaller Reporting Accelerated Filer or (6) Smaller Reporting Company and Large Accelerated Filer. Definitions of these categories are stated in Rule 12b-2 of the Exchange Act. This information should be based on the registrant's current or most recent filing containing the related disclosure.",
+        "label": "Entity Filer Category",
+        "terseLabel": "Entity Filer Category"
+       }
+      }
+     },
+     "localname": "EntityFilerCategory",
+     "nsuri": "http://xbrl.sec.gov/dei/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DocumentandEntityInformation"
+     ],
+     "xbrltype": "filerCategoryItemType"
+    },
+    "dei_EntityRegistrantName": {
+     "auth_ref": [
+      "r123"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The exact name of the entity filing the report as specified in its charter, which is required by forms filed with the SEC.",
+        "label": "Entity Registrant Name",
+        "terseLabel": "Entity Registrant Name"
+       }
+      }
+     },
+     "localname": "EntityRegistrantName",
+     "nsuri": "http://xbrl.sec.gov/dei/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DocumentandEntityInformation"
+     ],
+     "xbrltype": "normalizedStringItemType"
+    },
+    "us-gaap_AccountingPoliciesAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Accounting Policies [Abstract]",
+        "terseLabel": "Accounting Policies [Abstract]"
+       }
+      }
+     },
+     "localname": "AccountingPoliciesAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_AccountsNotesAndLoansReceivableNetCurrent": {
+     "auth_ref": [
+      "r28"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.02,
+       "parentTag": "us-gaap_AssetsCurrent",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The aggregate of amounts due from customers or clients, within one year of the balance sheet date (or one operating cycle, if longer), for goods or services that have been delivered or sold in the normal course of business and an amount representing an agreement for an unconditional promise by the maker to pay the entity (holder) a definite sum of money at a future date within one year of the balance sheet, reduced to their estimated net realizable fair value by an allowance established by the entity of the amount it deems uncertain of collection and net of any write-downs taken for collection uncertainty on the part of the holder, respectively.",
+        "label": "Accounts Notes And Loans Receivable Net Current",
+        "terseLabel": "Accounts receivable, less allowance for doubtful accounts (2016 - $30,676; 2015 - $19,180)"
+       }
+      }
+     },
+     "localname": "AccountsNotesAndLoansReceivableNetCurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_AccountsPayableCurrent": {
+     "auth_ref": [
+      "r23"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.1,
+       "parentTag": "us-gaap_LiabilitiesCurrent",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Carrying value as of the balance sheet date of liabilities incurred (and for which invoices have typically been received) and payable to vendors for goods and services received that are used in an entity's business. Used to reflect the current portion of the liabilities (due within one year or within the normal operating cycle if longer).",
+        "label": "Accounts Payable Current",
+        "terseLabel": "Accounts payable"
+       }
+      }
+     },
+     "localname": "AccountsPayableCurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_AccruedIncomeTaxesCurrent": {
+     "auth_ref": [
+      "r10",
+      "r108",
+      "r115"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.12,
+       "parentTag": "us-gaap_LiabilitiesCurrent",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Carrying amount as of the balance sheet date of the unpaid sum of the known and estimated amounts payable to satisfy all currently due domestic and foreign income tax obligations.",
+        "label": "Accrued Income Taxes Current",
+        "terseLabel": "Income taxes payable"
+       }
+      }
+     },
+     "localname": "AccruedIncomeTaxesCurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_AccumulatedDepreciationDepletionAndAmortizationPropertyPlantAndEquipment": {
+     "auth_ref": [
+      "r21",
+      "r78"
+     ],
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of accumulated depreciation, depletion and amortization for physical assets used in the normal conduct of business to produce goods and services.",
+        "label": "Accumulated Depreciation Depletion And Amortization Property Plant And Equipment",
+        "terseLabel": "Allowance for depreciation, property, plant and equipment"
+       }
+      }
+     },
+     "localname": "AccumulatedDepreciationDepletionAndAmortizationPropertyPlantAndEquipment",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassifiedParenthetical"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_AccumulatedOtherComprehensiveIncomeLossNetOfTax": {
+     "auth_ref": [
+      "r33",
+      "r34",
+      "r35"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.23,
+       "parentTag": "us-gaap_StockholdersEquity",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Accumulated change in equity from transactions and other events and circumstances from non-owner sources, net of tax effect, at period end. Excludes Net Income (Loss), and accumulated changes in equity from transactions resulting from investments by owners and distributions to owners. Includes foreign currency translation items, certain pension adjustments, unrealized gains and losses on certain investments in debt and equity securities, other than temporary impairment (OTTI) losses related to factors other than credit losses on available-for-sale and held-to-maturity debt securities that an entity does not intend to sell and it is not more likely than not that the entity will be required to sell before recovery of the amortized cost basis, as well as changes in the fair value of derivatives related to the effective portion of a designated cash flow hedge.",
+        "label": "Accumulated Other Comprehensive Income Loss Net Of Tax",
+        "periodEndLabel": "Ending balance",
+        "periodStartLabel": "Beginning balance",
+        "terseLabel": "Accumulated other comprehensive loss"
+       }
+      }
+     },
+     "localname": "AccumulatedOtherComprehensiveIncomeLossNetOfTax",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Adjustments To Reconcile Net Income Loss To Cash Provided By Used In Operating Activities [Abstract]",
+        "terseLabel": "Adjustments to reconcile net income to net cash provided by operating activities:"
+       }
+      }
+     },
+     "localname": "AdjustmentsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_AirlineRelatedInventory": {
+     "auth_ref": [
+      "r31"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.03,
+       "parentTag": "us-gaap_AssetsCurrent",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Gross amount, as of the balance sheet date, of merchandise, goods, commodities, or supplies to be used in air transport of passengers and freight.",
+        "label": "Airline Related Inventory, Gross",
+        "terseLabel": "Inventories of parts and supplies, at cost"
+       }
+      }
+     },
+     "localname": "AirlineRelatedInventory",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_AllowanceForDoubtfulAccountsReceivableCurrent": {
+     "auth_ref": [
+      "r30",
+      "r71"
+     ],
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "A valuation allowance for trade and other receivables due to an Entity within one year (or the normal operating cycle, whichever is longer) that are expected to be uncollectible.",
+        "label": "Allowance For Doubtful Accounts Receivable Current",
+        "terseLabel": "Allowance for doubtful accounts receivable"
+       }
+      }
+     },
+     "localname": "AllowanceForDoubtfulAccountsReceivableCurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassifiedParenthetical"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_AmortizationOfIntangibleAssets": {
+     "auth_ref": [
+      "r52",
+      "r75",
+      "r76"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation": {
+       "order": 1.04,
+       "parentTag": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+       "weight": -1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The aggregate expense charged against earnings to allocate the cost of intangible assets (nonphysical assets not used in production) in a systematic and rational manner to the periods expected to benefit from such assets. As a noncash expense, this element is added back to net income when calculating cash provided by or used in operations using the indirect method.",
+        "label": "Amortization Of Intangible Assets",
+        "negatedLabel": "Other intangible assets amortization"
+       }
+      }
+     },
+     "localname": "AmortizationOfIntangibleAssets",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_Assets": {
+     "auth_ref": [
+      "r66",
+      "r107",
+      "r114"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": null,
+       "parentTag": null,
+       "root": true,
+       "weight": null
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Sum of the carrying amounts as of the balance sheet date of all assets that are recognized. Assets are probable future economic benefits obtained or controlled by an entity as a result of past transactions or events.",
+        "label": "Assets",
+        "totalLabel": "TOTAL ASSETS"
+       }
+      }
+     },
+     "localname": "Assets",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_AssetsCurrent": {
+     "auth_ref": [
+      "r3",
+      "r4",
+      "r32"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.05,
+       "parentTag": "us-gaap_Assets",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Sum of the carrying amounts as of the balance sheet date of all assets that are expected to be realized in cash, sold, or consumed within one year (or the normal operating cycle, if longer). Assets are probable future economic benefits obtained or controlled by an entity as a result of past transactions or events.",
+        "label": "Assets Current",
+        "totalLabel": "TOTAL CURRENT ASSETS"
+       }
+      }
+     },
+     "localname": "AssetsCurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_AssetsCurrentAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Assets Current [Abstract]",
+        "terseLabel": "CURRENT ASSETS"
+       }
+      }
+     },
+     "localname": "AssetsCurrentAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_CashAndCashEquivalentsAtCarryingValue": {
+     "auth_ref": [
+      "r2",
+      "r20",
+      "r54"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.01,
+       "parentTag": "us-gaap_AssetsCurrent",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of currency on hand as well as demand deposits with banks or financial institutions. Includes other kinds of accounts that have the general characteristics of demand deposits. Also includes short-term, highly liquid investments that are both readily convertible to known amounts of cash and so near their maturity that they present insignificant risk of changes in value because of changes in interest rates. Excludes cash and cash equivalents within disposal group and discontinued operation.",
+        "label": "Cash And Cash Equivalents At Carrying Value",
+        "periodEndLabel": "CASH AND CASH EQUIVALENTS AT END OF PERIOD",
+        "periodStartLabel": "CASH AND CASH EQUIVALENTS AT BEGINNING OF PERIOD",
+        "terseLabel": "Cash and equivalents"
+       }
+      }
+     },
+     "localname": "CashAndCashEquivalentsAtCarryingValue",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect",
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_CashAndCashEquivalentsPeriodIncreaseDecrease": {
+     "auth_ref": [],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": null,
+       "parentTag": null,
+       "root": true,
+       "weight": null
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of increase (decrease) in cash and cash equivalents. Cash and cash equivalents are the amount of currency on hand as well as demand deposits with banks or financial institutions. Includes other kinds of accounts that have the general characteristics of demand deposits. Also includes short-term, highly liquid investments that are both readily convertible to known amounts of cash and so near their maturity that they present insignificant risk of changes in value because of changes in interest rates. Includes effect from exchange rate changes.",
+        "label": "Cash And Cash Equivalents Period Increase Decrease",
+        "totalLabel": "NET DECREASE IN CASH AND CASH EQUIVALENTS"
+       }
+      }
+     },
+     "localname": "CashAndCashEquivalentsPeriodIncreaseDecrease",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_CommonStockDividendsPerShareDeclared": {
+     "auth_ref": [
+      "r83"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Aggregate dividends declared during the period for each share of common stock outstanding.",
+        "label": "Common Stock Dividends Per Share Declared",
+        "terseLabel": "Dividends declared per share"
+       }
+      }
+     },
+     "localname": "CommonStockDividendsPerShareDeclared",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "perShareItemType"
+    },
+    "us-gaap_CommonStockParOrStatedValuePerShare": {
+     "auth_ref": [
+      "r13"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Face amount or stated value per share of common stock.",
+        "label": "Common Stock Par Or Stated Value Per Share",
+        "terseLabel": "Common stock, par value"
+       }
+      }
+     },
+     "localname": "CommonStockParOrStatedValuePerShare",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassifiedParenthetical"
+     ],
+     "xbrltype": "perShareItemType"
+    },
+    "us-gaap_CommonStockSharesAuthorized": {
+     "auth_ref": [
+      "r13"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The maximum number of common shares permitted to be issued by an entity's charter and bylaws.",
+        "label": "Common Stock Shares Authorized",
+        "terseLabel": "Common stock, shares authorized"
+       }
+      }
+     },
+     "localname": "CommonStockSharesAuthorized",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassifiedParenthetical"
+     ],
+     "xbrltype": "sharesItemType"
+    },
+    "us-gaap_CommonStockSharesIssued": {
+     "auth_ref": [
+      "r13"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Total number of common shares of an entity that have been sold or granted to shareholders (includes common shares that were issued, repurchased and remain in the treasury). These shares represent capital invested by the firm's shareholders and owners, and may be all or only a portion of the number of shares authorized. Shares issued include shares outstanding and shares held in the treasury.",
+        "label": "Common Stock Shares Issued",
+        "terseLabel": "Common stock, shares issued"
+       }
+      }
+     },
+     "localname": "CommonStockSharesIssued",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassifiedParenthetical"
+     ],
+     "xbrltype": "sharesItemType"
+    },
+    "us-gaap_CommonStockValue": {
+     "auth_ref": [
+      "r13"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.21,
+       "parentTag": "us-gaap_StockholdersEquity",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Aggregate par or stated value of issued nonredeemable common stock (or common stock redeemable solely at the option of the issuer). This item includes treasury stock repurchased by the entity. Note: elements for number of nonredeemable common shares, par value and other disclosure concepts are in another section within stockholders' equity.",
+        "label": "Common Stock Value",
+        "terseLabel": "Common stock, par value-$1 per share Authorized - 405,000,000 shares Issued - 2016 - 138,921,478; 2015 - 139,357,294"
+       }
+      }
+     },
+     "localname": "CommonStockValue",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest": {
+     "auth_ref": [
+      "r37",
+      "r39",
+      "r98",
+      "r103"
+     ],
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount after tax of increase (decrease) in equity from transactions and other events and circumstances from net income and other comprehensive income. Excludes changes in equity resulting from investments by owners and distributions to owners.",
+        "label": "Comprehensive Income Net Of Tax Including Portion Attributable To Noncontrolling Interest",
+        "terseLabel": "Comprehensive income",
+        "totalLabel": "Comprehensive income"
+       }
+      }
+     },
+     "localname": "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_CostOfGoodsSold": {
+     "auth_ref": [],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
+       "order": 1.02,
+       "parentTag": "us-gaap_GrossProfit",
+       "weight": -1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Total costs related to goods produced and sold during the reporting period.",
+        "label": "Cost Of Goods Sold",
+        "terseLabel": "Cost of goods sold"
+       }
+      }
+     },
+     "localname": "CostOfGoodsSold",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_CurrentIncomeTaxExpenseBenefit": {
+     "auth_ref": [
+      "r55",
+      "r94",
+      "r95"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
+       "order": 1.08,
+       "parentTag": "us-gaap_ProfitLoss",
+       "weight": -1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of current income tax expense (benefit) pertaining to taxable income (loss) from continuing operations.",
+        "label": "Current Income Tax Expense Benefit",
+        "terseLabel": "Income taxes"
+       }
+      }
+     },
+     "localname": "CurrentIncomeTaxExpenseBenefit",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_DeferredTaxAssetsNetNoncurrent": {
+     "auth_ref": [
+      "r88",
+      "r89",
+      "r90",
+      "r91",
+      "r92"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.07,
+       "parentTag": "us-gaap_Assets",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount after allocation of valuation allowances of deferred tax asset attributable to deductible temporary differences and carryforwards classified as noncurrent.",
+        "label": "Deferred Tax Assets Net Noncurrent",
+        "terseLabel": "Deferred tax assets"
+       }
+      }
+     },
+     "localname": "DeferredTaxAssetsNetNoncurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_DeferredTaxLiabilitiesGrossNoncurrent": {
+     "auth_ref": [
+      "r88",
+      "r93"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.18,
+       "parentTag": "us-gaap_LiabilitiesAndStockholdersEquity",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Gross amount of noncurrent deferred tax liabilities, which result from applying the applicable tax rate to taxable temporary differences pertaining to each jurisdiction to which the entity is obligated to pay income tax.",
+        "label": "Deferred Tax Liabilities Gross Noncurrent",
+        "terseLabel": "Deferred tax liabilities"
+       }
+      }
+     },
+     "localname": "DeferredTaxLiabilitiesGrossNoncurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_DepreciationAndAmortization": {
+     "auth_ref": [
+      "r52",
+      "r77"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.02,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInOperatingActivities",
+       "weight": 1.0
+      },
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
+       "order": 1.05,
+       "parentTag": "us-gaap_OperatingExpenses",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The current period expense charged against earnings on long-lived, physical assets not used in production, and which are not intended for resale, to allocate or recognize the cost of such assets over their useful lives; or to record the reduction in book value of an intangible asset over the benefit period of such asset; or to reflect consumption during the period of an asset that is not used in production.",
+        "label": "Depreciation And Amortization",
+        "terseLabel": "Depreciation and amortization"
+       }
+      }
+     },
+     "localname": "DepreciationAndAmortization",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect",
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_DescriptionOfNewAccountingPronouncementsNotYetAdopted": {
+     "auth_ref": [
+      "r57"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The entire disclosure for a new accounting pronouncement that has been issued but not yet adopted.",
+        "label": "Description of New Accounting Pronouncements not yet Adopted [Text Block]",
+        "terseLabel": "New Accounting Pronouncements"
+       }
+      }
+     },
+     "localname": "DescriptionOfNewAccountingPronouncementsNotYetAdopted",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/RecentAccountingPronouncements"
+     ],
+     "xbrltype": "textBlockItemType"
+    },
+    "us-gaap_DividendsPayableCurrent": {
+     "auth_ref": [
+      "r7",
+      "r24"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.13,
+       "parentTag": "us-gaap_LiabilitiesCurrent",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Carrying value as of the balance sheet date of dividends declared but unpaid on equity securities issued by the entity and outstanding. Used to reflect the current portion of the liabilities (due within one year or within the normal operating cycle if longer).",
+        "label": "Dividends Payable Current",
+        "terseLabel": "Dividends payable"
+       }
+      }
+     },
+     "localname": "DividendsPayableCurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_EarningsPerShareBasic": {
+     "auth_ref": [
+      "r41",
+      "r56",
+      "r60",
+      "r61",
+      "r62",
+      "r63",
+      "r64",
+      "r112",
+      "r120"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The amount of net income (loss) for the period per each share of common stock or unit outstanding during the reporting period.",
+        "label": "Earnings Per Share Basic",
+        "terseLabel": "Basic net income per share"
+       }
+      }
+     },
+     "localname": "EarningsPerShareBasic",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "perShareItemType"
+    },
+    "us-gaap_EarningsPerShareDiluted": {
+     "auth_ref": [
+      "r41",
+      "r56",
+      "r60",
+      "r61",
+      "r62",
+      "r63",
+      "r64",
+      "r112",
+      "r120"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The amount of net income (loss) for the period available to each share of common stock or common unit outstanding during the reporting period and to each share or unit that would have been outstanding assuming the issuance of common shares or units for all dilutive potential common shares or units outstanding during the reporting period.",
+        "label": "Earnings Per Share Diluted",
+        "terseLabel": "Diluted net income per share"
+       }
+      }
+     },
+     "localname": "EarningsPerShareDiluted",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "perShareItemType"
+    },
+    "us-gaap_EffectOfExchangeRateOnCashAndCashEquivalents": {
+     "auth_ref": [
+      "r105"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.18,
+       "parentTag": "us-gaap_CashAndCashEquivalentsPeriodIncreaseDecrease",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of increase (decrease) from the effect of exchange rate changes on cash and cash equivalent balances held in foreign currencies.",
+        "label": "Effect Of Exchange Rate On Cash And Cash Equivalents",
+        "terseLabel": "EFFECT OF EXCHANGE RATE CHANGES ON CASH"
+       }
+      }
+     },
+     "localname": "EffectOfExchangeRateOnCashAndCashEquivalents",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_ExcessTaxBenefitFromShareBasedCompensationFinancingActivities": {
+     "auth_ref": [
+      "r87"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.14,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInFinancingActivities",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of cash inflow from realized tax benefit related to deductible compensation cost reported on the entity's tax return for equity instruments in excess of the compensation cost for those instruments recognized for financial reporting purposes.",
+        "label": "Excess Tax Benefit From Share Based Compensation Financing Activities",
+        "terseLabel": "Excess tax benefits from share-based compensation"
+       }
+      }
+     },
+     "localname": "ExcessTaxBenefitFromShareBasedCompensationFinancingActivities",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_ExcessTaxBenefitFromShareBasedCompensationOperatingActivities": {
+     "auth_ref": [
+      "r87"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.04,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInOperatingActivities",
+       "weight": -1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of cash outflow for realized tax benefit related to deductible compensation cost reported on the entity's tax return for equity instruments in excess of the compensation cost for those instruments recognized for financial reporting purposes.",
+        "label": "Excess Tax Benefit From Share Based Compensation Operating Activities",
+        "negatedLabel": "Excess tax benefits from share-based compensation"
+       }
+      }
+     },
+     "localname": "ExcessTaxBenefitFromShareBasedCompensationOperatingActivities",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_GrossProfit": {
+     "auth_ref": [
+      "r42"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
+       "order": 1.03,
+       "parentTag": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Aggregate revenue less cost of goods and services sold or operating expenses directly attributable to the revenue generation activity.",
+        "label": "Gross Profit",
+        "totalLabel": "Gross profit"
+       }
+      }
+     },
+     "localname": "GrossProfit",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest": {
+     "auth_ref": [
+      "r40",
+      "r56",
+      "r106",
+      "r111",
+      "r121"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation": {
+       "order": null,
+       "parentTag": null,
+       "root": true,
+       "weight": null
+      },
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
+       "order": 1.07,
+       "parentTag": "us-gaap_ProfitLoss",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of income (loss) from continuing operations, including income (loss) from equity method investments, before deduction of income tax expense (benefit), and income (loss) attributable to noncontrolling interest.",
+        "label": "Income Loss From Continuing Operations Before Income Taxes Extraordinary Items Noncontrolling Interest",
+        "totalLabel": "Income before income taxes"
+       }
+      }
+     },
+     "localname": "IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation",
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_IncomeStatementAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Income Statement [Abstract]",
+        "terseLabel": "Income Statement [Abstract]"
+       }
+      }
+     },
+     "localname": "IncomeStatementAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_IncreaseDecreaseInOperatingCapital": {
+     "auth_ref": [
+      "r51"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.06,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInOperatingActivities",
+       "weight": -1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The increase (decrease) during the reporting period of all assets and liabilities used in operating activities.",
+        "label": "Increase Decrease In Operating Capital",
+        "negatedLabel": "Changes in operating assets and liabilities"
+       }
+      }
+     },
+     "localname": "IncreaseDecreaseInOperatingCapital",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_IncreaseDecreaseInOtherOperatingCapitalNet": {
+     "auth_ref": [
+      "r51"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.05,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInOperatingActivities",
+       "weight": -1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of increase (decrease) in operating assets after deduction of operating liabilities classified as other.",
+        "label": "Increase Decrease In Other Operating Capital Net",
+        "negatedLabel": "Other"
+       }
+      }
+     },
+     "localname": "IncreaseDecreaseInOtherOperatingCapitalNet",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_InterestRevenueExpenseNet": {
+     "auth_ref": [
+      "r66"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation": {
+       "order": 1.03,
+       "parentTag": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of interest revenue (income derived from investments in debt securities and on cash and cash equivalents) net of interest expense (cost of borrowed funds accounted for as interest).",
+        "label": "Interest Revenue Expense Net",
+        "terseLabel": "Interest expense, net"
+       }
+      }
+     },
+     "localname": "InterestRevenueExpenseNet",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_LiabilitiesAndStockholdersEquity": {
+     "auth_ref": [
+      "r17",
+      "r110",
+      "r118"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": null,
+       "parentTag": null,
+       "root": true,
+       "weight": null
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of liabilities and equity items, including the portion of equity attributable to noncontrolling interests, if any.",
+        "label": "Liabilities And Stockholders Equity",
+        "totalLabel": "TOTAL LIABILITIES AND EQUITY"
+       }
+      }
+     },
+     "localname": "LiabilitiesAndStockholdersEquity",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_LiabilitiesCurrent": {
+     "auth_ref": [
+      "r25"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.15,
+       "parentTag": "us-gaap_LiabilitiesAndStockholdersEquity",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Total obligations incurred as part of normal operations that are expected to be paid during the following twelve months or within one business cycle, if longer.",
+        "label": "Liabilities Current",
+        "totalLabel": "TOTAL CURRENT LIABILITIES"
+       }
+      }
+     },
+     "localname": "LiabilitiesCurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_LiabilitiesCurrentAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Liabilities Current [Abstract]",
+        "terseLabel": "CURRENT LIABILITIES"
+       }
+      }
+     },
+     "localname": "LiabilitiesCurrentAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_MainlineMember": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Significant, primary, generally longer routes of a carrier that it operates under its own brand, depart from or arrive to major cities or destinations, which are not defined by the entity as regional.",
+        "label": "Mainline [Member]",
+        "terseLabel": "Mainline [Member]"
+       }
+      }
+     },
+     "localname": "MainlineMember",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "domainItemType"
+    },
+    "us-gaap_MinorityInterest": {
+     "auth_ref": [
+      "r29",
+      "r109",
+      "r117"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.25,
+       "parentTag": "us-gaap_StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Total of all stockholders' equity (deficit) items, net of receivables from officers, directors, owners, and affiliates of the entity which is directly or indirectly attributable to that ownership interest in subsidiary equity which is not attributable to the parent (that is, noncontrolling interest, previously referred to as minority interest).",
+        "label": "Minority Interest",
+        "terseLabel": "Noncontrolling interests in subsidiaries"
+       }
+      }
+     },
+     "localname": "MinorityInterest",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_NetCashProvidedByUsedInFinancingActivities": {
+     "auth_ref": [
+      "r49"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.17,
+       "parentTag": "us-gaap_CashAndCashEquivalentsPeriodIncreaseDecrease",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of cash inflow (outflow) from financing activities, including discontinued operations. Financing activity cash flows include obtaining resources from owners and providing them with a return on, and a return of, their investment; borrowing money and repaying amounts borrowed, or settling the obligation; and obtaining and paying for other resources obtained from creditors on long-term credit.",
+        "label": "Net Cash Provided By Used In Financing Activities",
+        "totalLabel": "NET CASH USED IN FINANCING ACTIVITIES"
+       }
+      }
+     },
+     "localname": "NetCashProvidedByUsedInFinancingActivities",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_NetCashProvidedByUsedInFinancingActivitiesAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Net Cash Provided By Used In Financing Activities [Abstract]",
+        "terseLabel": "FINANCING ACTIVITIES:"
+       }
+      }
+     },
+     "localname": "NetCashProvidedByUsedInFinancingActivitiesAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_NetCashProvidedByUsedInInvestingActivities": {
+     "auth_ref": [
+      "r49"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.1,
+       "parentTag": "us-gaap_CashAndCashEquivalentsPeriodIncreaseDecrease",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of cash inflow (outflow) from investing activities, including discontinued operations. Investing activity cash flows include making and collecting loans and acquiring and disposing of debt or equity instruments and property, plant, and equipment and other productive assets.",
+        "label": "Net Cash Provided By Used In Investing Activities",
+        "totalLabel": "NET CASH USED IN INVESTING ACTIVITIES"
+       }
+      }
+     },
+     "localname": "NetCashProvidedByUsedInInvestingActivities",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_NetCashProvidedByUsedInInvestingActivitiesAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Net Cash Provided By Used In Investing Activities [Abstract]",
+        "terseLabel": "INVESTING ACTIVITIES:"
+       }
+      }
+     },
+     "localname": "NetCashProvidedByUsedInInvestingActivitiesAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_NetCashProvidedByUsedInOperatingActivities": {
+     "auth_ref": [
+      "r49",
+      "r50",
+      "r53"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.07,
+       "parentTag": "us-gaap_CashAndCashEquivalentsPeriodIncreaseDecrease",
+       "weight": 1.0
+      }
+     },
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of cash inflow (outflow) from operating activities, including discontinued operations. Operating activity cash flows include transactions, adjustments, and changes in value not defined as investing or financing activities.",
+        "label": "Net Cash Provided By Used In Operating Activities",
+        "totalLabel": "NET CASH PROVIDED BY OPERATING ACTIVITIES"
+       }
+      }
+     },
+     "localname": "NetCashProvidedByUsedInOperatingActivities",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_NetCashProvidedByUsedInOperatingActivitiesAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Net Cash Provided By Used In Operating Activities [Abstract]",
+        "terseLabel": "OPERATING ACTIVITIES:"
+       }
+      }
+     },
+     "localname": "NetCashProvidedByUsedInOperatingActivitiesAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_NewAccountingPronouncementsAndChangesInAccountingPrinciplesAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "New Accounting Pronouncements and Chances in Accounting Principles [Abstract]"
+       }
+      }
+     },
+     "localname": "NewAccountingPronouncementsAndChangesInAccountingPrinciplesAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_OperatingExpenses": {
+     "auth_ref": [],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
+       "order": 1.06,
+       "parentTag": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+       "weight": -1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Generally recurring costs associated with normal operations except for the portion of these expenses which can be clearly related to production and included in cost of sales or services. Includes selling, general and administrative expense.",
+        "label": "Operating Expenses",
+        "totalLabel": "Total operating expenses"
+       }
+      }
+     },
+     "localname": "OperatingExpenses",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_OperatingExpensesAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Operating Expenses [Abstract]",
+        "terseLabel": "Operating expenses:"
+       }
+      }
+     },
+     "localname": "OperatingExpensesAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_OperatingIncomeLoss": {
+     "auth_ref": [],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation": {
+       "order": 1.02,
+       "parentTag": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The net result for the period of deducting operating expenses from operating revenues.",
+        "label": "Operating Income Loss",
+        "terseLabel": "Total operating profit"
+       }
+      }
+     },
+     "localname": "OperatingIncomeLoss",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_OperatingIncomeLossAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Operating Income Loss [Abstract]",
+        "terseLabel": "Operating profit:"
+       }
+      }
+     },
+     "localname": "OperatingIncomeLossAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_OrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock": {
+     "auth_ref": [
+      "r1",
+      "r104"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The entire disclosure for organization, consolidation and basis of presentation of financial statements disclosure.",
+        "label": "Organization Consolidation And Presentation Of Financial Statements Disclosure [Text Block]",
+        "terseLabel": "Basis of Presentation"
+       }
+      }
+     },
+     "localname": "OrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/NotesToFinancialStatementsOrganizationConsolidationAndPresentationOfFinancialStatementsDisclosureTextBlock"
+     ],
+     "xbrltype": "textBlockItemType"
+    },
+    "us-gaap_OtherAssetsNoncurrent": {
+     "auth_ref": [
+      "r22"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.08,
+       "parentTag": "us-gaap_Assets",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of noncurrent assets classified as other.",
+        "label": "Other Assets Noncurrent",
+        "terseLabel": "Other assets"
+       }
+      }
+     },
+     "localname": "OtherAssetsNoncurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_OtherLiabilitiesCurrent": {
+     "auth_ref": [
+      "r5",
+      "r6",
+      "r24"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.14,
+       "parentTag": "us-gaap_LiabilitiesCurrent",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of liabilities classified as other, due within one year or the normal operating cycle, if longer.",
+        "label": "Other Liabilities Current",
+        "terseLabel": "Other current liabilities"
+       }
+      }
+     },
+     "localname": "OtherLiabilitiesCurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_OtherLiabilitiesNoncurrent": {
+     "auth_ref": [
+      "r27"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.19,
+       "parentTag": "us-gaap_LiabilitiesAndStockholdersEquity",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of liabilities classified as other, due after one year or the normal operating cycle, if longer.",
+        "label": "Other Liabilities Noncurrent",
+        "terseLabel": "Other long-term liabilities"
+       }
+      }
+     },
+     "localname": "OtherLiabilitiesNoncurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_OtherNoninterestExpense": {
+     "auth_ref": [
+      "r113"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation": {
+       "order": 1.05,
+       "parentTag": "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+       "weight": -1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of noninterest expense classified as other.",
+        "label": "Other Noninterest Expense",
+        "negatedLabel": "Other, net"
+       }
+      }
+     },
+     "localname": "OtherNoninterestExpense",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_PaymentsForRepurchaseOfCommonStock": {
+     "auth_ref": [
+      "r46"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.16,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInFinancingActivities",
+       "weight": -1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The cash outflow to reacquire common stock during the period.",
+        "label": "Payments For Repurchase Of Common Stock",
+        "negatedLabel": "Purchase of stock"
+       }
+      }
+     },
+     "localname": "PaymentsForRepurchaseOfCommonStock",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_PaymentsOfDividends": {
+     "auth_ref": [
+      "r46"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.15,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInFinancingActivities",
+       "weight": -1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Cash outflow in the form of capital distributions and dividends to common shareholders, preferred shareholders and noncontrolling interests.",
+        "label": "Payments Of Dividends",
+        "negatedLabel": "Dividends paid"
+       }
+      }
+     },
+     "localname": "PaymentsOfDividends",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_PaymentsToAcquirePropertyPlantAndEquipment": {
+     "auth_ref": [
+      "r44"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.08,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInInvestingActivities",
+       "weight": -1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The cash outflow associated with the acquisition of long-lived, physical assets that are used in the normal conduct of business to produce goods and services and not intended for resale; includes cash outflows to pay for construction of self-constructed assets.",
+        "label": "Payments To Acquire Property Plant And Equipment",
+        "negatedLabel": "Purchases of property, plant and equipment"
+       }
+      }
+     },
+     "localname": "PaymentsToAcquirePropertyPlantAndEquipment",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_PensionAndOtherPostretirementDefinedBenefitPlansLiabilitiesNoncurrent": {
+     "auth_ref": [
+      "r11",
+      "r84",
+      "r85",
+      "r86"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.17,
+       "parentTag": "us-gaap_LiabilitiesAndStockholdersEquity",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of liability, recognized in statement of financial position, for defined benefit pension and other postretirement plans, classified as noncurrent.",
+        "label": "Pension And Other Postretirement Defined Benefit Plans Liabilities Noncurrent",
+        "terseLabel": "Pension and other post-retirement benefit liabilities"
+       }
+      }
+     },
+     "localname": "PensionAndOtherPostretirementDefinedBenefitPlansLiabilitiesNoncurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_PreferredStockParOrStatedValuePerShare": {
+     "auth_ref": [
+      "r12"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Face amount or stated value per share of preferred stock nonredeemable or redeemable solely at the option of the issuer.",
+        "label": "Preferred Stock Par Or Stated Value Per Share",
+        "terseLabel": "Preferred stock, par value"
+       }
+      }
+     },
+     "localname": "PreferredStockParOrStatedValuePerShare",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassifiedParenthetical"
+     ],
+     "xbrltype": "perShareItemType"
+    },
+    "us-gaap_PreferredStockSharesAuthorized": {
+     "auth_ref": [
+      "r12"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The maximum number of nonredeemable preferred shares (or preferred stock redeemable solely at the option of the issuer) permitted to be issued by an entity's charter and bylaws.",
+        "label": "Preferred Stock Shares Authorized",
+        "terseLabel": "Preferred stock, shares authorized"
+       }
+      }
+     },
+     "localname": "PreferredStockSharesAuthorized",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassifiedParenthetical"
+     ],
+     "xbrltype": "sharesItemType"
+    },
+    "us-gaap_PreferredStockSharesIssued": {
+     "auth_ref": [
+      "r12"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Total number of nonredeemable preferred shares (or preferred stock redeemable solely at the option of the issuer) issued to shareholders (includes related preferred shares that were issued, repurchased, and remain in the treasury). May be all or portion of the number of preferred shares authorized. Excludes preferred shares that are classified as debt.",
+        "label": "Preferred Stock Shares Issued",
+        "terseLabel": "Preferred stock, shares issued"
+       }
+      }
+     },
+     "localname": "PreferredStockSharesIssued",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassifiedParenthetical"
+     ],
+     "xbrltype": "sharesItemType"
+    },
+    "us-gaap_PreferredStockValue": {
+     "auth_ref": [
+      "r12"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.2,
+       "parentTag": "us-gaap_StockholdersEquity",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Aggregate par or stated value of issued nonredeemable preferred stock (or preferred stock redeemable solely at the option of the issuer). This item includes treasury stock repurchased by the entity. Note: elements for number of nonredeemable preferred shares, par value and other disclosure concepts are in another section within stockholders' equity.",
+        "label": "Preferred Stock Value",
+        "terseLabel": "Preferred stock, par value-$1 per share Authorized-9,000,000 shares - None issued"
+       }
+      }
+     },
+     "localname": "PreferredStockValue",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_PrepaidExpenseAndOtherAssetsCurrent": {
+     "auth_ref": [
+      "r3",
+      "r18",
+      "r19"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.04,
+       "parentTag": "us-gaap_AssetsCurrent",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of asset related to consideration paid in advance for costs that provide economic benefits in future periods, and amount of other assets that are expected to be realized or consumed within one year or the normal operating cycle, if longer.",
+        "label": "Prepaid Expense And Other Assets Current",
+        "terseLabel": "Prepaid expenses and other current assets"
+       }
+      }
+     },
+     "localname": "PrepaidExpenseAndOtherAssetsCurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_ProceedsFromLongTermLinesOfCredit": {
+     "auth_ref": [
+      "r45"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.11,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInFinancingActivities",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The cash inflow from a contractual arrangement with the lender, including letter of credit, standby letter of credit and revolving credit arrangements, under which borrowings can be made up to a specific amount at any point in time with maturities due beyond one year or the operating cycle, if longer.",
+        "label": "Proceeds From Long Term Lines Of Credit",
+        "terseLabel": "Proceeds from debt"
+       }
+      }
+     },
+     "localname": "ProceedsFromLongTermLinesOfCredit",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_ProfitLoss": {
+     "auth_ref": [
+      "r36",
+      "r38",
+      "r48",
+      "r66",
+      "r69",
+      "r98",
+      "r99",
+      "r100",
+      "r102",
+      "r103"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.01,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInOperatingActivities",
+       "weight": 1.0
+      },
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
+       "order": null,
+       "parentTag": null,
+       "root": true,
+       "weight": null
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The consolidated profit or loss for the period, net of income taxes, including the portion attributable to the noncontrolling interest.",
+        "label": "Profit Loss",
+        "terseLabel": "Net income",
+        "totalLabel": "Net income"
+       }
+      }
+     },
+     "localname": "ProfitLoss",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect",
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_PropertyPlantAndEquipmentNet": {
+     "auth_ref": [
+      "r8",
+      "r9",
+      "r79",
+      "r119"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.09,
+       "parentTag": "us-gaap_Assets",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount after accumulated depreciation, depletion and amortization of physical assets used in the normal conduct of business to produce goods and services and not intended for resale. Examples include, but are not limited to, land, buildings, machinery and equipment, office equipment, and furniture and fixtures.",
+        "label": "Property Plant And Equipment Net",
+        "terseLabel": "Property, plant and equipment, less allowance for depreciation (2016 - $733,383; 2015 - $683,676)"
+       }
+      }
+     },
+     "localname": "PropertyPlantAndEquipmentNet",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_RegionalCarrierMember": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Carrier either owned by, affiliated with, or under contractual arrangement with a primary \"mainline\" carrier, or its brand, that provides commuter or feeder services to such \"mainline\" carrier.",
+        "label": "Regional [Member]",
+        "terseLabel": "Regional [Member]"
+       }
+      }
+     },
+     "localname": "RegionalCarrierMember",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "domainItemType"
+    },
+    "us-gaap_RepaymentsOfLongTermLinesOfCredit": {
+     "auth_ref": [
+      "r47"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.12,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInFinancingActivities",
+       "weight": -1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The cash outflow for the settlement of obligation drawn from a contractual arrangement with the lender, including letter of credit, standby letter of credit and revolving credit arrangements, under which borrowings can be made up to a specific amount at any point in time with maturities due beyond one year or the operating cycle, if longer.",
+        "label": "Repayments Of Long Term Lines Of Credit",
+        "negatedLabel": "Payments on debt"
+       }
+      }
+     },
+     "localname": "RepaymentsOfLongTermLinesOfCredit",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_RetainedEarningsAccumulatedDeficit": {
+     "auth_ref": [
+      "r14",
+      "r83",
+      "r116"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.22,
+       "parentTag": "us-gaap_StockholdersEquity",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The cumulative amount of the reporting entity's undistributed earnings or deficit.",
+        "label": "Retained Earnings Accumulated Deficit",
+        "terseLabel": "Retained earnings"
+       }
+      }
+     },
+     "localname": "RetainedEarningsAccumulatedDeficit",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_SalesRevenueNet": {
+     "auth_ref": [],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
+       "order": 1.01,
+       "parentTag": "us-gaap_GrossProfit",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Total revenue from sale of goods and services rendered during the reporting period, in the normal course of business, reduced by sales returns and allowances, and sales discounts.",
+        "label": "Revenue, net",
+        "terseLabel": "Net sales",
+        "verboseLabel": "Total net sales"
+       }
+      }
+     },
+     "localname": "SalesRevenueNet",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation",
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_SalesRevenueNetAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Sales Revenue Net [Abstract]",
+        "terseLabel": "Net sales:"
+       }
+      }
+     },
+     "localname": "SalesRevenueNetAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_ScheduleOfSegmentReportingInformationBySegmentTable": {
+     "auth_ref": [
+      "r65",
+      "r66",
+      "r67",
+      "r68",
+      "r74"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "A table disclosing the profit or loss and total assets for each reportable segment of the entity. An entity discloses certain information on each reportable segment if the amounts (a) are included in the measure of segment profit or loss reviewed by the chief operating decision maker or (b) are otherwise regularly provided to the chief operating decision maker, even if not included in that measure of segment profit or loss.",
+        "label": "Schedule Of Segment Reporting Information By Segment [Table]",
+        "terseLabel": "Schedule of Segment Reporting Information, by Segment [Table]"
+       }
+      }
+     },
+     "localname": "ScheduleOfSegmentReportingInformationBySegmentTable",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_ScheduleOfSegmentReportingInformationBySegmentTextBlock": {
+     "auth_ref": [
+      "r65",
+      "r66",
+      "r67",
+      "r68",
+      "r74"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Tabular disclosure of the profit or loss and total assets for each reportable segment. An entity discloses certain information on each reportable segment if the amounts (a) are included in the measure of segment profit or loss reviewed by the chief operating decision maker or (b) are otherwise regularly provided to the chief operating decision maker, even if not included in that measure of segment profit or loss.",
+        "label": "Schedule Of Segment Reporting Information By Segment [Text Block]",
+        "terseLabel": "Summary of Segment Information"
+       }
+      }
+     },
+     "localname": "ScheduleOfSegmentReportingInformationBySegmentTextBlock",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/NotesToFinancialStatementsSegmentReportingDisclosureTextBlockTables"
+     ],
+     "xbrltype": "textBlockItemType"
+    },
+    "us-gaap_SegmentDomain": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Components of an entity that engage in business activities from which they may earn revenue and incur expenses, including transactions with other components of the same entity.",
+        "label": "Segment [Domain]",
+        "terseLabel": "Segments [Domain]"
+       }
+      }
+     },
+     "localname": "SegmentDomain",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "domainItemType"
+    },
+    "us-gaap_SegmentReportingAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Segment Reporting [Abstract]",
+        "terseLabel": "Segment Reporting [Abstract]"
+       }
+      }
+     },
+     "localname": "SegmentReportingAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_SegmentReportingDisclosureTextBlock": {
+     "auth_ref": [
+      "r70"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The entire disclosure for reporting segments including data and tables. Reportable segments include those that meet any of the following quantitative thresholds a) it's reported revenue, including sales to external customers and intersegment sales or transfers is 10 percent or more of the combined revenue, internal and external, of all operating segments b) the absolute amount of its reported profit or loss is 10 percent or more of the greater, in absolute amount of 1) the combined reported profit of all operating segments that did not report a loss or 2) the combined reported loss of all operating segments that did report a loss c) its assets are 10 percent or more of the combined assets of all operating segments.",
+        "label": "Segment Reporting Disclosure [Text Block]",
+        "terseLabel": "Segment Information"
+       }
+      }
+     },
+     "localname": "SegmentReportingDisclosureTextBlock",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/NotesToFinancialStatementsSegmentReportingDisclosureTextBlock"
+     ],
+     "xbrltype": "textBlockItemType"
+    },
+    "us-gaap_SegmentReportingInformationLineItems": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Line items represent financial concepts included in a table. These concepts are used to disclose reportable information associated with domain members defined in one or many axes to the table.",
+        "label": "Segment Reporting Information [Line Items]",
+        "terseLabel": "Segment Reporting Information [Line Items]"
+       }
+      }
+     },
+     "localname": "SegmentReportingInformationLineItems",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_SellingGeneralAndAdministrativeExpense": {
+     "auth_ref": [
+      "r43",
+      "r73"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
+       "order": 1.04,
+       "parentTag": "us-gaap_OperatingExpenses",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The aggregate total costs related to selling a firm's product and services, as well as all other general and administrative expenses. Direct selling expenses (for example, credit, warranty, and advertising) are expenses that can be directly linked to the sale of specific products. Indirect selling expenses are expenses that cannot be directly linked to the sale of specific products, for example telephone expenses, Internet, and postal charges. General and administrative expenses include salaries of non-sales personnel, rent, utilities, communication, etc.",
+        "label": "Selling General And Administrative Expense",
+        "terseLabel": "Selling and administrative expenses"
+       }
+      }
+     },
+     "localname": "SellingGeneralAndAdministrativeExpense",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_SeniorLongTermNotes": {
+     "auth_ref": [
+      "r26"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.16,
+       "parentTag": "us-gaap_LiabilitiesAndStockholdersEquity",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Carrying value as of the balance sheet date of Notes with the highest claim on the assets of the issuer in case of bankruptcy or liquidation (with maturities initially due after one year or beyond the operating cycle if longer), excluding current portion. Senior note holders are paid off in full before any payments are made to junior note holders.",
+        "label": "Senior Long Term Notes",
+        "terseLabel": "Long-term debt"
+       }
+      }
+     },
+     "localname": "SeniorLongTermNotes",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_SeniorNotesCurrent": {
+     "auth_ref": [
+      "r24"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.11,
+       "parentTag": "us-gaap_LiabilitiesCurrent",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Carrying value as of the balance sheet date of the portion of long-term notes having the highest claim on the assets of the issuer in case of bankruptcy or liquidation, due within one year or the normal operating cycle, if longer. Senior note holders are paid off in full before any payments are made to debt holders having a lesser priority of repayment.",
+        "label": "Senior Notes Current",
+        "terseLabel": "Current portion of long-term debt"
+       }
+      }
+     },
+     "localname": "SeniorNotesCurrent",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_ShareBasedCompensation": {
+     "auth_ref": [
+      "r51"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect": {
+       "order": 1.03,
+       "parentTag": "us-gaap_NetCashProvidedByUsedInOperatingActivities",
+       "weight": 1.0
+      }
+     },
+     "crdr": "debit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The aggregate amount of noncash, equity-based employee remuneration. This may include the value of stock or unit options, amortization of restricted stock or units, and adjustment for officers' compensation. As noncash, this element is an add back when calculating net cash generated by operating activities using the indirect method.",
+        "label": "Share Based Compensation",
+        "terseLabel": "Share-based compensation"
+       }
+      }
+     },
+     "localname": "ShareBasedCompensation",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfCashFlowsIndirect"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_StatementBusinessSegmentsAxis": {
+     "auth_ref": [
+      "r0",
+      "r66",
+      "r74",
+      "r80",
+      "r81",
+      "r82",
+      "r122"
+     ],
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Information by business segments.",
+        "label": "Statement Business Segments [Axis]",
+        "terseLabel": "Segments [Axis]"
+       }
+      }
+     },
+     "localname": "StatementBusinessSegmentsAxis",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/DisclosureSegmentInformationSummaryOfSegmentInformation"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_StatementOfCashFlowsAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Statement Of Cash Flows [Abstract]",
+        "terseLabel": "Statement of Cash Flows [Abstract]"
+       }
+      }
+     },
+     "localname": "StatementOfCashFlowsAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_StatementOfFinancialPositionAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Statement Of Financial Position [Abstract]",
+        "terseLabel": "Statement of Financial Position [Abstract]"
+       }
+      }
+     },
+     "localname": "StatementOfFinancialPositionAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_StockholdersEquity": {
+     "auth_ref": [
+      "r13",
+      "r15",
+      "r16",
+      "r72"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.24,
+       "parentTag": "us-gaap_StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Total of all stockholders' equity (deficit) items, net of receivables from officers, directors, owners, and affiliates of the entity which are attributable to the parent. The amount of the economic entity's stockholders' equity attributable to the parent excludes the amount of stockholders' equity which is allocable to that ownership interest in subsidiary equity which is not attributable to the parent (noncontrolling interest, minority interest). This excludes temporary equity and is sometimes called permanent equity.",
+        "label": "Stockholders Equity",
+        "totalLabel": "TOTAL PARENT EQUITY"
+       }
+      }
+     },
+     "localname": "StockholdersEquity",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest": {
+     "auth_ref": [
+      "r96",
+      "r97",
+      "r101"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified": {
+       "order": 1.26,
+       "parentTag": "us-gaap_LiabilitiesAndStockholdersEquity",
+       "weight": 1.0
+      }
+     },
+     "crdr": "credit",
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Amount of stockholders' equity (deficit), net of receivables from officers, directors, owners, and affiliates of the entity, attributable to both the parent and noncontrolling interests. Amount excludes temporary equity. Alternate caption for the concept is permanent equity.",
+        "label": "Stockholders Equity Including Portion Attributable To Noncontrolling Interest",
+        "totalLabel": "TOTAL EQUITY"
+       }
+      }
+     },
+     "localname": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "monetaryItemType"
+    },
+    "us-gaap_StockholdersEquityIncludingPortionAttributableToNoncontrollingInterestAbstract": {
+     "auth_ref": [],
+     "lang": {
+      "en-US": {
+       "role": {
+        "label": "Stockholders Equity Including Portion Attributable To Noncontrolling Interest [Abstract]",
+        "terseLabel": "EQUITY"
+       }
+      }
+     },
+     "localname": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterestAbstract",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfFinancialPositionClassified"
+     ],
+     "xbrltype": "stringItemType"
+    },
+    "us-gaap_WeightedAverageNumberDilutedSharesOutstandingAdjustment": {
+     "auth_ref": [
+      "r63"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
+       "order": 1.1,
+       "parentTag": "us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding",
+       "weight": 1.0
+      }
+     },
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The sum of dilutive potential common shares or units used in the calculation of the diluted per-share or per-unit computation.",
+        "label": "Weighted Average Number Diluted Shares Outstanding Adjustment",
+        "terseLabel": "Dilutive effect of stock options and non-vested restricted stock awards"
+       }
+      }
+     },
+     "localname": "WeightedAverageNumberDilutedSharesOutstandingAdjustment",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "sharesItemType"
+    },
+    "us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding": {
+     "auth_ref": [
+      "r59",
+      "r63"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
+       "order": null,
+       "parentTag": null,
+       "root": true,
+       "weight": null
+      }
+     },
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "The average number of shares or units issued and outstanding that are used in calculating diluted EPS or earnings per unit (EPU), determined based on the timing of issuance of shares or units in the period.",
+        "label": "Weighted Average Number Of Shares Outstanding, Diluted",
+        "totalLabel": "Weighted average diluted shares outstanding"
+       }
+      }
+     },
+     "localname": "WeightedAverageNumberOfDilutedSharesOutstanding",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "sharesItemType"
+    },
+    "us-gaap_WeightedAverageNumberOfSharesOutstandingBasic": {
+     "auth_ref": [
+      "r58",
+      "r63"
+     ],
+     "calculation": {
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome": {
+       "order": 1.09,
+       "parentTag": "us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding",
+       "weight": 1.0
+      }
+     },
+     "lang": {
+      "en-US": {
+       "role": {
+        "documentation": "Number of [basic] shares or units, after adjustment for contingently issuable shares or units and other shares or units not deemed outstanding, determined by relating the portion of time within a reporting period that common shares or units have been outstanding to the total time in that period.",
+        "label": "Weighted Average Number Of Shares Outstanding Basic",
+        "terseLabel": "Weighted average shares outstanding"
+       }
+      }
+     },
+     "localname": "WeightedAverageNumberOfSharesOutstandingBasic",
+     "nsuri": "http://fasb.org/us-gaap/2018-01-31",
+     "presentation": [
+      "http://www.brightstar.com/taxonomy/role/StatementOfIncome"
+     ],
+     "xbrltype": "sharesItemType"
+    }
+   },
+   "unitCount": 3
+  }
+ },
+ "std_ref": {
+  "r0": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "20",
+   "Subparagraph": "(d)",
+   "Topic": "205",
+   "URI": "http://asc.fasb.org/extlink&oid=109222650&loc=d3e1361-107760"
+  },
+  "r1": {
+   "Name": "Accounting Standards Codification",
+   "Publisher": "FASB",
+   "Topic": "205",
+   "URI": "http://asc.fasb.org/topic&trid=2122149"
+  },
+  "r10": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02(20))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r100": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1A",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Subparagraph": "(c)(1)",
+   "Topic": "810",
+   "URI": "http://asc.fasb.org/extlink&oid=109239629&loc=SL4573702-111684"
+  },
+  "r101": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "4I",
+   "Publisher": "FASB",
+   "Section": "55",
+   "SubTopic": "10",
+   "Topic": "810",
+   "URI": "http://asc.fasb.org/extlink&oid=84234705&loc=SL4590271-111686"
+  },
+  "r102": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "4J",
+   "Publisher": "FASB",
+   "Section": "55",
+   "SubTopic": "10",
+   "Topic": "810",
+   "URI": "http://asc.fasb.org/extlink&oid=84234705&loc=SL4591551-111686"
+  },
+  "r103": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "4K",
+   "Publisher": "FASB",
+   "Section": "55",
+   "SubTopic": "10",
+   "Topic": "810",
+   "URI": "http://asc.fasb.org/extlink&oid=84234705&loc=SL4591552-111686"
+  },
+  "r104": {
+   "Name": "Accounting Standards Codification",
+   "Publisher": "FASB",
+   "Topic": "810",
+   "URI": "http://asc.fasb.org/topic&trid=2197479"
+  },
+  "r105": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "230",
+   "Topic": "830",
+   "URI": "http://asc.fasb.org/extlink&oid=98513438&loc=d3e33268-110906"
+  },
+  "r106": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "25",
+   "SubTopic": "20",
+   "Topic": "940",
+   "URI": "http://asc.fasb.org/extlink&oid=68072869&loc=d3e41242-110953"
+  },
+  "r107": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "210",
+   "Subparagraph": "(SX 210.9-03(11))",
+   "Topic": "942",
+   "URI": "http://asc.fasb.org/extlink&oid=6876686&loc=d3e534808-122878"
+  },
+  "r108": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "210",
+   "Subparagraph": "(SX 210.9-03(15)(1))",
+   "Topic": "942",
+   "URI": "http://asc.fasb.org/extlink&oid=6876686&loc=d3e534808-122878"
+  },
+  "r109": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "210",
+   "Subparagraph": "(SX 210.9-03(22))",
+   "Topic": "942",
+   "URI": "http://asc.fasb.org/extlink&oid=6876686&loc=d3e534808-122878"
+  },
+  "r11": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02(24))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r110": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "210",
+   "Subparagraph": "(SX 210.9-03(23))",
+   "Topic": "942",
+   "URI": "http://asc.fasb.org/extlink&oid=6876686&loc=d3e534808-122878"
+  },
+  "r111": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "220",
+   "Subparagraph": "(SX 210.9-04(15))",
+   "Topic": "942",
+   "URI": "http://asc.fasb.org/extlink&oid=114873765&loc=SL114874048-224260"
+  },
+  "r112": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "220",
+   "Subparagraph": "(SX 210.9-04(23))",
+   "Topic": "942",
+   "URI": "http://asc.fasb.org/extlink&oid=114873765&loc=SL114874048-224260"
+  },
+  "r113": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "220",
+   "Subparagraph": "(SX 210.9-04.14)",
+   "Topic": "942",
+   "URI": "http://asc.fasb.org/extlink&oid=114873765&loc=SL114874048-224260"
+  },
+  "r114": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "210",
+   "Subparagraph": "(SX 210.7-03(a)(12))",
+   "Topic": "944",
+   "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
+  },
+  "r115": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "210",
+   "Subparagraph": "(SX 210.7-03(a)(15)(b)(1))",
+   "Topic": "944",
+   "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
+  },
+  "r116": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "210",
+   "Subparagraph": "(SX 210.7-03(a)(23)(a)(4))",
+   "Topic": "944",
+   "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
+  },
+  "r117": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "210",
+   "Subparagraph": "(SX 210.7-03(a)(24))",
+   "Topic": "944",
+   "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
+  },
+  "r118": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "210",
+   "Subparagraph": "(SX 210.7-03(a)(25))",
+   "Topic": "944",
+   "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
+  },
+  "r119": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "210",
+   "Subparagraph": "(SX 210.7-03(a)(8))",
+   "Topic": "944",
+   "URI": "http://asc.fasb.org/extlink&oid=6879938&loc=d3e572229-122910"
+  },
+  "r12": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02(28))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r120": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "220",
+   "Subparagraph": "(SX 210.7-04(19))",
+   "Topic": "944",
+   "URI": "http://asc.fasb.org/extlink&oid=114873790&loc=SL114874131-224263"
+  },
+  "r121": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "220",
+   "Subparagraph": "(SX 210.7-04(8))",
+   "Topic": "944",
+   "URI": "http://asc.fasb.org/extlink&oid=114873790&loc=SL114874131-224263"
+  },
+  "r122": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "4H",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "40",
+   "Topic": "944",
+   "URI": "http://asc.fasb.org/extlink&oid=99384497&loc=SL65671331-158438"
+  },
+  "r123": {
+   "Name": "Regulation 12B",
+   "Number": "240",
+   "Publisher": "SEC",
+   "Section": "12",
+   "Subsection": "b-2"
+  },
+  "r13": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02(29))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r14": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02(30)(a)(3))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r15": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02(30))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r16": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02(31))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r17": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02(32))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r18": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02(7))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r19": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02(8))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r2": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Subparagraph": "(a)",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=82887183&loc=d3e6676-107765"
+  },
+  "r20": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.1)",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r21": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.14)",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r22": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.17)",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r23": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.19(a))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r24": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.20)",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r25": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.21)",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r26": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.22)",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r27": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.24)",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r28": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.3,4)",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r29": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.31)",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r3": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=82887183&loc=d3e6676-107765"
+  },
+  "r30": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.4)",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r31": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.6(a))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r32": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02.9)",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r33": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "11",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "220",
+   "URI": "http://asc.fasb.org/extlink&oid=114867106&loc=d3e637-108580"
+  },
+  "r34": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "14",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "220",
+   "URI": "http://asc.fasb.org/extlink&oid=114867106&loc=d3e681-108580"
+  },
+  "r35": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "14A",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "220",
+   "URI": "http://asc.fasb.org/extlink&oid=114867106&loc=SL7669686-108580"
+  },
+  "r36": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1A",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Subparagraph": "(a)",
+   "Topic": "220",
+   "URI": "http://asc.fasb.org/extlink&oid=114867106&loc=SL7669619-108580"
+  },
+  "r37": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1A",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Subparagraph": "(c)",
+   "Topic": "220",
+   "URI": "http://asc.fasb.org/extlink&oid=114867106&loc=SL7669619-108580"
+  },
+  "r38": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1B",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Subparagraph": "(a)",
+   "Topic": "220",
+   "URI": "http://asc.fasb.org/extlink&oid=114867106&loc=SL7669625-108580"
+  },
+  "r39": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1B",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Subparagraph": "(b)",
+   "Topic": "220",
+   "URI": "http://asc.fasb.org/extlink&oid=114867106&loc=SL7669625-108580"
+  },
+  "r4": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "3",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=82887183&loc=d3e6801-107765"
+  },
+  "r40": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-03(10))",
+   "Topic": "220",
+   "URI": "http://asc.fasb.org/extlink&oid=115205541&loc=SL114868664-224227"
+  },
+  "r41": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-03(21))",
+   "Topic": "220",
+   "URI": "http://asc.fasb.org/extlink&oid=115205541&loc=SL114868664-224227"
+  },
+  "r42": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-03.1,2)",
+   "Topic": "220",
+   "URI": "http://asc.fasb.org/extlink&oid=115205541&loc=SL114868664-224227"
+  },
+  "r43": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-03.4)",
+   "Topic": "220",
+   "URI": "http://asc.fasb.org/extlink&oid=115205541&loc=SL114868664-224227"
+  },
+  "r44": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "13",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Subparagraph": "(c)",
+   "Topic": "230",
+   "URI": "http://asc.fasb.org/extlink&oid=109223946&loc=d3e3213-108585"
+  },
+  "r45": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "14",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Subparagraph": "(b)",
+   "Topic": "230",
+   "URI": "http://asc.fasb.org/extlink&oid=109223946&loc=d3e3255-108585"
+  },
+  "r46": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "15",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Subparagraph": "(a)",
+   "Topic": "230",
+   "URI": "http://asc.fasb.org/extlink&oid=109223946&loc=d3e3291-108585"
+  },
+  "r47": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "15",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Subparagraph": "(b)",
+   "Topic": "230",
+   "URI": "http://asc.fasb.org/extlink&oid=109223946&loc=d3e3291-108585"
+  },
+  "r48": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "230",
+   "URI": "http://asc.fasb.org/extlink&oid=109223946&loc=d3e3000-108585"
+  },
+  "r49": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "24",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "230",
+   "URI": "http://asc.fasb.org/extlink&oid=109223946&loc=d3e3521-108585"
+  },
+  "r5": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "5",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=82887183&loc=d3e6904-107765"
+  },
+  "r50": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "25",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "230",
+   "URI": "http://asc.fasb.org/extlink&oid=109223946&loc=d3e3536-108585"
+  },
+  "r51": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "28",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Subparagraph": "(a)",
+   "Topic": "230",
+   "URI": "http://asc.fasb.org/extlink&oid=109223946&loc=d3e3602-108585"
+  },
+  "r52": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "28",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Subparagraph": "(b)",
+   "Topic": "230",
+   "URI": "http://asc.fasb.org/extlink&oid=109223946&loc=d3e3602-108585"
+  },
+  "r53": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "28",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "230",
+   "URI": "http://asc.fasb.org/extlink&oid=109223946&loc=d3e3602-108585"
+  },
+  "r54": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "4",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "230",
+   "URI": "http://asc.fasb.org/extlink&oid=109223946&loc=d3e3044-108585"
+  },
+  "r55": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.4-08(h))",
+   "Topic": "235",
+   "URI": "http://asc.fasb.org/extlink&oid=26873400&loc=d3e23780-122690"
+  },
+  "r56": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "11",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Topic": "250",
+   "URI": "http://asc.fasb.org/extlink&oid=109234566&loc=d3e22694-107794"
+  },
+  "r57": {
+   "Name": "Accounting Standards Codification",
+   "Publisher": "FASB",
+   "Topic": "250",
+   "URI": "http://asc.fasb.org/topic&trid=2122394"
+  },
+  "r58": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "10",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "260",
+   "URI": "http://asc.fasb.org/extlink&oid=109260490&loc=d3e1448-109256"
+  },
+  "r59": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "16",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "260",
+   "URI": "http://asc.fasb.org/extlink&oid=109260490&loc=d3e1505-109256"
+  },
+  "r6": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "6",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=82887183&loc=d3e6911-107765"
+  },
+  "r60": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "260",
+   "URI": "http://asc.fasb.org/extlink&oid=109260490&loc=d3e1252-109256"
+  },
+  "r61": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "60B",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Subparagraph": "(d)",
+   "Topic": "260",
+   "URI": "http://asc.fasb.org/extlink&oid=109260490&loc=SL5780133-109256"
+  },
+  "r62": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "7",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "260",
+   "URI": "http://asc.fasb.org/extlink&oid=109260490&loc=d3e1337-109256"
+  },
+  "r63": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Subparagraph": "(a)",
+   "Topic": "260",
+   "URI": "http://asc.fasb.org/extlink&oid=6371337&loc=d3e3550-109257"
+  },
+  "r64": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "52",
+   "Publisher": "FASB",
+   "Section": "55",
+   "SubTopic": "10",
+   "Topic": "260",
+   "URI": "http://asc.fasb.org/extlink&oid=109256448&loc=d3e4984-109258"
+  },
+  "r65": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "21",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Subparagraph": "(b)",
+   "Topic": "280",
+   "URI": "http://asc.fasb.org/extlink&oid=115929826&loc=d3e8721-108599"
+  },
+  "r66": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "22",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Topic": "280",
+   "URI": "http://asc.fasb.org/extlink&oid=115929826&loc=d3e8736-108599"
+  },
+  "r67": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "25",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Topic": "280",
+   "URI": "http://asc.fasb.org/extlink&oid=115929826&loc=d3e8813-108599"
+  },
+  "r68": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "30",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Topic": "280",
+   "URI": "http://asc.fasb.org/extlink&oid=115929826&loc=d3e8906-108599"
+  },
+  "r69": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "32",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Subparagraph": "(c)",
+   "Topic": "280",
+   "URI": "http://asc.fasb.org/extlink&oid=115929826&loc=d3e8933-108599"
+  },
+  "r7": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "8",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=82887183&loc=d3e6935-107765"
+  },
+  "r70": {
+   "Name": "Accounting Standards Codification",
+   "Publisher": "FASB",
+   "Topic": "280",
+   "URI": "http://asc.fasb.org/topic&trid=2134510"
+  },
+  "r71": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "4",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Topic": "310",
+   "URI": "http://asc.fasb.org/extlink&oid=84173941&loc=d3e5074-111524"
+  },
+  "r72": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SAB Topic 4.E)",
+   "Topic": "310",
+   "URI": "http://asc.fasb.org/extlink&oid=27010918&loc=d3e74512-122707"
+  },
+  "r73": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "8",
+   "Publisher": "FASB",
+   "Section": "30",
+   "SubTopic": "10",
+   "Topic": "330",
+   "URI": "http://asc.fasb.org/extlink&oid=68048583&loc=d3e3636-108311"
+  },
+  "r74": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "20",
+   "Topic": "350",
+   "URI": "http://asc.fasb.org/extlink&oid=108376223&loc=d3e13816-109267"
+  },
+  "r75": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "30",
+   "Topic": "350",
+   "URI": "http://asc.fasb.org/extlink&oid=6388964&loc=d3e16225-109274"
+  },
+  "r76": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "30",
+   "Subparagraph": "(a)(2)",
+   "Topic": "350",
+   "URI": "http://asc.fasb.org/extlink&oid=66006027&loc=d3e16323-109275"
+  },
+  "r77": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Subparagraph": "(a)",
+   "Topic": "360",
+   "URI": "http://asc.fasb.org/extlink&oid=6391035&loc=d3e2868-110229"
+  },
+  "r78": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Subparagraph": "(c)",
+   "Topic": "360",
+   "URI": "http://asc.fasb.org/extlink&oid=6391035&loc=d3e2868-110229"
+  },
+  "r79": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Topic": "360",
+   "URI": "http://asc.fasb.org/extlink&oid=6391035&loc=d3e2868-110229"
+  },
+  "r8": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02(13))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r80": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "3",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Subparagraph": "(f)",
+   "Topic": "360",
+   "URI": "http://asc.fasb.org/extlink&oid=109226691&loc=d3e2941-110230"
+  },
+  "r81": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Subparagraph": "(d)",
+   "Topic": "420",
+   "URI": "http://asc.fasb.org/extlink&oid=6394359&loc=d3e17939-110869"
+  },
+  "r82": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SAB Topic 5.P.4(d))",
+   "Topic": "420",
+   "URI": "http://asc.fasb.org/extlink&oid=115931487&loc=d3e140904-122747"
+  },
+  "r83": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.3-04)",
+   "Topic": "505",
+   "URI": "http://asc.fasb.org/extlink&oid=27012166&loc=d3e187085-122770"
+  },
+  "r84": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "20",
+   "Topic": "715",
+   "URI": "http://asc.fasb.org/extlink&oid=109237824&loc=d3e1703-114919"
+  },
+  "r85": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "3",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "20",
+   "Topic": "715",
+   "URI": "http://asc.fasb.org/extlink&oid=109237824&loc=d3e1731-114919"
+  },
+  "r86": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "20",
+   "Subparagraph": "(c)",
+   "Topic": "715",
+   "URI": "http://asc.fasb.org/extlink&oid=108410482&loc=d3e1928-114920"
+  },
+  "r87": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "24",
+   "Publisher": "FASB",
+   "Section": "55",
+   "SubTopic": "20",
+   "Topic": "718",
+   "URI": "http://asc.fasb.org/extlink&oid=109196918&loc=d3e11374-113907"
+  },
+  "r88": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "4",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "740",
+   "URI": "http://asc.fasb.org/extlink&oid=84176650&loc=d3e31917-109318"
+  },
+  "r89": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "5",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "740",
+   "URI": "http://asc.fasb.org/extlink&oid=84176650&loc=d3e31928-109318"
+  },
+  "r9": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SX 210.5-02(14))",
+   "Topic": "210",
+   "URI": "http://asc.fasb.org/extlink&oid=6877327&loc=d3e13212-122682"
+  },
+  "r90": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "6",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "740",
+   "URI": "http://asc.fasb.org/extlink&oid=84176650&loc=d3e31931-109318"
+  },
+  "r91": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "9",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "740",
+   "URI": "http://asc.fasb.org/extlink&oid=84176650&loc=d3e31958-109318"
+  },
+  "r92": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Subparagraph": "(b)",
+   "Topic": "740",
+   "URI": "http://asc.fasb.org/extlink&oid=84230637&loc=d3e32537-109319"
+  },
+  "r93": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "2",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Topic": "740",
+   "URI": "http://asc.fasb.org/extlink&oid=84230637&loc=d3e32537-109319"
+  },
+  "r94": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "9",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Subparagraph": "(a)",
+   "Topic": "740",
+   "URI": "http://asc.fasb.org/extlink&oid=84230637&loc=d3e32639-109319"
+  },
+  "r95": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1",
+   "Publisher": "FASB",
+   "Section": "S99",
+   "SubTopic": "10",
+   "Subparagraph": "(SAB Topic 6.I.7)",
+   "Topic": "740",
+   "URI": "http://asc.fasb.org/extlink&oid=34349781&loc=d3e330036-122817"
+  },
+  "r96": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "15",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "810",
+   "URI": "http://asc.fasb.org/extlink&oid=108774443&loc=SL4568447-111683"
+  },
+  "r97": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "16",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "810",
+   "URI": "http://asc.fasb.org/extlink&oid=108774443&loc=SL4568740-111683"
+  },
+  "r98": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "19",
+   "Publisher": "FASB",
+   "Section": "45",
+   "SubTopic": "10",
+   "Topic": "810",
+   "URI": "http://asc.fasb.org/extlink&oid=108774443&loc=SL4569616-111683"
+  },
+  "r99": {
+   "Name": "Accounting Standards Codification",
+   "Paragraph": "1A",
+   "Publisher": "FASB",
+   "Section": "50",
+   "SubTopic": "10",
+   "Subparagraph": "(a)(1)",
+   "Topic": "810",
+   "URI": "http://asc.fasb.org/extlink&oid=109239629&loc=SL4573702-111684"
+  }
+ },
+ "version": "2.0"
+}

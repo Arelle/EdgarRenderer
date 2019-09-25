@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xbrl
+  xmlns="http://www.xbrl.org/2003/instance"
+  xmlns:dei="http://xbrl.sec.gov/dei/2018-01-31"
+  xmlns:iso4217="http://www.xbrl.org/2003/iso4217"
+  xmlns:link="http://www.xbrl.org/2003/linkbase"
+  xmlns:rr="http://xbrl.sec.gov/rr/2018-01-31"
+  xmlns:specimen="http://specimen/20180531"
+  xmlns:xbrldi="http://xbrl.org/2006/xbrldi"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+    <link:schemaRef xlink:href="specimen-20180531.xsd" xlink:type="simple"/>
+    <context id="default">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">9876543210</identifier>
+        </entity>
+        <period>
+            <startDate>2018-06-19</startDate>
+            <endDate>2018-06-19</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">9876543210</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">specimen:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">specimen:S000021482Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2018-01-31</startDate>
+            <endDate>2018-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">9876543210</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">specimen:doc_Institutional_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">specimen:S000021482Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">specimen:C000061427Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2018-01-31</startDate>
+            <endDate>2018-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000021482Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">9876543210</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">specimen:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">specimen:S000021482Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2018-01-31</startDate>
+            <endDate>2018-01-31</endDate>
+        </period>
+    </context>
+    <context id="doc_Investor_Shares_ProspectusMember_S000021482Member_C000061428Member">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">9876543210</identifier>
+            <segment>
+                <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">specimen:doc_Investor_Shares_ProspectusMember</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="dei:LegalEntityAxis">specimen:S000021482Member</xbrldi:explicitMember>
+                <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">specimen:C000061428Member</xbrldi:explicitMember>
+            </segment>
+        </entity>
+        <period>
+            <startDate>2018-01-31</startDate>
+            <endDate>2018-01-31</endDate>
+        </period>
+    </context>
+    <unit id="usd">
+        <measure>iso4217:USD</measure>
+    </unit>
+    <unit id="pure">
+        <measure>pure</measure>
+    </unit>
+    <dei:DocumentPeriodEndDate contextRef="default">2018-05-31</dei:DocumentPeriodEndDate>
+    <dei:AmendmentFlag contextRef="default">false</dei:AmendmentFlag>
+    <dei:EntityCentralIndexKey contextRef="default">9876543210</dei:EntityCentralIndexKey>
+    <dei:EntityInvCompanyType contextRef="default">N-1A</dei:EntityInvCompanyType>
+    <dei:DocumentType contextRef="default">485BPOS</dei:DocumentType>
+    <rr:AnnualReturn2003
+      contextRef="doc_Investor_Shares_ProspectusMember_S000021482Member_C000061428Member"
+      decimals="INF"
+      unitRef="pure">0.0049</rr:AnnualReturn2003>
+    <rr:AnnualReturn2004
+      contextRef="doc_Investor_Shares_ProspectusMember_S000021482Member_C000061428Member"
+      decimals="INF"
+      unitRef="pure">0.0069</rr:AnnualReturn2004>
+    <rr:AnnualReturn2005
+      contextRef="doc_Investor_Shares_ProspectusMember_S000021482Member_C000061428Member"
+      decimals="INF"
+      unitRef="pure">0.0191</rr:AnnualReturn2005>
+    <rr:AnnualReturn2006
+      contextRef="doc_Investor_Shares_ProspectusMember_S000021482Member_C000061428Member"
+      decimals="INF"
+      unitRef="pure">0.0298</rr:AnnualReturn2006>
+    <rr:AnnualReturn2007
+      contextRef="doc_Investor_Shares_ProspectusMember_S000021482Member_C000061428Member"
+      decimals="INF"
+      unitRef="pure">0.0316</rr:AnnualReturn2007>
+    <rr:AnnualReturn2008
+      contextRef="doc_Investor_Shares_ProspectusMember_S000021482Member_C000061428Member"
+      decimals="INF"
+      unitRef="pure">0.0183</rr:AnnualReturn2008>
+    <rr:AnnualReturn2009
+      contextRef="doc_Investor_Shares_ProspectusMember_S000021482Member_C000061428Member"
+      decimals="INF"
+      unitRef="pure">0.0031</rr:AnnualReturn2009>
+    <rr:AnnualReturn2010
+      contextRef="doc_Investor_Shares_ProspectusMember_S000021482Member_C000061428Member"
+      decimals="INF"
+      unitRef="pure">0.0000</rr:AnnualReturn2010>
+    <rr:AnnualReturn2011
+      contextRef="doc_Investor_Shares_ProspectusMember_S000021482Member_C000061428Member"
+      decimals="INF"
+      unitRef="pure">0.0000</rr:AnnualReturn2011>
+    <rr:AnnualReturn2012
+      contextRef="doc_Investor_Shares_ProspectusMember_S000021482Member_C000061428Member"
+      decimals="INF"
+      unitRef="pure">0.0000</rr:AnnualReturn2012>
+    <rr:BarChartHighestQuarterlyReturnDate contextRef="doc_Investor_Shares_ProspectusMember_S000021482Member">2012-06-30</rr:BarChartHighestQuarterlyReturnDate>
+    <rr:BarChartLowestQuarterlyReturnDate contextRef="doc_Investor_Shares_ProspectusMember_S000021482Member">2017-12-31</rr:BarChartLowestQuarterlyReturnDate>
+    <rr:AnnualReturn2003
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0074</rr:AnnualReturn2003>
+    <rr:AnnualReturn2004
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0094</rr:AnnualReturn2004>
+    <rr:AnnualReturn2005
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0216</rr:AnnualReturn2005>
+    <rr:AnnualReturn2006
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0324</rr:AnnualReturn2006>
+    <rr:AnnualReturn2007
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0342</rr:AnnualReturn2007>
+    <rr:AnnualReturn2008
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0208</rr:AnnualReturn2008>
+    <rr:AnnualReturn2009
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0052</rr:AnnualReturn2009>
+    <rr:AnnualReturn2010
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0014</rr:AnnualReturn2010>
+    <rr:AnnualReturn2011
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0003</rr:AnnualReturn2011>
+    <rr:AnnualReturn2012
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0000</rr:AnnualReturn2012>
+    <rr:BarChartHighestQuarterlyReturnDate contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">2012-06-30</rr:BarChartHighestQuarterlyReturnDate>
+    <rr:BarChartLowestQuarterlyReturnDate contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">2017-12-31</rr:BarChartLowestQuarterlyReturnDate>
+    <dei:EntityRegistrantName contextRef="default">Specimen New York AMT-Free Municipal Cash Management</dei:EntityRegistrantName>
+    <dei:DocumentEffectiveDate contextRef="default">2013-06-01</dei:DocumentEffectiveDate>
+    <rr:RiskReturnHeading contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        
+          Fund Summary - &#160;
+        
+        
+          
+            Specimen New York AMT-Free Municipal Cash
+              Management
+          
+        
+      </rr:RiskReturnHeading>
+    <rr:ObjectiveHeading contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        
+          
+            Investment Objective
+          
+        
+      </rr:ObjectiveHeading>
+    <rr:ObjectivePrimaryTextBlock contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        &lt;p style="line-height: normal"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;The fund seeks as high a level of current income exempt
+            from federal, New York state and New York city personal income taxes as is consistent
+            with the preservation of capital and the maintenance of liquidity.&lt;/span&gt;
+        &lt;/p&gt;
+      </rr:ObjectivePrimaryTextBlock>
+    <rr:ExpenseHeading contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        
+          
+            Fees and Expenses
+          
+        
+      </rr:ExpenseHeading>
+    <rr:ExpenseNarrativeTextBlock contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        &lt;p style="line-height: normal"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;This table describes the fees and expenses that you may
+            pay if you buy and hold shares of the fund.&lt;/span&gt;
+        &lt;/p&gt;
+      </rr:ExpenseNarrativeTextBlock>
+    <rr:OperatingExpensesCaption contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+                
+                  
+                    Annual Fund Operating Expenses&#160;
+                  
+                  (expenses that you pay each year as a percentage
+                    of the value of your investment)
+                
+              </rr:OperatingExpensesCaption>
+    <rr:ManagementFeesOverAssets
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0020</rr:ManagementFeesOverAssets>
+    <rr:OtherExpensesOverAssets
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0014</rr:OtherExpensesOverAssets>
+    <rr:ExpensesOverAssets
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      unitRef="pure">0.0034</rr:ExpensesOverAssets>
+    <rr:ExpenseExampleHeading contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        
+          
+            Example
+          
+        
+      </rr:ExpenseExampleHeading>
+    <rr:ExpenseExampleNarrativeTextBlock contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        &lt;p style="line-height: normal"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;The Example is intended to help you compare the cost of
+            investing in the fund with the cost of investing in other mutual funds. The Example
+            assumes that you invest $10,000 in the fund for the time periods indicated and then
+            redeem all of your shares at the end of those periods. The Example also assumes that
+            your investment has a 5% return each year and that the fund's operating expenses remain
+            the same. Although your actual costs may be higher or lower, based on these assumptions
+            your costs would be:&lt;/span&gt;
+        &lt;/p&gt;
+      </rr:ExpenseExampleNarrativeTextBlock>
+    <rr:ExpenseExampleYear01
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="0"
+      unitRef="usd">35</rr:ExpenseExampleYear01>
+    <rr:ExpenseExampleYear03
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="0"
+      unitRef="usd">109</rr:ExpenseExampleYear03>
+    <rr:ExpenseExampleYear05
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="0"
+      unitRef="usd">191</rr:ExpenseExampleYear05>
+    <rr:ExpenseExampleYear10
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="0"
+      unitRef="usd">431</rr:ExpenseExampleYear10>
+    <rr:StrategyHeading contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        
+          
+            Principal Investment Strategy
+          
+        
+      </rr:StrategyHeading>
+    <rr:StrategyNarrativeTextBlock contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        &lt;p style="line-height: normal"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;As a money market fund, the fund is subject to the
+            maturity, quality, liquidity and diversification requirements of Rule 2a-7 under the
+            Investment Company Act of 1940, as amended, which are designed to help money market
+            funds maintain a stable share price of $1.00. To pursue its goal, the fund normally
+            invests substantially all of its net assets in short-term, high quality municipal
+            obligations that provide income exempt from federal, New York state and New York city
+            income taxes. The fund does not invest in municipal obligations that pay interest
+            subject to the federal alternative minimum tax. The fund also may invest in high
+            quality, short-term structured notes, which are derivative instruments whose value is
+            tied to underlying municipal obligations.&lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p style="line-height: normal"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;Although the fund seeks to provide income exempt from
+            federal, New York state and New York city personal income taxes, the fund may invest
+            temporarily in high quality, taxable money market instruments and/or municipal
+            obligations that pay income exempt only from federal income tax, including when the
+            portfolio manager believes that acceptable New York municipal obligations are
+            unavailable for investment.&lt;/span&gt;
+        &lt;/p&gt;
+      </rr:StrategyNarrativeTextBlock>
+    <rr:RiskHeading contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        
+          
+            Principal Risks
+          
+        
+      </rr:RiskHeading>
+    <rr:RiskNarrativeTextBlock contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        &lt;p style="line-height: normal"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;
+            An investment in the fund
+              is not insured or guaranteed by the Federal Deposit Insurance Corporation (FDIC) or
+              any other government agency.
+            Although the fund seeks to preserve the
+              value of your investment at $1.00 per share, it is possible to lose money by investing
+              in the fund.
+          &lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p style="line-height: normal"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;The fund's yield will fluctuate as the short-term
+            securities in its portfolio mature and the proceeds are reinvested in securities with
+            different interest rates. Additionally, while the fund has maintained a constant share
+            price since inception, and will continue to try to do so, neither The Specimen
+            Corporation nor its affiliates are required to make a capital infusion, enter into a
+            capital support agreement or take other actions to prevent the fund's share price from
+            falling below $1.00. The following are the principal risks that could reduce the fund's
+            income level and/or share price:&lt;/span&gt;
+          &lt;span style="font-size: 12.0pt;"&gt;&#160;&lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+          &lt;i&gt;
+            &lt;span style="font-size: 10.0pt;"&gt;Interest rate risk.&lt;/span&gt;
+          &lt;/i&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;&#160;This risk refers to the decline in the prices of
+            fixed-income securities that may accompany a rise in the overall level of interest
+            rates. A sharp and unexpected rise in interest rates could cause a money market fund's
+            share price to drop below a dollar.&lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+          &lt;i&gt;
+            &lt;span style="font-size: 10.0pt;"&gt;Credit risk.&#160;&lt;/span&gt;
+          &lt;/i&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;Failure of an issuer to make timely interest or principal
+            payments, or a decline or perception of a decline in the credit quality of a security,
+            can cause the security's price to fall, potentially lowering the fund's share price.
+            Although the fund invests only in high quality debt securities, any of the fund's
+            holdings could have its credit rating downgraded or could default. The credit quality of
+            the securities held by the fund can change rapidly in certain market environments, and
+            the default of a single holding could have the potential to cause significant
+            deterioration of the fund's net asset value.&lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+          &lt;i&gt;
+            &lt;span style="font-size: 10.0pt;"&gt;Liquidity risk.&#160;&lt;/span&gt;
+          &lt;/i&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;When there is little or no active trading market for
+            specific types of securities, it can become more difficult to sell the securities at or
+            near their perceived value. In such a market, the value of such securities may fall
+            dramatically, potentially lowering the fund's share price, even during periods of
+            declining interest rates. Also, during such periods, redemptions by a few large
+            investors in the fund may have a significant adverse effect on the fund's net asset
+            value and remaining fund shareholders.&lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+          &lt;i&gt;
+            &lt;span style="font-size: 10.0pt;"&gt;Municipal securities risk&lt;/span&gt;
+          &lt;/i&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;. The amount of public information available about
+            municipal securities is generally less than that for corporate equities or bonds.
+            Special factors, such as legislative changes, and state and local economic and business
+            developments, may adversely affect the yield and/or value of the fund's investments in
+            municipal securities. Other factors include the general conditions of the municipal
+            securities market, the size of the particular offering, the maturity of the obligation
+            and the rating of the issue. Changes in economic, business or political conditions
+            relating to a particular municipal project, municipality, or state in which the fund
+            invests may have an impact on the fund's share price.&lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+          &lt;i&gt;
+            &lt;span style="font-size: 10.0pt;"&gt;Tax risk.&lt;/span&gt;
+          &lt;/i&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;&#160;To be tax-exempt, municipal obligations generally
+            must meet certain regulatory requirements. If any such municipal obligation fails to
+            meet these regulatory requirements, the interest received by the fund from its
+            investment in such obligations and distributed to fund shareholders will be
+            taxable.&lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+          &lt;i&gt;
+            &lt;span style="font-size: 10.0pt;"&gt;Structured notes risk.&lt;/span&gt;
+          &lt;/i&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;&#160;Structured notes, a type of derivative instrument,
+            can be volatile, and the possibility of default by the financial institution or
+            counterparty may be greater for these instruments than for other types of money market
+            instruments. Structured notes typically are purchased in privately negotiated
+            transactions from financial institutions and, thus, an active trading market for such
+            instruments may not exist.&lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+          &lt;i&gt;
+            &lt;span style="font-size: 10.0pt;"&gt;State&lt;/span&gt;
+          &lt;/i&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;-&lt;i&gt;specific risk&lt;/i&gt;. The fund is subject to the risk
+            that New York's economy, and the revenues underlying its municipal obligations, may
+            decline. Investing primarily in a single state makes the fund more sensitive to risks
+            specific to the state and may magnify other risks.&lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p style="line-height: normal; margin-left: 8.65pt; text-indent: -8.65pt"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;&#xb7;&#160;&lt;/span&gt;
+          &lt;i&gt;
+            &lt;span style="font-size: 10.0pt;"&gt;Non&lt;/span&gt;
+          &lt;/i&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;-&lt;i&gt;diversification risk&lt;/i&gt;. The fund is non-diversified, which means that a
+              relatively high percentage of the fund's assets may be invested in a limited number of
+              issuers. Therefore, the fund's performance may be more vulnerable to changes in the
+              market value of a single issuer or a group of issuers and more susceptible to risks
+              associated with a single economic, political or regulatory occurrence than a
+              diversified fund.
+          &lt;/span&gt;
+        &lt;/p&gt;
+      </rr:RiskNarrativeTextBlock>
+    <rr:RiskNotInsuredDepositoryInstitution contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">An investment in the fund
+              is not insured or guaranteed by the Federal Deposit Insurance Corporation (FDIC) or
+              any other government agency.</rr:RiskNotInsuredDepositoryInstitution>
+    <rr:RiskMoneyMarketFundMayNotPreserveDollar contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">Although the fund seeks to preserve the
+              value of your investment at $1.00 per share, it is possible to lose money by investing
+              in the fund.</rr:RiskMoneyMarketFundMayNotPreserveDollar>
+    <rr:RiskNondiversifiedStatus contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">The fund is non-diversified, which means that a
+              relatively high percentage of the fund's assets may be invested in a limited number of
+              issuers. Therefore, the fund's performance may be more vulnerable to changes in the
+              market value of a single issuer or a group of issuers and more susceptible to risks
+              associated with a single economic, political or regulatory occurrence than a
+              diversified fund.</rr:RiskNondiversifiedStatus>
+    <rr:BarChartAndPerformanceTableHeading contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        
+          
+            Performance
+          
+        
+      </rr:BarChartAndPerformanceTableHeading>
+    <rr:PerformanceNarrativeTextBlock contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        &lt;p style="line-height: normal"&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;
+            The
+              following bar chart and table provide some indication of the risks of investing in the
+              fund. The bar chart shows changes in the performance of the fund's
+            Institutional shares from year to year. The table shows the average annual total returns
+            of the fund's Institutional shares over time. The fund's past performance (before and
+              after taxes) is not necessarily an indication of how the fund will perform in the
+              future. More recent performance information may be available
+              at&#160;
+              &lt;span style="text-decoration: underline"&gt;www.specimen.com&lt;/span&gt;
+            .&lt;/span&gt;
+        &lt;/p&gt;
+      </rr:PerformanceNarrativeTextBlock>
+    <rr:PerformanceInformationIllustratesVariabilityOfReturns contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">The
+              following bar chart and table provide some indication of the risks of investing in the
+              fund.</rr:PerformanceInformationIllustratesVariabilityOfReturns>
+    <rr:PerformancePastDoesNotIndicateFuture contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">The fund's past performance (before and
+              after taxes) is not necessarily an indication of how the fund will perform in the
+              future.</rr:PerformancePastDoesNotIndicateFuture>
+    <rr:PerformanceAvailabilityWebSiteAddress contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+              www.specimen.com
+            </rr:PerformanceAvailabilityWebSiteAddress>
+    <rr:BarChartHeading contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+                
+                  
+                    Year-by-Year Total Returns&#160;
+                  
+                  as of 12/31 each year (%)*
+                  
+                
+              </rr:BarChartHeading>
+    <rr:BarChartClosingTextBlock contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+        &lt;p style="line-height: normal"&gt;
+          &lt;b&gt;
+            
+              &lt;span style="font-size: 10.0pt;"&gt;Best Quarter&lt;/span&gt;
+            
+          &lt;/b&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;
+            &lt;br/&gt; Q2, 2007: 0.87%&lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p style="line-height: normal"&gt;
+          &lt;b&gt;
+            
+              &lt;span style="font-size: 10.0pt;"&gt;Worst Quarter&lt;/span&gt;
+            
+          &lt;/b&gt;
+          &lt;span style="font-size: 10.0pt;"&gt;
+            &lt;br/&gt; Q4, 2012: 0.00%&lt;/span&gt;
+        &lt;/p&gt;
+        &lt;p style="line-height: normal"&gt;
+          &lt;i&gt;
+            &lt;span style="font-size: 9.0pt;"&gt;
+              The year-to-date total return of the
+                fund's Institutional shares as of 3/31/13 was 0.00%.&lt;/span&gt;
+          &lt;/i&gt;
+          &lt;span style="font-size: 12.0pt;"&gt;&#160;&lt;/span&gt;
+        &lt;/p&gt;
+      </rr:BarChartClosingTextBlock>
+    <rr:HighestQuarterlyReturnLabel contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+              Best Quarter
+            </rr:HighestQuarterlyReturnLabel>
+    <rr:BarChartHighestQuarterlyReturn
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member"
+      decimals="INF"
+      unitRef="pure">0.0087</rr:BarChartHighestQuarterlyReturn>
+    <rr:LowestQuarterlyReturnLabel contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+              Worst Quarter
+            </rr:LowestQuarterlyReturnLabel>
+    <rr:BarChartLowestQuarterlyReturn
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member"
+      decimals="INF"
+      unitRef="pure">0.0000</rr:BarChartLowestQuarterlyReturn>
+    <rr:YearToDateReturnLabel contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">The year-to-date total return of the
+                fund's Institutional shares</rr:YearToDateReturnLabel>
+    <rr:BarChartYearToDateReturnDate contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">2013-03-31</rr:BarChartYearToDateReturnDate>
+    <rr:BarChartYearToDateReturn
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member"
+      decimals="INF"
+      unitRef="pure">0.0000</rr:BarChartYearToDateReturn>
+    <rr:AverageAnnualReturnCaption contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+                    Average Annual Total Returns&#160;as of 12/31/12
+                    
+                  </rr:AverageAnnualReturnCaption>
+    <rr:AverageAnnualReturnYear01
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      id="nonFraction1"
+      unitRef="pure">0.0000</rr:AverageAnnualReturnYear01>
+    <rr:AverageAnnualReturnYear05
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      id="nonFraction2"
+      unitRef="pure">0.0055</rr:AverageAnnualReturnYear05>
+    <rr:AverageAnnualReturnYear10
+      contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member_C000061427Member"
+      decimals="INF"
+      id="nonFraction3"
+      unitRef="pure">0.0132</rr:AverageAnnualReturnYear10>
+    <rr:BarChartFootnotesTextBlock contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+                &lt;p style="line-height: normal; margin-left: 4.5pt; text-indent: -.2pt"&gt;
+                  &lt;i&gt;
+                    &lt;sup&gt;
+                      &lt;span style="font-size: 9.0pt;"&gt;*
+                          &lt;span style="vertical-align: baseline"&gt;The fund commenced operations after
+                            all of the assets of another investment company, Muestra New York
+                            AMT-Free Municipal Money Fund (the predecessor fund), were transferred
+                            to the fund in a tax-free reorganization on September 12, 2008. Total
+                            returns for periods prior to September 13, 2008 (the commencement of
+                            operations of Institutional shares) reflect the performance of the
+                            Institutional shares of the predecessor fund, and the performance of the
+                            fund&#x2019;s Institutional shares since that date.&lt;/span&gt;
+                        
+                      &lt;/span&gt;
+                    &lt;/sup&gt;
+                  &lt;/i&gt;
+                &lt;/p&gt;
+              </rr:BarChartFootnotesTextBlock>
+    <rr:PerformanceTableClosingTextBlock contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">
+                &lt;p style="line-height: normal; margin-left: 4.5pt; text-indent: -.2pt"&gt;
+                  &lt;i&gt;
+                    &lt;span style="font-size: 9.0pt;"&gt;For the current yield for Institutional shares
+                      call toll-free 1-800-346-3621. Individuals or entities for whom
+                      institutions may purchase or redeem shares should call the institution
+                      directly.&lt;/span&gt;
+                  &lt;/i&gt;
+                &lt;/p&gt;
+              </rr:PerformanceTableClosingTextBlock>
+    <rr:MoneyMarketSevenDayYieldPhone contextRef="doc_Institutional_Shares_ProspectusMember_S000021482Member">1-800-346-3621</rr:MoneyMarketSevenDayYieldPhone>
+    <link:footnoteLink
+      xlink:role="http://www.xbrl.org/2003/role/link"
+      xlink:type="extended">
+        <link:loc
+          xlink:href="#nonFraction1"
+          xlink:label="nonFraction1"
+          xlink:type="locator"/>
+        <link:footnote id="XWAND00001141" xlink:label="XWAND00001141" xlink:role="http://www.xbrl.org/2003/role/footnote" xlink:type="resource" xml:lang="en"><xhtml:span style="vertical-align: baseline">The fund commenced operations after
+                            all of the assets of another investment company, Muestra New York
+                            AMT-Free Municipal Money Fund (the predecessor fund), were transferred
+                            to the fund in a tax-free reorganization on September 12, 2008. Total
+                            returns for periods prior to September 13, 2008 (the commencement of
+                            operations of Institutional shares) reflect the performance of the
+                            Institutional shares of the predecessor fund, and the performance of the
+                            fund&#x2019;s Institutional shares since that date.</xhtml:span>
+                        </link:footnote>
+        <link:footnoteArc
+          xlink:arcrole="http://www.xbrl.org/2003/arcrole/fact-footnote"
+          xlink:from="nonFraction1"
+          xlink:to="XWAND00001141"
+          xlink:type="arc"/>
+        <link:loc
+          xlink:href="#nonFraction2"
+          xlink:label="nonFraction2"
+          xlink:type="locator"/>
+        <link:footnoteArc
+          xlink:arcrole="http://www.xbrl.org/2003/arcrole/fact-footnote"
+          xlink:from="nonFraction2"
+          xlink:to="XWAND00001141"
+          xlink:type="arc"/>
+        <link:loc
+          xlink:href="#nonFraction3"
+          xlink:label="nonFraction3"
+          xlink:type="locator"/>
+        <link:footnoteArc
+          xlink:arcrole="http://www.xbrl.org/2003/arcrole/fact-footnote"
+          xlink:from="nonFraction3"
+          xlink:to="XWAND00001141"
+          xlink:type="arc"/>
+    </link:footnoteLink>
+</xbrl>

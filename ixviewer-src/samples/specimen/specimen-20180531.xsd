@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<xs:schema targetNamespace="http://specimen/20180531"
+xmlns:link="http://www.xbrl.org/2003/linkbase"
+xmlns:nonnum="http://www.xbrl.org/dtr/type/non-numeric"
+xmlns:xbrldt="http://xbrl.org/2005/xbrldt"
+xmlns:xbrli="http://www.xbrl.org/2003/instance"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+xmlns:rr="http://xbrl.sec.gov/rr/2018-01-31"
+xmlns:specimen="http://specimen/20180531"
+xmlns:us-types="http://xbrl.us/us-types/2009-01-31">
+<xs:annotation>
+<xs:appinfo>
+<link:linkbaseRef xlink:href="specimen-20180531_pre.xml" xlink:type="simple" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase" xlink:role="http://www.xbrl.org/2003/role/presentationLinkbaseRef" />
+<link:linkbaseRef xlink:href="specimen-20180531_def.xml" xlink:type="simple" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase" xlink:role="http://www.xbrl.org/2003/role/definitionLinkbaseRef" />
+<link:linkbaseRef xlink:href="specimen-20180531_lab.xml" xlink:type="simple" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase" xlink:role="http://www.xbrl.org/2003/role/labelLinkbaseRef" />
+</xs:appinfo>
+</xs:annotation>
+<xs:import schemaLocation="http://www.xbrl.org/2003/xbrl-instance-2003-12-31.xsd" namespace="http://www.xbrl.org/2003/instance" />
+<xs:import schemaLocation="http://www.xbrl.org/2003/xbrl-linkbase-2003-12-31.xsd" namespace="http://www.xbrl.org/2003/linkbase" />
+<xs:import schemaLocation="http://www.xbrl.org/lrr/role/negated-2009-12-16.xsd" namespace="http://www.xbrl.org/2009/role/negated" />
+<xs:import schemaLocation="https://xbrl.sec.gov/rr/2018/rr-2018-01-31.xsd" namespace="http://xbrl.sec.gov/rr/2018-01-31" />
+<xs:import schemaLocation="http://www.xbrl.org/dtr/type/nonNumeric-2009-12-16.xsd" namespace="http://www.xbrl.org/dtr/type/non-numeric" />
+<xs:element name="RiskReturnSummaryAbstract" id="specimen_RiskReturnSummaryAbstract" type="xbrli:stringItemType" xbrli:periodType="duration" abstract="true" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="S000021482Member" id="specimen_S000021482Member" type="nonnum:domainItemType" xbrli:periodType="duration" abstract="false" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="doc_Institutional_Shares_ProspectusMember" id="specimen_doc_Institutional_Shares_ProspectusMember" type="nonnum:domainItemType" xbrli:periodType="duration" abstract="false" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="C000061427Member" id="specimen_C000061427Member" type="nonnum:domainItemType" xbrli:periodType="duration" abstract="false" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="doc_Investor_Shares_ProspectusMember" id="specimen_doc_Investor_Shares_ProspectusMember" type="nonnum:domainItemType" xbrli:periodType="duration" abstract="false" nillable="true" substitutionGroup="xbrli:item" />
+<xs:element name="C000061428Member" id="specimen_C000061428Member" type="nonnum:domainItemType" xbrli:periodType="duration" abstract="false" nillable="true" substitutionGroup="xbrli:item" />
+</xs:schema>
