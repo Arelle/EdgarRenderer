@@ -199,70 +199,66 @@ var Sections = {
       Sections.populateChildCollapse(event.dataset['target'], groupType);
     }
   },
-  
+
   populateChildCollapse : function( idToPopulate, groupType ) {
-    
+
+    idToPopulate = idToPopulate.substring(1);
+    var firstListGroup = document.createElement('div');
     var discoveredGroupType = Sections.filterGroupType(groupType);
-    
-    var listHtml = '';
     discoveredGroupType
         .forEach(function( current, index ) {
-          
+
           var name = '';
           var contextref = '';
           var baseref = '';
           var sameBaseRef = true;
-          
+
           if ( current['firstAnchor'] ) {
-            
+
             name = current['firstAnchor']['name'];
             contextref = current['firstAnchor']['contextRef'];
             baseref = current['firstAnchor']['baseRef'];
             if ( current['firstAnchor']['baseRef'] ) {
-              
+
               sameBaseRef = HelpersUrl.getHTMLFileName === current['firstAnchor']['baseRef'];
             }
-            
+
           } else if ( current['uniqueAnchor'] ) {
-            
+
             name = current['uniqueAnchor']['name'];
             contextref = current['uniqueAnchor']['contextRef'];
             baseref = current['uniqueAnchor']['baseRef'];
             if ( current['uniqueAnchor']['baseRef'] ) {
-              
+
               sameBaseRef = HelpersUrl.getHTMLFileName === current['uniqueAnchor']['baseRef'];
             }
-            
+
           }
-          
-          // listHtml += '<small>';
-          if ( sameBaseRef ) {
-            listHtml += '<li name="'
-                + name
-                + '" contextref="'
-                + contextref
-                + '" selected-taxonomy="false" onclick="Sections.clickEvent(event, this);" onkeyup="Sections.clickEvent(event, this);" class="click list-group-item list-group-item-action d-flex align-items-center" tabindex="2">';
-          } else {
-            listHtml += '<li name="'
-                + name
-                + '" contextref="'
-                + contextref
-                + '" baseref="'
-                + baseref
-                + '" onclick="Sections.clickEvent(event, this);" onkeyup="Sections.clickEvent(event, this);" class="click list-group-item list-group-item-action d-flex align-items-center" tabindex="2">';
-            listHtml += '<i class="fas fa-external-link-alt mr-3"></i>';
+
+          var li = document.createElement('li');
+          li.setAttribute('name', name);
+          li.setAttribute('contextref', contextref);
+          li.setAttribute('selected-taxonomy', 'false');
+          li.setAttribute('onclick', 'Sections.clickEvent(event, this)');
+          li.setAttribute('onkeyup','Sections.clickEvent(event, this)');
+          li.className = 'click list-group-item list-group-item-action d-flex align-items-center';
+          li.tabIndex = 2;
+
+          if ( !sameBaseRef ) {
+            li.setAttribute('baseref', baseref);
+            var icon = document.createElement('i');
+            icon.className = 'fas fa-external-link-alt mr-3';
+            li.appendChild(icon);
           }
-          listHtml += current['shortName'];
-          listHtml += '</li>';
-          // listHtml += '</small>';
-          
+
+          li.textContent = current['shortName'];
+          firstListGroup.appendChild(li);
+
         });
-    
-    idToPopulate = idToPopulate.substring(1);
-    document.getElementById(idToPopulate).getElementsByClassName('list-group')[0].innerHTML = listHtml;
+    document.getElementById(idToPopulate).getElementsByClassName('list-group')[0].innerHTML = firstListGroup.innerHTML;
     $('#' + idToPopulate).collapse('show');
   },
-  
+
   emptyChildCollapse : function( idToEmpty ) {
     $('#' + idToEmpty).collapse('hide');
     document.getElementById(idToEmpty).getElementsByClassName('list-group')[0].innerHTML = '';

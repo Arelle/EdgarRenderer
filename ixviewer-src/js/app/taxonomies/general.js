@@ -33,21 +33,45 @@ var TaxonomiesGeneral = {
     
     element.setAttribute('data-toggle', 'popover');
     element.setAttribute('data-title', terseLabelOnly);
+
+    // Because of the way this code is architected, and HTML string must be generated.
+    // As such, we create a container element, construct the DOM safely, then pull out the innerHTML.
+    // Ideally we would use <template>, but this is not supported in IE 11.
     
-    var popoverHtml = '';
-    popoverHtml += '<div class="popover" role="tooltip">';
-    popoverHtml += '<div class="arrow"></div>';
-    popoverHtml += '<h3 class="popover-header text-center text-popover-clamp-1 py-0"></h3>';
-    popoverHtml += '<div class="text-center text-popover-clamp-2 py-1">' + FiltersValue.getFormattedValue(element)
-        + '</div>';
-    popoverHtml += '<div class="text-center p-2">' + FiltersContextref.getPeriod(element.getAttribute('contextref'))
-        + '</div>';
-    popoverHtml += '<p class="text-center p-2">Click for additional information.</p>';
-    popoverHtml += '</div>';
+    var containerElem = document.createElement('div');
+
+    var popoverDiv = document.createElement('div');
+    popoverDiv.className = 'popover';
+    popoverDiv.setAttribute('role', 'tooltip');
+    containerElem.appendChild(popoverDiv);
+
+    var arrow = document.createElement('div');
+    arrow.className = 'arrow';
+    popoverDiv.appendChild(arrow);
+
+    // This header is empty. Perhaps it is being used as an ersatz-spacer?
+    var popoverHeader = document.createElement('h3');
+    popoverHeader.className = 'popover-header text-center text-popover-clamp-1 py-0';
+    popoverDiv.appendChild(popoverHeader);
+
+    var firstInnerDiv = document.createElement('div');
+    firstInnerDiv.className = 'text-center text-popover-clamp-2 py-1';
+    firstInnerDiv.innerHTML = FiltersValue.getFormattedValue(element);
+    popoverDiv.appendChild(firstInnerDiv);
+
+    var secondInnerDiv = document.createElement('div');
+    secondInnerDiv.className = 'text-center p-2';
+    secondInnerDiv.textContent = FiltersContextref.getPeriod(element.getAttribute('contextref'));
+    popoverDiv.appendChild(secondInnerDiv);
+
+    var innerP = document.createElement('p');
+    innerP.className = 'text-center p-2';
+    innerP.textContent = 'Click for additional information.';
+    popoverDiv.appendChild(innerP);
     
     $(element).popover({
       'placement' : 'auto',
-      'template' : popoverHtml,
+      'template' : containerElem.innerHTML,
     // 'container' : 'element'
     });
     $(element).popover('show');
@@ -179,47 +203,62 @@ var TaxonomiesGeneral = {
   },
   
   getTaxonomyListTemplate : function( elementID, modalAction ) {
-    
-    var template = '';
+
+    // Architecture requires we return an HTML string, so we construct it safely in a container and
+    // return its innerHTML. Note that the original produced broken tags with unballanced quotes.
+    // I've done my best to work out what the developers intended, and written that.
+    var containerElem = document.createElement('div');
+
     var element = TaxonomiesGeneral.getTaxonomyById(elementID);
     element = (element instanceof Array) ? element[0] : element;
-    
-    if ( element.getAttribute('id') ) {
-      template += '<a selected-taxonomy="'
-          + element.getAttribute('selected-taxonomy')
-          + '" contextref="'
-          + element.getAttribute('contextref')
-          + '" name="'
-          + element.getAttribute('name')
-          + '" data-id="'
-          + element.getAttribute('id')
-          + '" onclick="TaxonomiesGeneral.goTo(event, this, '
-          + modalAction
-          + ');"'
-          + element.getAttribute('id')
-          + '" onkeyup="TaxonomiesGeneral.goTo(event, this, '
-          + modalAction
-          + ');"'
-          + 'class="click list-group-item list-group-item-action flex-column align-items-start px-2 py-2 w-100" tabindex="13">';
-      
+
+    var taxonomyLink = document.createElement('a');
+    taxonomyLink.setAttribute('selected-taxonomy', element.getAttribute('selected-taxonomy'));
+    taxonomyLink.setAttribute('contextref', element.getAttribute('contextref'));
+    taxonomyLink.setAttribute('name', element.getAttribute('name'));
+    taxonomyLink.setAttribute('onclick', 'TaxonomiesGeneral.goTo(event, this, ' + modalAction + ');');
+
+    var elementId = element.getAttribute('id');
+    if ( elementId ) {
+      taxonomyLink.setAttribute('data-id', elementId);
+      taxonomyLink.setAttribute('onkeyup','TaxonomiesGeneral.goTo(event, this, ' + modalAction + ');');
+      taxonomyLink.className = 'click list-group-item list-group-item-action flex-column align-items-start px-2 py-2 w-100';
+      taxonomyLink.tabIndex = 13;
     } else {
-      
-      template += '<a selected-taxonomy="' + element.getAttribute('selected-taxonomy') + '" contextref="'
-          + element.getAttribute('contextref') + '" name="' + element.getAttribute('name')
-          + '" onclick="TaxonomiesGeneral.goTo(event, this, ' + modalAction
-          + ');" class="click list-group-item list-group-item-action flex-column align-items-start px-2 py-2">';
+      taxonomyLink.className = 'click list-group-item list-group-item-action flex-column align-items-start px-2 py-2';
     }
-    template += '<div class="d-flex w-100 justify-content-between">';
-    template += '<p class="mb-1 font-weight-bold">' + (FiltersName.getLabel(element.getAttribute('name')) || '')
-        + '</p>';
-    template += TaxonomiesGeneral.getTaxonomyBadge(element) || '';
-    template += '</div>';
-    template += '<p class="mb-1">' + FiltersContextref.getPeriod(element.getAttribute('contextref')) + '</p>';
-    // template += '<hr>';
-    template += '<small class="mb-1">' + FiltersValue.getFormattedValue(element, false) + '</small>';
-    template += '</a>';
-    
-    return template;
+    containerElem.appendChild(taxonomyLink);
+
+    var containerDiv = document.createElement('div');
+    containerDiv.className = 'd-flex w-100 justify-content-between';
+    taxonomyLink.appendChild(containerDiv);
+
+    var labelContent = FiltersName.getLabel(element.getAttribute('name'));
+    var innerP = document.createElement('p');
+    innerP.className = 'mb-1 font-weight-bold';
+    if (labelContent) {
+      innerP.innerHTML = labelContent;
+    }
+    containerDiv.appendChild(innerP);
+
+    var badgeContent = TaxonomiesGeneral.getTaxonomyBadge(element);
+    if (badgeContent) {
+      var badgeNode = document.createElement('div');
+      badgeNode.innerHTML = badgeContent;
+      containerDiv.appendChild(badgeNode.firstChild);
+    }
+
+    var outerP = document.createElement('p');
+    outerP.className = 'mb-1';
+    outerP.textContent = FiltersContextref.getPeriod(element.getAttribute('contextref'));
+    taxonomyLink.appendChild(outerP);
+
+    var outerSmall = document.createElement('small');
+    outerSmall.className = 'mb-1';
+    outerSmall.innerHTML = FiltersValue.getFormattedValue(element, false);
+    taxonomyLink.appendChild(outerSmall);
+
+    return containerElem.innerHTML;
   },
   
   getTaxonomyBadge : function( element ) {
@@ -259,6 +298,7 @@ var TaxonomiesGeneral = {
     }
     
     if ( label ) {
+      // `title` and `label` are hard-coded values and are thus safe.
       return '<span><span title="' + title + '" class="m-1 badge badge-dark">' + label + '</span></span>';
     }
     return;

@@ -51,20 +51,35 @@ var Links = {
   
   populate : function( ) {
     
-    var innerHtml = '';
+    // Note: the original version of this function fails to actually close the link if it points
+    // to the current page. This has been fixed.
+
+    var dropdownContent = document.getElementById('links-dropdown-content');
+
     Constants.getMetaSourceDocuments
         .forEach(function( current ) {
+          
+          var link = document.createElement('a');
+          link.className = 'dropdown-item';
+          link.textContent = current;
+
           if ( current !== HelpersUrl.getHTMLFileName ) {
-            
-            innerHtml += '<a onclick="Links.clickEventInternal(event, this)" href="' + current + '" data-link="'
-                + current + '" class="dropdown-item">' + current + '</a>';
+            link.onclick = 'Links.clickEventInternal(event, this)';
+            link.href = current;
+            link.setAttribute('data-link', current);
           } else {
-            
-            innerHtml += '<a class="dropdown-item" href="#" aria-disabled="true"><i title="Current Form" class="fa fa-bookmark"></i> '
-                + current;
+            link.href = '#';
+            link.setAttribute('aria-disabled', 'true');
+
+            var icon = document.createElement('i');
+            icon.title = 'Current Form';
+            icon.className = 'fa fa-bookmark';
+            link.appendChild(icon);
           }
+          link.appendChild(document.createTextNode(current));
+
+          dropdownContent.appendChild(link);
         });
-    document.getElementById('links-dropdown-content').innerHTML = innerHtml;
   }
 
 };

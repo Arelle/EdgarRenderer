@@ -154,11 +154,21 @@ var UserFiltersGeneral = {
     if ( UserFiltersGeneral.getCurrentTagsFilter ) {
       
       document.getElementById('current-filters-dropdown').classList.remove('d-none');
-      var dropdownHtml = '<a onclick="UserFiltersGeneral.resetTagsFilter();" class="dropdown-item click">';
-      dropdownHtml += '<label><i class="fas fa-times mr-1"></i>';
-      dropdownHtml += UserFiltersGeneral.getCurrentTagsFilter;
-      dropdownHtml += '</label></a>';
-      document.getElementById('current-filters-tags').innerHTML = dropdownHtml;
+      var taglink = document.createElement('a');
+      var taglabel = document.createElement('label');
+      var tagicon = document.createElement('i');
+      var tagtext = document.createTextNode(UserFilterGeneral.getCurrentTagsFilter);
+      taglink.onclick = 'UserFiltersGeneral.resetTagsFilter()';
+      taglink.className = 'dropdown-item click';
+      tagicon.className = 'fas fa-timer mr-1';
+
+      taglabel.appendChild(tagicon);
+      taglabel.appendChild(tagtext);
+      taglink.appendChild(taglabel);
+
+      var taglinkcontainer = document.getElementById('current-filters-tag');
+      taglinkcontainer.innerHTML = '';
+      taglinkcontainer.appendChild(taglink);
     }
     if ( !UserFiltersGeneral.getCurrentTagsFilter ) {
       
@@ -168,11 +178,22 @@ var UserFiltersGeneral = {
     if ( UserFiltersGeneral.getCurrentDataFilter ) {
       
       document.getElementById('current-filters-dropdown').classList.remove('d-none');
-      var dropdownHtml = '<a onclick="UserFiltersGeneral.resetDataFilter();" class="dropdown-item click">';
-      dropdownHtml += '<label><i class="fas fa-times mr-1"></i>';
-      dropdownHtml += UserFiltersGeneral.getCurrentDataFilter;
-      dropdownHtml += '</label></a>';
-      document.getElementById('current-filters-data').innerHTML = dropdownHtml;
+
+      var taglink = document.createElement('a');
+      var taglabel = document.createElement('label');
+      var tagicon = document.createElement('i');
+      var tagtext = document.createTextNode(UserFilterGeneral.getCurrentDataFilter);
+      taglink.onclick = 'UserFiltersGeneral.resetDataFilter()';
+      taglink.className = 'dropdown-item click';
+      tagicon.className = 'fas fa-timer mr-1';
+
+      taglabel.appendChild(tagicon);
+      taglabel.appendChild(tagtext);
+      taglink.appendChild(taglabel);
+
+      var taglinkcontainer = document.getElementById('current-filters-data');
+      taglinkcontainer.innerHTML = '';
+      taglinkcontainer.appendChild(taglink);
     }
     if ( !UserFiltersGeneral.getCurrentDataFilter ) {
       
