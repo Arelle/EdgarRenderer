@@ -309,21 +309,43 @@ var Taxonomies = {
     
     element.setAttribute('data-toggle', 'popover');
     element.setAttribute('data-title', terseLabelOnly);
-    
-    var popoverHtml = '';
-    popoverHtml += '<div class="popover" role="tooltip">';
-    popoverHtml += '<div class="arrow"></div>';
-    popoverHtml += '<h3 class="popover-header text-center text-popover-clamp-1 py-0"></h3>';
-    popoverHtml += '<div class="text-center text-popover-clamp-2 py-1">' + FiltersValue.getFormattedValue(element)
-        + '</div>';
-    popoverHtml += '<div class="text-center p-2">' + FiltersContextref.getPeriod(element.getAttribute('contextref'))
-        + '</div>';
-    popoverHtml += '<p class="text-center p-2">Click for additional information.</p>';
-    popoverHtml += '</div>';
+
+    // Note: this code is *identical* to the code in taxonomies/general.js. The same comments
+    // apply.
+    var containerElem = document.createElement('div');
+
+    var popoverDiv = document.createElement('div');
+    popoverDiv.className = 'popover';
+    popoverDiv.setAttribute('role', 'tooltip');
+    containerElem.appendChild(popoverDiv);
+
+    var arrow = document.createElement('div');
+    arrow.className = 'arrow';
+    popoverDiv.appendChild(arrow);
+
+    // This header is empty. Perhaps it is being used as an ersatz-spacer?
+    var popoverHeader = document.createElement('h3');
+    popoverHeader.className = 'popover-header text-center text-popover-clamp-1 py-0';
+    popoverDiv.appendChild(popoverHeader);
+
+    var firstInnerDiv = document.createElement('div');
+    firstInnerDiv.className = 'text-center text-popover-clamp-2 py-1';
+    firstInnerDiv.innerHTML = FiltersValue.getFormattedValue(element);
+    popoverDiv.appendChild(firstInnerDiv);
+
+    var secondInnerDiv = document.createElement('div');
+    secondInnerDiv.className = 'text-center p-2';
+    secondInnerDiv.textContent = FiltersContextref.getPeriod(element.getAttribute('contextref'));
+    popoverDiv.appendChild(secondInnerDiv);
+
+    var innerP = document.createElement('p');
+    innerP.className = 'text-center p-2';
+    innerP.textContent = 'Click for additional information.';
+    popoverDiv.appendChild(innerP);
     
     $(element).popover({
       'placement' : 'auto',
-      'template' : popoverHtml,
+      'template' : containerElem.innerHTML,
       'container' : 'body'
     });
     $(element).popover('show');

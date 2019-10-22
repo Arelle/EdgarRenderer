@@ -98,8 +98,14 @@ var ModalsNested = {
   },
   
   createLabelCarousel : function( ) {
-    var titleCarousel = '';
-    var contents = '';
+
+    // Note: this function previously built up a `contents` variable to contain a bunch of HTML.
+    // However, this variable was then never actually used and just discarded. Since it is never
+    // used, I will not construct it. As a result, while this function previously branched into
+    // two paths, they differed only in their handling of `contents`, and so this branch has also
+    // been removed
+
+    var nestedLabelCarousel = document.getElementById('modal-taxonomy-nested-label-carousel');
     
     document.getElementById('nested-page').innerText = 1;
     document.getElementById('nested-count').innerText = ModalsNested.getAllElementIDs.length;
@@ -108,27 +114,21 @@ var ModalsNested = {
         .forEach(function( current, index ) {
           var element = ModalsNested.getElementById(current);
           
-          if ( element instanceof Array ) {
-            var nestedTaxonomyName = FiltersName.getLabel(element[0].getAttribute([ 'name' ]));
-            
-            titleCarousel += '<div class="carousel-item"><div class="carousel-content"><p class="text-center font-weight-bold">'
-                + nestedTaxonomyName + '</p></div></div>';
-            
-            contents += '<div class="tab-pane fade" id="nested-taxonomy-' + index + '" role="tabpanel">'
-                + ModalsNested.createCarousel(element, index, true) + '</div>';
-            
-          } else {
-            var nestedTaxonomyName = FiltersName.getLabel(element.getAttribute([ 'name' ]));
-            
-            titleCarousel += '<div class="carousel-item"><div class="carousel-content"><p class="text-center font-weight-bold">'
-                + nestedTaxonomyName + '</p></div></div>';
-            
-            contents += '<div class="tab-pane fade" id="nested-taxonomy-' + index + '" role="tabpanel">'
-                + ModalsNested.createCarousel(element, index, false) + '</div>';
-          }
+          var carouselItem = document.createElement('div');
+          carouselItem.className = 'carousel-item';
+
+          var carouselContent = document.createElement('div');
+          carouselContent.className = 'carousel-content';
+          carouselItem.appendChild(carouselContent);
+
+          var innerP = document.createElement('p');
+          p.className = 'text-center font-weight-bold';
+          p.textContent = FiltersName.getLabel(element[0].getAttribute([ 'name' ]));
+          carouselItem.appendChild(innerP);
+
+          nestedLabelCarousel.appendChild(carouselItem);
+
         });
-    
-    document.getElementById('modal-taxonomy-nested-label-carousel').innerHTML += titleCarousel;
     
     document.getElementById('modal-taxonomy-nested-label-carousel').querySelector('.carousel-item').classList
         .add('active');
@@ -215,6 +215,10 @@ var ModalsNested = {
   
   createCarousel : function( element, index, isContinued ) {
     
+    // Note: carouselData functions return HTML that is assumed to be safe, but constructed in
+    // a way that I can't easily modify it to guarantee safety. As such, there's not much we
+    // can do to this function.
+
     if ( isContinued ) {
       return '<div id="taxonomy-nested-modal-carousel-' + index
           + '" class="carousel" data-interval="false" data-keyboard="true"><div class="carousel-inner">'

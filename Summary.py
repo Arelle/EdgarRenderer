@@ -574,7 +574,7 @@ class InstanceSummary(object):
                         labelrole = (label.role or "").split('/')[-1:][0]
                         labeltext = ''
                         if label.text is not None:
-                            labeltext = label.text.strip().replace("&", "&amp;").replace("<", "&lt;")
+                            labeltext = label.text.strip()
                         if (lang not in langDict): langDict[lang] = {'role': {}}
                         langDict[lang]['role'][labelrole] = labeltext
         self.qnameInUseSet = {concept.qname.clarkNotation for concept in conceptInUseSet}

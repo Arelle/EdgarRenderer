@@ -314,29 +314,39 @@ var FiltersValue = {
       } else {
         
         var splitText = element.innerText.split(/(\r\n|\n|\r)/gm);
+        var containerElement = document.createElement('div');
         var dataToReturn = '';
         if ( splitText.length > 1 && showCollapse ) {
           // we show accordion
-          dataToReturn = '<div class="collapse d-block collapse-modal-partial" id="collapse-taxonomy">';
-          dataToReturn += element.innerHTML;
-          
-          dataToReturn += '</div>';
-          dataToReturn += '<button class="btn btn-primary btn-sm btn-block mt-1" type="button" data-toggle="collapse" data-target="#collapse-taxonomy">Contract / Expand</button>';
+
+          var div = document.createElement('div');
+          div.className = 'collapse d-block collapse-modal-partial';
+          div.id = 'collapse-taxonomy';
+          div.innerHTML = element.innerHTML;
+          containerElement.appendChild(div);
+
+          var button = document.createElement('button');
+          button.className = 'btn btn-primary btn-sm btn-block mt-1';
+          button.type = 'button';
+          button.setAttribute('data-toggle', 'collapse');
+          button.setAttribute('data-target', '#collapse-taxonomy');
+          button.textContent = 'Contract / Expand';
+          containerElement.appendChild(button);
           
         } else if ( splitText.length > 1 && !showCollapse ) {
-          dataToReturn = 'Click to see Fact';
+          containerElement.textContent = 'Click to see Fact';
         } else {
-          
-          dataToReturn = element.innerText;
-          
+          containerElement.textContent = element.textContent; // innerText is not cross-browser
         }
-        return FiltersNumber.numberFormatting(element, dataToReturn);
+        return FiltersNumber.numberFormatting(element, containerElement.innerHTML);
       }
     }
     
   },
   
   getFormattedValueForContinuedAt : function( element ) {
+    // Note: I can't vouch for this being safe, but I'm concerned that changing it may break
+    // existing functionality.
     var dataToReturn = '<div class="collapse d-block collapse-modal-partial" id="collapse-modal">';
     
     element.forEach(function( current ) {

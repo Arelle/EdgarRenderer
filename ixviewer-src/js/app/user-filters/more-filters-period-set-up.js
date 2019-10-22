@@ -99,42 +99,72 @@ var UserFiltersMoreFiltersPeriodSetUp = {
     var parentDiv = document.querySelector('#' + parentId + ' .list-group');
     parentDiv.innerHTML = '';
     arrayOfInfo.forEach(function( current, index ) {
-      
-      var innerHtml = '';
-      innerHtml += '<div class="d-flex justify-content-between align-items-center w-100 px-1">';
-      innerHtml += '<div class="form-check">';
-      
-      innerHtml += '<input onclick="UserFiltersMoreFiltersPeriod.parentClick(event, this, ' + index
-          + ')" title="Select/Deselect all options below." class="form-check-input" type="checkbox" tabindex="9">';
-      innerHtml += '<label class="form-check-label">';
-      innerHtml += '<a href="#period-filters-accordion-' + index + '" data-toggle="collapse" tabindex="9">'
-          + current['year'] + '</a>';
-      innerHtml += '</label>';
-      innerHtml += '</div>';
-      innerHtml += '<span class="badge badge-secondary">';
-      innerHtml += current['options'].length;
-      innerHtml += '</span>';
-      innerHtml += '</button>';
-      innerHtml += '</div>';
-      innerHtml += '<div data-parent="#user-filters-periods" id="period-filters-accordion-' + index
-          + '" class="collapse">';
-      
-      // we add all the individual 'options'
+
+      var firstOuterDiv = document.createElement('div');
+      firstOuterDiv.className = 'd-flex justify-content-between align-items-center w-100 px-1';
+
+      var innerDiv = document.createElement('div');
+      innerDiv.className = 'form-check';
+      firstOuterDiv.appendChild(innerDiv);
+
+      var input = document.createElement('input');
+      // index is guaranteed to be numeric by way of forEach construction
+      input.setAttribute('onclick','UserFiltersMoreFiltersPeriod.parentClick(event, this, ' + index + ')');
+      input.title = 'Select/Deselect all options below.';
+      input.className = 'form-check-input';
+      input.type = 'checkbox';
+      input.tabIndex = 9;
+      innerDiv.appendChild(input);
+
+      var label = document.createElement('label');
+      label.className = 'form-check-label';
+      innerDiv.appendChild(label);
+
+      var accordionLink = document.createElement('a');
+      // index is guaranteed to be numeric by way of forEach construction
+      accordionLink.href = '#period-filters-accordion-' + index;
+      accordionLink.setAttribute('data-toggle', 'collapse');
+      accordionLink.tabIndex = 9; // two elements with the same tab-index? likely a UI bug
+      accordionLink.textContent = current['year'];
+      label.appendChild(accordionLink);
+
+      var badgeSpan = document.createElement('span');
+      badgeSpan.className = 'badge badge-secondary';
+      badgeSpan.textContent = current['options'].length;
+      // the original had an errant </button> here which cannot be replecated using safe DOM construction
+      firstOuterDiv.appendChild(badgeSpan);
+
+      var optionDiv = document.createElement('div');
+      optionDiv.id = 'period-filters-accordion-' + index;
+      optionDiv.className = 'collapse';
+      optionDiv.setAttribute('data-parent', '#user-filters-periods');
+
       current['options'].forEach(function( nestedCurrent, nestedIndex ) {
-        innerHtml += '<div class="d-flex justify-content-between align-items-center w-100 px-2">';
-        innerHtml += '<div class="form-check">';
-        
-        innerHtml += '<input onclick="UserFiltersMoreFiltersPeriod.childClick(event, this, ' + index + ', '
-            + nestedIndex
-            + ')" title="Select/Deselect this option." class="form-check-input" type="checkbox" tabindex="9">';
-        innerHtml += '<label class="form-check-label">';
-        innerHtml += nestedCurrent['instanceDate'];
-        innerHtml += '</label>';
-        innerHtml += '</div>';
-        innerHtml += '</div>';
+        var optionOuterDiv = document.createElement('div');
+        optionOuterDiv.className = 'd-flex justify-content-between align-items-center w-100 px-2';
+
+        var optionInnerDiv = document.createElement('div');
+        optionInnerDiv.className = 'form-check';
+
+        var optionInput = document.createElement('input');
+        // nestedIndex is guaranteed to be numeric by way of forEach construction
+        optionInput.setAttribute('onclick','UserFiltersMoreFiltersPeriod.childClick(event, this, ' + index + ', ' + nestedIndex + ')');
+        optionInput.title = 'Select/Deselect this option.';
+        optionInput.className = 'form-check-input';
+        optionInput.type = 'checkbox';
+        optionInput.tabIndex = 9; // same tabIndex as the other elements above
+        optionInnerDiv.appendChild(optionInput);
+
+        var optionLabel = document.createElement('label');
+        optionLabel.className = 'form-check-label';
+        optionLabel.textContent = nestedCurrent['instanceDate'];
+        optionInnerDiv.appendChild(optionLabel);
+
+        optionDiv.appendChild(optionOuterDiv);
       });
-      innerHtml += '</div>';
-      parentDiv.innerHTML += innerHtml;
+
+      parentDiv.appendChild(firstOuterDiv);
+      parentDiv.appendChild(optionDiv);
     });
   }
 

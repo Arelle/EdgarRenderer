@@ -12,11 +12,20 @@ var FiltersName = {
     if ( name && typeof name === 'string' ) {
       if ( name.split(':').length > 1 ) {
         
-        var returnedName = '';
+        var returnedName = document.createElement('div');
         name = name.split(':');
-        returnedName += '<span class="font-weight-bold">' + name[0].toUpperCase() + '</span>';
-        returnedName += '<span class="ml-1">' + name[1].replace(/([A-Z])/g, ' $1').trim() + '</span>';
-        return returnedName;
+        
+        var span1 = document.createElement('span');
+        span1.className = 'font-weight-bold';
+        span1.textContent = name[0].toUpperCase();
+        returnedName.appendChild(span1);
+
+        var span2 = document.createElement('span');
+        span2.className = 'ml-1';
+        span2.textContent = name[1].replace(/([A-Z])/g, ' $1').trim();
+        returnedName.appendChild(span2);
+
+        return returnedName.innerHTML;
       }
     }
     return '';
@@ -49,27 +58,35 @@ var FiltersName = {
         return false;
       });
       if ( foundTagInformation && foundTagInformation[0] && foundTagInformation[0]['lang'] ) {
-        var stringToReturn = '';
+
+        var containerElem = document.createElement('div');
+
         Object.keys(foundTagInformation[0]['lang']).forEach(
             function( current, index ) {
               if ( foundTagInformation[0]['lang'][current]['role']
                   && foundTagInformation[0]['lang'][current]['role']['documentation'] ) {
-                
+
                 if ( Object.keys(foundTagInformation[0]['lang']).length === 1 ) {
-                  stringToReturn = foundTagInformation[0]['lang'][current]['role']['documentation'];
+                  containerElem.appendChild(document.createTextNode(
+                    foundTagInformation[0]['lang'][current]['role']['documentation']));
                 } else {
                   
-                  stringToReturn += '<span class="font-weight-bold">' + current.toUpperCase() + '</span>: '
-                      + foundTagInformation[0]['lang'][current]['role']['documentation'];
+                  var span = document.createElement('span');
+                  span.className = 'font-weight-bold';
+                  span.textContent = current.toUpperCase();
+                  containerElem.appendChild(span);
+
+                  containerElem.appendChild(document.createTextNode(
+                    ': ' + foundTagInformation[0]['lang'][current]['role']['documentation']));
                   
                   if ( index < Object.keys(foundTagInformation[0]['lang']).length ) {
-                    stringToReturn += '<br>';
+                    containerElem.appendChild(document.createElement('br'));
                   }
                 }
               }
               
             });
-        return stringToReturn;
+        return containerElem.innerHTML;
       }
       return null;
     }
@@ -150,26 +167,32 @@ var FiltersName = {
       });
       
       if ( foundTagInformation && foundTagInformation[0] && foundTagInformation[0]['lang'] ) {
-        var stringToReturn = '';
+        
+        var containerElem = document.createElement('div');
         
         Object.keys(foundTagInformation[0]['lang']).forEach(
             function( current, index ) {
               if ( foundTagInformation[0]['lang'][current]['role']
                   && foundTagInformation[0]['lang'][current]['role']['label'] ) {
                 if ( Object.keys(foundTagInformation[0]['lang']).length === 1 ) {
-                  stringToReturn = foundTagInformation[0]['lang'][current]['role']['label'];
+                  containerElem.appendChild(document.createTextNode(
+                    foundTagInformation[0]['lang'][current]['role']['label']));
                 } else {
-                  stringToReturn += '<span class="font-weight-bold">' + current.toUpperCase() + '</span>: '
-                      + foundTagInformation[0]['lang'][current]['role']['label'];
+                  var span = document.createElement('span');
+                  span.className = 'font-weight-bold';
+                  span.textContent = current.toUpperCase();
+                  containerElem.appendChild(span);
+                  containerElem.appendChild(document.createTextNode(
+                    foundTagInformation[0]['lang'][current]['role']['label']));
                   
                   if ( index < Object.keys(foundTagInformation[0]['lang']).length ) {
-                    stringToReturn += '<br>';
+                    containerElem.appendChild(document.createElement('br'));
                   }
                 }
               }
               
             });
-        return stringToReturn;
+        return containerElem.innerHTML;
         
       }
       return null;
@@ -208,21 +231,26 @@ var FiltersName = {
       });
       
       if ( foundTagInformation && foundTagInformation[0] && foundTagInformation[0]['lang'] ) {
-        var stringToReturn = '';
+        
+        var containerElem = document.createElement('div');
         Object.keys(foundTagInformation[0]['lang']).forEach(
             function( current, index ) {
               if ( foundTagInformation[0]['lang'][current]['role']
                   && foundTagInformation[0]['lang'][current]['role']['terseLabel'] ) {
-                stringToReturn += '<span class="font-weight-bold">' + current.toUpperCase() + '</span>: '
-                    + foundTagInformation[0]['lang'][current]['role']['terseLabel'];
+                var span = document.createElement('span');
+                span.className = 'font-weight-bold';
+                span.textContent = current.toUpperCase();
+                containerElem.appendChild(span);
+                containerElem.appendChild(document.createTextNode(
+                  foundTagInformation[0]['lang'][current]['role']['terseLabel']));
                 
                 if ( index < Object.keys(foundTagInformation[0]['lang']).length ) {
-                  stringToReturn += '<br>';
+                  containerElem.appendChild(document.createElement('br'));
                 }
               }
               
             });
-        return stringToReturn;
+        return containerElem.innerHTML;
       }
       return null;
     }

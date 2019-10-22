@@ -8,14 +8,21 @@
 var Modals = {
   
   renderCarouselIndicators : function( carouselId, indicatorId, carouselInformation ) {
-    var indicatorHtml = '';
+    
+    var indicator = document.getElementById(indicatorId);
+    indicator.innerHTML = '';
     
     carouselInformation.forEach(function( current, index ) {
       var activeSlide = (index === 0) ? 'active' : ''
-      indicatorHtml += '<li data-target="#' + carouselId + '" data-slide-to="' + index + '" class="' + activeSlide
-          + '" title="' + current['dialog-title'] + '" href="#" tabindex="14"></li>';
+      var li = document.createElement('li');
+      li.setAttribute('data-target', '#' + carouselId);
+      li.setAttribute('data-slide-to', index);
+      li.className = activeSlide;
+      li.title = current['dialog-title'];
+      li.href = '#';  // LI elements do not have HREF attributes, but reproducing...
+      li.tabIndex = 14;
+      indicator.appendChild(li);
     });
-    document.getElementById(indicatorId).innerHTML = indicatorHtml;
   },
   
   close : function( event, element ) {
@@ -90,7 +97,7 @@ var Modals = {
           }
         }
       });
-      document.querySelector(sectionToPopulate + ' textarea').innerHTML = textToCopy;
+      document.querySelector(sectionToPopulate + ' textarea').textContent = textToCopy;
     }
   },
   
