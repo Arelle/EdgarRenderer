@@ -158,7 +158,7 @@ var UserFiltersGeneral = {
       var taglabel = document.createElement('label');
       var tagicon = document.createElement('i');
       var tagtext = document.createTextNode(UserFilterGeneral.getCurrentTagsFilter);
-      taglink.onclick = 'UserFiltersGeneral.resetTagsFilter()';
+      taglink.addEventListener('click', UserFiltersGeneral.resetTagsFilter);
       taglink.className = 'dropdown-item click';
       tagicon.className = 'fas fa-timer mr-1';
 
@@ -183,7 +183,7 @@ var UserFiltersGeneral = {
       var taglabel = document.createElement('label');
       var tagicon = document.createElement('i');
       var tagtext = document.createTextNode(UserFilterGeneral.getCurrentDataFilter);
-      taglink.onclick = 'UserFiltersGeneral.resetDataFilter()';
+      taglink.addEventListener('click', UserFiltersGeneral.resetDataFilter);
       taglink.className = 'dropdown-item click';
       tagicon.className = 'fas fa-timer mr-1';
 

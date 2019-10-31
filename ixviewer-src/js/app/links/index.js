@@ -55,16 +55,18 @@ var Links = {
     // to the current page. This has been fixed.
 
     var dropdownContent = document.getElementById('links-dropdown-content');
+    dropdownContent.innerHTML = '';
 
     Constants.getMetaSourceDocuments
         .forEach(function( current ) {
           
           var link = document.createElement('a');
           link.className = 'dropdown-item';
-          link.textContent = current;
 
           if ( current !== HelpersUrl.getHTMLFileName ) {
-            link.onclick = 'Links.clickEventInternal(event, this)';
+            link.addEventListener('click', function(e) {
+              Links.clickEventInternal(e, this);
+            });
             link.href = current;
             link.setAttribute('data-link', current);
           } else {

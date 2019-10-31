@@ -113,7 +113,7 @@ var ModalsNested = {
     ModalsNested.getAllElementIDs
         .forEach(function( current, index ) {
           var element = ModalsNested.getElementById(current);
-          
+
           var carouselItem = document.createElement('div');
           carouselItem.className = 'carousel-item';
 
@@ -121,9 +121,11 @@ var ModalsNested = {
           carouselContent.className = 'carousel-content';
           carouselItem.appendChild(carouselContent);
 
+          var label = element instanceof Array ? element[0].getAttribute([ 'name' ]) : element.getAttribute([ 'name' ]);
+
           var innerP = document.createElement('p');
-          p.className = 'text-center font-weight-bold';
-          p.textContent = FiltersName.getLabel(element[0].getAttribute([ 'name' ]));
+          innerP.className = 'text-center font-weight-bold';
+          innerP.textContent = FiltersName.getLabel(label);
           carouselItem.appendChild(innerP);
 
           nestedLabelCarousel.appendChild(carouselItem);
@@ -162,7 +164,7 @@ var ModalsNested = {
     
     TaxonomiesGeneral.selectedTaxonomy(ModalsNested.getElementById(ModalsNested.getAllElementIDs[0]));
     
-    document.getElementById('nested-taxonomy-modal-jump').setAttribute('data-id', ModalsNested.getAllElementIDs[0]);
+    document.getElementById('taxonomy-nested-modal-jump').setAttribute('data-id', ModalsNested.getAllElementIDs[0]);
     
     Modals.renderCarouselIndicators('modal-taxonomy-nested-content-carousel',
         'taxonomy-nested-modal-carousel-indicators', ModalsNested.carouselInformation);
@@ -175,7 +177,7 @@ var ModalsNested = {
         function( event ) {
           
           // we add something...
-          document.getElementById('nested-taxonomy-modal-jump').setAttribute('data-id',
+          document.getElementById('taxonomy-nested-modal-jump').setAttribute('data-id',
               ModalsNested.getAllElementIDs[event['to']]);
           
           // we hide the copy & paste area

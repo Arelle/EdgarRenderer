@@ -165,12 +165,12 @@ var Taxonomies = {
           current.setAttribute('highlight-taxonomy', false);
           current.setAttribute('selected-taxonomy', false);
           current.setAttribute('hover-taxonomy', false);
-          
-          current.setAttribute('onClick', 'Taxonomies.clickEvent(event, this)');
-          current.setAttribute('onKeyUp', 'Taxonomies.clickEvent(event, this)');
-          
-          current.setAttribute('onMouseEnter', 'Taxonomies.enterElement(event, this);');
-          current.setAttribute('onMouseLeave', 'Taxonomies.leaveElement(event, this);');
+
+          current.addEventListener('click', function(e) {Taxonomies.clickEvent(e, this)});
+          current.addEventListener('keyup', function(e) {Taxonomies.clickEvent(e, this)});
+          current.addEventListener('mouseenter', function(e) {Taxonomies.enterElement(e, this)});
+          current.addEventListener('mouseleave', function(e) {Taxonomies.leaveElement(e, this)});
+
           current.setAttribute('tabindex', '18');
           if ( current.hasAttribute('contextref') && isChrome && foundTaxonomiesArray.length < 7500 ) {
             Taxonomies.setFilterAttributes(current);

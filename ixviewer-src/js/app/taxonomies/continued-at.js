@@ -29,10 +29,15 @@ var TaxonomiesContinuedAt = {
         order = 0;
         
       }
-      current.setAttribute('onMouseEnter', 'TaxonomiesContinuedAt.enterElement(this);');
-      current.setAttribute('onMouseLeave', 'TaxonomiesContinuedAt.leaveElement(this);');
-      current.setAttribute('onClick',
-          '(function(e) {e.preventDefault(); e.stopPropagation();})(event);ModalsContinuedAt.clickEvent(this);');
+
+      current.addEventListener('mouseenter', function(e) {TaxonomiesContinuedAt.enterElement(this)});
+      current.addEventListener('mouseleave', function(e) {TaxonomiesContinuedAt.leaveElement(this)});
+      current.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        ModalsContinuedAt.clickEvent(this);
+      });
+
     });
     return callback();
   },
@@ -40,10 +45,13 @@ var TaxonomiesContinuedAt = {
   addContinuedAtFunctionalityToSpecificElement : function( element ) {
     element.removeAttribute('enabled-taxonomy');
     element.setAttribute('continued-taxonomy', true);
-    element.setAttribute('onMouseEnter', 'TaxonomiesContinuedAt.enterElement(this);');
-    element.setAttribute('onMouseLeave', 'TaxonomiesContinuedAt.leaveElement(this);');
-    element.setAttribute('onClick',
-        '(function(e) {e.preventDefault(); e.stopPropagation();})(event);ModalsContinuedAt.clickEvent(this);');
+    element.addEventListener('mouseenter', function(e) {TaxonomiesContinuedAt.enterElement(this)});
+    element.addEventListener('mouseleave', function(e) {TaxonomiesContinuedAt.leaveElement(this)});
+    element.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      ModalsContinuedAt.clickEvent(this);
+    });
   },
   
   iterateDomForNestedContinuedAt : function( idRef, parentId, order ) {

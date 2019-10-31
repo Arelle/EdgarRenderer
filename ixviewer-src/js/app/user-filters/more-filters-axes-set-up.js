@@ -50,12 +50,27 @@ var UserFiltersMoreFiltersAxesSetUp = {
   populate : function( ) {
     var innerHtml = '';
     UserFiltersMoreFiltersAxesSetUp.axisOptions.forEach(function( current, index ) {
-      innerHtml += '<div class="d-flex justify-content-between align-items-center w-100 px-2">';
-      innerHtml += '<div class="form-check">';
-      innerHtml += '<input  onclick="UserFiltersMoreFiltersAxes.clickEvent(event, this, ' + index
-          + ')" title="Select/Deselect this option." class="form-check-input" type="checkbox" tabindex="9">';
-      innerHtml += '<label class="form-check-label">' + current['label'] + '</label>';
-      innerHtml += '</div></div>';
+      var outerDiv = document.createElement('div');
+      outerDiv.className = 'd-flex justify-content-between align-items-center w-100 px-2';
+      
+      var innerDiv = document.createElement('div');
+      innerDiv.className = 'form-check';
+      outerDiv.appendChild(innerDiv);
+      
+      var input = document.createElement('input');
+      input.className = 'form-check-input';
+      input.type = 'checkbox';
+      input.tabIndex = 9;
+      input.title = 'Select/Deselect this option.';
+      input.addEventListener('click', function(e) {UserFiltersMoreFiltersAxes.clickEvent(e, this, index)});
+      innerDiv.appendChild(input);
+      
+      var label = document.createElement('label');
+      label.className = 'form-check-label';
+      label.textContent = current['label'];
+      innerDiv.appendChild(label);
+
+      elem.appendChild(outerDiv);
     });
     document.getElementById('user-filters-axis').innerHTML = innerHtml;
   }

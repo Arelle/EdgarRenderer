@@ -47,20 +47,25 @@ var Pagination = {
   getTotalPages : 0,
   
   getPaginationTemplate : function( currentPage ) {
-    document.querySelector(Pagination.getPaginationControlsSelector).innerHTML = Pagination.getControlsTemplate();
-    var listHtml = '';
-    
+    var paginationControls = document.querySelector(Pagination.getPaginationControlsSelector);
+    paginationControls.innerHTML = '';
+    paginationControls.appendChild(Pagination.getControlsTemplate());
+
     var beginAt = ((currentPage - 1) * Constants.getPaginationPerPage);
     var endAt = beginAt + Constants.getPaginationPerPage;
     
     document.querySelector(Pagination.getPaginationControlsSelector + ' .pagination-info').innerHTML = currentPage
         + ' of ' + Pagination.getTotalPages;
+
+    var paginationSelectorElement = document.querySelector(Pagination.getPaginationSelector);
+    paginationSelectorElement.innerHTML = '';
     
     var arrayForPage = Pagination.getArray.slice(beginAt, endAt);
     arrayForPage.forEach(function( current ) {
-      listHtml += TaxonomiesGeneral.getTaxonomyListTemplate(current, Pagination.getModalAction);
+      paginationSelectorElement.appendChild(
+          TaxonomiesGeneral.getTaxonomyListTemplate(current, Pagination.getModalAction)
+        );
     });
-    document.querySelector(Pagination.getPaginationSelector).innerHTML = listHtml;
   },
   
   firstPage : function( ) {
@@ -170,74 +175,156 @@ var Pagination = {
     var previousPage = (Pagination.getCurrentPage - 1 <= 0) ? 'disabled' : '';
     var nextPage = (Pagination.getCurrentPage + 1 > Pagination.getTotalPages) ? 'disabled' : '';
     var lastPage = (Pagination.getCurrentPage === Pagination.getTotalPages) ? 'disabled' : '';
-    var template = '';
     
     Pagination.setPageSelect();
-    
-    template += '<div class="w-100 d-flex justify-content-between py-2 px-1">';
-    
-    template += '<div>';
-    template += '<ul class="pagination pagination-sm mb-0">';
-    
-    template += '<li class="page-item">';
-    template += '<a href="#" onclick="Pagination.previousTaxonomy(event, this);" class="page-link" onclick="Pagination.firstPage();" tabindex="13">';
-    template += 'Prev';
-    template += '</a>';
-    template += '</li>';
-    
-    template += '<li class="page-item">';
-    template += '<a href="#" data-test="next-taxonomy" onclick="Pagination.nextTaxonomy(event, this);" class="page-link" onclick="Pagination.firstPage();" tabindex="13">';
-    template += 'Next';
-    template += '</a>';
-    template += '</li>';
-    
-    template += '</ul>';
-    template += '</div>';
-    template += '<div class="pagination-info"></div>';
-    template += '<nav>';
-    template += '<ul class="pagination pagination-sm mb-0">';
-    template += '<li class="page-item ' + firstPage + '">';
-    template += '<a href="#" class="page-link" onclick="Pagination.firstPage();" tabindex="13">';
-    template += '<i class="fas fa-lg fa-angle-double-left"></i>';
-    template += '</a>';
-    template += '</li>';
-    template += '<li class="page-item ' + previousPage + '">';
-    template += '<a href="#" class="page-link" onclick="Pagination.previousPage();" tabindex="13">';
-    template += '<i class="fas fa-lg fa-angle-left"></i>';
-    template += '</a>';
-    template += '</li>';
-    template += '<li class="page-item ' + nextPage + '">';
-    template += '<a href="#" class="page-link" onclick="Pagination.nextPage();" tabindex="13">';
-    template += '<i class="fas fa-lg fa-angle-right"></i>';
-    template += '</a>';
-    template += '</li>';
-    template += '<li class="page-item ' + lastPage + '">';
-    template += '<a href="#" class="page-link" onclick="Pagination.lastPage();" tabindex="13">';
-    template += '<i class="fas fa-lg fa-angle-double-right"></i>';
-    template += '</a>';
-    template += '</li>';
-    template += '</ul>';
-    template += '</nav>';
-    template += '</div>';
-    
-    return template;
+
+    var outerDiv = document.createElement('div');
+    outerDiv.className = 'w-100 d-flex justify-content-between py-2 px-1';
+
+    var pageItemDiv = document.createElement('div');
+    outerDiv.appendChild(pageItemDiv);
+
+    var paginationTaxonomyUl = document.createElement('ul');
+    paginationTaxonomyUl.className = 'pagination pagination-sm mb-0';
+    pageItemDiv.appendChild(paginationTaxonomyUl);
+
+    var prevTaxonomyLi = document.createElement('li');
+    prevTaxonomyLi.className = 'page-item';
+    paginationTaxonomyUl.appendChild(prevTaxonomyLi);
+
+    var prevTaxonomyLink = document.createElement('a');
+    prevTaxonomyLink.textContent = 'Prev';
+    prevTaxonomyLink.href = '#';
+    prevTaxonomyLink.className = 'page-link';
+    prevTaxonomyLink.tabIndex = 13;
+    prevTaxonomyLink.addEventListener('click', function(e) {
+      Pagination.previousTaxonomy(e, this);
+      Pagination.firstPage();
+    });
+    prevTaxonomyLi.appendChild(prevTaxonomyLink);
+
+    var nextTaxonomyLi = document.createElement('li');
+    nextTaxonomyLi.className = 'page-item';
+    paginationTaxonomyUl.appendChild(nextTaxonomyLi);
+
+    var nextTaxonomyLink = document.createElement('a');
+    nextTaxonomyLink.textContent = 'Next';
+    nextTaxonomyLink.href = '#';
+    nextTaxonomyLink.setAttribute('data-test', 'next-taxonomy');
+    nextTaxonomyLink.className = 'page-link';
+    nextTaxonomyLink.tabIndex = 13;
+    nextTaxonomyLink.addEventListener('click', function(e) {
+      Pagination.nextTaxonomy(e, this);
+      Pagination.firstPage();   // firstPage? seems odd.
+    });
+    nextTaxonomyLi.appendChild(nextTaxonomyLink);
+
+    var paginationDiv = document.createElement('div');
+    paginationDiv.className = 'pagination-info';
+    outerDiv.appendChild(paginationDiv);
+
+    var nav = document.createElement('nav');
+    outerDiv.appendChild(nav);
+
+    var paginationUl = document.createElement('ul');
+    paginationUl.className = 'pagination pagination-sm mb-0';
+    nav.appendChild(paginationUl);
+
+    // first
+    var firstLi = document.createElement('li');
+    firstLi.className = 'page-item ' + firstPage;
+    paginationUl.appendChild(firstLi);
+
+    var firstLink = document.createElement('a');
+    firstLink.href = '#';
+    firstLink.className = 'page-link';
+    firstLink.tabIndex = 13;
+    firstLink.addEventListener('click', function(e) {
+      Pagination.firstPage();
+    });
+    firstLi.appendChild(firstLink);
+
+    var firstIcon = document.createElement('i');
+    firstIcon.className = 'fas fa-lg fa-angle-double-left';
+    firstLink.appendChild(firstIcon);
+
+    // previous
+    var previousLi = document.createElement('li');
+    previousLi.className = 'page-item ' + previousPage;
+    paginationUl.appendChild(previousLi);
+
+    var previousLink = document.createElement('a');
+    previousLink.href = '#';
+    previousLink.className = 'page-link';
+    previousLink.tabIndex = 13;
+    previousLink.addEventListener('click', function(e) {
+      Pagination.previousPage();
+    });
+    previousLi.appendChild(previousLink);
+
+    var previousIcon = document.createElement('i');
+    previousIcon.className = 'fas fa-lg fa-angle-left';
+    previousLink.appendChild(previousIcon);
+
+    // next
+    var nextLi = document.createElement('li');
+    nextLi.className = 'page-item ' + nextPage;
+    paginationUl.appendChild(nextLi);
+
+    var nextLink = document.createElement('a');
+    nextLink.href = '#';
+    nextLink.className = 'page-link';
+    nextLink.tabIndex = 13;
+    nextLink.addEventListener('click', function(e) {
+      Pagination.nextPage();
+    });
+    nextLi.appendChild(nextLink);
+
+    var nextIcon = document.createElement('i');
+    nextIcon.className = 'fas fa-lg fa-angle-right';
+    nextLink.appendChild(nextIcon);
+
+    // last
+    var lastLi = document.createElement('li');
+    lastLi.className = 'page-item ' + lastPage;
+    paginationUl.appendChild(lastLi);
+
+    var lastLink = document.createElement('a');
+    lastLink.href = '#';
+    lastLink.className = 'page-link';
+    lastLink.tabIndex = 13;
+    lastLink.addEventListener('click', function(e) {
+      Pagination.lastPage();
+    });
+    lastLi.appendChild(lastLink);
+
+    var lastIcon = document.createElement('i');
+    lastIcon.className = 'fas fa-lg fa-angle-double-right';
+    lastLink.appendChild(lastIcon);
+
+    return outerDiv;
     
   },
   
   setPageSelect : function( ) {
-    
-    var pageSelectHTML = '<option value="null">Select a Page</option>';
-    
-    for ( var i = 0; i < Pagination.getTotalPages; i++ ) {
-      if ( (i + 1) === Pagination.getCurrentPage ) {
-        pageSelectHTML += '<option selected value="' + (i + 1) + '">Page ' + (i + 1) + '</option>';
-        
-      } else {
-        pageSelectHTML += '<option value="' + (i + 1) + '">Page ' + (i + 1) + '</option>';
-        
+
+    var pageSelect = document.getElementById('taxonomies-menu-page-select');
+    pageSelect.innerHTML = '';
+
+    var option = document.createElement('option');
+    option.value = 'null';
+    option.textContent = 'Select a Page';
+    pageSelect.appendChild(option);
+
+    for ( var i = 1; i <= Pagination.getTotalPages; i++ ) {
+      option = document.createElement('option');
+      option.value = i;
+      option.textContent = 'Page ' + i;
+      if ( i === Pagination.getCurrentPage ) {
+        option.setAttribute('selected', '');
       }
+      pageSelect.appendChild(option);
     }
-    document.getElementById('taxonomies-menu-page-select').innerHTML = pageSelectHTML;
   },
   
   goToPage : function( event, element ) {

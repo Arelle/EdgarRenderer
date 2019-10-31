@@ -112,7 +112,7 @@ var Sections = {
       document.getElementById(parentId).classList.remove('d-none');
       var collapseButton = document.querySelector('#' + parentId + ' button');
       
-      collapseButton.setAttribute('onClick', 'Sections.prepareChildCollapse(this, "' + groupType + '");');
+      collapseButton.addEventListener('click', function(e) {Sections.prepareChildCollapse(this, groupType)});
       
       document.getElementById(badgeId).textContent = discoveredGroupType.length;
     }
@@ -203,7 +203,8 @@ var Sections = {
   populateChildCollapse : function( idToPopulate, groupType ) {
 
     idToPopulate = idToPopulate.substring(1);
-    var firstListGroup = document.createElement('div');
+    var firstListGroup = document.getElementById(idToPopulate).getElementsByClassName('list-group')[0];
+    firstListGroup.innerHTML = '';
     var discoveredGroupType = Sections.filterGroupType(groupType);
     discoveredGroupType
         .forEach(function( current, index ) {
@@ -239,8 +240,8 @@ var Sections = {
           li.setAttribute('name', name);
           li.setAttribute('contextref', contextref);
           li.setAttribute('selected-taxonomy', 'false');
-          li.setAttribute('onclick', 'Sections.clickEvent(event, this)');
-          li.setAttribute('onkeyup','Sections.clickEvent(event, this)');
+          li.addEventListener('click', function(e) {Sections.clickEvent(e, this)});
+          li.addEventListener('keyup', function(e) {Sections.clickEvent(e, this)});
           li.className = 'click list-group-item list-group-item-action d-flex align-items-center';
           li.tabIndex = 2;
 
@@ -255,7 +256,6 @@ var Sections = {
           firstListGroup.appendChild(li);
 
         });
-    document.getElementById(idToPopulate).getElementsByClassName('list-group')[0].innerHTML = firstListGroup.innerHTML;
     $('#' + idToPopulate).collapse('show');
   },
 
