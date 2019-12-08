@@ -987,21 +987,21 @@ FootnoteLink {footnoteLinkNumber} has disallowed role {linkrole}</message>
          level="warning"
          module="plugin/validate/EFM/Filing.py" line="1036"
          args="edgarCode seriesIdMember submissionType">
-[dq-0541-Series-Id-Member-Not-Axis-Member] Submission type {submissionType} should have {seriesIdMember} as a member of the Legal Entity Axis. {refSources}
+[dq-0541-Series-Id-Member-Not-Axis-Member] Submission type {subType} should have {seriesIdMember} as a member of the Legal Entity Axis. {refSources}
 </message>
 
 <message code="EFM.6.05.41.seriesIdMemberNotInContext"
          level="warning"
          module="plugin/validate/EFM/Filing.py" line="1051"
          args="edgarCode seriesIdMember submissionType">
-[dq-0541-Series-Id-Member-Not-In-Context] Submission type {submissionType} should have a context with {seriesIdMember} as a member of the Legal Entity Axis. {refSources}
+[dq-0541-Series-Id-Member-Not-In-Context] Submission type {subType} should have a context with {seriesIdMember} as a member of the Legal Entity Axis. {refSources}
 </message>
 
 <message code="EFM.6.05.41.seriesIdMemberNotDeclared"
          level="warning"
          module="plugin/validate/EFM/Filing.py" line="1031"
          args="edgarCode seriesIdMember submissionType">
-[dq-0541-Series-Id-Member-Not-Declared] Submission type {submissionType} should have {seriesIdMember} declared as a domainItemType element. {refSources}
+[dq-0541-Series-Id-Member-Not-Declared] Submission type {subType} should have {seriesIdMember} declared as a domainItemType element. {refSources}
 </message>
 
 <message code="EFM.6.05.42"
@@ -1757,7 +1757,7 @@ NOTE THAT EFM.6.23.02 can only be detected in Edgar, as Arelle will only load a 
          level="error"
          module="ValidateFiling.py" line="860"
          args="contextID documentType submissionType">
-[rxd-2303-EX-2.01-Document-Submission-Type-Value] The value for dei:DocumentType, {documentType}, does not match the submission type, {submissionType}.
+[rxd-2303-EX-2.01-Document-Submission-Type-Value] The value for dei:DocumentType, {documentType}, does not match the submission type, {subType}.
 </message>
 
 <message code="EFM.6.23.04"
@@ -2145,7 +2145,7 @@ NOTE THAT EFM.6.23.02 can only be detected in Edgar, as Arelle will only load a 
 
 <!--  Templated messages 
 Example:
-    <message code="dq-{efmSection}-{nameOfTag}-Blah-Blah">Submission type {submissionType} {severityVerb} blah blah blah in {context}. {refSources}</message>
+    <message code="dq-{efmSection}-{nameOfTag}-Blah-Blah">Submission type {subType} {severityVerb} blah blah blah in {context}. {refSources}</message>
 --> 
 <message code="dq-{efmSection}-{tag}-Missing">Submission type {subType} {severityVerb} have a non-empty value for {tag} in {context}. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-Missing">Submission type {subType} {severityVerb} have a non-empty value for at least one of {tags} in {context}. {refSources}</message>
@@ -2174,6 +2174,8 @@ Example:
 <message code="dq-{efmSection}-{tag}-Security-Axes">In submission type {subType}, {tag} {severityVerb} have values without axes if a single non-ADR member, otherwise in separate contexts by axis member, but not both, in contexts {contextIDs}. {refSources}</message>
 <message code="dq-0514-Hidden-Cover-Page-Fact-Not-Referenced">Submission type {subType} has {n} cover page fact(s) in ix:hidden that were not referenced by any -sec-ix-hidden style property: (namesOfTags). {refSources}</message>
 <message code="dq-0540-{tag}-Value">In submission type {subType}, {tag} value &quot;{value}&quot;, is not equivalent to header element {headerTag} value &quot;{valueOfHeaderTag}&quot; in the {context}. {refSources}</message>
+<message code="dq-0540-CurrentFiscalYearEndDate-Registrant-Value">In submission type {subType}, {tag} value &quot;{value}&quot;, {severityVerb} match the Entity Registrant Fiscal Year End Date &quot;{valueOfHeaderTag}&quot; on record within EDGAR. {refSources}</message>
+<message code="dq-0540-CurrentFiscalYearEndDate-Submission-Value">In submission type {subType}, {tag} value &quot;{value}&quot;, does not match the Submission Header Fiscal Year End Date &quot;{valueOfHeaderTag}&quot;. {refSources}</message>
 <message code="dq-0540-{headerTag}-Unexpected">Header element {headerTag} value &quot;{value}&quot; is not applicable for {subType} submission type." {refSources}</message>
 
 

@@ -10,10 +10,7 @@ domestic copyright protection. 17 U.S.C. 105.
 End user support is by e-mail direct to SEC at: [StructuredData@sec.gov]
 (mailto:StructuredData@sec.gov).
 
-This is a preview if EDGAR release 19.3.
-
-It has a preview of ix viewer 2.  To revert to usage of ix viewer v1 please rename directory `ixviewer` to 
-`ixviewer-v2` and rename `ixviewer-v1` to `ixviewer`.
+This is a preview of EDGAR release 19.3.a.u2 planned to be in production December 9, 2019.
 
 Developer issue management is by the Jira Edgar Renderer project: https://arelle.atlassian.net/projects/ER
 

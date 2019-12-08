@@ -163,51 +163,42 @@ class Cube(object):
         # references the cube.periodStartEndLabelDict  
         # will side effect cube.periodStartEndLabelDict if there is a duration fact with period start/end label.
         # will generally side effect self.factMemberships by appending to it.
+        
+        initialDurationSet = set([x[1]['period'] for x in self.factMemberships if x[1]['period'].periodTypeStr=='duration'])
 
         def matchingDurationSet(iFxm,preferredLabel): 
             # iFxm = instant Fact - axis - membership tuple.
             # return set of tuples consisting of start/end time tuple and start/end role
-            ignore, iAxm, ignore = iFxm # iAxm = instant AxisMembership
+            _, iAxm, _ = iFxm # iAxm = instant AxisMembership
             iPeriod = iAxm['period'] # instant Period (Period is a synonym for StartEndContext)
             iTime = iPeriod.endTime # instant Time
             assert iPeriod.periodTypeStr == 'instant'
             preferredLabelIsStart = Utils.isPeriodStartLabel(preferredLabel)
-            durations = set() # set of Periods to return
-            if len(discoveredDurations)==0:
-                for dFxm in self.factMemberships: # dFxm = duration's fact axis-membership tuple
-                    dAxm = dFxm[1] # duration's AxisMembership dictionary
-                    dPeriod = dAxm['period'] # duration's startEndContext
-                    if dPeriod.periodTypeStr == 'duration' and not dPeriod in durations:
-                        if preferredLabelIsStart:
-                            dTimeToMatch = dPeriod.startTime
-                        else:
-                            dTimeToMatch = dPeriod.endTime
-                        if dTimeToMatch == iTime:
-                            durations.add(dPeriod) 
-            else:
-                for dPeriod in discoveredDurations:
-                    if not dPeriod in durations:
-                        if preferredLabelIsStart:
-                            dTimeToMatch = dPeriod.startTime
-                        else:
-                            dTimeToMatch = dPeriod.endTime
-                        if dTimeToMatch == iTime:
-                            durations.add(dPeriod)
-            return {((d.startTime,d.endTime),preferredLabel) for d in durations} 
+            _durations = set() # set of Periods to collect
+            listOfDurations = initialDurationSet
+            if len(discoveredDurations) > 0:
+                listOfDurations = discoveredDurations
+            for dPeriod in listOfDurations: 
+                if preferredLabelIsStart:
+                    dTimeToMatch = dPeriod.startTime
+                else:
+                    dTimeToMatch = dPeriod.endTime
+                if dTimeToMatch == iTime:
+                    _durations.add(dPeriod)
+            return {((d.startTime,d.endTime),preferredLabel) for d in _durations} 
 
         initialSize = len(self.factMemberships)
-        i = initialSize - 1
-
+        self.controller.logDebug("factMembership at {} in {}".format(initialSize,self.definitionText))
+        # list of new fact memberships (aka fact locations) to be created from instants.
+        newFactMemberships= list()
         # set of instants with periodStart or periodEnd that could not be matched to a duration.
-        skippedFactMembershipSet = set() # TODO: this could could probably be a list, rather than a set, BC
+        skippedFactMembershipSet = set() 
         
-        while i >= 0:
-            factMembership = self.factMemberships[i]
+        for factMembership in self.factMemberships:
             fact, axisMemberLookupDict, role = factMembership
             # The startEndPreferredLabelList shows what label roles the presentation linkbase expected to be present.
             startEndPreferredLabelList = (self.periodStartEndLabelDict.get(fact.qname) or [])
             if len(startEndPreferredLabelList) > 0:
-
                 startAndEndLabelsSet = set()  # the set of durations that the instant of this fact begins
                 for preferredLabel in startEndPreferredLabelList:
                     if Utils.isPeriodStartOrEndLabel(preferredLabel):
@@ -226,9 +217,9 @@ class Cube(object):
                         self.timeAxis.add(newStartEndContext)
                     tempAxisMemberLookupDict = axisMemberLookupDict.copy()
                     tempAxisMemberLookupDict['period'] = newStartEndContext
-                    #  append to the fact memberships list that we were counting down from the end of.
-                    self.factMemberships += [(fact, tempAxisMemberLookupDict, preferredLabel)]
-            i -= 1
+                    newFactMemberships += [(fact, tempAxisMemberLookupDict, preferredLabel)]
+        self.factMemberships += newFactMemberships
+        self.controller.logDebug("factMembership now {} in {}".format(len(self.factMemberships),self.definitionText))
         skippedFactSet = {x[0] for x in skippedFactMembershipSet}
         if (len(skippedFactSet) == initialSize
             and len(discoveredDurations)==0):

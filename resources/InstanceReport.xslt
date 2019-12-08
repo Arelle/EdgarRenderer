@@ -15,6 +15,7 @@
   <xsl:variable name="majorversion" select="substring-before(/InstanceReport/Version, '.')"/>
   <xsl:key name="keyElement" match="Row" use="ElementName"/>
   <xsl:key name="keyDimension" match="DimensionInfo" use="concat(dimensionId, Id)"/>
+  <xsl:key name="keyColFootnoted" match="Cell[not(FootnoteIndexer = '')]" use="concat(Id,'@',generate-id(ancestor::InstanceReport[1]))"/>
 
   <xsl:template match="/">
     <xsl:choose>
@@ -45,29 +46,29 @@
   <xsl:template name="notify">
     <xsl:param name="pos"/>
     <xsl:param name="type"/>
-    <xsl:if test="count(../../Rows/Row[not(FootnoteIndexer = '')]) > 1">0|</xsl:if>
+    <xsl:param name="hasMultipleRows"/>
+    <xsl:if test="$hasMultipleRows">0|</xsl:if>
     <xsl:if test="$type = '-1' or $type = 0">
       <xsl:if test="not('' = FootnoteIndexer)"><xsl:value-of select="Id"/>|</xsl:if>
     </xsl:if>
     <xsl:if test="$type = '1' or $type = 0">
-      <xsl:for-each select="../../Rows/Row/Cells/Cell[Id = $pos and not(FootnoteIndexer = '')]">
-        <xsl:if test="position() = 1"><xsl:value-of select="Id"/>|</xsl:if>
-      </xsl:for-each>
+      <xsl:if test="key('keyColFootnoted',$pos)"><xsl:value-of select="Id"/>|</xsl:if>
     </xsl:if>
   </xsl:template>
 
   <xsl:template match="InstanceReport">
     <!-- if the columns, rows or cells have FootnoteIndexer -->
     <xsl:variable name="hasFootnotes" select="count((Columns/Column | Rows | Rows/Row/Cells/Cell)[not('' = FootnoteIndexer)]) > 0"/>
-
+	<xsl:variable name="hasMultipleRows" select="count(../../Rows/Row[not(FootnoteIndexer = '')]) > 0"/>
+    <xsl:variable name="here" select="generate-id(.)"/>
     <xsl:variable name="anyWithNotes">
-      <xsl:if test="$hasFootnotes">|<xsl:for-each select="Columns/Column"><xsl:call-template name="notify"><xsl:with-param name="pos" select="Id"/><xsl:with-param name="type" select="0"/></xsl:call-template></xsl:for-each></xsl:if>
+      <xsl:if test="$hasFootnotes">|<xsl:for-each select="Columns/Column"><xsl:call-template name="notify"><xsl:with-param name="pos" select="concat(Id,'@',$here)"/><xsl:with-param name="type" select="0"/></xsl:call-template></xsl:for-each></xsl:if>
     </xsl:variable>
     <xsl:variable name="colsWithNotes">
-      <xsl:if test="$hasFootnotes">|<xsl:for-each select="Columns/Column"><xsl:call-template name="notify"><xsl:with-param name="pos" select="Id"/><xsl:with-param name="type" select="1"/></xsl:call-template></xsl:for-each></xsl:if>
+      <xsl:if test="$hasFootnotes">|<xsl:for-each select="Columns/Column"><xsl:call-template name="notify"><xsl:with-param name="pos" select="concat(Id,'@',$here)"/><xsl:with-param name="type" select="1"/></xsl:call-template></xsl:for-each></xsl:if>
     </xsl:variable>
     <xsl:variable name="headsWithNotes">
-      <xsl:if test="$hasFootnotes">|<xsl:for-each select="Columns/Column"><xsl:call-template name="notify"><xsl:with-param name="pos" select="Id"/><xsl:with-param name="type" select="-1"/></xsl:call-template></xsl:for-each></xsl:if>
+      <xsl:if test="$hasFootnotes">|<xsl:for-each select="Columns/Column"><xsl:call-template name="notify"><xsl:with-param name="pos" select="concat(Id,'@',$here)"/><xsl:with-param name="type" select="-1"/></xsl:call-template></xsl:for-each></xsl:if>
     </xsl:variable>
     <xsl:variable name="idx" select="1"/>
     <xsl:variable name="isBarChartTable" select="string-length(../BarChartImageFileName) = 0"/>
@@ -86,7 +87,7 @@
             </xsl:attribute>
           </xsl:if>
           <!-- write the column headers -->
-          <xsl:if test="not(HasEmbeddedReports = 'true')">
+          <xsl:if test="not(HasEmbeddedReports = 'true') or $isOuterReport">
             <xsl:call-template name="viewHead">
               <xsl:with-param name="colsWithNotes" select="$anyWithNotes"/>
               <xsl:with-param name="hasFootnotes" select="$hasFootnotes"/>
