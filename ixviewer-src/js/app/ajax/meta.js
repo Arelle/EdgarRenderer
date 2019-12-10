@@ -27,8 +27,8 @@ var AjaxMeta = {
             callback(false);
           }
         }
-      }
-
+      };
+      
       xhr.open('GET', HelpersUrl.getAllParams['metalinks'], true);
       xhr.send();
     } else {

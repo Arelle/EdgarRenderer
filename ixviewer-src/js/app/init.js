@@ -13,7 +13,6 @@ var AppInit = {
     internalUrl = internalUrl || false;
     
     HelpersUrl.init(internalUrl, function( result ) {
-      console.log(result);
       if ( result ) {
         AjaxForm.init(function( formLoaded ) {
           if ( formLoaded ) {
@@ -56,6 +55,8 @@ var AppInit = {
   },
   
   initialSetup : function( ) {
+    // we figure out what browser the user is using, and store it
+    ConstantsFunctions.setBrowserType();
     
     AjaxMeta.init(function( result ) {
       Taxonomies.addEventAttributes();
@@ -79,6 +80,7 @@ var AppInit = {
         document.querySelector('[name="search-options"][value="1"]').removeAttribute('checked');
         
         disabledNavsArray.forEach(function( current ) {
+          
           current.classList.remove('disabled');
           current.removeAttribute('disabled');
         });

@@ -10,7 +10,6 @@ var MenusState = {
     var whichSide = (rightIfTrue) ? 'right' : 'left';
     
     if ( MenusState.openMenu !== '' && MenusState.openMenu !== menuId ) {
-      console.log('open?');
       var whichSavedSide = (MenusState.openMenuSide) ? 'right' : 'left';
       document.getElementById(MenusState.openMenu).style[whichSavedSide] = '-100%';
       

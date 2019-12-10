@@ -7,11 +7,15 @@
 
 var Constants = {
   
-  version : '2.0.0',
+  version : '2.0.1',
   
   fileSizeError : [ 7500000, '7.5MB' ],
   
   scrollPosition : localStorage.getItem('scrollPosition') || 'start',
+  
+  hoverOption : localStorage.getItem('hoverOption') === 'true' || false,
+  
+  getBrowserType : {},
   
   getHTMLAttributes : {},
   
@@ -89,9 +93,9 @@ var Constants = {
   getMetaDocuments : function( input ) {
     if ( input && (typeof input === 'string') ) {
       return (Constants.getMetaDts && Constants.getMetaDts[input]) ? Constants.getMetaDts[input] : null;
-    } else {
-      return null;
     }
+    return null;
+    
   },
   
   getFormattingObject : {}

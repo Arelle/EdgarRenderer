@@ -16,12 +16,12 @@ function setCustomCSS( ) {
     '#dynamic-xbrl-form [enabled-taxonomy="true"][continued-taxonomy="false"]' : {
       'border-top' : '2px solid #' + taggedData,
       'border-bottom' : '2px solid #' + taggedData,
-      'display' : 'inline',
+      'display' : 'inline'
     },
     
     '#dynamic-xbrl-form [enabled-taxonomy="true"][continued-main-taxonomy="true"]' : {
       'border-left' : '2px solid #' + taggedData,
-      'border-right' : '2px solid #' + taggedData,
+      'border-right' : '2px solid #' + taggedData
     },
     
     '#dynamic-xbrl-form [enabled-taxonomy="true"][text-block-taxonomy="true"]' : {
@@ -32,48 +32,48 @@ function setCustomCSS( ) {
     },
     
     '#dynamic-xbrl-form [highlight-taxonomy="true"]' : {
-      'background-color' : '#' + searchResults + ' !important',
+      'background-color' : '#' + searchResults + ' !important'
     },
     
     '#dynamic-xbrl-form [highlight-taxonomy="true"] > *' : {
-      'background-color' : '#' + searchResults + ' !important',
+      'background-color' : '#' + searchResults + ' !important'
     },
     
     '#dynamic-xbrl-form [selected-taxonomy="true"][continued-main-taxonomy="true"]' : {
       'border-left' : '2px solid #' + selectedFact,
-      'border-right' : '2px solid #' + selectedFact,
+      'border-right' : '2px solid #' + selectedFact
     },
     
     '#dynamic-xbrl-form [selected-taxonomy="true"][text-block-taxonomy="true"]' : {
       'border-left' : '2px solid #' + selectedFact,
-      'border-right' : '2px solid #' + selectedFact,
+      'border-right' : '2px solid #' + selectedFact
     },
     
     '#dynamic-xbrl-form [selected-taxonomy="true"][continued-taxonomy="false"]' : {
       'border' : '3px solid #' + selectedFact + ' !important',
-      'display' : 'inline',
+      'display' : 'inline'
     },
     
     '#dynamic-xbrl-form [hover-taxonomy="true"]' : {
-      'background-color' : tagShading,
+      'background-color' : tagShading
     },
     
     '.tagged-data-example-1' : {
       'border-top' : '2px solid #' + taggedData,
-      'border-bottom' : '2px solid #' + taggedData,
+      'border-bottom' : '2px solid #' + taggedData
     },
     
     '.search-results-example-1' : {
-      'background-color' : '#' + searchResults,
+      'background-color' : '#' + searchResults
     },
     
     '.tag-shading-exmple-1:hover' : {
-      'background-color' : tagShading,
+      'background-color' : tagShading
     },
     
     '.selected-fact-example-1' : {
-      'border' : '3px solid #' + selectedFact + ' !important',
-    },
+      'border' : '3px solid #' + selectedFact + ' !important'
+    }
   
   };
   
@@ -103,99 +103,54 @@ function setCustomCSS( ) {
   var searchResults = localStorage.getItem('searchResults') || 'FFD700';
   var selectedFact = localStorage.getItem('selectedFact') || '003768';
   var tagShading = localStorage.getItem('tagShading') || 'rgba(255,0,0,0.3)';
-  
   var pickrOptions = [ {
     'selector' : '#tagged-data-color-picker',
-    'default' : taggedData
+    'default' : taggedData,
+    'storage' : 'taggedData',
+    'reset' : 'FF6600'
   }, {
     'selector' : '#search-results-color-picker',
-    'default' : searchResults
+    'default' : searchResults,
+    'storage' : 'searchResults',
+    'reset' : 'FFD700'
   }, {
     'selector' : '#selected-fact-color-picker',
-    'default' : selectedFact
+    'default' : selectedFact,
+    'storage' : 'selectedFact',
+    'reset' : '003768'
   }, {
     'selector' : '#tag-shading-color-picker',
-    'default' : tagShading
+    'default' : tagShading,
+    'storage' : 'tagShading',
+    'reset' : 'rgba(255,0,0,0.3)'
   } ];
   
   pickrOptions.forEach(function( current, index ) {
-    Pickr.create({
-      'el' : current['selector'],
-      'default' : current['default'],
-      'components' : {
-        preview : true,
-        hue : true,
-        opacity : (index === 3),
-        interaction : {
-          save : true,
-          cancel : true,
-        },
-      },
-      strings : {
-        save : 'Set',
-        cancel : 'Reset'
-      }
-    }).on('save', function( color, instance ) {
-      if ( color ) {
-        // set as new color
-        switch ( index ) {
-          case 0 : {
-            localStorage.setItem('taggedData', color.toHEXA().toString().replace('#', ''));
-            setCustomCSS();
-            break;
-          }
-          case 1 : {
-            localStorage.setItem('searchResults', color.toHEXA().toString().replace('#', ''));
-            setCustomCSS();
-            break;
-          }
-          case 2 : {
-            localStorage.setItem('selectedFact', color.toHEXA().toString().replace('#', ''));
-            setCustomCSS();
-            break;
-          }
-          case 3 : {
-            localStorage.setItem('tagShading', color.toRGBA().toString(0));
-            setCustomCSS();
-            break;
-          }
-          default : {
-            ErrorsMinor.unknownError();
-          }
-        }
-      }
-      
-    }).on('cancel', function( instance ) {
-      // reset back to the original value(s)
-      switch ( index ) {
-        case 0 : {
-          instance.setColor('FF6600');
-          localStorage.setItem('taggedData', 'FF6600');
+    var picker = new Picker({
+      parent : document.querySelector(current['selector']),
+      popup : false,
+      color : current['default'],
+      editorFormat : 'hex',
+      alpha : index === 3 ? true : false,
+      editor : false,
+      cancelButton : true,
+      onDone : function( color ) {
+        if ( index === 3 ) {
+          localStorage.setItem(current['storage'], 'rgba(' + color.rgba.join(',') + ')');
           setCustomCSS();
-          break;
-        }
-        case 1 : {
-          instance.setColor('FFD700');
-          localStorage.setItem('searchResults', 'FFD700');
+        } else {
+          var hex = color.hex.replace('#', '').substring(0, 6);
+          localStorage.setItem(current['storage'], hex);
           setCustomCSS();
-          break;
-        }
-        case 2 : {
-          instance.setColor('003768');
-          localStorage.setItem('selectedFact', '003768');
-          setCustomCSS();
-          break;
-        }
-        case 3 : {
-          instance.setColor('rgba(255,0,0,0.3)');
-          localStorage.setItem('tagShading', 'rgba(255,0,0,0.3)');
-          setCustomCSS();
-          break;
-        }
-        default : {
-          ErrorsMinor.unknownError();
         }
       }
     });
+    document.querySelector(current['selector'] + ' .picker_done button').innerText = 'Save';
+    document.querySelector(current['selector'] + ' .picker_cancel button').innerText = 'Reset';
+    document.querySelector(current['selector'] + ' .picker_cancel button').onclick = function( ) {
+      localStorage.setItem(current['storage'], current['reset']);
+      picker.setColor(current['reset']);
+      setCustomCSS();
+    };
   });
 })();

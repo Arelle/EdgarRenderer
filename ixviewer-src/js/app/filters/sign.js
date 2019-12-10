@@ -15,10 +15,10 @@ var FiltersSign = {
       if ( sign && typeof sign === 'string' ) {
         return signOptions[sign];
       } else if ( tag.toLowerCase().endsWith(':nonfraction') ) {
-        return signOptions['+']
-      } else {
-        return null;
+        return signOptions['+'];
       }
+      return null;
+      
     }
     return null;
   }

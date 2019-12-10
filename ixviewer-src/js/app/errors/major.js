@@ -14,13 +14,14 @@ var ErrorsMajor = {
     Errors.updateMainContainerHeight();
   },
   
-  formLinksNotFound : function( ) {
-    
+   formLinksNotFound: function () {
     var messageToUser = 'Inline XBRL form could not be found.';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-danger show mb-0">'
-        + messageToUser + '</div>';
-    Errors.updateMainContainerHeight();
+    document.getElementById('error-container').innerHTML += '<div class="reboot alert-height alert alert-danger show mb-0">' +
+      messageToUser + ' (<a class="reboot" href="' + HelpersUrl.getFormAbsoluteURL + '">' + HelpersUrl.getFormAbsoluteURL + HelpersUrl.getHTMLFileName + '</a>)</div>';
+     window.location.assign(HelpersUrl.getFormAbsoluteURL + HelpersUrl.getHTMLFileName);
+Errors.updateMainContainerHeight();
   },
+  
   
   urlParams : function( ) {
     
@@ -32,7 +33,7 @@ var ErrorsMajor = {
   
   cors : function( doc ) {
     var host = window.location.protocol + '//' + window.location.host;
-    var messageToUser = 'The protocol, host name and port number of the "doc" field (' + doc.hostname
+    var messageToUser = 'The protocol, host name and port number of the "doc" field (' + doc.host
         + '), if provided, must be identical to that of the Inline XBRL viewer(' + host + ')';
     document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-danger show mb-0">'
         + messageToUser + '</div>';

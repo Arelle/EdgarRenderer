@@ -89,13 +89,13 @@ var TaxonomyPages = {
     var allLabels = FiltersName.getAllLabelObject(element.getAttribute('name'));
     var possibleLabels = [ ];
     for ( var current in allLabels ) {
-      
       var tempObject = {
         'label' : current,
-        'value' : allLabels[current],
+        'value' : allLabels[current]
       };
       possibleLabels.push(tempObject);
     }
+    
     var tableHtml = '';
     possibleLabels.forEach(function( current, index, array ) {
       if ( current['value'] ) {
@@ -111,16 +111,45 @@ var TaxonomyPages = {
       element = element[0];
     }
     
-    var allAuthRefs = FiltersName.getAuthRefs(element.getAttribute('name'));
+    var allAuthRefs = FiltersName.getAuthRefs(element.getAttribute('name')) || [ ];
+    var allAuthRefsViaDimension = FiltersContextref.getAxis(element.getAttribute('contextref'), true);
+    var additionalReferences = [ ];
+    if ( allAuthRefsViaDimension ) {
+      allAuthRefsViaDimension = allAuthRefsViaDimension.split(' ');
+      allAuthRefsViaDimension.forEach(function( current, index ) {
+        FiltersName.getAuthRefs(current).forEach(function( nestedAuth, nestedIndex ) {
+          allAuthRefs.push(nestedAuth);
+        });
+      });
+    }
+    var allAuthRefsViaMember = FiltersContextref.getMember(element.getAttribute('contextref'), true);
+    if ( allAuthRefsViaMember ) {
+allAuthRefsViaMember = allAuthRefsViaMember.split(' ');
+allAuthRefsViaMember.forEach(function( current, index ) {
+        FiltersName.getAuthRefs(current).forEach(function( nestedAuth, nestedIndex ) {
+          allAuthRefs.push(nestedAuth);
+        });
+      });
+    }
+    
+    allAuthRefs = new Set(allAuthRefs);
+    
     var tableHtml = '';
+    
     if ( allAuthRefs ) {
       allAuthRefs.forEach(function( current ) {
         var discoveredReference = ConstantsFunctions.getSingleMetaStandardReference(current);
         if ( discoveredReference[0] ) {
           
           var possibleLabels = [ {
+              'label' : 'Footnote',
+              'value' : discoveredReference[0]['Footnote']
+          }, {
             'label' : 'Name',
             'value' : discoveredReference[0]['Name']
+          }, {
+              'label' : 'Number',
+              'value' : discoveredReference[0]['Number']
           }, {
             'label' : 'Paragraph',
             'value' : discoveredReference[0]['Paragraph']
@@ -130,6 +159,9 @@ var TaxonomyPages = {
           }, {
             'label' : 'Section',
             'value' : discoveredReference[0]['Section']
+          }, {
+              'label' : 'Subsection',
+              'value' : discoveredReference[0]['Subsection']
           }, {
             'label' : 'Sub Topic',
             'value' : discoveredReference[0]['SubTopic']
@@ -146,7 +178,7 @@ var TaxonomyPages = {
             'label' : 'URL <small>(Will Leave SEC Website)</small>',
             'type' : 'link',
             'value' : discoveredReference[0]['URI']
-          }, ];
+          } ];
           
           possibleLabels.forEach(function( current, index, array ) {
             if ( current['type'] === 'link' && current['value'] ) {

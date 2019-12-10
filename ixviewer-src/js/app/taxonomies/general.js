@@ -47,7 +47,7 @@ var TaxonomiesGeneral = {
     
     $(element).popover({
       'placement' : 'auto',
-      'template' : popoverHtml,
+      'template' : popoverHtml
     // 'container' : 'element'
     });
     $(element).popover('show');
@@ -110,9 +110,8 @@ var TaxonomiesGeneral = {
     var element = document.getElementById('dynamic-xbrl-form').querySelector('[id="' + id + '"]');
     if ( element.hasAttribute('continued-main-taxonomy') && element.getAttribute('continued-main-taxonomy') === 'true' ) {
       return ModalsNested.dynamicallyFindContinuedTaxonomies(element, [ ]);
-    } else {
-      return element;
     }
+    return element;
     
   },
   
@@ -270,9 +269,8 @@ var TaxonomiesGeneral = {
     }
     if ( element && element.parentNode ) {
       return TaxonomiesGeneral.isParentNodeHidden(element.parentNode);
-    } else {
-      return false;
     }
+    return false;
     
   },
   

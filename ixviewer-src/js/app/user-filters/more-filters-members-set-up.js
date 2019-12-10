@@ -17,35 +17,23 @@ var UserFiltersMoreFiltersMembersSetUp = {
     foundDimensionsArray.forEach(function( current ) {
       
       if ( current && current['innerText'] ) {
-        // gatherAllIDS.push(current.closest('[id]').getAttribute('id'))
-        var tempObject = {
-          'parentID' : current.closest('[id]').getAttribute('id'),
-          'name' : current['innerText'].trim(),
-          'label' : (current['innerText'].trim().split(':')[1].endsWith('Member')) ? (current['innerText'].trim()
-              .split(':')[1].replace(/([A-Z])/g, ' $1').trim().slice(0, -7))
-              : (current['innerText'].trim().split(':')[1].replace(/([A-Z])/g, ' $1').trim()),
-        };
-        
-        // var memberExists =
-        // UserFiltersMoreFiltersMembersSetUp.membersOptions.filter(function(
-        // element ) {
-        // return element['name'] === tempObject['name'];
-        // });
-        
-        // console.log(memberExists);
-        
-        // if ( memberExists.length === 0 ) {
-        // console.log('new name!');
-        tempArray.push(tempObject);
-        // UserFiltersMoreFiltersMembersSetUp.membersOptions.push(tempObject);
-        
-        // }
+        if ( current['innerText'].trim().split(':').length > 1 ) {
+          var tempObject = {
+            'parentID' : current.closest('[id]').getAttribute('id'),
+            'name' : current['innerText'].trim(),
+            'label' : (current['innerText'].trim().split(':')[1].endsWith('Member')) ? (current['innerText'].trim()
+                .split(':')[1].replace(/([A-Z])/g, ' $1').trim().slice(0, -7)) : (current['innerText'].trim()
+                .split(':')[1].replace(/([A-Z])/g, ' $1').trim())
+          };
+          
+          tempArray.push(tempObject);
+        }
       }
       
     });
     tempArray.sort(function( first, second ) {
       if ( first['label'] > second['label'] ) {
-        return 1
+        return 1;
       }
       if ( first['label'] < second['label'] ) {
         return -1;
@@ -67,20 +55,25 @@ var UserFiltersMoreFiltersMembersSetUp = {
         }
       }
       return finalized;
-    }
-    document.getElementById('filters-members-count').innerText = UserFiltersMoreFiltersMembersSetUp.membersOptions.length;
+    };
+    
     if ( tempArray.length ) {
+      
       var currentName = tempArray[0]['name'];
       
       var finalized = [ {
         'parentID' : [ ],
         'name' : tempArray[0]['name'],
-        'label' : tempArray[0]['label'],
+        'label' : tempArray[0]['label']
       } ];
-      
       UserFiltersMoreFiltersMembersSetUp.membersOptions = setAllParentIDS(currentName, finalized, tempArray, 0);
       UserFiltersMoreFiltersMembersSetUp.populate();
+      document.getElementById('filters-members-count').innerText = UserFiltersMoreFiltersMembersSetUp.membersOptions.length;
+    } else {
+      
+      document.getElementById('filters-members-count').innerText = 0;
     }
+    
     callback();
   },
   

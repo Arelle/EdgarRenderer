@@ -231,6 +231,10 @@ var FiltersValue = {
             return FiltersNumber.numberFormatting(element, FiltersDate.durMonth(element));
             break;
           }
+ case 'durweek' : {
+            return FiltersNumber.numberFormatting(element, FiltersDate.durWeek(element));
+            break;
+          }
           case 'durday' : {
             return FiltersNumber.numberFormatting(element, FiltersDate.durDay(element));
             break;
@@ -311,27 +315,27 @@ var FiltersValue = {
       
       if ( element.hasAttribute('xsi:nil') && (element.getAttribute('xsi:nil') === true) ) {
         return 'nil';
+      }
+      
+      var splitText = element.innerText.split(/(\r\n|\n|\r)/gm);
+      var dataToReturn = '';
+      if ( splitText.length > 1 && showCollapse ) {
+        // we show accordion
+        dataToReturn = '<div class="collapse d-block collapse-modal-partial" id="collapse-taxonomy">';
+        dataToReturn += element.innerHTML;
+        
+        dataToReturn += '</div>';
+        dataToReturn += '<button class="btn btn-primary btn-sm btn-block mt-1" type="button" data-toggle="collapse" data-target="#collapse-taxonomy">Contract / Expand</button>';
+        
+      } else if ( splitText.length > 1 && !showCollapse ) {
+        dataToReturn = 'Click to see Fact';
       } else {
         
-        var splitText = element.innerText.split(/(\r\n|\n|\r)/gm);
-        var dataToReturn = '';
-        if ( splitText.length > 1 && showCollapse ) {
-          // we show accordion
-          dataToReturn = '<div class="collapse d-block collapse-modal-partial" id="collapse-taxonomy">';
-          dataToReturn += element.innerHTML;
-          
-          dataToReturn += '</div>';
-          dataToReturn += '<button class="btn btn-primary btn-sm btn-block mt-1" type="button" data-toggle="collapse" data-target="#collapse-taxonomy">Contract / Expand</button>';
-          
-        } else if ( splitText.length > 1 && !showCollapse ) {
-          dataToReturn = 'Click to see Fact';
-        } else {
-          
-          dataToReturn = element.innerText;
-          
-        }
-        return FiltersNumber.numberFormatting(element, dataToReturn);
+        dataToReturn = element.innerText;
+        
       }
+      return FiltersNumber.numberFormatting(element, dataToReturn);
+      
     }
     
   },
@@ -387,7 +391,6 @@ var FiltersValue = {
       for ( var i = 0; i < element['children'].length; i++ ) {
         FiltersValue.recursivelyFixHTMLTemp(element['children'][i]);
       }
-    } else {
     }
   },
   
@@ -402,7 +405,6 @@ var FiltersValue = {
       for ( var i = 0; i < element['children'].length; i++ ) {
         FiltersValue.recursivelyFixHTML(element['children'][i]);
       }
-    } else {
     }
   }
 

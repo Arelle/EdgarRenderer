@@ -33,9 +33,9 @@ var FiltersContextref = {
         }
         return FiltersName.getFormattedName(current.getAttribute('dimension'));
       }).filter(function( element, index, array ) {
-        return array.indexOf(element) == index;
-      })
-
+        return array.indexOf(element) === index;
+      });
+      
       if ( plainText ) {
         return axis.join(' ');
       }
@@ -59,7 +59,7 @@ var FiltersContextref = {
         }
         return FiltersName.getFormattedName(current.innerText);
       }).filter(function( element, index, array ) {
-        return array.indexOf(element) == index;
+        return array.indexOf(element) === index;
       });
       
       if ( plainText ) {
@@ -71,19 +71,23 @@ var FiltersContextref = {
   },
   
   getPeriod : function( contextref ) {
+    
     if ( contextref && typeof contextref === 'string' ) {
       contextref = contextref.replace(/\./g, '\\\.');
       if ( document.getElementById('dynamic-xbrl-form').querySelector('[id="' + contextref + '"]')
           && document.getElementById('dynamic-xbrl-form').querySelector('[id="' + contextref + '"]')['nodeName']
               .split(':')[0].toLowerCase() ) {
-        var prefix = document.getElementById('dynamic-xbrl-form').querySelector('[id="' + contextref + '"]')['nodeName']
-            .split(':')[0].toLowerCase();
+        var prefixParent = document.getElementById('dynamic-xbrl-form').querySelector('[id="' + contextref + '"]')['nodeName']
+            .toLowerCase();
+        var prefix = '';
+        if ( prefixParent.split(':').length === 2 ) {
+          prefix = prefixParent.split(':')[0] + '\\:';
+        }
       }
       
-      var startDateTag = prefix + '\\:startDate';
-      var endDateTag = prefix + '\\:endDate';
-      
-      var instantDateTag = prefix + '\\:instant';
+      var startDateTag = prefix + 'startdate';
+      var endDateTag = prefix + 'enddate';
+      var instantDateTag = prefix + 'instant';
       
       var startDate;
       
@@ -112,7 +116,7 @@ var FiltersContextref = {
         var betweenDate;
         var monthsDifference = Math.round(endDate.diff(startDate, 'months', true));
         if ( monthsDifference !== 0 ) {
-          betweenDate = monthsDifference + ' months ending ' + endDate.format('MM/DD/YYYY')
+          betweenDate = monthsDifference + ' months ending ' + endDate.format('MM/DD/YYYY');
         } else {
           betweenDate = startDate.format('MM/DD/YYYY') + ' - ' + endDate.format('MM/DD/YYYY');
         }
@@ -121,13 +125,12 @@ var FiltersContextref = {
       } else if ( instantDate && instantDate.isValid() ) {
         return 'As of ' + instantDate.format('MM/DD/YYYY');
         return 'As of ' + instantDate[1] + '/' + instantDate[2] + '/' + instantDate[0];
-      } else {
-        return 'No period information.';
       }
+      return 'No period information.';
       
     }
     return 'No period information.';
     
-  },
+  }
 
 };

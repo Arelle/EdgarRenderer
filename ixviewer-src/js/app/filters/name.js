@@ -320,12 +320,12 @@ var FiltersName = {
                 if ( nestedCurrent['role'] === current ) {
                   
                   returnArray.push({
-                    'blank' : true,
+                    'blank' : true
                   });
                   
                   returnArray.push({
                     'label' : 'Section',
-                    'value' : nestedCurrent['longName'],
+                    'value' : nestedCurrent['longName']
                   });
                   
                   var weight = foundTag[0]['calculation'][current]['weight'] || null;
@@ -339,7 +339,7 @@ var FiltersName = {
                   
                   returnArray.push({
                     'label' : 'Weight',
-                    'value' : weight,
+                    'value' : weight
                   });
                   
                   var parent = foundTag[0]['calculation'][current]['parentTag'] || null;
@@ -352,7 +352,7 @@ var FiltersName = {
                   
                   returnArray.push({
                     'label' : 'Parent',
-                    'value' : parent,
+                    'value' : parent
                   });
                 }
               });
@@ -360,9 +360,9 @@ var FiltersName = {
         return returnArray;
       }
       return null;
-    } else {
-      return null;
     }
+    return null;
+    
   }
 
 };

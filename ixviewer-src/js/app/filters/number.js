@@ -8,6 +8,12 @@
 var FiltersNumber = {
   numberFormatting : function( element, input ) {
     
+    // return 0 if No|None...etc
+    var regex = /^\s*([Nn]o(ne)?|[Nn]il|[Zz]ero)\s*$/;
+    if ( regex.exec(element.innerText) ) {
+      return "0";
+    }
+    
     if ( element.hasAttribute('xsi:nil') ) {
       return 'nil';
     }
@@ -17,64 +23,63 @@ var FiltersNumber = {
         
       } else if ( element.innerHTML === '—' ) {
         return input;
-      } else {
-        var scale = (element.hasAttribute('scale') && parseInt(element.getAttribute('scale'))) ? parseInt(element
-            .getAttribute('scale')) : 0;
-        
-        var decimals = (element.hasAttribute('decimals') && parseInt(element.getAttribute('decimals'))) ? parseInt(element
-            .getAttribute('decimals'))
-            : 0;
-        
-        if ( scale > 0 ) {
-          
-          var periodIndex = input.indexOf('.');
-          if ( periodIndex !== -1 ) {
-            
-            var inputArray = input.split('.');
-            scale = scale - inputArray[1].length;
-          }
-          input = input.padEnd(input.length + Math.abs(scale), 0);
-          input = input.replace('.', '');
-          input = [ input.slice(0, scale), input.slice(scale) ].join('');
-//          if ( periodIndex !== -1 ) {
-//            console.log(scale);
-//            input = [ input.slice(0, scale), input.slice(scale) ].join('');
-//          } else {
-//            //console.log(scale);
-//            input = [ input.slice(0, scale), input.slice(scale) ].join('');
-//          }
-          
-        } else if ( scale < 0 ) {
-          
-          var absScale = Math.abs(scale);
-          
-          if ( (input).split('.')[1] ) {
-            var precision = (input).split('.')[1].length + 2;
-            input = (input / 100).toFixed(precision);
-          }
-          
-        }
-        
-        if ( element.hasAttribute('sign') ) {
-          input = element.getAttribute('sign') + input;
-        }
-        
-        // adding commas when necessary
-        input = input.toString().replace(/,/g, '');
-        var arraySplitByPeriod = input.toString().split('.');
-        if ( arraySplitByPeriod.length > 0 ) {
-          arraySplitByPeriod[0] = arraySplitByPeriod[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-          if ( arraySplitByPeriod[1] && arraySplitByPeriod[1].match(/^0+$/) ) {
-            arraySplitByPeriod[1] = '';
-            return arraySplitByPeriod.join('');
-          }
-          return arraySplitByPeriod.join('.');
-        }
-        return input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       }
-    } else {
-      return input;
+      var scale = (element.hasAttribute('scale') && parseInt(element.getAttribute('scale'))) ? parseInt(element
+          .getAttribute('scale')) : 0;
+      
+      var decimals = (element.hasAttribute('decimals') && parseInt(element.getAttribute('decimals'))) ? parseInt(element
+          .getAttribute('decimals'))
+          : 0;
+      
+      if ( scale > 0 ) {
+        
+        var periodIndex = input.indexOf('.');
+        if ( periodIndex !== -1 ) {
+          
+          var inputArray = input.split('.');
+          scale = scale - inputArray[1].length;
+        }
+        input = input.padEnd(input.length + Math.abs(scale), 0);
+        input = input.replace('.', '');
+        input = [ input.slice(0, scale), input.slice(scale) ].join('');
+        // if ( periodIndex !== -1 ) {
+        // console.log(scale);
+        // input = [ input.slice(0, scale), input.slice(scale) ].join('');
+        // } else {
+        // //console.log(scale);
+        // input = [ input.slice(0, scale), input.slice(scale) ].join('');
+        // }
+        
+      } else if ( scale < 0 ) {
+        
+        var absScale = Math.abs(scale);
+        
+        if ( (input).split('.')[1] ) {
+          var precision = (input).split('.')[1].length + 2;
+          input = (input / 100).toFixed(precision);
+        }
+        
+      }
+      
+      if ( element.hasAttribute('sign') ) {
+        input = element.getAttribute('sign') + input;
+      }
+      
+      // adding commas when necessary
+      input = input.toString().replace(/,/g, '');
+      var arraySplitByPeriod = input.toString().split('.');
+      if ( arraySplitByPeriod.length > 0 ) {
+        arraySplitByPeriod[0] = arraySplitByPeriod[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        if ( arraySplitByPeriod[1] && arraySplitByPeriod[1].match(/^0+$/) ) {
+          arraySplitByPeriod[1] = '';
+          return arraySplitByPeriod.join('');
+        }
+        return arraySplitByPeriod.join('.');
+      }
+      return input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      
     }
+    return input;
     
   },
   
@@ -83,14 +88,15 @@ var FiltersNumber = {
       var normal = '';
       for ( var i = 0; i < jpDigits.length; i++ ) {
         var d = jpDigits[i];
-        if ( '\uFF10' <= d && d <= '\uFF19' )
+        if ( '\uFF10' <= d && d <= '\uFF19' ) {
           normal += String.fromCharCode(d.charCodeAt(0) - 0xFF10 + '0'.charCodeAt(0));
-        else
+        } else {
           normal += d;
+        }
       }
       return normal;
     }
-    return null
+    return null;
   },
   
   numComma : function( element ) {
@@ -129,7 +135,7 @@ var FiltersNumber = {
     for ( var i = 0; i < a.length; i++ ) {
       var w = a[i];
       var x = ConstantsNumber.getSmallNumber[w];
-      if ( x != null ) {
+      if ( x ) {
         g = g + x;
       } else if ( w === 'hundred' ) {
         g = g * 100;

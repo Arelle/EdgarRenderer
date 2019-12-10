@@ -2,6 +2,11 @@
  * Data and content created by government employees within the scope of their employment 
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  * */
+#dynamic-xbrl-form * {
+	box-sizing: initial;
+	line-height: initial;
+}
+
 kbd {
 	background-color: inherit;
 	color: inherit;
@@ -16,7 +21,7 @@ kbd {
 
 #dynamic-xbrl-form .text-block-indicator-left {
 	left: 0;
-	height: 1rem;
+	/*height: 1rem;*/
 	width: 5px;
 	border-top: .5rem solid transparent;
 	border-left: .75rem solid #003768;
@@ -25,7 +30,7 @@ kbd {
 
 #dynamic-xbrl-form .text-block-indicator-right {
 	right: 0;
-	height: 1rem;
+/*	height: 1rem;*/
 	width: 5px;
 	border-top: .5rem solid transparent;
 	border-right: .75rem solid #003768;
@@ -234,15 +239,29 @@ body {
 }
 
 .dialog-box {
-	top: 25%;
-	left: 35vw;
-	width: 30vw;
-	height: 50vh;
+	top: 55px;
+	left: 5%;
+	width: 90%;
+	height: calc(100vh - 55px);
 	background-color: white;
-	z-index: 9999;
+	z-index: 100;
 	color: #666;
 	border: 2px solid #003768;
 	border-radius: .3rem;
+}
+
+@media ( min-width : 576px) {
+	.dialog-box {
+		top: 25%;
+		left: 35vw;
+		width: 30vw;
+		height: 50vh;
+		background-color: white;
+		z-index: 9999;
+		color: #666;
+		border: 2px solid #003768;
+		border-radius: .3rem;
+	}
 }
 
 .drag-icon {

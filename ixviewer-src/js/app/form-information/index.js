@@ -26,8 +26,22 @@ var FormInformation = {
   },
   
   xbrlZip : function( ) {
-    
-    var zip = HelpersUrl.getExternalFile.substring(0, HelpersUrl.getExternalFile.lastIndexOf('.')) + '.zip';
+    var zip = "";
+    var zipFileName;
+    var adsh;
+    var url = HelpersUrl.getExternalFile;
+    if ( HelpersUrl.getAllParams.hostName.indexOf("edgar.sec.gov") !== -1 ) {
+      adsh = ConstantsFunctions.getUrlVars(url)["accessionNumber"];
+      zipFileName = adsh + '-xbrl.zip';
+      var lastIndexOfEqual = url.lastIndexOf("=");
+      zip = url.substring(0, lastIndexOfEqual) + "=" + zipFileName;
+    } else {
+      var index = url.lastIndexOf("/");
+      var tempHold = url.substring(index, index - 18);
+      adsh = tempHold.substring(0, 10) + "-" + tempHold.substring(10, 12) + "-" + tempHold.substring(12, 18);
+      zipFileName = adsh + '-xbrl.zip';
+      zip = url.substring(0, index) + "/" + zipFileName;
+    }
     
     document.getElementById('form-information-zip').setAttribute('href', zip);
     

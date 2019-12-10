@@ -37,6 +37,13 @@ var AjaxForm = {
             
             ConstantsFunctions.setHTMLPrefix();
             
+            var bodyRegex = /<body[^>]*>/;
+            
+            var bodyRegexResult = xhr.response.match(bodyRegex);
+            if ( bodyRegexResult && bodyRegexResult[0] ) {
+              ConstantsFunctions.setParentContainerStyles(bodyRegexResult[0].replace(/(\r\n|\n|\r)/gm, ' ').trim());
+            }
+            
             document.getElementById('xbrl-form-loading').classList.add('d-none');
             
             callback(true);

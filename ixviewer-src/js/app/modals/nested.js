@@ -29,10 +29,9 @@ var ModalsNested = {
           '[id="' + element.getAttribute('continuedat') + '"]');
       return ModalsNested.dynamicallyFindContinuedTaxonomies(continuedElement, elementsInArray);
       
-    } else {
-      return elementsInArray
-
     }
+    return elementsInArray;
+    
   },
   
   recursielyFindAllNestedTaxonomies : function( element, firstIteration ) {
@@ -91,9 +90,8 @@ var ModalsNested = {
     var element = document.getElementById('dynamic-xbrl-form').querySelector('[id="' + id + '"]');
     if ( element.hasAttribute('continued-main-taxonomy') && element.getAttribute('continued-main-taxonomy') === 'true' ) {
       return ModalsNested.dynamicallyFindContinuedTaxonomies(element, [ ]);
-    } else {
-      return element;
     }
+    return element;
     
   },
   
@@ -219,12 +217,11 @@ var ModalsNested = {
       return '<div id="taxonomy-nested-modal-carousel-' + index
           + '" class="carousel" data-interval="false" data-keyboard="true"><div class="carousel-inner">'
           + ModalsContinuedAt.carouselData(element, true) + '</div></div>';
-    } else {
-      return '<div id="taxonomy-nested-modal-carousel-' + index
-          + '" class="carousel" data-interval="false" data-keyboard="true"><div class="carousel-inner">'
-          + ModalsCommon.carouselData(element, false) + '</div></div>';
-      
     }
+    return '<div id="taxonomy-nested-modal-carousel-' + index
+        + '" class="carousel" data-interval="false" data-keyboard="true"><div class="carousel-inner">'
+        + ModalsCommon.carouselData(element, false) + '</div></div>';
+    
   },
   
   keyboardEvents : function( event ) {

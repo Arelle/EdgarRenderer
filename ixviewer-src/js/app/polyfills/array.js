@@ -3,6 +3,8 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
+/*eslint-disable*/
+
 'use strict';
 if ( !Array.from ) {
   Array.from = (function( ) {
@@ -132,4 +134,10 @@ if ( !Array.prototype.find ) {
     configurable : true,
     writable : true
   });
+}
+
+if ( !Array.prototype.includes ) {
+  Array.prototype.includes = function( search ) {
+    return !!~this.indexOf(search);
+  };
 }

@@ -9,9 +9,8 @@ var Errors = {
   
   checkPerformanceConcern : function( totalTaxonomies ) {
     if ( totalTaxonomies && typeof totalTaxonomies === 'number' ) {
-      var isChrome = window.chrome;
-      
-      if ( (!isChrome && totalTaxonomies > 1000) || (isChrome && totalTaxonomies >= 7500) ) {
+      if ( (!Constants.getBrowserType['chrome'] && totalTaxonomies > 1000)
+          || (Constants.getBrowserType['chrome'] && totalTaxonomies >= 7500) ) {
         var performanceConcern = document.querySelectorAll('.performance-concern');
         var performanceConcernArray = Array.prototype.slice.call(performanceConcern);
         performanceConcernArray.forEach(function( current ) {
@@ -19,9 +18,9 @@ var Errors = {
         });
       }
       return;
-    } else {
-      return null;
     }
+    return null;
+    
   },
   
   checkFileSizeForLimits : function( fileSize ) {
@@ -33,9 +32,9 @@ var Errors = {
         return;
       }
       return;
-    } else {
-      return;
     }
+    return;
+    
   },
   
   updateMainContainerHeight : function( removingWarning ) {

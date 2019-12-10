@@ -134,7 +134,7 @@ var ModalsFormInformation = {
           'label' : 'Document Type',
           'value' : document.getElementById('dynamic-xbrl-form').querySelector('[name="dei:DocumentType"]') ? document
               .getElementById('dynamic-xbrl-form').querySelector('[name="dei:DocumentType"]').textContent
-			  : 'Not Available.'
+              : 'Not Available.'
         },
         {
           'label' : 'Period End Date',
@@ -162,8 +162,7 @@ var ModalsFormInformation = {
           'value' : document.getElementById('dynamic-xbrl-form').querySelector('[name="dei:AmendmentFlag"]') ? document
               .getElementById('dynamic-xbrl-form').querySelector('[name="dei:AmendmentFlag"]').textContent
               : 'Not Available.'
-        },
-    ];
+        } ];
     
     var tableHtml = '';
     possibleLabels.forEach(function( current, index, array ) {
@@ -200,7 +199,7 @@ var ModalsFormInformation = {
           }, {
             'label' : 'Inline Version',
             'value' : Constants.getMetaVersion
-          }, ],
+          } ],
           [ {
             'label' : 'Tags'
           }, {
@@ -209,7 +208,7 @@ var ModalsFormInformation = {
             'label' : 'Custom'
           }, {
             'label' : 'Total'
-          }, ],
+          } ],
           
           [ {
             'label' : 'Primary',
@@ -273,8 +272,8 @@ var ModalsFormInformation = {
                 (totalStandard > 0) ? Math.round((totalCustom / total) * 100) + '%' : '0%',
                 
                 total ]
-          } ],
-      
+          } ]
+
       ];
       
       var tableHtml = '';
@@ -358,8 +357,7 @@ var ModalsFormInformation = {
               .getMetaDocuments('definitionLink')['local']
               : [ 'Not Available.' ]
         
-        },
-    ];
+        } ];
     
     var tableHtml = '';
     possibleLabels.forEach(function( current, index, array ) {

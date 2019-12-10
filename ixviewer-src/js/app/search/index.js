@@ -35,13 +35,13 @@ var Search = {
         return parseInt(current['value']);
       }
     }).filter(function( element ) {
-      return element
+      return element;
     });
     
     var matchCase = optionsArray.indexOf(11) >= 0;
     
     // we don't use the global
-    var regexOptions = 'sm';
+    var regexOptions = 'm';
     if ( !matchCase ) {
       regexOptions += 'i';
     }
@@ -72,7 +72,7 @@ var Search = {
       var regex = '^';
       inputArray.forEach(function( current, index, array ) {
         if ( current === '|' ) {
-          regex += '|'
+          regex += '|';
         } else if ( current === '&' ) {
           // business as usual
         } else {
@@ -80,8 +80,8 @@ var Search = {
         }
       });
       return regex;
-    } else {
-      return input;
     }
+    return input;
+    
   }
 };

@@ -10,7 +10,7 @@ var TaxonomiesContinuedAt = {
   addContinuedAtFunctionality : function( callback ) {
     
     var foundContinuedAtTotalElements = document.getElementById('dynamic-xbrl-form').querySelectorAll(
-        '[continuedat], ' + Constants.getHtmlPrefix + '\\:continuation');
+        '[continuedat], ' + Constants.getHTMLPrefix + '\\:continuation');
     
     var foundContinuedAtTotalElementsArray = Array.prototype.slice.call(foundContinuedAtTotalElements);
     
@@ -110,10 +110,10 @@ var TaxonomiesContinuedAt = {
   findContinuedMainTaxonomy : function( element ) {
     if ( element.hasAttribute('continued-main-taxonomy') && element.getAttribute('continued-main-taxonomy') === 'true' ) {
       return element;
-    } else {
-      return TaxonomiesContinuedAt.findContinuedMainTaxonomy(document.getElementById('dynamic-xbrl-form').querySelector(
-          '[continuedat="' + element.getAttribute('id') + '"]'));
     }
+    return TaxonomiesContinuedAt.findContinuedMainTaxonomy(document.getElementById('dynamic-xbrl-form').querySelector(
+        '[continuedat="' + element.getAttribute('id') + '"]'));
+    
   },
   // element.hasAttribute('continued-main-taxonomy')
   enterElement : function( event, element ) {

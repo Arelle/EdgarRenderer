@@ -6,9 +6,37 @@
 'use strict';
 
 var ConstantsFunctions = {
+  setBrowserType : function( ) {
+    
+    Constants.getBrowserType = {
+      'opera' : (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0,
+      'firefox' : typeof InstallTrigger !== 'undefined',
+      'safari' : /constructor/i.test(window.HTMLElement) || (function( p ) {
+        return p.toString() === "[object SafariRemoteNotification]";
+      })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification)),
+      'ie' : false || !!document.documentMode,
+      'edge' : !(false || !!document.documentMode) && !!window.StyleMedia,
+      'chrome' : !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)
+    };
+  },
+  
+  setParentContainerStyles : function( input ) {
+    if ( typeof input === 'string' && input.length > 0 ) {
+      var tempHTML = document.createElement('html');
+      tempHTML.innerHTML = input;
+      
+      if ( tempHTML.querySelector('body').hasAttribute('style') ) {
+        document.getElementById('dynamic-xbrl-form').setAttribute('style',
+            tempHTML.querySelector('body').getAttribute('style'));
+      }
+      
+    } else {
+      return;
+    }
+    
+  },
   
   setHTMLAttributes : function( input ) {
-    
     if ( typeof input === 'string' && input.length > 0 ) {
       var temp = {};
       var arrayToLoopOver = input.split(' ');
@@ -21,9 +49,9 @@ var ConstantsFunctions = {
       Constants.getHTMLAttributes = temp;
       ConstantsFunctions.setFormattingObject(temp);
       return true;
-    } else {
-      return null;
     }
+    return null;
+    
   },
   
   setMetaSourceDocumentsThenFixLinks : function( input ) {
@@ -41,14 +69,13 @@ var ConstantsFunctions = {
       
       if ( Constants.getHTMLAttributes[option] === 'http://www.xbrl.org/2013/inlineXBRL' ) {
         
-        Constants.getHtmlPrefix = option.split(':')[1];
+        Constants.getHTMLPrefix = option.split(':')[1];
         break;
       }
     }
   },
   
   setMetaTags : function( input ) {
-    
     if ( input && (typeof input === 'object') && !Array.isArray(input) ) {
       var tagsAsArray = [ ];
       for ( var i = 0; i < Object.keys(input).length; i++ ) {
@@ -82,7 +109,7 @@ var ConstantsFunctions = {
   },
   
   setMetaEntityCounts : function( input ) {
-    if ( input && (typeof input === 'object') && !Array.isArray(input) ) {
+    if ( input && (typeof input === 'object') && !(input instanceof Array) ) {
       var entityObject = {
         'keyStandard' : input['keyStandard'],
         'axisStandard' : input['axisStandard'],
@@ -98,7 +125,7 @@ var ConstantsFunctions = {
   },
   
   setMetaReports : function( input ) {
-    if ( input && (typeof input === 'object') && !Array.isArray(input) ) {
+    if ( input && (typeof input === 'object') && !(input instanceof Array) ) {
       var reportsAsArray = [ ];
       for ( var i = 0; i < Object.keys(input).length; i++ ) {
         input[Object.keys(input)[i]]['original-name'] = Object.keys(input)[i];
@@ -111,7 +138,7 @@ var ConstantsFunctions = {
   },
   
   setMetaStandardReference : function( input ) {
-    if ( input && (typeof input === 'object') && !Array.isArray(input) ) {
+    if ( input && (typeof input === 'object') && !(input instanceof Array) ) {
       var referencesAsArray = [ ];
       for ( var i = 0; i < Object.keys(input).length; i++ ) {
         input[Object.keys(input)[i]]['original-name'] = Object.keys(input)[i];
@@ -129,9 +156,9 @@ var ConstantsFunctions = {
       return Constants.getMetaStandardReference.filter(function( element ) {
         return element['original-name'] === ref;
       });
-    } else {
-      return null;
     }
+    return null;
+    
   },
   
   setMetaVersion : function( input ) {
@@ -149,14 +176,7 @@ var ConstantsFunctions = {
       }
 
       else {
-        
-        var warningMessage = 'File found was not a MetaLinks version 2.0 file or higher';
-        if ( document.getElementById('app-warning') ) {
-          document.getElementById('app-warning').textContent = warningMessage;
-          document.getElementById('app-warning').classList.remove('d-none');
-        } else {
-          return null;
-        }
+        ErrorsMinor.metaLinksVersion();
       }
     } else {
       return null;
@@ -165,7 +185,7 @@ var ConstantsFunctions = {
   },
   
   setMetaCustomPrefix : function( input ) {
-    if ( input && (typeof input === 'object') && !Array.isArray(input) && input['nsprefix'] ) {
+    if ( input && (typeof input === 'object') && !(input instanceof Array) && input['nsprefix'] ) {
       Constants.getMetaCustomPrefix = input['nsprefix'].toLowerCase();
     } else {
       return null;
@@ -173,7 +193,7 @@ var ConstantsFunctions = {
   },
   
   setMetaDts : function( input ) {
-    if ( input && (typeof input === 'object') && !Array.isArray(input) ) {
+    if ( input && (typeof input === 'object') && !(input instanceof Array) ) {
       Constants.getMetaDts = input;
     } else {
       return null;
@@ -181,7 +201,7 @@ var ConstantsFunctions = {
   },
   
   setMetaHidden : function( input ) {
-    if ( input && (typeof input === 'object') && !Array.isArray(input) ) {
+    if ( input && (typeof input === 'object') && !(input instanceof Array) ) {
       Constants.getMetaHidden = input;
     } else {
       return null;
@@ -309,5 +329,14 @@ var ConstantsFunctions = {
       }
     }
     Constants.getFormattingObject = temp;
+  },
+  
+  getUrlVars : function( url ) {
+    var vars = {};
+    var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi, function( m, key, value ) {
+      vars[key] = value;
+    });
+    return vars;
   }
+
 };

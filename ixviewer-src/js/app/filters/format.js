@@ -11,7 +11,7 @@ var FiltersFormat = {
       if ( format.split(':').length > 1 ) {
         return format.split(':')[1];
       }
-      return null
+      return null;
     }
     return null;
   }

@@ -4,14 +4,16 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
+const fs = require('fs');
 const gulp = require('gulp');
+const eslint = require('gulp-eslint');
 const uglify = require('gulp-uglify');
 const concat = require('gulp-concat');
 const rename = require('gulp-rename');
 const order = require('gulp-order');
 const header = require('gulp-header');
 
-const jsFiles = [ '../js/app/**/*.js','!../js/app/compressed.js' ];
+const jsFiles = [ '../js/app/**/*.js','!../js/production.js', '!../js/production.min.js' ];
 
 const jsProdFile = '../js';
 
@@ -23,8 +25,14 @@ const comment = [
   ].join('\n')
 
 
-gulp.task('default',() => {
-  
+gulp.task('lint',() => {
+  return gulp.src(jsFiles)
+  .pipe(eslint({configFile: '.eslintrc.json'}))
+  .pipe(eslint.format())
+  // .pipe(eslint.failAfterError())
+});
+
+gulp.task('production',() => {
   return gulp.src(jsFiles)
   .pipe(order([
     'ajax/*.js',
@@ -54,9 +62,18 @@ gulp.task('default',() => {
   .pipe(uglify())
   .pipe(header(comment))
   .pipe(gulp.dest(jsProdFile));
-  
-  
 });
+
+gulp.task('clean',(callback) => {
+   // removes production.js
+   fs.unlinkSync(`${jsProdFile}/production.js`);
+   callback();
+});
+
+gulp.task('default', gulp.series('lint','production', 'clean'),(done) => {
+});
+
+
 
 
 

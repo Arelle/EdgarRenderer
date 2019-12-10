@@ -75,6 +75,9 @@ var UserFiltersGeneral = {
           UserFiltersDataRadios.updateAdditionalItemsOnly();
           break;
         }
+        default : {
+          ErrorsMinor.unknownError();
+        }
       }
     }
     if ( !dataFilter ) {
@@ -90,6 +93,9 @@ var UserFiltersGeneral = {
         case 'Custom Only' : {
           UserFiltersTagsRadios.updateFactsCustom();
           break;
+        }
+        default : {
+          ErrorsMinor.unknownError();
         }
       }
     }

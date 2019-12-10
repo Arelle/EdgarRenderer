@@ -39,7 +39,7 @@ var FiltersOther = {
       });
       return contentToReturn;
     }
-    return null
+    return null;
   },
   
   countryNameEn : function( element ) {
@@ -295,7 +295,7 @@ var FiltersOther = {
         'EH' : /^\s*([Ww]estern\s+[Ss]ahara*)\s*$/,
         'YE' : /^\s*([Yy]emen)\s*$/,
         'ZM' : /^\s*([Zz]ambia)\s*$/,
-        'ZW' : /^\s*([Zz]imbabwe)\s*$/,
+        'ZW' : /^\s*([Zz]imbabwe)\s*$/
       };
       
       for ( var option in regexOptions ) {
@@ -380,7 +380,7 @@ var FiltersOther = {
         'PE' : /^\s*([Pp]rince\s+[Ee]dward\s+[Ii]sland)\s*$/,
         'QC' : /^\s*([Qq]u[éeÃ©]bec)\s*$/,
         'SK' : /^\s*([Ss]askatchewan)\s*$/,
-        'YT' : /^\s*([Yy]ukon)\s*$/,
+        'YT' : /^\s*([Yy]ukon)\s*$/
       };
       
       for ( var option in regexOptions ) {
@@ -416,7 +416,7 @@ var FiltersOther = {
         'NYSEAMER' : /^\s*(([Tt]he\s+)?[Nn][Yy][Ss][Ee]\s+[Aa]merican(,?\s+[Ll][Ll][Cc])?)\s*$/,
         'NYSEArca' : /^\s*(([Tt]he\s+)?[Nn][Yy][Ss][Ee]\s+[Aa]rca(,?\s+[Ii]nc[.]?)?)\s*$/,
         'NYSENAT' : /^\s*(([Tt]he\s+)?[Nn][Yy][Ss][Ee]\s+[Nn]ational(,?\s+[Ii]nc[.]?)?)\s*$/,
-        'NASDAQ' : /^\s*(([Tt]he\s+)?[Nn][Aa][Ss][Dd][Aa][Qq](\s+([Ss]tock|[Gg]lobal(\s+[Ss]elect)?)\s+[Mm]arket(,?\s+[Ll][Ll][Cc])?)?)\s*$/,
+        'NASDAQ' : /^\s*(([Tt]he\s+)?[Nn][Aa][Ss][Dd][Aa][Qq](\s+([Ss]tock|[Gg]lobal(\s+[Ss]elect)?)\s+[Mm]arket(,?\s+[Ll][Ll][Cc])?)?)\s*$/
       };
       for ( var option in regexOptions ) {
         if ( regexOptions[option].exec(element['innerText']) && regexOptions[option].exec(element['innerText'])[0] ) {
@@ -690,7 +690,7 @@ var FiltersOther = {
         'T7' : /^\s*([Yy]emen)\s*$/,
         'Y4' : /^\s*([Zz]ambia)\s*$/,
         'Y5' : /^\s*([Zz]imbabwe)\s*$/,
-        'XX' : /^\s*([Uu]nknown)\s*$/,
+        'XX' : /^\s*([Uu]nknown)\s*$/
       };
       
       for ( var option in regexOptions ) {
@@ -709,7 +709,7 @@ var FiltersOther = {
       var regexOptions = {
         'Large Accelerated Filer' : /^\s*([Ll]arge\s+[Aa]ccelerated\s+[Ff]iler)\s*$/,
         'Accelerated Filer' : /^\s*([Aa]ccelerated\s+[Ff]iler)\s*$/,
-        'Non-accelerated Filer' : /^\s*([Nn]on[^\w]+[Aa]ccelerated\s+[Ff]iler)\s*$/,
+        'Non-accelerated Filer' : /^\s*([Nn]on[^\w]+[Aa]ccelerated\s+[Ff]iler)\s*$/
       };
       for ( var option in regexOptions ) {
         if ( regexOptions[option].exec(element['innerText']) ) {

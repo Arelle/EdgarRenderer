@@ -78,7 +78,7 @@ var Taxonomies = {
       var hiddenElement = document.getElementById('dynamic-xbrl-form').querySelector(
           '[id="' + updatedStyle['-sec-ix-hidden'] + '"]');
       
-      if ( hiddenElement && !hiddenElement.getAttribute('xsi:nil') ) {
+      if ( hiddenElement ) {
         // we now create an entirely new element based on the innerHTML
         // of current, and the attributes of hiddenElement
         var newElement = '';
@@ -99,7 +99,6 @@ var Taxonomies = {
         
         hiddenElement.removeAttribute('contextref');
         hiddenElement.removeAttribute('name');
-        
         current.innerHTML = newElement;
         
       }
@@ -112,7 +111,7 @@ var Taxonomies = {
     Taxonomies.updateStyleTaxonomies();
     
     var foundTaxonomies = document.getElementById('dynamic-xbrl-form').querySelectorAll(
-        '[contextref], [continuedat], ' + Constants.getHtmlPrefix + '\\:continuation');
+        '[contextref], [continuedat], ' + Constants.getHTMLPrefix + '\\:continuation');
     var foundTaxonomiesArray = Array.prototype.slice.call(foundTaxonomies);
     var isChrome = window.chrome;
     foundTaxonomiesArray
@@ -133,7 +132,7 @@ var Taxonomies = {
               current.parentNode.insertBefore(rightSpan, current);
             }
             if ( current.hasAttribute('id') ) {
-              current.setAttribute('data-original-id', current.getAttribute('id'))
+              current.setAttribute('data-original-id', current.getAttribute('id'));
             }
             current.setAttribute('id', 'fact-identifier-' + index);
             current.setAttribute('continued-taxonomy', false);
@@ -152,7 +151,7 @@ var Taxonomies = {
             
             current.setAttribute('continued-main-taxonomy', true);
             if ( current.hasAttribute('id') ) {
-              current.setAttribute('data-original-id', current.getAttribute('id'))
+              current.setAttribute('data-original-id', current.getAttribute('id'));
             }
             current.setAttribute('id', 'fact-identifier-' + index);
           } else if ( current.tagName.toLowerCase().indexOf('continuation') >= 0 ) {
@@ -292,12 +291,14 @@ var Taxonomies = {
     Taxonomies.resetAllPopups(function( ) {
       Taxonomies.resetAllHoverAttributes();
       element.setAttribute('hover-taxonomy', true);
-      if ( Taxonomies.isElementContinued(element) ) {
-        if ( element.hasAttribute('continued-main-taxonomy') ) {
+      if ( Constants.hoverOption ) {
+        if ( Taxonomies.isElementContinued(element) ) {
+          if ( element.hasAttribute('continued-main-taxonomy') ) {
+            Taxonomies.addPopover(element);
+          }
+        } else {
           Taxonomies.addPopover(element);
         }
-      } else {
-        Taxonomies.addPopover(element);
       }
     });
     

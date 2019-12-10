@@ -6,19 +6,19 @@
 'use strict';
 
 if ( !String.prototype.endsWith ) {
-  String.prototype.endsWith = function( search, this_len ) {
-    if ( this_len === undefined || this_len > this.length ) {
-      this_len = this.length;
+  String.prototype.endsWith = function( search, thisLength ) {
+    if ( thisLength === undefined || thisLength > this.length ) {
+      thisLength = this.length;
     }
-    return this.substring(this_len - search.length, this_len) === search;
+    return this.substring(thisLength - search.length, thisLength) === search;
   };
 }
 
 if ( !String.prototype.startsWith ) {
-  String.prototype.startsWith = function( search, this_len ) {
-    this_len = this_len || 0;
-    return this.indexOf(search, this_len) === this_len;
-  }
+  String.prototype.startsWith = function( search, thisLength ) {
+    thisLength = thisLength || 0;
+    return this.indexOf(search, thisLength) === thisLength;
+  };
 }
 
 if ( !String.prototype.padEnd ) {
@@ -29,36 +29,34 @@ if ( !String.prototype.padEnd ) {
     if ( this.length > targetLength ) {
       return String(this);
     }
-    else {
-      targetLength = targetLength - this.length;
-      if ( targetLength > padString.length ) {
-        padString += padString.repeat(targetLength / padString.length);
-        // append to original to ensure we are longer than needed
-      }
-      return String(this) + padString.slice(0, targetLength);
+    targetLength = targetLength - this.length;
+    if ( targetLength > padString.length ) {
+      padString += padString.repeat(targetLength / padString.length);
+      // append to original to ensure we are longer than needed
     }
+    return String(this) + padString.slice(0, targetLength);
+    
   };
 }
 
 if ( !String.prototype.repeat ) {
   String.prototype.repeat = function( count ) {
     'use strict';
-    if ( this == null ) {
+    count = count || 0;
+    if ( this === null ) {
       throw new TypeError('can\'t convert ' + this + ' to object');
     }
     var str = '' + this;
     count = +count;
-    if ( count != count ) {
-      count = 0;
-    }
+    
     if ( count < 0 ) {
       throw new RangeError('repeat count must be non-negative');
     }
-    if ( count == Infinity ) {
+    if ( count === Infinity ) {
       throw new RangeError('repeat count must be less than infinity');
     }
     count = Math.floor(count);
-    if ( str.length == 0 || count == 0 ) {
+    if ( str.length === 0 || count === 0 ) {
       return '';
     }
     // Ensuring count is a 31-bit integer allows us to heavily optimize the
@@ -75,5 +73,5 @@ if ( !String.prototype.repeat ) {
     }
     str += str.substring(0, maxCount - str.length);
     return str;
-  }
+  };
 }

@@ -31,9 +31,9 @@ var SearchFunctions = {
         }
       }
       return continuedElementsInnerText;
-    } else {
-      return element.textContent;
     }
+    return element.textContent;
+    
   },
   
   elementLabelForRegex : function( element ) {

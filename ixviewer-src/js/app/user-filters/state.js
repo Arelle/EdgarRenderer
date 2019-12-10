@@ -4,6 +4,7 @@
  */
 
 'use strict';
+
 var UserFiltersState = {
   
   getAxes : [ ],
@@ -64,13 +65,13 @@ var UserFiltersState = {
       
       foundTaxonomiesArray.forEach(function( current ) {
         
+        var enabledTaxonomy = true;
+        
         // special highlight
         UserFiltersState.search(current, enabledTaxonomy);
         
-        var enabledTaxonomy = true;
+        enabledTaxonomy = UserFiltersState.dataRadios(current, enabledTaxonomy);
         
-        enabledTaxonomy = UserFiltersState.dataRadios(current, enabledTaxonomy)
-
         enabledTaxonomy = UserFiltersState.tagRadios(current, enabledTaxonomy);
         
         enabledTaxonomy = UserFiltersState.periods(current, enabledTaxonomy);

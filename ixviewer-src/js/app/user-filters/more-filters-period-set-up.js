@@ -11,8 +11,9 @@ var UserFiltersMoreFiltersPeriodSetUp = {
   periodsOptions : [ ],
   
   setPeriods : function( callback ) {
-    
-    var nameSpace = '';
+    // we set <period> as a possible html tag, because older inline files don't
+    // follow the <namespace:period> consistency.
+    var nameSpace = 'period,';
     for ( var ns in Constants.getHTMLAttributes ) {
       
       if ( Constants.getHTMLAttributes[ns] === 'http://www.xbrl.org/2003/instance' ) {
@@ -21,7 +22,6 @@ var UserFiltersMoreFiltersPeriodSetUp = {
     }
     
     if ( nameSpace ) {
-      
       nameSpace = nameSpace.substring(0, nameSpace.length - 1);
       
       var foundPeriods = document.getElementById('dynamic-xbrl-form').querySelectorAll(nameSpace);

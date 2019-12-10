@@ -17,7 +17,7 @@ var UserFiltersMoreFiltersAxesSetUp = {
     foundDimensionsArray.forEach(function( current ) {
       var tempObject = {
         'name' : current.getAttribute('dimension'),
-        'label' : current.getAttribute('dimension').split(':')[1].replace(/([A-Z])/g, ' $1').trim().slice(0, -5),
+        'label' : current.getAttribute('dimension').split(':')[1].replace(/([A-Z])/g, ' $1').trim().slice(0, -5)
       };
       
       var axisExists = UserFiltersMoreFiltersAxesSetUp.axisOptions.filter(function( element ) {
@@ -32,7 +32,7 @@ var UserFiltersMoreFiltersAxesSetUp = {
     });
     UserFiltersMoreFiltersAxesSetUp.axisOptions.sort(function( first, second ) {
       if ( first['label'] > second['label'] ) {
-        return 1
+        return 1;
       }
       if ( first['label'] < second['label'] ) {
         return -1;

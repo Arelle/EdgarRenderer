@@ -58,13 +58,14 @@ var Sections = {
     
     MenusState.toggle('sections-menu', false, function( openMenu ) {
       if ( openMenu ) {
-        document.getElementById('sections-menu').addEventListener('transitionend', function( event ) {
-          // our menu is now open
-          // we populate the menu with associated data
-          Sections.populate();
-        }, {
-          'once' : true
-        });
+        // document.getElementById('sections-menu').addEventListener('transitionend',
+        // function( event ) {
+        // our menu is now open
+        // we populate the menu with associated data
+        Sections.populate();
+        // }, {
+        // 'once' : true
+        // });
       }
     });
     
@@ -132,54 +133,53 @@ var Sections = {
       
       return discoveredGroupTypeArray;
       
-    } else {
-      var filteredDiscoveredGroupTypeArray = discoveredGroupTypeArray.filter(function( element ) {
-        var keepElement = true;
-        if ( Sections.searchObject['type'] ) {
-          if ( Sections.searchObject['type'] === 2 ) {
-            // return true if baseref is same as current url
-            if ( element['firstAnchor'] && element['firstAnchor']['baseRef'] ) {
-              
-              keepElement = (element['firstAnchor']['baseRef'] === HelpersUrl.getExternalFile
-                  .substr(HelpersUrl.getExternalFile.lastIndexOf('/') + 1));
-              
-            } else if ( element['uniqueAnchor'] && element['uniqueAnchor']['baseRef'] ) {
-              
-              keepElement = (element['uniqueAnchor']['baseRef'] === HelpersUrl.getExternalFile
-                  .substr(HelpersUrl.getExternalFile.lastIndexOf('/') + 1));
-              
-            }
-          }
-          if ( Sections.searchObject['type'] === 3 ) {
-            // return true if baseref is NOT same as current url
-            if ( element['firstAnchor'] && element['firstAnchor']['baseRef'] ) {
-              
-              keepElement = (element['firstAnchor']['baseRef'] !== HelpersUrl.getExternalFile
-                  .substr(HelpersUrl.getExternalFile.lastIndexOf('/') + 1));
-              
-            } else if ( element['uniqueAnchor'] && element['uniqueAnchor']['baseRef'] ) {
-              
-              keepElement = (element['uniqueAnchor']['baseRef'] !== HelpersUrl.getExternalFile
-                  .substr(HelpersUrl.getExternalFile.lastIndexOf('/') + 1));
-              
-            }
+    }
+    var filteredDiscoveredGroupTypeArray = discoveredGroupTypeArray.filter(function( element ) {
+      var keepElement = true;
+      if ( Sections.searchObject['type'] ) {
+        if ( Sections.searchObject['type'] === 2 ) {
+          // return true if baseref is same as current url
+          if ( element['firstAnchor'] && element['firstAnchor']['baseRef'] ) {
+            
+            keepElement = (element['firstAnchor']['baseRef'] === HelpersUrl.getExternalFile
+                .substr(HelpersUrl.getExternalFile.lastIndexOf('/') + 1));
+            
+          } else if ( element['uniqueAnchor'] && element['uniqueAnchor']['baseRef'] ) {
+            
+            keepElement = (element['uniqueAnchor']['baseRef'] === HelpersUrl.getExternalFile
+                .substr(HelpersUrl.getExternalFile.lastIndexOf('/') + 1));
+            
           }
         }
-        if ( Sections.searchObject['value'] ) {
-          
-          if ( keepElement ) {
+        if ( Sections.searchObject['type'] === 3 ) {
+          // return true if baseref is NOT same as current url
+          if ( element['firstAnchor'] && element['firstAnchor']['baseRef'] ) {
             
-            keepElement = Sections.searchObject['value'].test(element['shortName']);
+            keepElement = (element['firstAnchor']['baseRef'] !== HelpersUrl.getExternalFile
+                .substr(HelpersUrl.getExternalFile.lastIndexOf('/') + 1));
+            
+          } else if ( element['uniqueAnchor'] && element['uniqueAnchor']['baseRef'] ) {
+            
+            keepElement = (element['uniqueAnchor']['baseRef'] !== HelpersUrl.getExternalFile
+                .substr(HelpersUrl.getExternalFile.lastIndexOf('/') + 1));
             
           }
+        }
+      }
+      if ( Sections.searchObject['value'] ) {
+        
+        if ( keepElement ) {
+          
+          keepElement = Sections.searchObject['value'].test(element['shortName']);
           
         }
         
-        return keepElement;
-      });
+      }
       
-      return filteredDiscoveredGroupTypeArray;
-    }
+      return keepElement;
+    });
+    
+    return filteredDiscoveredGroupTypeArray;
     
   },
   

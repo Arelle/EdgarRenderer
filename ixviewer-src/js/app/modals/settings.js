@@ -21,6 +21,8 @@ var ModalsSettings = {
     
     // set correct selected value
     document.getElementById('scroll-position-select').value = Constants.scrollPosition;
+    // set correct hover value
+    document.getElementById('hover-option-select').value = Constants.hoverOption;
   },
   
   scrollPosition : function( event, value ) {
@@ -28,5 +30,16 @@ var ModalsSettings = {
     localStorage.setItem('scrollPosition', value);
     Constants.scrollPosition = value;
   },
-
+  
+  hoverOption : function( event, value ) {
+    if ( value === 'true' ) {
+      
+      localStorage.setItem('hoverOption', true);
+      Constants.hoverOption = true;
+    } else {
+      
+      localStorage.setItem('hoverOption', false);
+      Constants.hoverOption = false;
+    }
+  }
 };
