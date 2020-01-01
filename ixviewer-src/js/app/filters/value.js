@@ -9,6 +9,13 @@ var FiltersValue = {
   
   getFormattedValue : function( element, showCollapse ) {
     
+    var elementToFormat = element;
+    if ( element.hasAttribute('ishiddenelement') && element.hasAttribute('data-original-id') ) {
+      
+      var hiddenElement = document.getElementById('dynamic-xbrl-form').querySelector(
+          '[id="' + element.getAttribute('data-original-id') + '"]');
+      elementToFormat = hiddenElement;
+    }
     var popoverElement = element.querySelector('.popover');
     var format = element.getAttribute('format');
     
@@ -20,287 +27,287 @@ var FiltersValue = {
         switch ( format ) {
           
           case 'booleanfalse' : {
-            return FiltersNumber.numberFormatting(element, FiltersBoolean.booleanFalse(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersBoolean.booleanFalse(elementToFormat));
             break;
           }
           case 'booleantrue' : {
-            return FiltersNumber.numberFormatting(element, FiltersBoolean.booleanTrue(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersBoolean.booleanTrue(elementToFormat));
             break;
           }
           case 'boolballotbox' : {
-            return FiltersNumber.numberFormatting(element, FiltersBoolean.boolBallotBox(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersBoolean.boolBallotBox(elementToFormat));
             break;
           }
           case 'yesnoballotbox' : {
-            return FiltersNumber.numberFormatting(element, FiltersBoolean.yesNoBallotBox(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersBoolean.yesNoBallotBox(elementToFormat));
             break;
           }
             
           case 'countrynameen' : {
-            return FiltersNumber.numberFormatting(element, FiltersOther.countryNameEn(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersOther.countryNameEn(elementToFormat));
             break;
           }
           case 'stateprovnameen' : {
-            return FiltersNumber.numberFormatting(element, FiltersOther.stateProvNameEn(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersOther.stateProvNameEn(elementToFormat));
             break;
           }
           case 'exchnameen' : {
-            return FiltersNumber.numberFormatting(element, FiltersOther.exchNameEn(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersOther.exchNameEn(elementToFormat));
             break;
           }
             
           case 'entityfilercategoryen' : {
-            return FiltersNumber.numberFormatting(element, FiltersOther.entityFilerCategoryEn(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersOther.entityFilerCategoryEn(elementToFormat));
             break;
           }
             
           case 'edgarprovcountryen' : {
-            return FiltersNumber.numberFormatting(element, FiltersOther.edgarProvCountryEn(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersOther.edgarProvCountryEn(elementToFormat));
             break;
           }
             
           case 'calindaymonthyear' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.calINDayMonthYear(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.calINDayMonthYear(elementToFormat));
             break;
           }
           case 'datedaymonth' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateDayMonth(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateDayMonth(elementToFormat));
             break;
           }
           case 'datedaymonthdk' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateDayMonthDK(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateDayMonthDK(elementToFormat));
             break;
           }
           case 'datedaymonthen' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateDayMonthEN(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateDayMonthEN(elementToFormat));
             break;
           }
           case 'datedaymonthyear' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateDayMonthYear(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateDayMonthYear(elementToFormat));
             break;
           }
           case 'datedaymonthyeardk' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateDayMonthYearDK(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateDayMonthYearDK(elementToFormat));
             break;
           }
           case 'datedaymonthyearen' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateDayMonthYearEN(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateDayMonthYearEN(elementToFormat));
             break;
           }
           case 'datedaymonthyearin' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateDayMonthYearIN(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateDayMonthYearIN(elementToFormat));
             break;
           }
           case 'datedoteu' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateDotEU(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateDotEU(elementToFormat));
             break;
           }
           case 'datedotus' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateDotUS(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateDotUS(elementToFormat));
             break;
           }
           case 'dateerayearmonthdayjp' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateEraYearMonthDayJP(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateEraYearMonthDayJP(elementToFormat));
             break;
           }
           case 'dateerayearmonthjp' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateEraYearMonthJP(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateEraYearMonthJP(elementToFormat));
             break;
           }
           case 'datelongmonthyear' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateLongMonthYear(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateLongMonthYear(elementToFormat));
             break;
           }
           case 'datelonguk' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateLongUK(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateLongUK(elementToFormat));
             break;
           }
           case 'datelongus' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateLongUS(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateLongUS(elementToFormat));
             break;
           }
           case 'datelongyearmonth' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateLongYearMonth(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateLongYearMonth(elementToFormat));
             break;
           }
           case 'datemonthday' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateMonthDay(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateMonthDay(elementToFormat));
             break;
           }
           case 'datemonthdayen' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateMonthDayEN(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateMonthDayEN(elementToFormat));
             break;
           }
           case 'datemonthdayyear' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateMonthDayYear(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateMonthDayYear(elementToFormat));
             break;
           }
           case 'datemonthdayyearen' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateMonthDayYearEN(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateMonthDayYearEN(elementToFormat));
             break;
           }
           case 'datemonthyear' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateMonthYear(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateMonthYear(elementToFormat));
             break;
           }
           case 'datemonthyeardk' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateMonthYearDK(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateMonthYearDK(elementToFormat));
             break;
           }
           case 'datemonthyearen' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateMonthYearEN(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateMonthYearEN(elementToFormat));
             break;
           }
           case 'datemonthyearin' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateMonthYearIN(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateMonthYearIN(elementToFormat));
             break;
           }
           case 'dateshortdaymonthuk' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateShortDayMonthUK(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateShortDayMonthUK(elementToFormat));
             
             break;
           }
           case 'dateshorteu' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateShortEU(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateShortEU(elementToFormat));
             
             break;
           }
           case 'dateshortmonthdayus' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateShortMonthDayUS(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateShortMonthDayUS(elementToFormat));
             break;
           }
           case 'dateshortmonthyear' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateShortMonthYear(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateShortMonthYear(elementToFormat));
             break;
           }
           case 'dateshortuk' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateShortUK(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateShortUK(elementToFormat));
             break;
           }
           case 'dateshortus' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateShortUS(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateShortUS(elementToFormat));
             break;
           }
           case 'dateshortyearmonth' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateShortYearMonth(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateShortYearMonth(elementToFormat));
             break;
           }
           case 'dateslashdaymontheu' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateSlashDayMonthEU(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateSlashDayMonthEU(elementToFormat));
             break;
           }
           case 'dateslasheu' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateSlashEU(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateSlashEU(elementToFormat));
             break;
           }
           case 'dateslashmonthdayus' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateSlashMonthDayUS(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateSlashMonthDayUS(elementToFormat));
             break;
           }
           case 'dateslashus' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateSlashUS(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateSlashUS(elementToFormat));
             break;
           }
             
           case 'datequarterend' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateQuarterEnd(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateQuarterEnd(elementToFormat));
             break;
           }
             
           case 'dateyearmonthcjk' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateYearMonthCJK(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateYearMonthCJK(elementToFormat));
             break;
           }
           case 'dateyearmonthday' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateYearMonthDay(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateYearMonthDay(elementToFormat));
             break;
           }
           case 'dateyearmonthdaycjk' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateYearMonthDayCJK(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateYearMonthDayCJK(elementToFormat));
             break;
           }
           case 'dateyearmonthen' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.dateYearMonthEN(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateYearMonthEN(elementToFormat));
             break;
           }
           case 'duryear' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.durYear(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.durYear(elementToFormat));
             break;
           }
           case 'durmonth' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.durMonth(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.durMonth(elementToFormat));
             break;
           }
- case 'durweek' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.durWeek(element));
+          case 'durweek' : {
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.durWeek(elementToFormat));
             break;
           }
           case 'durday' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.durDay(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.durDay(elementToFormat));
             break;
           }
           case 'durhour' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.durHour(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.durHour(elementToFormat));
             break;
           }
           case 'durwordsen' : {
-            return FiltersNumber.numberFormatting(element, FiltersDate.durWordsEn(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.durWordsEn(elementToFormat));
             break;
           }
           case 'nocontent' : {
-            return FiltersNumber.numberFormatting(element, FiltersOther.noContent(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersOther.noContent(elementToFormat));
             break;
           }
           case 'numcomma' : {
-            return FiltersNumber.numberFormatting(element, FiltersNumber.numComma(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersNumber.numComma(elementToFormat));
             break;
           }
           case 'numcommadecimal' : {
-            return FiltersNumber.numberFormatting(element, FiltersNumber.numCommaDecimal(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersNumber.numCommaDecimal(elementToFormat));
             break;
           }
           case 'numcommadot' : {
-            return FiltersNumber.numberFormatting(element, FiltersNumber.numCommaDot(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersNumber.numCommaDot(elementToFormat));
             break;
           }
           case 'numdash' : {
-            return FiltersNumber.numberFormatting(element, FiltersNumber.numDash(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersNumber.numDash(elementToFormat));
             break;
           }
           case 'numdotcomma' : {
-            return FiltersNumber.numberFormatting(element, FiltersNumber.numDotComma(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersNumber.numDotComma(elementToFormat));
             break;
           }
           case 'numdotdecimal' : {
-            return FiltersNumber.numberFormatting(element, FiltersNumber.numDotDecimal(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersNumber.numDotDecimal(elementToFormat));
             break;
           }
           case 'numdotdecimalin' : {
-            return FiltersNumber.numberFormatting(element, FiltersNumber.numDotDecimalIN(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersNumber.numDotDecimalIN(elementToFormat));
             break;
           }
           case 'numspacecomma' : {
-            return FiltersNumber.numberFormatting(element, FiltersNumber.numSpaceComma(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersNumber.numSpaceComma(elementToFormat));
             break;
           }
           case 'numspacedot' : {
-            return FiltersNumber.numberFormatting(element, FiltersNumber.numSpaceDot(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersNumber.numSpaceDot(elementToFormat));
             break;
           }
           case 'numunitdecimal' : {
-            return FiltersNumber.numberFormatting(element, FiltersNumber.numUnitDecimal(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersNumber.numUnitDecimal(elementToFormat));
             break;
           }
           case 'numunitdecimalin' : {
-            return FiltersNumber.numberFormatting(element, FiltersNumber.numUnitDecimalIN(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersNumber.numUnitDecimalIN(elementToFormat));
             break;
           }
           case 'numwordsen' : {
-            return FiltersNumber.numberFormatting(element, FiltersNumber.numWordsEn(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersNumber.numWordsEn(elementToFormat));
             break;
           }
           case 'zerodash' : {
-            return FiltersNumber.numberFormatting(element, FiltersOther.zeroDash(element));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersOther.zeroDash(elementToFormat));
             break;
           }
           default : {
@@ -316,25 +323,31 @@ var FiltersValue = {
       if ( element.hasAttribute('xsi:nil') && (element.getAttribute('xsi:nil') === true) ) {
         return 'nil';
       }
-      
-      var splitText = element.innerText.split(/(\r\n|\n|\r)/gm);
+      var splitText = elementToFormat.innerText.split(/(\r\n|\n|\r)/gm);
+var containerElement = document.createElement('div');
       var dataToReturn = '';
       if ( splitText.length > 1 && showCollapse ) {
         // we show accordion
-        dataToReturn = '<div class="collapse d-block collapse-modal-partial" id="collapse-taxonomy">';
-        dataToReturn += element.innerHTML;
-        
-        dataToReturn += '</div>';
-        dataToReturn += '<button class="btn btn-primary btn-sm btn-block mt-1" type="button" data-toggle="collapse" data-target="#collapse-taxonomy">Contract / Expand</button>';
+       var div = document.createElement('div');
+          div.className = 'collapse d-block collapse-modal-partial';
+          div.id = 'collapse-taxonomy';
+          div.innerHTML = element.innerHTML;
+          containerElement.appendChild(div);
+
+          var button = document.createElement('button');
+          button.className = 'btn btn-primary btn-sm btn-block mt-1';
+          button.type = 'button';
+          button.setAttribute('data-toggle', 'collapse');
+          button.setAttribute('data-target', '#collapse-taxonomy');
+          button.textContent = 'Contract / Expand';
+          containerElement.appendChild(button);
         
       } else if ( splitText.length > 1 && !showCollapse ) {
-        dataToReturn = 'Click to see Fact';
+         containerElement.textContent = 'Click to see Fact';
       } else {
-        
-        dataToReturn = element.innerText;
-        
-      }
-      return FiltersNumber.numberFormatting(element, dataToReturn);
+          containerElement.textContent = element.textContent; 
+        }
+        return FiltersNumber.numberFormatting(element, containerElement.innerHTML);
       
     }
     

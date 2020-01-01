@@ -11,12 +11,11 @@
     var hostName = window.location.hostname;
     
     var browserAccepted = function( ) {
-      
-      var ie7 = navigator.appVersion.indexOf("MSIE 7");
-      var ie8 = navigator.appVersion.indexOf("MSIE 8");
-      var ie9 = navigator.appVersion.indexOf("MSIE 9");
-      var userAgent = window.navigator.userAgent.toLowerCase();
-      if ( (ie7 > 0) || (ie8 > 0) || (ie9 > 0) ) {
+	
+      var ua = window.navigator.userAgent;
+      var trident = ua.indexOf('Trident/'); //IE 11;
+      var msie = ua.indexOf('MSIE '); // IE 10 or older
+      if ( msie > 0 || trident > 0 ) {
         return false;
       }
       return true;

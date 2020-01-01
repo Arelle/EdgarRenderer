@@ -91,7 +91,7 @@ var Taxonomies = {
         }
         
         newElement += ' isadditionalitemsonly="true"';
-        
+        newElement += ' ishiddenelement="true"';
         newElement += '>';
         newElement += current.innerHTML;
         // close the tag

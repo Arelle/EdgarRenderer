@@ -7,7 +7,7 @@
 
 var Constants = {
   
-  version : '2.0.1',
+  version : '2.0.2',
   
   fileSizeError : [ 7500000, '7.5MB' ],
   
