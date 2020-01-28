@@ -1257,7 +1257,7 @@ class Member(object):
             return True
         if self.arelleConcept is not None:
             if other.arelleConcept is not None:
-                return arelleConcept.prefixedName >= other.arelleConcept.prefixedName
+                return self.arelleConcept.prefixedName >= other.arelleConcept.prefixedName
             return False
         if self.typedMemberIsNil:
             return other.typedMemberIsNil
