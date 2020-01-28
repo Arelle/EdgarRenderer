@@ -2176,6 +2176,7 @@ Example:
 <message code="dq-0540-{tag}-Value">In submission type {subType}, {tag} value &quot;{value}&quot;, is not equivalent to header element {headerTag} value &quot;{valueOfHeaderTag}&quot; in the {context}. {refSources}</message>
 <message code="dq-0540-CurrentFiscalYearEndDate-Registrant-Value">In submission type {subType}, {tag} value &quot;{value}&quot;, {severityVerb} match the Entity Registrant Fiscal Year End Date &quot;{valueOfHeaderTag}&quot; on record within EDGAR. {refSources}</message>
 <message code="dq-0540-CurrentFiscalYearEndDate-Submission-Value">In submission type {subType}, {tag} value &quot;{value}&quot;, does not match the Submission Header Fiscal Year End Date &quot;{valueOfHeaderTag}&quot;. {refSources}</message>
+<message code="dq-0540-EntityExTransitionPeriod-EntityEmergingGrowthCompany-Dependency">In submission type {subType}, EntityExTransitionPeriod must have a value if EntityEmergingGrowthCompany has value &quot;true&quot; in context {contextID}, else it should not be provided. {refSources}</message>
 <message code="dq-0540-{headerTag}-Unexpected">Header element {headerTag} value &quot;{value}&quot; is not applicable for {subType} submission type." {refSources}</message>
 
 
