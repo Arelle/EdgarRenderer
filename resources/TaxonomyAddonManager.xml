@@ -46,6 +46,13 @@
       <ReferenceFiles/>
     </TaxonomyAddon>
     <TaxonomyAddon>
+      <Taxonomy>country-2020-01-31.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>country-doc-2020-01-31.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles/>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>currency-2012-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>currency-doc-2012-01-31.xml</string>
@@ -77,6 +84,13 @@
       <Taxonomy>currency-2019-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>currency-doc-2019-01-31.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles/>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>currency-2020-01-31.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>currency-doc-2020-01-31.xml</string>
       </DefinitionFiles>
       <ReferenceFiles/>
     </TaxonomyAddon>
@@ -222,6 +236,15 @@
       </DefinitionFiles>
       <ReferenceFiles>
         <string>exch-ref-2019-01-31.xml</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>exch-2020-01-31.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>exch-doc-2020-01-31.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>exch-ref-2020-01-31.xml</string>
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
@@ -433,7 +456,25 @@
         <string>srt-ref-2019-01-31.xml</string>
       </ReferenceFiles>
     </TaxonomyAddon>
-    <TaxonomyAddon>
+  	<TaxonomyAddon>
+  		<Taxonomy>us-gaap-2020-01-31.xsd</Taxonomy>
+  		<DefinitionFiles>
+  			<string>us-gaap-doc-2020-01-31.xml</string>
+  		</DefinitionFiles>
+  		<ReferenceFiles>
+  			<string>us-gaap-ref-2020-01-31.xml</string>
+  		</ReferenceFiles>
+  	</TaxonomyAddon>
+  	<TaxonomyAddon>
+  		<Taxonomy>srt-2020-01-31.xsd</Taxonomy>
+  		<DefinitionFiles>
+  			<string>srt-doc-2020-01-31.xml</string>
+  		</DefinitionFiles>
+  		<ReferenceFiles>
+  			<string>srt-ref-2020-01-31.xml</string>
+  		</ReferenceFiles>
+  	</TaxonomyAddon>
+  	<TaxonomyAddon>
       <Taxonomy>full_ifrs-cor_2017-03-09.xsd</Taxonomy>
       <DefinitionFiles>
         <string>labels/doc_full_ifrs-en_2017-03-09.xml</string>
