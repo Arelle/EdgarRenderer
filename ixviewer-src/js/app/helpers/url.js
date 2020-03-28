@@ -92,7 +92,7 @@ var HelpersUrl = {
           if ( lastChar === '&' ) {
             current = current.slice(0, -1);
           }
-          if (( current.slice(-4) === '.htm') || (current.slice(-4) === '.html' )){
+          if (( current.slice(-4) === '.htm') || (current.slice(-5) === '.html' ) || (current.slice(-6) === '.xhtml' )){
             current = decodeURIComponent(current);
             var docFile = current.split('filename=')[1] ? current.split('filename=')[1] : current.substring(current
                 .lastIndexOf('/') + 1);

@@ -25,7 +25,7 @@ Errors.updateMainContainerHeight();
   
   urlParams : function( ) {
     
-    var messageToUser = 'Inline XBRL requires a URL param (doc | file) that coorelates to a Financial Report.';
+    var messageToUser = 'Inline XBRL requires a URL param (doc | file) that correlates to a Financial Report.';
     document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-danger show mb-0">'
         + messageToUser + '</div>';
     Errors.updateMainContainerHeight();

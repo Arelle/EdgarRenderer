@@ -69,11 +69,11 @@ var Taxonomies = {
   updateStyleTaxonomies : function( ) {
     
     // TODO need more test cases
-    var foundStyles = document.getElementById('dynamic-xbrl-form').querySelectorAll('[style*="-sec-ix-hidden"]');
+    var foundStyles = document.getElementById('dynamic-xbrl-form').querySelectorAll('[style*="-ix-hidden"]'); // either -sec-ix-hidden or -esef-ix-hidden
     var foundStylesArray = Array.prototype.slice.call(foundStyles);
     
     foundStylesArray.forEach(function( current ) {
-      var updatedStyle = Taxonomies.fixStyleString(current.getAttribute('style'));
+      var updatedStyle = Taxonomies.fixStyleString(current.getAttribute('style').replace("-esef-ix-hidden","-sec-ix-hidden"));
       
       var hiddenElement = document.getElementById('dynamic-xbrl-form').querySelector(
           '[id="' + updatedStyle['-sec-ix-hidden'] + '"]');
