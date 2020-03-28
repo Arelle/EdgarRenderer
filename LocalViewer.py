@@ -22,6 +22,7 @@ class _LocalViewer(LocalViewer):
                 _report = refererPathParts[3]
                 _file = file
         if (_file.startswith("ix.html") # although in ixviewer, it refers relatively to ixviewer/
+            or _file.startswith("ix-dev.html")
             or _file.startswith("css/")
             or (_file.startswith("images/") and os.path.exists(os.path.join(self.reportsFolders[0], 'ixviewer', _file))) 
             or _file.startswith("js/")):
