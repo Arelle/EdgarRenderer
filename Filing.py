@@ -11,6 +11,7 @@ from gettext import gettext as _
 from collections import defaultdict
 import os, re, math, datetime, dateutil.relativedelta, lxml, sys, time
 import arelle.ModelValue, arelle.XbrlConst
+from arelle.ModelDtsObject import ModelConcept
 from arelle.ModelObject import ModelObject
 from arelle.XmlUtil import collapseWhitespace
 from arelle.XmlValidate import VALID, VALID_NO_CONTENT
@@ -303,8 +304,8 @@ class Filing(object):
             parentChildRelationshipSet.loadModelRelationshipsTo()
             parentChildRelationshipSet.loadModelRelationshipsFrom()
             # Find the axes in presentation groups
-            toDimensions = {c for c in parentChildRelationshipSet.modelRelationshipsTo.keys() if c.isDimensionItem}
-            fromDimensions = {c for c in parentChildRelationshipSet.modelRelationshipsFrom.keys() if c.isDimensionItem}
+            toDimensions = {c for c in parentChildRelationshipSet.modelRelationshipsTo.keys() if isinstance(c,ModelConcept) and c.isDimensionItem}
+            fromDimensions = {c for c in parentChildRelationshipSet.modelRelationshipsFrom.keys() if isinstance(c,ModelConcept) and c.isDimensionItem}
             # definition linkbase
             dimensionDefaultRelationshipSet = self.modelXbrl.relationshipSet(arelle.XbrlConst.dimensionDefault)
             dimensionDefaultRelationshipSet.loadModelRelationshipsFrom()

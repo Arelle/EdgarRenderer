@@ -167,6 +167,24 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
+      <Taxonomy>dei-2020-01-31.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>dei-doc-2020-01-31.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>dei-ref-2020-01-31.xml</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>exch-2011-01-31.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>exch-doc-2011-01-31.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>exch-ref-2011-01-31.xml</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>exch-2012-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>exch-doc-2012-01-31.xml</string>
@@ -622,5 +640,53 @@
         <string>linkbases/sic_29/ref_sic_29_2019-03-27.xml</string>
         <string>http://www.xbrl.org/lrr/role/reference-2009-12-16.xsd</string>
       </ReferenceFiles>
-    </TaxonomyAddon>  </TaxonomyList>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>full_ifrs-cor_2020-03-16.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>labels/doc_full_ifrs-en_2020-03-16.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>linkbases/ias_1/ref_ias_1_2020-03-16.xml</string>
+        <string>linkbases/ias_10/ref_ias_10_2020-03-16.xml</string>
+        <string>linkbases/ias_12/ref_ias_12_2020-03-16.xml</string>
+        <string>linkbases/ias_16/ref_ias_16_2020-03-16.xml</string>
+        <string>linkbases/ias_19/ref_ias_19_2020-03-16.xml</string>
+        <string>linkbases/ias_2/ref_ias_2_2020-03-16.xml</string>
+        <string>linkbases/ias_20/ref_ias_20_2020-03-16.xml</string>
+        <string>linkbases/ias_21/ref_ias_21_2020-03-16.xml</string>
+        <string>linkbases/ias_23/ref_ias_23_2020-03-16.xml</string>
+        <string>linkbases/ias_24/ref_ias_24_2020-03-16.xml</string>
+        <string>linkbases/ias_26/ref_ias_26_2020-03-16.xml</string>
+        <string>linkbases/ias_27/ref_ias_27_2020-03-16.xml</string>
+        <string>linkbases/ias_29/ref_ias_29_2020-03-16.xml</string>
+        <string>linkbases/ias_33/ref_ias_33_2020-03-16.xml</string>
+        <string>linkbases/ias_34/ref_ias_34_2020-03-16.xml</string>
+        <string>linkbases/ias_36/ref_ias_36_2020-03-16.xml</string>
+        <string>linkbases/ias_37/ref_ias_37_2020-03-16.xml</string>
+        <string>linkbases/ias_38/ref_ias_38_2020-03-16.xml</string>
+        <string>linkbases/ias_40/ref_ias_40_2020-03-16.xml</string>
+        <string>linkbases/ias_41/ref_ias_41_2020-03-16.xml</string>
+        <string>linkbases/ias_7/ref_ias_7_2020-03-16.xml</string>
+        <string>linkbases/ias_8/ref_ias_8_2020-03-16.xml</string>
+        <string>linkbases/ifric_2/ref_ifric_2_2020-03-16.xml</string>
+        <string>linkbases/ifric_5/ref_ifric_5_2020-03-16.xml</string>
+        <string>linkbases/ifrs_1/ref_ifrs_1_2020-03-16.xml</string>
+        <string>linkbases/ifrs_12/ref_ifrs_12_2020-03-16.xml</string>
+        <string>linkbases/ifrs_13/ref_ifrs_13_2020-03-16.xml</string>
+        <string>linkbases/ifrs_14/ref_ifrs_14_2020-03-16.xml</string>
+        <string>linkbases/ifrs_15/ref_ifrs_15_2020-03-16.xml</string>
+        <string>linkbases/ifrs_16/ref_ifrs_16_2020-03-16.xml</string>
+        <string>linkbases/ifrs_17/ref_ifrs_17_2020-03-16.xml</string>
+        <string>linkbases/ifrs_2/ref_ifrs_2_2020-03-16.xml</string>
+        <string>linkbases/ifrs_3/ref_ifrs_3_2020-03-16.xml</string>
+        <string>linkbases/ifrs_4/ref_ifrs_4_2020-03-16.xml</string>
+        <string>linkbases/ifrs_5/ref_ifrs_5_2020-03-16.xml</string>
+        <string>linkbases/ifrs_6/ref_ifrs_6_2020-03-16.xml</string>
+        <string>linkbases/ifrs_7/ref_ifrs_7_2020-03-16.xml</string>
+        <string>linkbases/ifrs_8/ref_ifrs_8_2020-03-16.xml</string>
+        <string>linkbases/sic_29/ref_sic_29_2020-03-16.xml</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+  </TaxonomyList>
 </TaxonomyAddonManager>

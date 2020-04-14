@@ -137,7 +137,7 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     (to prevent matlib crash under runtime.exe with Java)
         
 """
-VERSION = '3.20.1.1'
+VERSION = '3.20.2'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -1404,7 +1404,7 @@ __pluginInfo__ = {
     'license': 'Apache-2',
     'author': 'U.S. SEC Employees and Mark V Systems Limited',
     'copyright': '(c) Portions by SEC Employees not subject to domestic copyright, otherwise (c) Copyright 2015 Mark V Systems Limited, All rights reserved.',
-    'import': ('validate/EFM', 'inlineXbrlDocumentSet'), # import dependent modules
+    'import': ('validate/EFM_20_2', 'inlineXbrlDocumentSet'), # import dependent modules
     # add Edgar Renderer options to command line & web service options
     'CntlrCmdLine.Options': edgarRendererCmdLineOptionExtender,
     # startup for Daemon mode (polls for filings folder's oldest input zip file)

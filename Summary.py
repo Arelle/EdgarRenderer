@@ -10,6 +10,7 @@ import sys, traceback, os.path, re, math, io, logging
 from collections import defaultdict
 from lxml.etree import Element, SubElement, ElementDepthFirstIterator
 import arelle.ModelDocument, arelle.ModelDtsObject, arelle.XbrlConst
+from arelle.ModelDtsObject import ModelConcept
 from . import IoManager, Utils
 
 metaversion = "2.1"
@@ -497,8 +498,8 @@ class InstanceSummary(object):
         
         # Assume for the moment that every concept in the presentation link base connects eventually to some fact  
         # TODO: use graph traversal instead.    
-        conceptInUseSet = conceptInUseSet.union({concept for concept in parentChildRelationshipSet.modelRelationshipsFrom.keys() if concept is not None})
-        conceptInUseSet = conceptInUseSet.union({concept for concept in parentChildRelationshipSet.modelRelationshipsTo.keys() if concept is not None})
+        conceptInUseSet = conceptInUseSet.union({concept for concept in parentChildRelationshipSet.modelRelationshipsFrom.keys() if isinstance(concept,ModelConcept)})
+        conceptInUseSet = conceptInUseSet.union({concept for concept in parentChildRelationshipSet.modelRelationshipsTo.keys() if isinstance(concept,ModelConcept)})
 
         # Do not add a concept just because it has a label or a reference.
         conceptLabelRelationshipSet = modelXbrl.relationshipSet(arelle.XbrlConst.conceptLabel)
