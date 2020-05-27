@@ -157,7 +157,7 @@ MODULENAME = os.path.basename(os.path.dirname(__file__))
 
 ###############
 
-logParamEscapePattern = re.compile("{{([^}]*)}(?!})") # match a java {{xxx} pattern to connvert to python escaped {{xxx}}
+logParamEscapePattern = re.compile("[{]([^}]*)[}](?![}])") # match a java {{xxx} pattern to connvert to python escaped {{xxx}}
 
 def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     parser.add_option("-o", "--output", dest="zipOutputFile",
@@ -789,18 +789,49 @@ class EdgarRenderer(Cntlr.Cntlr):
             if href:
                 fileLines[href.partition("#")[0]].add(ref.get("sourceLine", 0))
         _text = logHandler.format(logRec) # sets logRec.file
+        if hasattr(logHandler.formatter, "fileLines"):
+            _fileLines = logHandler.formatter.fileLines(logRec)
+            if _fileLines:
+                _text += " - " + _fileLines # default if no {refSources} or other in the ArelleMessagesText
         try:
-            _text = logParamEscapePattern.sub(r"{{\1}}", # substitute java {{x} into py {{x}}} but leave {{x}} as it was
-                        self.logMessageText[logRec.messageCode]
-                    ).format(**logRec.args) # now uses {...} parameters in arelleMessagesText
+            _msgText = self.logMessageText[logRec.messageCode]
+            _msgParams = logParamEscapePattern.findall(_msgText) # finds all parameters
+            _msgArgs = logRec.args.copy() # duplicate functinoality of ArelleMessageWrapper.java
+            _refNum = 0
+            for _ref in logRec.refs:
+                _href = _ref.get("href")
+                if _href:
+                    _hrefUrlParts = href.split("#")
+                    if len(_hrefUrlParts) > 0:
+                        _refNum += 1
+                        _fileName = _hrefUrlParts[0].rpartition("/")[2]
+                        _sourceLine = _ref.get("sourceLine")
+                        if _sourceLine:
+                            _source = "{} line {}".format(_fileName, _sourceLine) 
+                            if "refLine" not in _msgArgs:
+                                _msgArgs["refLine"] = _sourceLine
+                        else:
+                            _source = _fileName
+                        if "refSource" not in _msgArgs: # first only
+                            _msgArgs["refSource"] = _source
+                            _msgArgs["refUrl"] = _fileName
+                        else:
+                            _msgArgs["refSource{}".format(_refNum)] = _source
+                        if "refSources" in _msgArgs:
+                            _msgArgs["refSources"] = _msgArgs.get("refSources") + ", " + _source
+                            if "refSources2_n" in _msgArgs:
+                                _msgArgs["refSources2_n"] = _msgArgs.get("refSources2_n") + ", " + _source
+                            else:
+                                _msgArgs["refSources2_n"] = _source
+                        else:
+                            _msgArgs["refSources"] = _source                               
+            _text = logParamEscapePattern.sub(r"{\1}", # substitute java {{x} into py {{x}}} but leave {{x}} as it was
+                    _msgText   
+                    ).format(**_msgArgs) # now uses {...} parameters in arelleMessagesText
         except KeyError:
             pass # not replacable messageCode or a %(xxx)s format arg was not in the logRec arcs or it's a $() java function reference
         except ValueError as err: # error inn { ... } parameters specification
             self.logDebug("Message format string error {} in string {}".format(err, logRec.messageCode))
-        if hasattr(logHandler.formatter, "fileLines"):
-            _fileLines = logHandler.formatter.fileLines(logRec)
-            if _fileLines:
-                _text += " - " + _fileLines
         return _text
 
     def filingEnd(self, cntlr, options, filesource, filing, sourceZipStream=None, *args, **kwargs):

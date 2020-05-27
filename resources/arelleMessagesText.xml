@@ -1697,19 +1697,19 @@ Axis {dimension} in DRS role {linkrole}, missing targetrole consecutive relation
          level="error"
          module="ValidateFiling.py" line="1577"
          args="namespaceConflicts conflictClass">
-[cp-2203-Incompatible-Schemas]  References for conflicting standard taxonomies {conflictClass} are not allowed in same DTS {namespaceConflicts}
+[cp-2203-Incompatible-Schemas]  References for conflicting standard taxonomies {conflictClass} are not allowed in same DTS {namespaceConflicts}. {refSources}
 </message>
 <message code="EFM.6.22.03.incompatibleTaxonomyDocumentType"
          level="error"
          module="ValidateFiling.py" line="1582"
          args="documentType conflictClass">
-[cp-2203-Incompatible-Taxonomy-DocumentType]  DocumentType {documentType} is incompatible with the {conflictClass} taxonomy.
+[cp-2203-Incompatible-Taxonomy-DocumentType]  DocumentType {documentType} is incompatible with the {conflictClass} taxonomy. {refSources}
 </message>
 <message code="EFM.6.22.03.incompatibleInlineDocumentType"
          level="error"
          module="ValidateFiling.py" line="1590"
          args="documentType conflictClass">
-[cp-2203-Incompatible-Inline-DocumentType]  DocumentType {documentType} is incompatible with inline XBRL.
+[cp-2203-Incompatible-Inline-DocumentType]  DocumentType {documentType} is incompatible with inline XBRL. {refSources}
 </message>
 <message code="EFM.6.05.40.srtConceptsForIFRSConcepts"
          level="error"
