@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- EDGAR Workstation adaptation of Summarize.xslt
      Herm Fischer, Mark V Systems Limited, 2015-08-30
+     HF: added dynamic redline parameter, 2020-06-06
      Requires parameter "accessionNumber"
      sec.gov files are part of tomcat workstation's web content of include & Images directory
         include/jquery-1.4.3.min.js
@@ -68,9 +69,9 @@
   <xsl:param name="accessionNumber">PROVIDED-BY-ARELLE-FILE-ARGUMENT-OBJECT</xsl:param>
   <xsl:variable name="fetchprefix"><![CDATA[DisplayDocument.do?step=docOnly&accessionNumber=]]></xsl:variable>
   <xsl:variable name="fetch_ix_prefixquoted"><![CDATA[../DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D]]></xsl:variable>
-  <xsl:variable name="fetchsuffix"><![CDATA[&interpretedFormat=true&redline=true&filename=]]></xsl:variable>  
-  <xsl:variable name="fetchsuffixquoted"><![CDATA[%26interpretedFormat%3Dtrue%26redline%3Dtrue%26filename%3D]]></xsl:variable>
-  <xsl:variable name="fetchraw"><![CDATA[&interpretedFormat=false&redline=true&filename=]]></xsl:variable>
+  <xsl:variable name="fetchsuffix"><![CDATA[&interpretedFormat=true&redline=false&filename=]]></xsl:variable>  
+  <xsl:variable name="fetchsuffixquoted"><![CDATA[%26interpretedFormat%3Dtrue%26redline%3Dfalse%26filename%3D]]></xsl:variable>
+  <xsl:variable name="fetchraw"><![CDATA[&interpretedFormat=false&redline=false&filename=]]></xsl:variable>
   <xsl:key name="keyParent" match="Report" use="ParentRole"/>
   <xsl:variable name="majorversion" select="substring-before(/FilingSummary/Version,'.')"/>
   <xsl:variable name="nreports" select="count(/FilingSummary/MyReports/Report)"/>
@@ -201,6 +202,7 @@
           <xsl:value-of select="$xslt"/>
           <xsl:text>"; var InstanceReportXsltDoc = null; </xsl:text>
           <xsl:text>var accessionNumber = "</xsl:text><xsl:value-of select="$accessionNumber"/><xsl:text>";</xsl:text>
+          <xsl:text>var isRedline = (location.href.indexOf("&amp;redline=true") >= 0);</xsl:text>
           <xsl:text>var fetchprefix = "</xsl:text><xsl:value-of select="$fetchprefix"/><xsl:text>";</xsl:text>
           <xsl:text>var fetchsuffix = "</xsl:text><xsl:value-of select="$fetchsuffix"/><xsl:text>";</xsl:text>
           <xsl:text>var fetchraw = "</xsl:text><xsl:value-of select="$fetchraw"/><xsl:text>";</xsl:text>
@@ -433,7 +435,15 @@
             }
          }
       }
-   } 
+   }
+   
+   function applyRedline( url ) {
+       if (isRedline) {
+           return url.replace(/(&redline=|%26redline%3D)false/g,'$1true');
+       } else {
+           return url;
+       }
+   }
   
    window.onload = function () {
          if (window.location.href.substring(0,5)=='file:') {
@@ -540,7 +550,7 @@
 	            <xsl:comment>EDGAR workstation requires escaped database query for document retrieval</xsl:comment>
 	            <xsl:variable name="htmUrl" select="concat($fetch_ix_prefixquoted,$accessionNumber,$fetchsuffixquoted,$original)"/>
 	            <xsl:variable name="metalinksUrl" select="concat($fetch_ix_prefixquoted,$accessionNumber,$fetchsuffixquoted,'MetaLinks.json')"/>
-	            <a href="ixviewer/ix.html?xbrl=true&amp;doc={$htmUrl}&amp;metalinks={$metalinksUrl}"><xsl:value-of select="$doctype"/></a>
+	            <a href="javascript:window.location=applyRedline('ixviewer/ix.html?xbrl=true&amp;doc={$htmUrl}&amp;metalinks={$metalinksUrl}')"><xsl:value-of select="$doctype"/></a>
 	          </xsl:when>
 	          <xsl:otherwise>
 	            <xsl:variable name="htmUrl" select="concat($fetchprefix,$accessionNumber,$fetchsuffix,$original)"/>
@@ -606,7 +616,7 @@
                     <xsl:comment>EDGAR workstation requires escaped database query for document retrieval</xsl:comment>
                     <xsl:variable name="htmUrl" select="concat($fetch_ix_prefixquoted,$accessionNumber,$fetchsuffixquoted,$original)"/>
                     <xsl:variable name="metalinksUrl" select="concat($fetch_ix_prefixquoted,$accessionNumber,$fetchsuffixquoted,'MetaLinks.json')"/>
-                    <a href="ixviewer/ix.html?xbrl=true&amp;doc={$htmUrl}&amp;metalinks={$metalinksUrl}"><xsl:value-of select="$doctype"/></a>
+                    <a href="javascript:window.location=applyRedline('ixviewer/ix.html?xbrl=true&amp;doc={$htmUrl}&amp;metalinks={$metalinksUrl}')"><xsl:value-of select="$doctype"/></a>
                   </xsl:when>
                   <xsl:otherwise>
                     <xsl:variable name="htmUrl" select="concat($fetchprefix,$accessionNumber,$fetchsuffix,$original)"/>
