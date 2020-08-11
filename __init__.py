@@ -463,7 +463,8 @@ class EdgarRenderer(Cntlr.Cntlr):
 
         # Excel XSLT is optional, but do report if you can't find it.
         #setResourceFile('excelXslt', options.excelXslt, 'INVALID_CONFIG_EXCELXSLT')  
-        options.excelXslt = setResourceFile('excelXslt', options.excelXslt, "Cannot find excel xslt {}")
+        # if options.excelXslt is "True" from web interface, it has no no string value, e.g., &excelXslt (looks like True here)
+        options.excelXslt = setResourceFile('excelXslt', "" if options.excelXslt == True else options.excelXslt, "Cannot find excel xslt {}")
 
         # logMessageTextFile is optional resources file for messages text (SEC format)
         options.logMessageTextFile = setResourceFile('logMessageTextFile', options.logMessageTextFile, "Cannot find logMessageTextFile {}")
@@ -1236,7 +1237,7 @@ def edgarRendererGuiStartLogging(modelXbrl, mappedUri, normalizedUri, filepath, 
 
 def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
     """ run EdgarRenderer using GUI interactions for a single instance or testcases """
-    if cntlr.hasGui:
+    if cntlr.hasGui and modelXbrl.modelDocument:
         from arelle.ValidateFilingText import referencedFiles
         parameters = modelXbrl.modelManager.formulaOptions.parameterValues
         _combinedReports = not cntlr.showTablesMenu.get() # use mustard menu
