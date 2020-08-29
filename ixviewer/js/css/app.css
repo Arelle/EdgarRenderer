@@ -2,9 +2,13 @@
  * Data and content created by government employees within the scope of their employment 
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  * */
-#dynamic-xbrl-form * {
+
+/* #dynamic-xbrl-form * {
 	box-sizing: initial;
 	line-height: initial;
+} */
+a::active {
+	background-color: pink;
 }
 
 kbd {
@@ -21,7 +25,6 @@ kbd {
 
 #dynamic-xbrl-form .text-block-indicator-left {
 	left: 0;
-	/*height: 1rem;*/
 	width: 5px;
 	border-top: .5rem solid transparent;
 	border-left: .75rem solid #003768;
@@ -30,14 +33,12 @@ kbd {
 
 #dynamic-xbrl-form .text-block-indicator-right {
 	right: 0;
-/*	height: 1rem;*/
 	width: 5px;
 	border-top: .5rem solid transparent;
 	border-right: .75rem solid #003768;
 	border-bottom: .5rem solid transparent;
 }
 
-,
 .navbar-dark .navbar-nav .nav-link {
 	color: #FFF;
 }
@@ -54,12 +55,22 @@ kbd {
 	cursor: pointer;
 }
 
+#dynamic-xbrl-form [inside-table="true"] {
+	display: table-cell !important;
+	text-indent: initial;
+}
+
+#dynamic-xbrl-form [redline="true"] {
+	color: #FF0099;
+	text-decoration: underline;
+}
+
 #sections-menu [selected-taxonomy="true"] {
 	border: 3px solid #003768;
 }
 
 #taxonomies-menu-list-pagination [selected-taxonomy="true"] {
-	border: 3px solid #003768;
+	border: 3px solid #003768 !important;
 }
 
 #dynamic-xbrl-form .text-block-taxonomy-hover {
@@ -88,6 +99,7 @@ kbd {
 #dynamic-xbrl-form {
 	height: 100%;
 	overflow: auto;
+	padding: 0 15px !important;
 }
 
 #back-to-top {
@@ -99,6 +111,10 @@ kbd {
 
 .word-break {
 	word-break: break-all;
+}
+
+.font-size-1 {
+	font-size: 1rem;
 }
 
 .navbar-height {
@@ -227,6 +243,11 @@ body {
 
 .btn-link {
 	color: #003768;
+}
+
+#settings-modal {
+	top: 55px !important;
+	height: calc(100vh - 55px) !important;
 }
 
 .expand-modal {

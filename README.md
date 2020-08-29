@@ -10,7 +10,7 @@ domestic copyright protection. 17 U.S.C. 105.
 End user support is by e-mail direct to SEC at: [StructuredData@sec.gov]
 (mailto:StructuredData@sec.gov).
 
-This is EDGAR release 20.2 in production in June 29, 2020 with an ixviewer 2 enhancement to support ESEF by arelle.org (not changed by SEC).
+This is a preview for EDGAR release 20.3 expected to be in production in September, 2020, adding an SEC redline feature (see draft EFM vol 2).
 
 Developer issue management is by the Jira Edgar Renderer project: https://arelle.atlassian.net/projects/ER
 
