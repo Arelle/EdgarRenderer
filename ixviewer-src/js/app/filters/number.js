@@ -27,12 +27,7 @@ var FiltersNumber = {
       var scale = (element.hasAttribute('scale') && parseInt(element.getAttribute('scale'))) ? parseInt(element
           .getAttribute('scale')) : 0;
       
-      var decimals = (element.hasAttribute('decimals') && parseInt(element.getAttribute('decimals'))) ? parseInt(element
-          .getAttribute('decimals'))
-          : 0;
-      
       if ( scale > 0 ) {
-        
         var periodIndex = input.indexOf('.');
         if ( periodIndex !== -1 ) {
           
@@ -42,20 +37,19 @@ var FiltersNumber = {
         input = input.padEnd(input.length + Math.abs(scale), 0);
         input = input.replace('.', '');
         input = [ input.slice(0, scale), input.slice(scale) ].join('');
-        // if ( periodIndex !== -1 ) {
-        // console.log(scale);
-        // input = [ input.slice(0, scale), input.slice(scale) ].join('');
-        // } else {
-        // //console.log(scale);
-        // input = [ input.slice(0, scale), input.slice(scale) ].join('');
-        // }
+
         
       } else if ( scale < 0 ) {
-        
         var absScale = Math.abs(scale);
-        
-        if ( (input).split('.')[1] ) {
+
+        var canSplit = input.indexOf('.') !== -1;
+        if ( canSplit ) {
+
           var precision = (input).split('.')[1].length + 2;
+          input = (input / 100).toFixed(precision);
+        } else {
+          
+          var precision = input.length;
           input = (input / 100).toFixed(precision);
         }
         

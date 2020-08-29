@@ -7,7 +7,7 @@
 
 var Constants = {
   
-  version : '2.0.2',
+  version : '2.0.3',
   
   fileSizeError : [ 7500000, '7.5MB' ],
   
@@ -24,6 +24,8 @@ var Constants = {
   getHtmlOverallTaxonomiesCount : null,
   
   getMetaSourceDocuments : [ ],
+  
+  getFactTypes : [ ],
   
   getScaleOptions : {
     '0' : 'Zero',

@@ -6,6 +6,17 @@
 'use strict';
 
 var ConstantsFunctions = {
+  
+  updateXHTMLDocumentStyleProperties : function( input ) {
+    // this function specifically targets style="width:123;"
+    // and replaces it with style="width:123px;"
+    // because of IE wonky-ness this can't be fixed via a query selector
+    return input.replace(/width:\s*(\d+);/g, function( match, token ) {
+      var returnWidth = 'width: ' + token + 'px;';
+      return returnWidth;
+    });
+  },
+  
   setBrowserType : function( ) {
     
     Constants.getBrowserType = {
@@ -77,16 +88,12 @@ var ConstantsFunctions = {
   
   setMetaTags : function( input ) {
     if ( input && (typeof input === 'object') && !Array.isArray(input) ) {
-      var tagsAsArray = [ ];
-      for ( var i = 0; i < Object.keys(input).length; i++ ) {
-        
-        if ( Object.keys(input)[i] ) {
-          input[Object.keys(input)[i]]['original-name'] = Object.keys(input)[i];
-          tagsAsArray.push(input[Object.keys(input)[i]]);
-        } else {
-          return null;
+      var tagsAsArray = Object.keys(input).map(function( current, index, array ) {
+        if ( current ) {
+          input[current]['original-name'] = current;
+          return input[current];
         }
-      }
+      });
       Constants.getMetaTags = tagsAsArray;
       ConstantsFunctions.setMetaCalculationsParentTags();
     } else {
@@ -95,17 +102,13 @@ var ConstantsFunctions = {
   },
   
   setMetaCalculationsParentTags : function( ) {
-    var tempMetaCalculation = [ ];
-    Constants.getMetaTags.forEach(function( current ) {
+    Constants.getMetaCalculationsParentTags = Constants.getMetaTags.map(function( current, index, array ) {
       if ( current && current['calculation'] ) {
-        tempMetaCalculation.push(current['original-name']);
+        return current['original-name'];
       }
+    }).filter(function( element, index, array ) {
+      return element && (array.indexOf(element) === index);
     });
-    
-    Constants.getMetaCalculationsParentTags = tempMetaCalculation.filter(function( element, index, array ) {
-      return (array.indexOf(element) === index);
-    });
-    
   },
   
   setMetaEntityCounts : function( input ) {
@@ -126,12 +129,12 @@ var ConstantsFunctions = {
   
   setMetaReports : function( input ) {
     if ( input && (typeof input === 'object') && !(input instanceof Array) ) {
-      var reportsAsArray = [ ];
-      for ( var i = 0; i < Object.keys(input).length; i++ ) {
-        input[Object.keys(input)[i]]['original-name'] = Object.keys(input)[i];
-        reportsAsArray.push(input[Object.keys(input)[i]]);
-      }
+      var reportsAsArray = Object.keys(input).map(function( current, index, array ) {
+        input[current]['original-name'] = current;
+        return input[current];
+      });
       Constants.getMetaReports = reportsAsArray;
+      
     } else {
       return null;
     }
@@ -139,11 +142,10 @@ var ConstantsFunctions = {
   
   setMetaStandardReference : function( input ) {
     if ( input && (typeof input === 'object') && !(input instanceof Array) ) {
-      var referencesAsArray = [ ];
-      for ( var i = 0; i < Object.keys(input).length; i++ ) {
-        input[Object.keys(input)[i]]['original-name'] = Object.keys(input)[i];
-        referencesAsArray.push(input[Object.keys(input)[i]]);
-      }
+      var referencesAsArray = Object.keys(input).map(function( current, index, array ) {
+        input[current]['original-name'] = current;
+        return input[current];
+      });
       
       Constants.getMetaStandardReference = referencesAsArray;
     } else {
@@ -173,9 +175,7 @@ var ConstantsFunctions = {
         metaLinksElementsArray.forEach(function( current ) {
           current.textContent = input;
         });
-      }
-
-      else {
+      } else {
         ErrorsMinor.metaLinksVersion();
       }
     } else {
@@ -337,6 +337,29 @@ var ConstantsFunctions = {
       vars[key] = value;
     });
     return vars;
+  },
+  
+  getStringBooleanValue : function( input ) {
+    if ( typeof (input) === 'string' ) {
+      input = input.trim().toLowerCase();
+    }
+    switch ( input ) {
+      case true :
+      case 'true' :
+      case 1 :
+      case '1' :
+      case 'on' :
+      case 'yes' :
+        return true;
+      default :
+        return false;
+    }
+  },
+  
+  setModalFactAsTextBlock : function( element ) {
+    // if element has a height of over 35px, we consider it a text block element
+    // (they are not always labeled correctly)
+    return element.getBoundingClientRect().height > 35;
   }
 
 };

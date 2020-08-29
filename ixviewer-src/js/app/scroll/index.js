@@ -14,6 +14,7 @@ var Scroll = {
   },
   
   scroll : function( event, element ) {
+    event.preventDefault();
     if ( element.scrollTop === 0 ) {
       document.getElementById('back-to-top').classList.add('d-none');
       

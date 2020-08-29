@@ -51,7 +51,7 @@ describe('Initial Render, no Params', function ( ) {
   describe('Major Fail', function ( ) {
     it('Is visible', function ( ) {
       cy.get('[data-test="error-container"] .alert-danger').should('be.visible').contains(
-          'Inline XBRL requires a URL param (doc | file) that coorelates to a Financial Report.');
+          'Inline XBRL requires a URL param (doc | file) that correlates to a Financial Report.');
     });
   });
 });

@@ -6,25 +6,27 @@
 'use strict';
 
 var Help = {
-  
-  toggle : function( event, element ) {
-    
-    if ( event.keyCode && !(event.keyCode === 13 || event.keyCode === 32) ) {
+
+  toggle: function (event, element) {
+
+    if (event.keyCode && !(event.keyCode === 13 || event.keyCode === 32)) {
       return;
     }
-    
-    if ( element.classList && element.classList.contains('disabled') ) {
+
+    if (element.classList && element.classList.contains('disabled')) {
       return;
     }
-    
-    MenusState.toggle('help-menu', false, function( openMenu ) {
-      if ( openMenu ) {
-        document.getElementById('help-menu').addEventListener('transitionend', function( event ) {
-          // our menu is now open
-        }, {
-          'once' : true
-        });
+
+    MenusState.toggle('help-menu', false, function (openMenu) {
+      if (openMenu) {
+        document.getElementById('help-menu').addEventListener('transitionend', Help.transitionEvent);
       }
+    });
+  },
+
+  transitionEvent: function () {
+    setTimeout(function () {
+      document.getElementById('help-menu').removeEventListener('transitionend', Help.transitionEvent);
     });
   }
 };

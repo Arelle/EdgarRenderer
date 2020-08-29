@@ -8,83 +8,242 @@
 var ErrorsMinor = {
   
   unknownError : function( ) {
-    var messageToUser = 'An Error has occured within the Inline XBRL Viewer.';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-warning alert-dismissable show mb-0">'
-        + messageToUser
-        + '<button type="button" class="close" data-dismiss="alert" onclick="Errors.updateMainContainerHeight(true);"><i class="fas fa-times"></i></button></div>';
+    
+    var content = document.createTextNode('An Error has occured within the Inline XBRL Viewer.');
+    
+    var element = document.createElement('div');
+    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.appendChild(content);
+    
+    var buttonClose = document.createElement('i');
+    buttonClose.setAttribute('class', 'reboot fas fa-times');
+    
+    var button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('class', 'reboot close');
+    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    
+    button.appendChild(buttonClose);
+    element.appendChild(button);
+    
+    document.getElementById('error-container').appendChild(element);
+    
     Errors.updateMainContainerHeight();
   },
   
   browserSuggestion : function( ) {
-    var messageToUser = 'Using <a target="_blank" href="https://www.google.com/chrome/">Google Chrome</a> can help alleviate some of these performance issues.';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-warning alert-dismissable show mb-0">'
-        + messageToUser
-        + '<button type="button" class="close" data-dismiss="alert" onclick="Errors.updateMainContainerHeight(true);"><i class="fas fa-times"></i></button></div>';
-    Errors.updateMainContainerHeight();
+    if ( !Constants.getBrowserType['chrome'] ) {
+      var contentStart = document.createTextNode('Using ');
+      
+      var element = document.createElement('div');
+      element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+      element.appendChild(contentStart);
+      
+      var linkContent = document.createTextNode('Google Chrome');
+      var link = document.createElement('a');
+      link.setAttribute('class', 'reboot');
+      link.setAttribute('target', '_blank');
+      link.setAttribute('href', 'https://www.google.com/chrome/');
+      link.appendChild(linkContent);
+      element.appendChild(link);
+      
+      var contentEnd = document.createTextNode(' can help alleviate some of these performance issues.');
+      element.appendChild(contentEnd);
+      
+      var buttonClose = document.createElement('i');
+      buttonClose.setAttribute('class', 'reboot fas fa-times');
+      var button = document.createElement('button');
+      button.setAttribute('type', 'button');
+      button.setAttribute('class', 'reboot close');
+      button.setAttribute('data-dismiss', 'alert');
+      button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+      button.appendChild(buttonClose);
+      
+      element.appendChild(button);
+      
+      document.getElementById('error-container').appendChild(element);
+      
+      Errors.updateMainContainerHeight();
+    }
   },
   
   factNotFound : function( ) {
-    var messageToUser = 'Inline XBRL can not locate the requested fact.';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-warning alert-dismissable show mb-0">'
-        + messageToUser
-        + '<button type="button" class="close" data-dismiss="alert" onclick="Errors.updateMainContainerHeight(true);"><i class="fas fa-times"></i></button></div>';
+    var content = document.createTextNode('Inline XBRL can not locate the requested fact.');
+    
+    var element = document.createElement('div');
+    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.appendChild(content);
+    
+    var buttonClose = document.createElement('i');
+    buttonClose.setAttribute('class', 'reboot fas fa-times');
+    
+    var button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('class', 'reboot close');
+    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    
+    button.appendChild(buttonClose);
+    element.appendChild(button);
+    
+    document.getElementById('error-container').appendChild(element);
+    
     Errors.updateMainContainerHeight();
   },
   
   continuedAt : function( ) {
-    var messageToUser = 'Inline XBRL HTML Form is missing data to complete this action. This functionality has been removed.';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-warning alert-dismissable show mb-0">'
-        + messageToUser
-        + '<button type="button" class="close" data-dismiss="alert" onclick="Errors.updateMainContainerHeight(true);"><i class="fas fa-times"></i></button></div>';
+    var content = document
+        .createTextNode('Inline XBRL HTML Form is missing data to complete this action. This functionality has been removed.');
+    
+    var element = document.createElement('div');
+    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.appendChild(content);
+    
+    var buttonClose = document.createElement('i');
+    buttonClose.setAttribute('class', 'reboot fas fa-times');
+    
+    var button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('class', 'reboot close');
+    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    
+    button.appendChild(buttonClose);
+    element.appendChild(button);
+    
+    document.getElementById('error-container').appendChild(element);
+    
     Errors.updateMainContainerHeight();
   },
   
   fileSize : function( ) {
-    var messageToUser = 'Inline XBRL HTML Form is over ' + Constants.fileSizeError[1]
-        + ', performance may be affected.';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-warning alert-dismissable show mb-0">'
-        + messageToUser
-        + '<button type="button" class="close" data-dismiss="alert" onclick="Errors.updateMainContainerHeight(true);"><i class="fas fa-times"></i></button></div>';
+    
+    var content = document.createTextNode('Inline XBRL HTML Form is over ' + Constants.fileSizeError[1]
+        + ', performance may be affected.');
+    
+    var element = document.createElement('div');
+    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.appendChild(content);
+    
+    var buttonClose = document.createElement('i');
+    buttonClose.setAttribute('class', 'reboot fas fa-times');
+    
+    var button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('class', 'reboot close');
+    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    
+    button.appendChild(buttonClose);
+    element.appendChild(button);
+    
+    document.getElementById('error-container').appendChild(element);
+    
     Errors.updateMainContainerHeight();
     
-    if ( !window.chrome ) {
-      ErrorsMinor.browserSuggestion();
-    }
+    ErrorsMinor.browserSuggestion();
   },
   
   metaLinksNotFound : function( fileName ) {
+    var content = document
+        .createTextNode('Inline XBRL viewing features are minimal because no supporting file was found.');
     
-    var messageToUser = 'Inline XBRL viewing features are minimal because no supporting file was found.';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-warning alert-dismissable show mb-0">'
-        + messageToUser
-        + '<button type="button" class="close" data-dismiss="alert" onclick="Errors.updateMainContainerHeight(true);"><i class="fas fa-times"></i></button></div>';
+    var element = document.createElement('div');
+    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.appendChild(content);
+    
+    var buttonClose = document.createElement('i');
+    buttonClose.setAttribute('class', 'reboot fas fa-times');
+    
+    var button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('class', 'reboot close');
+    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    
+    button.appendChild(buttonClose);
+    element.appendChild(button);
+    
+    document.getElementById('error-container').appendChild(element);
+    
     Errors.updateMainContainerHeight();
   },
   
   metaLinksInstance : function( fileName ) {
     
-    var messageToUser = 'Inline XBRL viewing features are minimal because supporting file is not correct.';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-warning alert-dismissable show mb-0">'
-        + messageToUser
-        + '<button type="button" class="close" data-dismiss="alert" onclick="Errors.updateMainContainerHeight(true);"><i class="fas fa-times"></i></button></div>';
+    var content = document
+        .createTextNode('Inline XBRL viewing features are minimal because supporting file is not correct.');
+    
+    var element = document.createElement('div');
+    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.appendChild(content);
+    
+    var buttonClose = document.createElement('i');
+    buttonClose.setAttribute('class', 'reboot fas fa-times');
+    
+    var button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('class', 'reboot close');
+    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    
+    button.appendChild(buttonClose);
+    element.appendChild(button);
+    
+    document.getElementById('error-container').appendChild(element);
+    
     Errors.updateMainContainerHeight();
   },
   
   metaLinksVersion : function( ) {
     
-    var messageToUser = 'File found was not a MetaLinks version 2.0 file or higher.';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-warning alert-dismissable show mb-0">'
-        + messageToUser
-        + '<button type="button" class="close" data-dismiss="alert" onclick="Errors.updateMainContainerHeight(true);"><i class="fas fa-times"></i></button></div>';
+    var content = document.createTextNode('File found was not a MetaLinks version 2.0 file or higher.');
+    
+    var element = document.createElement('div');
+    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.appendChild(content);
+    
+    var buttonClose = document.createElement('i');
+    buttonClose.setAttribute('class', 'reboot fas fa-times');
+    
+    var button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('class', 'reboot close');
+    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    
+    button.appendChild(buttonClose);
+    element.appendChild(button);
+    
+    document.getElementById('error-container').appendChild(element);
+    
     Errors.updateMainContainerHeight();
   },
   
   factNotActive : function( ) {
     
-    var messageToUser = 'This fact is not apart of your active filter(s) and is not present in the Fact Menu.';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-warning alert-dismissable show mb-0">'
-        + messageToUser
-        + '<button type="button" class="close" data-dismiss="alert" onclick="Errors.updateMainContainerHeight(true);"><i class="fas fa-times"></i></button></div>';
+    var content = document
+        .createTextNode('This fact is not apart of your active filter(s) and is not present in the Fact Menu.');
+    
+    var element = document.createElement('div');
+    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.appendChild(content);
+    
+    var buttonClose = document.createElement('i');
+    buttonClose.setAttribute('class', 'reboot fas fa-times');
+    
+    var button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.setAttribute('class', 'reboot close');
+    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    
+    button.appendChild(buttonClose);
+    element.appendChild(button);
+    
+    document.getElementById('error-container').appendChild(element);
+    
     Errors.updateMainContainerHeight();
   }
 

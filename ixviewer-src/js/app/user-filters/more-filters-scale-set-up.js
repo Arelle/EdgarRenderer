@@ -6,39 +6,39 @@
 'use strict';
 
 var UserFiltersMoreFiltersScaleSetUp = {
-  filtersSet : false,
-  
-  scaleOptions : [ ],
-  
-  setScales : function( callback ) {
+  filtersSet: false,
+
+  scaleOptions: [],
+
+  setScales: function (callback) {
     var foundScales = document.getElementById('dynamic-xbrl-form').querySelectorAll('[scale]');
     var foundScalesArray = Array.prototype.slice.call(foundScales);
-    
-    UserFiltersMoreFiltersScaleSetUp.scaleOptions = foundScalesArray.map(function( current ) {
+
+    UserFiltersMoreFiltersScaleSetUp.scaleOptions = foundScalesArray.map(function (current) {
       return current.getAttribute('scale');
-    }).filter(function( element, index, array ) {
+    }).filter(function (element, index, array) {
       return array.indexOf(element) === index;
     }).sort().reverse();
-    
+
     document.getElementById('filters-scales-count').innerText = UserFiltersMoreFiltersScaleSetUp.scaleOptions.length;
-    
+
     UserFiltersMoreFiltersScaleSetUp.populate();
-    
+
     callback();
   },
-  
-  populate : function( ) {
-    
+
+  populate: function () {
+
     var innerHtml = '';
-    UserFiltersMoreFiltersScaleSetUp.scaleOptions.forEach(function( current, index ) {
-      innerHtml += '<div class="d-flex justify-content-between align-items-center w-100 px-2">';
-      innerHtml += '<div class="form-check">';
+    UserFiltersMoreFiltersScaleSetUp.scaleOptions.forEach(function (current, index) {
+      innerHtml += '<div class="reboot d-flex justify-content-between align-items-center w-100 px-2">';
+      innerHtml += '<div class="reboot form-check">';
       innerHtml += '<input onclick="UserFiltersMoreFiltersScale.clickEvent(event, this, ' + index
-          + ')" title="Select/Deselect this option." class="form-check-input" type="checkbox">';
-      innerHtml += '<label class="form-check-label">' + FiltersScale.getScale(current) + '</label>';
+        + ')" title="Select/Deselect this option." class="reboot form-check-input" type="checkbox">';
+      innerHtml += '<label class="reboot form-check-label mb-0">' + FiltersScale.getScale(current) + '</label>';
       innerHtml += '</div></div>';
     });
     document.getElementById('user-filters-scales').innerHTML = innerHtml;
-    
+
   }
 };

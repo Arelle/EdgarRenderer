@@ -19,6 +19,8 @@ var UserFiltersState = {
   
   getScale : [ ],
   
+  getType : [ ],
+  
   getDataRadios : 0,
   
   setDataRadios : function( input ) {
@@ -56,6 +58,7 @@ var UserFiltersState = {
   },
   
   filterUpdates : function( ) {
+    var startPerformance = performance.now();
     UserFiltersDropdown.init();
     
     Taxonomies.loadingTaxonomyCount(function( ) {
@@ -84,6 +87,8 @@ var UserFiltersState = {
         
         enabledTaxonomy = UserFiltersState.scales(current, enabledTaxonomy);
         
+        enabledTaxonomy = UserFiltersState.types(current, enabledTaxonomy);
+        
         enabledTaxonomy = UserFiltersState.balances(current, enabledTaxonomy);
         
         current.setAttribute('enabled-taxonomy', enabledTaxonomy);
@@ -91,7 +96,11 @@ var UserFiltersState = {
       });
       
       Taxonomies.updateTaxonomyCount(Object.keys(UserFiltersState.getUserSearch).length === 2);
+      var endPerformance = performance.now();
+      console.debug('UserFiltersState.filterUpdates() completed in: ' + (endPerformance - startPerformance).toFixed(2)
+          + '(ms).');
     });
+    
   },
   
   dataRadios : function( current, enabledTaxonomy ) {
@@ -304,6 +313,20 @@ var UserFiltersState = {
     return enabledTaxonomy;
   },
   
+  types : function( current, enabledTaxonomy ) {
+    if ( UserFiltersState.getType.length && enabledTaxonomy ) {
+      for ( var i = 0; i < UserFiltersState.getType.length; i++ ) {
+        if ( current.hasAttribute('name') && current.getAttribute('name').split(':').length === 2 ) {
+          if ( UserFiltersState.getType[i].toLowerCase() === current.getAttribute('name').split(':')[0].toLowerCase() ) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    return enabledTaxonomy;
+  },
+  
   balances : function( current, enabledTaxonomy ) {
     if ( UserFiltersState.getBalance.length && enabledTaxonomy ) {
       
@@ -357,7 +380,6 @@ var UserFiltersState = {
         fullContentToRegexAgainst += ' '
             + SearchFunctions.elementReferencesForRegex(current, UserFiltersState.getUserSearch);
       }
-      
       highlight = UserFiltersState.getUserSearch.regex.test(fullContentToRegexAgainst);
       
     }

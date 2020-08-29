@@ -7,6 +7,8 @@
 
 var ModalsCommon = {
   
+  currentSlide : 0,
+  
   carouselInformation : [ {
     'dialog-title' : 'Attributes'
   }, {
@@ -39,7 +41,7 @@ var ModalsCommon = {
     
     document.getElementById('taxonomy-modal-title').innerText = ModalsCommon.carouselInformation[0]['dialog-title'];
     
-    document.getElementById('taxonomy-modal-subtitle').innerHTML = FiltersName.getLabel(element.getAttribute('name'));
+    document.getElementById('taxonomy-modal-subtitle').innerHTML = FiltersName.getLabel(element.getAttribute('name'), true);
     
     $('#taxonomy-modal-carousel').carousel(0);
     
@@ -49,6 +51,8 @@ var ModalsCommon = {
         .on(
             'slide.bs.carousel',
             function( event ) {
+              
+              ModalsCommon.currentSlide = event['to'] + 1;
               var previousActiveIndicator = event['from'];
               var newActiveIndicator = event['to'];
               document.getElementById('taxonomy-modal-carousel-indicators').querySelector(
@@ -60,97 +64,143 @@ var ModalsCommon = {
     
   },
   
+  focusOnContent : function( ) {
+    
+    document.getElementById('taxonomy-modal-carousel-page-' + ModalsCommon.currentSlide).focus();
+  },
+  
   keyboardEvents : function( event ) {
     
     var key = event.keyCode ? event.keyCode : event.which;
-    
     if ( key === 49 || key === 97 ) {
       $('#taxonomy-modal-carousel').carousel(0);
+      ModalsCommon.focusOnContent();
       return false;
     }
     if ( key === 50 || key === 98 ) {
       $('#taxonomy-modal-carousel').carousel(1);
+      ModalsCommon.focusOnContent();
       return false;
     }
     if ( key === 51 || key === 99 ) {
       $('#taxonomy-modal-carousel').carousel(2);
+      ModalsCommon.focusOnContent();
       return false;
     }
     if ( key === 52 || key === 100 ) {
       $('#taxonomy-modal-carousel').carousel(3);
+      ModalsCommon.focusOnContent();
       return false;
     }
     if ( key === 37 ) {
       $('#taxonomy-modal-carousel').carousel('prev');
+      ModalsCommon.focusOnContent();
       return false;
     }
     if ( key === 39 ) {
       $('#taxonomy-modal-carousel').carousel('next');
+      ModalsCommon.focusOnContent();
       return false;
     }
     
   },
   
-  carouselData : function( element, returnString ) {
-    returnString = returnString || false;
-    if ( !returnString ) {
+  carouselData : function( element, returnElement ) {
+    returnElement = returnElement || false;
+    
+    if ( !returnElement ) {
       Modals.renderCarouselIndicators('taxonomy-modal-carousel', 'taxonomy-modal-carousel-indicators',
           ModalsContinuedAt.carouselInformation);
     }
-    var stringToReturn = '';
-    TaxonomyPages
-        .firstPage(
-            element,
-            function( page1Html ) {
-              page1Html = page1Html || 'No Data.';
-              if ( returnString ) {
-                stringToReturn += '<div class="carousel-item table-responsive active"><table class="table table-striped table-sm">'
-                    + page1Html + '</table></div>';
-              } else {
-                document.getElementById('taxonomy-modal-carousel-page-1').innerHTML = page1Html;
-              }
+    
+    var elementToReturn = document.createDocumentFragment();
+    
+    TaxonomyPages.firstPage(element, function( page1Html ) {
+      
+      if ( returnElement ) {
+        
+        var divElement = document.createElement('div');
+        divElement.setAttribute('class', 'reboot carousel-item table-responsive active');
+        
+        var tableElement = document.createElement('table');
+        tableElement.setAttribute('class', 'reboot table table-striped table-sm');
+        tableElement.appendChild(page1Html);
+        divElement.appendChild(tableElement);
+        elementToReturn.appendChild(divElement);
+        
+      } else {
+        
+        while (document.getElementById('taxonomy-modal-carousel-page-1').firstChild) {
+          document.getElementById('taxonomy-modal-carousel-page-1').firstChild.remove();
+        }
+        document.getElementById('taxonomy-modal-carousel-page-1').appendChild(page1Html);
+      }
+      TaxonomyPages.secondPage(element, function( page2Html ) {
+        
+        if ( returnElement ) {
+          
+          var divElement = document.createElement('div');
+          divElement.setAttribute('class', 'reboot carousel-item table-responsive');
+          
+          var tableElement = document.createElement('table');
+          tableElement.setAttribute('class', 'reboot table table-striped table-sm');
+          
+          tableElement.appendChild(page2Html);
+          divElement.appendChild(tableElement);
+          elementToReturn.appendChild(divElement);
+          
+        } else {
+          
+          while (document.getElementById('taxonomy-modal-carousel-page-2').firstChild) {
+            document.getElementById('taxonomy-modal-carousel-page-2').firstChild.remove();
+          }
+          document.getElementById('taxonomy-modal-carousel-page-2').appendChild(page2Html);
+        }
+        TaxonomyPages.thirdPage(element, function( page3Html ) {
+          if ( returnElement ) {
+            
+            var divElement = document.createElement('div');
+            divElement.setAttribute('class', 'reboot carousel-item table-responsive');
+            
+            var tableElement = document.createElement('table');
+            tableElement.setAttribute('class', 'reboot table table-striped table-sm');
+            
+            tableElement.appendChild(page3Html);
+            divElement.appendChild(tableElement);
+            elementToReturn.appendChild(divElement);
+            
+          } else {
+            
+            while (document.getElementById('taxonomy-modal-carousel-page-3').firstChild) {
+              document.getElementById('taxonomy-modal-carousel-page-3').firstChild.remove();
+            }
+            document.getElementById('taxonomy-modal-carousel-page-3').appendChild(page3Html);
+          }
+          TaxonomyPages.fourthPage(element, function( page4Html ) {
+            if ( returnElement ) {
               
-              TaxonomyPages
-                  .secondPage(
-                      element,
-                      function( page2Html ) {
-                        page2Html = page2Html || 'No Data.';
-                        if ( returnString ) {
-                          stringToReturn += '<div class="carousel-item table-responsive"><table class="table table-striped table-sm">'
-                              + page2Html + '</table></div>';
-                        } else {
-                          document.getElementById('taxonomy-modal-carousel-page-2').innerHTML = page2Html;
-                        }
-                        
-                        TaxonomyPages
-                            .thirdPage(
-                                element,
-                                function( page3Html ) {
-                                  page3Html = page3Html || 'No Data.';
-                                  if ( returnString ) {
-                                    stringToReturn += '<div class="carousel-item table-responsive"><table class="table table-striped table-sm">'
-                                        + page3Html + '</table></div>';
-                                  } else {
-                                    document.getElementById('taxonomy-modal-carousel-page-3').innerHTML = page3Html;
-                                  }
-                                  TaxonomyPages
-                                      .fourthPage(
-                                          element,
-                                          function( page4Html ) {
-                                            page4Html = page4Html || 'No Data.';
-                                            if ( returnString ) {
-                                              stringToReturn += '<div class="carousel-item table-responsive"><table class="table table-striped table-sm">'
-                                                  + page4Html + '</table></div>';
-                                            } else {
-                                              document.getElementById('taxonomy-modal-carousel-page-4').innerHTML = page4Html;
-                                            }
-                                          });
-                                });
-                      });
-            });
-    if ( returnString ) {
-      return stringToReturn;
-    }
+              var divElement = document.createElement('div');
+              divElement.setAttribute('class', 'reboot carousel-item table-responsive');
+              
+              var tableElement = document.createElement('table');
+              tableElement.setAttribute('class', 'reboot table table-striped table-sm');
+              
+              tableElement.appendChild(page4Html);
+              divElement.appendChild(tableElement);
+              elementToReturn.appendChild(divElement);
+              
+            } else {
+              
+              while (document.getElementById('taxonomy-modal-carousel-page-4').firstChild) {
+                document.getElementById('taxonomy-modal-carousel-page-4').firstChild.remove();
+              }
+              document.getElementById('taxonomy-modal-carousel-page-4').appendChild(page4Html);
+            }
+          });
+        });
+      });
+    });
+    return elementToReturn;
   }
 
 };

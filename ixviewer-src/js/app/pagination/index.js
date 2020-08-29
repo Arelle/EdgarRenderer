@@ -6,6 +6,7 @@
 'use strict';
 
 var Pagination = {
+  
   init : function( paginaitonContent, selectorForPaginationControls, selectorForPaginationContent, modalAction ) {
     Pagination.reset();
     Pagination.getModalAction = modalAction;
@@ -47,20 +48,34 @@ var Pagination = {
   getTotalPages : 0,
   
   getPaginationTemplate : function( currentPage ) {
-    document.querySelector(Pagination.getPaginationControlsSelector).innerHTML = Pagination.getControlsTemplate();
-    var listHtml = '';
     
+    while (document.querySelector(Pagination.getPaginationControlsSelector).firstChild) {
+      document.querySelector(Pagination.getPaginationControlsSelector).firstChild.remove();
+    }
+    
+    var divElement = document.createElement('div');
+    divElement.setAttribute('class', 'reboot w-100 d-flex justify-content-between py-2 px-1');
+    divElement.appendChild(Pagination.getPrevNextControls());
+    divElement.appendChild(Pagination.getPaginationInfo());
+    divElement.appendChild(Pagination.getPageControls());
+    document.querySelector(Pagination.getPaginationControlsSelector).appendChild(divElement);
+    
+    var elementToReturn = document.createDocumentFragment();
     var beginAt = ((currentPage - 1) * Constants.getPaginationPerPage);
     var endAt = beginAt + Constants.getPaginationPerPage;
     
-    document.querySelector(Pagination.getPaginationControlsSelector + ' .pagination-info').innerHTML = currentPage
-        + ' of ' + Pagination.getTotalPages;
-    
     var arrayForPage = Pagination.getArray.slice(beginAt, endAt);
     arrayForPage.forEach(function( current ) {
-      listHtml += TaxonomiesGeneral.getTaxonomyListTemplate(current, Pagination.getModalAction);
+      elementToReturn.appendChild(TaxonomiesGeneral.getTaxonomyListTemplate(current, Pagination.getModalAction));
     });
-    document.querySelector(Pagination.getPaginationSelector).innerHTML = listHtml;
+    while (document.querySelector(Pagination.getPaginationSelector).firstChild) {
+      document.querySelector(Pagination.getPaginationSelector).firstChild.remove();
+    }
+    
+    document.querySelector(Pagination.getPaginationSelector).setAttribute('style', 'height: calc(100vh - 200px);');
+    
+    document.querySelector(Pagination.getPaginationSelector).appendChild(elementToReturn);
+    Pagination.setPageSelect();
   },
   
   firstPage : function( ) {
@@ -164,76 +179,259 @@ var Pagination = {
     }
   },
   
+  getPrevNextControls : function( ) {
+    var elementToReturn = document.createDocumentFragment();
+    
+    var divElement = document.createElement('div');
+    divElement.setAttribute('class', 'reboot');
+    
+    var ulElement = document.createElement('ul');
+    ulElement.setAttribute('class', 'reboot pagination pagination-sm mb-0');
+    
+    var previousTaxonomyLiElement = document.createElement('li');
+    previousTaxonomyLiElement.setAttribute('class', 'reboot page-item');
+    
+    var previousTaxonomyAElement = document.createElement('a');
+    previousTaxonomyAElement.setAttribute('class', 'reboot page-link text-body');
+    previousTaxonomyAElement.setAttribute('href', '#');
+    previousTaxonomyAElement.setAttribute('onclick', 'Pagination.previousTaxonomy(event, this);');
+    previousTaxonomyAElement.setAttribute('tabindex', 13);
+    
+    var previousTaxonomyContent = document.createTextNode('Prev');
+    
+    previousTaxonomyAElement.appendChild(previousTaxonomyContent);
+    previousTaxonomyLiElement.appendChild(previousTaxonomyAElement);
+    ulElement.appendChild(previousTaxonomyLiElement);
+    
+    var nextTaxonomyLiElement = document.createElement('li');
+    nextTaxonomyLiElement.setAttribute('class', 'reboot page-item');
+    
+    var nextTaxonomyAElement = document.createElement('a');
+    nextTaxonomyAElement.setAttribute('class', 'reboot page-link text-body');
+    nextTaxonomyAElement.setAttribute('href', '#');
+    nextTaxonomyAElement.setAttribute('onclick', 'Pagination.nextTaxonomy(event, this);');
+    nextTaxonomyAElement.setAttribute('tabindex', 13);
+    
+    var nextTaxonomyContent = document.createTextNode('Next');
+    
+    nextTaxonomyAElement.appendChild(nextTaxonomyContent);
+    nextTaxonomyLiElement.appendChild(nextTaxonomyAElement);
+    ulElement.appendChild(nextTaxonomyLiElement);
+    divElement.appendChild(ulElement);
+    
+    elementToReturn.appendChild(divElement);
+    
+    return elementToReturn;
+  },
+  
+  getPaginationInfo : function( ) {
+    var elementToReturn = document.createDocumentFragment();
+    
+    var paginationInfoDivElement = document.createElement('div');
+    paginationInfoDivElement.setAttribute('class', 'reboot pagination-info text-body');
+    
+    var paginationInfoDivContent = document.createTextNode(Pagination.getCurrentPage + ' of '
+        + Pagination.getTotalPages);
+    paginationInfoDivElement.appendChild(paginationInfoDivContent);
+    
+    elementToReturn.appendChild(paginationInfoDivElement);
+    
+    return elementToReturn;
+  },
+  
+  getPageControls : function( ) {
+    var firstPage = (Pagination.getCurrentPage === 1) ? 'disabled' : '';
+    var previousPage = (Pagination.getCurrentPage - 1 <= 0) ? 'disabled' : '';
+    var nextPage = (Pagination.getCurrentPage + 1 > Pagination.getTotalPages) ? 'disabled' : '';
+    var lastPage = (Pagination.getCurrentPage === Pagination.getTotalPages) ? 'disabled' : '';
+    
+    var elementToReturn = document.createDocumentFragment();
+    
+    var navElement = document.createElement('nav');
+    navElement.setAttribute('class', 'reboot');
+    
+    var ulElement = document.createElement('ul');
+    ulElement.setAttribute('class', 'reboot pagination pagination-sm mb-0');
+    
+    var firstPageLiElement = document.createElement('li');
+    firstPageLiElement.setAttribute('class', 'reboot page-item ' + firstPage);
+    
+    var firstPageAElement = document.createElement('a');
+    firstPageAElement.setAttribute('class', 'reboot page-link text-body');
+    firstPageAElement.setAttribute('href', '#');
+    firstPageAElement.setAttribute('onclick', 'Pagination.firstPage();');
+    firstPageAElement.setAttribute('tabindex', 13);
+    
+    var firstPageContent = document.createElement('i');
+    firstPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-double-left');
+    
+    firstPageAElement.appendChild(firstPageContent);
+    firstPageLiElement.appendChild(firstPageAElement);
+    ulElement.appendChild(firstPageLiElement);
+    
+    var previousPageLiElement = document.createElement('li');
+    previousPageLiElement.setAttribute('class', 'reboot page-item ' + previousPage);
+    
+    var previousPageAElement = document.createElement('a');
+    previousPageAElement.setAttribute('class', 'reboot page-link text-body');
+    previousPageAElement.setAttribute('href', '#');
+    previousPageAElement.setAttribute('onclick', 'Pagination.previousPage();');
+    previousPageAElement.setAttribute('tabindex', 13);
+    
+    var previousPageContent = document.createElement('i');
+    previousPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-left');
+    
+    previousPageAElement.appendChild(previousPageContent);
+    previousPageLiElement.appendChild(previousPageAElement);
+    ulElement.appendChild(previousPageLiElement);
+    
+    var nextPageLiElement = document.createElement('li');
+    nextPageLiElement.setAttribute('class', 'reboot page-item ' + nextPage);
+    
+    var nextPageAElement = document.createElement('a');
+    nextPageAElement.setAttribute('class', 'reboot page-link text-body');
+    nextPageAElement.setAttribute('href', '#');
+    nextPageAElement.setAttribute('onclick', 'Pagination.nextPage();');
+    nextPageAElement.setAttribute('tabindex', 13);
+    
+    var nextPageContent = document.createElement('i');
+    nextPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-right');
+    
+    nextPageAElement.appendChild(nextPageContent);
+    nextPageLiElement.appendChild(nextPageAElement);
+    ulElement.appendChild(nextPageLiElement);
+    
+    var lastPageLiElement = document.createElement('li');
+    lastPageLiElement.setAttribute('class', 'reboot page-item ' + lastPage);
+    
+    var lastPageAElement = document.createElement('a');
+    lastPageAElement.setAttribute('class', 'reboot page-link text-body');
+    lastPageAElement.setAttribute('href', '#');
+    lastPageAElement.setAttribute('onclick', 'Pagination.lastPage();');
+    lastPageAElement.setAttribute('tabindex', 13);
+    
+    var lastPageContent = document.createElement('i');
+    lastPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-double-right');
+    
+    lastPageAElement.appendChild(lastPageContent);
+    lastPageLiElement.appendChild(lastPageAElement);
+    ulElement.appendChild(lastPageLiElement);
+    
+    navElement.appendChild(ulElement);
+    elementToReturn.appendChild(navElement);
+    return elementToReturn;
+    
+  },
+  
   getControlsTemplate : function( ) {
     
     var firstPage = (Pagination.getCurrentPage === 1) ? 'disabled' : '';
     var previousPage = (Pagination.getCurrentPage - 1 <= 0) ? 'disabled' : '';
     var nextPage = (Pagination.getCurrentPage + 1 > Pagination.getTotalPages) ? 'disabled' : '';
     var lastPage = (Pagination.getCurrentPage === Pagination.getTotalPages) ? 'disabled' : '';
-    var template = '';
+    
+    var elementToReturn = document.createDocumentFragment();
     
     Pagination.setPageSelect();
     
-    template += '<div class="w-100 d-flex justify-content-between py-2 px-1">';
+    var divElement = document.createElement('div');
+    divElement.setAttribute('class', 'reboot w-100 d-flex justify-content-between py-2 px-1');
     
-    template += '<div>';
-    template += '<ul class="pagination pagination-sm mb-0">';
+    var divNestedElement = document.createElement('div');
+    divNestedElement.setAttribute('class', 'reboot');
     
-    template += '<li class="page-item">';
-    template += '<a href="#" onclick="Pagination.previousTaxonomy(event, this);" class="page-link" onclick="Pagination.firstPage();" tabindex="13">';
-    template += 'Prev';
-    template += '</a>';
-    template += '</li>';
+    var divNestedElement = document.createElement('div');
+    divNestedElement.setAttribute('class', 'reboot');
     
-    template += '<li class="page-item">';
-    template += '<a href="#" data-test="next-taxonomy" onclick="Pagination.nextTaxonomy(event, this);" class="page-link" onclick="Pagination.firstPage();" tabindex="13">';
-    template += 'Next';
-    template += '</a>';
-    template += '</li>';
+    var navElement = document.createElement('nav');
+    navElement.setAttribute('class', 'reboot');
     
-    template += '</ul>';
-    template += '</div>';
-    template += '<div class="pagination-info"></div>';
-    template += '<nav>';
-    template += '<ul class="pagination pagination-sm mb-0">';
-    template += '<li class="page-item ' + firstPage + '">';
-    template += '<a href="#" class="page-link" onclick="Pagination.firstPage();" tabindex="13">';
-    template += '<i class="fas fa-lg fa-angle-double-left"></i>';
-    template += '</a>';
-    template += '</li>';
-    template += '<li class="page-item ' + previousPage + '">';
-    template += '<a href="#" class="page-link" onclick="Pagination.previousPage();" tabindex="13">';
-    template += '<i class="fas fa-lg fa-angle-left"></i>';
-    template += '</a>';
-    template += '</li>';
-    template += '<li class="page-item ' + nextPage + '">';
-    template += '<a href="#" class="page-link" onclick="Pagination.nextPage();" tabindex="13">';
-    template += '<i class="fas fa-lg fa-angle-right"></i>';
-    template += '</a>';
-    template += '</li>';
-    template += '<li class="page-item ' + lastPage + '">';
-    template += '<a href="#" class="page-link" onclick="Pagination.lastPage();" tabindex="13">';
-    template += '<i class="fas fa-lg fa-angle-double-right"></i>';
-    template += '</a>';
-    template += '</li>';
-    template += '</ul>';
-    template += '</nav>';
-    template += '</div>';
+    var ulElement = document.createElement('ul');
+    ulElement.setAttribute('class', 'reboot pagination pagination-sm mb-0');
     
-    return template;
+    var firstPageLiElement = document.createElement('li');
+    firstPageLiElement.setAttribute('class', 'reboot page-item ' + firstPage);
+    
+    var firstPageAElement = document.createElement('a');
+    firstPageAElement.setAttribute('class', 'reboot page-link text-body');
+    firstPageAElement.setAttribute('href', '#');
+    firstPageAElement.setAttribute('onclick', 'Pagination.firstPage();');
+    firstPageAElement.setAttribute('tabindex', 13);
+    
+    var firstPageContent = document.createElement('i');
+    firstPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-double-left');
+    
+    firstPageAElement.appendChild(firstPageContent);
+    firstPageLiElement.appendChild(firstPageAElement);
+    ulElement.appendChild(firstPageLiElement);
+    
+    var previousPageLiElement = document.createElement('li');
+    previousPageLiElement.setAttribute('class', 'reboot page-item ' + previousPage);
+    
+    var previousPageAElement = document.createElement('a');
+    previousPageAElement.setAttribute('class', 'reboot page-link text-body');
+    previousPageAElement.setAttribute('href', '#');
+    previousPageAElement.setAttribute('onclick', 'Pagination.previousPage();');
+    previousPageAElement.setAttribute('tabindex', 13);
+    
+    var previousPageContent = document.createElement('i');
+    previousPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-left');
+    
+    previousPageAElement.appendChild(previousPageContent);
+    previousPageLiElement.appendChild(previousPageAElement);
+    ulElement.appendChild(previousPageLiElement);
+    
+    var nextPageLiElement = document.createElement('li');
+    nextPageLiElement.setAttribute('class', 'reboot page-item ' + nextPage);
+    
+    var nextPageAElement = document.createElement('a');
+    nextPageAElement.setAttribute('class', 'reboot page-link text-body');
+    nextPageAElement.setAttribute('href', '#');
+    nextPageAElement.setAttribute('onclick', 'Pagination.nextPage();');
+    nextPageAElement.setAttribute('tabindex', 13);
+    
+    var nextPageContent = document.createElement('i');
+    nextPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-right');
+    
+    nextPageAElement.appendChild(nextPageContent);
+    nextPageLiElement.appendChild(nextPageAElement);
+    ulElement.appendChild(nextPageLiElement);
+    
+    var lastPageLiElement = document.createElement('li');
+    lastPageLiElement.setAttribute('class', 'reboot page-item ' + lastPage);
+    
+    var lastPageAElement = document.createElement('a');
+    lastPageAElement.setAttribute('class', 'reboot page-link text-body');
+    lastPageAElement.setAttribute('href', '#');
+    lastPageAElement.setAttribute('onclick', 'Pagination.lastPage();');
+    lastPageAElement.setAttribute('tabindex', 13);
+    
+    var lastPageContent = document.createElement('i');
+    lastPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-double-right');
+    
+    lastPageAElement.appendChild(lastPageContent);
+    lastPageLiElement.appendChild(lastPageAElement);
+    ulElement.appendChild(lastPageLiElement);
+    
+    divNestedElement.appendChild(ulElement);
+    divElement.appendChild(divNestedElement);
+    
+    elementToReturn.appendChild(divElement);
+    
+    return elementToReturn;
     
   },
   
   setPageSelect : function( ) {
-    
     var pageSelectHTML = '<option value="null">Select a Page</option>';
     
     for ( var i = 0; i < Pagination.getTotalPages; i++ ) {
       if ( (i + 1) === Pagination.getCurrentPage ) {
-        pageSelectHTML += '<option selected value="' + (i + 1) + '">Page ' + (i + 1) + '</option>';
+        
+        pageSelectHTML += '<option class="reboot" selected value="' + (i + 1) + '">Page ' + (i + 1) + '</option>';
         
       } else {
-        pageSelectHTML += '<option value="' + (i + 1) + '">Page ' + (i + 1) + '</option>';
+        pageSelectHTML += '<option class="reboot" value="' + (i + 1) + '">Page ' + (i + 1) + '</option>';
         
       }
     }
@@ -249,6 +447,12 @@ var Pagination = {
   },
   
   goToTaxonomy : function( event, element ) {
+    
+    if ( event.keyCode && !(event.keyCode === 13 || event.keyCode === 32) ) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
     
     if ( element && element.hasAttribute('data-id') ) {
       

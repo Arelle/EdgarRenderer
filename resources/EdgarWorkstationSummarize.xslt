@@ -202,7 +202,7 @@
           <xsl:value-of select="$xslt"/>
           <xsl:text>"; var InstanceReportXsltDoc = null; </xsl:text>
           <xsl:text>var accessionNumber = "</xsl:text><xsl:value-of select="$accessionNumber"/><xsl:text>";</xsl:text>
-          <xsl:text>var isRedline = (location.href.indexOf("&amp;redline=true") >= 0);</xsl:text>
+          <xsl:text>var isRedline = (location.href.indexOf("&amp;redline=true") >= 0 || location.href.indexOf("?redline=true") >= 0);</xsl:text>
           <xsl:text>var fetchprefix = "</xsl:text><xsl:value-of select="$fetchprefix"/><xsl:text>";</xsl:text>
           <xsl:text>var fetchsuffix = "</xsl:text><xsl:value-of select="$fetchsuffix"/><xsl:text>";</xsl:text>
           <xsl:text>var fetchraw = "</xsl:text><xsl:value-of select="$fetchraw"/><xsl:text>";</xsl:text>

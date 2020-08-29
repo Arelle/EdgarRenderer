@@ -7,8 +7,7 @@
 
 var FiltersValue = {
   
-  getFormattedValue : function( element, showCollapse ) {
-    
+  getCorrectFormatBasedOnNamespace : function( element ) {
     var elementToFormat = element;
     if ( element.hasAttribute('ishiddenelement') && element.hasAttribute('data-original-id') ) {
       
@@ -16,12 +15,9 @@ var FiltersValue = {
           '[id="' + element.getAttribute('data-original-id') + '"]');
       elementToFormat = hiddenElement;
     }
-    var popoverElement = element.querySelector('.popover');
     var format = element.getAttribute('format');
-    
     if ( format && format.split(':')[1] ) {
       var namespace = format.split(':')[0].toLowerCase();
-      
       format = format.split(':')[1].toLowerCase();
       if ( Constants.getFormattingObject[namespace] && Constants.getFormattingObject[namespace].indexOf(format) >= 0 ) {
         switch ( format ) {
@@ -317,56 +313,174 @@ var FiltersValue = {
       } else {
         return 'Namespace not found';
       }
+    }
+  },
+  
+  getFormattedValue : function( element, contentForSideBarOrPopOver ) {
+    
+    if ( element.hasAttribute('format') ) {
       
+      return FiltersValue.getCorrectFormatBasedOnNamespace(element);
+    }
+    
+    var elementToFormat = element;
+    if ( element.hasAttribute('ishiddenelement') && element.hasAttribute('data-original-id') ) {
+      
+      var hiddenElement = document.getElementById('dynamic-xbrl-form').querySelector(
+          '[id="' + element.getAttribute('data-original-id') + '"]');
+      elementToFormat = hiddenElement;
+    }
+    
+    if ( elementToFormat.hasAttribute('xsi:nil') && (elementToFormat.getAttribute('xsi:nil') === true) ) {
+      
+      return 'nil';
+    }
+    
+    var containerElement = document.createElement('div');
+    var showCollapseIfApplicable = (element.offsetHeight > 30) ? true : false;
+    
+    if ( contentForSideBarOrPopOver ) {
+      
+      if ( (element.hasAttribute('continued-main-taxonomy') && ConstantsFunctions.getStringBooleanValue(element
+          .getAttribute('continued-main-taxonomy')))
+          || element.hasAttribute('text-block-taxonomy') ) {
+        
+        showCollapseIfApplicable = true;
+      } else {
+        
+        showCollapseIfApplicable = false;
+      }
+      
+      if ( showCollapseIfApplicable ) {
+        
+        containerElement.textContent = 'Click to see Fact';
+      } else {
+        
+        containerElement.textContent = elementToFormat.textContent;
+      }
     } else {
       
-      if ( element.hasAttribute('xsi:nil') && (element.getAttribute('xsi:nil') === true) ) {
-        return 'nil';
-      }
-      var splitText = elementToFormat.innerText.split(/(\r\n|\n|\r)/gm);
-var containerElement = document.createElement('div');
-      var dataToReturn = '';
-      if ( splitText.length > 1 && showCollapse ) {
+      if ( showCollapseIfApplicable ) {
         // we show accordion
-       var div = document.createElement('div');
-          div.className = 'collapse d-block collapse-modal-partial';
-          div.id = 'collapse-taxonomy';
-          div.innerHTML = element.innerHTML;
-          containerElement.appendChild(div);
-
-          var button = document.createElement('button');
-          button.className = 'btn btn-primary btn-sm btn-block mt-1';
-          button.type = 'button';
-          button.setAttribute('data-toggle', 'collapse');
-          button.setAttribute('data-target', '#collapse-taxonomy');
-          button.textContent = 'Contract / Expand';
-          containerElement.appendChild(button);
+        var newElement = document.createElement('div');
+        newElement.setAttribute('class', 'reboot collapse d-block collapse-modal-partial');
+        newElement.setAttribute('id', 'collapse-taxonomy');
         
-      } else if ( splitText.length > 1 && !showCollapse ) {
-         containerElement.textContent = 'Click to see Fact';
+        newElement.innerHTML = elementToFormat.innerHTML;
+        containerElement.appendChild(newElement);
+        
+        var button = document.createElement('button');
+        button.setAttribute('class', 'reboot btn btn-primary btn-sm mt-1');
+        button.setAttribute('type', 'button');
+        button.setAttribute('data-toggle', 'collapse');
+        button.setAttribute('data-target', '#collapse-taxonomy');
+        var content = document.createTextNode('Contract / Expand');
+        
+        button.appendChild(content);
+        containerElement.appendChild(button);
       } else {
-          containerElement.textContent = element.textContent; 
-        }
-        return FiltersNumber.numberFormatting(element, containerElement.innerHTML);
-      
+        containerElement.textContent = elementToFormat.textContent;
+      }
     }
+    
+    // if ( !contentForSideBarOrPopOver && showCollapseIfApplicable ) {
+    // // we show accordion
+    // var newElement = document.createElement('div');
+    // newElement.setAttribute('class', 'reboot collapse d-block
+    // collapse-modal-partial');
+    // newElement.setAttribute('id', 'collapse-taxonomy');
+    //      
+    // newElement.innerHTML = elementToFormat.innerHTML;
+    // containerElement.appendChild(newElement);
+    //      
+    // var button = document.createElement('button');
+    // button.setAttribute('class', 'reboot btn btn-primary btn-sm mt-1');
+    // button.setAttribute('type', 'button');
+    // button.setAttribute('data-toggle', 'collapse');
+    // button.setAttribute('data-target', '#collapse-taxonomy');
+    // var content = document.createTextNode('Contract / Expand');
+    //      
+    // button.appendChild(content);
+    // containerElement.appendChild(button);
+    //      
+    // } else if ( contentForSideBarOrPopOver && showCollapseIfApplicable ) {
+    // containerElement.textContent = 'Click to see Fact';
+    // } else {
+    //      
+    // containerElement.textContent = elementToFormat.textContent;
+    // }
+    return FiltersNumber.numberFormatting(element, he.unescape(containerElement.innerHTML));
     
   },
   
   getFormattedValueForContinuedAt : function( element ) {
-    var dataToReturn = '<div class="collapse d-block collapse-modal-partial" id="collapse-modal">';
+    
+    var containerElement = document.createElement('div');
+    var newElement = document.createElement('div');
+    newElement.setAttribute('class', 'reboot collapse d-block collapse-modal-partial');
+    newElement.setAttribute('id', 'collapse-modal');
     
     element.forEach(function( current ) {
       var duplicateNode = current.cloneNode(true);
       
       FiltersValue.recursivelyFixHTMLTemp(duplicateNode);
-      
-      dataToReturn += duplicateNode.outerHTML;
+      newElement.appendChild(duplicateNode);
       
     });
-    dataToReturn += '</div>';
-    dataToReturn += '<button class="btn btn-primary btn-sm mt-1" type="button" data-toggle="collapse" data-target="#collapse-modal">Contract / Expand</button>';
-    return dataToReturn;
+    
+    var button = document.createElement('button');
+    button.setAttribute('class', 'reboot btn btn-primary btn-sm mt-1');
+    button.setAttribute('type', 'button');
+    button.setAttribute('data-toggle', 'collapse');
+    button.setAttribute('data-target', '#collapse-modal');
+    
+    var content = document.createTextNode('Contract / Expand');
+    button.appendChild(content);
+    
+    containerElement.appendChild(newElement);
+    containerElement.appendChild(button);
+    return [ containerElement ];
+  },
+  
+  getFormattedValueForTextBlock : function( element ) {
+    if ( element.hasAttribute('format') ) {
+      
+      return FiltersValue.getCorrectFormatBasedOnNamespace(element);
+    }
+    
+    var containerElement = document.createElement('div');
+    var newElement = document.createElement('div');
+    newElement.setAttribute('class', 'reboot collapse d-block collapse-modal-partial');
+    newElement.setAttribute('id', 'collapse-modal');
+    var elementChildren = [ ];
+    if ( element.childNodes.length ) {
+      
+      elementChildren = Array.prototype.slice.call(element.childNodes);
+      
+    } else {
+      var simpleSpan = document.createElement('div');
+      var simpleSpanContent = document.createTextNode(element.innerText);
+      simpleSpan.appendChild(simpleSpanContent);
+      elementChildren.push(simpleSpan);
+    }
+    
+    elementChildren.forEach(function( current ) {
+      
+      var duplicateNode = current.cloneNode(true);
+      newElement.appendChild(duplicateNode);
+    });
+    var button = document.createElement('button');
+    button.setAttribute('class', 'reboot btn btn-primary btn-sm mt-1');
+    button.setAttribute('type', 'button');
+    button.setAttribute('data-toggle', 'collapse');
+    button.setAttribute('data-target', '#collapse-modal');
+    
+    var content = document.createTextNode('Contract / Expand');
+    button.appendChild(content);
+    
+    containerElement.appendChild(newElement);
+    containerElement.appendChild(button);
+    return containerElement;
   },
   
   recursivelyFixHTMLTemp : function( element ) {

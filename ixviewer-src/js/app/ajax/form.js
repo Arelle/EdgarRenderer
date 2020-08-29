@@ -8,13 +8,14 @@
 var AjaxForm = {
   
   init : function( callback ) {
-    
+    var startPerformance = performance.now();
     if ( HelpersUrl.getAllParams ) {
       var input = HelpersUrl.getAllParams['doc'];
       document.getElementById('dynamic-xbrl-form').innerHTML = '';
       document.getElementById('xbrl-form-loading').classList.remove('d-none');
       var xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function( event ) {
+        event.preventDefault();
         if ( xhr['readyState'] === 4 ) {
           if ( xhr['status'] === 200 ) {
             
@@ -33,7 +34,8 @@ var AjaxForm = {
               ErrorsMinor.unknownError();
             }
             
-            document.getElementById('dynamic-xbrl-form').innerHTML = event['currentTarget']['response'];
+            document.getElementById('dynamic-xbrl-form').innerHTML = ConstantsFunctions
+                .updateXHTMLDocumentStyleProperties(event['currentTarget']['response']);
             
             ConstantsFunctions.setHTMLPrefix();
             
@@ -45,10 +47,15 @@ var AjaxForm = {
             }
             
             document.getElementById('xbrl-form-loading').classList.add('d-none');
+            var endPerformance = performance.now();
             
+            console.debug('AjaxForm.init() completed in: ' + (endPerformance - startPerformance).toFixed(2) + '(ms).');
             callback(true);
           } else {
             document.getElementById('xbrl-form-loading').className += ' d-none';
+            var endPerformance = performance.now();
+            
+            console.debug('AjaxForm.init() completed in: ' + (endPerformance - startPerformance).toFixed(2) + '(ms).');
             callback(false);
           }
           
@@ -59,6 +66,9 @@ var AjaxForm = {
       xhr.send();
     } else {
       document.getElementById('xbrl-form-loading').className += ' d-none';
+      var endPerformance = performance.now();
+      
+      console.debug('AjaxForm.init() completed in: ' + (endPerformance - startPerformance).toFixed(2) + '(ms).');
       callback(false);
     }
     

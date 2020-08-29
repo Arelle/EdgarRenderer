@@ -8,35 +8,58 @@
 var ErrorsMajor = {
   
   inactive : function( ) {
-    var messageToUser = 'Inline XBRL is not usable in this state.';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-danger show mb-0">'
-        + messageToUser + '</div>';
+    ErrorsMinor.browserSuggestion();
+    var content = document.createTextNode('Inline XBRL is not usable in this state.');
+    
+    var element = document.createElement('div');
+    element.setAttribute('class', 'reboot alert-height alert alert-danger show mb-0');
+    element.appendChild(content);
+    document.getElementById('error-container').appendChild(element);
+    
     Errors.updateMainContainerHeight();
   },
   
-   formLinksNotFound: function () {
-    var messageToUser = 'Inline XBRL form could not be found.';
-    document.getElementById('error-container').innerHTML += '<div class="reboot alert-height alert alert-danger show mb-0">' +
-      messageToUser + ' (<a class="reboot" href="' + HelpersUrl.getFormAbsoluteURL + '">' + HelpersUrl.getFormAbsoluteURL + HelpersUrl.getHTMLFileName + '</a>)</div>';
-     window.location.assign(HelpersUrl.getFormAbsoluteURL + HelpersUrl.getHTMLFileName);
-Errors.updateMainContainerHeight();
+  formLinksNotFound : function( ) {
+    var content = document.createTextNode(HelpersUrl.getFormAbsoluteURL + HelpersUrl.getHTMLFileName);
+    
+    var element = document.createElement('div');
+    element.setAttribute('class', 'reboot alert-height alert alert-danger show mb-0');
+    
+    var link = document.createElement('a');
+    link.setAttribute('class', 'reboot');
+    link.setAttribute('href', HelpersUrl.getFormAbsoluteURL);
+    
+    link.appendChild(content);
+    element.appendChild(link);
+    document.getElementById('error-container').appendChild(element);
+    
+    window.location.assign(HelpersUrl.getFormAbsoluteURL + HelpersUrl.getHTMLFileName);
+    Errors.updateMainContainerHeight();
   },
   
-  
   urlParams : function( ) {
+    var content = document
+        .createTextNode('Inline XBRL requires a URL param (doc | file) that correlates to a Financial Report.');
     
-    var messageToUser = 'Inline XBRL requires a URL param (doc | file) that correlates to a Financial Report.';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-danger show mb-0">'
-        + messageToUser + '</div>';
+    var element = document.createElement('div');
+    element.setAttribute('class', 'reboot alert-height alert alert-danger show mb-0');
+    element.appendChild(content);
+    document.getElementById('error-container').appendChild(element);
+    
     Errors.updateMainContainerHeight();
   },
   
   cors : function( doc ) {
     var host = window.location.protocol + '//' + window.location.host;
-    var messageToUser = 'The protocol, host name and port number of the "doc" field (' + doc.host
-        + '), if provided, must be identical to that of the Inline XBRL viewer(' + host + ')';
-    document.getElementById('error-container').innerHTML += '<div class="alert-height alert alert-danger show mb-0">'
-        + messageToUser + '</div>';
+    
+    var content = document.createTextNode('The protocol, host name and port number of the "doc" field (' + doc.host
+        + '), if provided, must be identical to that of the Inline XBRL viewer(' + host + ')');
+    
+    var element = document.createElement('div');
+    element.setAttribute('class', 'reboot alert-height alert alert-danger show mb-0');
+    element.appendChild(content);
+    document.getElementById('error-container').appendChild(element);
+    
     Errors.updateMainContainerHeight();
   }
 };

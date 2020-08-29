@@ -7,6 +7,8 @@
 
 var ModalsFormInformation = {
   
+  currentSlide : 0,
+  
   carouselInformation : [ {
     'dialog-title' : 'Company and Document'
   }, {
@@ -44,6 +46,8 @@ var ModalsFormInformation = {
         .on(
             'slide.bs.carousel',
             function( event ) {
+              
+              ModalsFormInformation.currentSlide = event['to'] + 1;
               var previousActiveIndicator = event['from'];
               var newActiveIndicator = event['to'];
               document.getElementById('form-information-carousel-indicators').querySelector(
@@ -54,32 +58,43 @@ var ModalsFormInformation = {
             });
   },
   
+  focusOnContent : function( ) {
+    
+    document.getElementById('form-information-modal-carousel-page-' + ModalsFormInformation.currentSlide).focus();
+  },
+  
   keyboardEvents : function( event ) {
     
     var key = event.keyCode ? event.keyCode : event.which;
     
     if ( key === 49 || key === 97 ) {
       $('#form-information-modal-carousel').carousel(0);
+      ModalsFormInformation.focusOnContent();
       return false;
     }
     if ( key === 50 || key === 98 ) {
       $('#form-information-modal-carousel').carousel(1);
+      ModalsFormInformation.focusOnContent();
       return false;
     }
     if ( key === 51 || key === 99 ) {
       $('#form-information-modal-carousel').carousel(2);
+      ModalsFormInformation.focusOnContent();
       return false;
     }
     if ( key === 52 || key === 100 ) {
       $('#form-information-modal-carousel').carousel(3);
+      ModalsFormInformation.focusOnContent();
       return false;
     }
     if ( key === 37 ) {
       $('#form-information-modal-carousel').carousel('prev');
+      ModalsFormInformation.focusOnContent();
       return false;
     }
     if ( key === 39 ) {
       $('#form-information-modal-carousel').carousel('next');
+      ModalsFormInformation.focusOnContent();
       return false;
     }
     
@@ -164,14 +179,21 @@ var ModalsFormInformation = {
               : 'Not Available.'
         } ];
     
-    var tableHtml = '';
+    var table = document.createElement('table');
     possibleLabels.forEach(function( current, index, array ) {
       if ( current['value'] ) {
-        tableHtml += '<tr><th>' + current['label'] + '</th><td data-name="' + current['label'] + '">'
-            + current['value'] + '</td></tr>';
+        var tr = document.createElement('tr');
+        var th = document.createElement('th');
+        var td = document.createElement('td');
+        th.textContent = current['label'];
+        td.setAttribute('data-name', current['label']);
+        td.textContent = current['value'];
+        tr.appendChild(th);
+        tr.appendChild(td);
+        table.appendChild(tr);
       }
     });
-    return callback(tableHtml);
+    return callback(table.innerHTML);
     
   },
   
@@ -276,37 +298,56 @@ var ModalsFormInformation = {
 
       ];
       
-      var tableHtml = '';
+      var table = document.createElement('table');
       possibleLabels.forEach(function( current, index, array ) {
+        var tr = document.createElement('tr');
+        tr.setAttribute('colspan', 8);
+        // colspan on a tr element isn't a thing, but reproducing anyway...
+        table.appendChild(tr);
         
         if ( current instanceof Array ) {
-          tableHtml += '<tr colspan="8">';
+          
           current.forEach(function( nestedCurrent, nestedIndex ) {
+            var th = document.createElement('th');
+            th.setAttribute('colspan', 2);
+            th.textContent = nestedCurrent['label'];
+            tr.appendChild(th);
+            
             if ( nestedCurrent['value'] ) {
-              tableHtml += '<th colspan="2">' + nestedCurrent['label'] + '</th><td data-name="'
-                  + nestedCurrent['label'] + '" colspan="2">' + nestedCurrent['value'] + '</td>';
+              var td = document.createElement('td');
+              td.setAttribute('data-name', nestedCurrent['label']);
+              td.setAttribute('colspan', 2);
+              td.textContent = nestedCurrent['value'];
+              tr.appendChild(td);
+              
             } else if ( nestedCurrent['values'] ) {
-              tableHtml += '<th colspan="2">' + nestedCurrent['label'] + '</th>';
-              
               nestedCurrent['values'].forEach(function( finalCurrent, finalIndex ) {
-                tableHtml += '<td data-name="' + nestedCurrent['label'] + '-' + finalIndex + '"colspan="1">'
-                    + finalCurrent + '</td>';
+                var td = document.createElement('td');
+                td.setAttribute('data-name', nestedCurrent['label'] + '-' + finalIndex);
+                td.setAttribute('colspan', 1);
+                td.textContent = finalCurrent;
+                tr.appendChild(td);
               });
-            } else {
               
-              tableHtml += '<th colspan="2">' + nestedCurrent['label'] + '</th>';
             }
           });
-          tableHtml += '</tr>';
+          
         } else {
           if ( current['value'] ) {
-            tableHtml += '<tr><th colspan="1">' + current['label'] + '</th><td colspan="1">' + current['value']
-                + '</td></tr>';
+            var th = document.createElement('th');
+            th.setAttribute('colspan', 1);
+            th.textContent = current['label'];
+            tr.appendChild(th);
+            
+            var td = document.createElement('td');
+            td.setAttribute('colspan', 1);
+            td.textContent = current['value'];
+            tr.appendChild(td);
           }
         }
       });
       
-      return callback(tableHtml);
+      return callback(table.innerHTML);
       
     }
     return callback();
@@ -359,26 +400,49 @@ var ModalsFormInformation = {
         
         } ];
     
-    var tableHtml = '';
+    var table = document.createElement('td');
     possibleLabels.forEach(function( current, index, array ) {
       if ( current['values'] ) {
-        tableHtml += '<tr><th>' + current['label'] + '</th>';
+        var tr = document.createElement('tr');
+        tr.className = "reboot";
+        table.appendChild(tr);
+        
+        var th = document.createElement('th');
+        th.className = "reboot";
+        th.textContent = current['label'];
+        tr.appendChild(th);
         
         current['values'].forEach(function( nestedCurrent, nestedIndex ) {
           if ( nestedIndex === 0 ) {
-            tableHtml += '<td data-name="' + current['label'] + '-' + nestedIndex + '">' + nestedCurrent + '</td>';
+            var td = document.createElement('td');
+            td.setAttribute('data-name', current['label'] + '-' + nestedIndex);
+            td.textContent = nestedCurrent;
+            tr.appendChild(td);
+            
           } else {
-            tableHtml += '<tr><td></td><td data-name="' + current['label'] + '-' + nestedIndex + '">' + nestedCurrent
-                + '</td></tr>';
+            
+            tr = document.createElement('tr');
+            tr.className = "reboot";
+            table.appendChild(tr);
+            tr.appendChild(document.createElement('td'));
+            var td = document.createElement('td');
+            td.className = "reboot";
+            td.setAttribute('data-name', current['label'] + '-' + nestedIndex);
+            td.textContent = nestedCurrent;
+            tr.appendChild(td);
           }
           
         });
-        tableHtml += '</tr>';
       } else {
-        tableHtml += '<tr><th>' + current['label'] + '</th></tr>';
+        var tr = document.createElement('tr');
+        tr.className = "reboot";
+        var th = document.createElement('th');
+        th.className = "reboot";
+        th.textContent = current['label'];
+        table.appendChild(tr);
       }
     });
-    return callback(tableHtml);
+    return callback(table.innerHTML);
     
   },
   
@@ -398,17 +462,36 @@ var ModalsFormInformation = {
         };
         possibleLabels.push(temp);
       });
-      var tableHtml = '';
+      
+      var table = document.createElement('table');
       possibleLabels.forEach(function( current, index, array ) {
+        var tr = document.createElement('tr');
+        tr.className = "reboot";
+        table.appendChild(tr);
         if ( current['bold'] ) {
-          tableHtml += '<tr><th>' + current['label'] + '</th><th>' + current['value'] + '</th></tr>';
+          var th1 = document.createElement('th');
+          th1.textContent = current['label'];
+          th1.className = "reboot";
+          tr.appendChild(th1);
+          
+          var th2 = document.createElement('th');
+          th2.textContent = current['value'];
+          th2.className = "reboot";
+          tr.appendChild(th2);
           
         } else if ( current['value'] ) {
-          tableHtml += '<tr><th data-name="Additional Items Label-' + (index - 1) + '">' + current['label']
-              + '</th><td data-name="Additional Items Value-' + (index - 1) + '">' + current['value'] + '</td></tr>';
+          var th = document.createElement('th');
+          th.setAttribute('data-name', 'Additional Items Label-' + (index - 1));
+          th.textContent = current['label'];
+          tr.appendChild(th);
+          
+          var td = document.createElement('td');
+          td.setAttribute('data-name', 'Additional Items Value-' + (index - 1));
+          td.textContent = current['value'];
+          tr.appendChild(td);
         }
       });
-      return callback(tableHtml);
+      return callback(table.innerHTML);
     }
     return callback();
   }

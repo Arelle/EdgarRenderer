@@ -10,100 +10,47 @@ var UserFiltersGeneral = {
   moreFiltersClickEvent : function( event, element ) {
     
     if ( !UserFiltersMoreFiltersPeriodSetUp.filtersSet ) {
-      UserFiltersMoreFiltersPeriodSetUp.setPeriods(function( ) {
-        UserFiltersMoreFiltersPeriodSetUp.filtersSet = true;
-        
-        if ( !UserFiltersMoreFiltersMeasureSetUp.filtersSet ) {
-          UserFiltersMoreFiltersMeasureSetUp.setMeasures(function( ) {
-            UserFiltersMoreFiltersMeasureSetUp.filtersSet = true;
-            
-            if ( !UserFiltersMoreFiltersAxesSetUp.filtersSet ) {
-              UserFiltersMoreFiltersAxesSetUp.setAxes(function( ) {
-                UserFiltersMoreFiltersAxesSetUp.filtersSet = true;
-                
-                if ( !UserFiltersMoreFiltersMembersSetUp.filtersSet ) {
-                  UserFiltersMoreFiltersMembersSetUp.setMembers(function( ) {
-                    UserFiltersMoreFiltersMembersSetUp.filtersSet = true;
-                    
-                    if ( !UserFiltersMoreFiltersScaleSetUp.filtersSet ) {
-                      UserFiltersMoreFiltersScaleSetUp.setScales(function( ) {
-                        UserFiltersMoreFiltersScaleSetUp.filtersSet = true;
-                        
-                        // the Balances are not dynamic, they are already in the
-                        // html
-                      });
-                    }
-                  });
-                }
-              });
-            }
-          });
-        }
+      document.getElementById('loading-more-filters').classList.remove('fa-filter');
+      document.getElementById('loading-more-filters').classList.add('fa-spinner');
+      document.getElementById('loading-more-filters').classList.add('fa-spin');
+      document.getElementById('loading-more-filters').title = "Loading, this may take a few moments.";
+      setTimeout(function( ) {
+        UserFiltersMoreFiltersPeriodSetUp.setPeriods(function( ) {
+          UserFiltersMoreFiltersPeriodSetUp.filtersSet = true;
+          
+          if ( !UserFiltersMoreFiltersMeasureSetUp.filtersSet ) {
+            UserFiltersMoreFiltersMeasureSetUp.setMeasures(function( ) {
+              UserFiltersMoreFiltersMeasureSetUp.filtersSet = true;
+              
+              if ( !UserFiltersMoreFiltersAxesSetUp.filtersSet ) {
+                UserFiltersMoreFiltersAxesSetUp.setAxes(function( ) {
+                  UserFiltersMoreFiltersAxesSetUp.filtersSet = true;
+                  
+                  if ( !UserFiltersMoreFiltersMembersSetUp.filtersSet ) {
+                    UserFiltersMoreFiltersMembersSetUp.setMembers(function( ) {
+                      UserFiltersMoreFiltersMembersSetUp.filtersSet = true;
+                      
+                      if ( !UserFiltersMoreFiltersScaleSetUp.filtersSet ) {
+                        UserFiltersMoreFiltersScaleSetUp.setScales(function( ) {
+                          UserFiltersMoreFiltersScaleSetUp.filtersSet = true;
+                          
+                          document.getElementById('loading-more-filters').classList.remove('fa-spin');
+                          document.getElementById('loading-more-filters').classList.remove('fa-spinner');
+                          document.getElementById('loading-more-filters').classList.add('fa-filter');
+                          document.getElementById('loading-more-filters').removeAttribute('title');
+                          // the Balances are not dynamic, they are already in
+                          // the html
+                        });
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
       });
     }
-  },
-  
-  setAllFilteredDataTemp : function( dataFilter, tagsFilter ) {
-    
-    UserFiltersGeneral.resetAllFilteredData();
-    if ( dataFilter ) {
-      UserFiltersGeneral.setCurrentDataFilter(dataFilter);
-      // 0 = All
-      // 1 = Amounts Only
-      // 2 = Text Only
-      // 3 = Calculations Only
-      // 4 = Negatives Only
-      // 5 = Additional Items Only
-      switch ( dataFilter ) {
-        case 'Amounts Only' : {
-          UserFiltersDataRadios.updateFacts('nonfraction');
-          break;
-        }
-        case 'Text Only' : {
-          UserFiltersDataRadios.updateFacts('nonnumeric');
-          break;
-        }
-        case 'Calculations Only' : {
-          UserFiltersDataRadios.updateCalculationsOnly();
-          break;
-        }
-        case 'Negatives Only' : {
-          UserFiltersDataRadios.updateFactsNegativesOnly();
-          break;
-        }
-        case 'Additional Items Only' : {
-          UserFiltersDataRadios.updateAdditionalItemsOnly();
-          break;
-        }
-        default : {
-          ErrorsMinor.unknownError();
-        }
-      }
-    }
-    if ( !dataFilter ) {
-      UserFiltersDataRadios.all();
-    }
-    if ( tagsFilter ) {
-      switch ( tagsFilter ) {
-        case 'Standard Only' : {
-          UserFiltersTagsRadios.updateFactsStandard();
-          
-          break;
-        }
-        case 'Custom Only' : {
-          UserFiltersTagsRadios.updateFactsCustom();
-          break;
-        }
-        default : {
-          ErrorsMinor.unknownError();
-        }
-      }
-    }
-    if ( !tagsFilter ) {
-      UserFiltersTagsRadios.all();
-    }
-    
-    UserFiltersGeneral.setEnabledTaxonomies();
   },
   
   setEnabledTaxonomies : function( ) {
@@ -248,5 +195,16 @@ var UserFiltersGeneral = {
   resetAllFilters : function( ) {
     UserFiltersGeneral.resetDataFilter();
     UserFiltersGeneral.resetTagsFilter();
+  },
+  
+  emptyMoreFilters : function( ) {
+    
+    UserFiltersMoreFiltersPeriodSetUp.filtersSet = false;
+    UserFiltersMoreFiltersMeasureSetUp.filtersSet = false;
+    UserFiltersMoreFiltersAxesSetUp.filtersSet = false;
+    UserFiltersMoreFiltersMembersSetUp.filtersSet = false;
+    UserFiltersMoreFiltersScaleSetUp.filtersSet = false;
+    
   }
+
 };

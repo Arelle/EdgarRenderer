@@ -17,6 +17,9 @@ var SectionsSearch = {
     
     var valueToSearchFor = document.getElementById('sections-search').value;
     
+    // here we sanitize the users input to account for Regex patterns
+    valueToSearchFor = valueToSearchFor.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
+    
     var optionsArray = Array.prototype.slice.call(options);
     optionsArray = optionsArray.map(function( current ) {
       if ( current['checked'] ) {

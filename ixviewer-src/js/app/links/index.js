@@ -51,20 +51,35 @@ var Links = {
   
   populate : function( ) {
     
-    var innerHtml = '';
-    Constants.getMetaSourceDocuments
-        .forEach(function( current ) {
-          if ( current !== HelpersUrl.getHTMLFileName ) {
-            
-            innerHtml += '<a onclick="Links.clickEventInternal(event, this)" href="' + current + '" data-link="'
-                + current + '" class="dropdown-item">' + current + '</a>';
-          } else {
-            
-            innerHtml += '<a class="dropdown-item" href="#" aria-disabled="true"><i title="Current Form" class="fa fa-bookmark"></i> '
-                + current;
-          }
-        });
-    document.getElementById('links-dropdown-content').innerHTML = innerHtml;
+    var dropdownContent = document.getElementById('links-dropdown-content');
+    // first we empty the dropdown element
+    while (dropdownContent.firstChild) {
+      dropdownContent.firstChild.remove();
+    }
+    
+    Constants.getMetaSourceDocuments.forEach(function( current ) {
+      var link = document.createElement('a');
+      link.setAttribute('class', 'reboot dropdown-item');
+      if ( current !== HelpersUrl.getHTMLFileName ) {
+        
+        link.setAttribute('onclick', 'Links.clickEventInternal(event, this)');
+        link.setAttribute('href', current);
+        link.setAttribute('data-link', current);
+        
+      } else {
+        link.setAttribute('href', '#');
+        link.setAttribute('aria-disabled', 'true');
+        
+        var icon = document.createElement('i');
+        icon.setAttribute('title', 'Current Form');
+        icon.setAttribute('class', 'reboot fa fa-bookmark mr-1');
+        link.prepend(icon);
+      }
+      link.appendChild(document.createTextNode(current));
+      dropdownContent.appendChild(link);
+      
+    });
+    
   }
 
 };

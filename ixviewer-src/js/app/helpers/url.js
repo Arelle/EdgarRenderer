@@ -82,7 +82,8 @@ var HelpersUrl = {
   },
   
   returnURLParamsAsObject : function( url ) {
-      var urlSplit = url.split(/doc=|file=|metalinks=|xbrl=true|xbrl=false/).filter(function( e ) {
+    
+    var urlSplit = url.split(/doc=|file=|metalinks=|xbrl=true|xbrl=false/).filter(function( e ) {
       return e;
     });
     
@@ -92,20 +93,26 @@ var HelpersUrl = {
           if ( lastChar === '&' ) {
             current = current.slice(0, -1);
           }
-          if (( current.slice(-4) === '.htm') || (current.slice(-5) === '.html' ) || (current.slice(-6) === '.xhtml' )){
+          if ( current.endsWith('.htm') || current.endsWith('.html') || current.endsWith('.xhtml') ) {
+            
             current = decodeURIComponent(current);
             var docFile = current.split('filename=')[1] ? current.split('filename=')[1] : current.substring(current
                 .lastIndexOf('/') + 1);
+            var redline = current.indexOf('redline=true') >= 0;
             return {
               'doc' : current,
-              'doc-file' : docFile
+              'doc-file' : docFile,
+              'redline' : redline
             };
           } else if ( current.slice(-5) === '.json' ) {
+            
             current = decodeURIComponent(current);
             current = current.replace('interpretedFormat=true', 'interpretedFormat=false');
+            var redline = current.indexOf('redline=true') >= 0;
             return {
               'metalinks' : current,
-              'metalinks-file' : 'MetaLinks.json'
+              'metalinks-file' : 'MetaLinks.json',
+              'redline' : redline
             };
           }
         }).filter(function( element ) {
@@ -161,7 +168,6 @@ var HelpersUrl = {
     HelpersUrl.fullURL = url.href;
     // we are going to set all of the URL Params as a simple object
     if ( url.search ) {
-      
       HelpersUrl.getAllParams = HelpersUrl.returnURLParamsAsObject(url.search.substring(1));
       HelpersUrl.getAllParams.hostName = window.location.hostname;
       
@@ -176,11 +182,13 @@ var HelpersUrl = {
       }
       
       if ( url['hash'] ) {
+        if ( url['hash'].endsWith('#') ) {
+          
+          url['hash'] = url['hash'].substring(0, url['hash'].length - 1);
+        }
         HelpersUrl.getAnchorTag = url['hash'];
       }
-      
       HelpersUrl.getExternalFile = HelpersUrl.getAllParams['doc'];
-      
       if ( !HelpersUrl.getHTMLFileName && HelpersUrl.getExternalFile ) {
         var splitFormURL = HelpersUrl.getExternalFile.split('/');
         HelpersUrl.getHTMLFileName = splitFormURL[splitFormURL.length - 1];
@@ -194,6 +202,7 @@ var HelpersUrl = {
       }
     }
     if ( !HelpersUrl.getExternalFile ) {
+      
       return false;
     }
     

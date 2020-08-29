@@ -18,6 +18,7 @@ var FiltersContextref = {
   },
   
   getAxis : function( contextref, plainText ) {
+    
     plainText = plainText || false;
     
     if ( contextref && typeof contextref === 'string' ) {
@@ -37,9 +38,19 @@ var FiltersContextref = {
       });
       
       if ( plainText ) {
+        
         return axis.join(' ');
       }
-      return axis.join('<br>');
+      
+      var returnAxis = axis.reduce(function( acc, current, index, array ) {
+        acc.push(current);
+        if ( index < array.length - 1 ) {
+          acc.push(document.createElement('br'));
+        }
+        return acc;
+      }, [ ]);
+      
+      return returnAxis.length ? returnAxis : null;
     }
     return null;
   },
@@ -65,7 +76,15 @@ var FiltersContextref = {
       if ( plainText ) {
         return member.join(' ');
       }
-      return member.join('<br>');
+      var returnMember = member.reduce(function( acc, current, index, array ) {
+        acc.push(current);
+        if ( index < array.length - 1 ) {
+          acc.push(document.createElement('br'));
+        }
+        return acc;
+      }, [ ]);
+      
+      return returnMember.length ? returnMember : null;
     }
     return null;
   },
@@ -124,7 +143,8 @@ var FiltersContextref = {
         
       } else if ( instantDate && instantDate.isValid() ) {
         return 'As of ' + instantDate.format('MM/DD/YYYY');
-        return 'As of ' + instantDate[1] + '/' + instantDate[2] + '/' + instantDate[0];
+        // return 'As of ' + instantDate[1] + '/' + instantDate[2] + '/' +
+        // instantDate[0];
       }
       return 'No period information.';
       

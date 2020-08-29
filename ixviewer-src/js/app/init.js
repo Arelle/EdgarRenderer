@@ -7,7 +7,8 @@
 
 var AppInit = {
   init : function( internalUrl, callback ) {
-    
+    // we figure out what browser the user is using, and store it
+    ConstantsFunctions.setBrowserType();
     AppInit.emptySidebars();
     
     internalUrl = internalUrl || false;
@@ -55,8 +56,6 @@ var AppInit = {
   },
   
   initialSetup : function( ) {
-    // we figure out what browser the user is using, and store it
-    ConstantsFunctions.setBrowserType();
     
     AjaxMeta.init(function( result ) {
       Taxonomies.addEventAttributes();
@@ -91,11 +90,13 @@ var AppInit = {
   
   additionalSetup : function( ) {
     // we go here if a user changes forms (metalinks is already in memory)
+    
     Taxonomies.addEventAttributes();
     Taxonomies.setFilterAttributes();
     Links.init();
     Sections.formChange();
     TaxonomiesMenu.formChange();
+    UserFiltersGeneral.emptyMoreFilters();
   },
   
   emptySidebars : function( ) {
@@ -129,13 +130,17 @@ var AppInit = {
 
 (function( ) {
   // the user has just loaded up the application
+  var startPerformance = performance.now();
   AppInit.init('', function( formLoaded ) {
     if ( formLoaded ) {
       
       AppInit.initialSetup();
     } else {
-      
       ErrorsMajor.inactive();
     }
+    var endPerformance = performance.now();
+    
+    console.debug('AppInit.init() completed in: ' + (endPerformance - startPerformance).toFixed(2) + '(ms).');
   });
+  
 })();

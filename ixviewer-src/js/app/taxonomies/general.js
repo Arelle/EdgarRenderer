@@ -38,8 +38,8 @@ var TaxonomiesGeneral = {
     popoverHtml += '<div class="popover" role="tooltip">';
     popoverHtml += '<div class="arrow"></div>';
     popoverHtml += '<h3 class="popover-header text-center text-popover-clamp-1 py-0"></h3>';
-    popoverHtml += '<div class="text-center text-popover-clamp-2 py-1">' + FiltersValue.getFormattedValue(element)
-        + '</div>';
+    popoverHtml += '<div class="text-center text-popover-clamp-2 py-1">'
+        + FiltersValue.getFormattedValue(element, true) + '</div>';
     popoverHtml += '<div class="text-center p-2">' + FiltersContextref.getPeriod(element.getAttribute('contextref'))
         + '</div>';
     popoverHtml += '<p class="text-center p-2">Click for additional information.</p>';
@@ -180,49 +180,73 @@ var TaxonomiesGeneral = {
   getTaxonomyListTemplate : function( elementID, modalAction ) {
     
     var template = '';
+    var elementToReturn = document.createDocumentFragment();
+    
     var element = TaxonomiesGeneral.getTaxonomyById(elementID);
     element = (element instanceof Array) ? element[0] : element;
     
-    if ( element.getAttribute('id') ) {
-      template += '<a selected-taxonomy="'
-          + element.getAttribute('selected-taxonomy')
-          + '" contextref="'
-          + element.getAttribute('contextref')
-          + '" name="'
-          + element.getAttribute('name')
-          + '" data-id="'
-          + element.getAttribute('id')
-          + '" onclick="TaxonomiesGeneral.goTo(event, this, '
-          + modalAction
-          + ');"'
-          + element.getAttribute('id')
-          + '" onkeyup="TaxonomiesGeneral.goTo(event, this, '
-          + modalAction
-          + ');"'
-          + 'class="click list-group-item list-group-item-action flex-column align-items-start px-2 py-2 w-100" tabindex="13">';
+    // if ( element.getAttribute('id') ) {
+    var aElement = document.createElement('a');
+    aElement
+        .setAttribute('class',
+            'reboot text-body border-bottom click text-decoration-none click list-group-item list-group-item-action px-0 py-0');
+    aElement.setAttribute('selected-taxonomy', element.getAttribute('selected-taxonomy'));
+    aElement.setAttribute('contextref', element.getAttribute('contextref'));
+    aElement.setAttribute('name', element.getAttribute('name'));
+    if ( element.hasAttribute('id') ) {
+      aElement.setAttribute('data-id', element.getAttribute('id'));
+    }
+    aElement.setAttribute('onclick', 'TaxonomiesGeneral.goTo(event, this, ' + modalAction + ')');
+    aElement.setAttribute('onkeyup', 'TaxonomiesGeneral.goTo(event, this, ' + modalAction + ')');
+    aElement.setAttribute('tabindex', 13);
+    
+    var divElement = document.createElement('div');
+    divElement.setAttribute('class', 'd-flex w-100 justify-content-between');
+    
+    var pElement = document.createElement('p');
+    pElement.setAttribute('class', 'mb-1 font-weight-bold');
+    
+    var pElementContent = document.createTextNode((FiltersName.getLabel(element.getAttribute('name')) || ''));
+    pElement.appendChild(pElementContent);
+    
+    divElement.appendChild(pElement);
+    divElement.appendChild(TaxonomiesGeneral.getTaxonomyBadge(element) || document.createTextNode(''));
+    
+    var pElement = document.createElement('p');
+    pElement.setAttribute('class', 'mb-1');
+    
+    var pElementContent = document.createTextNode(FiltersContextref.getPeriod(element.getAttribute('contextref')));
+    pElement.appendChild(pElementContent);
+    
+    var smallElement = document.createElement('small');
+    smallElement.setAttribute('class', 'mb-1');
+    
+    var smallElementContent;
+    
+    if ( element instanceof Array ) {
       
+      smallElementContent = document.createTextNode('Click to see Fact.');
+    } else if ( element.hasAttribute('text-block-taxonomy') || ConstantsFunctions.setModalFactAsTextBlock(element) ) {
+      
+      smallElementContent = document.createTextNode('Click to see Fact.');
     } else {
       
-      template += '<a selected-taxonomy="' + element.getAttribute('selected-taxonomy') + '" contextref="'
-          + element.getAttribute('contextref') + '" name="' + element.getAttribute('name')
-          + '" onclick="TaxonomiesGeneral.goTo(event, this, ' + modalAction
-          + ');" class="click list-group-item list-group-item-action flex-column align-items-start px-2 py-2">';
+      smallElementContent = document.createTextNode(FiltersValue.getFormattedValue(element, true));
     }
-    template += '<div class="d-flex w-100 justify-content-between">';
-    template += '<p class="mb-1 font-weight-bold">' + (FiltersName.getLabel(element.getAttribute('name')) || '')
-        + '</p>';
-    template += TaxonomiesGeneral.getTaxonomyBadge(element) || '';
-    template += '</div>';
-    template += '<p class="mb-1">' + FiltersContextref.getPeriod(element.getAttribute('contextref')) + '</p>';
-    // template += '<hr>';
-    template += '<small class="mb-1">' + FiltersValue.getFormattedValue(element, false) + '</small>';
-    template += '</a>';
     
-    return template;
+    smallElement.appendChild(smallElementContent);
+    
+    aElement.appendChild(divElement);
+    aElement.appendChild(pElement);
+    aElement.appendChild(smallElement);
+    elementToReturn.appendChild(aElement);
+    
+    return elementToReturn;
   },
   
   getTaxonomyBadge : function( element ) {
     
+    var elementToReturn = document.createDocumentFragment();
     var label = '';
     var title = '';
     
@@ -258,7 +282,17 @@ var TaxonomiesGeneral = {
     }
     
     if ( label ) {
-      return '<span><span title="' + title + '" class="m-1 badge badge-dark">' + label + '</span></span>';
+      var spanElement = document.createElement('span');
+      var spanNestedElement = document.createElement('span');
+      spanNestedElement.setAttribute('title', title);
+      spanNestedElement.setAttribute('class', 'm-1 badge badge-dark');
+      
+      var spanNestedElementContent = document.createTextNode(label);
+      
+      spanNestedElement.appendChild(spanNestedElementContent);
+      spanElement.appendChild(spanNestedElement);
+      elementToReturn.appendChild(spanElement);
+      return elementToReturn;
     }
     return;
   },

@@ -28,6 +28,10 @@ var Search = {
     // 11 => Match Case
     
     var valueToSearchFor = document.getElementById('global-search').value;
+    
+    // here we sanitize the users input to account for Regex patterns
+    valueToSearchFor = valueToSearchFor.replace(/[\\{}()[\]^$+*?.]/g, '\\$&');
+    
     var options = document.querySelectorAll('[name="search-options"]');
     var optionsArray = Array.prototype.slice.call(options);
     optionsArray = optionsArray.map(function( current ) {
@@ -54,7 +58,6 @@ var Search = {
       'regex' : regex,
       'options' : optionsArray
     };
-    
     UserFiltersState.setUserSearch(objectForState);
     UserFiltersState.filterUpdates();
     
@@ -66,7 +69,7 @@ var Search = {
     // OR template = (VARIABLE1)|(VARIABLE2)
     
     // TODO this will require a second/third look
-    var inputArray = input.replace(/ and /g, ' & ').replace(/ or /g, ' | ').split(' ');
+    var inputArray = input.replace(/ and /gi, ' & ').replace(/ or /gi, ' | ').split(' ');
     
     if ( inputArray.length > 1 ) {
       var regex = '^';

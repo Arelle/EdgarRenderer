@@ -7,6 +7,8 @@
 
 var ModalsNested = {
   
+  currentSlide : 0,
+  
   carouselInformation : [ {
     'dialog-title' : 'Attributes'
   }, {
@@ -41,17 +43,27 @@ var ModalsNested = {
       
       if ( (element.hasAttribute('continued-taxonomy') && element.getAttribute('continued-taxonomy') === 'true')
           || (element.tagName.split(':')[1].toLowerCase() === 'continuation') ) {
-        
         ModalsNested.recursielyFindAllNestedTaxonomies(TaxonomiesContinuedAt.findContinuedMainTaxonomy(element));
+        
+      } else if ( element.hasAttribute('text-block-taxonomy') && element.getAttribute('text-block-taxonomy') === 'true' ) {
+        ModalsNested.getAllElementIDs.push({
+          id : element.getAttribute('id'),
+          'text-block' : true
+        });
+      } else {
+        ModalsNested.getAllElementIDs.push({
+          id : element.getAttribute('id'),
+          'text-block' : false
+        });
       }
     }
     
     var nestedTaxonomies = element.querySelectorAll('[contextref]');
     var nestedTaxonomiesArray = Array.prototype.slice.call(nestedTaxonomies);
+    
     if ( nestedTaxonomiesArray.length ) {
-      
-      nestedTaxonomiesArray.forEach(function( current, index, array ) {
-        ModalsNested.recursielyFindAllNestedTaxonomies(current);
+      nestedTaxonomiesArray.forEach(function( current ) {
+        ModalsNested.recursielyFindAllNestedTaxonomies(current, true);
       });
       
     } else {
@@ -59,10 +71,16 @@ var ModalsNested = {
       if ( element.hasAttribute('continued-main-taxonomy')
           && element.getAttribute('continued-main-taxonomy') === 'true' ) {
         // we are at the beginning of the continued fact
-        
-        if ( ModalsNested.getAllElementIDs.indexOf(element.getAttribute('id')) === -1 ) {
+        var uniqueElement = ModalsNested.getAllElementIDs.filter(function( current ) {
+          return current.id === element.getAttribute('id');
+        });
+        if ( uniqueElement.length === 0 ) {
+          
           // unique id, so we can add it to our big array of nested ids
-          ModalsNested.getAllElementIDs.push(element.getAttribute('id'));
+          ModalsNested.getAllElementIDs.push({
+            id : element.getAttribute('id'),
+            'text-block' : element.hasAttribute('text-block-taxonomy')
+          });
           
           var tempContinuedElements = ModalsNested.dynamicallyFindContinuedTaxonomies(element, [ ]);
           tempContinuedElements.shift(element);
@@ -76,19 +94,23 @@ var ModalsNested = {
           || (element.tagName.split(':')[1].toLowerCase() === 'continuation') ) {
         // we ignore the continued facts, as they are already accounted for
       } else {
-        
-        if ( ModalsNested.getAllElementIDs.indexOf(element.getAttribute('id')) === -1 ) {
-          ModalsNested.getAllElementIDs.push(element.getAttribute('id'));
+        var uniqueElement = ModalsNested.getAllElementIDs.filter(function( current ) {
+          return current.id === element.getAttribute('id');
+        });
+        if ( uniqueElement.length === 0 ) {
+          ModalsNested.getAllElementIDs.push({
+            id : element.getAttribute('id'),
+            'text-block' : element.hasAttribute('text-block-taxonomy')
+          });
         }
-        
       }
-      
     }
   },
   
   getElementById : function( id ) {
     var element = document.getElementById('dynamic-xbrl-form').querySelector('[id="' + id + '"]');
-    if ( element.hasAttribute('continued-main-taxonomy') && element.getAttribute('continued-main-taxonomy') === 'true' ) {
+    if ( element && element.hasAttribute('continued-main-taxonomy')
+        && element.getAttribute('continued-main-taxonomy') === 'true' ) {
       return ModalsNested.dynamicallyFindContinuedTaxonomies(element, [ ]);
     }
     return element;
@@ -96,37 +118,42 @@ var ModalsNested = {
   },
   
   createLabelCarousel : function( ) {
-    var titleCarousel = '';
-    var contents = '';
+    var titleCarousel = document.createDocumentFragment();
     
     document.getElementById('nested-page').innerText = 1;
     document.getElementById('nested-count').innerText = ModalsNested.getAllElementIDs.length;
     
-    ModalsNested.getAllElementIDs
-        .forEach(function( current, index ) {
-          var element = ModalsNested.getElementById(current);
-          
-          if ( element instanceof Array ) {
-            var nestedTaxonomyName = FiltersName.getLabel(element[0].getAttribute([ 'name' ]));
-            
-            titleCarousel += '<div class="carousel-item"><div class="carousel-content"><p class="text-center font-weight-bold">'
-                + nestedTaxonomyName + '</p></div></div>';
-            
-            contents += '<div class="tab-pane fade" id="nested-taxonomy-' + index + '" role="tabpanel">'
-                + ModalsNested.createCarousel(element, index, true) + '</div>';
-            
-          } else {
-            var nestedTaxonomyName = FiltersName.getLabel(element.getAttribute([ 'name' ]));
-            
-            titleCarousel += '<div class="carousel-item"><div class="carousel-content"><p class="text-center font-weight-bold">'
-                + nestedTaxonomyName + '</p></div></div>';
-            
-            contents += '<div class="tab-pane fade" id="nested-taxonomy-' + index + '" role="tabpanel">'
-                + ModalsNested.createCarousel(element, index, false) + '</div>';
-          }
-        });
+    ModalsNested.getAllElementIDs.forEach(function( current, index ) {
+      
+      var element = ModalsNested.getElementById(current.id);
+      var nestedTaxonomyName;
+      if ( element instanceof Array ) {
+        
+        nestedTaxonomyName = FiltersName.getLabel(element[0].getAttribute([ 'name' ]), true);
+        
+      } else {
+        
+        nestedTaxonomyName = FiltersName.getLabel(element.getAttribute([ 'name' ]), true);
+        
+      }
+      var divTitleElement = document.createElement('div');
+      divTitleElement.setAttribute('class', 'reboot carousel-item');
+      
+      var divTitleNestedElement = document.createElement('div');
+      divTitleNestedElement.setAttribute('class', 'reboot carousel-content');
+      
+      var pTitleElement = document.createElement('p');
+      pTitleElement.setAttribute('class', 'reboot text-center font-weight-bold');
+      var pTitleContent = document.createTextNode(nestedTaxonomyName);
+      
+      pTitleElement.appendChild(pTitleContent);
+      divTitleNestedElement.appendChild(pTitleElement);
+      divTitleElement.appendChild(divTitleNestedElement);
+      titleCarousel.appendChild(divTitleElement);
+      
+    });
     
-    document.getElementById('modal-taxonomy-nested-label-carousel').innerHTML += titleCarousel;
+    document.getElementById('modal-taxonomy-nested-label-carousel').appendChild(titleCarousel);
     
     document.getElementById('modal-taxonomy-nested-label-carousel').querySelector('.carousel-item').classList
         .add('active');
@@ -135,8 +162,7 @@ var ModalsNested = {
   
   createContentCarousel : function( index ) {
     
-    var element = ModalsNested.getElementById((ModalsNested.getAllElementIDs[index]));
-    
+    var element = ModalsNested.getElementById((ModalsNested.getAllElementIDs[index].id));
     ModalsNested.carouselData(element, Taxonomies.isElementContinued(element));
   },
   
@@ -154,17 +180,22 @@ var ModalsNested = {
     
     ModalsNested.recursielyFindAllNestedTaxonomies(element, true);
     
+    ModalsNested.getAllElementIDs.sort(function( a, b ) {
+      (a['text-block'] > b['text-block']) ? 1 : -1;
+    });
+    
     ModalsNested.createLabelCarousel();
     
     ModalsNested.createContentCarousel(0);
     
-    TaxonomiesGeneral.selectedTaxonomy(ModalsNested.getElementById(ModalsNested.getAllElementIDs[0]));
+    TaxonomiesGeneral.selectedTaxonomy(ModalsNested.getElementById(ModalsNested.getAllElementIDs[0].id));
     
-    document.getElementById('nested-taxonomy-modal-jump').setAttribute('data-id', ModalsNested.getAllElementIDs[0]);
+    document.getElementById('nested-taxonomy-modal-jump').setAttribute('data-id', ModalsNested.getAllElementIDs[0].id);
     
     Modals.renderCarouselIndicators('modal-taxonomy-nested-content-carousel',
         'taxonomy-nested-modal-carousel-indicators', ModalsNested.carouselInformation);
     
+    document.getElementById('taxonomy-nested-modal-drag').focus();
     // we add draggable
     Modals.initDrag(document.getElementById('taxonomy-nested-modal-drag'));
     
@@ -172,14 +203,15 @@ var ModalsNested = {
         'slide.bs.carousel',
         function( event ) {
           
+          ModalsNested.currentSlide = 0;
           // we add something...
           document.getElementById('nested-taxonomy-modal-jump').setAttribute('data-id',
-              ModalsNested.getAllElementIDs[event['to']]);
+              ModalsNested.getAllElementIDs[event['to']].id);
           
           // we hide the copy & paste area
           document.getElementById('taxonomy-nested-copy-paste').classList.add('d-none');
           
-          var selectedElement = ModalsNested.getElementById(ModalsNested.getAllElementIDs[event['to']]);
+          var selectedElement = ModalsNested.getElementById(ModalsNested.getAllElementIDs[event['to']].id);
           
           TaxonomiesGeneral.selectedTaxonomy(selectedElement);
           
@@ -201,6 +233,7 @@ var ModalsNested = {
         'slide.bs.carousel',
         function( event ) {
           
+          ModalsNested.currentSlide = event['to'] + 1;
           var previousActiveIndicator = event['from'];
           var newActiveIndicator = event['to'];
           document.getElementById('taxonomy-nested-modal-carousel-indicators').querySelector(
@@ -213,15 +246,39 @@ var ModalsNested = {
   
   createCarousel : function( element, index, isContinued ) {
     
-    if ( isContinued ) {
-      return '<div id="taxonomy-nested-modal-carousel-' + index
-          + '" class="carousel" data-interval="false" data-keyboard="true"><div class="carousel-inner">'
-          + ModalsContinuedAt.carouselData(element, true) + '</div></div>';
-    }
-    return '<div id="taxonomy-nested-modal-carousel-' + index
-        + '" class="carousel" data-interval="false" data-keyboard="true"><div class="carousel-inner">'
-        + ModalsCommon.carouselData(element, false) + '</div></div>';
+    var elementsToReturn = document.createDocumentFragment();
     
+    var divElement = document.createElement('div');
+    divElement.setAttribute('id', 'taxonomy-nested-modal-carousel-' + index);
+    divElement.setAttribute('class', 'reboot carousel');
+    divElement.setAttribute('data-interval', false);
+    divElement.setAttribute('data-keyboard', true);
+    
+    var divNestedElement = document.createElement('div');
+    divNestedElement.setAttribute('class', 'reboot carousel-inner');
+    divNestedElement.setAttribute('data-interval', false);
+    divNestedElement.setAttribute('data-keyboard', true);
+    
+    if ( isContinued ) {
+      divNestedElement.appendChild(ModalsContinuedAt.carouselData(element, true));
+      divElement.appendChild(divNestedElement);
+      
+      elementsToReturn.appendChild(divElement);
+      return elementsToReturn;
+      
+    }
+    
+    divNestedElement.appendChild(ModalsCommon.carouselData(element));
+    divElement.appendChild(divNestedElement);
+    
+    elementsToReturn.appendChild(divElement);
+    
+    return elementsToReturn;
+    
+  },
+  
+  focusOnContent : function( ) {
+    document.getElementById('modal-taxonomy-nested-content-carousel-page-' + ModalsNested.currentSlide).focus();
   },
   
   keyboardEvents : function( event ) {
@@ -230,26 +287,32 @@ var ModalsNested = {
     
     if ( key === 49 || key === 97 ) {
       $('#taxonomy-modal-carousel').carousel(0);
+      ModalsNested.focusOnContent();
       return false;
     }
     if ( key === 50 || key === 98 ) {
       $('#taxonomy-modal-carousel').carousel(1);
+      ModalsNested.focusOnContent();
       return false;
     }
     if ( key === 51 || key === 99 ) {
       $('#taxonomy-modal-carousel').carousel(2);
+      ModalsNested.focusOnContent();
       return false;
     }
     if ( key === 52 || key === 100 ) {
       $('#taxonomy-modal-carousel').carousel(3);
+      ModalsNested.focusOnContent();
       return false;
     }
     if ( key === 37 ) {
       $('#taxonomy-modal-carousel').carousel('prev');
+      ModalsNested.focusOnContent();
       return false;
     }
     if ( key === 39 ) {
       $('#taxonomy-modal-carousel').carousel('next');
+      ModalsNested.focusOnContent();
       return false;
     }
     
@@ -258,23 +321,35 @@ var ModalsNested = {
   carouselData : function( element, isContinued ) {
     
     TaxonomyPages.firstPage(element, function( page1Html ) {
+      while (document.getElementById('modal-taxonomy-nested-content-carousel-page-1').firstChild) {
+        document.getElementById('modal-taxonomy-nested-content-carousel-page-1').firstChild.remove();
+      }
       
-      page1Html = page1Html || 'No Data.';
-      document.getElementById('modal-taxonomy-nested-content-carousel-page-1').innerHTML = page1Html;
+      document.getElementById('modal-taxonomy-nested-content-carousel-page-1').appendChild(page1Html);
+      
       TaxonomyPages.secondPage(element, function( page2Html ) {
         
-        page2Html = page2Html || 'No Data.';
-        document.getElementById('modal-taxonomy-nested-content-carousel-page-2').innerHTML = page2Html;
+        while (document.getElementById('modal-taxonomy-nested-content-carousel-page-2').firstChild) {
+          document.getElementById('modal-taxonomy-nested-content-carousel-page-2').firstChild.remove();
+        }
+        
+        document.getElementById('modal-taxonomy-nested-content-carousel-page-2').appendChild(page2Html);
         
         TaxonomyPages.thirdPage(element, function( page3Html ) {
           
-          page3Html = page3Html || 'No Data.';
-          document.getElementById('modal-taxonomy-nested-content-carousel-page-3').innerHTML = page3Html;
+          while (document.getElementById('modal-taxonomy-nested-content-carousel-page-3').firstChild) {
+            document.getElementById('modal-taxonomy-nested-content-carousel-page-3').firstChild.remove();
+          }
+          
+          document.getElementById('modal-taxonomy-nested-content-carousel-page-3').appendChild(page3Html);
           
           TaxonomyPages.fourthPage(element, function( page4Html ) {
             
-            page4Html = page4Html || 'No Data.';
-            document.getElementById('modal-taxonomy-nested-content-carousel-page-4').innerHTML = page4Html;
+            while (document.getElementById('modal-taxonomy-nested-content-carousel-page-4').firstChild) {
+              document.getElementById('modal-taxonomy-nested-content-carousel-page-4').firstChild.remove();
+            }
+            
+            document.getElementById('modal-taxonomy-nested-content-carousel-page-4').appendChild(page4Html);
             
           });
         });

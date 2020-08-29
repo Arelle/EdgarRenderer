@@ -8,14 +8,28 @@
 var Modals = {
   
   renderCarouselIndicators : function( carouselId, indicatorId, carouselInformation ) {
-    var indicatorHtml = '';
+    
+    var elementToReturn = document.createDocumentFragment();
     
     carouselInformation.forEach(function( current, index ) {
       var activeSlide = (index === 0) ? 'active' : '';
-      indicatorHtml += '<li data-target="#' + carouselId + '" data-slide-to="' + index + '" class="' + activeSlide
-          + '" title="' + current['dialog-title'] + '" href="#" tabindex="14"></li>';
+      
+      var liElement = document.createElement('li');
+      liElement.setAttribute('class', 'reboot ' + activeSlide);
+      liElement.setAttribute('data-target', '#' + carouselId);
+      liElement.setAttribute('data-slide-to', index);
+      liElement.setAttribute('title', current['dialog-title']);
+      liElement.setAttribute('href', '#');
+      liElement.setAttribute('tabindex', '16');
+      
+      elementToReturn.appendChild(liElement);
     });
-    document.getElementById(indicatorId).innerHTML = indicatorHtml;
+    
+    while (document.getElementById(indicatorId).firstChild) {
+      document.getElementById(indicatorId).firstChild.remove();
+    }
+    
+    document.getElementById(indicatorId).appendChild(elementToReturn);
   },
   
   close : function( event, element ) {
@@ -41,8 +55,11 @@ var Modals = {
       var viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
       if ( viewPortWidth >= 576 ) {
         document.getElementById('taxonomy-modal-expand').classList.remove('d-none');
+        document.getElementById('taxonomy-nested-modal-expand').classList.remove('d-none');
+        
       }
       document.getElementById('taxonomy-modal-compress').classList.add('d-none');
+      document.getElementById('taxonomy-nested-modal-compress').classList.add('d-none');
       
       current.classList.add('d-none');
     });
@@ -63,9 +80,9 @@ var Modals = {
       var sectionToPopulate = '#' + copyPasteElement;
       document.getElementById(copyPasteElement).classList.remove('d-none');
       
-      var foundCarouselPages = document.getElementById(elementIdToCopy).querySelectorAll(
-          '.carousel-item > table > tbody > tr');
+      var foundCarouselPages = document.getElementById(elementIdToCopy).querySelectorAll('.carousel-item');
       var foundCarouselPagesArray = Array.prototype.slice.call(foundCarouselPages);
+      
       // TODO should we just put all of the innerText automatically into the
       // users clipboard?
       
@@ -74,24 +91,31 @@ var Modals = {
       var textToCopy = '';
       
       foundCarouselPagesArray.forEach(function( current ) {
-        if ( current.querySelector('th') && current.querySelector('th').innerText ) {
-          textToCopy += current.querySelector('th').innerText.trim() + ' : ';
-        }
         
-        if ( current.querySelector('td') ) {
+        var foundInformation = current.querySelectorAll('table > * > tr');
+        var foundInformationArray = Array.prototype.slice.call(foundInformation);
+        
+        foundInformationArray.forEach(function( nestedCurrent ) {
           
-          if ( current.querySelector('td #collapse-modal') ) {
-            var largeTaxonomySelector = current.querySelector('td #collapse-modal');
-            
-            textToCopy += '\n';
-            textToCopy += largeTaxonomySelector.innerText.trim();
-            textToCopy += '\n';
-            
-          } else if ( current.querySelector('td').innerText ) {
-            textToCopy += current.querySelector('td').innerText;
-            textToCopy += '\n';
+          if ( nestedCurrent.querySelector('th') && nestedCurrent.querySelector('th').innerText ) {
+            textToCopy += nestedCurrent.querySelector('th').innerText.trim() + ' : ';
           }
-        }
+          
+          if ( nestedCurrent.querySelector('td') ) {
+            
+            if ( nestedCurrent.querySelector('td #collapse-modal') ) {
+              var largeTaxonomySelector = nestedCurrent.querySelector('td #collapse-modal');
+              
+              textToCopy += '\n';
+              textToCopy += largeTaxonomySelector.innerText.trim().replace(/(\r\n|\n|\r)/gm, '');
+              textToCopy += '\n';
+              
+            } else if ( nestedCurrent.querySelector('td').innerText ) {
+              textToCopy += nestedCurrent.querySelector('td').innerText.trim().replace(/(\r\n|\n|\r)/gm, '');
+              textToCopy += '\n';
+            }
+          }
+        });
       });
       document.querySelector(sectionToPopulate + ' textarea').innerHTML = textToCopy;
     }

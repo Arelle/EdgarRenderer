@@ -24,19 +24,17 @@ var TaxonomiesMenu = {
     }
     MenusState.toggle('taxonomies-menu', true, function( openMenu ) {
       if ( openMenu ) {
-        document.getElementById('taxonomies-menu').addEventListener('transitionend', function( event ) {
-          // our menu is now open
-          // we populate the menu with associated data
-          setTimeout(function( ) {
-            TaxonomiesMenu.prepareForPagination();
-          });
-          
-        }, {
-          'once' : true
-        });
+        document.getElementById('taxonomies-menu').addEventListener('transitionend', TaxonomiesMenu.transitionEvent);
       }
     });
     
+  },
+  
+  transitionEvent : function( ) {
+    setTimeout(function( ) {
+      TaxonomiesMenu.prepareForPagination();
+      document.getElementById('taxonomies-menu').removeEventListener('transitionend', Sections.transitionEvent);
+    });
   },
   
   formChange : function( ) {
