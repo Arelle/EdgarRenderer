@@ -12,6 +12,8 @@ End user support is by e-mail direct to SEC at: [StructuredData@sec.gov]
 
 This is a preview for EDGAR release 20.3 expected to be in production in September, 2020, adding an SEC redline feature (see draft EFM vol 2).
 
+It includes enhancements to support previewing of inline XBRL redlining and to view embedded images (ESEF).
+
 Developer issue management is by the Jira Edgar Renderer project: https://arelle.atlassian.net/projects/ER
 
 To debug under eclipse, check this project out under arelle's plugin directory or soft link from EdgarRenderer to the Arelle project src/arelle/plugin directory, e.g., under MacOS/Linux:

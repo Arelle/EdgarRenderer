@@ -3,6 +3,7 @@
      Prior references to files on www.sec.gov/include and images
      are changed to /include (on current web host).
      Herm Fischer, Mark V Systems Limited, 2015-06-20
+     HF: added dynamic redline parameter, 2020-08-28
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0">
   <xsl:output encoding="UTF-8" indent="yes" method="html" doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"/>
@@ -140,6 +141,7 @@
           <xsl:text>var InstanceReportXslt = "</xsl:text>
           <xsl:value-of select="$xslt"/>
           <xsl:text>"; var InstanceReportXsltDoc = null; </xsl:text>
+          <xsl:text>var isRedline = (location.href.indexOf("&amp;redline=true") >= 0 || location.href.indexOf("?redline=true") >= 0);</xsl:text>
           <xsl:text>var processXsltInBrowser = "</xsl:text><xsl:value-of select="$processXsltInBrowser"/><xsl:text>";</xsl:text>
           <xsl:text>var reports = new Array();</xsl:text>
           <xsl:apply-templates mode="reportarray" select="MyReports/Report"/>
@@ -354,6 +356,14 @@
          }
       }
    } 
+   
+   function applyRedline( url ) {
+       if (isRedline) {
+           return url + "&redline=true";
+       } else {
+           return url;
+       }
+   }
   
    window.onload = function () {
          if (window.location.href.substring(0,5)=='file:') {
@@ -452,7 +462,7 @@
             <li class="accordion ">
               <xsl:choose>
                 <xsl:when test="$instance_is_inline = 'true'">
-                  <a href="ix.html?doc={$original}&amp;xbrl=true"><xsl:value-of select="$doctype"/></a>
+                  <a href="javascript:window.location=applyRedline('ix.html?doc={$original}&amp;xbrl=true')"><xsl:value-of select="$doctype"/></a>
                 </xsl:when>
                 <xsl:otherwise>
                   <a href="http://hq-dera-d44941:8080/vf/documents/{$original}"><xsl:value-of select="$doctype"/></a>
@@ -515,7 +525,7 @@
               <li class="accordion octave">
                 <xsl:choose>
                   <xsl:when test="$instance_is_inline = 'true'">
-                    <a href="ix.html?doc={$original}&amp;xbrl=true"><xsl:value-of select="$doctype"/></a>
+                    <a href="javascript:window.location=applyRedline('ix.html?doc={$original}&amp;xbrl=true')"><xsl:value-of select="$doctype"/></a>
                   </xsl:when>
                   <xsl:otherwise>
                     <a href="http://hq-dera-d44941:8080/vf/documents/{$original}"><xsl:value-of select="$doctype"/></a>
