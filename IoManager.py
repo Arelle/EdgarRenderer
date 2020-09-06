@@ -93,8 +93,11 @@ def move_clobbering_file(src, dst):  # this works across Windows drives, simple 
 
 
 def handleFolder(controller, folderName, mustBeEmpty, forceClean):  # return success
-    if not exists(folderName):
-        makedirs(folderName, exist_ok=True)
+    if not isdir(folderName): # must exist and be a direectory, not file
+        if exists(folderName):
+            controller.logDebug(_("Folder {} exists and is not a directory.").format(folderName), file=basename(__file__))
+        else:
+            makedirs(folderName, exist_ok=True)
     else:
         fileList = listdir(folderName)
         if forceClean:

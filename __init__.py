@@ -1213,9 +1213,9 @@ def edgarRendererGuiViewMenuExtender(cntlr, viewMenu, *args, **kwargs):
     def setShowFilingData(self, *args):
         cntlr.config["edgarRendererShowFilingData"] = cntlr.showFilingData.get()
         cntlr.saveConfig()
-        erViewMenu.entryconfig("Workstation Redline Mode", state="normal" if cntlr.showFilingData.get() else "disabled")
-    def setWorkstationRedlineMode(self, *args):
-        cntlr.config["edgarRendererWorkstationRedlineMode"] = cntlr.workstationRedlineMode.get()
+        erViewMenu.entryconfig("Show Redlining", state="normal" if cntlr.showFilingData.get() else "disabled")
+    def setRedlineMode(self, *args):
+        cntlr.config["edgarRendererRedlineMode"] = cntlr.redlineMode.get()
         cntlr.saveConfig()
     def setShowTablesMenu(self, *args):
         cntlr.config["edgarRendererShowTablesMenu"] = cntlr.showTablesMenu.get()
@@ -1226,9 +1226,9 @@ def edgarRendererGuiViewMenuExtender(cntlr, viewMenu, *args, **kwargs):
     cntlr.showFilingData = BooleanVar(value=cntlr.config.get("edgarRendererShowFilingData", True))
     cntlr.showFilingData.trace("w", setShowFilingData)
     erViewMenu.add_checkbutton(label=_("Show Filing Data"), underline=0, variable=cntlr.showFilingData, onvalue=True, offvalue=False)
-    cntlr.workstationRedlineMode = BooleanVar(value=cntlr.config.get("edgarRendererWorkstationRedlineMode", True))
-    cntlr.workstationRedlineMode.trace("w", setWorkstationRedlineMode)
-    erViewMenu.add_checkbutton(label=_("Workstation Redline Mode"), underline=0, variable=cntlr.workstationRedlineMode, onvalue=True, offvalue=False, 
+    cntlr.redlineMode = BooleanVar(value=cntlr.config.get("edgarRendererRedlineMode", True))
+    cntlr.redlineMode.trace("w", setRedlineMode)
+    erViewMenu.add_checkbutton(label=_("Show Redlining"), underline=0, variable=cntlr.redlineMode, onvalue=True, offvalue=False, 
                                         state="normal" if cntlr.showFilingData.get() else "disabled")
     cntlr.showTablesMenu = BooleanVar(value=cntlr.config.get("edgarRendererShowTablesMenu", True))
     cntlr.showTablesMenu.trace("w", setShowTablesMenu)
@@ -1256,14 +1256,13 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
                 _ixRedline = "?redline=true"
             else:
                 _ixRedline = ""
-        elif cntlr.workstationRedlineMode.get():
-            _reportXslt = 'EdgarWorkstationInstanceReport.xslt'
-            _summaryXslt = 'EdgarWorkstationSummarize.xslt'
-            _ixRedline = "?redline=true"
         else:
             _reportXslt =  ('InstanceReport.xslt', 'InstanceReportTable.xslt')[_combinedReports]
             _summaryXslt = ('Summarize.xslt', '')[_combinedReports] # no FilingSummary.htm for Rall.htm production  
-            _ixRedline = ""
+            if cntlr.redlineMode.get():
+                _ixRedline = "?redline=true"
+            else:
+                _ixRedline = ""
         isNonEFMorGFMinline = (not getattr(cntlr.modelManager.disclosureSystem, "EFMplugin", False) and
                                modelXbrl.modelDocument.type in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INLINEXBRLDOCUMENTSET))
         # may use GUI mode to process a single instance or test suite
