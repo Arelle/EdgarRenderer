@@ -10,9 +10,7 @@ domestic copyright protection. 17 U.S.C. 105.
 End user support is by e-mail direct to SEC at: [StructuredData@sec.gov]
 (mailto:StructuredData@sec.gov).
 
-This is a preview for EDGAR release 20.3 expected to be in production in September, 2020, adding an SEC redline feature (see draft EFM vol 2).
-
-It includes enhancements to support previewing of inline XBRL redlining and to view embedded images (ESEF).
+This is EDGAR release 20.3 in production September 22, 2020.
 
 Developer issue management is by the Jira Edgar Renderer project: https://arelle.atlassian.net/projects/ER
 
