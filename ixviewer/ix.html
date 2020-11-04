@@ -92,8 +92,7 @@
 				<li class="reboot nav-item dropdown my-auto ml-1"><a
 					id="menu-dropdown-link" data-test="menu-dropdown-link"
 					class="reboot nav-link dropdown-toggle click disabled"
-					role="button" onclick="FormInformation.init(event, this);"
-					onkeyup="FormInformation.init(event, this);" data-toggle="dropdown"
+					role="button" data-toggle="dropdown"
 					aria-haspopup="true" aria-expanded="false" tabindex="1"
 					accesskey="1"> <i class="reboot nav-loading fas fa-bars"
 						title="Menu"></i> <span class="reboot d-md-none d-lg-inline">Menu</span>
@@ -103,8 +102,6 @@
 						<a id="menu-dropdown-information"
 							data-test="menu-dropdown-information"
 							class="reboot dropdown-item click text-body"
-							onclick="ModalsFormInformation.clickEvent(event, this)"
-							onkeyup="ModalsFormInformation.clickEvent(event, this)"
 							tabindex="1">Information</a> <a id="form-information-instance"
 							data-test="form-information-instance"
 							class="reboot dropdown-item click text-body" target="_blank"
@@ -117,27 +114,23 @@
 							tabindex="1">Open as HTML</a> <a id="menu-dropdown-settings"
 							data-test="menu-dropdown-settings"
 							class="reboot dropdown-item click text-body"
-							onclick="ModalsSettings.clickEvent(event, this);"
-							onkeyup="ModalsSettings.clickEvent(event, this);" tabindex="1">Settings</a>
+							tabindex="1">Settings</a>
 						<a id="form-information-help" data-test="form-information-help"
 							class="reboot dropdown-item click text-body"
-							onclick="Help.toggle(event, this)"
-							onkeyup="Help.toggle(event, this)" tabindex="1">Help</a> <span
+							tabindex="1">Help</a> <span
 							id="form-information-version"
 							class="reboot dropdown-item-text text-body" tabindex="1"></span>
 					</div></li>
 				<li class="reboot nav-item my-auto ml-1"><a
 					id="sections-dropdown-link" data-test="sections-dropdown-link"
 					class="reboot nav-link click disabled meta-required"
-					onclick="Sections.toggle(event, this);"
-					onkeyup="Sections.toggle(event, this);" tabindex="2" accesskey="2">
+					tabindex="2" accesskey="2">
 						<i class="reboot fas fa-layer-group" title="Sections"></i> <span
 						class="reboot d-md-none d-lg-inline">Sections</span> <span
 						class="reboot sr-only sr-only-focusable">Sections</span>
 				</a></li>
 				<li class="reboot nav-item my-auto ml-1 mr-1">
 					<form id="global-search-form" data-test="global-search-form"
-						onsubmit="Search.submit(event, this); return false;"
 						class="reboot my-2 my-lg-0 input-group disabled" novalidate>
 						<div class="reboot input-group-prepend">
 							<button data-name="global-search-options"
@@ -242,8 +235,7 @@
 							aria-label="Search all Facts and highlight them accordingly."
 							tabindex="4">
 						<div class="reboot input-group-append">
-							<button data-name="global-search-clear"
-								onclick="Search.clear(event, this);"
+							<button id="search-btn-clear" data-name="global-search-clear"
 								class="reboot btn btn-outline-light disabled" type="button"
 								tabindex="5">
 								<i class="reboot nav-loading fas fa-times-circle"
@@ -269,8 +261,7 @@
 						class="reboot sr-only sr-only-focusable">Data</span>
 				</a>
 					<div class="reboot dropdown-menu">
-						<form data-name="data-dropdown"
-							onchange="UserFiltersDataRadios.clickEvent(event, this)"
+						<form id="nav-filter-dropdown" data-name="data-dropdown"
 							class="reboot px-2">
 							<div class="reboot form-check">
 								<input class="reboot form-check-input" type="radio"
@@ -334,8 +325,7 @@
 						class="reboot sr-only sr-only-focusable">Tags</span>
 				</a>
 					<div class="reboot dropdown-menu">
-						<form data-name="tags-dropdown"
-							onchange="UserFiltersTagsRadios.clickEvent(event, this)"
+						<form id="nav-filter-tags-dropdown" data-name="tags-dropdown"
 							class="reboot px-2">
 							<div class="reboot form-check">
 								<input class="reboot form-check-input" type="radio"
@@ -372,7 +362,6 @@
 					</div></li>
 				<li class="reboot nav-item dropdown my-auto ml-1"><a href="#"
 					id="nav-filter-more" data-test="nav-filter-more"
-					onclick="UserFiltersGeneral.moreFiltersClickEvent(event, this);"
 					class="reboot nav-link dropdown-toggle disabled click"
 					role="button" data-toggle="dropdown" aria-haspopup="true"
 					aria-expanded="false" tabindex="9" accesskey="5"> <i
@@ -510,7 +499,7 @@
 											class="reboot d-flex justify-content-between align-items-center w-100 px-2">
 											<div class="reboot form-check">
 												<input
-													onclick="UserFiltersMoreFiltersBalances.clickEvent(event, this, 0)"
+													id="user-filters-balances-debit"
 													title="Select/Deselect this option."
 													class="reboot form-check-input" type="checkbox"
 													tabindex="9"> <label
@@ -521,7 +510,7 @@
 											class="reboot d-flex justify-content-between align-items-center w-100 px-2">
 											<div class="reboot form-check">
 												<input
-													onclick="UserFiltersMoreFiltersBalances.clickEvent(event, this, 1)"
+													id="user-filters-balances-credit"
 													title="Select/Deselect this option."
 													class="reboot form-check-input" type="checkbox"
 													tabindex="9"> <label
@@ -535,8 +524,7 @@
 					</div></li>
 				<li id="current-filters-reset" data-test="current-filters-reset"
 					class="reboot nav-item d-none my-auto ml-1"><a href="#"
-					data-name="current-filters-reset"
-					onclick="UserFiltersDropdown.resetAll();"
+					id="current-filters-reset-all" data-name="current-filters-reset"
 					class="reboot nav-link dropdown-toggle text-danger disabled click"
 					tabindex="11" accesskey="7"> <i
 						class="reboot nav-loading fas fa-redo"></i> <span
@@ -557,9 +545,7 @@
 			<ul class="reboot navbar-nav pull-right bg-inherit">
 				<li class="reboot nav-item my-auto ml-1"><a id="facts-menu"
 					data-test="facts-menu" class="reboot nav-link click"
-					onclick="TaxonomiesMenu.toggle(event, this);"
-					onkeyup="TaxonomiesMenu.toggle(event, this);" tabindex="13"
-					accesskey="9"> Facts <span
+					tabindex="13" accesskey="9"> Facts <span
 						class="reboot taxonomy-total-count badge badge-light"> <i
 							class="reboot fas fa-spinner fa-spin"></i>
 					</span>
@@ -582,14 +568,12 @@
 			class="reboot left-sidenav col-sm-3 bg-light overflow-x-auto invisible">
 			<div class="reboot mb-2">
 				<span class="reboot lead">Tagged Sections</span> <a
-					class="reboot float-right click color-inherit" tabindex="2"
-					onclick="Sections.toggle(event, this);"
-					onkeyup="Sections.toggle(event, this);"> <i
+					id="sections-menu-toggle"
+					class="reboot float-right click color-inherit" tabindex="2"> <i
 					class="reboot fas fa-times-circle mt-2 text-dark"></i>
 				</a>
 			</div>
-			<form data-name="sections-menu-search"
-				onsubmit="SectionsSearch.submit(event, this); return false;"
+			<form id="sections-menu-search-submit" data-name="sections-menu-search"
 				class="reboot my-2 my-lg-0 input-group" novalidate>
 				<div id="sections-search-additional"
 					class="reboot input-group-prepend d-none">
@@ -622,8 +606,8 @@
 					aria-label="Search all Sections by their associated label."
 					name="search-sections" tabindex="2" required>
 				<div class="reboot input-group-append">
-					<button data-name="sections-menu-search-clear"
-						onclick="SectionsSearch.clear(event, this);"
+					<button id="section-menu-search-btn-clear"
+						data-name="sections-menu-search-clear"
 						class="reboot btn btn-sec" type="button" tabindex="2">
 						<i class="nav-loading fas fa-times-circle"
 							title="Clear Sections Search"></i> <span
@@ -743,8 +727,7 @@
 
 			<div class="reboot mb-2">
 				<span class="reboot lead">Help</span> <a id="help-menu-close"
-					data-test="help-menu-close" class="reboot float-right click"
-					onclick="Help.toggle(event, this)"> <i
+					data-test="help-menu-close" class="reboot float-right click"> <i
 					class="reboot fas fa-times-circle mt-2"></i>
 				</a>
 			</div>
@@ -1103,9 +1086,9 @@
 			<div class="reboot d-flex flex-column flex-fill h-100">
 				<div class="reboot mb-2">
 					<span class="reboot lead">Facts</span> <a
+						id="taxonomy-menu-secondary-toggle"
 						data-test="taxonomy-secondary-toggle"
-						class="reboot float-right click"
-						onclick="TaxonomiesMenu.toggle(event, this);"> <i
+						class="reboot float-right click"> <i
 						class="reboot fas fa-times-circle mt-2"></i>
 					</a>
 				</div>
@@ -1114,7 +1097,6 @@
 					<div class="reboot pagination"></div>
 					<div class="reboot form-group">
 						<select id="taxonomies-menu-page-select"
-							onchange="Pagination.goToPage(event,this);"
 							class="reboot form-control"
 							aria-label="Quickly jump to a page in the Fact Menu."
 							tabindex="13">
@@ -1127,14 +1109,13 @@
 			</div>
 		</div>
 		<div id="back-to-top" class="reboot d-none">
-			<button onclick="Scroll.toTop();" type="button"
+			<button id="back-to-top-btn" type="button"
 				class="btn btn-sm btn-primary">
 				<i class="reboot fas fa-arrow-up"></i>
 			</button>
 		</div>
 
-		<div id="dynamic-xbrl-form" class="position-relative"
-			onscroll="Scroll.scroll(event, this)"></div>
+		<div id="dynamic-xbrl-form" class="position-relative"></div>
 
 
 	</div>
@@ -1149,14 +1130,11 @@
 				<i id="form-information-modal-drag"
 					title="Click and drag to move this Dialog Box."
 					class="reboot fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block"
-					tabindex="14"></i> <i title="Click to Copy all Dialog Box Content."
-					onclick="Modals.copyContent(event,this,'form-information-modal-carousel','form-information-copy-paste')"
-					onkeyup="Modals.copyContent(event,this,'form-information-modal-carousel','form-information-copy-paste')"
+					tabindex="14"></i> <i id="dialog-box-copy-content" title="Click to Copy all Dialog Box Content."
 					class="reboot fas fa-copy m-1 click" tabindex="14"></i> <i
+					id="dialog-box-close"
 					data-name="Form Information Modal"
 					title="Click to Close this Dialog Box."
-					onclick="Modals.close(event,this)"
-					onkeyup="Modals.close(event,this)"
 					class="reboot fas fa-times m-1 click" tabindex="14"></i>
 
 			</div>
@@ -1165,9 +1143,8 @@
 			<div id="form-information-copy-paste"
 				class="reboot form-group d-none">
 				<label class="reboot">Copy and Paste Below Content.</label> <a
+					id="dialog-content-copy-content"
 					class="reboot float-right click color-inherit"
-					onclick="Modals.copyContent(event,this,'form-information-modal-carousel','form-information-copy-paste')"
-					onkeyup="Modals.copyContent(event,this,'form-information-modal-carousel','form-information-copy-paste')"
 					tabindex="14"> <i class="reboot fas fa-times-circle mt-2"></i>
 				</a>
 				<textarea class="reboot form-control" rows="5" tabindex="14"></textarea>
@@ -1257,9 +1234,8 @@
 				<i id="settings-modal-drag"
 					title="Click and drag to move this Dialog Box."
 					class="reboot fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block"
-					tabindex="15"></i> <i data-name="Settings Modal"
+					tabindex="15"></i> <i id="settings-modal-close" data-name="Settings Modal"
 					title="Click to Close this Dialog Box."
-					onclick="Modals.close(event,this)"
 					class="reboot fas fa-times m-1 click" tabindex="15"></i>
 			</div>
 		</div>
@@ -1269,7 +1245,6 @@
 					<label class="reboot col-sm-4 col-form-label" tabindex="15">Hover
 						over Fact for quick information.</label> <select id="hover-option-select"
 						class="reboot col-sm-8 form-control"
-						onchange="ModalsSettings.hoverOption(event, this.value);"
 						tabindex="15">
 						<option class="reboot" value="true">On</option>
 						<option class="reboot" value="false">Off</option>
@@ -1279,7 +1254,6 @@
 					<label class="reboot col-sm-4 col-form-label" tabindex="15">Auto
 						Scrolling Position</label> <select id="scroll-position-select"
 						class="reboot col-sm-8 form-control"
-						onchange="ModalsSettings.scrollPosition(event, this.value);"
 						tabindex="15">
 						<option class="reboot" value="start">Top</option>
 						<option class="reboot" value="center">Center</option>
@@ -1342,25 +1316,17 @@
 					title="Click and drag to move this Dialog Box."
 					class="reboot fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block"
 					tabindex="16"></i> <i
-					onclick="Pagination.goToTaxonomy(event, this)"
-					onkeyup="Pagination.goToTaxonomy(event, this)"
 					id="taxonomy-modal-jump"
 					title="Click to see this in the Facts sidebar."
 					class="reboot fas fa-directions m-1 click" tabindex="16"></i> <i
-					onclick="Modals.copyContent(event,this,'taxonomy-modal-carousel','taxonomy-copy-paste')"
-					onkeyup="Modals.copyContent(event,this,'taxonomy-modal-carousel','taxonomy-copy-paste')"
+					id="taxonomy-modal-copy-content"
 					class="reboot fas fa-copy m-1 click" tabindex="16"></i> <i
 					id="taxonomy-modal-compress"
-					onclick="Modals.expandToggle(event, this, 'taxonomy-modal', 'taxonomy-modal-expand', 'taxonomy-modal-compress');"
-					onkeyup="Modals.expandToggle(event, this,'taxonomy-modal', 'taxonomy-modal-expand', 'taxonomy-modal-compress');"
 					class="reboot fas fa-compress m-1 click d-none" tabindex="16"></i>
 
 				<i id="taxonomy-modal-expand"
-					onclick="Modals.expandToggle(event, this,'taxonomy-modal', 'taxonomy-modal-expand', 'taxonomy-modal-compress');"
-					onkeyup="Modals.expandToggle(event, this,'taxonomy-modal', 'taxonomy-modal-expand', 'taxonomy-modal-compress');"
 					class="reboot fas fa-expand m-1 click d-none" tabindex="16"></i> <i
-					onclick="Modals.close(event,this);"
-					onkeyup="Modals.close(event,this);"
+					id="taxonomy-modal-close"
 					class="reboot fas fa-times m-1 click" tabindex="16"></i>
 			</div>
 		</div>
@@ -1369,9 +1335,8 @@
 				class="reboot text-center font-weight-bold"></p>
 			<div id="taxonomy-copy-paste" class="reboot form-group d-none">
 				<label>Copy and Paste Below Content.</label> <a
+					id="taxonomy-copy-content"
 					class="reboot float-right click color-inherit"
-					onclick="Modals.copyContent(event,this,'taxonomy-modal-carousel','taxonomy-copy-paste')"
-					onkeyup="Modals.copyContent(event,this,'taxonomy-modal-carousel','taxonomy-copy-paste')"
 					tabindex="16"> <i class="reboot fas fa-times-circle mt-2"></i>
 				</a>
 				<textarea class="reboot form-control" rows="5" tabindex="16"></textarea>
@@ -1464,24 +1429,17 @@
 					title="Click and drag to move this Dialog Box."
 					class="reboot fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block"
 					tabindex="17"></i> <i
-					onclick="Pagination.goToTaxonomy(event, this)"
-					onkeyup="Pagination.goToTaxonomy(event, this)"
-					id="nested-taxonomy-modal-jump"
+					id="taxonomy-nested-modal-jump"
 					title="Click to see this in the Facts sidebar."
 					class="reboot fas fa-directions m-1 click" tabindex="17"></i> <i
-					onclick="Modals.copyContent(event,this,'modal-taxonomy-nested-content-carousel','taxonomy-nested-copy-paste')"
-					onkeyup="Modals.copyContent(event,this,'modal-taxonomy-nested-content-carousel','taxonomy-nested-copy-paste')"
+					id="taxonomy-nested-modal-copy-content"
 					class="reboot fas fa-copy m-1 click" tabindex="17"></i> <i
 					id="taxonomy-nested-modal-compress"
-					onclick="Modals.expandToggle(event, this,'taxonomy-nested-modal', 'taxonomy-nested-modal-expand', 'taxonomy-nested-modal-compress');"
-					onkeyup="Modals.expandToggle(event, this,'taxonomy-nested-modal', 'taxonomy-nested-modal-expand', 'taxonomy-nested-modal-compress');"
 					class="reboot fas fa-compress m-1 click d-none" tabindex="17"></i>
 
 				<i id="taxonomy-nested-modal-expand"
-					onclick="Modals.expandToggle(event, this,'taxonomy-nested-modal', 'taxonomy-nested-modal-expand', 'taxonomy-nested-modal-compress');"
-					onkeyup="Modals.expandToggle(event, this,'taxonomy-nested-modal', 'taxonomy-nested-modal-expand', 'taxonomy-nested-modal-compress');"
 					class="reboot fas fa-expand m-1 click d-none" tabindex="17"></i> <i
-					onclick="Modals.close(this);" class="reboot fas fa-times m-1 click"
+					id="taxonomy-nested-modal-close" class="reboot fas fa-times m-1 click"
 					tabindex="17"></i>
 			</div>
 		</div>
@@ -1511,9 +1469,8 @@
 			</div>
 			<div id="taxonomy-nested-copy-paste" class="reboot form-group d-none">
 				<label class="reboot">Copy and Paste Below Content.</label> <a
+					id="taxonomy-nested-copy-content"
 					class="reboot float-right click color-inherit"
-					onclick="Modals.copyContent(event,this,'modal-taxonomy-nested-content-carousel','taxonomy-nested-copy-paste')"
-					onkeyup="Modals.copyContent(event,this,'modal-taxonomy-nested-content-carousel','taxonomy-nested-copy-paste')"
 					tabindex="17"> <i class="reboot fas fa-times-circle mt-2"></i>
 				</a>
 				<textarea class="reboot form-control" rows="5" tabindex="17"></textarea>
