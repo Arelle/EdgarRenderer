@@ -196,9 +196,9 @@ var TaxonomiesGeneral = {
     if ( element.hasAttribute('id') ) {
       aElement.setAttribute('data-id', element.getAttribute('id'));
     }
-    aElement.setAttribute('onclick', 'TaxonomiesGeneral.goTo(event, this, ' + modalAction + ')');
-    aElement.setAttribute('onkeyup', 'TaxonomiesGeneral.goTo(event, this, ' + modalAction + ')');
     aElement.setAttribute('tabindex', 13);
+    aElement.addEventListener('click', TaxonomiesGeneral.goTo(event, this, modalAction));
+    aElement.addEventListener('keyup', TaxonomiesGeneral.goTo(event, this, modalAction));
     
     var divElement = document.createElement('div');
     divElement.setAttribute('class', 'd-flex w-100 justify-content-between');
