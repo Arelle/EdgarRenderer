@@ -63,7 +63,6 @@ var FiltersContextref = {
           '[id="' + contextref + '"] [dimension]');
       
       var foundDimensionsArray = Array.prototype.slice.call(foundDimensions);
-      
       var member = foundDimensionsArray.map(function( current ) {
         if ( plainText ) {
           return current.innerText;
@@ -82,9 +81,65 @@ var FiltersContextref = {
           acc.push(document.createElement('br'));
         }
         return acc;
-      }, [ ]);
-      
+      }, [ ]).filter(function( element, index, array ) {
+        return element;
+      });
+
       return returnMember.length ? returnMember : null;
+    }
+    return null;
+  },
+  
+  getTypedMember : function( contextref ) {
+    
+    if ( contextref && typeof contextref === 'string' ) {
+      
+      var nameSpace;
+      for ( var ns in Constants.getHTMLAttributes ) {
+        
+        if ( Constants.getHTMLAttributes[ns] === 'http://xbrl.org/2006/xbrldi' ) {
+          nameSpace = ns.split(':')[1];
+        }
+      }
+      
+      var foundDimensions = document.getElementById('dynamic-xbrl-form').querySelectorAll(
+          '[id="' + contextref + '"] ' + nameSpace + '\\:typedmember');
+      
+      var foundDimensionsArray = Array.prototype.slice.call(foundDimensions);
+      var returnMember = foundDimensionsArray.map(function( current, index, array ) {
+        
+        return current.textContent;
+        
+      }).join(', ');
+      
+      return returnMember ? returnMember : null;
+    }
+    return null;
+  },
+  
+  getExplicitMember : function( contextref ) {
+    
+    if ( contextref && typeof contextref === 'string' ) {
+      
+      var nameSpace;
+      for ( var ns in Constants.getHTMLAttributes ) {
+        
+        if ( Constants.getHTMLAttributes[ns] === 'http://xbrl.org/2006/xbrldi' ) {
+          nameSpace = ns.split(':')[1];
+        }
+      }
+      
+      var foundDimensions = document.getElementById('dynamic-xbrl-form').querySelectorAll(
+          '[id="' + contextref + '"] ' + nameSpace + '\\:explicitmember');
+      
+      var foundDimensionsArray = Array.prototype.slice.call(foundDimensions);
+      var returnMember = foundDimensionsArray.map(function( current, index, array ) {
+        
+        return current.textContent;
+        
+      }).join(', ');
+      
+      return returnMember ? returnMember : null;
     }
     return null;
   },

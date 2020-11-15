@@ -20,13 +20,11 @@ function setCustomCSS( ) {
     },
     
     '#dynamic-xbrl-form [enabled-taxonomy="true"][continued-main-taxonomy="true"]' : {
-      'border-left' : '2px solid #' + taggedData,
-      'border-right' : '2px solid #' + taggedData
+      'box-shadow' : '-2px 0px 0px 0px #' + taggedData + ', 2px 0px 0px 0px #' + taggedData
     },
     
     '#dynamic-xbrl-form [enabled-taxonomy="true"][text-block-taxonomy="true"]' : {
-      'border-left' : '2px solid #' + taggedData,
-      'border-right' : '2px solid #' + taggedData,
+      'box-shadow' : '-2px 0px 0px 0px #' + taggedData + ', 2px 0px 0px 0px #' + taggedData,
       'border-top' : 'none',
       'border-bottom' : 'none'
     },
@@ -40,13 +38,11 @@ function setCustomCSS( ) {
     },
     
     '#dynamic-xbrl-form [selected-taxonomy="true"][continued-main-taxonomy="true"]' : {
-      'border-left' : '2px solid #' + selectedFact,
-      'border-right' : '2px solid #' + selectedFact
+      'box-shadow' : '-2px 0px 0px 0px #' + selectedFact + ', 2px 0px 0px 0px #' + selectedFact
     },
     
     '#dynamic-xbrl-form [selected-taxonomy="true"][text-block-taxonomy="true"]' : {
-      'border-left' : '2px solid #' + selectedFact,
-      'border-right' : '2px solid #' + selectedFact
+      'box-shadow' : '-2px 0px 0px 0px #' + selectedFact + ', 2px 0px 0px 0px #' + selectedFact
     },
     
     '#dynamic-xbrl-form [selected-taxonomy="true"][continued-taxonomy="false"]' : {

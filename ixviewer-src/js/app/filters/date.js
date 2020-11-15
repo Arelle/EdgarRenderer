@@ -572,7 +572,6 @@ var FiltersDate = {
       
       var regex = /^\s*(jan|feb|mar|apr|maj|jun|jul|aug|sep|okt|nov|dec)([A-Za-z]*)([.]*)[^0-9]*([0-9]{4}|[0-9]{1,2})\s*$/i;
       var result = regex.exec(element.innerText);
-      
       if ( result ) {
         var year = result[4];
         var month = result[1];
@@ -895,7 +894,559 @@ var FiltersDate = {
     }
     return 'Format Error: Date Year Month EN';
   },
+        
+  // TR4 common functions
+  datedaymonth : function( arg, pattern, moTbl, dy, mo, lastindex ) {
+    if (typeof moTbl === "undefined") {
+          moTbl = ConstantsDate.monthnumber;
+    }
+    dt = dy || 1;
+    mo = mo || 2;
+    lastindex = lastindex || 2;
+    var m = pattern.exec(arg);
+    if ( m && ConstantsNumber.lastindex(m) === lastindex && dy in m ) {
+        var day = ConstantsNumber.zeroPadTwoDigits(m[dy]);
+        var mo = m[mo].toLowerCase();
+        if ( (!moTbl || mo in moTbl) && mo in maxDayInMo && "01" <= day && day <= (maxDayInMo[mo] || "00")) {
+            mo = (moTbl) ? moTbl[mo] : parseInt(mo);
+            return "--" + ConstantsNumber.zeroPadTwoDigits(mo) + "-" + day;
+        }
+    }
+    return 'Format Error: Date Day Month';
+},
+
+  datemonthyear    : function( arg, pattern, moTbl, mo, yr, lastindex ) {
+      if (typeof moTbl === "undefined") {
+          moTbl = ConstantsDate.monthnumber;
+      }
+    dt = dy || 1;
+    mo = mo || 2;
+    lastindex = lastindex || 2;
+    var m = pattern.exec(arg);
+    if ( m && ConstantsNumber.lastindex(m) === lastindex && yr in m && mo in m ) {
+        var yr = ConstantsDate.getYr4(m[yr]);
+        var mo = m[mo].toLowerCase();
+        if ( !moTbl || mo in moTbl ) {
+            mo = (moTbl) ? moTbl[mo] : parseInt(mo);
+            return yr + "-" + ConstantsNumber.zeroPadTwoDigits(mo);
+        }
+    }
+    return 'Format Error: Month Year';
+},
+
+  datedaymonthyear : function( arg, pattern, moTbl, dy, mo, yr, lastindex ) {
+      if (typeof moTbl === "undefined") {
+          moTbl = ConstantsDate.monthnumber;
+      }
+    dt = dy || 1;
+    mo = mo || 2;
+    yr = yr || 3;
+    lastindex = lastindex || 3;
+    var m = pattern.exec(arg);
+    if ( m && ConstantsNumber.lastindex(m) === lastindex && yr in m && mo in m && dy in m ) {
+        var yr = ConstantsDate.getYr4(m[yr]);
+        var day = ConstantsNumber.zeroPadTwoDigits(m[dy]);
+        var mo = m[mo].toLowerCase();
+        if ( !moTbl || mo in moTbl ) {
+            mo = (moTbl) ? moTbl[mo] : parseInt(mo);
+            mo = ConstantsNumber.zeroPadTwoDigits(mo);
+            return yr + "-" + mo + "-" + day;
+        }
+    }
+    return 'Format Error: Day Month Year';
+},
+   
+  // TR4 patterned calls
+  datedaymonthbg : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, 
+                  /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(\u044f\u043d|\u0444\u0435\u0432|\u043c\u0430\u0440|\u0430\u043f\u0440|\u043c\u0430\u0439|\u043c\u0430\u0438|\u044e\u043d\u0438|\u044e\u043b\u0438|\u0430\u0432\u0433|\u0441\u0435\u043f|\u043e\u043a\u0442|\u043d\u043e\u0435|\u0434\u0435\u043a|\u042f\u041d|\u0424\u0415\u0412|\u041c\u0410\u0420|\u0410\u041f\u0420|\u041c\u0410\u0419|\u041c\u0410\u0418|\u042e\u041d\u0418|\u042e\u041b\u0418|\u0410\u0412\u0413|\u0421\u0415\u041f|\u041e\u041a\u0422|\u041d\u041e\u0415|\u0414\u0415\u041a|\u042f\u043d|\u0424\u0435\u0432|\u041c\u0430\u0440|\u0410\u043f\u0440|\u041c\u0430\u0439|\u041c\u0430\u0438|\u042e\u043d\u0438|\u042e\u043b\u0438|\u0410\u0432\u0433|\u0421\u0435\u043f|\u041e\u043a\u0442|\u041d\u043e\u0435|\u0414\u0435\u043a)[^0-9]{0,6}[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthcs : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, 
+                /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(ledna|\xfanora|unora|b\u0159ezna|brezna|dubna|kv\u011btna|kvetna|\u010dervna|cervna|\u010dervence|cervence|srpna|z\xe1\u0159\xed|zari|\u0159\xedjna|rijna|listopadu|prosince|led|\xfano|uno|b\u0159e|bre|dub|kv\u011b|kve|\u010dvn|cvn|\u010dvc|cvc|srp|z\xe1\u0159|zar|\u0159\xedj|rij|lis|pro|LEDNA|\xdaNORA|UNORA|B\u0158EZNA|BREZNA|DUBNA|KV\u011aTNA|KVETNA|\u010cERVNA|CERVNA|\u010cERVENCE|CERVENCE|SRPNA|Z\xc1\u0158\xcd|ZARI|\u0158\xcdJNA|RIJNA|LISTOPADU|PROSINCE|LED|\xdaNO|UNO|B\u0158E|BRE|DUB|KV\u011a|KVE|\u010cVN|CVN|\u010cVC|CVC|SRP|Z\xc1\u0158|ZAR|\u0158\xcdJ|RIJ|LIS|PRO|Ledna|\xdanora|Unora|B\u0159ezna|Brezna|Dubna|Kv\u011btna|Kvetna|\u010cervna|Cervna|\u010cervence|Cervence|Srpna|Z\xe1\u0159\xed|Zari|\u0158\xedjna|Rijna|Listopadu|Prosince|Led|\xdano|Uno|B\u0159e|Bre|Dub|Kv\u011b|Kve|\u010cvn|Cvn|\u010cvc|Cvc|Srp|Z\xe1\u0159|Zar|\u0158\xedj|Rij|Lis|Pro)\.?[ \t\n\r]*$/, 
+              ConstantsDate.monthnumbercs);
+   }
+  },
+
+  datedaymonthde : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|j\xe4n|jaen|feb|m\xe4r|maer|mar|apr|mai|jun|jul|aug|sep|okt|nov|dez|JAN|J\xc4N|JAEN|FEB|M\xc4R|MAER|MAR|APR|MAI|JUN|JUL|AUG|SEP|OKT|NOV|DEZ|Jan|J\xe4n|Jaen|Feb|M\xe4r|Maer|Mar|Apr|Mai|Jun|Jul|Aug|Sep|Okt|Nov|Dez)[^0-9]{0,6}[ \t\n\r]*$/);
+   }
+  },
+    
+  datedaymonthdk : function( element ) {
+      var moTbl = ConstantsDate.monthnumber;
+    var m = /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|feb|mar|apr|maj|jun|jul|aug|sep|okt|nov|dec)([A-Za-z]*)([.]*)[ \t\n\r]*$/i.exec(element.innerText);
+    if ( m && ConstantsNumber.lastindex(m) === 4 ) {
+        var day = ConstantsNumber.zeroPadTwoDigits(m[1]);
+        var mon3 = m[2].toLowerCase();
+        var monEnd = m[3];
+        var monPer = m[4];
+        if (mon3 in moTbl) {
+            var mo = moTbl[mon3];
+            if (((!monEnd && !monPer) ||
+                 (!monEnd && monPer) ||
+                 (monEnd && !monPer)) &&
+                mo in ConstantsNumber.maxDayInMo &&
+                "01" <= day && day <= ConstantsNumber.maxDayInMo[mo]) {
+                return "--" + ConstantsNumber.zeroPadTwoDigits(mo) + "-" + day;
+            }
+        }
+    }
+    return 'Format Error: Date Day Month';
+},
+
+  datedaymonthel : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(\u03b9\u03b1\u03bd|\u03af\u03b1\u03bd|\u03c6\u03b5\u03b2|\u03bc\u03ac\u03c1|\u03bc\u03b1\u03c1|\u03b1\u03c0\u03c1|\u03ac\u03c0\u03c1|\u03b1\u03c1\u03af\u03bb|\u03ac\u03c1\u03af\u03bb|\u03b1\u03c1\u03b9\u03bb|\u03ac\u03c1\u03b9\u03bb|\u03bc\u03b1\u0390|\u03bc\u03b1\u03b9|\u03bc\u03ac\u03b9|\u03bc\u03b1\u03ca|\u03bc\u03ac\u03ca|\u03b9\u03bf\u03cd\u03bd|\u03af\u03bf\u03cd\u03bd|\u03af\u03bf\u03c5\u03bd|\u03b9\u03bf\u03c5\u03bd|\u03b9\u03bf\u03cd\u03bb|\u03af\u03bf\u03cd\u03bb|\u03af\u03bf\u03c5\u03bb|\u03af\u03bf\u03c5\u03bb|\u03b9\u03bf\u03c5\u03bb|\u03b1\u03cd\u03b3|\u03b1\u03c5\u03b3|\u03c3\u03b5\u03c0|\u03bf\u03ba\u03c4|\u03cc\u03ba\u03c4|\u03bd\u03bf\u03ad|\u03bd\u03bf\u03b5|\u03b4\u03b5\u03ba|\u0399\u0391\u039d|\u038a\u0391\u039d|I\u0391\u039d|\u03a6\u0395\u0392|\u039c\u0386\u03a1|\u039c\u0391\u03a1|\u0391\u03a0\u03a1|\u0386\u03a0\u03a1|A\u03a0\u03a1|A\u03a1\u0399\u039b|\u0386\u03a1\u0399\u039b|\u0391\u03a1\u0399\u039b|\u039c\u0391\u03aa\u0301|\u039c\u0391\u0399|\u039c\u0386\u0399|\u039c\u0391\u03aa|\u039c\u0386\u03aa|\u0399\u039f\u038e\u039d|\u038a\u039f\u038e\u039d|\u038a\u039f\u03a5\u039d|I\u039f\u03a5\u039d|\u0399\u039f\u03a5\u039d|I\u039f\u03a5\u039d|\u0399\u039f\u038e\u039b|\u038a\u039f\u038e\u039b|\u038a\u039f\u03a5\u039b|I\u039f\u038e\u039b|\u0399\u039f\u03a5\u039b|I\u039f\u03a5\u039b|\u0391\u038e\u0393|\u0391\u03a5\u0393|\u03a3\u0395\u03a0|\u039f\u039a\u03a4|\u038c\u039a\u03a4|O\u039a\u03a4|\u039d\u039f\u0388|\u039d\u039f\u0395|\u0394\u0395\u039a|\u0399\u03b1\u03bd|\u038a\u03b1\u03bd|I\u03b1\u03bd|\u03a6\u03b5\u03b2|\u039c\u03ac\u03c1|\u039c\u03b1\u03c1|\u0391\u03c0\u03c1|\u0386\u03c0\u03c1|A\u03c0\u03c1|\u0391\u03c1\u03af\u03bb|\u0386\u03c1\u03af\u03bb|A\u03c1\u03af\u03bb|A\u03c1\u03b9\u03bb|\u0386\u03c1\u03b9\u03bb|\u0391\u03c1\u03b9\u03bb|\u039c\u03b1\u0390|\u039c\u03b1\u03b9|\u039c\u03ac\u03b9|\u039c\u03b1\u03ca|\u039c\u03ac\u03ca|\u0399\u03bf\u03cd\u03bd|\u038a\u03bf\u03cd\u03bd|\u038a\u03bf\u03c5\u03bd|I\u03bf\u03cd\u03bd|\u0399\u03bf\u03c5\u03bd|I\u03bf\u03c5\u03bd|\u0399\u03bf\u03cd\u03bb|\u038a\u03bf\u03cd\u03bb|\u038a\u03bf\u03c5\u03bb|I\u03bf\u03cd\u03bb|\u0399\u03bf\u03c5\u03bb|I\u03bf\u03c5\u03bb|\u0391\u03cd\u03b3|\u0391\u03c5\u03b3|\u03a3\u03b5\u03c0|\u039f\u03ba\u03c4|\u038c\u03ba\u03c4|O\u03ba\u03c4|\u039d\u03bf\u03ad|\u039d\u03bf\u03b5|\u0394\u03b5\u03ba)[^0-9]{0,8}[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthen : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)[ \t\n\r]*$/);
+   }
+  },
+    
+  datemonthdayen : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)[^0-9]+([0-9]{1,2})[A-Za-z]{0,2}[ \t\n\r]*$/, null, 2, 1);
+   }
+  },
+
+  datedaymonthes : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic|ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC|Ene|Feb|Mar|Abr|May|Jun|Jul|Ago|Sep|Oct|Nov|Dic)[^0-9]{0,7}[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthet : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jaan|veebr|m\xe4rts|marts|apr|mai|juuni|juuli|aug|sept|okt|nov|dets|JAAN|VEEBR|M\xc4RTS|MARTS|APR|MAI|JUUNI|JUULI|AUG|SEPT|OKT|NOV|DETS|Jaan|Veebr|M\xe4rts|Marts|Apr|Mai|Juuni|Juuli|Aug|Sept|Okt|Nov|Dets)[^0-9]{0,5}[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthfi : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]*[^0-9a-zA-Z]+(tam|hel|maa|huh|tou|kes|hei|elo|syy|lok|mar|jou|TAM|HEL|MAA|HUH|TOU|KES|HEI|ELO|SYY|LOK|MAR|JOU|Tam|Hel|Maa|Huh|Tou|Kes|Hei|Elo|Syy|Lok|Mar|Jou)[^0-9]{0,8}[ \t\n\r]*$/, ConstantsDate.monthnumberfi);
+   }
+  },
+
+  datedaymonthfr : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(janv|f\xe9vr|fevr|mars|avr|mai|juin|juil|ao\xfbt|aout|sept|oct|nov|d\xe9c|dec|JANV|F\xc9VR|FEVR|MARS|AVR|MAI|JUIN|JUIL|AO\xdbT|AOUT|SEPT|OCT|NOV|D\xc9C|DEC|Janv|F\xe9vr|Fevr|Mars|Avr|Mai|Juin|Juil|Ao\xfbt|Aout|Sept|Oct|Nov|D\xe9c|Dec)[^0-9]{0,5}[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthhr : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(sij|velj|o\u017eu|ozu|tra|svi|lip|srp|kol|ruj|lis|stu|pro|SIJ|VELJ|O\u017dU|OZU|TRA|SVI|LIP|SRP|KOL|RUJ|LIS|STU|PRO|Sij|Velj|O\u017eu|Ozu|Tra|Svi|Lip|Srp|Kol|Ruj|Lis|Stu|Pro)[^0-9]{0,6}[ \t\n\r]*$/, ConstantsDate.monthnumberhr);
+   }
+  },
+
+  datemonthdayhu : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*(jan|feb|m\xe1rc|marc|\xe1pr|apr|m\xe1j|maj|j\xfan|jun|j\xfal|jul|aug|szept|okt|nov|dec|JAN|FEB|M\xc1RC|MARC|\xc1PR|APR|M\xc1J|MAJ|J\xdaN|JUN|J\xdaL|JUL|AUG|SZEPT|OKT|NOV|DEC|Jan|Feb|M\xe1rc|Marc|\xc1pr|Apr|M\xe1j|Maj|J\xfan|Jun|J\xfal|Jul|Aug|Szept|Okt|Nov|Dec)[^0-9]{0,7}[^0-9]+([0-9]{1,2})[ \t\n\r]*$/, null, 2, 1);
+   }
+  },
+
+  datedaymonthit : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic|GEN|FEB|MAR|APR|MAG|GIU|LUG|AGO|SET|OTT|NOV|DIC|Gen|Feb|Mar|Apr|Mag|Giu|Lug|Ago|Set|Ott|Nov|Dic)[^0-9]{0,6}[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthdaylt : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*(sau|vas|kov|bal|geg|bir|lie|rugp|rgp|rugs|rgs|spa|spl|lap|gru|grd|SAU|VAS|KOV|BAL|GEG|BIR|LIE|RUGP|RGP|RUGS|RGS|SPA|SPL|LAP|GRU|GRD|Sau|Vas|Kov|Bal|Geg|Bir|Lie|Rugp|Rgp|Rugs|Rgs|Spa|Spl|Lap|Gru|Grd)[^0-9]{0,6}[^0-9]+([0-9]{1,2})[^0-9]*[ \t\n\r]*$/, ConstantsDate.monthnumberlt, 2, 1);
+   }
+  },
+
+  datedaymonthlv : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(janv|febr|marts|apr|maijs|j\u016bn|jun|j\u016bl|jul|aug|sept|okt|nov|dec|JANV|FEBR|MARTS|APR|MAIJS|J\u016aN|JUN|J\u016aL|JUL|AUG|SEPT|OKT|NOV|DEC|Janv|Febr|Marts|Apr|Maijs|J\u016bn|Jun|J\u016bl|Jul|Aug|Sept|Okt|Nov|Dec)[^0-9]{0,6}[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthnl : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|feb|maa|mrt|apr|mei|jun|jul|aug|sep|okt|nov|dec|JAN|FEB|MAA|MRT|APR|MEI|JUN|JUL|AUG|SEP|OKT|NOV|DEC|Jan|Feb|Maa|Mrt|Apr|Mei|Jun|Jul|Aug|Sep|Okt|Nov|Dec)[^0-9]{0,6}[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthno : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|feb|mar|apr|mai|jun|jul|aug|sep|okt|nov|des|JAN|FEB|MAR|APR|MAI|JUN|JUL|AUG|SEP|OKT|NOV|DES|Jan|Feb|Mar|Apr|Mai|Jun|Jul|Aug|Sep|Okt|Nov|Des)[^0-9]{0,6}[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthpl : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]*[^0-9a-zA-Z]+(sty|lut|mar|kwi|maj|cze|lip|sie|wrz|pa\u017a|paz|lis|gru|STY|LUT|MAR|KWI|MAJ|CZE|LIP|SIE|WRZ|PA\u0179|PAZ|LIS|GRU|Sty|Lut|Mar|Kwi|Maj|Cze|Lip|Sie|Wrz|Pa\u017a|Paz|Lis|Gru)[^0-9]{0,9}s*$/, ConstantsDate.monthnumberpl);
+   }
+  },
+
+  datedaymonthpt : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez|JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ|Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez)[^0-9]{0,6}[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthroman : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]*[^XVIxvi]((I?(X|V|I)I{0,3})|(i?(x|v|i)i{0,3}))[ \t\n\r]*$/, ConstantsDate.monthnumberroman);
+   }
+  },
+
+  datedaymonthro : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(ian|feb|mar|apr|mai|iun|iul|aug|sep|oct|noi|nov|dec|IAN|FEB|MAR|APR|MAI|IUN|IUL|AUG|SEP|OCT|NOI|NOV|DEC|Ian|Feb|Mar|Apr|Mai|Iun|Iul|Aug|Sep|Oct|Noi|Nov|Dec)[^0-9]{0,7}[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthsk : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|feb|mar|apr|m\xe1j|maj|j\xfan|jun|j\xfal|jul|aug|sep|okt|nov|dec|JAN|FEB|MAR|APR|M\xc1J|MAJ|J\xdaN|JUN|J\xdaL|JUL|AUG|SEP|OKT|NOV|DEC|Jan|Feb|Mar|Apr|M\xe1j|Maj|J\xfan|Jun|J\xfal|Jul|Aug|Sep|Okt|Nov|Dec)[^0-9]{0,6}[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthsl : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|feb|mar|apr|maj|jun|jul|avg|sep|okt|nov|dec|JAN|FEB|MAR|APR|MAJ|JUN|JUL|AVG|SEP|OKT|NOV|DEC|Jan|Feb|Mar|Apr|Maj|Jun|Jul|Avg|Sep|Okt|Nov|Dec)[^0-9]{0,6}[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthyearTR4 : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, ConstantsNumber.getDevanagariDigitsToNormal(arg), /^[ \t\n\r]*([0-9]{1,2})[^0-9]+([0-9]{1,2})[^0-9]+([0-9]{4}|[0-9]{1,2})[ \t\n\r]*$/, 1, 2, 3);
+   }
+  },
   
+  datedaymonthyearbg : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /[ \t\n\r]*([0-9]{1,2})[^0-9]+(\u044f\u043d|\u0444\u0435\u0432|\u043c\u0430\u0440|\u0430\u043f\u0440|\u043c\u0430\u0439|\u043c\u0430\u0438|\u044e\u043d\u0438|\u044e\u043b\u0438|\u0430\u0432\u0433|\u0441\u0435\u043f|\u043e\u043a\u0442|\u043d\u043e\u0435|\u0434\u0435\u043a|\u042f\u041d|\u0424\u0415\u0412|\u041c\u0410\u0420|\u0410\u041f\u0420|\u041c\u0410\u0419|\u041c\u0410\u0418|\u042e\u041d\u0418|\u042e\u041b\u0418|\u0410\u0412\u0413|\u0421\u0415\u041f|\u041e\u041a\u0422|\u041d\u041e\u0415|\u0414\u0415\u041a|\u042f\u043d|\u0424\u0435\u0432|\u041c\u0430\u0440|\u0410\u043f\u0440|\u041c\u0430\u0439|\u041c\u0430\u0438|\u042e\u043d\u0438|\u042e\u043b\u0438|\u0410\u0432\u0433|\u0421\u0435\u043f|\u041e\u043a\u0442|\u041d\u043e\u0435|\u0414\u0435\u043a)[A-Za-z]*[^0-9]+([0-9]{1,2}|[0-9]{4})[^0-9]*[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthyearcs : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(ledna|\xfanora|unora|b\u0159ezna|brezna|dubna|kv\u011btna|kvetna|\u010dervna|cervna|\u010dervence|cervence|srpna|z\xe1\u0159\xed|zari|\u0159\xedjna|rijna|listopadu|prosince|led|\xfano|uno|b\u0159e|bre|dub|kv\u011b|kve|\u010dvn|cvn|\u010dvc|cvc|srp|z\xe1\u0159|zar|\u0159\xedj|rij|lis|pro|LEDNA|\xdaNORA|UNORA|B\u0158EZNA|BREZNA|DUBNA|KV\u011aTNA|KVETNA|\u010cERVNA|CERVNA|\u010cERVENCE|CERVENCE|SRPNA|Z\xc1\u0158\xcd|ZARI|\u0158\xcdJNA|RIJNA|LISTOPADU|PROSINCE|LED|\xdaNO|UNO|B\u0158E|BRE|DUB|KV\u011a|KVE|\u010cVN|CVN|\u010cVC|CVC|SRP|Z\xc1\u0158|ZAR|\u0158\xcdJ|RIJ|LIS|PRO|Ledna|\xdanora|Unora|B\u0159ezna|Brezna|Dubna|Kv\u011btna|Kvetna|\u010cervna|Cervna|\u010cervence|Cervence|Srpna|Z\xe1\u0159\xed|Zari|\u0158\xedjna|Rijna|Listopadu|Prosince|Led|\xdano|Uno|B\u0159e|Bre|Dub|Kv\u011b|Kve|\u010cvn|Cvn|\u010cvc|Cvc|Srp|Z\xe1\u0159|Zar|\u0158\xedj|Rij|Lis|Pro)[^0-9a-zA-Z]+[^0-9]*([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/, ConstantsDate.monthnumbercs);
+   }
+  },
+
+  datedaymonthyearde : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|j\xe4n|jaen|feb|m\xe4r|maer|mar|apr|mai|jun|jul|aug|sep|okt|nov|dez|JAN|J\xc4N|JAEN|FEB|M\xc4R|MAER|MAR|APR|MAI|JUN|JUL|AUG|SEP|OKT|NOV|DEZ|Jan|J\xe4n|Jaen|Feb|M\xe4r|Maer|Mar|Apr|Mai|Jun|Jul|Aug|Sep|Okt|Nov|Dez)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+        
+
+  datedaymonthyeardk : function( element ) {
+    var moTbl = ConstantsDate.monthnumber;
+    var m = /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|feb|mar|apr|maj|jun|jul|aug|sep|okt|nov|dec)([A-Za-z]*)([.]*)[^0-9]*([0-9]{4}|[0-9]{1,2})[ \t\n\r]*$/i.exec(element.innerText);
+    if ( m && ConstantsNumber.lastindex(m) === 5 ) {
+        var yr = ConstantsDate.getYr4(m[5]);
+        var day = ConstantsNumber.zeroPadTwoDigits(m[1]);
+        var mon3 = m[2].toLowerCase();
+        var monEnd = m[3];
+        var monPer = m[4];
+        
+        if (mon3 in moTbl && (( !monEnd && !monPer) ||
+                               ( !monEnd && monPer) ||
+                               (monEnd && !monPer))) {
+            var mo = moTbl[mon3];
+            return yr + "-" + ConstantsNumber.zeroPadTwoDigits(mo) + "-" + day;
+        }
+    }
+    return 'Format Error: Day Month Year';
+},
+
+  datedaymonthyearel : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(\u03b9\u03b1\u03bd|\u03af\u03b1\u03bd|\u03c6\u03b5\u03b2|\u03bc\u03ac\u03c1|\u03bc\u03b1\u03c1|\u03b1\u03c0\u03c1|\u03ac\u03c0\u03c1|\u03b1\u03c1\u03af\u03bb|\u03ac\u03c1\u03af\u03bb|\u03b1\u03c1\u03b9\u03bb|\u03ac\u03c1\u03b9\u03bb|\u03bc\u03b1\u0390|\u03bc\u03b1\u03b9|\u03bc\u03ac\u03b9|\u03bc\u03b1\u03ca|\u03bc\u03ac\u03ca|\u03b9\u03bf\u03cd\u03bd|\u03af\u03bf\u03cd\u03bd|\u03af\u03bf\u03c5\u03bd|\u03b9\u03bf\u03c5\u03bd|\u03b9\u03bf\u03cd\u03bb|\u03af\u03bf\u03cd\u03bb|\u03af\u03bf\u03c5\u03bb|\u03af\u03bf\u03c5\u03bb|\u03b9\u03bf\u03c5\u03bb|\u03b1\u03cd\u03b3|\u03b1\u03c5\u03b3|\u03c3\u03b5\u03c0|\u03bf\u03ba\u03c4|\u03cc\u03ba\u03c4|\u03bd\u03bf\u03ad|\u03bd\u03bf\u03b5|\u03b4\u03b5\u03ba|\u0399\u0391\u039d|\u038a\u0391\u039d|I\u0391\u039d|\u03a6\u0395\u0392|\u039c\u0386\u03a1|\u039c\u0391\u03a1|\u0391\u03a0\u03a1|\u0386\u03a0\u03a1|A\u03a0\u03a1|A\u03a1\u0399\u039b|\u0386\u03a1\u0399\u039b|\u0391\u03a1\u0399\u039b|\u039c\u0391\u03aa\u0301|\u039c\u0391\u0399|\u039c\u0386\u0399|\u039c\u0391\u03aa|\u039c\u0386\u03aa|\u0399\u039f\u038e\u039d|\u038a\u039f\u038e\u039d|\u038a\u039f\u03a5\u039d|I\u039f\u038e\u039d|\u0399\u039f\u03a5\u039d|I\u039f\u03a5\u039d|\u0399\u039f\u038e\u039b|\u038a\u039f\u038e\u039b|\u038a\u039f\u03a5\u039b|I\u039f\u038e\u039b|\u0399\u039f\u03a5\u039b|I\u039f\u03a5\u039b|\u0391\u038e\u0393|\u0391\u03a5\u0393|\u03a3\u0395\u03a0|\u039f\u039a\u03a4|\u038c\u039a\u03a4|O\u039a\u03a4|\u039d\u039f\u0388|\u039d\u039f\u0395|\u0394\u0395\u039a|\u0399\u03b1\u03bd|\u038a\u03b1\u03bd|I\u03b1\u03bd|\u03a6\u03b5\u03b2|\u039c\u03ac\u03c1|\u039c\u03b1\u03c1|\u0391\u03c0\u03c1|\u0386\u03c0\u03c1|A\u03c0\u03c1|\u0391\u03c1\u03af\u03bb|\u0386\u03c1\u03af\u03bb|A\u03c1\u03af\u03bb|A\u03c1\u03b9\u03bb|\u0386\u03c1\u03b9\u03bb|\u0391\u03c1\u03b9\u03bb|\u039c\u03b1\u0390|\u039c\u03b1\u03b9|\u039c\u03ac\u03b9|\u039c\u03b1\u03ca|\u039c\u03ac\u03ca|\u0399\u03bf\u03cd\u03bd|\u038a\u03bf\u03cd\u03bd|\u038a\u03bf\u03c5\u03bd|I\u03bf\u03cd\u03bd|\u0399\u03bf\u03c5\u03bd|I\u03bf\u03c5\u03bd|\u0399\u03bf\u03cd\u03bb|\u038a\u03bf\u03cd\u03bb|\u038a\u03bf\u03c5\u03bb|I\u03bf\u03cd\u03bb|\u0399\u03bf\u03c5\u03bb|I\u03bf\u03c5\u03bb|\u0391\u03cd\u03b3|\u0391\u03c5\u03b3|\u03a3\u03b5\u03c0|\u039f\u03ba\u03c4|\u038c\u03ba\u03c4|O\u03ba\u03c4|\u039d\u03bf\u03ad|\u039d\u03bf\u03b5|\u0394\u03b5\u03ba)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthyearen : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)[^0-9]+([0-9]{4}|[0-9]{1,2})[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthdayyearen : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)[^0-9]+([0-9]+)[^0-9]+([0-9]{4}|[0-9]{1,2})[ \t\n\r]*$/, null, 2, 1, 3);
+   }
+  },
+    
+  datedaymonthyeares : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic|ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC|Ene|Feb|Mar|Abr|May|Jun|Jul|Ago|Sep|Oct|Nov|Dic)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthyearet : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jaan|veebr|m\xe4rts|marts|apr|mai|juuni|juuli|aug|sept|okt|nov|dets|JAAN|VEEBR|M\xc4RTS|MARTS|APR|MAI|JUUNI|JUULI|AUG|SEPT|OKT|NOV|DETS|Jaan|Veebr|M\xe4rts|Marts|Apr|Mai|Juuni|Juuli|Aug|Sept|Okt|Nov|Dets)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthyearfi : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]*[^0-9a-zA-Z]+(tam|hel|maa|huh|tou|kes|hei|elo|syy|lok|mar|jou|TAM|HEL|MAA|HUH|TOU|KES|HEI|ELO|SYY|LOK|MAR|JOU|Tam|Hel|Maa|Huh|Tou|Kes|Hei|Elo|Syy|Lok|Mar|Jou)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/, ConstantsDate.monthnumberfi);
+   }
+  },
+
+  datedaymonthyearfr : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(janv|f\xe9vr|fevr|mars|avr|mai|juin|juil|ao\xfbt|aout|sept|oct|nov|d\xe9c|dec|JANV|F\xc9VR|FEVR|MARS|AVR|MAI|JUIN|JUIL|AO\xdbT|AOUT|SEPT|OCT|NOV|D\xc9C|DEC|Janv|F\xe9vr|Fevr|Mars|Avr|Mai|Juin|Juil|Ao\xfbt|Aout|Sept|Oct|Nov|D\xe9c|Dec)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthyearhr : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(sij|velj|o\u017eu|ozu|tra|svi|lip|srp|kol|ruj|lis|stu|pro|SIJ|VELJ|O\u017dU|OZU|TRA|SVI|LIP|SRP|KOL|RUJ|LIS|STU|PRO|Sij|Velj|O\u017eu|Ozu|Tra|Svi|Lip|Srp|Kol|Ruj|Lis|Stu|Pro)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/, ConstantsDate.monthnumberhr);
+   }
+  },
+
+  dateyearmonthdayhu : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2}|[0-9]{4})[^0-9]+(jan|feb|m\xe1rc|marc|\xe1pr|apr|m\xe1j|maj|j\xfan|jun|j\xfal|jul|aug|szept|okt|nov|dec|JAN|FEB|M\xc1RC|MARC|\xc1PR|APR|M\xc1J|MAJ|J\xdaN|JUN|J\xdaL|JUL|AUG|SZEPT|OKT|NOV|DEC|Jan|Feb|M\xe1rc|Marc|\xc1pr|Apr|M\xe1j|Maj|J\xfan|Jun|J\xfal|Jul|Aug|Szept|Okt|Nov|Dec)[^0-9]+([0-9]{1,2})[ \t\n\r]*$/, null, 3, 2, 1);
+   }
+  },
+
+  datedaymonthyearinTR4 : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyearin(element.innerText, /^[ \t\n\r]*([0-9]{1,2}|[\u0966-\u096f]{1,2})[^0-9\u0966-\u096f]+(\u091c\u0928\u0935\u0930\u0940|\u092b\u0930\u0935\u0930\u0940|\u092e\u093e\u0930\u094d\u091a|\u0905\u092a\u094d\u0930\u0948\u0932|\u092e\u0908|\u091c\u0942\u0928|\u091c\u0941\u0932\u093e\u0908|\u0905\u0917\u0938\u094d\u0924|\u0938\u093f\u0924\u0902\u092c\u0930|\u0905\u0915\u094d\u091f\u0942\u092c\u0930|\u0928\u0935\u0902\u092c\u0930|\u0926\u093f\u0938\u0902\u092c\u0930)[^0-9\u0966-\u096f]+([0-9]{2}|[0-9]{4}|[\u0966-\u096f]{2}|[\u0966-\u096f]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthyearit : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic|GEN|FEB|MAR|APR|MAG|GIU|LUG|AGO|SET|OTT|NOV|DIC|Gen|Feb|Mar|Apr|Mag|Giu|Lug|Ago|Set|Ott|Nov|Dic)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  dateyeardaymonthlv : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2}|[0-9]{4})[^0-9]+([0-9]{1,2})[^0-9]+(janv|febr|marts|apr|maijs|j\u016bn|jun|j\u016bl|jul|aug|sept|okt|nov|dec|JANV|FEBR|MARTS|APR|MAIJS|J\u016aN|JUN|J\u016aL|JUL|AUG|SEPT|OKT|NOV|DEC|Janv|Febr|Marts|Apr|Maijs|J\u016bn|Jun|J\u016bl|Jul|Aug|Sept|Okt|Nov|Dec)[^0-9]*[ \t\n\r]*$/, null, 2, 3, 1);
+   }
+  },
+
+  dateyearmonthdaylt : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2}|[0-9]{4})[^0-9]*[^0-9a-zA-Z]+(sau|vas|kov|bal|geg|bir|lie|rugp|rgp|rugs|rgs|spa|spl|lap|gru|grd|SAU|VAS|KOV|BAL|GEG|BIR|LIE|RUGP|RGP|RUGS|RGS|SPA|SPL|LAP|GRU|GRD|Sau|Vas|Kov|Bal|Geg|Bir|Lie|Rugp|Rgp|Rugs|Rgs|Spa|Spl|Lap|Gru|Grd)[^0-9]+([0-9]{1,2})[^0-9]*[ \t\n\r]*$/, ConstantsDate.monthnumberlt, 3, 2, 1);
+   }
+  },
+
+  datedaymonthyearnl : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|feb|maa|mrt|apr|mei|jun|jul|aug|sep|okt|nov|dec|JAN|FEB|MAA|MRT|APR|MEI|JUN|JUL|AUG|SEP|OKT|NOV|DEC|Jan|Feb|Maa|Mrt|Apr|Mei|Jun|Jul|Aug|Sep|Okt|Nov|Dec)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthyearno : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|feb|mar|apr|mai|jun|jul|aug|sep|okt|nov|des|JAN|FEB|MAR|APR|MAI|JUN|JUL|AUG|SEP|OKT|NOV|DES|Jan|Feb|Mar|Apr|Mai|Jun|Jul|Aug|Sep|Okt|Nov|Des)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthyearpl : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]*[^0-9a-zA-Z]+(sty|lut|mar|kwi|maj|cze|lip|sie|wrz|pa\u017a|paz|lis|gru|STY|LUT|MAR|KWI|MAJ|CZE|LIP|SIE|WRZ|PA\u0179|PAZ|LIS|GRU|Sty|Lut|Mar|Kwi|Maj|Cze|Lip|Sie|Wrz|Pa\u017a|Paz|Lis|Gru)[^0-9]+([0-9]{1,2}|[0-9]{4})[^0-9]*[ \t\n\r]*$/, ConstantsDate.monthnumberpl);
+   }
+  },
+
+  datedaymonthyearpt : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez|JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ|Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthyearroman : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]*[^XVIxvi]((I?(X|V|I)I{0,3})|(i?(x|v|i)i{0,3}))[^XVIxvi][^0-9]*([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/, ConstantsDate.monthnumberroman, 1, 2, 7, 7);
+   }
+  },
+
+  datedaymonthyearro : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(ian|feb|mar|apr|mai|iun|iul|aug|sep|oct|noi|nov|dec|IAN|FEB|MAR|APR|MAI|IUN|IUL|AUG|SEP|OCT|NOI|NOV|DEC|Ian|Feb|Mar|Apr|Mai|Iun|Iul|Aug|Sep|Oct|Noi|Nov|Dec)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthyearsk : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|feb|mar|apr|m\xe1j|maj|j\xfan|jun|j\xfal|jul|aug|sep|okt|nov|dec|JAN|FEB|MAR|APR|M\xc1J|MAJ|J\xdaN|JUN|J\xdaL|JUL|AUG|SEP|OKT|NOV|DEC|Jan|Feb|Mar|Apr|M\xe1j|Maj|J\xfan|Jun|J\xfal|Jul|Aug|Sep|Okt|Nov|Dec)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datedaymonthyearsl : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(jan|feb|mar|apr|maj|jun|jul|avg|sep|okt|nov|dec|JAN|FEB|MAR|APR|MAJ|JUN|JUL|AVG|SEP|OKT|NOV|DEC|Jan|Feb|Mar|Apr|Maj|Jun|Jul|Avg|Sep|Okt|Nov|Dec)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+   
+  datemonthyearbg : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(\u044f\u043d|\u0444\u0435\u0432|\u043c\u0430\u0440|\u0430\u043f\u0440|\u043c\u0430\u0439|\u043c\u0430\u0438|\u044e\u043d\u0438|\u044e\u043b\u0438|\u0430\u0432\u0433|\u0441\u0435\u043f|\u043e\u043a\u0442|\u043d\u043e\u0435|\u0434\u0435\u043a|\u042f\u041d|\u0424\u0415\u0412|\u041c\u0410\u0420|\u0410\u041f\u0420|\u041c\u0410\u0419|\u041c\u0410\u0418|\u042e\u041d\u0418|\u042e\u041b\u0418|\u0410\u0412\u0413|\u0421\u0415\u041f|\u041e\u041a\u0422|\u041d\u041e\u0415|\u0414\u0415\u041a|\u042f\u043d|\u0424\u0435\u0432|\u041c\u0430\u0440|\u0410\u043f\u0440|\u041c\u0430\u0439|\u041c\u0430\u0438|\u042e\u043d\u0438|\u042e\u043b\u0438|\u0410\u0432\u0433|\u0421\u0435\u043f|\u041e\u043a\u0442|\u041d\u043e\u0435|\u0414\u0435\u043a)[^0-9]+([0-9]{1,2}|[0-9]{4})[^0-9]*[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthyearcs : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(leden|ledna|lednu|\xfanor|unor|\xfanora|unora|\xfanoru|unoru|b\u0159ezen|brezen|b\u0159ezna|brezna|b\u0159eznu|breznu|duben|dubna|dubnu|kv\u011bten|kveten|kv\u011btna|kvetna|kv\u011btnu|kvetnu|\u010derven|cerven|\u010dervna|cervna|\u010dervnu|cervnu|\u010dervenec|cervenec|\u010dervence|cervence|\u010dervenci|cervenci|srpen|srpna|srpnu|z\xe1\u0159\xed|zari|\u0159\xedjen|rijen|\u0159\xedjna|rijna|\u0159\xedjnu|rijnu|listopad|listopadu|prosinec|prosince|prosinci|led|\xfano|uno|b\u0159e|bre|dub|kv\u011b|kve|\u010dvn|cvn|\u010dvc|cvc|srp|z\xe1\u0159|zar|\u0159\xedj|rij|lis|pro|LEDEN|LEDNA|LEDNU|\xdaNOR|UNOR|\xdaNORA|UNORA|\xdaNORU|UNORU|B\u0158EZEN|BREZEN|B\u0158EZNA|BREZNA|B\u0158EZNU|BREZNU|DUBEN|DUBNA|DUBNU|KV\u011aTEN|KVETEN|KV\u011aTNA|KVETNA|KV\u011aTNU|KVETNU|\u010cERVEN|CERVEN|\u010cERVNA|CERVNA|\u010cERVNU|CERVNU|\u010cERVENEC|CERVENEC|\u010cERVENCE|CERVENCE|\u010cERVENCI|CERVENCI|SRPEN|SRPNA|SRPNU|Z\xc1\u0158\xcd|ZARI|\u0158\xcdJEN|RIJEN|\u0158\xcdJNA|RIJNA|\u0158\xcdJNU|RIJNU|LISTOPAD|LISTOPADU|PROSINEC|PROSINCE|PROSINCI|LED|\xdaNO|UNO|B\u0158E|BRE|DUB|KV\u011a|KVE|\u010cVN|CVN|\u010cVC|CVC|SRP|Z\xc1\u0158|ZAR|\u0158\xcdJ|RIJ|LIS|PRO|Leden|Ledna|Lednu|\xdanor|Unor|\xdanora|Unora|\xdanoru|Unoru|B\u0159ezen|Brezen|B\u0159ezna|Brezna|B\u0159eznu|Breznu|Duben|Dubna|Dubnu|Kv\u011bten|Kveten|Kv\u011btna|Kvetna|Kv\u011btnu|Kvetnu|\u010cerven|Cerven|\u010cervna|Cervna|\u010cervnu|Cervnu|\u010cervenec|Cervenec|\u010cervence|Cervence|\u010cervenci|Cervenci|Srpen|Srpna|Srpnu|Z\xe1\u0159\xed|Zari|\u0158\xedjen|Rijen|\u0158\xedjna|Rijna|\u0158\xedjnu|Rijnu|Listopad|Listopadu|Prosinec|Prosince|Prosinci|Led|\xdano|Uno|B\u0159e|Bre|Dub|Kv\u011b|Kve|\u010cvn|Cvn|\u010cvc|Cvc|Srp|Z\xe1\u0159|Zar|\u0158\xedj|Rij|Lis|Pro)[^0-9a-zA-Z]+[^0-9]*([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/, ConstantsDate.monthnumbercs);
+   }
+  },
+
+  datemonthyearde : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(jan|j\xe4n|jaen|feb|m\xe4r|maer|mar|apr|mai|jun|jul|aug|sep|okt|nov|dez|JAN|J\xc4N|JAEN|FEB|M\xc4R|MAER|MAR|APR|MAI|JUN|JUL|AUG|SEP|OKT|NOV|DEZ|Jan|J\xe4n|Jaen|Feb|M\xe4r|Maer|Mar|Apr|Mai|Jun|Jul|Aug|Sep|Okt|Nov|Dez)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthyeardk : function( element ) {
+    var moTbl = ConstantsDate.monthnumber;
+    var m = /^[ \t\n\r]*(jan|feb|mar|apr|maj|jun|jul|aug|sep|okt|nov|dec)([A-Za-z]*)([.]*)[^0-9]*([0-9]{4}|[0-9]{1,2})[ \t\n\r]*$/i.exec(element.innerText);
+    if ( m && ConstantsNumber.lastindex(m) === 4 ) {
+        var yr = ConstantsDate.getYr4(m[4]);
+        var mon3 = m[1].toLowerCase();
+        var monEnd = m[2];
+        var monPer = m[3];
+        if ( mo in moTbl && ((!monEnd && !monPer) ||
+                              (!monEnd && monPer) ||
+                              (monEnd && !monPer)) ) {
+            return yr + "-" + ConstantsNumber.zeroPadTwoDigits(moTbl[mon3]);
+        }
+    }
+    return 'Format Error: Month Year';
+},
+    
+  datemonthyearel : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(\u03b9\u03b1\u03bd|\u03af\u03b1\u03bd|\u03c6\u03b5\u03b2|\u03bc\u03ac\u03c1|\u03bc\u03b1\u03c1|\u03b1\u03c0\u03c1|\u03ac\u03c0\u03c1|\u03b1\u03c1\u03af\u03bb|\u03ac\u03c1\u03af\u03bb|\u03b1\u03c1\u03b9\u03bb|\u03ac\u03c1\u03b9\u03bb|\u03bc\u03b1\u0390|\u03bc\u03b1\u03b9|\u03bc\u03ac\u03b9|\u03bc\u03b1\u03ca|\u03bc\u03ac\u03ca|\u03b9\u03bf\u03cd\u03bd|\u03af\u03bf\u03cd\u03bd|\u03af\u03bf\u03c5\u03bd|\u03b9\u03bf\u03c5\u03bd|\u03b9\u03bf\u03cd\u03bb|\u03af\u03bf\u03cd\u03bb|\u03af\u03bf\u03c5\u03bb|\u03af\u03bf\u03c5\u03bb|\u03b9\u03bf\u03c5\u03bb|\u03b1\u03cd\u03b3|\u03b1\u03c5\u03b3|\u03c3\u03b5\u03c0|\u03bf\u03ba\u03c4|\u03cc\u03ba\u03c4|\u03bd\u03bf\u03ad|\u03bd\u03bf\u03b5|\u03b4\u03b5\u03ba|\u0399\u0391\u039d|\u038a\u0391\u039d|I\u0391\u039d|\u03a6\u0395\u0392|\u039c\u0386\u03a1|\u039c\u0391\u03a1|\u0391\u03a0\u03a1|\u0386\u03a0\u03a1|A\u03a0\u03a1|A\u03a1\u0399\u039b|\u0386\u03a1\u0399\u039b|\u0391\u03a1\u0399\u039b|\u039c\u0391\u03aa\u0301|\u039c\u0391\u0399|\u039c\u0386\u0399|\u039c\u0391\u03aa|\u039c\u0386\u03aa|\u0399\u039f\u038e\u039d|\u038a\u039f\u038e\u039d|\u038a\u039f\u03a5\u039d|I\u039f\u038e\u039d|\u0399\u039f\u03a5\u039d|I\u039f\u03a5\u039d|\u0399\u039f\u038e\u039b|\u038a\u039f\u038e\u039b|\u038a\u039f\u03a5\u039b|I\u039f\u038e\u039b|\u0399\u039f\u03a5\u039b|I\u039f\u03a5\u039b|\u0391\u038e\u0393|\u0391\u03a5\u0393|\u03a3\u0395\u03a0|\u039f\u039a\u03a4|\u038c\u039a\u03a4|O\u039a\u03a4|\u039d\u039f\u0388|\u039d\u039f\u0395|\u0394\u0395\u039a|\u0399\u03b1\u03bd|\u038a\u03b1\u03bd|I\u03b1\u03bd|\u03a6\u03b5\u03b2|\u039c\u03ac\u03c1|\u039c\u03b1\u03c1|\u0391\u03c0\u03c1|\u0386\u03c0\u03c1|A\u03c0\u03c1|\u0391\u03c1\u03af\u03bb|\u0386\u03c1\u03af\u03bb|A\u03c1\u03af\u03bb|A\u03c1\u03b9\u03bb|\u0386\u03c1\u03b9\u03bb|\u0391\u03c1\u03b9\u03bb|\u039c\u03b1\u0390|\u039c\u03b1\u03b9|\u039c\u03ac\u03b9|\u039c\u03b1\u03ca|\u039c\u03ac\u03ca|\u0399\u03bf\u03cd\u03bd|\u038a\u03bf\u03cd\u03bd|\u038a\u03bf\u03c5\u03bd|I\u03bf\u03cd\u03bd|\u0399\u03bf\u03c5\u03bd|I\u03bf\u03c5\u03bd|\u0399\u03bf\u03cd\u03bb|\u038a\u03bf\u03cd\u03bb|\u038a\u03bf\u03c5\u03bb|I\u03bf\u03cd\u03bb|\u0399\u03bf\u03c5\u03bb|I\u03bf\u03c5\u03bb|\u0391\u03cd\u03b3|\u0391\u03c5\u03b3|\u03a3\u03b5\u03c0|\u039f\u03ba\u03c4|\u038c\u03ba\u03c4|O\u03ba\u03c4|\u039d\u03bf\u03ad|\u039d\u03bf\u03b5|\u0394\u03b5\u03ba)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthyearen : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/, 1, 2);
+   }
+  },
+    
+  datemonthyeares : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic|ENE|FEB|MAR|ABR|MAY|JUN|JUL|AGO|SEP|OCT|NOV|DIC|Ene|Feb|Mar|Abr|May|Jun|Jul|Ago|Sep|Oct|Nov|Dic)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+    
+  dateyearmonthen : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2}|[0-9]{4})[^0-9]+(January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC|JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)[ \t\n\r]*$/, 2, 1);
+   }
+  },
+
+  datemonthyearet : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(jaan|veebr|m\xe4rts|marts|apr|mai|juuni|juuli|aug|sept|okt|nov|dets|JAAN|VEEBR|M\xc4RTS|MARTS|APR|MAI|JUUNI|JUULI|AUG|SEPT|OKT|NOV|DETS|Jaan|Veebr|M\xe4rts|Marts|Apr|Mai|Juuni|Juuli|Aug|Sept|Okt|Nov|Dets)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthyearfi : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(tam|hel|maa|huh|tou|kes|hei|elo|syy|lok|mar|jou|TAM|HEL|MAA|HUH|TOU|KES|HEI|ELO|SYY|LOK|MAR|JOU|Tam|Hel|Maa|Huh|Tou|Kes|Hei|Elo|Syy|Lok|Mar|Jou)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/, ConstantsDate.monthnumberfi);
+   }
+  },
+
+  datemonthyearfr : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(janv|f\xe9vr|fevr|mars|avr|mai|juin|juil|ao\xfbt|aout|sept|oct|nov|d\xe9c|dec|JANV|F\xc9VR|FEVR|MARS|AVR|MAI|JUIN|JUIL|AO\xdbT|AOUT|SEPT|OCT|NOV|D\xc9C|DEC|Janv|F\xe9vr|Fevr|Mars|Avr|Mai|Juin|Juil|Ao\xfbt|Aout|Sept|Oct|Nov|D\xe9c|Dec)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthyearhr : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(sij|velj|o\u017eu|ozu|tra|svi|lip|srp|kol|ruj|lis|stu|pro|SIJ|VELJ|O\u017dU|OZU|TRA|SVI|LIP|SRP|KOL|RUJ|LIS|STU|PRO|Sij|Velj|O\u017eu|Ozu|Tra|Svi|Lip|Srp|Kol|Ruj|Lis|Stu|Pro)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/, ConstantsDate.monthnumberhr);
+   }
+  },
+
+  datemonthyearit : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic|GEN|FEB|MAR|APR|MAG|GIU|LUG|AGO|SET|OTT|NOV|DIC|Gen|Feb|Mar|Apr|Mag|Giu|Lug|Ago|Set|Ott|Nov|Dic)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthyearnl : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(jan|feb|maa|mrt|apr|mei|jun|jul|aug|sep|okt|nov|dec|JAN|FEB|MAA|MRT|APR|MEI|JUN|JUL|AUG|SEP|OKT|NOV|DEC|Jan|Feb|Maa|Mrt|Apr|Mei|Jun|Jul|Aug|Sep|Okt|Nov|Dec)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthyearno : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(jan|feb|mar|apr|mai|jun|jul|aug|sep|okt|nov|des|JAN|FEB|MAR|APR|MAI|JUN|JUL|AUG|SEP|OKT|NOV|DES|Jan|Feb|Mar|Apr|Mai|Jun|Jul|Aug|Sep|Okt|Nov|Des)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthyearpl : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(sty|lut|mar|kwi|maj|cze|lip|sie|wrz|pa\u017a|paz|lis|gru|STY|LUT|MAR|KWI|MAJ|CZE|LIP|SIE|WRZ|PA\u0179|PAZ|LIS|GRU|Sty|Lut|Mar|Kwi|Maj|Cze|Lip|Sie|Wrz|Pa\u017a|Paz|Lis|Gru)[^0-9]+([0-9]{1,2}|[0-9]{4})[^0-9]*[ \t\n\r]*$/, ConstantsDate.monthnumberpl);
+   }
+  },
+
+  datemonthyearpt : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez|JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ|Jan|Fev|Mar|Abr|Mai|Jun|Jul|Ago|Set|Out|Nov|Dez)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthyearroman : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, monthyearRomanPattern, ConstantsDate.monthnumberroman, 1, 6, 6);
+   }
+  },
+
+  datemonthyearro : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(ian|feb|mar|apr|mai|iun|iul|aug|sep|oct|noi|nov|dec|IAN|FEB|MAR|APR|MAI|IUN|IUL|AUG|SEP|OCT|NOI|NOV|DEC|Ian|Feb|Mar|Apr|Mai|Iun|Iul|Aug|Sep|Oct|Noi|Nov|Dec)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthyearsk : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(jan|feb|mar|apr|m\xe1j|maj|j\xfan|jun|j\xfal|jul|aug|sep|okt|nov|dec|JAN|FEB|MAR|APR|M\xc1J|MAJ|J\xdaN|JUN|J\xdaL|JUL|AUG|SEP|OKT|NOV|DEC|Jan|Feb|Mar|Apr|M\xe1j|Maj|J\xfan|Jun|J\xfal|Jul|Aug|Sep|Okt|Nov|Dec)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  datemonthyearsl : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(jan|feb|mar|apr|maj|jun|jul|avg|sep|okt|nov|dec|JAN|FEB|MAR|APR|MAJ|JUN|JUL|AVG|SEP|OKT|NOV|DEC|Jan|Feb|Mar|Apr|Maj|Jun|Jul|Avg|Sep|Okt|Nov|Dec)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
+   }
+  },
+
+  dateyearmonthhu : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2}|[0-9]{4})[^0-9]+(jan|feb|m\xe1rc|marc|\xe1pr|apr|m\xe1j|maj|j\xfan|jun|j\xfal|jul|aug|szept|okt|nov|dec|JAN|FEB|M\xc1RC|MARC|\xc1PR|APR|M\xc1J|MAJ|J\xdaN|JUN|J\xdaL|JUL|AUG|SZEPT|OKT|NOV|DEC|Jan|Feb|M\xe1rc|Marc|\xc1pr|Apr|M\xe1j|Maj|J\xfan|Jun|J\xfal|Jul|Aug|Szept|Okt|Nov|Dec)[^0-9]{0,7}[ \t\n\r]*$/, null, 2, 1);
+   }
+  },
+
+  dateyearmonthlt : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2}|[0-9]{4})[^0-9]*[^0-9a-zA-Z]+(sau|vas|kov|bal|geg|bir|lie|rugp|rgp|rugs|rgs|spa|spl|lap|gru|grd|SAU|VAS|KOV|BAL|GEG|BIR|LIE|RUGP|RGP|RUGS|RGS|SPA|SPL|LAP|GRU|GRD|Sau|Vas|Kov|Bal|Geg|Bir|Lie|Rugp|Rgp|Rugs|Rgs|Spa|Spl|Lap|Gru|Grd)[^0-9]*[ \t\n\r]*$/, ConstantsDate.monthnumberlt, 2, 1);
+   }
+  },
+
+  dateyearmonthlv : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2}|[0-9]{4})[^0-9]+(janv|febr|marts|apr|maijs|j\u016bn|jun|j\u016bl|jul|aug|sept|okt|nov|dec|JANV|FEBR|MARTS|APR|MAIJS|J\u016aN|JUN|J\u016aL|JUL|AUG|SEPT|OKT|NOV|DEC|Janv|Febr|Marts|Apr|Maijs|J\u016bn|Jun|J\u016bl|Jul|Aug|Sept|Okt|Nov|Dec)[^0-9]{0,7}[ \t\n\r]*$/, null, 2, 1);
+   }
+  },
+
+
  printDurationType : function ( y, m, d, h, negative ){
   // preprocess each value so we don't print P0Y0M0D
   // in this case, we should print P0Y, and leave out the months and days.

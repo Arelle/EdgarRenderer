@@ -6,7 +6,11 @@
 'use strict';
 
 var FiltersNumber = {
-  numberFormatting : function( element, input ) {
+  fixedZero : function( element ) {
+      return '0';
+  },
+  
+  numberFormatting : function( element, input, canonicalize ) {
     
     // return 0 if No|None...etc
     var regex = /^\s*([Nn]o(ne)?|[Nn]il|[Zz]ero)\s*$/;
@@ -21,7 +25,7 @@ var FiltersNumber = {
       if ( element.hasAttribute('xsi:nil') && (element.getAttribute('xsi:nil') === true) ) {
         return 'nil';
         
-      } else if ( element.innerHTML === '—' ) {
+      } else if ( element.innerHTML === '\u2014' ) {
         return input;
       }
       var scale = (element.hasAttribute('scale') && parseInt(element.getAttribute('scale'))) ? parseInt(element
@@ -54,6 +58,15 @@ var FiltersNumber = {
         }
         
       }
+    
+      // must be valid decimal number
+      if ( canonicalize && /^[+-]?([0-9]+(\.[0-9]*)?|\.[0-9]+)$/.exec(input) ) {
+        // HF: return xml canonical xs:decimal lexical number
+        var m = /^[ \t\n\r]*0*([1-9][0-9]*)?(([.]0*)[ \t\n\r]*$|([.][0-9]*[1-9])0*[ \t\n\r]*$|[ \t\n\r]*$)/.exec(input);
+        if ( m ) {
+           input = ((m[1]) ? m[1] : "0") + ((m[4]) ? m[4] : "");
+         }
+      }
       
       if ( element.hasAttribute('sign') ) {
         input = element.getAttribute('sign') + input;
@@ -66,12 +79,13 @@ var FiltersNumber = {
         arraySplitByPeriod[0] = arraySplitByPeriod[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         if ( arraySplitByPeriod[1] && arraySplitByPeriod[1].match(/^0+$/) ) {
           arraySplitByPeriod[1] = '';
-          return arraySplitByPeriod.join('');
+          input = arraySplitByPeriod.join('');
+        } else {
+          input = arraySplitByPeriod.join('.');
         }
-        return arraySplitByPeriod.join('.');
+      } else {
+        input = input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       }
-      return input.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-      
     }
     return input;
     
@@ -120,6 +134,15 @@ var FiltersNumber = {
     
   },
   
+  numDotDecimalTR4 : function( element ) {
+    if ( element && typeof element === 'object' && element['innerText'] ) {
+      if ( /^[ \t\n\r]*[, \xA00-9]*(\.[ \xA00-9]+)?[ \t\n\r]*$/.exec(element.innerText) ) {
+        return element.innerText.replace(/\,/g, '').replace(/ /g, '').replace('/\u00A0/g', '');
+      }
+    }
+    return 'Format Error: Num Dot Decimal';
+  },
+  
   textToNumber : function( numberAsString ) {
     // if ( numberAsString && typeof element === 'string' ) {
     var wordSplitPattern = /[\s-]+/;
@@ -155,6 +178,15 @@ var FiltersNumber = {
       if ( regex.exec(element.innerText) ) {
         
         return element.innerText.replace(/\./g, '').replace(/\,/g, '.').replace(/ /g, '').replace('/\u00A0/g', '');
+      }
+    }
+    return 'Format Error: Num Comma Decimal';
+  },
+  
+  numCommaDecimalTR4 : function( element ) {
+    if ( element && typeof element === 'object' && element['innerText'] ) {
+      if ( /^[ \t\n\r]*[\. \xA00-9]*(,[ \xA00-9]+)?[ \t\n\r]*$/.exec(element.innerText) ) {
+         return element.innerText.replace(/\./g, '').replace(/\,/g, '.').replace(/ /g, '').replace('/\u00A0/g', '');
       }
     }
     return 'Format Error: Num Comma Decimal';
@@ -244,7 +276,7 @@ var FiltersNumber = {
       if ( result ) {
         
         return result[1].replace(/\./g, '').replace(/\,/g, '').replace('/\uFF0C/g', '').replace('/\uFF0E/g', '')
-            .replace(/\，/g, '')
+            .replace(/\\uff0c/g, '')
             + '.' + ConstantsNumber.zeroPadTwoDigits(result[result.length - 1]);
       }
     }
@@ -270,6 +302,21 @@ var FiltersNumber = {
     }
     return "Format Error: Num Unit Decimal IN";
     
+  },
+  
+  numUnitDecimalTR4 : function( element ) {
+    if ( element && typeof element === 'object' && element['innerText'] ) {
+      var m = /^([0-9\uff10-\uff19\.,\uff0c]+)([^0-9\uff10-\uff19\.,\uff0c][^0-9\uff10-\uff19]*)([0-9\uff10-\uff19]{1,2})[^0-9\uff10-\uff19]*$/.exec(element.innerText);
+      if ( m && ConstantsNumber.lastindex(m) > 1 ) {
+        var majorValue = m[1].replace('.', '').replace(',', '').replace('\uFF0C', '').replace('\uFF0E', '');
+        var fractValue = ConstantsNumber.zeroPadTwoDigits(m[ConstantsNumber.lastindex(m)]);
+        if (majorValue.length > 0 && fractValue.length > 0) {
+            return (majorValue + '.' + fractValue);
+        }
+      }
+    }
+    
+    return 'Format Error: Num Unit Decimal';
   },
   
   numWordsEn : function( element ) {

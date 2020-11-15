@@ -325,15 +325,19 @@ var ModalsNested = {
         document.getElementById('modal-taxonomy-nested-content-carousel-page-1').firstChild.remove();
       }
       
-      document.getElementById('modal-taxonomy-nested-content-carousel-page-1').appendChild(page1Html);
-      
+      while (page1Html.firstChild) {
+        document.getElementById('modal-taxonomy-nested-content-carousel-page-1').appendChild(page1Html.firstChild);
+      }
+            
       TaxonomyPages.secondPage(element, function( page2Html ) {
         
         while (document.getElementById('modal-taxonomy-nested-content-carousel-page-2').firstChild) {
           document.getElementById('modal-taxonomy-nested-content-carousel-page-2').firstChild.remove();
         }
         
-        document.getElementById('modal-taxonomy-nested-content-carousel-page-2').appendChild(page2Html);
+        while (page2Html.firstChild) {
+          document.getElementById('modal-taxonomy-nested-content-carousel-page-2').appendChild(page2Html.firstChild);
+        }
         
         TaxonomyPages.thirdPage(element, function( page3Html ) {
           
@@ -341,7 +345,9 @@ var ModalsNested = {
             document.getElementById('modal-taxonomy-nested-content-carousel-page-3').firstChild.remove();
           }
           
-          document.getElementById('modal-taxonomy-nested-content-carousel-page-3').appendChild(page3Html);
+          while (page3Html.firstChild) {
+            document.getElementById('modal-taxonomy-nested-content-carousel-page-3').appendChild(page3Html.firstChild);
+          }
           
           TaxonomyPages.fourthPage(element, function( page4Html ) {
             
@@ -349,7 +355,9 @@ var ModalsNested = {
               document.getElementById('modal-taxonomy-nested-content-carousel-page-4').firstChild.remove();
             }
             
-            document.getElementById('modal-taxonomy-nested-content-carousel-page-4').appendChild(page4Html);
+            while (page4Html.firstChild) {
+              document.getElementById('modal-taxonomy-nested-content-carousel-page-4').appendChild(page4Html.firstChild);
+            }
             
           });
         });

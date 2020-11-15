@@ -101,6 +101,19 @@ var ConstantsNumber = {
     return n.plus(g);
   },
   
+ lastindex : function( m ) { 
+    // HF: python match result .lastindex, match group number
+    var mLastindex = 0;
+    if (m) {
+        for ( var i = 0; i < m.length; i++ ) {
+          if ( m[i] ) {
+            mLastindex = i;
+        }
+      }
+    }
+    return mLastindex;
+ },
+  
   zeroPadTwoDigits : function( input ) {
     if ( input.toString().length === 1 ) {
       return '0' + input.toString();

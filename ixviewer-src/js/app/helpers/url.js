@@ -83,7 +83,8 @@ var HelpersUrl = {
   
   returnURLParamsAsObject : function( url ) {
     
-    var urlRedline = url.indexOf('redline=true') >= 0; // HF: true when redline specified in non-workstation mode
+    // HF: urlRedline=true when redline specified in non-workstation mode
+    var urlRedline = url.indexOf('redline=true') >= 0; 
     var urlSplit = url.split(/doc=|file=|metalinks=|xbrl=true|xbrl=false/).filter(function( e ) {
       return e;
     });
@@ -99,7 +100,8 @@ var HelpersUrl = {
             current = decodeURIComponent(current);
             var docFile = current.split('filename=')[1] ? current.split('filename=')[1] : current.substring(current
                 .lastIndexOf('/') + 1);
-            var redline = urlRedline || current.indexOf('redline=true') >= 0; // HF: redline in normal or workstation mode
+            // HF: redline in normal or workstation mode
+            var redline = urlRedline || current.indexOf('redline=true') >= 0; 
             return {
               'doc' : current,
               'doc-file' : docFile,
@@ -109,7 +111,8 @@ var HelpersUrl = {
             
             current = decodeURIComponent(current);
             current = current.replace('interpretedFormat=true', 'interpretedFormat=false');
-            var redline = urlRedline || current.indexOf('redline=true') >= 0;  // HF: redline in normal or workstation mode
+            // HF: redline in normal or workstation mode
+            var redline = urlRedline || current.indexOf('redline=true') >= 0;
             return {
               'metalinks' : current,
               'metalinks-file' : 'MetaLinks.json',

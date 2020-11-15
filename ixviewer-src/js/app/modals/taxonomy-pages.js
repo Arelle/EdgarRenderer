@@ -47,6 +47,12 @@ var TaxonomyPages = {
       'value' : FiltersContextref.getMember(element.getAttribute('contextref')),
       'html' : true
     }, {
+      'label' : 'Typed Member',
+      'value' : FiltersContextref.getTypedMember(element.getAttribute('contextref'))
+    }, {
+      'label' : 'Explicit Member',
+      'value' : FiltersContextref.getExplicitMember(element.getAttribute('contextref'))
+    }, {
       'label' : 'Measure',
       'value' : FiltersUnitref.getMeasure(element.getAttribute('unitref'))
     }, {
@@ -110,7 +116,8 @@ var TaxonomyPages = {
             tdElement.appendChild(current['value']);
           }
         } else {
-          divElement.innerHTML=current['value'];
+         
+divElement.innerHTML=current['value'];
           tdElement.appendChild(divElement);
         }
         trElement.appendChild(thElement);
