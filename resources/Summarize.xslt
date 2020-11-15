@@ -11,6 +11,7 @@
   <!-- set processXsltInBrowser='true' to transform report logs in browser hf 12/29/18 -->
   <xsl:param name="processXsltInBrowser">false</xsl:param>
   <xsl:param name="includeLogs">true</xsl:param>
+  <xsl:param name="includeExcel">true</xsl:param>
   <xsl:key name="keyParent" match="Report" use="ParentRole"/>
   <xsl:variable name="majorversion" select="substring-before(/FilingSummary/Version,'.')"/>
   <xsl:variable name="nreports" select="count(/FilingSummary/MyReports/Report)"/>
@@ -388,7 +389,7 @@
         <div>
           <table>
             <tr>
-              <td colspan="2"><a class="xbrlviewer" style="color: black; font-weight: bold;" href="javascript:window.print();">Print Document</a><xsl:if test="not($isrr)">&#160;<a class="xbrlviewer" href="Financial_Report.xlsx">View Excel Document</a></xsl:if></td>
+              <td colspan="2"><a class="xbrlviewer" style="color: black; font-weight: bold;" href="javascript:window.print();">Print Document</a><xsl:if test="not($isrr) and $includeExcel = 'true'">&#160;<a class="xbrlviewer" href="Financial_Report.xlsx">View Excel Document</a></xsl:if></td>
             </tr>
             <tr>
               <td style="vertical-align: top;">
@@ -456,7 +457,7 @@
             <xsl:value-of select="(/FilingSummary/InputFiles/File[.=$instance]/@original)"/>
           </xsl:variable>
           <xsl:variable name="instance_is_inline">
-            <xsl:value-of select="translate(substring($instance,string-length($instance)-3),'HTM','htm') = '.htm' or substring($instance,string-length($instance)-5) = '.xhtml'"/>
+            <xsl:value-of select="translate(substring($instance,string-length($instance)-3),'HTM','htm') = '.htm' or substring($instance,string-length($instance)-5) = '.xhtml' or substring($instance,string-length($instance)-4) = '.html'"/>
           </xsl:variable>
           <xsl:if test="$original != ''">
             <li class="accordion ">

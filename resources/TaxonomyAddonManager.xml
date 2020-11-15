@@ -185,15 +185,6 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
-      <Taxonomy>exch-2011-01-31.xsd</Taxonomy>
-      <DefinitionFiles>
-        <string>exch-doc-2011-01-31.xml</string>
-      </DefinitionFiles>
-      <ReferenceFiles>
-        <string>exch-ref-2011-01-31.xml</string>
-      </ReferenceFiles>
-    </TaxonomyAddon>
-    <TaxonomyAddon>
       <Taxonomy>exch-2012-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>exch-doc-2012-01-31.xml</string>

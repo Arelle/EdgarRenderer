@@ -66,6 +66,7 @@
   <!-- set processXsltInBrowser='true' to transform report logs in browser hf 12/29/18 -->
   <xsl:param name="processXsltInBrowser">false</xsl:param>
   <xsl:param name="includeLogs">true</xsl:param>
+  <xsl:param name="includeExcel">true</xsl:param>
   <xsl:param name="accessionNumber">PROVIDED-BY-ARELLE-FILE-ARGUMENT-OBJECT</xsl:param>
   <xsl:variable name="fetchprefix"><![CDATA[DisplayDocument.do?step=docOnly&accessionNumber=]]></xsl:variable>
   <xsl:variable name="fetch_ix_prefixquoted"><![CDATA[../DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D]]></xsl:variable>
@@ -470,7 +471,7 @@
             <tr>
               <td colspan="2">
                  <a class="xbrlviewer" style="color: black; font-weight: bold;"
-                    href="javascript:window.print();">Print Document</a><xsl:if test="not($isrr)">&#160;<a
+                    href="javascript:window.print();">Print Document</a><xsl:if test="not($isrr) and $includeExcel = 'true'">&#160;<a
                        class="xbrlviewer">
                   <xsl:attribute name="href">
                     <xsl:value-of select="concat($fetchprefix,$accessionNumber,$fetchsuffix,'Financial_Report.xlsx')"/>
