@@ -83,7 +83,7 @@ class Embedding(object):
         for pseudoaxisQname, (ignore, presentationGroupOrderForAxis) in self.cube.axisAndMemberOrderDict.items():
             axes.add(pseudoaxisQname)
             if presentationGroupOrderForAxis is not None:  # unit, period and primary don't have a presentationGroup order
-                axisLabel = self.cube.hasAxes[pseudoaxisQname].arelleConcept.label()
+                axisLabel = self.cube.hasAxes[pseudoaxisQname].arelleConcept.label(lang=self.controller.labelLangs)
                 if axisLabel is None:
                     axisLabel = ''
                 orderedListOfOrderAxisQnameTuples += [(presentationGroupOrderForAxis, pseudoaxisQname, axisLabel)]
@@ -422,7 +422,7 @@ class Embedding(object):
                                 linkroleDefinition=shortName, linkroleName=shortName,
                                 preferredLabel=originalLabelRole, preferredLabelValue=originalLabelRole.rpartition("/")[2])
                 else:
-                    labelStr = fact.concept.label(preferredLabel=labelRole, fallbackToQname=True)
+                    labelStr = fact.concept.label(preferredLabel=labelRole, fallbackToQname=True, lang=self.controller.labelLangs)
 
                 factAxisMember.memberLabel = labelStr
                 factAxisMemberLabelList += [(factAxisMember, labelRole)]

@@ -1466,11 +1466,9 @@ class Row(object):
             if concept is not None:
                 typeQname = str(concept.typeQname)
                 simpleDataType = self.simpleDataType(concept)
-                for lang in ('en-US','en','en-GB'): # WcH 7/14/2017 look for both languages
-                    thedoclabel = concept.label(preferredLabel=arelle.XbrlConst.documentationLabel, fallbackToQname=False,lang=lang,linkrole=arelle.XbrlConst.defaultLinkRole)
-                    if thedoclabel is not None:
-                        doclabel = thedoclabel
-                        break
+                thedoclabel = concept.label(preferredLabel=arelle.XbrlConst.documentationLabel, fallbackToQname=False,lang=self.report.controller.labelLangs,linkrole=arelle.XbrlConst.defaultLinkRole)
+                if thedoclabel is not None:
+                    doclabel = thedoclabel
                 references = []
                 relationshipList = concept.modelXbrl.relationshipSet(arelle.XbrlConst.conceptReference).fromModelObject(concept)
                 def arbitrarykey(x):
@@ -1935,7 +1933,7 @@ class Cell(object):
 #                             self.rowList.insert(counter, openingAbstractRow)
 #                             counter += 1
 # 
-#                             totalLabel = self.filing.memberDict[factAxisMember.member].arelleConcept.label(preferredLabel = Utils.totalRole)
+#                             totalLabel = self.filing.memberDict[factAxisMember.member].arelleConcept.label(preferredLabel = Utils.totalRole,lang=self.filing.controller.labelLangs)
 #                             memberStack += [(factAxisMember.member, totalLabel)]
 # 
 #                     # if we haven't written a sequence of rows with the same groupedCoordinateList, we close anyways.

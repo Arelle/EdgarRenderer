@@ -248,7 +248,7 @@ def strFactValue(fact, preferredLabel=None, filing=None, report=None):
                 # check for declared preferred label
                 if qnameToGetTheLabelOf in report.cube.labelDict:
                     return report.cube.labelDict[qnameToGetTheLabelOf]
-            return filing.modelXbrl.qnameConcepts[qnameToGetTheLabelOf].label(preferredLabel)
+            return filing.modelXbrl.qnameConcepts[qnameToGetTheLabelOf].label(preferredLabel, lang=filing.controller.labelLangs)
         except KeyError:
             pass
 

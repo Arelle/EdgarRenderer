@@ -48,7 +48,7 @@ class PresentationGroup(object):
             return
         # it helps to have a canonical root node order, even if it is arbitrary.
         # the "or ''" at the end of the below statement is in case the concept doesn't have a label and returns None, can't sort like that.
-        self.rootNodeList = sorted(self.rootNodeList, key = lambda thing : thing.arelleConcept.label() or '')
+        self.rootNodeList = sorted(self.rootNodeList, key = lambda thing : thing.arelleConcept.label(lang=self.filing.controller.labelLangs) or '')
 
 
     # this function builds a graph of all the uncategorized facts and all of their respective axes and members.
@@ -291,7 +291,7 @@ class PresentationGroup(object):
 
     def buildLabel(self, concept, preferredLabel = None):
         # if preferredLabel is None, it outputs the standard labelStr
-        labelStr = concept.label(preferredLabel=preferredLabel, fallbackToQname=False)
+        labelStr = concept.label(preferredLabel=preferredLabel, fallbackToQname=False, lang=self.filing.controller.labelLangs)
         if labelStr is None: # if no labelStr, labelStr function with fallbackToQname=False returns None
             labelStr = Utils.prettyPrintQname(concept.qname.localName)
         self.cube.labelDict[concept.qname] = labelStr

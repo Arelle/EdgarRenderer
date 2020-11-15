@@ -136,8 +136,14 @@ Required if running under Java (using runtime.exec) on Windows, suggested always
     please set environment variable MPLCONFIGDIR to same location as xdgConfigHome/XDG_CONFIG_HOME
     (to prevent matlib crash under runtime.exe with Java)
         
+Language of labels:
+
+    Multi-language labels will select first the label language, secondly en-US if different from label language, and lastly qname.
+    Command line (and Web API) may override system language for labels with parameter --labelLang
+    GUI may use tools->language labels setting to override system language for labels
+        
 """
-VERSION = '3.20.3'
+VERSION = '3.20.4'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -247,6 +253,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.excelXslt = None
         self.createdFolders = []
         self.success = True
+        self.labelLangs = ['en-US','en-GB'] # list by WcH 7/14/2017, priority of label langs, en-XX always falls back to en anyway
 
     # wrap controler properties as needed
 
@@ -469,6 +476,10 @@ class EdgarRenderer(Cntlr.Cntlr):
         # logMessageTextFile is optional resources file for messages text (SEC format)
         options.logMessageTextFile = setResourceFile('logMessageTextFile', options.logMessageTextFile, "Cannot find logMessageTextFile {}")
 
+        _lang = options.labelLang or self.modelManager.defaultLang
+        if _lang in self.labelLangs:
+            self.labelLangs.remove(_lang)
+        self.labelLangs.insert(0, _lang) # ensure system lang is at start of langs list (highest priority)
 
     def copyReAttrOptions(self, options):
         # set EdgarRenderer options from prior processed options object
@@ -946,7 +957,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                                                        accessionNumber="'{}'".format(getattr(filing, "accessionNumber", "")),
                                                        resourcesFolder="'{}'".format(self.resourcesFolder.replace("\\","/")),
                                                        processXsltInBrowser=etree.XSLT.strparam(str(self.processXsltInBrowser).lower()),
-                                                       includeLogs=etree.XSLT.strparam(str(_includeLogs).lower()))
+                                                       includeLogs=etree.XSLT.strparam(str(_includeLogs).lower()),
+                                                       includeExcel=etree.XSLT.strparam("true" if (self.excelXslt) else "false"))
                             IoManager.writeHtmlDoc(filing, result, self.reportZip, _reportsFolder, "FilingSummary.htm")
                         self.logDebug("FilingSummary XSLT transform {:.3f} secs.".format(time.time() - _startedAt))
                         self.renderedFiles.add("FilingSummary.htm")
@@ -1306,7 +1318,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             renderingLogsXslt = ('RenderingLogs.xslt', None)[_combinedReports],
             excelXslt = ('InstanceReport_XmlWorkbook.xslt', None)[_combinedReports],
             logMessageTextFile = None,
-            logFile = None # from cntlrCmdLine but need to simulate for GUI operation
+            logFile = None, # from cntlrCmdLine but need to simulate for GUI operation
+            labelLang = cntlr.labelLang # emulate cmd line labelLang
         )
         if modelXbrl.modelDocument.type in ModelDocument.Type.TESTCASETYPES:
             modelXbrl.efmOptions = options  # save options in testcase's modelXbrl
