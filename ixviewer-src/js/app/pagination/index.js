@@ -195,7 +195,7 @@ var Pagination = {
     previousTaxonomyAElement.setAttribute('class', 'reboot page-link text-body');
     previousTaxonomyAElement.setAttribute('href', '#');
     previousTaxonomyAElement.setAttribute('tabindex', 13);
-    previousTaxonomyAElement.addEventListener('click', Pagination.previousTaxonomy(event, this));
+    previousTaxonomyAElement.addEventListener('click', function(e) { Pagination.previousTaxonomy(e, this); });
     
     var previousTaxonomyContent = document.createTextNode('Prev');
     
@@ -210,7 +210,7 @@ var Pagination = {
     nextTaxonomyAElement.setAttribute('class', 'reboot page-link text-body');
     nextTaxonomyAElement.setAttribute('href', '#');
     nextTaxonomyAElement.setAttribute('tabindex', 13);
-    nextTaxonomyAElement.addEventListener('click', Pagination.nextTaxonomy(event, this));
+    nextTaxonomyAElement.addEventListener('click', function(e) { Pagination.nextTaxonomy(e, this); });
     
     var nextTaxonomyContent = document.createTextNode('Next');
     
@@ -260,7 +260,7 @@ var Pagination = {
     firstPageAElement.setAttribute('class', 'reboot page-link text-body');
     firstPageAElement.setAttribute('href', '#');
     firstPageAElement.setAttribute('tabindex', 13);
-    firstPageAElement.addEventListener('click', Pagination.firstPage());
+    firstPageAElement.addEventListener('click', function() { Pagination.firstPage(); });
     
     var firstPageContent = document.createElement('i');
     firstPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-double-left');
@@ -276,7 +276,7 @@ var Pagination = {
     previousPageAElement.setAttribute('class', 'reboot page-link text-body');
     previousPageAElement.setAttribute('href', '#');
     previousPageAElement.setAttribute('tabindex', 13);
-    previousPageAElement.addEventListener('click', Pagination.previousPage());
+    previousPageAElement.addEventListener('click', function() { Pagination.previousPage(); });
     
     var previousPageContent = document.createElement('i');
     previousPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-left');
@@ -292,7 +292,7 @@ var Pagination = {
     nextPageAElement.setAttribute('class', 'reboot page-link text-body');
     nextPageAElement.setAttribute('href', '#');
     nextPageAElement.setAttribute('tabindex', 13);
-    nextPageAElement.addEventListener('click', Pagination.nextPage());
+    nextPageAElement.addEventListener('click', function() { Pagination.nextPage(); });
     
     var nextPageContent = document.createElement('i');
     nextPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-right');
@@ -308,7 +308,7 @@ var Pagination = {
     lastPageAElement.setAttribute('class', 'reboot page-link text-body');
     lastPageAElement.setAttribute('href', '#');
     lastPageAElement.setAttribute('tabindex', 13);
-    lastPageAElement.addEventListener('click', Pagination.lastPage());
+    lastPageAElement.addEventListener('click', function() { Pagination.lastPage(); });
     
     var lastPageContent = document.createElement('i');
     lastPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-double-right');
@@ -356,7 +356,7 @@ var Pagination = {
     firstPageAElement.setAttribute('class', 'reboot page-link text-body');
     firstPageAElement.setAttribute('href', '#');
     firstPageAElement.setAttribute('tabindex', 13);
-    firstPageAElement.addEventListener('click', Pagination.firstPage());
+    firstPageAElement.addEventListener('click', function() { Pagination.firstPage(); });
     
     var firstPageContent = document.createElement('i');
     firstPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-double-left');
@@ -372,7 +372,7 @@ var Pagination = {
     previousPageAElement.setAttribute('class', 'reboot page-link text-body');
     previousPageAElement.setAttribute('href', '#');
     previousPageAElement.setAttribute('tabindex', 13);
-    previousPageAElement.addEventListener('click', Pagination.previousPage());
+    previousPageAElement.addEventListener('click', function() { Pagination.previousPage(); });
     
     var previousPageContent = document.createElement('i');
     previousPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-left');
@@ -388,7 +388,7 @@ var Pagination = {
     nextPageAElement.setAttribute('class', 'reboot page-link text-body');
     nextPageAElement.setAttribute('href', '#');
     nextPageAElement.setAttribute('tabindex', 13);
-    nextPageAElement.addEventListener('click', Pagination.nextPage());
+    nextPageAElement.addEventListener('click', function() { Pagination.nextPage(); });
     
     var nextPageContent = document.createElement('i');
     nextPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-right');
@@ -404,7 +404,7 @@ var Pagination = {
     lastPageAElement.setAttribute('class', 'reboot page-link text-body');
     lastPageAElement.setAttribute('href', '#');
     lastPageAElement.setAttribute('tabindex', 13);
-    lastPageAElement.addEventListener('click', Pagination.lastPage());
+    lastPageAElement.addEventListener('click', function() { Pagination.lastPage(); });
     
     var lastPageContent = document.createElement('i');
     lastPageContent.setAttribute('class', 'reboot fas fa-lg fa-angle-double-right');

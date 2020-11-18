@@ -62,7 +62,7 @@ var Links = {
       link.setAttribute('class', 'reboot dropdown-item');
       if ( current !== HelpersUrl.getHTMLFileName ) {
         
-        link.addEventListener('click', Links.clickEventInternal(event, this));
+        link.addEventListener('click', function(e) { Links.clickEventInternal(e, this); });
         link.setAttribute('href', current);
         link.setAttribute('data-link', current);
         
