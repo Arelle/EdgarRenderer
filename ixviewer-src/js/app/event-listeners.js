@@ -28,6 +28,9 @@ $(document).ready(function() {
     $('#menu-dropdown-settings')
         .on('click', function(e) { ModalsSettings.clickEvent(e.originalEvent, e.delegateTarget); })
         .on('keyup', function(e) { ModalsSettings.clickEvent(e.originalEvent, e.delegateTarget); });
+    $('#nested-taxonomy-modal-jump')
+        .on('click', function(e) { Pagination.goToTaxonomy(e.originalEvent, e.delegateTarget); })
+        .on('keyup', function(e) { Pagination.goToTaxonomy(e.originalEvent, e.delegateTarget); });
     $('#sections-dropdown-link')
         .on('click', function(e) { Sections.toggle(e.originalEvent, e.delegateTarget); })
         .on('keyup', function(e) { Sections.toggle(e.originalEvent, e.delegateTarget); });
@@ -64,9 +67,6 @@ $(document).ready(function() {
     $('#taxonomy-nested-modal-expand')
         .on('click', function(e) { Modals.expandToggle(e.originalEvent, e.delegateTarget, 'taxonomy-nested-modal', 'taxonomy-nested-modal-expand', 'taxonomy-nested-modal-compress'); })
         .on('keyup', function(e) { Modals.expandToggle(e.originalEvent, e.delegateTarget, 'taxonomy-nested-modal', 'taxonomy-nested-modal-expand', 'taxonomy-nested-modal-compress'); });
-    $('#taxonomy-nested-modal-jump')
-        .on('click', function(e) { Pagination.goToTaxonomy(e.originalEvent, e.delegateTarget); })
-        .on('keyup', function(e) { Pagination.goToTaxonomy(e.originalEvent, e.delegateTarget); });
 
     // onClick functions
     $('#back-to-top-btn')
