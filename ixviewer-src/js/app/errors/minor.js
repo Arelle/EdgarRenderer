@@ -22,7 +22,7 @@ var ErrorsMinor = {
     button.setAttribute('type', 'button');
     button.setAttribute('class', 'reboot close');
     button.setAttribute('data-dismiss', 'alert');
-    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
     button.appendChild(buttonClose);
     element.appendChild(button);
@@ -57,7 +57,7 @@ var ErrorsMinor = {
       button.setAttribute('type', 'button');
       button.setAttribute('class', 'reboot close');
       button.setAttribute('data-dismiss', 'alert');
-      button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+      button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
       button.appendChild(buttonClose);
       
       element.appendChild(button);
@@ -82,7 +82,7 @@ var ErrorsMinor = {
     button.setAttribute('type', 'button');
     button.setAttribute('class', 'reboot close');
     button.setAttribute('data-dismiss', 'alert');
-    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
     button.appendChild(buttonClose);
     element.appendChild(button);
@@ -107,7 +107,7 @@ var ErrorsMinor = {
     button.setAttribute('type', 'button');
     button.setAttribute('class', 'reboot close');
     button.setAttribute('data-dismiss', 'alert');
-    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
     button.appendChild(buttonClose);
     element.appendChild(button);
@@ -133,7 +133,7 @@ var ErrorsMinor = {
     button.setAttribute('type', 'button');
     button.setAttribute('class', 'reboot close');
     button.setAttribute('data-dismiss', 'alert');
-    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
     button.appendChild(buttonClose);
     element.appendChild(button);
@@ -160,7 +160,7 @@ var ErrorsMinor = {
     button.setAttribute('type', 'button');
     button.setAttribute('class', 'reboot close');
     button.setAttribute('data-dismiss', 'alert');
-    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
     button.appendChild(buttonClose);
     element.appendChild(button);
@@ -186,7 +186,7 @@ var ErrorsMinor = {
     button.setAttribute('type', 'button');
     button.setAttribute('class', 'reboot close');
     button.setAttribute('data-dismiss', 'alert');
-    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
     button.appendChild(buttonClose);
     element.appendChild(button);
@@ -211,7 +211,7 @@ var ErrorsMinor = {
     button.setAttribute('type', 'button');
     button.setAttribute('class', 'reboot close');
     button.setAttribute('data-dismiss', 'alert');
-    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
     button.appendChild(buttonClose);
     element.appendChild(button);
@@ -237,7 +237,7 @@ var ErrorsMinor = {
     button.setAttribute('type', 'button');
     button.setAttribute('class', 'reboot close');
     button.setAttribute('data-dismiss', 'alert');
-    button.setAttribute('onclick', Errors.updateMainContainerHeight(true));
+    button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
     button.appendChild(buttonClose);
     element.appendChild(button);
