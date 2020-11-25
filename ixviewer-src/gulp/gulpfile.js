@@ -77,6 +77,7 @@ gulp.task('production', () => {
       'user-filters/*.js',
       '*.js',
       'init.js',
+      'event-listeners.js'
     ]))
     .pipe(concat('production.js'))
     .pipe(gulp.dest(jsProdFile))
