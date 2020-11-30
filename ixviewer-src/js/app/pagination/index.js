@@ -195,7 +195,7 @@ var Pagination = {
     previousTaxonomyAElement.setAttribute('class', 'reboot page-link text-body');
     previousTaxonomyAElement.setAttribute('href', '#');
     previousTaxonomyAElement.setAttribute('tabindex', 13);
-    previousTaxonomyAElement.addEventListener('click', function(e) { Pagination.previousTaxonomy(e, this); });
+    previousTaxonomyAElement.addEventListener('click', function(e) { Pagination.previousTaxonomy(e, previousTaxonomyAElement); });
     
     var previousTaxonomyContent = document.createTextNode('Prev');
     
@@ -210,7 +210,7 @@ var Pagination = {
     nextTaxonomyAElement.setAttribute('class', 'reboot page-link text-body');
     nextTaxonomyAElement.setAttribute('href', '#');
     nextTaxonomyAElement.setAttribute('tabindex', 13);
-    nextTaxonomyAElement.addEventListener('click', function(e) { Pagination.nextTaxonomy(e, this); });
+    nextTaxonomyAElement.addEventListener('click', function(e) { Pagination.nextTaxonomy(e, nextTaxonomyAElement); });
     
     var nextTaxonomyContent = document.createTextNode('Next');
     

@@ -197,8 +197,8 @@ var TaxonomiesGeneral = {
       aElement.setAttribute('data-id', element.getAttribute('id'));
     }
     aElement.setAttribute('tabindex', 13);
-    aElement.addEventListener('click', function(e) { TaxonomiesGeneral.goTo(e, this, modalAction); });
-    aElement.addEventListener('keyup', function(e) { TaxonomiesGeneral.goTo(e, this, modalAction); });
+    aElement.addEventListener('click', function(e) { TaxonomiesGeneral.goTo(e, aElement, modalAction); });
+    aElement.addEventListener('keyup', function(e) { TaxonomiesGeneral.goTo(e, aElement, modalAction); });
     
     var divElement = document.createElement('div');
     divElement.setAttribute('class', 'd-flex w-100 justify-content-between');
