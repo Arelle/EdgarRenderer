@@ -569,7 +569,8 @@ class InstanceSummary(object):
             if labels is not None and len(labels) > 0:
                 langDict = tag['lang'] = {}
                 for rel in labels:
-                    lang = rel.toModelObject.xmlLang 
+                    lang = rel.toModelObject.xmlLang
+                    if lang: lang = lang.lower() # index on canonical xml:lang 
                     label = rel.toModelObject
                     if label is not None:
                         labelrole = (label.role or "").split('/')[-1:][0]
@@ -644,7 +645,7 @@ class InstanceSummary(object):
                     if (axis.namespaceURI.startswith('http://xbrl.sec.gov/dei/')):
                         if (axis.localName == 'DocumentInformationDocumentAxis'):                            
                             try:
-                                _labels = self.tagDict[dim.member.id]['lang']['en-US']['role']
+                                _labels = self.tagDict[dim.member.id]['lang']['en-us']['role'] # canonical em-us
                                 if ('terseLabel' in _labels):
                                     _memberDocument = _labels['terseLabel']
                                 elif ('label' in _labels):
@@ -653,7 +654,7 @@ class InstanceSummary(object):
                                 pass
                         elif (axis.localName == 'LegalEntityAxis'):
                             try:
-                                _labels = self.tagDict[dim.member.id]['lang']['en-US']['role']
+                                _labels = self.tagDict[dim.member.id]['lang']['en-us']['role'] # canonical em-us
                                 if ('terseLabel' in _labels):
                                     _memberSeries = _labels['terseLabel']
                                 elif ('label' in _labels):
