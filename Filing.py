@@ -346,7 +346,7 @@ class Filing(object):
                             else:  discriminator = 0 - float(fact.decimals) # Larger decimal values come first
                         else: # non-numeric
                             if fact.isNil: discriminator = '\uffff' # Null values always last (highest 2-byte unicode character)
-                            elif fact.xmlLang == 'en-US': discriminator = 'aa-AA' # en-US comes first
+                            elif fact.xmlLang in ('en-US','en-us'): discriminator = 'aa-AA' # en-US comes first.  en-us is canonical form
                             elif fact.xmlLang is None: discriminator = 'aa-AA' # no lang means en-US
                             else: discriminator = fact.xmlLang # followed by all others
                         return (fact.contextID,discriminator,fact.sourceline) # sourceLine is the tiebreaker              
