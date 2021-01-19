@@ -424,28 +424,28 @@ Link:{elementName} not child of link:linkbase or xbrli:instance
          level="warning"
          module="ValidateFiling.py" line="1439"
          args="countEligible elements">
-[ix-0514-Hidden-Fact-Eligible-For-Transform] WARN: {countEligible} fact(s) appearing in ix:hidden were eligible for transformation: {elements}
+[ix-0514-Hidden-Fact-Eligible-For-Transform] WARN: {countEligible} fact(s) appearing in ix:hidden were eligible for transformation: {elements} -  {refSources}
 </message>
 
 <message code="EFM.5.02.05.14.hidden-fact-not-referenced"
          level="warning"
          module="ValidateFiling.py" line="1458"
          args="countUnreferenced elements">
-[ix-0514-Hidden-Fact-Not-Referenced] WARN: {countUnreferenced} fact(s) appearing in ix:hidden were not referenced by any -sec-ix-hidden style property: {elements}
+[ix-0514-Hidden-Fact-Not-Referenced] WARN: {countUnreferenced} fact(s) appearing in ix:hidden were not referenced by any -sec-ix-hidden style property: {elements} -  {refSources}
 </message>
 
 <message code="EFM.5.02.05.14.hidden-fact-multiple-references"
          level="warning"
          module="ValidateFiling.py" line="1448"
          args="element id countReferences">
-[ix-0514-Hidden-Fact-Multiple-References] WARN: {element} is referenced by {countReferences} -sec-ix-hidden style properties: {id}.
+[ix-0514-Hidden-Fact-Multiple-References] WARN: {element} is referenced by {countReferences} -sec-ix-hidden style properties: {id}.  {refSources}
 </message>
 
 <message code="EFM.5.02.05.14.hidden-fact-not-found"
          level="error"
          module="ValidateFiling.py" line="1448"
          args="id">
-[ix-0514-Hidden-Fact-Not-Found] The value of the -sec-ix-hidden style property, {id}, does not correspond to the id of any hidden fact.
+[ix-0514-Hidden-Fact-Not-Found] The value of the -sec-ix-hidden style property, {id}, does not correspond to the id of any hidden fact.  {refSources}
 </message>
 
 <message code="EFM.6.03.02.sdrHasNonSdrExhibit"

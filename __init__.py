@@ -143,7 +143,7 @@ Language of labels:
     GUI may use tools->language labels setting to override system language for labels
         
 """
-VERSION = '3.20.4'
+VERSION = '3.21.1'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -810,6 +810,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             _msgParams = logParamEscapePattern.findall(_msgText) # finds all parameters
             _msgArgs = logRec.args.copy() # duplicate functinoality of ArelleMessageWrapper.java
             _refNum = 0
+            _fileLines = defaultdict(set)
             for _ref in logRec.refs:
                 _href = _ref.get("href")
                 if _href:
@@ -829,14 +830,13 @@ class EdgarRenderer(Cntlr.Cntlr):
                             _msgArgs["refUrl"] = _fileName
                         else:
                             _msgArgs["refSource{}".format(_refNum)] = _source
-                        if "refSources" in _msgArgs:
-                            _msgArgs["refSources"] = _msgArgs.get("refSources") + ", " + _source
                             if "refSources2_n" in _msgArgs:
                                 _msgArgs["refSources2_n"] = _msgArgs.get("refSources2_n") + ", " + _source
                             else:
                                 _msgArgs["refSources2_n"] = _source
-                        else:
-                            _msgArgs["refSources"] = _source                               
+                        _fileLines[_fileName].add(_sourceLine)
+            if logRec.refs:               
+                _msgArgs["refSources"] = Cntlr.logRefsFileLines(logRec.refs)
             _text = logParamEscapePattern.sub(r"{\1}", # substitute java {{x} into py {{x}}} but leave {{x}} as it was
                     _msgText   
                     ).format(**_msgArgs) # now uses {...} parameters in arelleMessagesText
