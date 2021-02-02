@@ -1697,7 +1697,7 @@ Axis {dimension} in DRS role {linkrole}, missing targetrole consecutive relation
          level="error"
          module="ValidateFiling.py" line="1577"
          args="namespaceConflicts conflictClass">
-[cp-2203-Incompatible-Schemas]  References for conflicting standard taxonomies {conflictClass} are not allowed in same DTS {namespaceConflicts}. {refSources}
+[cp-2203-Incompatible-Schemas]  References for conflicting standard taxonomies {conflictClass} are not allowed in same DTS: {namespaceConflicts}. {refSources}
 </message>
 <message code="EFM.6.22.03.incompatibleTaxonomyDocumentType"
          level="error"

@@ -163,7 +163,7 @@ class Filing(object):
         self.axisDict = {}
         self.memberDict = {}
         self.elementDict = {}
-        self.factToQlabelDict = {}
+        self.factToQlabelsDict = {}
         self.symbolLookupDict = {}
         self.presentationUnitToConceptDict = {}
 
@@ -496,15 +496,24 @@ class Filing(object):
                 else:
                     isEmbeddedCommand = False
 
-                if not isEmbeddedCommand and re.compile('[a-zA-Z-]+:[a-zA-Z]+').match(fact.value):
+                if not isEmbeddedCommand and re.compile('[a-zA-Z-]+:[a-zA-Z]+').match(fact.value): # regex is too restrictive
                     try:
                         prefix, ignore, localName = fact.value.partition(':')
                         namespaceURI = self.modelXbrl.prefixedNamespaces[prefix]
                         qname = arelle.ModelValue.QName(prefix, namespaceURI, localName)
                         if qname in self.modelXbrl.qnameConcepts:
-                            self.factToQlabelDict[fact] = qname
+                            self.factToQlabelsDict[fact] = [qname]
                     except KeyError:
                         pass
+                    
+                if (not isEmbeddedCommand 
+                    and fact.concept is not None 
+                    and fact.concept.isEnumeration2Item 
+                    and type(fact.xValue)==list):
+                    self.factToQlabelsDict[fact] = []
+                    for qname in fact.xValue:
+                        if qname in self.modelXbrl.qnameConcepts:
+                            self.factToQlabelsDict[fact] += [qname]
 
             axisMemberLookupDict = {}
 
@@ -1068,7 +1077,7 @@ class Filing(object):
                                _('In "%(linkroleName)s", fact %(fact)s with value %(value)s and preferred label %(preferredLabelValue)s, '
                                  'was not shown because there are no facts in a duration %(startOrEnd)s at %(date)s. Change the preferred label role or add facts.'),
                                 modelObject=fact, fact=fact.qname, value=value,  startOrEnd=word, date=endTime,
-                                preferredLabel=role, preferredLabelValue=role.rpartition("/")[2], 
+                                preferredLabel=role, preferredLabelValue=role, 
                                 linkrole=linkroleUri, linkroleDefinition=definitionText, linkroleName=shortName)
 
 class ReportSummary(object):

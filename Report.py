@@ -1327,7 +1327,7 @@ class Row(object):
 
         self.preferredLabel = None
         if not (isSegmentTitle or IsAbstractGroupTitle or report.embedding.rowPrimaryPosition == -1 or factAxisMemberGroup.preferredLabel is None):
-            self.preferredLabel = factAxisMemberGroup.preferredLabel.rpartition('/')[2]
+            self.preferredLabel = factAxisMemberGroup.preferredLabel
         self.isHidden = False
         self.startEndContext = startEndContext
 
@@ -1575,7 +1575,7 @@ class Column(object):
                                     cube=report.cube.shortName, error=errorStr, column=self.index)
         self.unitTypeToFactSetDefaultDict = defaultdict(set)
         if report.embedding.columnPrimaryPosition != -1 and factAxisMemberGroup.preferredLabel is not None:
-            self.preferredLabel = factAxisMemberGroup.preferredLabel.rpartition('/')[2]
+            self.preferredLabel = factAxisMemberGroup.preferredLabel
         else:
             self.preferredLabel = None
 
@@ -1645,7 +1645,7 @@ class Cell(object):
         if preferredLabel is None:
             self.preferredLabel = None
         else:
-            self.preferredLabel = preferredLabel.rpartition('/')[2]
+            self.preferredLabel = preferredLabel
 
         if      (fact is not None and
                  fact.isNumeric and

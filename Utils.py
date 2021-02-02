@@ -240,15 +240,19 @@ def strFactValue(fact, preferredLabel=None, filing=None, report=None):
         else:
             return valueStr
 
-    # handle qlabel
-    if filing is not None:
+    # handle labels of one or more qname values in a fact.
+    if filing is not None and report is not None:
         try:
-            qnameToGetTheLabelOf = filing.factToQlabelDict[fact]
-            if not preferredLabel and report is not None:
-                # check for declared preferred label
-                if qnameToGetTheLabelOf in report.cube.labelDict:
-                    return report.cube.labelDict[qnameToGetTheLabelOf]
-            return filing.modelXbrl.qnameConcepts[qnameToGetTheLabelOf].label(preferredLabel, lang=filing.controller.labelLangs)
+            labels = []
+            qnamesToGetTheLabelOf = filing.factToQlabelsDict[fact]
+            for qname in qnamesToGetTheLabelOf:
+                label = None
+                if qname in report.cube.labelDict:
+                    label = report.cube.labelDict[qname]
+                else:
+                    label = filing.modelXbrl.qnameConcepts[qname].label(preferredLabel, lang=filing.controller.labelLangs)
+                labels.append(label)
+            return ", ".join(labels)
         except KeyError:
             pass
 

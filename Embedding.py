@@ -420,7 +420,7 @@ class Embedding(object):
                                 _("In \"%(linkroleName)s\", element %(conceptTo)s has period type 'duration' but is given a preferred label %(preferredLabelValue)s when shown under parent %(conceptFrom)s.  The preferred label will be ignored."),
                                 modelObject=fact, conceptTo=qname, conceptFrom=parentQname, linkrole=linkroleUri, 
                                 linkroleDefinition=shortName, linkroleName=shortName,
-                                preferredLabel=originalLabelRole, preferredLabelValue=originalLabelRole.rpartition("/")[2])
+                                preferredLabel=originalLabelRole, preferredLabelValue=originalLabelRole)
                 else:
                     labelStr = fact.concept.label(preferredLabel=labelRole, fallbackToQname=True, lang=self.controller.labelLangs)
 

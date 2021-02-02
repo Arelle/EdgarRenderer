@@ -435,7 +435,7 @@
                 <xsl:text>javascript:loadReport(</xsl:text>
                 <xsl:value-of select="$nreports"/>
                 <xsl:text>)</xsl:text>
-              </xsl:attribute><img src="/include/reports.gif" border="0" height="12" width="9" alt="Reports"/>All Reports</a>
+              </xsl:attribute><img src="/images/reports.gif" border="0" height="12" width="9" alt="Reports"/>All Reports</a>
           </li>
         </xsl:if>
         <xsl:if test="$nlogs > 0">
@@ -444,7 +444,7 @@
                 <xsl:text>javascript:loadReport(</xsl:text>
                 <xsl:value-of select="$nreports + $nlogs "/>
                 <xsl:text>)</xsl:text>
-              </xsl:attribute><img src="/include/reports.gif" border="0" height="12" width="9" alt="Logs"/>Rendering Log</a>
+              </xsl:attribute><img src="/images/reports.gif" border="0" height="12" width="9" alt="Logs"/>Rendering Log</a>
           </li>
         </xsl:if>
       </xsl:when>
