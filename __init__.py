@@ -806,7 +806,14 @@ class EdgarRenderer(Cntlr.Cntlr):
             if _fileLines:
                 _text += " - " + _fileLines # default if no {refSources} or other in the ArelleMessagesText
         try:
-            _msgText = self.logMessageText[logRec.messageCode]
+            # try edgarCode and if not there, try messageCode
+            msgCode = logRec.args.get("edgarCode")
+            if msgCode in self.logMessageText:
+                _msgText = self.logMessageText[msgCode]
+            elif logRec.messageCode in self.logMessageText:
+                _msgText = self.logMessageText[logRec.messageCode]
+            else:
+                return _text
             _msgParams = logParamEscapePattern.findall(_msgText) # finds all parameters
             _msgArgs = logRec.args.copy() # duplicate functinoality of ArelleMessageWrapper.java
             _refNum = 0
