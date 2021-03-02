@@ -688,32 +688,6 @@ var FiltersValue = {
       }
     }
     
-    // if ( !contentForSideBarOrPopOver && showCollapseIfApplicable ) {
-    // // we show accordion
-    // var newElement = document.createElement('div');
-    // newElement.setAttribute('class', 'reboot collapse d-block
-    // collapse-modal-partial');
-    // newElement.setAttribute('id', 'collapse-taxonomy');
-    //      
-    // newElement.innerHTML = elementToFormat.innerHTML;
-    // containerElement.appendChild(newElement);
-    //      
-    // var button = document.createElement('button');
-    // button.setAttribute('class', 'reboot btn btn-primary btn-sm mt-1');
-    // button.setAttribute('type', 'button');
-    // button.setAttribute('data-toggle', 'collapse');
-    // button.setAttribute('data-target', '#collapse-taxonomy');
-    // var content = document.createTextNode('Contract / Expand');
-    //      
-    // button.appendChild(content);
-    // containerElement.appendChild(button);
-    //      
-    // } else if ( contentForSideBarOrPopOver && showCollapseIfApplicable ) {
-    // containerElement.textContent = 'Click to see Fact';
-    // } else {
-    //      
-    // containerElement.textContent = elementToFormat.textContent;
-    // }
     return FiltersNumber.numberFormatting(element, he.unescape(containerElement.innerHTML));
     
   },
@@ -722,7 +696,7 @@ var FiltersValue = {
     
     var containerElement = document.createElement('div');
     var newElement = document.createElement('div');
-    newElement.setAttribute('class', 'reboot collapse d-block collapse-modal-partial');
+    newElement.setAttribute('class', 'reboot collapse d-block collapse-modal-partial text-break');
     newElement.setAttribute('id', 'collapse-modal');
     
     element.forEach(function( current ) {
@@ -748,6 +722,7 @@ var FiltersValue = {
   },
   
   getFormattedValueForTextBlock : function( element ) {
+    
     if ( element.hasAttribute('format') ) {
       
       return FiltersValue.getCorrectFormatBasedOnNamespace(element);
@@ -772,6 +747,11 @@ var FiltersValue = {
     elementChildren.forEach(function( current ) {
       
       var duplicateNode = current.cloneNode(true);
+      // remove width attribute from the duplicated node(s)
+      if ( duplicateNode && duplicateNode.style && duplicateNode.style.width ) {
+        
+        duplicateNode.style.width = null;
+      }
       newElement.appendChild(duplicateNode);
     });
     var button = document.createElement('button');
@@ -800,12 +780,12 @@ var FiltersValue = {
     element.removeAttribute('escape');
     element.removeAttribute('continued-taxonomy');
     element.removeAttribute('continued-main-taxonomy');
-    element.removeAttribute('class');
     element.removeAttribute('enabled-taxonomy');
     element.removeAttribute('highlight-taxonomy');
     element.removeAttribute('selected-taxonomy');
     element.removeAttribute('hover-taxonomy');
     element.removeAttribute('onclick');
+    element.removeAttribute('onkeyup');
     element.removeAttribute('onmouseenter');
     element.removeAttribute('onmouseleave');
     element.removeAttribute('isamountsonly');
@@ -815,7 +795,9 @@ var FiltersValue = {
     element.removeAttribute('isadditionalitemsonly');
     element.removeAttribute('isstandardonly');
     element.removeAttribute('iscustomonly');
+    element.removeAttribute('tabindex');
     
+    element.style.width = null;
     element.style.fontSize = null;
     element.style.lineHeight = null;
     // element.removeAttribute('style');

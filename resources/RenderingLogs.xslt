@@ -10,6 +10,7 @@
     <style type="text/css">
       .info{ }
       .erro{ background-color:pink; }
+      .inco{ background-color:peachpuff; }
       .warn{ background-color:lemonchiffon; }
     </style>
   </xsl:template>
@@ -39,6 +40,7 @@
       </tr>
       <xsl:variable name="type" select="translate(substring(@type,1,4),$upper,$lower)"/>
       <xsl:apply-templates select="Log[translate(substring(@type,1,4),$upper,$lower)='erro']"/>
+      <xsl:apply-templates select="Log[translate(substring(@type,1,4),$upper,$lower)='inco']"/>
       <xsl:apply-templates select="Log[translate(substring(@type,1,4),$upper,$lower)='warn']"/>
       <xsl:apply-templates select="Log[translate(substring(@type,1,4),$upper,$lower)='info']"/>
     </table>
