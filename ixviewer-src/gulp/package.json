@@ -20,6 +20,8 @@
     "gulp-order": "^1.2.0",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
-    "gulp-uglify": "^3.0.2"
+    "gulp-uglify": "^3.0.2",
+    "jquery": "^3.5.1",
+    "popper": "^1.0.1"
   }
 }
