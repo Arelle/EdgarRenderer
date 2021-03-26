@@ -807,9 +807,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                 _text += " - " + _fileLines # default if no {refSources} or other in the ArelleMessagesText
         try:
             # try edgarCode and if not there, try messageCode
-            msgCode = logRec.args.get("edgarCode")
-            if msgCode in self.logMessageText:
-                _msgText = self.logMessageText[msgCode]
+            if isinstance(logRec.args,dict) and logRec.args.get("edgarCode") in self.logMessageText:
+                _msgText = self.logMessageText[logRec.args.get("edgarCode")]
             elif logRec.messageCode in self.logMessageText:
                 _msgText = self.logMessageText[logRec.messageCode]
             else:

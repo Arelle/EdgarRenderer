@@ -1271,7 +1271,7 @@ ArcroleType {arcroleType} should end with /arcrole/{LC3name}
          level="error"
          module="ValidateFilingDTS.py" line="281"
          args="schema concept">
-[rq-0732-Nonnnumeric-Must-Be-Duration] Declaration of element {concept} in {schema} must have xbrli:periodType of 'duration' because its base type is not numeric.
+[rq-0732-Nonnnumeric-Must-Be-Duration] Declaration of element {concept} in {schema} must have xbrli:periodType of 'duration' because its base type is a text block.
 </message>
 
 
