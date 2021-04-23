@@ -382,6 +382,7 @@
                 <xsl:when test="IsSegmentTitle = 'true'"/>
                 <xsl:when test="IsAbstractGroupTitle = 'true'"/>
                 <xsl:when test="ElementPrefix = 'us-gaap_'"/>
+                <xsl:when test="ElementPrefix = 'ifrs-full_'"/>                
                 <xsl:when test="ElementPrefix = 'dei_'"/>
                 <xsl:when test="ElementPrefix = 'invest_'"/>
                 <xsl:when test="ElementPrefix = 'rr_'"/>
