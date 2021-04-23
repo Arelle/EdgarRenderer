@@ -10,7 +10,7 @@ domestic copyright protection. 17 U.S.C. 105.
 End user support is by e-mail direct to SEC at: [StructuredData@sec.gov]
 (mailto:StructuredData@sec.gov).
 
-This is EDGAR release 21.1 in production March 22, 2021.
+This is EDGAR release 21.1, update 21.1.2.u1 in production March 22, 2021, updated on April 25, 2021.
 
 Developer issue management is by the Jira Edgar Renderer project: https://arelle.atlassian.net/projects/ER
 
