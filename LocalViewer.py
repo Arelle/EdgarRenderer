@@ -54,7 +54,7 @@ class _LocalViewer(LocalViewer):
                         redirect("/{}/{}".format(_report,f))      
             if not _fileExists:
                 self.cntlr.addToLog("http://localhost:{}/{}".format(self.port,file), messageCode="localViewer:fileNotFound",level=logging.DEBUG)
-            return static_file(_file, root=_fileDir, more_headers=self.noCacheHeaders) # extra_headers modification to py-bottle
+            return static_file(_file, root=_fileDir, headers=self.noCacheHeaders) # extra_headers modification to py-bottle
         return static_file(file, root="/") # probably can't get here unless path is wrong
 
 localViewer = _LocalViewer("SEC ix viewer", os.path.dirname(__file__)) # plugin singleton local viewer class
