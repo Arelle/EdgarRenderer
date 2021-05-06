@@ -401,7 +401,10 @@ class Embedding(object):
             return factAxisMemberLabelList
         getMemberPositionsOnAxisDict = self.getMemberPositionsOnAxisDictOfDicts['primary']
         for positionOnPrimaryAxis, labelRole in getMemberPositionsOnAxisDict[fact.qname]:
-            if not Utils.isPeriodStartOrEndLabel(labelRole) or periodStartEndLabel == labelRole:
+            mustMatch = (Utils.isPeriodStartOrEndLabel(labelRole)
+                         or Utils.isPeriodStartOrEndLabel(periodStartEndLabel))
+            if ((mustMatch and periodStartEndLabel == labelRole) # EDGARDEV-6871 5/5/21
+                or not mustMatch):
                 factAxisMember = FactAxisMember('primary', fact.qname)
                 factAxisMember.axisMemberPositionTuple = (axisIndex, positionOnPrimaryAxis)
 
