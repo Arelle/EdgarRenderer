@@ -291,7 +291,7 @@ var FiltersName = {
       // return an empty array
       return [ ];
     }
-    return null;
+    return [ ];
   },
   
   getTag : function( name ) {

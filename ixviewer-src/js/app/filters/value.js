@@ -693,7 +693,11 @@ var FiltersValue = {
   },
   
   getFormattedValueForContinuedAt : function( element ) {
-    
+     // dev for continue-at transformation issue
+     if ( element[0].hasAttribute('format') ) {
+      
+      return FiltersValue.getCorrectFormatBasedOnNamespace(element[0]);
+    }
     var containerElement = document.createElement('div');
     var newElement = document.createElement('div');
     newElement.setAttribute('class', 'reboot collapse d-block collapse-modal-partial text-break');

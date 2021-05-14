@@ -10,7 +10,7 @@ domestic copyright protection. 17 U.S.C. 105.
 End user support is by e-mail direct to SEC at: [StructuredData@sec.gov]
 (mailto:StructuredData@sec.gov).
 
-This is a EDGAR release 21.1 in production March 22, 2021, with ix viewer updated by arelle.org to accept TR4 so that it can be used to view ESEF filings.
+This is a EDGAR release 21.1, update 21.1.2.u1, in production March 22, 2021 with update April 25, 2021, with ix viewer updated accept TR4, planned for the upcoming EDGAR release.  
 
 Developer issue management is by the Jira Edgar Renderer project: https://arelle.atlassian.net/projects/ER
 

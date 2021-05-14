@@ -420,6 +420,13 @@ Link:{elementName} not child of link:linkbase or xbrli:instance
 [ix-0502-Standard-Namespace-Prefix] The prefix {submittedPrefix} must be replaced by {recommendedPrefix} for standard namespace {namespace}
 </message>
 
+<message code="EFM.5.02.05.12.unupportedTransformationRegistry"
+         level="error"
+         module="ValidateFiling.py" line="1946"
+         args="unsupportedRegistries">
+[ix-0512-Unsupported-Transformation-Registry] Inline elements have disallowed transformation registries {unsupportedRegistries} -  {refSources}
+</message>
+
 <message code="EFM.5.02.05.14.hidden-fact-eligible-for-transform"
          level="warning"
          module="ValidateFiling.py" line="1439"
@@ -1271,7 +1278,7 @@ ArcroleType {arcroleType} should end with /arcrole/{LC3name}
          level="error"
          module="ValidateFilingDTS.py" line="281"
          args="schema concept">
-[rq-0732-Nonnnumeric-Must-Be-Duration] Declaration of element {concept} in {schema} must have xbrli:periodType of 'duration' because its base type is a text block.
+[rq-0732-TextBlock-Must-Be-Duration] Declaration of element {concept} in {schema} must have xbrli:periodType of 'duration' because its type is a text block.
 </message>
 
 

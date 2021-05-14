@@ -64,6 +64,9 @@ var HelpersUrl = {
             element.setAttribute('href', element.getAttribute(attribute));
             element.setAttribute('onclick', 'Links.clickEventInternal(event, this)');
           }
+           else {
+            HelpersUrl.makeAbsoluteUrlUnlessSimpleAnchorTag(element);
+          }
         } else {
           var index = Constants.getMetaSourceDocuments.indexOf(element.getAttribute(attribute));
           if ( index >= 0 ) {

@@ -46,15 +46,37 @@ var ModalsNested = {
         ModalsNested.recursielyFindAllNestedTaxonomies(TaxonomiesContinuedAt.findContinuedMainTaxonomy(element));
         
       } else if ( element.hasAttribute('text-block-taxonomy') && element.getAttribute('text-block-taxonomy') === 'true' ) {
-        ModalsNested.getAllElementIDs.push({
+       
+       /* ModalsNested.getAllElementIDs.push({
           id : element.getAttribute('id'),
           'text-block' : true
+        }); */
+        // Dev fixing nested duplicateElement issue
+         var uniqueElement = ModalsNested.getAllElementIDs.filter(function( current ) {
+          return current.id === element.getAttribute('id');
         });
-      } else {
-        ModalsNested.getAllElementIDs.push({
+        if ( uniqueElement.length === 0 ) {
+          ModalsNested.getAllElementIDs.push({
+            id : element.getAttribute('id'),
+            'text-block' : true
+          });
+        }
+        } else {
+       // Dev fixing nested duplicateElement issue
+        var uniqueElement = ModalsNested.getAllElementIDs.filter(function( current ) {
+          return current.id === element.getAttribute('id');
+        });
+        if ( uniqueElement.length === 0 ) {
+          ModalsNested.getAllElementIDs.push({
+            id : element.getAttribute('id'),
+            'text-block' : false
+          });
+        }
+
+       /*  ModalsNested.getAllElementIDs.push({
           id : element.getAttribute('id'),
           'text-block' : false
-        });
+        }); */
       }
     }
     

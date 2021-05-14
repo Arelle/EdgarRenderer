@@ -112,8 +112,10 @@ var TaxonomyPages = {
             });
             tdElement.appendChild(divElement);
           } else {
-            
-            tdElement.appendChild(current['value']);
+                  if ( current['value'] instanceof HTMLElement )     
+                     { tdElement.appendChild(current['value']); }
+                 else { divElement.innerHTML=current['value'];
+                   tdElement.appendChild(divElement); }
           }
         } else {
          
