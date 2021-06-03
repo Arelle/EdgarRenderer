@@ -455,6 +455,71 @@ Link:{elementName} not child of link:linkbase or xbrli:instance
 [ix-0514-Hidden-Fact-Not-Found] The value of the -sec-ix-hidden style property, {id}, does not correspond to the id of any hidden fact.  {refSources}
 </message>
 
+<!--  shared with EFM.6.05.34 code -->
+
+<message code="EFM.5.02.05.activeContent"
+         level="error"
+         module="ValidateFilingText.py" line="565"
+         args="validatedObjectLabel attribute element">
+[cp-0502-Prohibited-Html] {validatedObjectLabel} contains text that is not valid for the content of the HTML "body" tag: javascript in '{attribute}' for &lt;{element}>. {refSources}
+</message>
+
+<message code="EFM.5.02.05.dtdError"
+         level="error"
+         module="ValidateFilingText.py" line="555"
+         args="validatedObjectLabel error">
+[cp-0502-Prohibited-Html] {validatedObjectLabel} causes the XML error: {error}. {refSources}
+</message>
+
+<message code="EFM.5.02.05.disallowedMetaContent"
+         level="error"
+         module="ValidateFilingText.py" line="578"
+         args="validatedObjectLabel metaContent">
+[cp-0502-Prohibited-Html] {validatedObjectLabel} &lt;meta&gt; content is "{metaContent}" but must be "text/html". {refSources}
+</message>
+
+<message code="EFM.5.02.05.externalReference"
+         level="error"
+         module="ValidateFilingText.py" line="572"
+         args="validatedObjectLabel attribute element value">
+[cp-0502-Prohibited-Html] {validatedObjectLabel} contains text that is not valid for the content of the HTML "body" tag: invalid external reference in '{attribute}' for &lt;{element}>: {value}. {refSources}
+</message>
+
+<message code="EFM.5.02.05.graphicDataUrl"
+         level="error"
+         module="ValidateFilingText.py" line="578"
+         args="validatedObjectLabel attribute element">
+[cp-0502-Prohibited-Html] {validatedObjectLabel} references a graphics data URL which isn't accepted which isn't accepted '{attribute}' for &lt;{element}>. {refSources}
+</message>
+
+<message code="EFM.5.02.05.graphicFileContent"
+         level="error"
+         module="ValidateFilingText.py" line="585"
+         args="validatedObjectLabel attribute element">
+[cp-0502-Prohibited-Html] {validatedObjectLabel} references a graphics file which has invalid format '{attribute}' for &lt;{element}>. {refSources}
+</message>
+
+<message code="EFM.5.02.05.graphicFileError"
+         level="error"
+         module="ValidateFilingText.py" line="590"
+         args="validatedObjectLabel attribute element error">
+[cp-0502-Prohibited-Html] {validatedObjectLabel} references a graphics file which isn't openable '{attribute}' for &lt;{element}>, error: {error}. {refSources}
+</message>
+
+<message code="EFM.5.02.05.graphicFileType"
+         level="error"
+         module="ValidateFilingText.py" line="578"
+         args="validatedObjectLabel attribute element">
+[cp-0502-Prohibited-Html] {validatedObjectLabel}  contains text that is not valid for the content of the HTML "body" tag: reference to a graphics file which isn't .gif or .jpg '{attribute}' for &lt;{element}>. {refSources}
+</message>
+
+<message code="EFM.5.02.05.nestedTable"
+         level="error"
+         module="ValidateFilingText.py" line="595"
+         args="validatedObjectLabel">
+[cp-0502-Prohibited-Html] {validatedObjectLabel} has nested &lt;table> elements. {refSources}
+</message>
+
 <message code="EFM.6.03.02.sdrHasNonSdrExhibit"
          level="error"
          module="EFM/__init__.py" line="309"
@@ -576,13 +641,6 @@ Invalid linkbase file name: {filename}, expected {expectedFilename}
 [du-0311-Xml-Base-Used] The attribute xml:base appears in on element {element} in {refSource}. Please remove the attribute.
 </message>
 
-<message code="EFM.6.04.03"
-         level="error"
-         module="ValidateFiling.py" line="339"
-         args="fact contextID">
-[fs-0403-Fact-Xbrl-Error] Fact {fact} of context {contextID} has an XBRL error
-</message>
-
 <message code="EFM.6.05.01"
          level="error"
          module="ValidateFiling.py" line="125"
@@ -696,42 +754,49 @@ Invalid entity identifier {entityIdentifierName}: {entityIdentifer}
          level="error"
          module="ValidateFilingText.py" line="496"
          args="fact contextID attribute element">
-[cp-0516-Prohibited-Html-Body] A {fact} fact, in {refSource}, contains text that is not valid for the content of the HTML 'body' tag: javascript in '{attribute}' for &lt;{element}>.
+[cp-0516-Prohibited-Html-Body] A {fact} fact contains text that is not valid for the content of the HTML 'body' tag: javascript in '{attribute}' for &lt;{element}>. {refSources}
 </message>
 
 <message code="EFM.6.05.16.externalReference"
          level="error"
          module="ValidateFilingText.py" line="503"
          args="fact contextID attribute element">
-[cp-0516-Prohibited-Html-Body] A {fact} fact, in {refSource}, contains text that is not valid for the content of the HTML 'body' tag: external reference in '{attribute}' for &lt;{element}>.
+[cp-0516-Prohibited-Html-Body] A {fact} fact contains text that is not valid for the content of the HTML 'body' tag: external reference in '{attribute}' for &lt;{element}>. {refSources}
+</message>
+
+<message code="EFM.6.05.16.graphicDataUrl"
+         level="error"
+         module="ValidateFilingText.py" line="516"
+         args="fact contextID attribute element">
+[cp-0516-Prohibited-Html-Body] A {fact} fact references a graphics data URL which isn't accepted which isn't accepted '{attribute}' for &lt;{element}>. {refSources}
 </message>
 
 <message code="EFM.6.05.16.graphicFileContent"
          level="error"
          module="ValidateFilingText.py" line="516"
          args="fact contextID attribute element">
-[cp-0516-Prohibited-Html-Body] A {fact} fact, in {refSource}, contains text that is not valid for the content of the HTML 'body' tag: reference to a graphics file which doesn't have expected content '{attribute}' for &lt;{element}>.
+[cp-0516-Prohibited-Html-Body] A {fact} fact contains text that is not valid for the content of the HTML 'body' tag: reference to a graphics file which has invalid format '{attribute}' for &lt;{element}>. {refSources}
 </message>
 
 <message code="EFM.6.05.16.graphicFileError"
          level="error"
          module="ValidateFilingText.py" line="521"
          args="fact contextID attribute element error">
-[cp-0516-Prohibited-Html-Body] A {fact} fact, in {refSource}, contains text that is not valid for the content of the HTML 'body' tag: reference to a graphics file which isn't openable '{attribute}' for &lt;{element}>, error: {error}.
+[cp-0516-Prohibited-Html-Body] A {fact} fact contains text that is not valid for the content of the HTML 'body' tag: reference to a graphics file which isn't openable '{attribute}' for &lt;{element}>, error: {error}. {refSources}
 </message>
 
 <message code="EFM.6.05.16.graphicFileType"
          level="error"
          module="ValidateFilingText.py" line="509"
          args="fact contextID attribute element">
-[cp-0516-Prohibited-Html-Body] A {fact} fact, in {refSource}, contains text that is not valid for the content of the HTML 'body' tag: reference to a graphics file which isn't .gif or .jpg '{attribute}' for &lt;{element}>
+[cp-0516-Prohibited-Html-Body] A {fact} fact contains text that is not valid for the content of the HTML 'body' tag: reference to a graphics file which isn't .gif or .jpg '{attribute}' for &lt;{element}>. {refSources}
 </message>
 
 <message code="EFM.6.05.16.nestedTable"
          level="error"
          module="ValidateFilingText.py" line="526"
          args="fact contextID">
-[cp-0516-Prohibited-Html-Body] A {fact} fact, in {refSource}, contains text that is not valid for the content of the HTML 'body' tag: nested &lt;table> elements.
+[cp-0516-Prohibited-Html-Body] A {fact} fact contains text that is not valid for the content of the HTML 'body' tag: nested &lt;table> elements. {refSources}
 </message>
 
 <message code="EFM.6.05.17"
@@ -909,7 +974,7 @@ FootnoteLink {footnoteLinkNumber} has disallowed role {linkrole}</message>
 <message code="EFM.6.05.34"
          level="error"
          module="ValidateFilingText.py" line="601"
-         args="xlinkLabel error">
+         args="validatedObjectLabel error">
 [cp-0534-Prohibited-Html-Footnote-Body] Footnote {xlinkLabel}, line {refLine}, contains text that is not valid for the content of the HTML "body" tag: {error}.
 </message>
 
@@ -917,49 +982,63 @@ FootnoteLink {footnoteLinkNumber} has disallowed role {linkrole}</message>
          level="error"
          module="ValidateFilingText.py" line="565"
          args="xlinkLabel attribute element">
-[cp-0534-Prohibited-Html-Footnote-Body] Footnote {xlinkLabel}, line {refLine}, contains text that is not valid for the content of the HTML "body" tag: javascript in '{attribute}' for &lt;{element}>.
+[cp-0534-Prohibited-Html-Footnote-Body] {validatedObjectLabel} contains text that is not valid for the content of the HTML "body" tag: javascript in '{attribute}' for &lt;{element}>. {refSources}
 </message>
 
 <message code="EFM.6.05.34.dtdError"
          level="error"
          module="ValidateFilingText.py" line="555"
-         args="xlinkLabel error">
-[cp-0534-Prohibited-Html-Footnote-Body] Footnote {xlinkLabel}, line {refLine}, contains text that is not valid for the content of the HTML "body" tag: XML error {error}
+         args="validatedObjectLabel error">
+[cp-0534-Prohibited-Html-Footnote-Body] {validatedObjectLabel} causes the XML error: {error}. {refSources}
+</message>
+
+<message code="EFM.6.05.34.disallowedMetaContent"
+         level="error"
+         module="ValidateFilingText.py" line="578"
+         args="validatedObjectLabel metaContent">
+[cp-0534-Prohibited-Html-Footnote-Body] {validatedObjectLabel} &lt;meta&gt; content is "{metaContent}" but must be "text/html". {refSources}
 </message>
 
 <message code="EFM.6.05.34.externalReference"
          level="error"
          module="ValidateFilingText.py" line="572"
-         args="xlinkLabel attribute element value">
-[cp-0534-Prohibited-Html-Footnote-Body] Footnote {xlinkLabel}, line {refLine}, contains text that is not valid for the content of the HTML "body" tag: invalid external reference in '{attribute}' for &lt;{element}>: {value}
+         args="validatedObjectLabel attribute element value">
+[cp-0534-Prohibited-Html-Footnote-Body] {validatedObjectLabel} contains text that is not valid for the content of the HTML "body" tag: invalid external reference in '{attribute}' for &lt;{element}>: {value}. {refSources}
+</message>
+
+<message code="EFM.6.05.34.graphicDataUrl"
+         level="error"
+         module="ValidateFilingText.py" line="578"
+         args="validatedObjectLabel attribute element">
+[cp-0534-Prohibited-Html-Footnote-Body] {validatedObjectLabel} references a graphics data URL which isn't accepted which isn't accepted '{attribute}' for &lt;{element}>. {refSources}
 </message>
 
 <message code="EFM.6.05.34.graphicFileContent"
          level="error"
          module="ValidateFilingText.py" line="585"
-         args="xlinkLabel attribute element">
-[cp-0534-Prohibited-Html-Footnote-Body] Footnote {xlinkLabel}, line {refLine}, contains text that is not valid for the content of the HTML "body" tag: reference to a graphics file which doesn't have expected content '{attribute}' for &lt;{element}>
+         args="validatedObjectLabel attribute element">
+[cp-0534-Prohibited-Html-Footnote-Body] {validatedObjectLabel} references a graphics file which has invalid format '{attribute}' for &lt;{element}>. {refSources}
 </message>
 
 <message code="EFM.6.05.34.graphicFileError"
          level="error"
          module="ValidateFilingText.py" line="590"
-         args="xlinkLabel attribute element error">
-[cp-0534-Prohibited-Html-Footnote-Body] Footnote {xlinkLabel}, line {refLine}, contains text that is not valid for the content of the HTML "body" tag: reference to a graphics file which isn't openable '{attribute}' for &lt;{element}>, error: {error}
+         args="validatedObjectLabel attribute element error">
+[cp-0534-Prohibited-Html-Footnote-Body] {validatedObjectLabel} references a graphics file which isn't openable '{attribute}' for &lt;{element}>, error: {error}. {refSources}
 </message>
 
 <message code="EFM.6.05.34.graphicFileType"
          level="error"
          module="ValidateFilingText.py" line="578"
-         args="xlinkLabel attribute element">
-[cp-0534-Prohibited-Html-Footnote-Body] Footnote {xlinkLabel}, line {refLine}, contains text that is not valid for the content of the HTML "body" tag: reference to a graphics file which isn't .gif or .jpg '{attribute}' for &lt;{element}>
+         args="validatedObjectLabel attribute element">
+[cp-0534-Prohibited-Html-Footnote-Body] {validatedObjectLabel}  contains text that is not valid for the content of the HTML "body" tag: reference to a graphics file which isn't .gif or .jpg '{attribute}' for &lt;{element}>. {refSources}
 </message>
 
 <message code="EFM.6.05.34.nestedTable"
          level="error"
          module="ValidateFilingText.py" line="595"
-         args="xlinkLabel">
-[cp-0534-Prohibited-Html-Footnote-Body] Footnote {xlinkLabel}, line {refLine}, contains text that is not valid for the content of the HTML "body" tag: nested &lt;table> elements.
+         args="validatedObjectLabel">
+[cp-0534-Prohibited-Html-Footnote-Body] {validatedObjectLabel} has nested &lt;table> elements. {refSources}
 </message>
 
 <message code="EFM.6.05.36"
@@ -1274,7 +1353,16 @@ ArcroleType {arcroleType} should end with /arcrole/{LC3name}
 [du-0731-Fraction-Item-Type] Element {concept} is declared as a fraction item type.  Change or remove the declaration and resubmit.
 </message>
 
-<message code="EFM.6.07.32"
+<!--  up to version 58 EFM.6.07.32 
+<message code="rq-0732-Nonnnumeric-Must-Be-Duration"
+         level="error"
+         module="ValidateFilingDTS.py" line="281"
+         args="schema concept">
+[rq-0732-Nonnnumeric-Must-Be-Duration] Declaration of element {concept} in {schema} must have xbrli:periodType of 'duration' because its type is not numeric.
+</message>
+-->
+<!--  after version 58 EFM.6.07.32 -->
+<message code="rq-0732-TextBlock-Must-Be-Duration"
          level="error"
          module="ValidateFilingDTS.py" line="281"
          args="schema concept">

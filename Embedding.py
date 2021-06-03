@@ -283,13 +283,15 @@ class Embedding(object):
                                                for fact, getMemberOnAxisForFactDict, periodStartEndLabel in self.cube.factMemberships
                                                if pseudoAxis in getMemberOnAxisForFactDict),
                                               key=lambda member: member.typedMemberSortKey):
-                        giveMemGetPositionDict[typedMember] = len(giveMemGetPositionDict)
+                        if typedMember not in giveMemGetPositionDict:
+                            giveMemGetPositionDict[typedMember] = len(giveMemGetPositionDict)
                 except TypeError: # if unsortable members, try as string (but will be inconsistent on numbers)
                     for typedMember in sorted((getMemberOnAxisForFactDict[pseudoAxis]
                                                for fact, getMemberOnAxisForFactDict, periodStartEndLabel in self.cube.factMemberships
                                                if pseudoAxis in getMemberOnAxisForFactDict),
                                               key=lambda member: str(member.typedMemberSortKey)):
-                        giveMemGetPositionDict[typedMember] = len(giveMemGetPositionDict)
+                        if typedMember not in giveMemGetPositionDict:
+                            giveMemGetPositionDict[typedMember] = len(giveMemGetPositionDict)
 
         for fact, getMemberOnAxisForFactDict, periodStartEndLabel in self.cube.factMemberships:
             factAxisMemberGroupList = self.buildFactAxisMemberGroupsForFactOrFilter(pseudoAxisRowColStrTuples, pseudoAxisSet, fact, getMemberOnAxisForFactDict,
