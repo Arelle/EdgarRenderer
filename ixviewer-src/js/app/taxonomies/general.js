@@ -181,11 +181,14 @@ var TaxonomiesGeneral = {
     
     var template = '';
     var elementToReturn = document.createDocumentFragment();
-    
+    var elementContinueAt='';
     var element = TaxonomiesGeneral.getTaxonomyById(elementID);
-    element = (element instanceof Array) ? element[0] : element;
+    // dev 
+    if (element instanceof Array ) {
+        elementContinueAt = element;
+        element = element[0];
+      }
     
-    // if ( element.getAttribute('id') ) {
     var aElement = document.createElement('a');
     aElement
         .setAttribute('class',
@@ -223,9 +226,9 @@ var TaxonomiesGeneral = {
     
     var smallElementContent;
     
-    if ( element instanceof Array ) {
+    if ((elementContinueAt instanceof Array) && (elementContinueAt[0].hasAttribute('format'))){
       
-      smallElementContent = document.createTextNode('Click to see Fact.');
+      smallElementContent = document.createTextNode(FiltersValue.getFormattedValueForContinuedAt(elementContinueAt, true));
     } else if ( element.hasAttribute('text-block-taxonomy') || ConstantsFunctions.setModalFactAsTextBlock(element) ) {
       
       smallElementContent = document.createTextNode('Click to see Fact.');

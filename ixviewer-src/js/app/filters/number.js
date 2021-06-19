@@ -21,8 +21,9 @@ var FiltersNumber = {
     if ( element.hasAttribute('xsi:nil') ) {
       return 'nil';
     }
-    if ( element.nodeName.split(':')[1].toLowerCase() === 'nonfraction' ) {
-      if ( element.hasAttribute('xsi:nil') && (element.getAttribute('xsi:nil') === true) ) {
+    
+    if (element.hasAttribute('nodeName') && element.nodeName.split(':')[1].toLowerCase() === 'nonfraction' ) {
+     if ( element.hasAttribute('xsi:nil') && (element.getAttribute('xsi:nil') === true) ) {
         return 'nil';
         
       } else if ( element.innerHTML === '\u2014' ) {

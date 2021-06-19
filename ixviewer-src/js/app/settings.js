@@ -45,14 +45,9 @@ function setCustomCSS( ) {
       'box-shadow' : '-2px 0px 0px 0px #' + selectedFact + ', 2px 0px 0px 0px #' + selectedFact
     },
     
-    '#dynamic-xbrl-form [selected-taxonomy="true"][continued-taxonomy="false"][text-block-taxonomy="false"]' : {
+    '#dynamic-xbrl-form [selected-taxonomy="true"][continued-taxonomy="false"]' : {
       'border' : '3px solid #' + selectedFact + ' !important',
       'display' : 'inline'
-    },
-    
-    '#dynamic-xbrl-form [selected-taxonomy="true"][continued-taxonomy="false"][text-block-taxonomy="true"]' : {
-      'border' : '3px solid #' + selectedFact + ' !important',
-      'display' : 'inline-block'
     },
     
     '#dynamic-xbrl-form [hover-taxonomy="true"]' : {

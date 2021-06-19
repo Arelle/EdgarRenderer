@@ -693,11 +693,7 @@ var FiltersValue = {
   },
   
   getFormattedValueForContinuedAt : function( element ) {
-     // dev for continue-at transformation issue
-     if ( element[0].hasAttribute('format') ) {
-      
-      return FiltersValue.getCorrectFormatBasedOnNamespace(element[0]);
-    }
+     
     var containerElement = document.createElement('div');
     var newElement = document.createElement('div');
     newElement.setAttribute('class', 'reboot collapse d-block collapse-modal-partial text-break');
@@ -710,7 +706,11 @@ var FiltersValue = {
       newElement.appendChild(duplicateNode);
       
     });
-    
+    // dev for continue-at transformation issue
+     if ( element[0].hasAttribute('format') ) {
+        newElement.setAttribute('format', element[0].getAttribute('format'));
+        return FiltersValue.getCorrectFormatBasedOnNamespace(newElement);
+    }
     var button = document.createElement('button');
     button.setAttribute('class', 'reboot btn btn-primary btn-sm mt-1');
     button.setAttribute('type', 'button');
