@@ -1354,7 +1354,7 @@ ArcroleType {arcroleType} should end with /arcrole/{LC3name}
 </message>
 
 <!--  up to version 58 EFM.6.07.32 
-<message code="rq-0732-Nonnnumeric-Must-Be-Duration"
+<message code="EFM.6.07.32"
          level="error"
          module="ValidateFilingDTS.py" line="281"
          args="schema concept">
@@ -1362,7 +1362,7 @@ ArcroleType {arcroleType} should end with /arcrole/{LC3name}
 </message>
 -->
 <!--  after version 58 EFM.6.07.32 -->
-<message code="rq-0732-TextBlock-Must-Be-Duration"
+<message code="EFM.6.07.32"
          level="error"
          module="ValidateFilingDTS.py" line="281"
          args="schema concept">
