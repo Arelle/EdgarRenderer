@@ -3,11 +3,11 @@
 :mod:`EdgarRenderer.IoManager`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
-Data and content created by government employees within the scope of their employment 
+Data and content created by government employees within the scope of their employment
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
-from os import getpid, remove, makedirs, getenv, listdir
+from os import getpid, remove, makedirs, listdir # , getenv
 from os.path import basename, isfile, abspath, isdir, dirname, exists, join, splitext, normpath
 from io import IOBase
 import json, re, shutil, sys, datetime, os, zipfile
@@ -16,14 +16,14 @@ from lxml.etree import tostring as treeToString
 from . import Utils
 
 jsonIndent = 1  # None for most compact, 0 for left aligned
-  
+
 def genpath(filename):
     if filename == '.':
         filename = basename(abspath(filename))
-    return "{0}-{1}-{2:06d}".format(re.sub(r'[:\-\\.]', '', str(datetime.datetime.now())).replace(' ', '-')                                    
+    return "{0}-{1}-{2:06d}".format(re.sub(r'[:\-\\.]', '', str(datetime.datetime.now())).replace(' ', '-')
                                     # .translate(str.maketrans(" :.","---"))
                                     , splitext(basename(filename))[0], getpid())
-    
+
 def createNewFolder(controller,path,stubname="."):
     newpath = join(path, genpath(stubname))
     controller.createdFolders += [newpath]
@@ -32,7 +32,7 @@ def createNewFolder(controller,path,stubname="."):
 def cleanupNewfolders(controller):
     for f in controller.createdFolders:
         shutil.rmtree(f,ignore_errors=True)
-    
+
 def absPathOnPythonPath(controller, filename):  # if filename is relative, find it on the PYTHONPATH, otherwise, just return it.
     if filename is None: return None
     if os.path.isabs(filename): return filename
@@ -45,21 +45,21 @@ def absPathOnPythonPath(controller, filename):  # if filename is relative, find 
         if exists(result): return os.path.abspath(result)
     controller.logDebug("No such location {} found in sys path dirs {}.".format(filename, pathdirs))
     return None
-    
-def writeXmlDoc(filing, etree, reportZip, reportFolder, filename):  
+
+def writeXmlDoc(filing, etree, reportZip, reportFolder, filename):
     xmlText = treeToString(etree.getroottree(), method='xml', with_tail=False, pretty_print=True, encoding='utf-8', xml_declaration=True)
     if reportZip:
-        reportZip.writestr(filename, xmlText)  
+        reportZip.writestr(filename, xmlText)
     elif reportFolder is not None:
         filing.writeFile(os.path.join(reportFolder, filename), xmlText)
-    
+
 def writeHtmlDoc(filing, root, reportZip, reportFolder, filename):
     htmlText =  treeToString(root, method='html', with_tail=False, pretty_print=True, encoding='utf-8')
     if reportZip:
-        reportZip.writestr(filename, htmlText)  
+        reportZip.writestr(filename, htmlText)
     elif reportFolder is not None:
         filing.writeFile(os.path.join(reportFolder, filename), htmlText)
-    
+
 def writeJsonDoc(lines, pathOrStream):
     if isinstance(pathOrStream, str):
         with open(pathOrStream, mode='w') as f:
@@ -67,13 +67,13 @@ def writeJsonDoc(lines, pathOrStream):
     elif isinstance(pathOrStream, IOBase): # path is an open file
         json.dump(lines, pathOrStream, sort_keys=True, indent=jsonIndent)
 
-def moveToZip(zf, abspath, zippath):                        
+def moveToZip(zf, abspath, zippath):
     if isfile(abspath) and not isFileHidden(abspath):
         zf.write(abspath, zippath, zipfile.ZIP_DEFLATED)
         remove(abspath)
 
 def move_clobbering_file(src, dst):  # this works across Windows drives, simple rename does not.
-    if isdir(dst):  
+    if isdir(dst):
         dstfolder = dst
         dstfile = basename(src)
     else:
@@ -81,19 +81,19 @@ def move_clobbering_file(src, dst):  # this works across Windows drives, simple 
         dstfile = basename(dst)
     if not exists(dstfolder): makedirs(dstfolder, exist_ok=True)
     destination = join(dstfolder, dstfile)
-    if exists(join(dstfolder, dstfile)): remove(destination)                     
+    if exists(join(dstfolder, dstfile)): remove(destination)
     shutil.copy2(src, destination)
     try:
         remove(src)
-    except OSError as err:
-        # HF: fix msg in next release ("Non fatal Cleanup problem: {}".format(err))
+    except OSError as _err:
+        # HF: fix msg in next release ("Non fatal Cleanup problem: {}".format(_err))
         return None
 
     return destination
 
 
 def handleFolder(controller, folderName, mustBeEmpty, forceClean):  # return success
-    if not isdir(folderName): # must exist and be a direectory, not file
+    if not isdir(folderName): # must exist and be a directory, not file
         if exists(folderName):
             controller.logDebug(_("Folder {} exists and is not a directory.").format(folderName), file=basename(__file__))
         else:
@@ -101,7 +101,7 @@ def handleFolder(controller, folderName, mustBeEmpty, forceClean):  # return suc
     else:
         fileList = listdir(folderName)
         if forceClean:
-            for file in fileList: 
+            for file in fileList:
                 fullfilepath = join(folderName , file)
                 if isdir(fullfilepath):
                     shutil.rmtree(fullfilepath)
@@ -109,7 +109,7 @@ def handleFolder(controller, folderName, mustBeEmpty, forceClean):  # return suc
                     remove(fullfilepath)
         elif mustBeEmpty and len(fileList) > 0 :
             controller.logDebug(_("Folder {} exists and is not empty.").format(folderName), file=basename(__file__))
-        
+
 def getConfigFile(controller, options):
     if options.configFile is None: return None
     _localConfigFile = os.path.join(os.getcwd(), options.configFile)
@@ -126,7 +126,7 @@ def logConfigFile(controller, options):
             for line in ins:
                 controller.logInfo(line.strip(), file=basename(__file__))
         controller.logInfo("sys.argv {}".format(sys.argv), file=basename(__file__))
-        
+
 
 def isFileHidden(p):
     p = basename(p)
@@ -140,7 +140,7 @@ def isFileHidden(p):
             return True
     return False
 
-    
+
 def unpackInput(controller, options, filesource):  # success
     # with side effect on controller entrypointFolder, processingFolder, instanceList,otherXbrlList,inlineList,supplementList
     # Process options, setting self.entrypointFolder and figuring out whether it is:
@@ -155,9 +155,9 @@ def unpackInput(controller, options, filesource):  # success
     controller.otherXbrlList = []
     controller.supplementList = []
     # an absolute path for processing folder root can be specified in the configuration file.
-    # HF: controller.originalProcessingFolder = join(getenv("TEMP"), controller.processingFolder)    
+    # HF: controller.originalProcessingFolder = join(getenv("TEMP"), controller.processingFolder)
     # HF: controller.processingFolder = createNewFolder(controller,controller.originalProcessingFolder, options.entrypoint)
-    knownSingleInput = None                
+    knownSingleInput = None
     try:
         # Case 1: entry point is a zip file.
         if controller.processInZip:
@@ -173,12 +173,12 @@ def unpackInput(controller, options, filesource):  # success
             for base in zf.namelist():
                 if base.startswith('./'):  # prevent errors arising from windows file system foolishness
                     base = normpath(base)
-                target = join(controller.processingFolder, base)               
+                target = join(controller.processingFolder, base)
                 with open(target, 'wb') as fp:
                     fp.write(zf.read(base))  # unzip to the processing folder.
                 if isSurvivor(controller, "zip", base, None, target):
                     unpacked += 1
-        
+
         else:  # Not a zip file.
 
             # Case 2: Entry point is a single file.
@@ -188,7 +188,7 @@ def unpackInput(controller, options, filesource):  # success
             # TODO: give a warning when XBRL files are copied to target but then not used in the DTS.
             if isfile(options.entrypoint) and not isdir(options.entrypoint):
                 knownSingleInput = basename(options.entrypoint)
-    
+
             # Case 1: Entry point is a folder.  Copy everything except unknown instances and inlines
             controller.logDebug(_("Copying from Input folder {}").format(controller.entrypointFolder), file=basename(__file__))
             for base in listdir(controller.entrypointFolder):
@@ -198,8 +198,8 @@ def unpackInput(controller, options, filesource):  # success
                     target = join(controller.processingFolder, base)
                     shutil.copy(source, target)
                     if isSurvivor(controller, "folder", base, knownSingleInput, target):
-                        unpacked += 1         
-                                   
+                        unpacked += 1
+
     except Exception as e:
         unpacked = 0
         controller.logError(_("Exception raised during file unpacking: {}").format(e), file='IoManager.py')
@@ -271,7 +271,7 @@ def getQName(controller, pathname): # return ns, localname, and inline namespace
             f = pathname
         for event, element in etree.iterparse(f.buffer, events=('start','start-ns')):
             if event == 'start-ns':
-                ignore, uri = element
+                _ignore, uri = element
                 if uri in arelle.XbrlConst.ixbrlAll:
                     inlineNamespaceBound = uri
             elif event == 'start':
