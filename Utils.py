@@ -250,7 +250,12 @@ def strFactValue(fact, preferredLabel=None, filing=None, report=None):
                 if qname in report.cube.labelDict:
                     label = report.cube.labelDict[qname]
                 else:
-                    label = filing.modelXbrl.qnameConcepts[qname].label(preferredLabel, lang=filing.controller.labelLangs)
+                    concept = filing.modelXbrl.qnameConcepts[qname]
+                    label = None
+                    if preferredLabel: # first look for a prefferred label, if specified
+                        label = concept.label(preferredLabel, fallbackToQname=False, lang=filing.controller.labelLangs)
+                    if not label: # find standard label or qname if none
+                        label = concept.label(lang=filing.controller.labelLangs)
                 labels.append(label)
             return ", ".join(labels)
         except KeyError:
