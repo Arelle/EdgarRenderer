@@ -22,7 +22,7 @@ var FiltersNumber = {
       return 'nil';
     }
     
-    if (element.hasAttribute('nodeName') && element.nodeName.split(':')[1].toLowerCase() === 'nonfraction' ) {
+    if (element.nodeName.split(':')[1] && element.nodeName.split(':')[1].toLowerCase() === 'nonfraction' ) {
      if ( element.hasAttribute('xsi:nil') && (element.getAttribute('xsi:nil') === true) ) {
         return 'nil';
         
@@ -46,16 +46,17 @@ var FiltersNumber = {
         
       } else if ( scale < 0 ) {
         var absScale = Math.abs(scale);
-
+        var divScale ="1";
+        divScale = divScale.padEnd(absScale + 1, 0);
         var canSplit = input.indexOf('.') !== -1;
         if ( canSplit ) {
 
-          var precision = (input).split('.')[1].length + 2;
-          input = (input / 100).toFixed(precision);
+          var precision = (input).split('.')[1].length + absScale;
+          input = (input / divScale).toFixed(precision);
         } else {
           
-          var precision = input.length;
-          input = (input / 100).toFixed(precision);
+          var precision = absScale;
+          input = (input / divScale).toFixed(precision);
         }
         
       }

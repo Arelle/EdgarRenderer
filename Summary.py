@@ -363,7 +363,10 @@ class InstanceSummary(object):
         for uri,doc in sorted(modelXbrl.urlDocs.items(), key=lambda i: i[1].objectIndex):
             if doc.type == arelle.ModelDocument.Type.INLINEXBRLDOCUMENTSET:
                 continue # ignore ixds manifest
-            isLocal = uri.startswith(filing.controller.processingFolder)
+            if not doc.inDTS:
+                continue # ignore non-DTS documents (e.g., reference and documentation labels imported by rendering
+            isLocal = (uri not in filing.controller.disclosureSystem.standardTaxonomiesDict
+                       and uri.startswith(filing.controller.processingFolder))
             (f,rl) = (uri,'remote')
             if isLocal: (f,rl) = (os.path.basename(uri),'local')
             doctype = 'supplemental'

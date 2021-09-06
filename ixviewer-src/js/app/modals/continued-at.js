@@ -46,7 +46,7 @@ var ModalsContinuedAt = {
   },
   
   clickEvent : function( event, element ) {
-    
+    var defaultTab = ModalsCommon.currentDetailTab;
     if ( event.keyCode && !(event.keyCode === 13 || event.keyCode === 32) ) {
       return;
     }
@@ -89,7 +89,10 @@ var ModalsContinuedAt = {
                 document.getElementById('taxonomy-modal-carousel-indicators').querySelector(
                     '[data-slide-to="' + newActiveIndicator + '"]').classList.add('active');
                 document.getElementById('taxonomy-modal-title').innerText = ModalsContinuedAt.carouselInformation[event['to']]['dialog-title'];
-              });
+                ModalsCommon.currentDetailTab = newActiveIndicator;
+               });
+            $('#taxonomy-modal-carousel').carousel(defaultTab);
+            ModalsCommon.currentDetailTab= defaultTab;
     }
   },
   

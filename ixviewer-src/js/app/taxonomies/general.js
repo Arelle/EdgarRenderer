@@ -229,15 +229,21 @@ var TaxonomiesGeneral = {
     if ((elementContinueAt instanceof Array) && (elementContinueAt[0].hasAttribute('format'))){
       
       smallElementContent = document.createTextNode(FiltersValue.getFormattedValueForContinuedAt(elementContinueAt, true));
+    
     } else if ( element.hasAttribute('text-block-taxonomy') || ConstantsFunctions.setModalFactAsTextBlock(element) ) {
       
       smallElementContent = document.createTextNode('Click to see Fact.');
-    } else {
+
+    } else if (element.innerText.length > 100 ){
       
+      smallElementContent = document.createTextNode('Click to see Fact.');
+      
+    } else
+    
+   {
       smallElementContent = document.createTextNode(FiltersValue.getFormattedValue(element, true));
     }
-    
-    smallElement.appendChild(smallElementContent);
+     smallElement.appendChild(smallElementContent);
     
     aElement.appendChild(divElement);
     aElement.appendChild(pElement);

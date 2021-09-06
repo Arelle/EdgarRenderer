@@ -8,6 +8,7 @@
 var ModalsCommon = {
   
   currentSlide : 0,
+  currentDetailTab : 0, 
   
   carouselInformation : [ {
     'dialog-title' : 'Attributes'
@@ -22,6 +23,7 @@ var ModalsCommon = {
   getAttributes : null,
   
   clickEvent : function( event, element ) {
+    var defaultTab = ModalsCommon.currentDetailTab;
     if ( event.keyCode && !(event.keyCode === 13 || event.keyCode === 32) ) {
       return;
     }
@@ -60,8 +62,10 @@ var ModalsCommon = {
               document.getElementById('taxonomy-modal-carousel-indicators').querySelector(
                   '[data-slide-to="' + newActiveIndicator + '"]').classList.add('active');
               document.getElementById('taxonomy-modal-title').innerText = ModalsCommon.carouselInformation[event['to']]['dialog-title'];
+              ModalsCommon.currentDetailTab = newActiveIndicator;
             });
-    
+    $('#taxonomy-modal-carousel').carousel(defaultTab);
+    ModalsCommon.currentDetailTab= defaultTab;
   },
   
   focusOnContent : function( ) {

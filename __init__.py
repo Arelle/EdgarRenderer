@@ -700,7 +700,8 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.createdFolders.extend(options.daemonCreatedFolders)
             del options.daemonCreatedFolders # don't pass to any subsequent independent filing if any
         mdlMgr = cntlr.modelManager
-        self.validatedForEFM = ("esef" in mdlMgr.disclosureSystem.names or # prevent EFM validation messages for "esef" validations
+        self.disclosureSystem = mdlMgr.disclosureSystem
+        self.validatedForEFM = ("esef" in self.disclosureSystem.names or # prevent EFM validation messages for "esef" validations
                                 (not cntlr.hasGui and mdlMgr.validateDisclosureSystem and getattr(mdlMgr.disclosureSystem, "EFMplugin", False))
                                 )
         self.instanceSummaryList = []

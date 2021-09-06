@@ -189,6 +189,7 @@ var ModalsNested = {
   },
   
   clickEvent : function( event, element ) {
+    var defaultTab = ModalsCommon.currentDetailTab;
     event.preventDefault();
     event.stopPropagation();
     
@@ -224,8 +225,8 @@ var ModalsNested = {
     $('#modal-nested-fact-labels').on(
         'slide.bs.carousel',
         function( event ) {
-          
-          ModalsNested.currentSlide = 0;
+        //  var defaultTab = ModalsCommon.currentDetailTab;
+          ModalsNested.currentSlide = defaultTab;
           // we add something...
           document.getElementById('nested-taxonomy-modal-jump').setAttribute('data-id',
               ModalsNested.getAllElementIDs[event['to']].id);
@@ -249,6 +250,8 @@ var ModalsNested = {
           
           document.getElementById('nested-page').innerText = (event['to'] + 1);
           ModalsNested.createContentCarousel(event['to']);
+          $('#modal-taxonomy-nested-content-carousel').carousel(defaultTab);
+          ModalsCommon.currentDetailTab = defaultTab;
         });
     
     $('#modal-taxonomy-nested-content-carousel').on(
@@ -262,8 +265,11 @@ var ModalsNested = {
               '[data-slide-to="' + previousActiveIndicator + '"]').classList.remove('active');
           document.getElementById('taxonomy-nested-modal-carousel-indicators').querySelector(
               '[data-slide-to="' + newActiveIndicator + '"]').classList.add('active');
+          ModalsCommon.currentDetailTab = newActiveIndicator;
         });
-    
+     $('#modal-taxonomy-nested-content-carousel').carousel(0);
+     $('#modal-taxonomy-nested-content-carousel').carousel(defaultTab);
+     ModalsCommon.currentDetailTab = defaultTab;
   },
   
   createCarousel : function( element, index, isContinued ) {
