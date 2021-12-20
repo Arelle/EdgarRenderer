@@ -140,7 +140,7 @@ divElement.innerHTML=current['value'];
     for ( var current in allLabels ) {
       var tempObject = {
         'label' : current,
-        'value' : allLabels[current]
+        'value' : allLabels[current].replaceAll('&amp;', '&')
       };
       possibleLabels.push(tempObject);
     }

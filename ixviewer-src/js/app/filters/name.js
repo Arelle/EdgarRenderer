@@ -190,7 +190,7 @@ var FiltersName = {
                     var br = document.createElement('br');
                     element.appendChild(br);
                   }
-                  stringToReturn += element.innerHTML;
+                  stringToReturn += element.innerText;
                 }
               }
               

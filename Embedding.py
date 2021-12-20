@@ -341,7 +341,7 @@ class Embedding(object):
                                 _("Presentation group \"%(linkroleName)s\" has multiple (%(numberRootConcepts)s) root nodes. "
                                   "XBRL allows unordered root nodes, but rendering requires ordering.  They will instead be ordered by their labels.  "
                                   "To avoid undesirable ordering of axes and primary items across multiple root nodes, rearrange the presentation "
-                                  "relationships to have only a single root node.”"),
+                                  "relationships to have only a single root node."),
                                 modelObject=self.factThatContainsEmbeddedCommand, linkrole=self.cube.linkroleUri, linkroleDefinition=self.cube.definitionText,
                                 linkroleName=self.cube.shortName, numberRootConcepts=numUsedRootNodes)
                         break

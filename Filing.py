@@ -150,7 +150,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
         
     controller.instanceSummaryList += [Summary.InstanceSummary(filing, modelXbrl)]  
     controller.logDebug("Filing finish {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
-    return True
+    return filing.reportSummaryList
 
 
 

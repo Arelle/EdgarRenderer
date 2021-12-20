@@ -21,12 +21,17 @@ var FiltersDate = {
       var month;
       var day;
       
-      var quarter = element.innerText.match(/1st|first|q1|2nd|second|q2|3rd|third|q3|4th|fourth|last|q4/gi);
-      
+      var quarter = element.innerText.match(/1st|1|first|q1|2nd|2|second|q2|3rd|3|third|q3|4th|4|fourth|last|q4/gi);
+     
       if ( quarter && quarter[0] ) {
         
         switch ( quarter[0].toLowerCase() ) {
           case ('1st') : {
+            month = "03";
+            day = "31";
+            break;
+          }
+          case ('1') : {
             month = "03";
             day = "31";
             break;
@@ -41,7 +46,12 @@ var FiltersDate = {
             day = "31";
             break;
           }
-          case ('2nd' || 'second' || 'q2') : {
+          case ('2nd') : {
+            month = "06";
+            day = "30";
+            break;
+          }
+          case ('2') : {
             month = "06";
             day = "30";
             break;
@@ -61,6 +71,11 @@ var FiltersDate = {
             day = "30";
             break;
           }
+         case ('3') : {
+            month = "09";
+            day = "30";
+            break;
+          }
           case ('third') : {
             month = "09";
             day = "30";
@@ -72,6 +87,11 @@ var FiltersDate = {
             break;
           }
           case ('4th') : {
+            month = "12";
+            day = "31";
+            break;
+          }
+          case ('4') : {
             month = "12";
             day = "31";
             break;

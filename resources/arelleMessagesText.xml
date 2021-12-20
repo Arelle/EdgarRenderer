@@ -661,7 +661,7 @@ Invalid entity identifier {entityIdentifierName}: {entityIdentifer}
          level="error"
          module="ValidateFiling.py" line="139"
          args="entityIdentifierName entityIdentifer entityIdentifer2 filerIdentifier">
-[cp-0523-Non-Matching-Cik] The submission CIK, {filerIdentifier} does not match either the EntityCentralIndexKey, {entityIdentifer}, or context identifier CIK(s) {entityIdentifer}, {entityIdentifer2}, or is not 10 digits, for required context(s).  Please include a correct matching EntityCentralIndexKey and context identifier CIK(s) in the filing.
+[cp-0503-Non-Matching-Cik] The submission CIK, {filerIdentifier} does not match either the EntityCentralIndexKey, {entityIdentifer}, or context identifier CIK(s) {entityIdentifer}, {entityIdentifer2}, or is not 10 digits, for required context(s).  Please include a correct matching EntityCentralIndexKey and context identifier CIK(s) in the filing.
 </message>
 
 <message code="EFM.6.05.04"
@@ -1179,14 +1179,12 @@ Taxonomy schema {schema} namespace {targetNamespace} prefix {prefix} must not ha
 [du-0709-Role-Namespace-Mismatch] Role {roleType} does not begin with {targetNamespace}'s scheme and authority, in {refSource}. Please change the role URI or target namespace URI.
 </message>
 
-<!--WcH do not show warnings other than from 6.5.21
 <message code="EFM.6.07.09.roleEnding"
          level="warning"
          module="ValidateFilingDTS.py" line="427"
          args="roleType">
-RoleType {roleType} should end with /role/{LC3name}
+RoleType {roleType} should end with /role/{mnemonic name}
 </message>
--->
 
 <message code="EFM.6.07.10"
          level="error"
@@ -1223,14 +1221,12 @@ RoleType {roleType} should end with /role/{LC3name}
 [du-0713-Arcrole-Namespace-Mismatch]  Relationship role {arcroleType} does not begin with {targetNamespace}'s scheme and authority, in {refSource}.  Please change the relationship role URI or target namespace URI.
 </message>
 
-<!--WcH do not show warnings other than from 6.5.21
 <message code="EFM.6.07.13.arcroleEnding"
          level="warning"
          module="ValidateFilingDTS.py" line="487"
          args="arcroleType">
-ArcroleType {arcroleType} should end with /arcrole/{LC3name}
+ArcroleType {arcroleType} should end with /arcrole/{mnemonic name}
 </message>
--->
 
 <message code="EFM.6.07.14"
          level="error"
@@ -2242,9 +2238,11 @@ NOTE THAT EFM.6.23.02 can only be detected in Edgar, as Arelle will only load a 
 Example:
     <message code="dq-{efmSection}-{nameOfTag}-Blah-Blah">[dq-{efmSection}-{nameOfTag}-Blah-Blah] Submission type {subType} {severityVerb} blah blah blah in {context}. {refSources}</message>
 --> 
-<message code="dq-{efmSection}-{tag}-Missing">[dq-{efmSection}-{tag}-Missing] Submission type {subType} {severityVerb} have a non-empty value for {tag} in {context}. {refSources}</message>
-<message code="dq-{efmSection}-{tags}-Missing">[dq-{efmSection}-{tags}-Missing] Submission type {subType} {severityVerb} have a non-empty value for at least one of {tags} in {context}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-Missing">[dq-{efmSection}-{tag}-Missing] Submission type {subType} {severityVerb} have a non-empty value for {tag} in the {context}. {refSources}</message>
+<message code="dq-{efmSection}-{tags}-Missing">[dq-{efmSection}-{tags}-Missing] Submission type {subType} {severityVerb} have a non-empty value for at least one of {tags} in the {context}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-Unexpected">[dq-{efmSection}-{tag}-Unexpected] Submission type {subType} {severityVerb} not have a value for {tag} in the {context}. {refSources}</message>
+<message code="dq-{efmSection}-{taxonomy}-Facts-Unexpected">[dq-{efmSection}-{taxonomy}-Facts-Unexpected]Submission type {subType} {severityVerb} not report {taxonomy} namespace facts. {refSources}</message>
+<message code="dq-{efmSection}-{taxonomy}-Version-Required">[dq-{efmSection}-{taxonomy}-Version-Required]Submission type {subType} {severityVerb} use {taxonomy} version {earliestTaxonomy} or later.</message>
 <message code="dq-{efmSection}-{tag}-{value}">[dq-{efmSection}-{tag}-{value}] In submission type {subType}, {tag} value {severityVerb} have {value} in the {context}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-Value">[dq-{efmSection}-{tag}-Value] In submission type {subType}, {tag} value {severityVerb} have {value} in the {context}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}">[dq-{efmSection}-{tag}-{otherTag}] In submission type {subType}, {tag} value {severityVerb} have value &quot;{value}&quot; in the same context as {otherTag}, {contextID}. {refSources}</message>
@@ -2258,13 +2256,15 @@ Example:
 <message code="dq-{efmSection}-{tags}-Inclusive">[dq-{efmSection}-{tags}-Inclusive] In submission type {subType}, at least one of {tags} {severityVerb} have a value. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-Both">[dq-{efmSection}-{tags}-Both] In submission type {subType}, both or neither of {tags} {severityVerb} have a value. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Dependency">[dq-{efmSection}-{tag}-{otherTag}-Dependency] In submission type {subType}, {tag} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTag}-Value-Dependency">[dq-{efmSection}-{tag}-{otherTag}-Value-Dependency]In submission type {subType}, {tag} {severityVerb} have the value &quot;{value}&quot;  if and only if {otherTag} has the value &quot;{value}&quot;  in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTags}-Dependency">[dq-{efmSection}-{tag}-{otherTags}-Dependency] In submission type {subType}, {tag} {severityVerb} have a value if one of {otherTags} has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Dependent-Value">[dq-{efmSection}-{tag}-{otherTag}-Dependent-Value] In submission type {subType}, {tag} {severityVerb} be provided if and only if {otherTag} has value &quot;{value}&quot; in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Inclusive">[dq-{efmSection}-{tag}-{otherTag}-Inclusive] In submission type {subType}, either {tag} or {otherTag} should have a value, or both. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Exclusive-Dependency">[dq-{efmSection}-{tag}-{otherTag}-Exclusive-Dependency] In submission type {subType}, {tag} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-{otherTag}-Exclusive-Dependency">[dq-{efmSection}-{tags}-{otherTag}-Exclusive-Dependency] In submission type {subType}, one of {tags} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-{otherTags}-Exclusive-Dependency">[dq-{efmSection}-{tags}-{otherTags}-Exclusive-Dependency] In submission type {subType}, one of {tags} {severityVerb} have a value if one of {otherTags} has a value in context {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{tag}-{headerTag}-Dependency">[dq-{efmSection}-{tag}-{headerTag}-Dependency] In submission type {subType}, {tag} {severityVerb} have a value if and only if header element {headerTag} is provided." {refSources}</message>
+<message code="dq-{efmSection}-{tags}-Mutual-Dependency">[dq-{efmSection}-{tags}-Mutual-Dependency]In submission type {subType}, all of {tags} {severityVerb} have a value if any of them has a value in context {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{headerTag}-Dependency">[dq-{efmSection}-{tag}-{headerTag}-Dependency] In submission type {subType}, {tag} {severityVerb} have a value if and only if header element {headerTag} is provided. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{headerTag}-Dependent-Value">[dq-{efmSection}-{tag}-{headerTag}-Dependent-Value] In submission type {subType}, when {tag} has a value &quot;{value}&quot;, header element {headerTag} {severityVerb} have a value &quot;{otherValue}&quot;. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-Security-Axes">[dq-{efmSection}-{tag}-Security-Axes] In submission type {subType}, {tag} {severityVerb} have values without axes if a single non-ADR member, otherwise in separate contexts by axis member, but not both, in contexts {contextIDs}. {refSources}</message>
 <message code="dq-0514-Hidden-Cover-Page-Fact-Not-Referenced">[dq-0514-Hidden-Cover-Page-Fact-Not-Referenced] Submission type {subType} has {n} cover page fact(s) in ix:hidden that were not referenced by any -sec-ix-hidden style property: (namesOfTags). {refSources}</message>

@@ -17,6 +17,8 @@ from arelle.ModelInstanceObject import ModelInlineFootnote
 from arelle.XmlUtil import addChild, copyIxFootnoteHtml, elementChildSequence
 from arelle.UrlUtil import isHttpUrl
 from arelle.ValidateFilingText import CDATApattern
+from arelle.XbrlConst import standardLabel, documentationLabel, terseLabel
+from arelle.XmlValidate import VALID
 import os, zipfile, io
 from optparse import SUPPRESS_HELP
 from lxml.etree import XML, XMLSyntaxError
@@ -27,7 +29,7 @@ DEFAULT_INSTANCE_EXT = ".xml"  # the extension on the instance to be saved
 DEFAULT_DISTINGUISHING_SUFFIX = "_htm."  # suffix tacked onto the base name of the source inline document
 USUAL_INSTANCE_EXTS = {"xml", "xbrl"}
 
-def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm.", iext=".xml"):  
+def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, reportSummaryList, suffix="_htm.", iext=".xml"):  
     if (modelXbrl is None): return
     if modelXbrl.modelDocument.type not in (Type.INLINEXBRL, Type.INLINEXBRLDOCUMENTSET):
         cntlr.logTrace(_("No Inline XBRL document."))
@@ -89,7 +91,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm."
                 fileStream = filing.readFile(refFile, binary=True)[0]  # returned in a tuple
                 filingZip.writestr(modelDocument.relativeUri(refFile), fileStream.read())
                 fileStream.close()
-     
+                
     if options.saveTargetFiling and filingZip:          
         filingZip.close()
     if cntlr.reportZip and saveTargetPath:

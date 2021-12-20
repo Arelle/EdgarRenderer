@@ -28,6 +28,8 @@ class _LocalViewer(LocalViewer):
             or (_file.startswith("images/") and os.path.exists(os.path.join(self.reportsFolders[0], 'ixviewer', _file))) 
             or _file.startswith("js/")):
             return static_file(_file, root=os.path.join(self.reportsFolders[0], 'ixviewer')) 
+        if _file.startswith("/ixviewer"): # ops gateway
+            return static_file(_file, root=self.reportsFolders[0][:-1]) 
         if _report == "include": # really in include subtree
             return static_file(_file, root=os.path.join(self.reportsFolders[0], 'include'))              
         if _file.startswith("include/") or  _file.startswith("Images/"): # really in ixviewer subtree (Workstation Images are in distribution include)

@@ -27,12 +27,12 @@ var ModalsSettings = {
   
   scrollPosition : function( event, value ) {
     
-    localStorage.setItem('scrollPosition', value);
-    Constants.scrollPosition = value;
+    localStorage.setItem('scrollPosition', value.value);
+    Constants.scrollPosition = value.value;
   },
   
   hoverOption : function( event, value ) {
-    if ( value === 'true' ) {
+    if ( value.value === 'true' ) {
       
       localStorage.setItem('hoverOption', true);
       Constants.hoverOption = true;

@@ -143,7 +143,7 @@ Language of labels:
     GUI may use tools->language labels setting to override system language for labels
         
 """
-VERSION = '3.21.2'
+VERSION = '3.21.4'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -210,7 +210,7 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     parser.add_option("--renderingLogsXslt", dest="renderingLogsXslt", help=_("Path and name of Stylesheet, if any, for producing filing rendering logs html."))
     parser.add_option("--excelXslt", dest="excelXslt", help=_("Path and name of Stylesheet, if any, for producing Excel 2007 xlsx output."))
     parser.add_option("--auxMetadata", action="store_true", dest="auxMetadata", help=_("Set flag to generate inline xbrl auxiliary files"))
-    # saveTarget* paraameters are added by inlineXbrlDocumentSet.py plugin
+    # saveTarget* parameters are added by inlineXbrlDocumentSet.py plugin
     parser.add_option("--sourceList", action="store", dest="sourceList", help=_("Comma-separated triples of instance file, doc type and source file."))
     parser.add_option("--copyInlineFilesToOutput", action="store_true", dest="copyInlineFilesToOutput", help=_("Set flag to copy all inline files to the output folder or zip."))
     parser.add_option("--copyXbrlFilesToOutput", action="store_true", dest="copyXbrlFilesToOutput", help=_("Set flag to copy all source xbrl files to the output folder or zip."))
@@ -765,8 +765,10 @@ class EdgarRenderer(Cntlr.Cntlr):
         RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
         self.loopnum = getattr(self, "loopnum", 0) + 1
         try:
-            Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing)
-            success = Filing.mainFun(self, modelXbrl, self.reportsFolder)
+            reportSummaryList = Filing.mainFun(self, modelXbrl, self.reportsFolder)
+            Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, reportSummaryList)
+            del reportSummaryList # dereference
+            success = True
         except Utils.RenderingException as ex:
             success = False # error message provided at source where exception was raised
             self.logDebug(_("RenderingException after {} validation errors: {}").format(errorCountDuringValidation, ex))
