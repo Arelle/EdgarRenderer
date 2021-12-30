@@ -31,9 +31,11 @@ class _LocalViewer(LocalViewer):
         if _file.startswith("/ixviewer"): # ops gateway
             return static_file(_file, root=self.reportsFolders[0][:-1]) 
         if _report == "include": # really in include subtree
-            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'include'))              
-        if _file.startswith("include/") or  _file.startswith("Images/"): # really in ixviewer subtree (Workstation Images are in distribution include)
+            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'include'))
+        if _file.startswith("include/"): # really in ixviewer subtree (Workstation Images are in distribution include)
             return static_file(_file[8:], root=os.path.join(self.reportsFolders[0], 'include'))              
+        if _file.startswith("images/") or  _file.startswith("Images/"): # really in ixviewer subtree (Workstation Images are in distribution include)
+            return static_file(_file[7:], root=os.path.join(self.reportsFolders[0], 'include'))
         if _file.startswith("ixviewer/"): # really in ixviewer subtree
             return static_file(_file[9:], root=os.path.join(self.reportsFolders[0], 'ixviewer'))
         if _report.isnumeric(): # in reportsFolder folder
