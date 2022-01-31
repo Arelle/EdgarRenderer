@@ -143,7 +143,7 @@ Language of labels:
     GUI may use tools->language labels setting to override system language for labels
         
 """
-VERSION = '3.21.4'
+VERSION = '3.22.0.1'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -1371,12 +1371,11 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             documentType = None
         )
         del instDocs # dereference
-        for concept in modelXbrl.nameConcepts["DocumentType"]:
-            for f in modelXbrl.factsByQname[concept.qname]:
-                cntx = f.context
-                if cntx is not None and not cntx.hasSegment and f.xValue:
-                    report.documentType = f.xValue # find document type for mustard menu
-                    break
+        for f in modelXbrl.factsByLocalName["DocumentType"]:
+            cntx = f.context
+            if cntx is not None and not cntx.hasSegment and f.xValue:
+                report.documentType = f.xValue # find document type for mustard menu
+                break
         def guiWriteFile(filepath, data):
             outdir = os.path.dirname(filepath)
             if not os.path.exists(outdir): # may be a subdirectory of out dir

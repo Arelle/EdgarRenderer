@@ -36,6 +36,8 @@ class _LocalViewer(LocalViewer):
             return static_file(_file[8:], root=os.path.join(self.reportsFolders[0], 'include'))              
         if _file.startswith("images/") or  _file.startswith("Images/"): # really in ixviewer subtree (Workstation Images are in distribution include)
             return static_file(_file[7:], root=os.path.join(self.reportsFolders[0], 'include'))
+        if _report == "images": # really in ixviewer subtree (Workstation Images are in distribution include)
+            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'include'))
         if _file.startswith("ixviewer/"): # really in ixviewer subtree
             return static_file(_file[9:], root=os.path.join(self.reportsFolders[0], 'ixviewer'))
         if _report.isnumeric(): # in reportsFolder folder
