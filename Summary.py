@@ -7,7 +7,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
 import sys, traceback, os.path, re, math, io, logging
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 from lxml.etree import Element, SubElement, ElementDepthFirstIterator
 import arelle.ModelDocument, arelle.ModelDtsObject, arelle.XbrlConst
 from arelle.ModelDtsObject import ModelConcept
@@ -95,9 +95,10 @@ class Summary(object):
         self.footnotesReported = 0 < sum([s.footnoteCount for s in summaries])
         self.scenarioCount = sum([s.scenarioCount for s in summaries])
         self.hasRR = next((True for s in summaries if s.hasRR), False)
-        self.namespacesInUse = set()
+        self.namespacesFactsCount = {}
         for s in summaries:
-            self.namespacesInUse.update(s.namespacesInUseSet)
+            for ns, count in s.namespacesFactsCount.items():
+                self.namespacesFactsCount[ns] = self.namespacesFactsCount.get(ns, 0) + count
         dtsroots = []
         for s in summaries:  # collect a list in order, but skip duplicates if they should occur           
             for dtsroot in s.dtsroots:
@@ -193,7 +194,7 @@ class Summary(object):
         inputFilesEtree = SubElement(self.rootETree, 'InputFiles')
         sourceDict = self.controller.sourceDict
         for l in [self.controller.instanceList, self.controller.inlineList, self.controller.otherXbrlList]:
-            for file in l:
+            for file in sorted(l, key=lambda f: os.path.basename(f)):
                 s = SubElement(inputFilesEtree, 'File')
                 if file in sourceDict and sourceDict[file][0] is not None and sourceDict[file][1] is not None: 
                     (doctype, original) = sourceDict[file]
@@ -207,8 +208,9 @@ class Summary(object):
         for file in self.controller.supplementalFileList:
             SubElement(supplementalFilesEtree, 'File').text = str(file)
         baseTaxonomiesEtree = SubElement(self.rootETree, 'BaseTaxonomies')
-        for ns in self.namespacesInUse:
-            SubElement(baseTaxonomiesEtree,'BaseTaxonomy').text = str(ns)
+        for ns, count in sorted(self.namespacesFactsCount.items(), key=lambda i: i[0]): # sort on namespace only
+            if count > 0:
+                SubElement(baseTaxonomiesEtree,'BaseTaxonomy',attrib={"items":str(count)}).text = str(ns)
         hasPresentationLinkbase = next((True for s in self.instanceSummaryList
                                         if s.hasPresentationLinkbase), False)
         hasCalculationLinkbase = next((True for s in self.instanceSummaryList
@@ -224,16 +226,16 @@ class Summary(object):
     def writeMetaFiles(self):
         def innerWriteMetaFiles():
             roots = {'version' : metaversion}
-            refs = roots['std_ref'] = {}
+            refs = roots['std_ref'] = OrderedDict() # preserve pairs order
             pairs = [(i, ref) for ref, i in self.referencePositionDict.items()]  
             pairs.sort(key=lambda x: x[0]) 
             for pair in pairs:                
                 i, ref = pair
-                rDict = refs['r'+str(i)] = {}
+                rDict = refs['r'+str(i)] = OrderedDict() # preserve references order
                 for (att, val) in ref:  rDict[att] = val
-            roots['instance'] = {}
+            roots['instance'] = OrderedDict()
             for s in self.summaryList:
-                root = roots['instance'][' '.join(s.dtsroots)] = {}                
+                root = roots['instance'][' '.join(s.dtsroots)] = OrderedDict() # preserve order              
                 if s.customPrefix is not None: root['nsprefix'] = s.customPrefix
                 if s.customNamespace is not None: root['nsuri'] = s.customNamespace
                 root['dts'] = s.dts
@@ -250,7 +252,7 @@ class Summary(object):
                 root['segmentCount'] = s.segmentCount
                 root['elementCount'] = len(s.conceptInUseSet)
                 root['unitCount'] = sum(s.unitCountDict.values())
-                reportDict = root['report'] = {}
+                reportDict = root['report'] = OrderedDict() # preserve creation order
                 isDefault = True
                 if hasattr(s, 'rrSectionFacts'):
                     for i, anchor in enumerate(s.rrSectionFacts):
@@ -260,7 +262,7 @@ class Summary(object):
                         reportDict['S' + str(i+1)] = anchor
                 if True: # change this line to "else:" to not clutter rr inline outputs.
                     for i,r in enumerate(s.reportSummaryList):
-                        report = reportDict[r.baseNameBeforeExtension] = {}
+                        report = reportDict[r.baseNameBeforeExtension] = OrderedDict()
                         report['role']=r.role
                         report['longName'] = r.longName
                         report['shortName'] = r.shortName
@@ -284,7 +286,7 @@ class Summary(object):
                             if ('htmlAnchors' not in report): report['htmlAnchors'] = []
                             report['htmlAnchors'] += [{'qname':qname,'context':context,'lang':lang,'attributes':atts}]
                         
-                for tagAa in s.tagDict.values():
+                for _tagName, tagAa in sorted(s.tagDict.items(), key=lambda i: i[0]): # sort on tag names
                     qname = '{' + tagAa['nsuri'] + '}' + tagAa['localname']
                     numList = []
                     for r in (s.qnameReferenceDict.get(qname) or []):
@@ -360,7 +362,7 @@ class InstanceSummary(object):
         # do not hang on to filing or modelXbrl, just collect the statistics.        
         self.dts = defaultdict(lambda: defaultdict(list)) # self.dts['instance']['local'] returns a list
         self.hasRR = False
-        for uri,doc in sorted(modelXbrl.urlDocs.items(), key=lambda i: i[1].objectIndex):
+        for uri,doc in sorted(modelXbrl.urlDocs.items(), key=lambda i: i[0]): # change to url from discovery order. i[1].objectIndex
             if doc.type == arelle.ModelDocument.Type.INLINEXBRLDOCUMENTSET:
                 continue # ignore ixds manifest
             if not doc.inDTS:
@@ -584,7 +586,12 @@ class InstanceSummary(object):
                         langDict[lang]['role'][labelrole] = labeltext
         self.qnameInUseSet = {concept.qname.clarkNotation for concept in conceptInUseSet}
         self.conceptInUseSet = {concept.qname for concept in conceptInUseSet}
-        self.namespacesInUseSet = {qname.namespaceURI for qname in self.conceptInUseSet if Utils.isEfmStandardNamespace(qname.namespaceURI)}
+        self.namespacesFactsCount = {} # dict of namespace by number of facts of that namespace
+        for qname in self.conceptInUseSet:
+            ns = qname.namespaceURI
+            if Utils.isEfmStandardNamespace(ns):
+                self.namespacesFactsCount[ns] = self.namespacesFactsCount.get(ns, 0) + len(modelXbrl.factsByQname.get(qname,()))
+                
 
         #/ hasRR = self.hasRR = next((True for n in modelXbrl.namespaceDocs.keys() if 'http://xbrl.sec.gov/rr/' in n), False)
         if (self.hasRR and hasattr(modelXbrl,'ixdsHtmlElements')): # RR summaries have "S1" "S2" entries.

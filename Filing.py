@@ -184,6 +184,12 @@ class Filing(object):
         self.srtNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('fasb.org/srt/20',n) is not None),None)
         self.isRR = self.rrNamespace is not None
         self.isInvestTaxonomyInDTS = self.investNamespace is not None
+        self.isN2Prospectus = not self.isRR and any(
+            f.xValue in {'N-2', 'N-2/A', 'N-2ASR', 'N-2MEF', 'N-2 POSASR', '497'}
+            for f in self.modelXbrl.factsByLocalName["DocumentType"])
+        self.isProspectus = bool(next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('sec.gov/vip',n) is not None),None))
+        self.isFeeExhibit = bool(next((n for n in self.modelXbrl.roleTypes.keys() if n is not None and re.search('/role/document/feesTable',n) is not None),None))
+
         
         self.builtinEquityColAxes = [('dei',self.deiNamespace,'LegalEntityAxis'),
                                      ('ifrs-full',self.ifrsNamespace,'ComponentsOfEquityAxis'),
@@ -947,7 +953,7 @@ class Filing(object):
         report.emitRFile()
         self.controller.logDebug("R{} emit RFile {:.3f} secs.".format(cube.fileNumber, time.time() - _rStartedAt))
 
-        if xlWriter:
+        if xlWriter and not (self.isRR or self.isProspectus or self.isN2Prospectus or self.isFeeExhibit):
             # we pass the cube's shortname since it doesn't have units and stuff tacked onto the end.
             _rStartedAt = time.time()
             xlWriter.createWorkSheet(cube.fileNumber, cube.shortName)

@@ -17,6 +17,8 @@
   <!-- WH 2021-08-22: branch on filing types other than rr and financial statements. -->
   <xsl:variable name="isprospectus" select="0 &lt; count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'sec.gov/vip')])"/>
   <xsl:variable name="isfeeexhibit" select="0 &lt; count(/FilingSummary/MyReports/Report/Role[contains(.,'/role/document/feesTable')])"/>
+  <xsl:variable name="isUsgaapOrIfrs" select="0 &lt; (count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'fasb.org/us-gaap/20')]) + count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'fasb.org/srt/20')]) + count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'ifrs.org/taxonomy/20') and contains(.,'/ifrs-full')]))"/>
+  <xsl:variable name="isOnlyDei" select="(0 &lt; count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'sec.gov/dei/20')])) and (0 = count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[not(contains(.,'sec.gov/dei/20'))]))"/>
   <xsl:variable name="nlogs">
     <xsl:choose>
       <xsl:when test="count(/FilingSummary/Logs/*) > 0 and $includeLogs = 'true'">1</xsl:when>
@@ -417,7 +419,7 @@
           <table>
             <tr>
               <td colspan="2"><a class="xbrlviewer" style="color: black; font-weight: bold;" href="javascript:window.print();">Print Document</a>
-              <xsl:if test="not($isrr) and $includeExcel = 'true'">&#160;<a class="xbrlviewer" href="{$filingDocUrlPrefix}Financial_Report.xlsx">View Excel Document</a></xsl:if></td>
+              <xsl:if test="($isUsgaapOrIfrs or $isOnlyDei) and $includeExcel = 'true'">&#160;<a class="xbrlviewer" href="{$filingDocUrlPrefix}Financial_Report.xlsx">View Excel Document</a></xsl:if></td>
             </tr>
             <tr>
               <td style="vertical-align: top;">
