@@ -19,6 +19,9 @@ from lxml import etree
 
 from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
 
+usGaapOrIfrsPattern = re.compile(".*/fasb[.]org/(us-gaap|srt)/20|.*/xbrl[.]ifrs[.]org/taxonomy/[0-9-]{10}/ifrs-full", re.I)
+deiPattern = re.compile(".*/xbrl[.]sec[.]gov/dei/20", re.I)
+
 def mainFun(controller, modelXbrl, outputFolderName):
     if "EdgarRenderer/Filing.py#mainFun" in modelXbrl.arelleUnitTests:
         raise arelle.PythonUtil.pyNamedObject(modelXbrl.arelleUnitTests["EdgarRenderer/Filing.py#mainFun"], "EdgarRenderer/Filing.py#mainFun")
@@ -64,6 +67,9 @@ def mainFun(controller, modelXbrl, outputFolderName):
     # handle excel writing
     xlWriter = None
     if controller.excelXslt:
+        nsWithFacts = set(qn.namespaceURI for qn in modelXbrl.factsByQname.keys() if qn)
+        controller.hasXlout = (any(usGaapOrIfrsPattern.match(ns) for ns in nsWithFacts) or
+                               all(deiPattern.match(ns) for ns in nsWithFacts) )
         if filing.hasEmbeddings:
             modelXbrl.debug("debug",
                             _("Excel XSLT is not applied to instance %(instance)s having embedded commands."),
@@ -953,7 +959,7 @@ class Filing(object):
         report.emitRFile()
         self.controller.logDebug("R{} emit RFile {:.3f} secs.".format(cube.fileNumber, time.time() - _rStartedAt))
 
-        if xlWriter and not (self.isRR or self.isProspectus or self.isN2Prospectus or self.isFeeExhibit):
+        if xlWriter and self.controller.hasXlout: # not (self.isRR or self.isProspectus or self.isN2Prospectus or self.isFeeExhibit):
             # we pass the cube's shortname since it doesn't have units and stuff tacked onto the end.
             _rStartedAt = time.time()
             xlWriter.createWorkSheet(cube.fileNumber, cube.shortName)
