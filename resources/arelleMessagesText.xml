@@ -1640,6 +1640,20 @@ Concept {concept} is monetary without a balance and must have a documentation la
 [rq-1209-Presented-Units-Incomplete-Order] Units of measure {foundMeasureSet} were found in ''{linkroleName}'' but the facts presented use these additional units of measure: {missingMeasureSet}.  Add presentation relationships to provide a definite ordering of these additional units in output.
 </message>
 
+<message code="EFM.6.12.10"
+         level="error"
+         module="validate/Filing.py" line="2540"
+         args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
+[du-1210-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+
+<message code="EFM.6.12.11"
+         level="error"
+         module="validate/Filing.py" line="2540"
+         args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
+[du-1211-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+
 <message code="EFM.6.14.01"
          level="error"
          module="ValidateXbrlDTS.py" line="964"
@@ -1673,6 +1687,20 @@ Concept {concept} is monetary without a balance and must have a documentation la
          module="ValidateFiling.py" line="1175"
          args="conceptFrom conceptTo linkroleDefinition contextId">
 [du-1405-Facts-In-Calculations-Presentation-Missing] Context {contextId} has facts of elements {conceptFrom} and {conceptTo}, with a calculation relationship in {linkroleDefinition}, but these elements are not in any common corresponding presentation relationship group.  The calculation relationship is in {refSource}.
+</message>
+
+<message code="EFM.6.14.06"
+         level="error"
+         module="validate/Filing.py" line="2552"
+         args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
+[du-1406-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+
+<message code="EFM.6.14.07"
+         level="error"
+         module="validate/Filing.py" line="2552"
+         args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
+[du-1407-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
 
 <!-- semantic error for now
@@ -1768,6 +1796,20 @@ Table {hypercube} in DRS role {linkrole}, missing targetrole consecutive relatio
 Axis {dimension} in DRS role {linkrole}, missing targetrole consecutive relationship
 </message>
 -->
+
+<message code="EFM.6.16.10"
+         level="error"
+         module="validate/Filing.py" line="2570"
+         args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
+[du-1610-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+
+<message code="EFM.6.16.11"
+         level="error"
+         module="validate/Filing.py" line="2570"
+         args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
+[du-1611-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
 
 <message code="EFM.6.18.01"
          level="error"
