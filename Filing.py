@@ -19,6 +19,9 @@ from lxml import etree
 
 from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
 
+usGaapOrIfrsPattern = re.compile(".*/fasb[.]org/(us-gaap|srt)/20|.*/xbrl[.]ifrs[.]org/taxonomy/[0-9-]{10}/ifrs-full", re.I)
+deiPattern = re.compile(".*/xbrl[.]sec[.]gov/dei/20", re.I)
+
 def mainFun(controller, modelXbrl, outputFolderName):
     if "EdgarRenderer/Filing.py#mainFun" in modelXbrl.arelleUnitTests:
         raise arelle.PythonUtil.pyNamedObject(modelXbrl.arelleUnitTests["EdgarRenderer/Filing.py#mainFun"], "EdgarRenderer/Filing.py#mainFun")
@@ -64,6 +67,9 @@ def mainFun(controller, modelXbrl, outputFolderName):
     # handle excel writing
     xlWriter = None
     if controller.excelXslt:
+        nsWithFacts = set(qn.namespaceURI for qn in modelXbrl.factsByQname.keys() if qn)
+        controller.hasXlout = (any(usGaapOrIfrsPattern.match(ns) for ns in nsWithFacts) or
+                               all(deiPattern.match(ns) for ns in nsWithFacts) )
         if filing.hasEmbeddings:
             modelXbrl.debug("debug",
                             _("Excel XSLT is not applied to instance %(instance)s having embedded commands."),
@@ -362,6 +368,7 @@ class Filing(object):
                         lineNumOfFactWeAreKeeping = firstFact.sourceline
                         discardedLineNumberList = []
                         discardedCounter = 0
+                        discardedFactList = []
                         # finds facts with same qname, context and unit as firstFact
                         while (len(sortedFactList) > 0 and
                                sortedFactList[0].qname == firstFact.qname and
@@ -370,9 +377,10 @@ class Filing(object):
                             discardedCounter += 1
                             fact = sortedFactList.pop(0)
                             duplicateFacts.add(fact) # not keeping this fact
+                            discardedFactList += [fact]
                             if footnoteRelationships.fromModelObject(fact): # does duplicate have any footnotes?
                                 dupFactFootnoteOrigin[fact] = firstFact # track first fact for footnotes from duplicate
-                            discardedLineNumberList += [str(fact.sourceline)] # these are added in sorted order by sourceline
+                            discardedLineNumberList += [str(fact.sourceline)] # these are added in sorted order by sourceline (should be an ordered set)
 
                         if discardedCounter > 0:
                             # start it off because we can assume that these facts have a qname and a context
@@ -380,9 +388,9 @@ class Filing(object):
                             if firstFact.unit is not None:
                                 qnameContextIDUnitStr += ', unit ' + firstFact.unitID
                             self.modelXbrl.debug("debug",
-                                                 _("There are multiple facts with %(contextUnitIds)s. The fact on line %(lineNumOfFactWeAreKeeping)s of the instance " 
+                                                 _("There are multiple facts with %(contextUnitIds)s. The first fact on line %(lineNumOfFactWeAreKeeping)s of the instance " 
                                                    "document will be rendered, and the rest at line(s) %(linesDiscarded)s will not."),
-                                                 modelObject=duplicateFacts, contextUnitIds=qnameContextIDUnitStr, 
+                                                 modelObject=[firstFact]+discardedFactList, contextUnitIds=qnameContextIDUnitStr, 
                                                  lineNumOfFactWeAreKeeping=lineNumOfFactWeAreKeeping,
                                                  linesDiscarded=', '.join(discardedLineNumberList))
 
@@ -953,7 +961,7 @@ class Filing(object):
         report.emitRFile()
         self.controller.logDebug("R{} emit RFile {:.3f} secs.".format(cube.fileNumber, time.time() - _rStartedAt))
 
-        if xlWriter and not (self.isRR or self.isProspectus or self.isN2Prospectus or self.isFeeExhibit):
+        if xlWriter and self.controller.hasXlout: # not (self.isRR or self.isProspectus or self.isN2Prospectus or self.isFeeExhibit):
             # we pass the cube's shortname since it doesn't have units and stuff tacked onto the end.
             _rStartedAt = time.time()
             xlWriter.createWorkSheet(cube.fileNumber, cube.shortName)

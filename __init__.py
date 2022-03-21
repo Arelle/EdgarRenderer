@@ -143,7 +143,7 @@ Language of labels:
     GUI may use tools->language labels setting to override system language for labels
         
 """
-VERSION = '3.22.0.1'
+VERSION = '3.22.1'
 
 from collections import defaultdict
 from arelle import PythonUtil  # define 2.x or 3.x string types
@@ -865,7 +865,7 @@ class EdgarRenderer(Cntlr.Cntlr):
 
         if self.success:
             try:
-                if self.xlWriter:
+                if self.xlWriter and self.hasXlout:
                     _startedAt = time.time()
                     self.xlWriter.save()
                     self.xlWriter.close()

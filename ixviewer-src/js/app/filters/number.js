@@ -144,6 +144,15 @@ var FiltersNumber = {
     }
     return 'Format Error: Num Dot Decimal';
   },
+
+  numDotDecimalAposTR5 : function( element ) {
+    if ( element && typeof element === 'object' && element['innerText'] ) {
+      if ( /^[ \t\n\r]*[,\x27\x60\xB4\u2019\u2032 \xA00-9]*(\.[ \xA00-9]+)?[ \t\n\r]*$/.exec(element.innerText) ) {
+        return element.innerText.replace(/\,/g, '').replace('/\x27/g', '').replace('/\x60/g', '').replace('/\xB4/g', '').replace('/\u2019/g', '').replace('/\u2032/g', '').replace(/ /g, '').replace('/\u00A0/g', '');
+      }
+    }
+    return 'Format Error: Num Dot Decimal';
+  },
   
   textToNumber : function( numberAsString ) {
     // if ( numberAsString && typeof element === 'string' ) {
@@ -189,6 +198,15 @@ var FiltersNumber = {
     if ( element && typeof element === 'object' && element['innerText'] ) {
       if ( /^[ \t\n\r]*[\. \xA00-9]*(,[ \xA00-9]+)?[ \t\n\r]*$/.exec(element.innerText) ) {
          return element.innerText.replace(/\./g, '').replace(/\,/g, '.').replace(/ /g, '').replace('/\u00A0/g', '');
+      }
+    }
+    return 'Format Error: Num Comma Decimal';
+  },
+  
+  numCommaDecimalAposTR5 : function( element ) {
+    if ( element && typeof element === 'object' && element['innerText'] ) {
+      if ( /^[ \t\n\r]*[\.\x27\x60\xB4\u2019\u2032 \xA00-9]*(,[ \xA00-9]+)?[ \t\n\r]*$/.exec(element.innerText) ) {
+         return element.innerText.replace(/\./g, '').replace(/\,/g, '.').replace('/\x27/g', '').replace('/\x60/g', '').replace('/\xB4/g', '').replace('/\u2019/g', '').replace('/\u2032/g', '').replace(/ /g, '').replace('/\u00A0/g', '');
       }
     }
     return 'Format Error: Num Comma Decimal';
@@ -318,6 +336,21 @@ var FiltersNumber = {
       }
     }
     
+    return 'Format Error: Num Unit Decimal';
+  },
+  
+  numUnitDecimalAposTR5 : function( element ) {
+    if ( element && typeof element === 'object' && element['innerText'] ) {
+      var m = /^([0-9\uff10-\uff19\.,\uff0c\x27\x60\xB4\u2019\u2032\uFF07]+)([^0-9\uff10-\uff19\.,\uff0c\x27\x60\xB4\u2019\u2032\uFF07][^0-9\uff10-\uff19]*)([0-9\uff10-\uff19]{1,2})[^0-9\uff10-\uff19]*$/.exec(element.innerText);
+      if ( m && ConstantsNumber.lastindex(m) > 1 ) {
+        var majorValue = m[1].replace('.', '').replace(',', '').replace('\uFF0C', '').replace('\x27', '').replace('\x60', '').replace('\xB4', '').replace('\u2019', '').replace('\u2032', '').replace('\uFF07', '');
+        var fractValue = ConstantsNumber.zeroPadTwoDigits(m[ConstantsNumber.lastindex(m)]);
+        if (majorValue.length > 0 && fractValue.length > 0) {
+            return (majorValue + '.' + fractValue);
+        }
+      }
+    }
+   
     return 'Format Error: Num Unit Decimal';
   },
   

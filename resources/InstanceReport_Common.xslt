@@ -9,7 +9,8 @@
   <xsl:param name="numberGroupSize" select="'3'"/>
   <xsl:param name="showFlags"/>
   <xsl:param name="source"/>
-  <xsl:param name="otherStandardPrefix"/>
+  <!-- xquery -qs:'distinct-values(for $x in //Loc[Elements=1]/Prefix/text() return ($x))' -s:../../validate/EFM/resources/edgartaxonomies/edgartaxonomies-22-1.xml -->
+  <xsl:param name="standardPrefixes">dei|cef|country|currency|exch|sic|stpr|naics|us-gaap|srt|vip|rr|ifrs-full|xbrldi|xbrldt</xsl:param>
   <xsl:param name="authMode">0</xsl:param>
   <xsl:param name="infText">&#x221E;</xsl:param>
   <xsl:decimal-format name="currency" digit="D"/>
@@ -418,6 +419,7 @@
     <xsl:variable name="showElementNames" select="ShowElementNames = 'true'"/>
     <xsl:variable name="displayLabelColumn" select="string-length(DisplayLabelColumn) = 0 or DisplayLabelColumn = 'true'"/>
     <xsl:variable name="hasLabelFootnotes" select="Rows/Row/FootnoteIndexer/node()"/>
+    <xsl:variable name="standardPrefixesRegex" select="concat('^(',$standardPrefixes,')_$')"/>
     <xsl:for-each select="Rows/Row">
       <xsl:choose>
         <xsl:when test="IsReportTitle = 'true'"/>
@@ -429,12 +431,7 @@
               <xsl:choose>
                 <xsl:when test="IsSegmentTitle = 'true'"/>
                 <xsl:when test="IsAbstractGroupTitle = 'true'"/>
-                <xsl:when test="ElementPrefix = 'us-gaap_'"/>
-                <xsl:when test="ElementPrefix = 'ifrs-full_'"/>                
-                <xsl:when test="ElementPrefix = 'dei_'"/>
-                <xsl:when test="ElementPrefix = 'invest_'"/>
-                <xsl:when test="ElementPrefix = 'rr_'"/>
-                <xsl:when test="ElementPrefix = $otherStandardPrefix"/>
+                <xsl:when test="contains($standardPrefixesRegex,concat('|',ElementPrefix,'|'))"/>
                 <xsl:otherwise>custom</xsl:otherwise>
               </xsl:choose>
             </xsl:variable>
