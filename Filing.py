@@ -368,6 +368,7 @@ class Filing(object):
                         lineNumOfFactWeAreKeeping = firstFact.sourceline
                         discardedLineNumberList = []
                         discardedCounter = 0
+                        discardedFactList = []
                         # finds facts with same qname, context and unit as firstFact
                         while (len(sortedFactList) > 0 and
                                sortedFactList[0].qname == firstFact.qname and
@@ -376,9 +377,10 @@ class Filing(object):
                             discardedCounter += 1
                             fact = sortedFactList.pop(0)
                             duplicateFacts.add(fact) # not keeping this fact
+                            discardedFactList += [fact]
                             if footnoteRelationships.fromModelObject(fact): # does duplicate have any footnotes?
                                 dupFactFootnoteOrigin[fact] = firstFact # track first fact for footnotes from duplicate
-                            discardedLineNumberList += [str(fact.sourceline)] # these are added in sorted order by sourceline
+                            discardedLineNumberList += [str(fact.sourceline)] # these are added in sorted order by sourceline (should be an ordered set)
 
                         if discardedCounter > 0:
                             # start it off because we can assume that these facts have a qname and a context
@@ -386,9 +388,9 @@ class Filing(object):
                             if firstFact.unit is not None:
                                 qnameContextIDUnitStr += ', unit ' + firstFact.unitID
                             self.modelXbrl.debug("debug",
-                                                 _("There are multiple facts with %(contextUnitIds)s. The fact on line %(lineNumOfFactWeAreKeeping)s of the instance " 
+                                                 _("There are multiple facts with %(contextUnitIds)s. The first fact on line %(lineNumOfFactWeAreKeeping)s of the instance " 
                                                    "document will be rendered, and the rest at line(s) %(linesDiscarded)s will not."),
-                                                 modelObject=duplicateFacts, contextUnitIds=qnameContextIDUnitStr, 
+                                                 modelObject=[firstFact]+discardedFactList, contextUnitIds=qnameContextIDUnitStr, 
                                                  lineNumOfFactWeAreKeeping=lineNumOfFactWeAreKeeping,
                                                  linesDiscarded=', '.join(discardedLineNumberList))
 

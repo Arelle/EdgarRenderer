@@ -242,7 +242,9 @@ var FiltersDate = {
             'DD.MM.Y',
             'DD.MM.YY',
             'D.M.YY',
-            'DD/MM/YY' ], true);
+            'D.M.YYYY',
+            'DD/MM/YY',
+            'DD/MM/YYYY' ], true);
         if ( !dateResult.isValid() ) {
           return 'Format Error: Date Day Month Year';
         }
@@ -311,7 +313,7 @@ var FiltersDate = {
         var month = result[2];
         var day = result[1];
         var year = result[3];
-        var dateResult = moment(day + '-' + month + '-' + year, 'DD-MMM-Y');
+        var dateResult = moment(day + '-' + month + '-' + year, ['DD-MMM-YY', 'DD-MMM-YYYY'] );
         if ( !dateResult.isValid() ) {
           return 'Format Error: Date Day Month Year EN';
         }
@@ -329,11 +331,8 @@ var FiltersDate = {
     return 'Format Error: Date Day Month Year EN';
   },
   
-  dateDayMonthYearIN : function( element ) {
-    if ( element && typeof element === 'object' && element['innerText'] ) {
-      
-      var regex = /^\s*([0-9\u0966-\u096F]{1,2})\s([\u0966-\u096F]{2}|[^\s0-9\u0966-\u096F]+)\s([0-9\u0966-\u096F]{2}|[0-9\u0966-\u096F]{4})\s*$/;
-      var result = regex.exec(element.innerText);
+  datedaymonthyearin : function( arg, pattern ) {
+      var result = pattern.exec(arg);
       if ( result ) {
         var year = ConstantsNumber.getDevanagariDigitsToNormal(result[3]);
         
@@ -349,13 +348,23 @@ var FiltersDate = {
         var dateResult = moment(day + '-' + month + '-' + year, 'DD-MM-YYYY');
         
         if ( !dateResult.isValid() ) {
-          return 'Format Error: Date Day Month Year IN';
+          return 'Format Error (date value): Date Day Month Year IN';
         }
         return dateResult.format('YYYY-MM-DD');
       }
-    }
-    return 'Format Error: Date Day Month Year IN';
-    
+      return 'Format Error (date pattern): Date Day Month Year IN';
+  },
+
+  datedaymonthyearinTR3 : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyearin(element.innerText, /^\s*([0-9\u0966-\u096F]{1,2})\s([\u0966-\u096F]{2}|[^\s0-9\u0966-\u096F]+)\s([0-9\u0966-\u096F]{2}|[0-9\u0966-\u096F]{4})\s*$/);
+   }
+  },
+
+  datedaymonthyearinTR4 : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyearin(element.innerText, /^[ \t\n\r]*([0-9]{1,2}|[\u0966-\u096f]{1,2})[^0-9\u0966-\u096f]+(\u091c\u0928\u0935\u0930\u0940|\u092b\u0930\u0935\u0930\u0940|\u092e\u093e\u0930\u094d\u091a|\u0905\u092a\u094d\u0930\u0948\u0932|\u092e\u0908|\u091c\u0942\u0928|\u091c\u0941\u0932\u093e\u0908|\u0905\u0917\u0938\u094d\u0924|\u0938\u093f\u0924\u0902\u092c\u0930|\u0905\u0915\u094d\u091f\u0942\u092c\u0930|\u0928\u0935\u0902\u092c\u0930|\u0926\u093f\u0938\u0902\u092c\u0930)[^0-9\u0966-\u096f]+([0-9]{2}|[0-9]{4}|[\u0966-\u096f]{2}|[\u0966-\u096f]{4})[ \t\n\r]*$/);
+   }
   },
   
   dateDotEU : function( element ) {
@@ -916,36 +925,40 @@ var FiltersDate = {
   },
         
   // TR4 common functions
-  datedaymonth : function( arg, pattern, moTbl, dy, mo, lastindex ) {
-    if (typeof moTbl === "undefined") {
+  datedaymonth : function( arg, pattern, moTblArg, dyArg, moArg, lastindexArg ) {
+    var moTbl = moTblArg;
+    if (typeof moTblArg === "undefined") {
           moTbl = ConstantsDate.monthnumber;
     }
-    dt = dy || 1;
-    mo = mo || 2;
-    lastindex = lastindex || 2;
+    var dy = dyArg || 1;
+    var mo = moArg || 2;
+    var lastindex = lastindexArg || 2;
     var m = pattern.exec(arg);
     if ( m && ConstantsNumber.lastindex(m) === lastindex && dy in m ) {
-        var day = ConstantsNumber.zeroPadTwoDigits(m[dy]);
-        var mo = m[mo].toLowerCase();
-        if ( (!moTbl || mo in moTbl) && mo in maxDayInMo && "01" <= day && day <= (maxDayInMo[mo] || "00")) {
+        dy = ConstantsNumber.zeroPadTwoDigits(m[dy]);
+        mo = m[mo].toLowerCase();
+        if ( !moTbl || mo in moTbl ) {
             mo = (moTbl) ? moTbl[mo] : parseInt(mo);
-            return "--" + ConstantsNumber.zeroPadTwoDigits(mo) + "-" + day;
+            if ( mo in ConstantsDate.maxDayInMo && "01" <= dy && dy <= (ConstantsDate.maxDayInMo[mo] || "00")) {
+                return "--" + ConstantsNumber.zeroPadTwoDigits(mo) + "-" + dy;
+            }
         }
     }
     return 'Format Error: Date Day Month';
 },
 
-  datemonthyear    : function( arg, pattern, moTbl, mo, yr, lastindex ) {
-      if (typeof moTbl === "undefined") {
+  datemonthyear    : function( arg, pattern, moTblArg, moArg, yrArg, lastindexArg ) {
+    var moTbl = moTblArg;
+    if (typeof moTblArg === "undefined") {
           moTbl = ConstantsDate.monthnumber;
-      }
-    dt = dy || 1;
-    mo = mo || 2;
-    lastindex = lastindex || 2;
+    }
+    var mo = moArg || 1;
+    var yr = yrArg || 2;
+    var lastindex = lastindexArg || 2;
     var m = pattern.exec(arg);
     if ( m && ConstantsNumber.lastindex(m) === lastindex && yr in m && mo in m ) {
-        var yr = ConstantsDate.getYr4(m[yr]);
-        var mo = m[mo].toLowerCase();
+        yr = ConstantsDate.getYr4(m[yr]);
+        mo = m[mo].toLowerCase();
         if ( !moTbl || mo in moTbl ) {
             mo = (moTbl) ? moTbl[mo] : parseInt(mo);
             return yr + "-" + ConstantsNumber.zeroPadTwoDigits(mo);
@@ -954,23 +967,24 @@ var FiltersDate = {
     return 'Format Error: Month Year';
 },
 
-  datedaymonthyear : function( arg, pattern, moTbl, dy, mo, yr, lastindex ) {
-      if (typeof moTbl === "undefined") {
+  datedaymonthyear : function( arg, pattern, moTblArg, dyArg, moArg, yrArg, lastindexArg ) {
+    var moTbl = moTblArg;
+    if (typeof moTblArg === "undefined") {
           moTbl = ConstantsDate.monthnumber;
-      }
-    dt = dy || 1;
-    mo = mo || 2;
-    yr = yr || 3;
-    lastindex = lastindex || 3;
+    }
+    var dy = dyArg || 1;
+    var mo = moArg || 2;
+    var yr = yrArg || 3;
+    var lastindex = lastindexArg || 3;
     var m = pattern.exec(arg);
     if ( m && ConstantsNumber.lastindex(m) === lastindex && yr in m && mo in m && dy in m ) {
-        var yr = ConstantsDate.getYr4(m[yr]);
-        var day = ConstantsNumber.zeroPadTwoDigits(m[dy]);
-        var mo = m[mo].toLowerCase();
+        yr = ConstantsDate.getYr4(m[yr]);
+        dy = ConstantsNumber.zeroPadTwoDigits(m[dy]);
+        mo = m[mo].toLowerCase();
         if ( !moTbl || mo in moTbl ) {
             mo = (moTbl) ? moTbl[mo] : parseInt(mo);
             mo = ConstantsNumber.zeroPadTwoDigits(mo);
-            return yr + "-" + mo + "-" + day;
+            return yr + "-" + mo + "-" + dy;
         }
     }
     return 'Format Error: Day Month Year';
@@ -989,6 +1003,14 @@ var FiltersDate = {
       return FiltersDate.datedaymonth(element.innerText, 
                 /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(ledna|\xfanora|unora|b\u0159ezna|brezna|dubna|kv\u011btna|kvetna|\u010dervna|cervna|\u010dervence|cervence|srpna|z\xe1\u0159\xed|zari|\u0159\xedjna|rijna|listopadu|prosince|led|\xfano|uno|b\u0159e|bre|dub|kv\u011b|kve|\u010dvn|cvn|\u010dvc|cvc|srp|z\xe1\u0159|zar|\u0159\xedj|rij|lis|pro|LEDNA|\xdaNORA|UNORA|B\u0158EZNA|BREZNA|DUBNA|KV\u011aTNA|KVETNA|\u010cERVNA|CERVNA|\u010cERVENCE|CERVENCE|SRPNA|Z\xc1\u0158\xcd|ZARI|\u0158\xcdJNA|RIJNA|LISTOPADU|PROSINCE|LED|\xdaNO|UNO|B\u0158E|BRE|DUB|KV\u011a|KVE|\u010cVN|CVN|\u010cVC|CVC|SRP|Z\xc1\u0158|ZAR|\u0158\xcdJ|RIJ|LIS|PRO|Ledna|\xdanora|Unora|B\u0159ezna|Brezna|Dubna|Kv\u011btna|Kvetna|\u010cervna|Cervna|\u010cervence|Cervence|Srpna|Z\xe1\u0159\xed|Zari|\u0158\xedjna|Rijna|Listopadu|Prosince|Led|\xdano|Uno|B\u0159e|Bre|Dub|Kv\u011b|Kve|\u010cvn|Cvn|\u010cvc|Cvc|Srp|Z\xe1\u0159|Zar|\u0158\xedj|Rij|Lis|Pro)\.?[ \t\n\r]*$/, 
               ConstantsDate.monthnumbercs);
+   }
+  },
+
+  datedaymonthcy : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonth(element.innerText, 
+                /^[ \t\n\r]*([0-9]{1,2})[^0-9a-zA-Z]+(ion|chwe|maw|ebr|mai|meh|gor|aws|med|hyd|tach|rhag|ION|CHWE|MAW|EBR|MAI|MEH|GOR|AWS|MED|HYD|TACH|RHAG|Ion|Chwe|Maw|Ebr|Mai|Meh|Gor|Aws|Med|Hyd|Tach|Rhag)[^0-9]{0,7}[ \t\n\r]*$/, 
+              ConstantsDate.monthnumbercy);
    }
   },
 
@@ -1142,7 +1164,7 @@ var FiltersDate = {
 
   datedaymonthyearTR4 : function( element ) {
    if ( element && typeof element === 'object' && element['innerText'] ) {
-      return FiltersDate.datedaymonthyear(element.innerText, ConstantsNumber.getDevanagariDigitsToNormal(arg), /^[ \t\n\r]*([0-9]{1,2})[^0-9]+([0-9]{1,2})[^0-9]+([0-9]{4}|[0-9]{1,2})[ \t\n\r]*$/, 1, 2, 3);
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+([0-9]{1,2})[^0-9]+([0-9]{4}|[0-9]{1,2})[ \t\n\r]*$/, 1, 2, 3);
    }
   },
   
@@ -1155,6 +1177,12 @@ var FiltersDate = {
   datedaymonthyearcs : function( element ) {
    if ( element && typeof element === 'object' && element['innerText'] ) {
       return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(ledna|\xfanora|unora|b\u0159ezna|brezna|dubna|kv\u011btna|kvetna|\u010dervna|cervna|\u010dervence|cervence|srpna|z\xe1\u0159\xed|zari|\u0159\xedjna|rijna|listopadu|prosince|led|\xfano|uno|b\u0159e|bre|dub|kv\u011b|kve|\u010dvn|cvn|\u010dvc|cvc|srp|z\xe1\u0159|zar|\u0159\xedj|rij|lis|pro|LEDNA|\xdaNORA|UNORA|B\u0158EZNA|BREZNA|DUBNA|KV\u011aTNA|KVETNA|\u010cERVNA|CERVNA|\u010cERVENCE|CERVENCE|SRPNA|Z\xc1\u0158\xcd|ZARI|\u0158\xcdJNA|RIJNA|LISTOPADU|PROSINCE|LED|\xdaNO|UNO|B\u0158E|BRE|DUB|KV\u011a|KVE|\u010cVN|CVN|\u010cVC|CVC|SRP|Z\xc1\u0158|ZAR|\u0158\xcdJ|RIJ|LIS|PRO|Ledna|\xdanora|Unora|B\u0159ezna|Brezna|Dubna|Kv\u011btna|Kvetna|\u010cervna|Cervna|\u010cervence|Cervence|Srpna|Z\xe1\u0159\xed|Zari|\u0158\xedjna|Rijna|Listopadu|Prosince|Led|\xdano|Uno|B\u0159e|Bre|Dub|Kv\u011b|Kve|\u010cvn|Cvn|\u010cvc|Cvc|Srp|Z\xe1\u0159|Zar|\u0158\xedj|Rij|Lis|Pro)[^0-9a-zA-Z]+[^0-9]*([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/, ConstantsDate.monthnumbercs);
+   }
+  },
+
+  datedaymonthyearcy : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(ion|chwe|maw|ebr|mai|meh|gor|aws|med|hyd|tach|rhag|ION|CHWE|MAW|EBR|MAI|MEH|GOR|AWS|MED|HYD|TACH|RHAG|Ion|Chwe|Maw|Ebr|Mai|Meh|Gor|Aws|Med|Hyd|Tach|Rhag)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/, ConstantsDate.monthnumbercy);
    }
   },
 
@@ -1239,12 +1267,6 @@ var FiltersDate = {
    }
   },
 
-  datedaymonthyearinTR4 : function( element ) {
-   if ( element && typeof element === 'object' && element['innerText'] ) {
-      return FiltersDate.datedaymonthyearin(element.innerText, /^[ \t\n\r]*([0-9]{1,2}|[\u0966-\u096f]{1,2})[^0-9\u0966-\u096f]+(\u091c\u0928\u0935\u0930\u0940|\u092b\u0930\u0935\u0930\u0940|\u092e\u093e\u0930\u094d\u091a|\u0905\u092a\u094d\u0930\u0948\u0932|\u092e\u0908|\u091c\u0942\u0928|\u091c\u0941\u0932\u093e\u0908|\u0905\u0917\u0938\u094d\u0924|\u0938\u093f\u0924\u0902\u092c\u0930|\u0905\u0915\u094d\u091f\u0942\u092c\u0930|\u0928\u0935\u0902\u092c\u0930|\u0926\u093f\u0938\u0902\u092c\u0930)[^0-9\u0966-\u096f]+([0-9]{2}|[0-9]{4}|[\u0966-\u096f]{2}|[\u0966-\u096f]{4})[ \t\n\r]*$/);
-   }
-  },
-
   datedaymonthyearit : function( element ) {
    if ( element && typeof element === 'object' && element['innerText'] ) {
       return FiltersDate.datedaymonthyear(element.innerText, /^[ \t\n\r]*([0-9]{1,2})[^0-9]+(gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic|GEN|FEB|MAR|APR|MAG|GIU|LUG|AGO|SET|OTT|NOV|DIC|Gen|Feb|Mar|Apr|Mag|Giu|Lug|Ago|Set|Ott|Nov|Dic)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
@@ -1323,6 +1345,12 @@ var FiltersDate = {
    }
   },
 
+  datemonthyearcy : function( element ) {
+   if ( element && typeof element === 'object' && element['innerText'] ) {
+      return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(ion|chwe|maw|faw|ebr|mai|fai|meh|feh|gor|ngor|aws|med|fed|hyd|tach|dach|nhach|thach|rhag|rag|ION|CHWE|MAW|FAW|EBR|MAI|FAI|MEH|FEH|GOR|NGOR|AWS|MED|FED|HYD|TACH|DACH|NHACH|THACH|RHAG|RAG|Ion|Chwe|Maw|Faw|Ebr|Mai|Fai|Meh|Feh|Gor|Ngor|Aws|Med|Fedi|Hyd|Tach|Dach|Nhach|Thach|Rhag|Rag)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/, ConstantsDate.monthnumbercy);
+   }
+  },
+
   datemonthyearde : function( element ) {
    if ( element && typeof element === 'object' && element['innerText'] ) {
       return FiltersDate.datemonthyear(element.innerText, /^[ \t\n\r]*(jan|j\xe4n|jaen|feb|m\xe4r|maer|mar|apr|mai|jun|jul|aug|sep|okt|nov|dez|JAN|J\xc4N|JAEN|FEB|M\xc4R|MAER|MAR|APR|MAI|JUN|JUL|AUG|SEP|OKT|NOV|DEZ|Jan|J\xe4n|Jaen|Feb|M\xe4r|Maer|Mar|Apr|Mai|Jun|Jul|Aug|Sep|Okt|Nov|Dez)[^0-9]+([0-9]{1,2}|[0-9]{4})[ \t\n\r]*$/);
@@ -1337,7 +1365,7 @@ var FiltersDate = {
         var mon3 = m[1].toLowerCase();
         var monEnd = m[2];
         var monPer = m[3];
-        if ( mo in moTbl && ((!monEnd && !monPer) ||
+        if ( mon3 in moTbl && ((!monEnd && !monPer) ||
                               (!monEnd && monPer) ||
                               (monEnd && !monPer)) ) {
             return yr + "-" + ConstantsNumber.zeroPadTwoDigits(moTbl[mon3]);
