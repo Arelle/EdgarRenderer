@@ -14,10 +14,12 @@ At this moment, Xlout.py requires openpyxl 2.1.4, it does not work with openpyxl
 """
 
 import os.path, re, datetime, time, lxml, decimal, collections, openpyxl.cell, openpyxl.styles, openpyxl.utils, openpyxl.worksheet.dimensions
+from . import IoManager
+from lxml.etree import tostring as treeToString
 
 # note that number pattern allows word before number like shares (1,234,567) (but would misfire on same in text block!)
 numberPattern = re.compile(r"\s*[_A-Za-z\xC0-\xD6\xD8-\xF6\xF8-\xFF\u0100-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]*"
-                           r"\s*([$€¥£]\s*)?[(]?\s*[+-]?[0-9,]+([.][0-9]*)?[)-]?\s*$")
+                           r"\s*([$€¥£]\s*)?[(]?\s*[+-]?[0-9,]+([.][0-9]*)?[)-]?[%]?\s*$")
 # word in num only allows non-numeric unicode character in first group
 # we could change to allow number after first alpha character (like in XmlValidate.py) but not sure it is necessary net
 wordInNumPattern = re.compile(r"\s*([_A-Za-z\xC0-\xD6\xD8-\xF6\xF8-\xFF\u0100-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]*)"
@@ -112,6 +114,9 @@ class XlWriter(object):
             _startedAt = time.time()
             rdoc = self.simplified_transform(report.rootETree,asPage=lxml.etree.XSLT.strparam('true'),method='html')
             self.controller.logDebug("R{} xlout XSLT {:.3f} secs".format(report.cube.fileNumber, time.time() - _startedAt))
+            # uncomment to debug intermediate xml result
+            #with open("/Users/hermf/temp/xlout.xml", "wb") as fh:
+            #    fh.write(treeToString(rdoc, method='xml', with_tail=False, pretty_print=True, encoding='utf-8', xml_declaration=True))
             row = 0  # openpyxl changed to 1-offset col numbering in version 2
             widthPerCharacter = 1
             maxWidth = 80
@@ -140,11 +145,14 @@ class XlWriter(object):
                         elif numberPattern.match(text) and classAttr in ("num", "nump"):
                             if ',' in text:
                                 text = text.replace(',', '')
-                            isNeg = False
+                            isNeg = isPct = False
                             for c in '()-':
                                 if c in text:
                                     text = text.replace(c, '')
                                     isNeg = True
+                            if "%" in text:
+                                isPct = True
+                                text = text.replace('%', '')
                             try:
                                 mWordInNum = wordInNumPattern.match(text)
                                 if mWordInNum and len(mWordInNum.group(1)) > 0:
@@ -165,6 +173,9 @@ class XlWriter(object):
                                     fractPattern = ''
                                 if unitSymbol:
                                     fmt = '_("{0}"#,##0{1}_);_("{0}"(#,##0{1})'.format(unitSymbol, fractPattern)
+                                elif isPct:
+                                    fmt = '#,##0{0}%_);(#,##0{0}%)'.format(fractPattern)
+                                    value = value / decimal.Decimal(100)
                                 else:
                                     fmt = '#,##0{0}_);(#,##0{0})'.format(fractPattern)
                                 if isNeg:
