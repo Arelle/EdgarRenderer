@@ -808,7 +808,7 @@ class InstanceSummary(object):
                 return Uncategorized
             elif isStatement(longName):
                 return Statements
-            elif isParenthetical(longName):
+            elif isParenthetical(longName) or isDocument(longName):
                 return Cover
             elif isPolicy(longName):
                 return Notes

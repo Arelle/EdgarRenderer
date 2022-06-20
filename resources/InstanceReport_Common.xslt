@@ -497,6 +497,18 @@
 
   <xsl:template name="authRefLink">
     <xsl:choose>
+      <xsl:when test="$isXmlWorkbook">
+          <xsl:choose>
+            <xsl:when test="IsAbstractGroupTitle = 'true'">
+              <strong>
+                <xsl:value-of select="normalize-space(Label)"/>
+              </strong>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="normalize-space(Label)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+      </xsl:when>
       <xsl:when test="not(../../../IsTransposed = 'true') and string-length(.//Label[@Id = 0]/@Key) > 0 and $majorversion &lt; 3">
         <a class="a" href="javascript:void(0);" onclick="{$top}Show.showAR( this, 'defref_{translate(.//Label[@Id=0]/@Key,':','=')}', window );">
           <xsl:choose>

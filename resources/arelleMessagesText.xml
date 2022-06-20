@@ -1183,7 +1183,7 @@ Taxonomy schema {schema} namespace {targetNamespace} prefix {prefix} must not ha
          level="warning"
          module="ValidateFilingDTS.py" line="427"
          args="roleType">
-RoleType {roleType} should end with /role/{mnemonic name}
+[du-0709-Role-Ending-Mismatch] RoleType {roleType} should end with /role/{mnemonic name}
 </message>
 
 <message code="EFM.6.07.10"
@@ -1218,14 +1218,14 @@ RoleType {roleType} should end with /role/{mnemonic name}
          level="error"
          module="ValidateFilingDTS.py" line="482"
          args="arcroleType targetNamespaceAuthority targetNamespace">
-[du-0713-Arcrole-Namespace-Mismatch]  Relationship role {arcroleType} does not begin with {targetNamespace}'s scheme and authority, in {refSource}.  Please change the relationship role URI or target namespace URI.
+[du-0713-Arcrole-Namespace-Mismatch] Relationship role {arcroleType} does not begin with {targetNamespace}'s scheme and authority, in {refSource}.  Please change the relationship role URI or target namespace URI.
 </message>
 
 <message code="EFM.6.07.13.arcroleEnding"
          level="warning"
          module="ValidateFilingDTS.py" line="487"
          args="arcroleType">
-ArcroleType {arcroleType} should end with /arcrole/{mnemonic name}
+[du-0713-Arcrole-Ending-Mismatch] ArcroleType {arcroleType} should end with /arcrole/{mnemonic name}
 </message>
 
 <message code="EFM.6.07.14"
@@ -1481,7 +1481,7 @@ Concept {concept} of type xbrli:stringItemType must have periodType duration
          level="error"
          module="ValidateXbrlDTS.py" line="885"
          args="element element2">
-[cp-0907-Linkbases-Distinct] Your filing contained extended type links with roles of different namesapces and local names, {element} and {element2} in the same linkbase, {refUrl}.  Please recheck your submission and ensure that all extended-type links in a single linkbase have the same namespace and local name.
+[cp-0907-Linkbases-Distinct] Your filing contained extended type links with roles of different namespaces and local names, {element} and {element2} in the same linkbase, {refUrl}.  Please recheck your submission and ensure that all extended-type links in a single linkbase have the same namespace and local name.
 </message>
 
 <message code="EFM.6.09.09"
@@ -1844,6 +1844,8 @@ Axis {dimension} in DRS role {linkrole}, missing targetrole consecutive relation
          args="documentType conflictClass">
 [cp-2203-Incompatible-Inline-DocumentType]  DocumentType {documentType} is incompatible with inline XBRL. {refSources}
 </message>
+
+<!-- this is not part of 6.5.40 or mentioned anywhere in EFM
 <message code="EFM.6.05.40.srtConceptsForIFRSConcepts"
          level="error"
          module="ValidateFiling.py" line="1590"
@@ -1856,7 +1858,8 @@ Axis {dimension} in DRS role {linkrole}, missing targetrole consecutive relation
          args="ifrsSrtConceptsUsed">
 [cp-0540-SRT-Members-For-SRT-Axes]  Taxonomy axes from the SRT taxonomy should use SRT or extension members for the following IFRS member concepts: {ifrsSrtConceptsUsed}.
 </message>
-
+ -->
+ 
 <!-- Note: EFM 6.23 is not currently in effect.  WcH comments nested in here have been stripped of xml comment markup.
 <message code="EFM.6.23.01"
          level="error"
