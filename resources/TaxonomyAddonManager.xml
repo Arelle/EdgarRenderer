@@ -109,13 +109,6 @@
       <ReferenceFiles/>
     </TaxonomyAddon>
     <TaxonomyAddon>
-      <Taxonomy>currency-2022.xsd</Taxonomy>
-      <DefinitionFiles>
-        <string>currency-doc-2022.xml</string>
-      </DefinitionFiles>
-      <ReferenceFiles/>
-    </TaxonomyAddon>
-    <TaxonomyAddon>
       <Taxonomy>dei-2009-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>dei-doc-2009-01-31.xml</string>
@@ -493,13 +486,6 @@
       <Taxonomy>stpr-2018-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>stpr-doc-2018-01-31.xml</string>
-      </DefinitionFiles>
-      <ReferenceFiles/>
-    </TaxonomyAddon>
-    <TaxonomyAddon>
-      <Taxonomy>stpr-2022.xsd</Taxonomy>
-      <DefinitionFiles>
-        <string>stpr-doc-2022.xml</string>
       </DefinitionFiles>
       <ReferenceFiles/>
     </TaxonomyAddon>
