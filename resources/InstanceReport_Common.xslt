@@ -419,7 +419,7 @@
     <xsl:variable name="showElementNames" select="ShowElementNames = 'true'"/>
     <xsl:variable name="displayLabelColumn" select="string-length(DisplayLabelColumn) = 0 or DisplayLabelColumn = 'true'"/>
     <xsl:variable name="hasLabelFootnotes" select="Rows/Row/FootnoteIndexer/node()"/>
-    <xsl:variable name="standardPrefixesRegex" select="concat('^(',$standardPrefixes,')_$')"/>
+    <xsl:variable name="standardPrefixesPattern" select="concat('|',$standardPrefixes,'|')"/>
     <xsl:for-each select="Rows/Row">
       <xsl:choose>
         <xsl:when test="IsReportTitle = 'true'"/>
@@ -431,12 +431,12 @@
               <xsl:choose>
                 <xsl:when test="IsSegmentTitle = 'true'"/>
                 <xsl:when test="IsAbstractGroupTitle = 'true'"/>
-                <xsl:when test="contains($standardPrefixesRegex,concat('|',ElementPrefix,'|'))"/>
-                <xsl:otherwise>custom</xsl:otherwise>
+                <xsl:when test="contains($standardPrefixesPattern, substring-before(ElementPrefix, '_'))"/>
+                <xsl:otherwise> custom</xsl:otherwise>
               </xsl:choose>
             </xsl:variable>
             <xsl:if test="$displayLabelColumn">
-              <td class="pl {$custom}" style="border-bottom: 0px;" valign="top">
+              <td class="pl{$custom}" style="border-bottom: 0px;" valign="top">
                 <xsl:call-template name="authRefLink"/>
               </td>
               <xsl:if test="$hasLabelFootnotes">

@@ -95,6 +95,8 @@ class Summary(object):
         self.footnotesReported = 0 < sum([s.footnoteCount for s in summaries])
         self.scenarioCount = sum([s.scenarioCount for s in summaries])
         self.hasRR = next((True for s in summaries if s.hasRR), False)
+        self.hasProspectus = next((True for s in summaries if s.hasProspectus), False)
+        self.hasFeeExhibit = next((True for s in summaries if s.hasFeeExhibit), False)
         self.namespacesFactsCount = {}
         for s in summaries:
             for ns, count in s.namespacesFactsCount.items():
@@ -120,6 +122,8 @@ class Summary(object):
     @property
     def menuStyle(self):
         if self.hasRR: return 'RiskReturn'
+        if self.hasProspectus: return 'Prospectus'
+        if self.hasFeeExhibit: return 'FeeExhibit'
         return 'Other'
        
     def __str__(self):
@@ -131,11 +135,11 @@ class Summary(object):
             self.rootETree = Element('FilingSummary', nsmap=nsmap)
             self.appendSummaryHeader()
             self.myReportsETree = SubElement(self.rootETree, 'MyReports')
-            isRR = self.menuStyle == 'RiskReturn'
+            isRRorProspectusorFeeTable = self.menuStyle in ('RiskReturn', 'Prospectus', 'FeeExhibit')
             for i, instanceSummary in enumerate(self.instanceSummaryList):
-                instanceSummary.appendToFilingSummary(self.myReportsETree, i == 1, isRR, False)
+                instanceSummary.appendToFilingSummary(self.myReportsETree, i == 1, isRRorProspectusorFeeTable, False)
             for i, instanceSummary in enumerate(self.instanceSummaryList):
-                instanceSummary.appendToFilingSummary(self.myReportsETree, i == 1, isRR, True)
+                instanceSummary.appendToFilingSummary(self.myReportsETree, i == 1, isRRorProspectusorFeeTable, True)
             self.appendSummaryFooter()
             return self.rootETree
         except Exception as err:
@@ -269,7 +273,9 @@ class Summary(object):
                         report['isDefault'] = str(isDefault).casefold()
                         isDefault = False
                         groupType = ''
-                        if isDisclosure(r.longName): groupType = 'disclosure'
+                        if self.hasProspectus: groupType = "Prospectus"
+                        elif self.hasFeeExhibit: groupType = "Fee_Exhibit"
+                        elif isDisclosure(r.longName): groupType = 'disclosure'
                         elif isStatement(r.longName): groupType = 'statement'
                         elif isDocument(r.longName): groupType = 'document'
                         report['groupType'] = groupType
@@ -361,7 +367,7 @@ class InstanceSummary(object):
 
         # do not hang on to filing or modelXbrl, just collect the statistics.        
         self.dts = defaultdict(lambda: defaultdict(list)) # self.dts['instance']['local'] returns a list
-        self.hasRR = False
+        self.hasRR = self.hasProspectus = self.hasFeeExhibit = False
         for uri,doc in sorted(modelXbrl.urlDocs.items(), key=lambda i: i[0]): # change to url from discovery order. i[1].objectIndex
             if doc.type == arelle.ModelDocument.Type.INLINEXBRLDOCUMENTSET:
                 continue # ignore ixds manifest
@@ -382,8 +388,13 @@ class InstanceSummary(object):
                 doctype = 'schema'
                 self.otherXbrlFiles += [f]   
                 ns = doc.targetNamespace
-                if ns and 'http://xbrl.sec.gov/rr/' in ns: 
-                    self.hasRR = True
+                if ns:
+                    if 'http://xbrl.sec.gov/rr/' in ns: 
+                        self.hasRR = True
+                    elif 'http://xbrl.sec.gov/vip/' in ns:
+                        self.hasProspectus = True
+                    elif 'http://xbrl.sec.gov/ffd/' in ns:
+                        self.hasFeeExhibit = True
                 if (self.customPrefix is None 
                     and ns is not None 
                     and not Utils.isEfmStandardNamespace(ns)):
@@ -693,13 +704,13 @@ class InstanceSummary(object):
         return  # from InstanceSummary initialization
    
 
-    def appendToFilingSummary(self, myReportsEtree, isFirstInstance, isRR, includeUncategorized):
+    def appendToFilingSummary(self, myReportsEtree, isFirstInstance, isRRorProspectusorFeeTable, includeUncategorized):
         startPosition = 1 + math.trunc(myReportsEtree.xpath('count(Report)'))
         parentRole = None
         state = ''
         for i, reportSummary in enumerate([r for r in self.reportSummaryList 
                                           if (includeUncategorized == r.isUncategorized)]):
-            if not isRR: 
+            if not isRRorProspectusorFeeTable: 
                 state = self.classifyReportFiniteStateMachine(state, reportSummary.longName)
                 parentRole = self.getReportParentIfExists(reportSummary, state)
             reportETree = SubElement(myReportsEtree, 'Report')
