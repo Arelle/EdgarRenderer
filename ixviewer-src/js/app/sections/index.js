@@ -98,6 +98,12 @@ var Sections = {
     Sections.populateParentCollapse('tagged-sections-3', 'collapseRRSummariesBadge', 'RR_Summaries',
       'collapseRRSummaries');
 
+    Sections.populateParentCollapse('tagged-sections-4', 'collapseProspectusBadge', 'Prospectus',
+      'collapseProspectus');
+
+    Sections.populateParentCollapse('tagged-sections-5', 'collapseFeeExhibitBadge', 'Fee_Exhibit',
+      'collapseFeeExhibit');
+
     Sections.formChange();
   },
 
