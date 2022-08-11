@@ -1506,7 +1506,8 @@ def edgarRendererRemoveRedlining(modelDocument, *args, **kwargs):
                     e.set("style", cleanedStyle)
                 else:
                     e.attrib.pop("style")
-                    if not e.attrib: # no other elements, remove this one
+                    # if no remaining attributes on <span> remove it
+                    if not e.attrib and e.tag == "{http://www.w3.org/1999/xhtml}span":
                         e0 = e.getprevious()
                         prop = "tail"
                         if e0 is None:
