@@ -785,6 +785,8 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.renderedFiles = filing.renderedFiles # filing-level rendered files
         if not success:
             self.success = False
+        # block closing filesource when modelXbrl closes because it's used by filingEnd (and may be an archive)
+        modelXbrl.closeFileSource = False
         modelXbrl.profileStat(_("EdgarRenderer process instance {}").format(report.basenames[0]))
 
     def loadLogMessageText(self):
@@ -1016,7 +1018,6 @@ class EdgarRenderer(Cntlr.Cntlr):
                                                 file = filesource.file(_filepath, binary=True)[0]  # returned in a tuple
                                             xbrlZip.writestr(reportedFile, file.read())
                                             file.close()
-                            filesource.close()
                         xbrlZip.close()
                         zipStream.seek(0)
                         if self.reportZip:
@@ -1060,6 +1061,9 @@ class EdgarRenderer(Cntlr.Cntlr):
                 self.success = False # force postprocessingFailure
 
             cntlr.edgarRedlineDocs.clear()
+            
+        # close filesource (which may have been an archive), regardless of success above
+        filesource.close()
             
         if not self.success and self.isDaemon: # not successful
             self.postprocessFailure(filing.options)
