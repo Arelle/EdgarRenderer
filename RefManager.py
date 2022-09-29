@@ -10,8 +10,6 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 import os.path, re, lxml, time
 import arelle.ModelDocument
 from arelle.FileSource import openFileSource
-from arelle import PythonUtil # define 2.x or 3.x string types
-PythonUtil.noop(0) # Get rid of warning on PythonUtil import
 
 taxonomyManagerFile = 'TaxonomyAddonManager.xml'
 

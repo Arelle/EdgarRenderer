@@ -146,8 +146,7 @@ Language of labels:
 VERSION = '3.22.2.2'
 
 from collections import defaultdict
-from arelle import PythonUtil  # define 2.x or 3.x string types
-PythonUtil.noop(0)  # Get rid of warning on PythonUtil import
+from arelle import PythonUtil
 from arelle import (Cntlr, FileSource, ModelDocument, XmlUtil, Version, ModelValue, Locale, PluginManager, WebCache, ModelFormulaObject,
                     ViewFileFactList, ViewFileFactTable, ViewFileConcepts, ViewFileFormulae,
                     ViewFileRelationshipSet, ViewFileTests, ViewFileRssFeed, ViewFileRoleTypes)
