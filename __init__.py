@@ -151,6 +151,7 @@ from arelle import (Cntlr, FileSource, ModelDocument, XmlUtil, Version, ModelVal
                     ViewFileFactList, ViewFileFactTable, ViewFileConcepts, ViewFileFormulae,
                     ViewFileRelationshipSet, ViewFileTests, ViewFileRssFeed, ViewFileRoleTypes)
 from arelle.PluginManager import pluginClassMethods
+from arelle.ValidateFilingText import elementsWithNoContent
 from . import RefManager, IoManager, Inline, Utils, Filing, Summary
 import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os, re, io, tempfile
 from lxml import etree
@@ -159,6 +160,10 @@ from os.path import join, isfile, exists, dirname, basename, isdir
 from optparse import OptionParser, SUPPRESS_HELP
 
 MODULENAME = os.path.basename(os.path.dirname(__file__))
+
+tagsWithNoContent = set(f"{{http://www.w3.org/1999/xhtml}}{t}" for t in elementsWithNoContent)
+for t in ("schemaRef", "linkbaseRef", "roleRef", "arcroleRef", "loc", "arc"):
+    tagsWithNoContent.add(f"{{http://www.xbrl.org/2003/linkbase}}{t}")
 
 ###############
 
@@ -950,6 +955,14 @@ class EdgarRenderer(Cntlr.Cntlr):
                         dissemReportsFolder = os.path.join(self.reportsFolder, "dissem")
                         if not os.path.exists(dissemReportsFolder):
                             os.mkdir(dissemReportsFolder)
+                    if dissemReportsFolder:
+                        # redline-removed docs have self-closed <p> and other elements which must not be self-closed when saved
+                        for doc in cntlr.edgarRedlineDocs.values():
+                            doc.parser.set_element_class_lookup(None) # modelXbrl class features are already closed now, block class lookup
+                            for e in doc.xmlRootElement.iter():
+                                # check if no text, no children and not self-closable element for EDGAR
+                                if e.text is None and (not e.getchildren()) and e.tag not in tagsWithNoContent:
+                                    e.text = "" # prevents self-closing tag with etree.tostring for zip and dissem folders
                     self.renderedFiles.add("FilingSummary.xml")
                     if self.renderingLogsXslt and self.summaryHasLogEntries and not self.processXsltInBrowser:
                         _startedAt = time.time()
@@ -1005,7 +1018,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                             doc = cntlr.edgarRedlineDocs[reportedFile]
                                             # redline removed file is not readable in encoded version, create from dom in memory
                                             xbrlZip.writestr(reportedFile, 
-                                                             etree.tostring(doc.xmlRootElement, encoding=doc.documentEncoding, xml_declaration=True).decode('utf-8'))
+                                                             etree.tostring(doc.xmlRootElement, encoding="ASCII", xml_declaration=True).decode('utf-8'))
                                         else:
                                             if filesource.isArchive and reportedFile in filesource.dir:
                                                 _filepath = os.path.join(filesource.baseurl, reportedFile)
@@ -1032,7 +1045,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         target = join(dissemReportsFolder, reportedFile) + ".redlineRemoved"
                         os.makedirs(self.reportsFolder, exist_ok=True)
                         filing.writeFile(target,
-                            etree.tostring(modelDocument.xmlRootElement, encoding=modelDocument.documentEncoding, xml_declaration=True))
+                            etree.tostring(modelDocument.xmlRootElement, encoding="ASCII", xml_declaration=True))
 
                 if "EdgarRenderer/__init__.py#filingEnd" in filing.arelleUnitTests:
                     raise arelle.PythonUtil.pyNamedObject(filing.arelleUnitTests["EdgarRenderer/__init__.py#filingEnd"], "EdgarRenderer/__init__.py#filingEnd")
