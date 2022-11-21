@@ -290,7 +290,6 @@ class Summary(object):
                         elif isDetail(r.longName): subGroupType = 'details'
                         elif isUncategorized(r.longName): subGroupType = 'Uncategorized'
                         report['subGroupType'] = subGroupType
-                        print(r.longName)
                         report['menuCat'] = r.menuCat
                         report['order'] = r.order
                         report['firstAnchor'] = r.firstAnchor
@@ -541,7 +540,7 @@ class InstanceSummary(object):
                 for rel in toRels:
                     toReference = rel.toModelObject
                     if isinstance(toReference, arelle.ModelDtsObject.ModelResource):
-                        r = []
+                        r = [("role",toReference.role)]
                         for elt in toReference.iterchildren():
                             s = elt.text
                             if s is not None: # empty elts appear in us-gaap 2008 and 2011 refs

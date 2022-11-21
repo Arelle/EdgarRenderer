@@ -1239,7 +1239,7 @@ Taxonomy schema {schema} namespace {targetNamespace} prefix {prefix} must not ha
          level="error"
          module="ValidateFilingDTS.py" line="501"
          args="arcroleType">
-[du-0715-Arcrole-Definition-Missing]  Relationship role declaration {arcroleType} is missing a definition, in {refSource}.  Please provide a definition.
+[du-0715-Arcrole-Definition-/Missing]  Relationship role declaration {arcroleType} is missing a definition, in {refSource}.  Please provide a definition.
 </message>
 
 <message code="EFM.6.07.16"
@@ -1702,6 +1702,13 @@ Concept {concept} is monetary without a balance and must have a documentation la
          args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
 [du-1407-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
+<message code="EFM.6.14.08"
+         level="error"
+         module="validate/Filing.py" line="2552"
+         args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
+[du-1408-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+
 
 <!-- semantic error for now
 <message code="EFM.6.15.04"
@@ -1810,6 +1817,13 @@ Axis {dimension} in DRS role {linkrole}, missing targetrole consecutive relation
          args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
 [du-1611-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
+<message code="EFM.6.16.12"
+         level="error"
+         module="validate/Filing.py" line="2570"
+         args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
+[du-1612-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+
 
 <message code="EFM.6.18.01"
          level="error"

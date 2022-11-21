@@ -208,6 +208,15 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
+      <Taxonomy>dei-2022q4.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>dei-2022q4_doc.xsd</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>dei-2022q4_ref.xsd</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>cef-2021q4.xsd</Taxonomy>
       <ReferenceFiles>
         <string>cef-2021q4_ref.xsd</string>
