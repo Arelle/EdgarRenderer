@@ -429,6 +429,7 @@
                       <xsl:with-param name="depth">0</xsl:with-param>
                       <xsl:with-param name="position">1</xsl:with-param>
                       <xsl:with-param name="menucat">0</xsl:with-param>
+                      <xsl:with-param name="prev_instance"></xsl:with-param>
                     </xsl:call-template>
                   </ul>
                 </div>
@@ -694,7 +695,6 @@
                     </xsl:variable>
                     <xsl:choose>
                       <!-- we have seen no statements yet, stick to cover -->
-                      <xsl:when test="$is2='true' and $cat = 'Cover'">Cover</xsl:when>
                       <xsl:when test="$is2='true'">Notes to Financial Statements</xsl:when>
                       <xsl:otherwise>
                         <xsl:variable name="is1">
@@ -709,6 +709,7 @@
 	                        <xsl:choose>
 	                          <xsl:when test="$is0='true'">Financial Statements</xsl:when>
 	                          <xsl:when test="$cat = 'Cover'">Cover</xsl:when>
+	                          <xsl:when test="$cat = ''">Cover</xsl:when>
 	                          <xsl:otherwise>Other</xsl:otherwise>
 	                        </xsl:choose>
 	                      </xsl:otherwise>
