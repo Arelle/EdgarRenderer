@@ -429,6 +429,7 @@
                       <xsl:with-param name="depth">0</xsl:with-param>
                       <xsl:with-param name="position">1</xsl:with-param>
                       <xsl:with-param name="menucat">0</xsl:with-param>
+                      <xsl:with-param name="prev_instance"></xsl:with-param>
                     </xsl:call-template>
                   </ul>
                 </div>
@@ -644,8 +645,8 @@
     <xsl:variable name="that">
       <xsl:for-each select="MyReports/Report[position() = $pos]">
         <xsl:call-template name="menu_name">
-          <xsl:with-param name="atstart">
-            <xsl:value-of select="$cat = 'Cover'"/>
+          <xsl:with-param name="cat">
+            <xsl:value-of select="$cat"/>
           </xsl:with-param>
         </xsl:call-template>
       </xsl:for-each>
@@ -664,7 +665,7 @@
   </xsl:template>
 
   <xsl:template name="menu_name">
-    <xsl:param name="atstart"/>
+    <xsl:param name="cat"/>
     <xsl:variable name="is6">
       <xsl:call-template name="isUncategorized"/>
     </xsl:variable>
@@ -694,17 +695,25 @@
                     </xsl:variable>
                     <xsl:choose>
                       <!-- we have seen no statements yet, stick to cover -->
-                      <xsl:when test="$is2='true' and $atstart='true'">Cover</xsl:when>
                       <xsl:when test="$is2='true'">Notes to Financial Statements</xsl:when>
                       <xsl:otherwise>
                         <xsl:variable name="is1">
-                          <xsl:call-template name="isStatement"/>
+                          <xsl:call-template name="isDocument"/>
                         </xsl:variable>
                         <xsl:choose>
-                          <xsl:when test="$is1='true'">Financial Statements</xsl:when>
-                          <xsl:when test="$atstart='true'">Cover</xsl:when>
-                          <xsl:otherwise>Other</xsl:otherwise>
-                        </xsl:choose>
+                          <xsl:when test="$cat = 'Cover' and $is1='true'">Cover</xsl:when>
+                          <xsl:otherwise>
+	                        <xsl:variable name="is0">
+	                          <xsl:call-template name="isStatement"/>
+	                        </xsl:variable>
+	                        <xsl:choose>
+	                          <xsl:when test="$is0='true'">Financial Statements</xsl:when>
+	                          <xsl:when test="$cat = 'Cover'">Cover</xsl:when>
+	                          <xsl:when test="$cat = ''">Cover</xsl:when>
+	                          <xsl:otherwise>Other</xsl:otherwise>
+	                        </xsl:choose>
+	                      </xsl:otherwise>
+	                    </xsl:choose>
                       </xsl:otherwise>
                     </xsl:choose>
                   </xsl:otherwise>
@@ -733,6 +742,14 @@
     <!-- '.* +\- +Disclosure +\- .*' -->
     <xsl:variable name="p1" select="substring-after(LongName,'- ')"/>
     <xsl:variable name="p2" select="substring-after($p1,'Disclosure ')"/>
+    <xsl:variable name="p3" select="substring-after($p2,'- ')"/>
+    <xsl:value-of select="string-length($p3) &gt; 0"/>
+  </xsl:template>
+
+  <xsl:template name="isDocument">
+    <!-- '.* +\- +Document +\- .*' -->
+    <xsl:variable name="p1" select="substring-after(LongName,'- ')"/>
+    <xsl:variable name="p2" select="substring-after($p1,'Document ')"/>
     <xsl:variable name="p3" select="substring-after($p2,'- ')"/>
     <xsl:value-of select="string-length($p3) &gt; 0"/>
   </xsl:template>

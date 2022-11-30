@@ -20,7 +20,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.-->
     <!-- keep text and attributes -->
     <xsl:copy/>
   </xsl:template>
-  <xsl:template match="node()" priority="-10">
+  <xsl:template match="*" priority="-10">
     <!-- Keep everything else -->
     <xsl:element name="{local-name()}">
       <xsl:apply-templates select="@* | node()"/>
