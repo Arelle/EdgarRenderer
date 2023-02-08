@@ -162,8 +162,8 @@ var ConstantsFunctions = {
               current.menuCat === "Tables" ||
               current.menuCat === "Notes")
           ) {
-            current.groupType = "Cover";
-          } else {
+            current.groupType = "Notes";
+          } else if (current.menuCat) {
             current.groupType = current.menuCat;
           }
           current["longName"] = current.order;

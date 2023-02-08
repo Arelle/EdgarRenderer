@@ -121,6 +121,11 @@ var Sections = {
         label: "Notes to the Financial Statements"
       },
       {
+        // this will only be available for MetaLinks Version 2.2 or higher
+        groupType: "Notes",
+        label: "Notes to Financial Statements"
+      },
+      {
         groupType: "RR_Summaries",
         label: "RR Summaries"
       },
