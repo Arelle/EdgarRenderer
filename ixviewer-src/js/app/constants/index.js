@@ -6,7 +6,7 @@
 "use strict";
 
 var Constants = {
-  version: "22.4",
+  version: "23.1",
 
   fileSizeError: [7500000, "7.5MB"],
 
