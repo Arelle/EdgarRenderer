@@ -2,75 +2,61 @@
 <html lang="en">
 
 <head>
-<!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport"
-	content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<!-- Favicon -->
-<link rel="shortcut icon" type="image/x-icon"
-	href="https://www.sec.gov/favicon.ico">
-<!-- Bootstrap CSS -->
-<link rel="stylesheet" href="./js/css/custom-bootstrap.css">
-<!--  FontAwesome -->
-<link rel="stylesheet" href="./js/lib/fontawesome/css/all.min.css">
-<!-- Custom CSS -->
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Favicon -->
+	<link rel="shortcut icon" type="image/x-icon" href="https://www.sec.gov/favicon.ico">
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="./js/css/custom-bootstrap.css">
+	<!--  FontAwesome -->
+	<link rel="stylesheet" href="./js/lib/fontawesome/css/all.min.css">
+	<!-- Custom CSS -->
 
-<link rel="stylesheet" href="./js/css/app.css">
-<title>Inline XBRL Viewer</title>
+	<link rel="stylesheet" href="./js/css/app.css">
+	<title>Inline XBRL Viewer</title>
 </head>
 
 <body>
 	<noscript>This application relies heavily on JavaScript, you
 		will need to allow JavaScript to use this application.</noscript>
-	<nav
-		class="reboot navbar navbar-expand-md navbar-dark navbar-height bg-sec fixed-top w-100 pl-0">
-		<button class="reboot navbar-toggler ml-1" type="button" data-test=""
-			data-toggle="collapse" data-target="#main-navbar"
-			aria-controls="main-navbar" aria-expanded="false"
+	<nav class="reboot navbar navbar-expand-md navbar-dark navbar-height bg-sec fixed-top w-100 pl-0">
+		<button class="reboot navbar-toggler ml-1" type="button" data-test="" data-toggle="collapse"
+			data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false"
 			aria-label="Toggle navigation">Inline Viewer</button>
-		<div
-			class="reboot navbar-height collapse navbar-collapse bg-sec w-100"
-			data-test="main-navbar" id="main-navbar">
+		<div class="reboot navbar-height collapse navbar-collapse bg-sec w-100" data-test="main-navbar"
+			id="main-navbar">
 			<ul class="reboot navbar-nav mr-auto bg-inherit">
 				<li class="reboot nav-item dropdown my-auto ml-1">
 					<a id="menu-dropdown-link" data-test="menu-dropdown-link"
-						class="reboot nav-link dropdown-toggle click disabled"
-						role="button"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-						tabindex="1" accesskey="1">
+						class="reboot nav-link dropdown-toggle click disabled" role="button" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false" tabindex="1" accesskey="1">
 						<i class="reboot nav-loading fas fa-bars" title="Menu"></i>
 						<span class="reboot d-md-none d-lg-inline">Menu</span>
 						<span class="reboot sr-only sr-only-focusable">Menu</span>
 					</a>
 					<div class="reboot dropdown-menu">
-						<a id="menu-dropdown-information"
-							data-test="menu-dropdown-information"
-							class="reboot dropdown-item click text-body"
-							tabindex="1">Information</a>
-						<a id="form-information-instance"
-							data-test="form-information-instance"
-							class="reboot dropdown-item click text-body" target="_blank"
-							tabindex="1">Save XBRL Instance</a>
+						<a id="menu-dropdown-information" data-test="menu-dropdown-information"
+							class="reboot dropdown-item click text-body" tabindex="1">Information</a>
+						<a id="form-information-instance" data-test="form-information-instance"
+							class="reboot dropdown-item click text-body" target="_blank" tabindex="1">Save XBRL
+							Instance</a>
 						<a id="form-information-zip" data-test="form-information-zip"
-							class="reboot dropdown-item click text-body" target="_blank"
-							tabindex="1">Save XBRL Zip File</a>
+							class="reboot dropdown-item click text-body" target="_blank" tabindex="1">Save XBRL Zip
+							File</a>
 						<a id="form-information-html" data-test="form-information-html"
-							class="reboot dropdown-item click text-body" target="_blank"
-							tabindex="1">Open as HTML</a>
+							class="reboot dropdown-item click text-body" target="_blank" tabindex="1">Open as HTML</a>
 						<a id="menu-dropdown-settings" data-test="menu-dropdown-settings"
-							class="reboot dropdown-item click text-body"
-							tabindex="1">Settings</a>
+							class="reboot dropdown-item click text-body" tabindex="1">Settings</a>
 						<a id="form-information-help" data-test="form-information-help"
-							class="reboot dropdown-item click text-body"
-							tabindex="1">Help</a>
-						<span id="form-information-version"
-							class="reboot dropdown-item-text text-body" tabindex="1"></span>
+							class="reboot dropdown-item click text-body" tabindex="1">Help</a>
+						<span id="form-information-version" class="reboot dropdown-item-text text-body"
+							tabindex="1"></span>
 					</div>
 				</li>
 				<li class="reboot nav-item my-auto ml-1">
 					<a id="sections-dropdown-link" data-test="sections-dropdown-link"
-						class="reboot nav-link click disabled meta-required"
-						tabindex="2" accesskey="2">
+						class="reboot nav-link click disabled meta-required" tabindex="2" accesskey="2">
 						<i class="reboot fas fa-layer-group" title="Sections"></i>
 						<span class="reboot d-md-none d-lg-inline">Sections</span>
 						<span class="reboot sr-only sr-only-focusable">Sections</span>
@@ -81,49 +67,45 @@
 						class="reboot my-2 my-lg-0 input-group disabled" novalidate>
 						<div class="reboot input-group-prepend">
 							<button data-name="global-search-options"
-								class="reboot dropdown btn btn-outline-light disabled"
-								type="button" data-toggle="dropdown" tabindex="3">
-								<i class="reboot nav-loading fas fa-cog"
-									title="Additional Search Options">
+								class="reboot dropdown btn btn-outline-light disabled" type="button"
+								data-toggle="dropdown" tabindex="3">
+								<i class="reboot nav-loading fas fa-cog" title="Additional Search Options">
 									<span class="reboot sr-only sr-only-focusable">Additional
 										Search Options</span>
 								</i>
 							</button>
 							<div class="reboot dropdown-menu px-2">
 								<div class="reboot form-check">
-									<input disabled class="reboot form-check-input meta-required"
-										type="checkbox" name="search-options" value="1" checked
-										tabindex="3">
+									<input disabled class="reboot form-check-input meta-required" type="checkbox"
+										name="search-options" value="1" checked tabindex="3">
 									<label class="reboot form-check-label mb-0">
 										<span class="reboot">Include Fact Name</span>
 									</label>
 								</div>
 								<div class="reboot form-check">
-									<input disabled class="reboot form-check-input meta-required"
-										type="checkbox" name="search-options" value="2" checked
-										tabindex="3">
+									<input disabled class="reboot form-check-input meta-required" type="checkbox"
+										name="search-options" value="2" checked tabindex="3">
 									<label class="reboot form-check-label mb-0">
 										<span class="reboot">Include Fact Content</span>
 									</label>
 								</div>
 								<div class="reboot form-check">
-									<input disabled class="reboot form-check-input meta-required"
-										type="checkbox" name="search-options" value="3" checked
-										tabindex="3">
+									<input disabled class="reboot form-check-input meta-required" type="checkbox"
+										name="search-options" value="3" checked tabindex="3">
 									<label class="reboot form-check-label mb-0">
 										<span class="reboot">Include Labels</span>
 									</label>
 								</div>
 								<div class="reboot form-check">
-									<input disabled class="reboot form-check-input meta-required"
-										type="checkbox" name="search-options" value="4" tabindex="3">
+									<input disabled class="reboot form-check-input meta-required" type="checkbox"
+										name="search-options" value="4" tabindex="3">
 									<label class="reboot form-check-label mb-0">
 										<span class="reboot">Include Definitions</span>
 									</label>
 								</div>
 								<div class="reboot form-check">
-									<input disabled class="reboot form-check-input meta-required"
-										type="checkbox" name="search-options" value="5" tabindex="3">
+									<input disabled class="reboot form-check-input meta-required" type="checkbox"
+										name="search-options" value="5" tabindex="3">
 									<label class="reboot form-check-label mb-0">
 										<span class="reboot">Include Dimensions</span>
 									</label>
@@ -132,68 +114,62 @@
 									<span class="reboot dropdown-item-text">Reference
 										Options</span>
 									<div class="reboot form-check">
-										<input disabled class="reboot form-check-input meta-required"
-											type="checkbox" name="search-options" value="6" tabindex="3">
+										<input disabled class="reboot form-check-input meta-required" type="checkbox"
+											name="search-options" value="6" tabindex="3">
 										<label class="reboot form-check-label mb-0">
 											<span class="reboot">Include Topic</span>
 										</label>
 									</div>
 									<div class="reboot form-check">
-										<input disabled class="reboot form-check-input meta-required"
-											type="checkbox" name="search-options" value="7" tabindex="3">
+										<input disabled class="reboot form-check-input meta-required" type="checkbox"
+											name="search-options" value="7" tabindex="3">
 										<label class="reboot form-check-label mb-0">
 											<span class="reboot">Include Sub-Topic</span>
 										</label>
 									</div>
 									<div class="reboot form-check">
-										<input disabled class="reboot form-check-input meta-required"
-											type="checkbox" name="search-options" value="8" tabindex="3">
+										<input disabled class="reboot form-check-input meta-required" type="checkbox"
+											name="search-options" value="8" tabindex="3">
 										<label class="reboot form-check-label mb-0">
 											<span class="reboot">Include Paragraph</span>
 										</label>
 									</div>
 									<div class="reboot form-check">
-										<input disabled class="reboot form-check-input meta-required"
-											type="checkbox" name="search-options" value="9" tabindex="3">
+										<input disabled class="reboot form-check-input meta-required" type="checkbox"
+											name="search-options" value="9" tabindex="3">
 										<label class="reboot form-check-label mb-0">
 											<span class="reboot">Include Publisher</span>
 										</label>
 									</div>
 									<div class="reboot form-check">
-										<input disabled class="reboot form-check-input meta-required"
-											type="checkbox" name="search-options" value="10" tabindex="3">
+										<input disabled class="reboot form-check-input meta-required" type="checkbox"
+											name="search-options" value="10" tabindex="3">
 										<label class="reboot form-check-label mb-0">
 											<span class="disabled">Include Section</span>
 										</label>
 									</div>
 								</div>
 								<div class="reboot form-check">
-									<input class="reboot form-check-input" type="checkbox"
-										name="search-options" value="11" tabindex="3">
+									<input class="reboot form-check-input" type="checkbox" name="search-options"
+										value="11" tabindex="3">
 									<label class="reboot form-check-label mb-0">
 										<span class="reboot">Match Case</span>
 									</label>
 								</div>
 							</div>
 						</div>
-						<input type="text" class="reboot form-control disabled"
-							id="global-search" data-test="global-search"
-							placeholder="Search Facts" disabled
-							aria-label="Search all Facts and highlight them accordingly."
-							tabindex="4">
+						<input type="text" class="reboot form-control disabled" id="global-search"
+							data-test="global-search" placeholder="Search Facts" disabled
+							aria-label="Search all Facts and highlight them accordingly." tabindex="4">
 						<div class="reboot input-group-append">
 							<button id="search-btn-clear" data-name="global-search-clear"
-								class="reboot btn btn-outline-light disabled" type="button"
-								tabindex="5">
-								<i class="reboot nav-loading fas fa-times-circle"
-									title="Clear Search"></i>
+								class="reboot btn btn-outline-light disabled" type="button" tabindex="5">
+								<i class="reboot nav-loading fas fa-times-circle" title="Clear Search"></i>
 								<span class="reboot sr-only sr-only-focusable">Clear
 									Search</span>
 							</button>
-							<button class="reboot btn btn-outline-light disabled"
-								type="submit" tabindex="6">
-								<i class="reboot nav-loading fas fa-search"
-									title="Submit Search"></i>
+							<button class="reboot btn btn-outline-light disabled" type="submit" tabindex="6">
+								<i class="reboot nav-loading fas fa-search" title="Submit Search"></i>
 								<span class="reboot sr-only sr-only-focusable">Submit
 									Search</span>
 							</button>
@@ -202,67 +178,60 @@
 				</li>
 				<li class="reboot nav-item dropdown my-auto ml-1">
 					<a href="#" id="nav-filter-data" data-test="nav-filter-data"
-						class="reboot nav-link dropdown-toggle disabled click"
-						role="button" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false" tabindex="7" accesskey="3">
+						class="reboot nav-link dropdown-toggle disabled click" role="button" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false" tabindex="7" accesskey="3">
 						<i class="reboot nav-loading fas fa-list-alt" title="Data"></i>
 						<span class="reboot d-md-none d-lg-inline">Data</span>
 						<span class="reboot sr-only sr-only-focusable">Data</span>
 					</a>
 					<div class="reboot dropdown-menu">
-						<form id="nav-filter-dropdown" data-name="data-dropdown"
-							class="reboot px-2">
+						<form id="nav-filter-dropdown" data-name="data-dropdown" class="reboot px-2">
 							<div class="reboot form-check">
-								<input class="reboot form-check-input" type="radio"
-									name="data-radios" value="0" checked tabindex="7">
+								<input class="reboot form-check-input" type="radio" name="data-radios" value="0" checked
+									tabindex="7">
 								<label class="reboot form-check-label mb-0">All</label>
 							</div>
 							<div class="reboot form-check">
-								<input class="reboot form-check-input" type="radio"
-									name="data-radios" value="1" tabindex="7">
+								<input class="reboot form-check-input" type="radio" name="data-radios" value="1"
+									tabindex="7">
 								<label class="reboot form-check-label mb-0">
-									<i
-										title="The first time choosing this will take a few moments."
+									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
 									<span class="reboot">Amounts Only</span>
 								</label>
 							</div>
 							<div class="reboot form-check">
-								<input class="reboot form-check-input" type="radio"
-									name="data-radios" value="2" tabindex="7">
+								<input class="reboot form-check-input" type="radio" name="data-radios" value="2"
+									tabindex="7">
 								<label class="reboot form-check-label mb-0">
-									<i
-										title="The first time choosing this will take a few moments."
+									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
 									<span class="reboot">Text Only</span>
 								</label>
 							</div>
 							<div class="reboot form-check">
-								<input class="reboot form-check-input meta-required"
-									type="radio" name="data-radios" value="3" disabled tabindex="7">
+								<input class="reboot form-check-input meta-required" type="radio" name="data-radios"
+									value="3" disabled tabindex="7">
 								<label class="reboot form-check-label mb-0">
-									<i
-										title="The first time choosing this will take a few moments."
+									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
 									<span class="reboot">Calculations Only</span>
 								</label>
 							</div>
 							<div class="reboot form-check">
-								<input class="reboot form-check-input" type="radio"
-									name="data-radios" value="4" tabindex="7">
+								<input class="reboot form-check-input" type="radio" name="data-radios" value="4"
+									tabindex="7">
 								<label class="reboot form-check-label mb-0">
-									<i
-										title="The first time choosing this will take a few moments."
+									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
 									<span class="reboot">Negatives Only</span>
 								</label>
 							</div>
 							<div class="reboot form-check">
-								<input class="reboot form-check-input" type="radio"
-									name="data-radios" value="5" tabindex="7">
+								<input class="reboot form-check-input" type="radio" name="data-radios" value="5"
+									tabindex="7">
 								<label class="reboot form-check-label mb-0">
-									<i
-										title="The first time choosing this will take a few moments."
+									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
 									<span class="reboot">Additional Items Only</span>
 								</label>
@@ -272,46 +241,35 @@
 				</li>
 				<li class="reboot nav-item dropdown my-auto ml-1">
 					<a href="#" id="nav-filter-tags" data-test="nav-filter-tags"
-						class="reboot nav-link dropdown-toggle disabled click"
-						role="button" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false" tabindex="8" accesskey="4">
+						class="reboot nav-link dropdown-toggle disabled click" role="button" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false" tabindex="8" accesskey="4">
 						<i class="reboot nav-loading fas fa-tags" title="Tags"></i>
 						<span class="reboot d-md-none d-lg-inline">Tags</span>
 						<span class="reboot sr-only sr-only-focusable">Tags</span>
 					</a>
 					<div class="reboot dropdown-menu">
-						<form id="nav-filter-tags-dropdown" data-name="tags-dropdown"
-							class="reboot px-2">
+						<form id="nav-filter-tags-dropdown" data-name="tags-dropdown" class="reboot px-2">
 							<div class="reboot form-check">
-								<input class="reboot form-check-input" type="radio"
-									name="tags-radios" value="0"
-									aria-label="Radio Button for All Tag Types" checked
-									tabindex="8">
+								<input class="reboot form-check-input" type="radio" name="tags-radios" value="0"
+									aria-label="Radio Button for All Tag Types" checked tabindex="8">
 								<label class="reboot form-check-label mb-0">All</label>
 							</div>
 							<div class="reboot form-check">
-								<input class="reboot form-check-input" type="radio"
-									name="tags-radios" value="1"
-									aria-label="Radio Button for Standard Only Tag Types"
-									tabindex="8">
+								<input class="reboot form-check-input" type="radio" name="tags-radios" value="1"
+									aria-label="Radio Button for Standard Only Tag Types" tabindex="8">
 								<label class="reboot form-check-label mb-0">
-									<i
-										title="The first time choosing this will take a few moments."
+									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
 									<span>Standard Only</span>
 								</label>
 							</div>
 							<div class="reboot form-check">
-								<input class="reboot form-check-input meta-required"
-									type="radio" name="tags-radios" value="2" disabled
-									aria-label="Radio Button for Custom Only Tag Types"
-									tabindex="8">
+								<input class="reboot form-check-input meta-required" type="radio" name="tags-radios"
+									value="2" disabled aria-label="Radio Button for Custom Only Tag Types" tabindex="8">
 								<label class="reboot form-check-label mb-0">
-									<i
-										title="Facts whose tags are outside the realm of DEI, US-GAAP, etc."
+									<i title="Facts whose tags are outside the realm of DEI, US-GAAP, etc."
 										class="reboot far fa-question-circle"></i>
-									<i
-										title="The first time choosing this will take a few moments."
+									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
 									<span class="reboot">Custom Only</span>
 								</label>
@@ -321,26 +279,22 @@
 				</li>
 				<li class="reboot nav-item dropdown my-auto ml-1">
 					<a href="#" id="nav-filter-more" data-test="nav-filter-more"
-						class="reboot nav-link dropdown-toggle disabled click"
-						role="button" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false" tabindex="9" accesskey="5">
-						<i id="loading-more-filters"
-							class="reboot nav-loading fas fa-filter" title="More Filters"></i>
+						class="reboot nav-link dropdown-toggle disabled click" role="button" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false" tabindex="9" accesskey="5">
+						<i id="loading-more-filters" class="reboot nav-loading fas fa-filter" title="More Filters"></i>
 						<span class="reboot d-md-none d-lg-inline">More Filters</span>
 						<span class="reboot sr-only sr-only-focusable">More Filters</span>
-						<span title="Total active filters."
-							class="reboot badge badge-warning"></span>
+						<span title="Total active filters." class="reboot badge badge-warning"></span>
 					</a>
 					<div class="reboot dropdown-menu dropdown-menu-width">
-						<label
-							class="reboot dropdown-item-text d-none performance-concern">
+						<label class="reboot dropdown-item-text d-none performance-concern">
 							Selecting any of the below will take a few moments.</label>
 						<div class="reboot accordion" id="more-filters-accordion">
 							<form class="reboot" data-test="more-filters-form">
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
-										<a href="#" data-test="Period"
-											data-target="#user-filters-periods" data-toggle="collapse"
+										<a href="#" data-test="Period" data-target="#user-filters-periods"
+											data-toggle="collapse"
 											class="reboot d-flex justify-content-between align-items-center w-100 click text-primary"
 											tabindex="9">
 											<span class="reboot">Periods</span>
@@ -350,8 +304,7 @@
 											</span>
 										</a>
 									</div>
-									<div id="user-filters-periods"
-										class="reboot collapse height-200 overflow-y-auto"
+									<div id="user-filters-periods" class="reboot collapse height-200 overflow-y-auto"
 										data-parent="#more-filters-accordion">
 										<!-- Below is populated dynamically VIA JS -->
 										<div class="reboot list-group list-group-flush"></div>
@@ -361,8 +314,8 @@
 							<form>
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
-										<a href="#" data-test="Measures"
-											data-target="#user-filters-measures" data-toggle="collapse"
+										<a href="#" data-test="Measures" data-target="#user-filters-measures"
+											data-toggle="collapse"
 											class="reboot d-flex justify-content-between align-items-center w-100 click text-primary"
 											tabindex="9">
 											<span class="reboot">Measures</span>
@@ -372,8 +325,7 @@
 											</span>
 										</a>
 									</div>
-									<div id="user-filters-measures"
-										class="reboot collapse height-200 overflow-y-auto"
+									<div id="user-filters-measures" class="reboot collapse height-200 overflow-y-auto"
 										data-parent="#more-filters-accordion">
 										<!-- Below is populated dynamically VIA JS -->
 										<div class="reboot list-group list-group-flush"></div>
@@ -387,48 +339,103 @@
 											data-toggle="collapse"
 											class="reboot d-flex justify-content-between align-items-center w-100 click text-primary"
 											tabindex="9">
-											<span>Axis</span>
+											<span class="reboot">Axis</span>
 											<span data-test="Axis-count" id="filters-axis-count"
 												class="reboot badge badge-secondary">
 												<i class="fas fa-spinner fa-spin"></i>
 											</span>
 										</a>
 									</div>
-									<div id="user-filters-axis"
-										class="reboot collapse height-200 overflow-y-auto"
+									<div id="user-filters-axis" class="reboot collapse height-200 overflow-y-auto"
 										data-parent="#more-filters-accordion">
+										<div class="reboot list-group list-group-flush d-none">
+											<div
+												class="reboot d-flex justify-content-between align-items-center w-100 px-1">
+												<div class="reboot form-check">
+													<input id="axes-all-0" title="Select/Deselect all options below."
+														class="reboot form-check-input" type="checkbox" tabindex="9">
+													<label class="reboot form-check-label mb-0">
+														<a class="reboot" href="#axes-filters-accordion-0"
+															data-toggle="collapse" tabindex="9">Explicit</a>
+													</label>
+												</div>
+												<span class="reboot badge badge-secondary"
+													id="axis-explicit-count"></span>
+											</div>
+										</div>
 										<!-- Below is populated dynamically VIA JS -->
-										<div class="reboot list-group list-group-flush"></div>
+										<div class="reboot list-group list-group-flush d-none">
+											<div
+												class="reboot d-flex justify-content-between align-items-center w-100 px-1">
+												<div class="reboot form-check">
+													<input id="axes-all-1" title="Select/Deselect all options below."
+														class="reboot form-check-input" type="checkbox" tabindex="9">
+													<label class="reboot form-check-label mb-0">
+														<a class="reboot" href="#axes-filters-accordion-1"
+															data-toggle="collapse" tabindex="9">Typed</a>
+													</label>
+												</div>
+												<span class="reboot badge badge-secondary" id="axis-typed-count"></span>
+											</div>
+										</div>
 									</div>
 								</div>
 							</form>
 							<form>
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
-										<a href="#" data-test="Members"
-											data-target="#user-filters-members" data-toggle="collapse"
+										<a href="#" data-test="Members" data-target="#user-filters-members"
+											data-toggle="collapse"
 											class="reboot d-flex justify-content-between align-items-center w-100 click text-primary"
 											tabindex="9">
-											<span class="reboot ">Members</span>
+											<span class="reboot">Members</span>
 											<span data-test="Members-count" id="filters-members-count"
 												class="reboot badge badge-secondary">
 												<i class="reboot fas fa-spinner fa-spin"></i>
 											</span>
 										</a>
 									</div>
-									<div id="user-filters-members"
-										class="reboot collapse height-200 overflow-y-auto"
+									<div id="user-filters-members" class="reboot collapse height-200 overflow-y-auto"
 										data-parent="#more-filters-accordion">
+										<div class="reboot list-group list-group-flush d-none">
+											<div
+												class="reboot d-flex justify-content-between align-items-center w-100 px-1">
+												<div class="reboot form-check">
+													<input id="members-all-0" title="Select/Deselect all options below."
+														class="reboot form-check-input" type="checkbox" tabindex="9">
+													<label class="reboot form-check-label mb-0">
+														<a class="reboot" href="#members-filters-accordion-0"
+															data-toggle="collapse" tabindex="9">Explicit</a>
+													</label>
+												</div>
+												<span class="reboot badge badge-secondary"
+													id="members-explicit-count"></span>
+											</div>
+										</div>
 										<!-- Below is populated dynamically VIA JS -->
-										<div class="reboot list-group list-group-flush"></div>
+										<div class="reboot list-group list-group-flush d-none">
+											<div
+												class="reboot d-flex justify-content-between align-items-center w-100 px-1">
+												<div class="reboot form-check">
+													<input id="members-all-1" title="Select/Deselect all options below."
+														class="reboot form-check-input" type="checkbox" tabindex="9">
+													<label class="reboot form-check-label mb-0">
+														<a class="reboot" href="#members-filters-accordion-1"
+															data-toggle="collapse" tabindex="9">Typed</a>
+													</label>
+												</div>
+												<span class="reboot badge badge-secondary"
+													id="members-typed-count"></span>
+											</div>
+										</div>
 									</div>
 								</div>
 							</form>
 							<form>
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
-										<a href="#" data-test="Scale"
-											data-target="#user-filters-scales" data-toggle="collapse"
+										<a href="#" data-test="Scale" data-target="#user-filters-scales"
+											data-toggle="collapse"
 											class="reboot d-flex justify-content-between align-items-center w-100 click text-primary"
 											tabindex="9">
 											<span class="reboot">Scale</span>
@@ -438,8 +445,7 @@
 											</span>
 										</a>
 									</div>
-									<div id="user-filters-scales"
-										class="reboot collapse height-200 overflow-y-auto"
+									<div id="user-filters-scales" class="reboot collapse height-200 overflow-y-auto"
 										data-parent="#more-filters-accordion">
 										<!-- Below is populated dynamically VIA JS -->
 										<div class="reboot list-group list-group-flush"></div>
@@ -449,8 +455,8 @@
 							<form>
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
-										<a href="#" data-test="Balance"
-											data-target="#user-filters-balances" data-toggle="collapse"
+										<a href="#" data-test="Balance" data-target="#user-filters-balances"
+											data-toggle="collapse"
 											class="reboot d-flex justify-content-between align-items-center w-100 click text-primary"
 											tabindex="9">
 											<span class="reboot">Balance</span>
@@ -458,28 +464,23 @@
 												class="reboot badge badge-secondary">2</span>
 										</a>
 									</div>
-									<div id="user-filters-balances"
-										class="reboot collapse height-200 overflow-y-auto"
+									<div id="user-filters-balances" class="reboot collapse height-200 overflow-y-auto"
 										data-parent="#more-filters-accordion">
 										<div
 											class="reboot d-flex justify-content-between align-items-center w-100 px-2">
 											<div class="reboot form-check">
-												<input
-													id="user-filters-balances-debit"
-													title="Select/Deselect this option."
-													class="reboot form-check-input" type="checkbox"
-													tabindex="9">
+												<input id="user-filters-balances-debit"
+													title="Select/Deselect this option." class="reboot form-check-input"
+													type="checkbox" tabindex="9">
 												<label class="reboot form-check-label mb-0">Debit</label>
 											</div>
 										</div>
 										<div
 											class="reboot d-flex justify-content-between align-items-center w-100 px-2">
 											<div class="reboot form-check">
-												<input
-													id="user-filters-balances-credit"
-													title="Select/Deselect this option."
-													class="reboot form-check-input" type="checkbox"
-													tabindex="9">
+												<input id="user-filters-balances-credit"
+													title="Select/Deselect this option." class="reboot form-check-input"
+													type="checkbox" tabindex="9">
 												<label class="reboot form-check-label mb-0">Credit</label>
 											</div>
 										</div>
@@ -492,32 +493,25 @@
 				<li id="current-filters-reset" data-test="current-filters-reset"
 					class="reboot nav-item d-none my-auto ml-1">
 					<a href="#" id="current-filters-reset-all" data-name="current-filters-reset"
-						class="reboot nav-link dropdown-toggle text-danger disabled click"
-						tabindex="11" accesskey="7">
+						class="reboot nav-link dropdown-toggle text-danger disabled click" tabindex="11" accesskey="7">
 						<i class="reboot nav-loading fas fa-redo"></i>
 						<span class="reboot d-md-none d-lg-inline">Reset All
 							Filters</span>
 					</a>
 				</li>
-				<li id="links-dropdown" data-test="links-dropdown"
-					class="reboot nav-item dropdown d-none my-auto ml-1">
-					<a href="#" id="additional-links-dropdown"
-						class="reboot nav-link dropdown-toggle disabled click"
-						role="button" data-toggle="dropdown" aria-haspopup="true"
-						aria-expanded="false" tabindex="12" accesskey="8">
+				<li id="links-dropdown" data-test="links-dropdown" class="reboot nav-item dropdown d-none my-auto ml-1">
+					<a href="#" id="additional-links-dropdown" class="reboot nav-link dropdown-toggle disabled click"
+						role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="12"
+						accesskey="8">
 						<i class="reboot nav-loading fas fa-link"></i>
 						<span class="reboot d-md-none d-lg-inline">Links</span>
 					</a>
-					<div id="links-dropdown-content"
-						class="reboot dropdown-menu dropdown-menu-width w-auto"></div>
+					<div id="links-dropdown-content" class="reboot dropdown-menu dropdown-menu-width w-auto"></div>
 				</li>
 			</ul>
 			<ul class="reboot navbar-nav pull-right bg-inherit">
 				<li class="reboot nav-item my-auto ml-1">
-					<a id="facts-menu" data-test="facts-menu"
-						class="reboot nav-link click"
-						tabindex="13"
-						accesskey="9">
+					<a id="facts-menu" data-test="facts-menu" class="reboot nav-link click" tabindex="13" accesskey="9">
 						Facts
 						<span class="reboot taxonomy-total-count badge badge-light">
 							<i class="reboot fas fa-spinner fa-spin"></i>
@@ -528,12 +522,10 @@
 		</div>
 	</nav>
 	<div class="reboot main-container">
-		<div id="error-container" data-test="error-container"
-			class="reboot px-0">
+		<div id="error-container" data-test="error-container" class="reboot px-0">
 			<!-- Below is populated dynamically VIA JS (error messages) -->
 		</div>
-		<div id="xbrl-form-loading" data-test="xbrl-form-loading"
-			class="reboot jumbotron h-100">
+		<div id="xbrl-form-loading" data-test="xbrl-form-loading" class="reboot jumbotron h-100">
 			<h2 class="reboot display-4 text-center">
 				<i class="reboot fas fa-spinner fa-spin"></i>
 				Loading Inline Form.
@@ -543,55 +535,48 @@
 			class="reboot left-sidenav col-sm-3 bg-light overflow-x-auto invisible">
 			<div class="reboot mb-2">
 				<span class="reboot lead">Tagged Sections</span>
-				<a id="sections-menu-toggle" class="reboot float-right click color-inherit"
-				   tabindex="2">
+				<a id="sections-menu-toggle" class="reboot float-right click color-inherit" tabindex="2">
 					<i class="reboot fas fa-times-circle mt-2 text-dark"></i>
 				</a>
 			</div>
 			<form id="sections-menu-search-submit" data-name="sections-menu-search"
 				class="reboot my-2 my-lg-0 input-group" novalidate>
-				<div id="sections-search-additional"
-					class="reboot input-group-prepend d-none">
-					<button class="reboot dropdown btn btn-sec" type="button"
-						data-toggle="dropdown" tabindex="2">
+				<div id="sections-search-additional" class="reboot input-group-prepend d-none">
+					<button class="reboot dropdown btn btn-sec" type="button" data-toggle="dropdown" tabindex="2">
 						<i class="reboot nav-loading fas fa-cog"></i>
 					</button>
 					<div class="reboot dropdown-menu px-2">
 						<div class="reboot form-check">
-							<input class="reboot form-check-input" type="radio"
-								name="sections-search-options" value="1" checked tabindex="2">
+							<input class="reboot form-check-input" type="radio" name="sections-search-options" value="1"
+								checked tabindex="2">
 							<label class="reboot form-check-label">Search in All.</label>
 						</div>
 						<div class="reboot form-check">
-							<input class="reboot form-check-input" type="radio"
-								name="sections-search-options" value="2" tabindex="2">
+							<input class="reboot form-check-input" type="radio" name="sections-search-options" value="2"
+								tabindex="2">
 							<label class="reboot form-check-label">Search in Internal
 								Sections Only.</label>
 						</div>
 						<div class="reboot form-check">
-							<input class="reboot form-check-input" type="radio"
-								name="sections-search-options" value="3" tabindex="2">
+							<input class="reboot form-check-input" type="radio" name="sections-search-options" value="3"
+								tabindex="2">
 							<label class="reboot form-check-label">Search in External
 								Sections Only.</label>
 						</div>
 					</div>
 				</div>
-				<input type="text" class="reboot form-control" id="sections-search"
-					data-test="sections-search" placeholder="Search Sections"
-					aria-label="Search all Sections by their associated label."
+				<input type="text" class="reboot form-control" id="sections-search" data-test="sections-search"
+					placeholder="Search Sections" aria-label="Search all Sections by their associated label."
 					name="search-sections" tabindex="2" required>
 				<div class="reboot input-group-append">
-					<button id="section-menu-search-btn-clear"
-						data-name="sections-menu-search-clear"
+					<button id="section-menu-search-btn-clear" data-name="sections-menu-search-clear"
 						class="reboot btn btn-sec" type="button" tabindex="2">
-						<i class="nav-loading fas fa-times-circle"
-							title="Clear Sections Search"></i>
+						<i class="nav-loading fas fa-times-circle" title="Clear Sections Search"></i>
 						<span class="reboot sr-only sr-only-focusable">Clear
 							Sections Search</span>
 					</button>
 					<button class="reboot btn btn-sec" type="submit" tabindex="2">
-						<i class="reboot nav-loading fas fa-search"
-							title="Submit Sections Search"></i>
+						<i class="reboot nav-loading fas fa-search" title="Submit Sections Search"></i>
 						<span class="reboot sr-only sr-only-focusable">Submit
 							Sections Search</span>
 					</button>
@@ -600,175 +585,29 @@
 			<hr>
 
 			<div class="reboot accordion" id="tagged-sections">
-				<div class="reboot card" id="tagged-sections-0"
-					data-test="tagged-sections-0">
-					<div class="reboot card-header px-0 py-0">
-						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
-								type="button" data-target="#collapseDocumentEntityTypes"
-								tabindex="2">
-								<span class="reboot font-size-1">Document &amp; Entity
-									Information</span>
-								<span id="collapseDocumentEntityTypesBadge"
-									class="reboot badge badge-secondary">
-									<i class="reboot fas fa-spinner fa-spin"></i>
-
-								</span>
-							</button>
-						</h5>
-					</div>
-					<div id="collapseDocumentEntityTypes" class="reboot collapse"
-						data-parent="#tagged-sections">
-						<!-- Below is populated dynamically VIA JS -->
-						<div class="reboot list-group list-group-flush"></div>
-					</div>
-				</div>
-
-				<div class="reboot card" id="tagged-sections-1"
-					data-test="tagged-sections-1">
-					<div class="reboot card-header px-0 py-0">
-						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
-								type="button" data-target="#collapseFinancialStatements"
-								tabindex="2">
-								<span class="reboot font-size-1">Financial Statements</span>
-								<span id="collapseFinancialStatementsBadge"
-									class="reboot badge badge-secondary">
-									<i class="reboot fas fa-spinner fa-spin"></i>
-
-								</span>
-							</button>
-						</h5>
-					</div>
-					<div id="collapseFinancialStatements" class="reboot collapse"
-						data-parent="#tagged-sections">
-						<!-- Below is populated dynamically VIA JS -->
-						<div class="reboot list-group list-group-flush"></div>
-					</div>
-				</div>
-
-				<div class="reboot card" id="tagged-sections-2"
-					data-test="tagged-sections-2">
-					<div class="reboot card-header px-0 py-0">
-						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
-								type="button" data-target="#collapseNotesToTheFinancials"
-								tabindex="2">
-								<span class="reboot font-size-1">Notes to the Financial Statements</span>
-								<span id="collapseNotesToTheFinancialsBadge"
-									class="reboot badge badge-secondary">
-									<i class="reboot fas fa-spinner fa-spin"></i>
-
-								</span>
-							</button>
-						</h5>
-					</div>
-					<div id="collapseNotesToTheFinancials" class="reboot collapse"
-						data-parent="#tagged-sections">
-						<!-- Below is populated dynamically VIA JS -->
-						<div class="reboot list-group list-group-flush"></div>
-					</div>
-				</div>
-
-				<div class="reboot card" id="tagged-sections-3"
-					data-test="tagged-sections-3">
-					<div class="reboot card-header px-0 py-0">
-						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
-								type="button" data-target="#collapseRRSummaries">
-								<span class="reboot font-size-1">RR Summaries</span>
-								<span id="collapseRRSummariesBadge"
-									class="reboot badge badge-secondary">
-									<i class="reboot fas fa-spinner fa-spin"></i>
-
-								</span>
-							</button>
-						</h5>
-					</div>
-					<div id="collapseRRSummaries" class="reboot collapse"
-						data-parent="#tagged-sections">
-						<!-- Below is populated dynamically VIA JS -->
-						<div class="reboot list-group list-group-flush"></div>
-					</div>
-				</div>
-
-				<div class="reboot card" id="tagged-sections-4"
-					data-test="tagged-sections-4">
-					<div class="reboot card-header px-0 py-0">
-						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
-								type="button" data-target="#collapseProspectus">
-								<span class="reboot font-size-1">Prospectus</span>
-								<span id="collapseProspectusBadge"
-									class="reboot badge badge-secondary">
-									<i class="reboot fas fa-spinner fa-spin"></i>
-
-								</span>
-							</button>
-						</h5>
-					</div>
-					<div id="collapseProspectus" class="reboot collapse"
-						data-parent="#tagged-sections">
-						<!-- Below is populated dynamically VIA JS -->
-						<div class="reboot list-group list-group-flush"></div>
-					</div>
-				</div>
-
-				<div class="reboot card" id="tagged-sections-5"
-					data-test="tagged-sections-5">
-					<div class="reboot card-header px-0 py-0">
-						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
-								type="button" data-target="#collapseFeeExhibit">
-								<span class="reboot font-size-1">RR Summaries</span>
-								<span id="collapseFeeExhibitBadge"
-									class="reboot badge badge-secondary">
-									<i class="reboot fas fa-spinner fa-spin"></i>
-
-								</span>
-							</button>
-						</h5>
-					</div>
-					<div id="collapseFeeExhibit" class="reboot collapse"
-						data-parent="#tagged-sections">
-						<!-- Below is populated dynamically VIA JS -->
-						<div class="reboot list-group list-group-flush"></div>
-					</div>
-				</div>
+				<!-- Below is populated dynamically VIA JS -->
 			</div>
 		</div>
-		
-		
 
 		<div id="help-menu" data-test="help-menu"
 			class="reboot left-sidenav col-sm-3 bg-light overflow-x-auto invisible">
 
 			<div class="reboot mb-2">
-				<span class="reboot lead">Help</span> <a id="help-menu-close"
-					data-test="help-menu-close" class="reboot float-right click"> <i
-					class="reboot fas fa-times-circle mt-2"></i>
+				<span class="reboot lead">Help</span> <a id="help-menu-close" data-test="help-menu-close"
+					class="reboot float-right click"> <i class="reboot fas fa-times-circle mt-2"></i>
 				</a>
 			</div>
 			<div class="reboot accordion" id="help-sections">
 				<div class="reboot card">
 					<div class="reboot card-header px-0 py-0">
 						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
-								type="button" data-toggle="collapse"
-								data-target="#help-getting-started">
+							<button class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
+								type="button" data-toggle="collapse" data-target="#help-getting-started">
 								<span class="reboot font-size-1 ">Getting Started</span>
 							</button>
 						</h5>
 					</div>
-					<div id="help-getting-started" class="reboot collapse"
-						data-parent="#help-sections">
+					<div id="help-getting-started" class="reboot collapse" data-parent="#help-sections">
 						<p class="reboot m-2">The Inline XBRL viewer allows a user
 							to quickly and easily review details of the tagged information in
 							an Inline document by automatically placing a top and bottom
@@ -784,16 +623,13 @@
 				<div class="reboot card">
 					<div class="reboot card-header px-0 py-0">
 						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
-								type="button" data-toggle="collapse"
-								data-target="#help-fact-review-window">
+							<button class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
+								type="button" data-toggle="collapse" data-target="#help-fact-review-window">
 								<span class="reboot font-size-1">Fact Review Window</span>
 							</button>
 						</h5>
 					</div>
-					<div id="help-fact-review-window" class="reboot collapse"
-						data-parent="#help-sections">
+					<div id="help-fact-review-window" class="reboot collapse" data-parent="#help-sections">
 						<p class="reboot m-2">The Fact Review Window shows the tagging
 							details for the currently selected fact, which is highlighted
 							with a solid blue border. There are four categories of fact detail
@@ -816,15 +652,13 @@
 				<div class="reboot card">
 					<div class="reboot card-header px-0 py-0">
 						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
+							<button class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
 								type="button" data-toggle="collapse" data-target="#help-search">
 								<span class="reboot font-size-1">Searching</span>
 							</button>
 						</h5>
 					</div>
-					<div id="help-search" class="reboot collapse"
-						data-parent="#help-sections">
+					<div id="help-search" class="reboot collapse" data-parent="#help-sections">
 						<p class="reboot m-2">There are two ways to search the
 							document: FACTS AND SECTIONS. To search information, enter a
 							keyword in a search box and select the magnifying glass icon to
@@ -845,7 +679,7 @@
 							included tag definitions, dimensions, and authoritative
 							references by selecting the cog / wheel icon to the left of the
 							search box. See Settings for more information.</p>
-						
+
 						<p class="reboot m-2">
 							<strong>SECTIONS</strong>
 						</p>
@@ -856,15 +690,13 @@
 				<div class="reboot card">
 					<div class="reboot card-header px-0 py-0">
 						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
+							<button class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
 								type="button" data-toggle="collapse" data-target="#help-filter">
 								<span class="reboot font-size-1">Filters</span>
 							</button>
 						</h5>
 					</div>
-					<div id="help-filter" class="reboot collapse"
-						data-parent="#help-sections">
+					<div id="help-filter" class="reboot collapse" data-parent="#help-sections">
 						<p class="reboot m-2">Filters change the number of highlighted
 							facts and items in the fact list by providing several ways to
 							review and pinpoint certain tagged information. Multiple filters
@@ -927,16 +759,13 @@
 				<div class="reboot card">
 					<div class="reboot card-header px-0 py-0">
 						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
-								type="button" data-toggle="collapse"
-								data-target="#help-facts-results-list">
+							<button class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
+								type="button" data-toggle="collapse" data-target="#help-facts-results-list">
 								<span class="reboot font-size-1">Facts List (Results)</span>
 							</button>
 						</h5>
 					</div>
-					<div id="help-facts-results-list" class="reboot collapse"
-						data-parent="#help-sections">
+					<div id="help-facts-results-list" class="reboot collapse" data-parent="#help-sections">
 						<p class="reboot m-2">On the toolbar, select the "count" to
 							the right of the word Facts (e.g., Facts 234) to reveal the Facts
 							List results - a navigable listing of all currently highlighted
@@ -961,16 +790,13 @@
 				<div class="reboot card">
 					<div class="reboot card-header px-0 py-0">
 						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
-								type="button" data-toggle="collapse"
-								data-target="#help-tagged-sections">
+							<button class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
+								type="button" data-toggle="collapse" data-target="#help-tagged-sections">
 								<span class="reboot font-size-1">Sections</span>
 							</button>
 						</h5>
 					</div>
-					<div id="help-tagged-sections" class="reboot collapse"
-						data-parent="#help-sections">
+					<div id="help-tagged-sections" class="reboot collapse" data-parent="#help-sections">
 						<p class="reboot m-2">The SECTIONS toolbar item provides a
 							listing of the tagged sections of the Inline document. Sections
 							are divided into three groups:</p>
@@ -986,20 +812,17 @@
 							sections that match the entered criteria.</p>
 					</div>
 				</div>
-				
+
 				<div class="reboot card">
 					<div class="reboot card-header px-0 py-0">
 						<h5 class="reboot mb-0">
-							<button
-								class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
-								type="button" data-toggle="collapse"
-								data-target="#help-tagged-menu">
+							<button class="reboot btn btn-link d-flex justify-content-between align-items-center w-100"
+								type="button" data-toggle="collapse" data-target="#help-tagged-menu">
 								<span class="reboot font-size-1">Menu</span>
 							</button>
 						</h5>
 					</div>
-					<div id="help-tagged-menu" class="reboot collapse"
-						data-parent="#help-sections">
+					<div id="help-tagged-menu" class="reboot collapse" data-parent="#help-sections">
 						<p class="reboot m-2">
 							<strong>Information</strong>
 						</p>
@@ -1098,14 +921,13 @@
 							application.</p>
 					</div>
 				</div>
-			
+
 			</div>
 		</div>
 
-		
-		
-		<div data-test="taxonomies-menu" id="taxonomies-menu"
-			class="reboot right-sidenav col-sm-3 bg-light invisible">
+
+
+		<div data-test="taxonomies-menu" id="taxonomies-menu" class="reboot right-sidenav col-sm-3 bg-light invisible">
 			<div class="reboot d-flex flex-column flex-fill h-100">
 				<div class="reboot mb-2">
 					<span class="reboot lead">Facts</span>
@@ -1114,25 +936,20 @@
 						<i class="reboot fas fa-times-circle mt-2"></i>
 					</a>
 				</div>
-				<div id="taxonomies-menu-list-pagination"
-					class="reboot d-flex flex-column flex-fill h-100 w-100">
+				<div id="taxonomies-menu-list-pagination" class="reboot d-flex flex-column flex-fill h-100 w-100">
 					<div class="reboot pagination"></div>
 					<div class="reboot form-group">
-						<select id="taxonomies-menu-page-select"
-							class="reboot form-control"
-							aria-label="Quickly jump to a page in the Fact Menu."
-							tabindex="13">
+						<select id="taxonomies-menu-page-select" class="reboot form-control"
+							aria-label="Quickly jump to a page in the Fact Menu." tabindex="13">
 							<option class="reboot">Select Page</option>
 						</select>
 					</div>
-					<div
-						class="reboot list-group list-group-flush overflow-x-auto w-100"></div>
+					<div class="reboot list-group list-group-flush overflow-x-auto w-100"></div>
 				</div>
 			</div>
 		</div>
 		<div id="back-to-top" class="reboot d-none">
-			<button id="back-to-top-btn" type="button"
-				class="btn btn-sm btn-primary">
+			<button id="back-to-top-btn" type="button" class="btn btn-sm btn-primary">
 				<i class="reboot fas fa-arrow-up"></i>
 			</button>
 		</div>
@@ -1144,42 +961,34 @@
 
 	<div id="form-information-modal" data-test="form-information-modal"
 		class="reboot dialog-box fixed-dialog-box d-none bg-white">
-		<div
-			class="reboot dialog-header bg-sec text-white px-1 d-flex justify-content-between">
-			<p id="form-information-modal-title"
-				data-test="form-information-modal-title" class="reboot lead mb-0"></p>
+		<div class="reboot dialog-header bg-sec text-white px-1 d-flex justify-content-between">
+			<p id="form-information-modal-title" data-test="form-information-modal-title" class="reboot lead mb-0"></p>
 			<div class="reboot dialog-header-actions">
-				<i id="form-information-modal-drag"
-					title="Click and drag to move this Dialog Box."
-					class="reboot fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block"
-					tabindex="14"></i>
+				<i id="form-information-modal-drag" title="Click and drag to move this Dialog Box."
+					class="reboot fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="14"></i>
 
 				<i id="dialog-box-copy-content" title="Click to Copy all Dialog Box Content."
 					class="reboot fas fa-copy m-1 click" tabindex="14"></i>
 
-				<i id="dialog-box-close" data-name="Form Information Modal"
-					title="Click to Close this Dialog Box."
+				<i id="dialog-box-close" data-name="Form Information Modal" title="Click to Close this Dialog Box."
 					class="reboot fas fa-times m-1 click" tabindex="14"></i>
 
 			</div>
 		</div>
 		<div class="reboot dialog-content">
-			<div id="form-information-copy-paste"
-				class="reboot form-group d-none">
+			<div id="form-information-copy-paste" class="reboot form-group d-none">
 				<label class="reboot">Copy and Paste Below Content.</label>
-				<a id="dialog-content-copy-content" class="reboot float-right click color-inherit"
-					tabindex="14">
+				<a id="dialog-content-copy-content" class="reboot float-right click color-inherit" tabindex="14">
 					<i class="reboot fas fa-times-circle mt-2"></i>
 				</a>
 				<textarea class="reboot form-control" rows="5" tabindex="14"></textarea>
 			</div>
-			<div id="form-information-modal-carousel" class="reboot carousel"
-				data-interval="false" data-ride="carousel">
+			<div id="form-information-modal-carousel" class="reboot carousel" data-interval="false"
+				data-ride="carousel">
 				<div class="reboot carousel-inner">
 					<div class="reboot carousel-item table-responsive active">
 						<table class="reboot table table-striped table-sm">
-							<tbody class="reboot" id="form-information-modal-carousel-page-1"
-								tabindex="14">
+							<tbody class="reboot" id="form-information-modal-carousel-page-1" tabindex="14">
 								<!-- Below is populated dynamically VIA JS -->
 								<tr class="reboot">
 									<td class="reboot text-center">
@@ -1191,8 +1000,7 @@
 					</div>
 					<div class="reboot carousel-item table-responsive">
 						<table class="reboot table table-striped table-bordered table-sm">
-							<tbody class="reboot" id="form-information-modal-carousel-page-2"
-								tabindex="14">
+							<tbody class="reboot" id="form-information-modal-carousel-page-2" tabindex="14">
 								<!-- Below is populated dynamically VIA JS -->
 								<tr class="reboot">
 									<td class="reboot text-center">
@@ -1204,8 +1012,7 @@
 					</div>
 					<div class="reboot carousel-item table-responsive">
 						<table class="reboot table table-striped table-sm">
-							<tbody class="reboot" id="form-information-modal-carousel-page-3"
-								tabindex="14">
+							<tbody class="reboot" id="form-information-modal-carousel-page-3" tabindex="14">
 								<!-- Below is populated dynamically VIA JS -->
 								<tr class="reboot">
 									<td class="reboot text-center">
@@ -1217,8 +1024,7 @@
 					</div>
 					<div class="reboot carousel-item table-responsive">
 						<table class="reboot table table-striped table-sm">
-							<tbody class="reboot" id="form-information-modal-carousel-page-4"
-								tabindex="14">
+							<tbody class="reboot" id="form-information-modal-carousel-page-4" tabindex="14">
 								<!-- Below is populated dynamically VIA JS -->
 								<tr class="reboot">
 									<td class="reboot text-center">
@@ -1232,40 +1038,29 @@
 			</div>
 		</div>
 		<div class="reboot dialog-footer d-flex justify-content-around">
-			<button id="form-information-prev"
-				class="reboot btn btn-link text-dark"
-				href="#form-information-modal-carousel" role="button"
-				data-slide="prev" tabindex="14">
+			<button id="form-information-prev" class="reboot btn btn-link text-dark"
+				href="#form-information-modal-carousel" role="button" data-slide="prev" tabindex="14">
 				<i class="reboot fas fa-chevron-left" title="Previous"></i>
 				<span class="reboot sr-only">Previous</span>
 			</button>
-			<ol id="form-information-carousel-indicators"
-				class="reboot carousel-indicators mx-0 my-3 p-initial">
+			<ol id="form-information-carousel-indicators" class="reboot carousel-indicators mx-0 my-3 p-initial">
 			</ol>
-			<button id="form-information-next" data-test="form-information-next"
-				class="reboot btn btn-link text-dark"
-				href="#form-information-modal-carousel" role="button"
-				data-slide="next" tabindex="14">
+			<button id="form-information-next" data-test="form-information-next" class="reboot btn btn-link text-dark"
+				href="#form-information-modal-carousel" role="button" data-slide="next" tabindex="14">
 				<i class="reboot fas fa-chevron-right" title="Next"></i>
 				<span class="reboot sr-only">Next</span>
 			</button>
 		</div>
 	</div>
 
-	<div id="settings-modal" data-test="settings-modal"
-		class="reboot dialog-box fixed-dialog-box d-none bg-white">
-		<div
-			class="reboot dialog-header bg-sec text-white px-1 d-flex justify-content-between">
-			<p id="settings-modal-title" data-test="settings-modal-title"
-				class="reboot lead mb-0">Settings</p>
+	<div id="settings-modal" data-test="settings-modal" class="reboot dialog-box fixed-dialog-box d-none bg-white">
+		<div class="reboot dialog-header bg-sec text-white px-1 d-flex justify-content-between">
+			<p id="settings-modal-title" data-test="settings-modal-title" class="reboot lead mb-0">Settings</p>
 			<div class="reboot dialog-header-actions">
-				<i id="settings-modal-drag"
-					title="Click and drag to move this Dialog Box."
-					class="reboot fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block"
-					tabindex="15"></i>
+				<i id="settings-modal-drag" title="Click and drag to move this Dialog Box."
+					class="reboot fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="15"></i>
 
-				<i id="settings-modal-close" data-name="Settings Modal"
-					title="Click to Close this Dialog Box."
+				<i id="settings-modal-close" data-name="Settings Modal" title="Click to Close this Dialog Box."
 					class="reboot fas fa-times m-1 click" tabindex="15"></i>
 			</div>
 		</div>
@@ -1274,9 +1069,7 @@
 				<div class="reboot form-group row">
 					<label class="reboot col-sm-4 col-form-label" tabindex="15">Hover
 						over Fact for quick information.</label>
-					<select id="hover-option-select"
-						class="reboot col-sm-8 form-control"
-						tabindex="15">
+					<select id="hover-option-select" class="reboot col-sm-8 form-control" tabindex="15">
 						<option class="reboot" value="true">On</option>
 						<option class="reboot" value="false">Off</option>
 					</select>
@@ -1284,9 +1077,7 @@
 				<div class="reboot form-group row">
 					<label class="reboot col-sm-4 col-form-label" tabindex="15">Auto
 						Scrolling Position</label>
-					<select id="scroll-position-select"
-						class="reboot col-sm-8 form-control"
-						tabindex="15">
+					<select id="scroll-position-select" class="reboot col-sm-8 form-control" tabindex="15">
 						<option class="reboot" value="start">Top</option>
 						<option class="reboot" value="center">Center</option>
 					</select>
@@ -1333,56 +1124,53 @@
 						<div class="reboot" id="tag-shading-color-picker" tabindex="15"></div>
 					</div>
 				</div>
+				<hr>
+				<div class="reboot form-group row">
+					<label class="reboot col-sm-4 col-form-label" tabindex="15">
+						<span class="reboot text-block-exmple-1">Text Block Indicators</span>
+					</label>
+					<div class="reboot col-sm-4">
+						<div class="reboot" id="text-block-color-picker" tabindex="15"></div>
+					</div>
+				</div>
 			</form>
 		</div>
 		<div class="reboot dialog-footer d-flex justify-content-around"></div>
 	</div>
 
-	<div id="taxonomy-modal"
-		class="reboot dialog-box fixed-dialog-box d-none bg-white">
-		<div
-			class="reboot dialog-header bg-sec text-white px-1 d-flex justify-content-between">
+	<div id="taxonomy-modal" class="reboot dialog-box fixed-dialog-box d-none bg-white">
+		<div class="reboot dialog-header bg-sec text-white px-1 d-flex justify-content-between">
 			<p id="taxonomy-modal-title" class="reboot lead mb-0"></p>
 			<div class="reboot dialog-header-actions">
 
-				<i id="taxonomy-modal-drag"
-					title="Click and drag to move this Dialog Box."
-					class="reboot fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block"
-					tabindex="16"></i>
+				<i id="taxonomy-modal-drag" title="Click and drag to move this Dialog Box."
+					class="reboot fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="16"></i>
 
-				<i id="taxonomy-modal-jump"
-					title="Click to see this in the Facts sidebar."
+				<i id="taxonomy-modal-jump" title="Click to see this in the Facts sidebar."
 					class="reboot fas fa-directions m-1 click" tabindex="16"></i>
-				<i id="taxonomy-modal-copy-content"
-					class="reboot fas fa-copy m-1 click" tabindex="16"></i>
+				<i id="taxonomy-modal-copy-content" class="reboot fas fa-copy m-1 click" tabindex="16"></i>
 
-				<i id="taxonomy-modal-compress"
-					class="reboot fas fa-compress m-1 click d-none" tabindex="16"></i>
+				<i id="taxonomy-modal-compress" class="reboot fas fa-compress m-1 click d-none" tabindex="16"></i>
 
-				<i id="taxonomy-modal-expand"
-					class="reboot fas fa-expand m-1 click d-none" tabindex="16"></i>
+				<i id="taxonomy-modal-expand" class="reboot fas fa-expand m-1 click d-none" tabindex="16"></i>
 
-				<i id="taxonomy-modal-close"
-					class="reboot fas fa-times m-1 click" tabindex="16"></i>
+				<i id="taxonomy-modal-close" class="reboot fas fa-times m-1 click" tabindex="16"></i>
 			</div>
 		</div>
 		<div class="reboot dialog-content">
-			<p id="taxonomy-modal-subtitle"
-				class="reboot text-center font-weight-bold"></p>
+			<p id="taxonomy-modal-subtitle" class="reboot text-center font-weight-bold"></p>
 			<div id="taxonomy-copy-paste" class="reboot form-group d-none">
 				<label>Copy and Paste Below Content.</label>
-				<a id="taxonomy-copy-content" class="reboot float-right click color-inherit"
-					tabindex="16">
+				<a id="taxonomy-copy-content" class="reboot float-right click color-inherit" tabindex="16">
 					<i class="reboot fas fa-times-circle mt-2"></i>
 				</a>
 				<textarea class="reboot form-control" rows="5" tabindex="16"></textarea>
 			</div>
-			<div id="taxonomy-modal-carousel" class="reboot carousel"
-				data-interval="false" data-keyboard="false">
+			<div id="taxonomy-modal-carousel" class="reboot carousel" data-interval="false" data-keyboard="false">
 				<div class="reboot carousel-inner">
 					<div class="reboot carousel-item table-responsive active">
-						<table class="reboot table table-striped table-sm"
-							id="taxonomy-modal-carousel-page-1" tabindex="16">
+						<table class="reboot table table-striped table-sm" id="taxonomy-modal-carousel-page-1"
+							tabindex="16">
 							<!-- Below is populated dynamically VIA JS -->
 							<tbody class="reboot">
 								<tr class="reboot">
@@ -1394,8 +1182,8 @@
 						</table>
 					</div>
 					<div class="reboot carousel-item table-responsive">
-						<table class="reboot table table-striped table-sm"
-							id="taxonomy-modal-carousel-page-2" tabindex="16">
+						<table class="reboot table table-striped table-sm" id="taxonomy-modal-carousel-page-2"
+							tabindex="16">
 							<!-- Below is populated dynamically VIA JS -->
 							<tbody class="reboot">
 								<tr class="reboot">
@@ -1407,8 +1195,8 @@
 						</table>
 					</div>
 					<div class="reboot carousel-item table-responsive">
-						<table class="reboot table table-striped table-sm"
-							id="taxonomy-modal-carousel-page-3" tabindex="16">
+						<table class="reboot table table-striped table-sm" id="taxonomy-modal-carousel-page-3"
+							tabindex="16">
 							<!-- Below is populated dynamically VIA JS -->
 							<tbody class="reboot">
 								<tr class="reboot">
@@ -1420,8 +1208,8 @@
 						</table>
 					</div>
 					<div class="reboot carousel-item table-responsive">
-						<table class="reboot table table-striped table-sm"
-							id="taxonomy-modal-carousel-page-4" tabindex="16">
+						<table class="reboot table table-striped table-sm" id="taxonomy-modal-carousel-page-4"
+							tabindex="16">
 							<!-- Below is populated dynamically VIA JS -->
 							<tbody class="reboot">
 								<tr class="reboot">
@@ -1436,30 +1224,23 @@
 			</div>
 		</div>
 		<div class="reboot dialog-footer d-flex justify-content-around">
-			<button data-test="modal-taxonomy-prev"
-				class="reboot btn btn-link text-dark"
-				href="#taxonomy-modal-carousel" role="button" data-slide="prev"
-				tabindex="16">
+			<button data-test="modal-taxonomy-prev" class="reboot btn btn-link text-dark"
+				href="#taxonomy-modal-carousel" role="button" data-slide="prev" tabindex="16">
 				<i class="reboot fas fa-chevron-left" title="Previous"></i>
 				<span class="reboot sr-only">Previous</span>
 			</button>
-			<ol id="taxonomy-modal-carousel-indicators"
-				class="reboot carousel-indicators mx-0 my-3 p-initial">
+			<ol id="taxonomy-modal-carousel-indicators" class="reboot carousel-indicators mx-0 my-3 p-initial">
 			</ol>
-			<button data-test="modal-taxonomy-next"
-				class="reboot btn btn-link text-dark"
-				href="#taxonomy-modal-carousel" role="button" data-slide="next"
-				tabindex="16">
+			<button data-test="modal-taxonomy-next" class="reboot btn btn-link text-dark"
+				href="#taxonomy-modal-carousel" role="button" data-slide="next" tabindex="16">
 				<i class="reboot fas fa-chevron-right" title="Next"></i>
 				<span class="reboot sr-only">Next</span>
 			</button>
 		</div>
 	</div>
 
-	<div id="taxonomy-nested-modal"
-		class="reboot dialog-box fixed-dialog-box d-none bg-white">
-		<div
-			class="reboot dialog-header bg-sec text-white px-1 d-flex justify-content-between">
+	<div id="taxonomy-nested-modal" class="reboot dialog-box fixed-dialog-box d-none bg-white">
+		<div class="reboot dialog-header bg-sec text-white px-1 d-flex justify-content-between">
 			<p class="reboot lead mb-0">
 				Nested Facts
 				<span class="reboot" id="nested-page"></span>
@@ -1467,47 +1248,35 @@
 				<span class="reboot" id="nested-count"></span>
 			</p>
 			<div class="reboot dialog-header-actions">
-				<i id="taxonomy-nested-modal-drag"
-					title="Click and drag to move this Dialog Box."
-					class="reboot fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block"
-					tabindex="17"></i>
+				<i id="taxonomy-nested-modal-drag" title="Click and drag to move this Dialog Box."
+					class="reboot fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="17"></i>
 
-				<i id="nested-taxonomy-modal-jump"
-					title="Click to see this in the Facts sidebar."
+				<i id="nested-taxonomy-modal-jump" title="Click to see this in the Facts sidebar."
 					class="reboot fas fa-directions m-1 click" tabindex="17"></i>
 
-				<i id="taxonomy-nested-modal-copy-content"
-					class="reboot fas fa-copy m-1 click" tabindex="17"></i>
+				<i id="taxonomy-nested-modal-copy-content" class="reboot fas fa-copy m-1 click" tabindex="17"></i>
 
-				<i id="taxonomy-nested-modal-compress"
-					class="reboot fas fa-compress m-1 click d-none" tabindex="17"></i>
+				<i id="taxonomy-nested-modal-compress" class="reboot fas fa-compress m-1 click d-none"
+					tabindex="17"></i>
 
-				<i id="taxonomy-nested-modal-expand"
-					class="reboot fas fa-expand m-1 click d-none" tabindex="17"></i>
+				<i id="taxonomy-nested-modal-expand" class="reboot fas fa-expand m-1 click d-none" tabindex="17"></i>
 
-				<i id="taxonomy-nested-modal-close"
-					class="reboot fas fa-times m-1 click" tabindex="17"></i>
+				<i id="taxonomy-nested-modal-close" class="reboot fas fa-times m-1 click" tabindex="17"></i>
 			</div>
 		</div>
 		<div class="reboot dialog-content pt-0">
-			<div id="modal-nested-fact-labels" class="reboot carousel"
-				data-interval="false" data-keyboard="false">
+			<div id="modal-nested-fact-labels" class="reboot carousel" data-interval="false" data-keyboard="false">
 				<div class="reboot d-flex">
-					<button data-test="modal-taxonomy-nested-prev"
-						class="reboot btn btn-link text-dark"
-						href="#modal-nested-fact-labels" role="button" data-slide="prev"
-						tabindex="17">
+					<button data-test="modal-taxonomy-nested-prev" class="reboot btn btn-link text-dark"
+						href="#modal-nested-fact-labels" role="button" data-slide="prev" tabindex="17">
 						<i class="reboot fas fa-chevron-left" title="Previous"></i>
 						<span class="reboot sr-only">Previous</span>
 					</button>
-					<div id="modal-taxonomy-nested-label-carousel"
-						class="reboot carousel-inner">
+					<div id="modal-taxonomy-nested-label-carousel" class="reboot carousel-inner">
 						<!-- Below is populated dynamically VIA JS -->
 					</div>
-					<button data-test="modal-taxonomy-nested-next"
-						class="reboot btn btn-link text-dark"
-						href="#modal-nested-fact-labels" role="button" data-slide="next"
-						tabindex="17">
+					<button data-test="modal-taxonomy-nested-next" class="reboot btn btn-link text-dark"
+						href="#modal-nested-fact-labels" role="button" data-slide="next" tabindex="17">
 						<i class="reboot fas fa-chevron-right" title="Next"></i>
 						<span class="reboot sr-only">Next</span>
 					</button>
@@ -1515,19 +1284,17 @@
 			</div>
 			<div id="taxonomy-nested-copy-paste" class="reboot form-group d-none">
 				<label class="reboot">Copy and Paste Below Content.</label>
-				<a id="taxonomy-nested-copy-content" class="reboot float-right click color-inherit"
-					tabindex="17">
+				<a id="taxonomy-nested-copy-content" class="reboot float-right click color-inherit" tabindex="17">
 					<i class="reboot fas fa-times-circle mt-2"></i>
 				</a>
 				<textarea class="reboot form-control" rows="5" tabindex="17"></textarea>
 			</div>
-			<div id="modal-taxonomy-nested-content-carousel"
-				class="reboot carousel" data-interval="false" data-keyboard="false">
+			<div id="modal-taxonomy-nested-content-carousel" class="reboot carousel" data-interval="false"
+				data-keyboard="false">
 				<div class="reboot carousel-inner">
 					<div class="reboot carousel-item table-responsive active">
 						<table class="reboot table table-striped table-sm">
-							<tbody class="reboot"
-								id="modal-taxonomy-nested-content-carousel-page-1" tabindex="17">
+							<tbody class="reboot" id="modal-taxonomy-nested-content-carousel-page-1" tabindex="17">
 								<!-- Below is populated dynamically VIA JS -->
 								<tr class="reboot">
 									<td class="reboot text-center">
@@ -1539,8 +1306,7 @@
 					</div>
 					<div class="reboot carousel-item table-responsive">
 						<table class="reboot table table-striped table-bordered table-sm">
-							<tbody class="reboot"
-								id="modal-taxonomy-nested-content-carousel-page-2" tabindex="17">
+							<tbody class="reboot" id="modal-taxonomy-nested-content-carousel-page-2" tabindex="17">
 								<!-- Below is populated dynamically VIA JS -->
 								<tr class="reboot">
 									<td class="reboot text-center">
@@ -1552,8 +1318,7 @@
 					</div>
 					<div class="reboot carousel-item table-responsive">
 						<table class="reboot table table-striped table-sm">
-							<tbody class="reboot"
-								id="modal-taxonomy-nested-content-carousel-page-3" tabindex="17">
+							<tbody class="reboot" id="modal-taxonomy-nested-content-carousel-page-3" tabindex="17">
 								<!-- Below is populated dynamically VIA JS -->
 								<tr class="reboot">
 									<td class="reboot text-center">
@@ -1565,8 +1330,7 @@
 					</div>
 					<div class="reboot carousel-item table-responsive">
 						<table class="reboot table table-striped table-sm">
-							<tbody class="reboot"
-								id="modal-taxonomy-nested-content-carousel-page-4" tabindex="17">
+							<tbody class="reboot" id="modal-taxonomy-nested-content-carousel-page-4" tabindex="17">
 								<!-- Below is populated dynamically VIA JS -->
 								<tr class="reboot">
 									<td class="reboot text-center">
@@ -1579,23 +1343,17 @@
 				</div>
 			</div>
 		</div>
-		<div id="taxonomy-nested-nav-controls"
-			class="reboot dialog-footer d-flex justify-content-around">
-			<button data-test="modal-taxonomy-prev"
-				class="reboot btn btn-link text-dark"
-				href="#modal-taxonomy-nested-content-carousel" role="button"
-				data-slide="prev" tabindex="17">
+		<div id="taxonomy-nested-nav-controls" class="reboot dialog-footer d-flex justify-content-around">
+			<button data-test="modal-taxonomy-prev" class="reboot btn btn-link text-dark"
+				href="#modal-taxonomy-nested-content-carousel" role="button" data-slide="prev" tabindex="17">
 				<i class="reboot fas fa-chevron-left" title="Previous"></i>
 				<span class="reboot sr-only">Previous</span>
 			</button>
-			<ol id="taxonomy-nested-modal-carousel-indicators"
-				class="reboot carousel-indicators mx-0 my-3 p-initial">
+			<ol id="taxonomy-nested-modal-carousel-indicators" class="reboot carousel-indicators mx-0 my-3 p-initial">
 				<!-- Below is populated dynamically VIA JS -->
 			</ol>
-			<button data-test="modal-taxonomy-next"
-				class="reboot btn btn-link text-dark"
-				href="#modal-taxonomy-nested-content-carousel" role="button"
-				data-slide="next" tabindex="17">
+			<button data-test="modal-taxonomy-next" class="reboot btn btn-link text-dark"
+				href="#modal-taxonomy-nested-content-carousel" role="button" data-slide="next" tabindex="17">
 				<i class="reboot fas fa-chevron-right" title="Next"></i>
 				<span class="reboot sr-only">Next</span>
 			</button>
@@ -1661,8 +1419,7 @@
 	<script type="text/javascript" src="./js/app/modals/common.js"></script>
 	<script type="text/javascript" src="./js/app/modals/continued-at.js"></script>
 	<script type="text/javascript" src="./js/app/modals/nested.js"></script>
-	<script type="text/javascript"
-		src="./js/app/modals/form-information.js"></script>
+	<script type="text/javascript" src="./js/app/modals/form-information.js"></script>
 	<script type="text/javascript" src="./js/app/modals/settings.js"></script>
 	<script type="text/javascript" src="./js/app/menus/state.js"></script>
 	<script type="text/javascript" src="./js/app/help/index.js"></script>
@@ -1671,36 +1428,22 @@
 	<script type="text/javascript" src="./js/app/taxonomies/menu.js"></script>
 	<script type="text/javascript" src="./js/app/user-filters/state.js"></script>
 	<script type="text/javascript" src="./js/app/user-filters/general.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/data-radios.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/tags-radios.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/more-filters-period-set-up.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/more-filters-period.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/more-filters-measure-set-up.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/more-filters-measure.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/more-filters-axes-set-up.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/more-filters-axes.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/more-filters-members-set-up.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/more-filters-members.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/more-filters-scale-set-up.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/more-filters-scale.js"></script>
-	<script type="text/javascript"
-		src="./js/app/user-filters/more-filters-balance.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/data-radios.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/tags-radios.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/more-filters-period-set-up.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/more-filters-period.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/more-filters-measure-set-up.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/more-filters-measure.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/more-filters-axes-set-up.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/more-filters-axes.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/more-filters-members-set-up.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/more-filters-members.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/more-filters-scale-set-up.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/more-filters-scale.js"></script>
+	<script type="text/javascript" src="./js/app/user-filters/more-filters-balance.js"></script>
 	<script type="text/javascript" src="./js/app/user-filters/dropdown.js"></script>
 	<script type="text/javascript" src="./js/app/taxonomies/general.js"></script>
-	<script type="text/javascript"
-		src="./js/app/taxonomies/continued-at.js"></script>
+	<script type="text/javascript" src="./js/app/taxonomies/continued-at.js"></script>
 	<script type="text/javascript" src="./js/app/search/index.js"></script>
 	<script type="text/javascript" src="./js/app/search/functions.js"></script>
 	<script type="text/javascript" src="./js/app/filters/date.js"></script>

@@ -155,15 +155,7 @@ var ConstantsFunctions = {
       });
       if (Constants.getMetaVersion >= "2.2") {
         reportsAsArray = reportsAsArray.map(function (current) {
-          if (
-            current.menuCat &&
-            (current.menuCat === "Details" ||
-              current.menuCat === "Policies" ||
-              current.menuCat === "Tables" ||
-              current.menuCat === "Notes")
-          ) {
-            current.groupType = "Notes";
-          } else if (current.menuCat) {
+          if (current.menuCat) {
             current.groupType = current.menuCat;
           }
           current["longName"] = current.order;

@@ -117,6 +117,11 @@ var Sections = {
         label: "Financial Statements"
       },
       {
+        // this will only be available for MetaLinks Version 2.2 or higher
+        groupType: "Statements",
+        label: "Financial Statements"
+      },
+      {
         groupType: "disclosure",
         label: "Notes to the Financial Statements"
       },
@@ -124,6 +129,21 @@ var Sections = {
         // this will only be available for MetaLinks Version 2.2 or higher
         groupType: "Notes",
         label: "Notes to Financial Statements"
+      },
+      {
+        // this will only be available for MetaLinks Version 2.2 or higher
+        groupType: "Policies",
+        label: "Accounting Policies"
+      },
+      {
+        // this will only be available for MetaLinks Version 2.2 or higher
+        groupType: "Tables",
+        label: "Notes Tables"
+      },
+      {
+        // this will only be available for MetaLinks Version 2.2 or higher
+        groupType: "Details",
+        label: "Notes Details"
       },
       {
         groupType: "RR_Summaries",
