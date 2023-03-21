@@ -376,3 +376,7 @@ body {
 	overflow: hidden;
 	-webkit-line-clamp: 2;
 }
+
+.no-hover:hover {
+	cursor: initial;
+}

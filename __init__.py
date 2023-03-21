@@ -143,7 +143,7 @@ Language of labels:
     GUI may use tools->language labels setting to override system language for labels
         
 """
-VERSION = '3.23.1'
+VERSION = '3.22.4'
 
 from collections import defaultdict
 from arelle import PythonUtil
@@ -164,10 +164,6 @@ MODULENAME = os.path.basename(os.path.dirname(__file__))
 tagsWithNoContent = set(f"{{http://www.w3.org/1999/xhtml}}{t}" for t in elementsWithNoContent)
 for t in ("schemaRef", "linkbaseRef", "roleRef", "arcroleRef", "loc", "arc"):
     tagsWithNoContent.add(f"{{http://www.xbrl.org/2003/linkbase}}{t}")
-
-def allowableBytesForEdgar(bytestr):
-    # encode xml-legal ascii bytes not acceptable to EDGAR
-    return re.sub(b"[\\^\x7F]", lambda m: b"&#x%X;" % ord(m[0]), bytestr) 
 
 ###############
 
@@ -1021,8 +1017,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                                         if reportedFile in cntlr.edgarRedlineDocs:
                                             doc = cntlr.edgarRedlineDocs[reportedFile]
                                             # redline removed file is not readable in encoded version, create from dom in memory
-                                            xbrlZip.writestr(reportedFile, allowableBytesForEdgar(
-                                                             etree.tostring(doc.xmlRootElement, encoding="ASCII", xml_declaration=True)).decode('utf-8'))
+                                            xbrlZip.writestr(reportedFile, 
+                                                             etree.tostring(doc.xmlRootElement, encoding="ASCII", xml_declaration=True).decode('utf-8'))
                                         else:
                                             if filesource.isArchive and reportedFile in filesource.dir:
                                                 _filepath = os.path.join(filesource.baseurl, reportedFile)
@@ -1048,8 +1044,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                     for reportedFile, modelDocument in cntlr.edgarRedlineDocs.items():
                         target = join(dissemReportsFolder, reportedFile) + ".redlineRemoved"
                         os.makedirs(self.reportsFolder, exist_ok=True)
-                        filing.writeFile(target, allowableBytesForEdgar(
-                            etree.tostring(modelDocument.xmlRootElement, encoding="ASCII", xml_declaration=True)))
+                        filing.writeFile(target,
+                            etree.tostring(modelDocument.xmlRootElement, encoding="ASCII", xml_declaration=True))
 
                 if "EdgarRenderer/__init__.py#filingEnd" in filing.arelleUnitTests:
                     raise arelle.PythonUtil.pyNamedObject(filing.arelleUnitTests["EdgarRenderer/__init__.py#filingEnd"], "EdgarRenderer/__init__.py#filingEnd")

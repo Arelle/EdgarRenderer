@@ -1,45 +1,47 @@
 /* Created by staff of the U.S. Securities and Exchange Commission.
- * Data and content created by government employees within the scope of their employment 
+ * Data and content created by government employees within the scope of their employment
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
-'use strict';
+"use strict";
 
 var Sections = {
-
   currentlyOpenChildMenu: {},
 
   searchObject: {},
 
-  clickEvent: function (event, element) {
+  populatedSections: false,
 
+  clickEvent: function (event, element) {
     if (event.keyCode && !(event.keyCode === 13 || event.keyCode === 32)) {
       return;
     }
 
-    if (element.getAttribute('baseref') && (element.getAttribute('baseref') !== HelpersUrl.getHTMLFileName)) {
-
+    if (
+      element.getAttribute("baseref") &&
+      element.getAttribute("baseref") !== HelpersUrl.getHTMLFileName
+    ) {
       // we load it, then send the user to the correct spot
 
-      AppInit.init(element.getAttribute('baseref'), function () {
+      AppInit.init(element.getAttribute("baseref"), function () {
         AppInit.additionalSetup();
         Sections.fallbackElementScroll(event, element);
       });
     } else {
       Sections.fallbackElementScroll(event, element);
-
     }
-
   },
 
   fallbackElementScroll: function (event, element) {
     Sections.setSelectedAttributes(element);
-    var taxonomyElement = TaxonomiesGeneral.getElementByNameContextref(element.getAttribute('name'), element
-      .getAttribute('contextref'));
+    var taxonomyElement = TaxonomiesGeneral.getElementByNameContextref(
+      element.getAttribute("name"),
+      element.getAttribute("contextref")
+    );
 
     if (taxonomyElement) {
       taxonomyElement.scrollIntoView({
-        'block': Constants.scrollPosition
+        block: Constants.scrollPosition
       });
     } else {
       ErrorsMinor.factNotFound();
@@ -51,239 +53,399 @@ var Sections = {
       return;
     }
 
-    if (element.classList && element.classList.contains('disabled')) {
+    if (element.classList && element.classList.contains("disabled")) {
       return;
     }
-    MenusState.toggle('sections-menu', false, function (openMenu) {
+    MenusState.toggle("sections-menu", false, function (openMenu) {
       if (openMenu) {
-        document.getElementById('sections-menu').addEventListener('transitionend', Sections.transitionEvent);
+        document
+          .getElementById("sections-menu")
+          .addEventListener("transitionend", Sections.transitionEvent);
       }
     });
-
   },
 
-  transitionEvent: function () {
-    setTimeout(function () {
-      Sections.populate();
-      document.getElementById('sections-menu').removeEventListener('transitionend', Sections.transitionEvent);
-    });
+  transitionEvent: function (event) {
+    if (event.propertyName === "visibility") {
+      setTimeout(function () {
+        if (!Sections.populatedSections) {
+          Sections.populate();
+          document
+            .getElementById("sections-menu")
+            .removeEventListener("transitionend", Sections.transitionEvent);
+          Sections.populatedSections = true;
+        }
+      });
+    }
   },
 
   formChange: function () {
-
-    if (MenusState.openMenu === 'sections-menu') {
-      if (Sections.currentlyOpenChildMenu.hasOwnProperty('id') &&
-        Sections.currentlyOpenChildMenu.hasOwnProperty('group')) {
-        Sections.populateChildCollapse(Sections.currentlyOpenChildMenu['id'], Sections.currentlyOpenChildMenu['group']);
+    if (MenusState.openMenu === "sections-menu") {
+      if (
+        Sections.currentlyOpenChildMenu.hasOwnProperty("id") &&
+        Sections.currentlyOpenChildMenu.hasOwnProperty("group")
+      ) {
+        // we now want to re-paint all sections, keeping Sections.currentlyOpenChildMenu open
+        while (document.querySelector("#tagged-sections").firstChild) {
+          document.querySelector("#tagged-sections").firstChild.remove();
+        }
+        Sections.populatedSections = false;
+        Sections.populate(
+          Sections.searchObject,
+          Sections.currentlyOpenChildMenu.id
+        );
       }
     }
-
   },
 
-  populate: function (searchObject) {
-
+  populate: function (searchObject, idToKeepOpen) {
     searchObject = searchObject || {};
 
     Sections.searchObject = searchObject;
+    var setupArray = [
+      {
+        // this will only be available for MetaLinks Version 2.2 or higher
+        groupType: "Cover",
+        label: "Cover"
+      },
+      {
+        groupType: "document",
+        label: "Document & Entity Information"
+      },
+      {
+        groupType: "statement",
+        label: "Financial Statements"
+      },
+      {
+        // this will only be available for MetaLinks Version 2.2 or higher
+        groupType: "Statements",
+        label: "Financial Statements"
+      },
+      {
+        groupType: "disclosure",
+        label: "Notes to the Financial Statements"
+      },
+      {
+        // this will only be available for MetaLinks Version 2.2 or higher
+        groupType: "Notes",
+        label: "Notes to Financial Statements"
+      },
+      {
+        // this will only be available for MetaLinks Version 2.2 or higher
+        groupType: "Policies",
+        label: "Accounting Policies"
+      },
+      {
+        // this will only be available for MetaLinks Version 2.2 or higher
+        groupType: "Tables",
+        label: "Notes Tables"
+      },
+      {
+        // this will only be available for MetaLinks Version 2.2 or higher
+        groupType: "Details",
+        label: "Notes Details"
+      },
+      {
+        groupType: "RR_Summaries",
+        label: "RR Summaries"
+      },
+      {
+        groupType: "Prospectus",
+        label: "Prospectus"
+      },
+      {
+        groupType: "Fee_Exhibit",
+        label: "RR Summaries"
+      }
+    ];
+    setupArray.forEach(function (current, index) {
+      current.parentId = "tagged-sections-" + index;
+      current.badgeId = "tagged-sections-badge-" + index;
+      current.containerId = "tagged-sections-container-" + index;
+      if (current.containerId === idToKeepOpen) {
+        current.open = true;
+      } else {
+        current.open = false;
+      }
+      if (!Sections.populatedSections) {
+        Sections.populateParentCollapse(current);
+      }
+      Sections.filterParentCollapse(Sections.searchObject, setupArray);
 
-    Sections.populateParentCollapse('tagged-sections-0', 'collapseDocumentEntityTypesBadge', 'document',
-      'collapseDocumentEntityTypes');
-
-    Sections.populateParentCollapse('tagged-sections-1', 'collapseFinancialStatementsBadge', 'statement',
-      'collapseFinancialStatements');
-
-    Sections.populateParentCollapse('tagged-sections-2', 'collapseNotesToTheFinancialsBadge', 'disclosure',
-      'collapseNotesToTheFinancials');
-
-    Sections.populateParentCollapse('tagged-sections-3', 'collapseRRSummariesBadge', 'RR_Summaries',
-      'collapseRRSummaries');
-
-    Sections.populateParentCollapse('tagged-sections-4', 'collapseProspectusBadge', 'Prospectus',
-      'collapseProspectus');
-
-    Sections.populateParentCollapse('tagged-sections-5', 'collapseFeeExhibitBadge', 'Fee_Exhibit',
-      'collapseFeeExhibit');
-
-    Sections.formChange();
+      Sections.updateBadgeCount(setupArray);
+    });
   },
 
-  populateParentCollapse: function (parentId, badgeId, groupType, containerId) {
+  filterParentCollapse: function (searchObject, setupArray) {
+    setupArray.forEach(function (current) {
+      var liElements = document.querySelectorAll(
+        "#" + current.containerId + " li"
+      );
+      var liElementsArray = Array.prototype.slice.call(liElements);
 
-    var discoveredGroupType = Sections.filterGroupType(groupType);
+      if (searchObject.hasOwnProperty("value")) {
+        if (document.getElementById(current.containerId)) {
+          liElementsArray.forEach(function (li) {
+            if (searchObject.type === 1) {
+              // search all sections
+              if (
+                Sections.searchObject.value &&
+                !Sections.searchObject.value.test(li.textContent)
+              ) {
+                li.classList.remove("d-flex");
+                li.classList.add("d-none");
+              } else {
+                li.classList.add("d-flex");
+                li.classList.remove("d-none");
+              }
+            } else if (searchObject.type === 2 && !li.hasAttribute("baseref")) {
+              // search internal sections ONLY
+              if (
+                !li.hasAttribute("baseref") &&
+                li.textContent &&
+                Sections.searchObject.value &&
+                !Sections.searchObject.value.test(li.textContent)
+              ) {
+                li.classList.remove("d-flex");
+                li.classList.add("d-none");
+              } else {
+                li.classList.add("d-flex");
+                li.classList.remove("d-none");
+              }
+            } else if (searchObject.type === 3 && li.hasAttribute("baseref")) {
+              // search external sections ONLY
+              if (
+                li.textContent &&
+                Sections.searchObject.value &&
+                !Sections.searchObject.value.test(li.textContent)
+              ) {
+                li.classList.remove("d-flex");
+                li.classList.add("d-none");
+              } else {
+                li.classList.add("d-flex");
+                li.classList.remove("d-none");
+              }
+            } else {
+              li.classList.remove("d-flex");
+              li.classList.add("d-none");
+            }
+          });
+        }
+      }
 
-    if (discoveredGroupType.length === 0) {
-      document.getElementById(parentId).classList.add('d-none');
-    } else {
-      document.getElementById(parentId).classList.remove('d-none');
-      var collapseButton = document.querySelector('#' + parentId + ' button');
+      if (
+        !searchObject.hasOwnProperty("type") &&
+        !searchObject.hasOwnProperty("value")
+      ) {
+        liElementsArray.forEach(function (li) {
+          li.classList.add("d-flex");
+          li.classList.remove("d-none");
+        });
+      }
+    });
+  },
 
-      collapseButton.setAttribute('onClick', 'Sections.prepareChildCollapse(this, "' + groupType + '");');
+  updateBadgeCount: function (setupArray) {
+    setupArray.forEach(function (current) {
+      var badgeCount = 0;
+      var liElements = document.querySelectorAll(
+        "#" + current.containerId + " li"
+      );
+      var liElementsArray = Array.prototype.slice.call(liElements);
+      liElementsArray.forEach(function (li) {
+        if (li.classList.contains("d-flex")) {
+          badgeCount++;
+        }
+      });
+      var badge = document.getElementById(current.badgeId);
+      if (badge) {
+        if (badgeCount > 0) {
+          document.getElementById(current.parentId).classList.remove("d-none");
+          badge.innerHTML = badgeCount;
+        } else {
+          document.getElementById(current.parentId).classList.add("d-none");
+        }
+      }
+    });
+  },
 
-      document.getElementById(badgeId).textContent = discoveredGroupType.length;
+  populateParentCollapse: function (input) {
+    var discoveredGroupType = Sections.filterGroupType(input.groupType);
+
+    if (discoveredGroupType.length > 0) {
+      // we generate the HTML for this section
+      Sections.generateParentCollapseHTML(input, discoveredGroupType.length);
+      Sections.generateChildCollapseHTML(input, discoveredGroupType);
     }
+  },
 
+  generateParentCollapseHTML: function (input, badgeCount) {
+    var card = document.createElement("div");
+    card.classList.add("reboot");
+    card.classList.add("card");
+    card.setAttribute("id", input.parentId);
+    card.setAttribute("data-test", input.parentId);
+
+    var headerContainer = document.createElement("div");
+    headerContainer.classList.add("reboot");
+    headerContainer.classList.add("card-header");
+    headerContainer.classList.add("px-0");
+    headerContainer.classList.add("py-0");
+
+    var header = document.createElement("h5");
+    header.classList.add("reboot");
+    header.classList.add("mb-0");
+
+    var button = document.createElement("button");
+    button.classList.add("reboot");
+    button.classList.add("btn");
+    button.classList.add("d-flex");
+    button.classList.add("justify-content-between");
+    button.classList.add("align-items-center");
+    button.classList.add("align-items-center");
+    button.classList.add("w-100");
+    button.setAttribute("type", "button");
+    button.setAttribute("data-target", "#" + input.containerId);
+    button.setAttribute("tabindex", "2");
+    button.setAttribute("data-toggle", "collapse");
+    button.addEventListener("click", function () {
+      // eslint-disable-next-line no-invalid-this
+      Sections.captureChildCollapse(this, "#" + input.parentId);
+    });
+
+    var span = document.createElement("span");
+    span.classList.add("reboot");
+    span.classList.add("font-size-1");
+
+    var text = document.createTextNode(input.label);
+
+    var span2 = document.createElement("span");
+    span2.classList.add("reboot");
+    span2.classList.add("badge");
+    span2.classList.add("badge-secondary");
+    span2.setAttribute("id", input.badgeId);
+    var text2 = document.createTextNode(badgeCount);
+
+    span.appendChild(text);
+    button.appendChild(span);
+
+    span2.appendChild(text2);
+    button.appendChild(span2);
+    header.appendChild(button);
+
+    headerContainer.appendChild(header);
+    card.appendChild(headerContainer);
+    document.getElementById("tagged-sections").appendChild(card);
+  },
+
+  generateChildCollapseHTML: function (input, objectOfInfo) {
+    var card = document.getElementById(input.parentId);
+    var collapseContainer = document.createElement("div");
+    collapseContainer.classList.add("reboot");
+    collapseContainer.classList.add("collapse");
+    if (input.open) {
+      collapseContainer.classList.add("show");
+    }
+    collapseContainer.setAttribute("data-parent", "#tagged-sections");
+    collapseContainer.setAttribute("id", input.containerId);
+
+    var listGroup = document.createElement("div");
+    listGroup.classList.add("reboot");
+    listGroup.classList.add("list-group");
+    listGroup.classList.add("list-group-flush");
+    objectOfInfo.forEach(function (current) {
+      var name = "";
+      var contextref = "";
+      var baseref = "";
+      var sameBaseRef = true;
+
+      if (current["firstAnchor"]) {
+        name = current["firstAnchor"]["name"];
+        contextref = current["firstAnchor"]["contextRef"];
+        baseref = current["firstAnchor"]["baseRef"];
+        if (current["firstAnchor"]["baseRef"]) {
+          sameBaseRef =
+            HelpersUrl.getHTMLFileName === current["firstAnchor"]["baseRef"];
+        }
+      } else if (current["uniqueAnchor"]) {
+        name = current["uniqueAnchor"]["name"];
+        contextref = current["uniqueAnchor"]["contextRef"];
+        baseref = current["uniqueAnchor"]["baseRef"];
+        if (current["uniqueAnchor"]["baseRef"]) {
+          sameBaseRef =
+            HelpersUrl.getHTMLFileName === current["uniqueAnchor"]["baseRef"];
+        }
+      }
+      var list = document.createElement("li");
+      list.setAttribute("name", name);
+      list.setAttribute("contextref", contextref);
+      list.classList.add("reboot");
+      list.classList.add("click");
+      list.classList.add("list-group-item");
+      list.classList.add("list-group-item-action");
+      list.classList.add("d-flex");
+      list.classList.add("align-items-center");
+      list.addEventListener("click", function () {
+        // eslint-disable-next-line no-invalid-this
+        Sections.clickEvent(event, this);
+      });
+      list.addEventListener("onkeyup", function () {
+        // eslint-disable-next-line no-invalid-this
+        Sections.clickEvent(event, this);
+      });
+      list.setAttribute("tabindex", "2");
+
+      var text = document.createTextNode(current["shortName"]);
+
+      if (!sameBaseRef) {
+        list.setAttribute("baseref", baseref);
+        var icon = document.createElement("i");
+        icon.classList.add("fas");
+        icon.classList.add("fa-external-link-alt");
+        icon.classList.add("mr-3");
+        list.appendChild(icon);
+      }
+      list.appendChild(text);
+
+      listGroup.appendChild(list);
+    });
+    collapseContainer.appendChild(listGroup);
+    card.appendChild(collapseContainer);
   },
 
   filterGroupType: function (groupType) {
     var discoveredGroupType = FiltersReports.getReportsByGroupType(groupType);
-    var discoveredGroupTypeArray = Array.prototype.slice.call(discoveredGroupType);
+
+    var discoveredGroupTypeArray =
+      Array.prototype.slice.call(discoveredGroupType);
     // we sort by Long Name to put it in the correct order.
     discoveredGroupTypeArray.sort(function (first, second) {
-      return (first['longName']).localeCompare(second['longName']);
+      return first["longName"].localeCompare(second["longName"]);
     });
 
-    if (Object.keys(Sections.searchObject).length === 0 ||
-      (Object.keys(Sections.searchObject).length === 1 && Sections.searchObject['type'] && Sections.searchObject['type'] === 1)) {
-
-      return discoveredGroupTypeArray;
-
-    }
-    var filteredDiscoveredGroupTypeArray = discoveredGroupTypeArray.filter(function (element) {
-      var keepElement = true;
-      if (Sections.searchObject['type']) {
-        if (Sections.searchObject['type'] === 2) {
-          // return true if baseref is same as current url
-          if (element['firstAnchor'] && element['firstAnchor']['baseRef']) {
-
-            keepElement = (element['firstAnchor']['baseRef'] === HelpersUrl.getExternalFile
-              .substr(HelpersUrl.getExternalFile.lastIndexOf('/') + 1));
-
-          } else if (element['uniqueAnchor'] && element['uniqueAnchor']['baseRef']) {
-
-            keepElement = (element['uniqueAnchor']['baseRef'] === HelpersUrl.getExternalFile
-              .substr(HelpersUrl.getExternalFile.lastIndexOf('/') + 1));
-
-          }
-        }
-        if (Sections.searchObject['type'] === 3) {
-          // return true if baseref is NOT same as current url
-          if (element['firstAnchor'] && element['firstAnchor']['baseRef']) {
-
-            keepElement = (element['firstAnchor']['baseRef'] !== HelpersUrl.getExternalFile
-              .substr(HelpersUrl.getExternalFile.lastIndexOf('/') + 1));
-
-          } else if (element['uniqueAnchor'] && element['uniqueAnchor']['baseRef']) {
-
-            keepElement = (element['uniqueAnchor']['baseRef'] !== HelpersUrl.getExternalFile
-              .substr(HelpersUrl.getExternalFile.lastIndexOf('/') + 1));
-
-          }
-        }
-      }
-      if (Sections.searchObject['value']) {
-
-        if (keepElement) {
-
-          keepElement = Sections.searchObject['value'].test(element['shortName']);
-
-        }
-
-      }
-
-      return keepElement;
-    });
-
-    return filteredDiscoveredGroupTypeArray;
-
+    return discoveredGroupTypeArray;
   },
 
-  prepareChildCollapse: function (event, groupType) {
-    // TODO small error handling to ensure we have our HTML correct
-
-    var idToPopulate = event.getAttribute('data-target').substring(1);
-    if (document.getElementById(idToPopulate).classList.contains('show')) {
+  captureChildCollapse: function (event, groupType) {
+    var idToPopulate = event.getAttribute("data-target").substring(1);
+    if (document.getElementById(idToPopulate).classList.contains("show")) {
       Sections.currentlyOpenChildMenu = {};
-      Sections.emptyChildCollapse(idToPopulate);
     } else {
-
       Sections.currentlyOpenChildMenu = {
-        'id': '#' + idToPopulate,
-        'group': groupType
+        id: idToPopulate,
+        group: groupType
       };
-
-      Sections.populateChildCollapse(idToPopulate, groupType);
     }
-  },
-
-  populateChildCollapse: function (idToPopulate, groupType) {
-
-    var discoveredGroupType = Sections.filterGroupType(groupType);
-
-    var listHtml = '';
-    discoveredGroupType
-      .forEach(function (current, index) {
-
-        var name = '';
-        var contextref = '';
-        var baseref = '';
-        var sameBaseRef = true;
-
-        if (current['firstAnchor']) {
-
-          name = current['firstAnchor']['name'];
-          contextref = current['firstAnchor']['contextRef'];
-          baseref = current['firstAnchor']['baseRef'];
-          if (current['firstAnchor']['baseRef']) {
-
-            sameBaseRef = HelpersUrl.getHTMLFileName === current['firstAnchor']['baseRef'];
-          }
-
-        } else if (current['uniqueAnchor']) {
-
-          name = current['uniqueAnchor']['name'];
-          contextref = current['uniqueAnchor']['contextRef'];
-          baseref = current['uniqueAnchor']['baseRef'];
-          if (current['uniqueAnchor']['baseRef']) {
-
-            sameBaseRef = HelpersUrl.getHTMLFileName === current['uniqueAnchor']['baseRef'];
-          }
-
-        }
-
-        // listHtml += '<small>';
-        if (sameBaseRef) {
-          listHtml += '<li name="' +
-            name +
-            '" contextref="' +
-            contextref +
-            '" selected-taxonomy="false" onclick="Sections.clickEvent(event, this);" onkeyup="Sections.clickEvent(event, this);" class="reboot click list-group-item list-group-item-action d-flex align-items-center" tabindex="2">';
-        } else {
-          listHtml += '<li name="' +
-            name +
-            '" contextref="' +
-            contextref +
-            '" baseref="' +
-            baseref +
-            '" onclick="Sections.clickEvent(event, this);" onkeyup="Sections.clickEvent(event, this);" class="reboot click list-group-item list-group-item-action d-flex align-items-center" tabindex="2">';
-          listHtml += '<i class="fas fa-external-link-alt mr-3"></i>';
-        }
-        listHtml += current['shortName'];
-        listHtml += '</li>';
-        // listHtml += '</small>';
-
-      });
-
-    if (idToPopulate && idToPopulate.startsWith('#')) {
-      document.getElementById(idToPopulate.substring(1)).getElementsByClassName('list-group')[0].innerHTML = listHtml;
-      $(idToPopulate.substring(1)).collapse('show');
-    } else if (idToPopulate && !idToPopulate.startsWith('#')) {
-      document.getElementById(idToPopulate).getElementsByClassName('list-group')[0].innerHTML = listHtml;
-      $('#' + idToPopulate).collapse('show');
-    }
-  },
-
-  emptyChildCollapse: function (idToEmpty) {
-    $('#' + idToEmpty).collapse('hide');
-    document.getElementById(idToEmpty).getElementsByClassName('list-group')[0].innerHTML = '';
   },
 
   setSelectedAttributes: function (element) {
-
-    var selected = document.getElementById('tagged-sections').querySelectorAll('[selected-taxonomy]');
+    var selected = document
+      .getElementById("tagged-sections")
+      .querySelectorAll("[selected-taxonomy]");
     var selectedArray = Array.prototype.slice.call(selected);
     selectedArray.forEach(function (current) {
-      current.setAttribute('selected-taxonomy', false);
+      current.setAttribute("selected-taxonomy", false);
     });
-    element.setAttribute('selected-taxonomy', true);
+    element.setAttribute("selected-taxonomy", true);
   }
 };
