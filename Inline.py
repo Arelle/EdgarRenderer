@@ -111,10 +111,10 @@ def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocument
                                           # no lang on xbrl:xbrl, specific xml:lang on elements which aren't en-US
                                           baseXmlLang=None, defaultXmlLang="en-US")
         if outputZip:
-            targetInstance.saveInstance(overrideFilepath=targetUrl, outputZip=outputZip, updateFileHistory=False, xmlcharrefreplace=True)
+            targetInstance.saveInstance(overrideFilepath=targetUrl, outputZip=outputZip, updateFileHistory=False, xmlcharrefreplace=True, edgarcharrefreplace=True)
         else:
             fh = io.StringIO();
-            targetInstance.saveInstance(overrideFilepath=targetUrl, outputFile=fh, updateFileHistory=False, xmlcharrefreplace=True)
+            targetInstance.saveInstance(overrideFilepath=targetUrl, outputFile=fh, updateFileHistory=False, xmlcharrefreplace=True, edgarcharrefreplace=True)
             fh.seek(0)
             filing.writeFile(targetUrl, fh.read())
             fh.close()
