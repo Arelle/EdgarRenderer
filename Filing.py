@@ -195,7 +195,6 @@ class Filing(object):
             for f in self.modelXbrl.factsByLocalName["DocumentType"])
         self.isProspectus = bool(next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('sec.gov/vip',n) is not None),None))
         self.isFeeExhibit = bool(next((n for n in self.modelXbrl.roleTypes.keys() if n is not None and re.search('/role/document/feesTable',n) is not None),None))
-
         
         self.builtinEquityColAxes = [('dei',self.deiNamespace,'LegalEntityAxis'),
                                      ('ifrs-full',self.ifrsNamespace,'ComponentsOfEquityAxis'),

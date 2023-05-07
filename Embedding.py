@@ -121,7 +121,24 @@ class Embedding(object):
                                         self.localnamesMovedToColumns, self.localnamesMovedToRows))
 
             self.controller.logDebug("Equity Command List {}".format(self.commandTextListOfLists))
+        elif self.cube.linkroleUri in ('http://xbrl.sec.gov/rxp/role/Detail'# TODO: Wch first cut at customized rxp rendering, looks crummy
+                                       # WcH the problem here is that only 'compact' keyword works right now.
+                                       ,'http://xbrl.sec.gov/rxp/role/ByProject'
+                                       ,'http://xbrl.sec.gov/rxp/role/ByGovernment'):
+            for ignore, axisQname, ignore in orderedListOfOrderAxisQnameTuples:
+                token = 'compact' # WcH experiments with this have unsatisfactory results
+                self.commandTextListOfLists += [['row', axisQname, token, '*']]
 
+            if len(self.cube.timeAxis) > 0:
+                self.commandTextListOfLists += [['row', 'period', 'compact', '*']]
+
+            self.commandTextListOfLists += [['column', 'primary', 'compact', '*']]
+
+            if len(self.cube.unitAxis) > 0:
+                self.commandTextListOfLists += [['column', 'unit', 'compact', '*']]
+
+            # print(self.commandTextListOfLists) # wch for debug
+            
         elif self.cube.cubeType == 'statement' or self.filing.hasEmbeddings or self.cube.isElements:
             generatedCommandTextListOfLists = []
 
