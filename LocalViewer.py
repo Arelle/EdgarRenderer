@@ -2,7 +2,7 @@
 :mod:`EdgarRenderer.LocalViewer`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
-Data and content created by government employees within the scope of their employment 
+Data and content created by government employees within the scope of their employment
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 from arelle.webserver.bottle import static_file, redirect
@@ -25,15 +25,15 @@ class _LocalViewer(LocalViewer):
             or _file.startswith("ix-dev.html")
             or _file.startswith("browser-error.html")
             or _file.startswith("css/")
-            or (_file.startswith("images/") and os.path.exists(os.path.join(self.reportsFolders[0], 'ixviewer', _file))) 
+            or (_file.startswith("images/") and os.path.exists(os.path.join(self.reportsFolders[0], 'ixviewer', _file)))
             or _file.startswith("js/")):
-            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'ixviewer')) 
+            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'ixviewer'))
         if _file.startswith("/ixviewer"): # ops gateway
-            return static_file(_file, root=self.reportsFolders[0][:-1]) 
+            return static_file(_file, root=self.reportsFolders[0][:-1])
         if _report == "include": # really in include subtree
             return static_file(_file, root=os.path.join(self.reportsFolders[0], 'include'))
         if _file.startswith("include/"): # really in ixviewer subtree (Workstation Images are in distribution include)
-            return static_file(_file[8:], root=os.path.join(self.reportsFolders[0], 'include'))              
+            return static_file(_file[8:], root=os.path.join(self.reportsFolders[0], 'include'))
         if _file.startswith("images/") or  _file.startswith("Images/"): # really in ixviewer subtree (Workstation Images are in distribution include)
             return static_file(_file[7:], root=os.path.join(self.reportsFolders[0], 'include'))
         if _report == "images": # really in ixviewer subtree (Workstation Images are in distribution include)
@@ -56,8 +56,8 @@ class _LocalViewer(LocalViewer):
             elif file.endswith("---xbrl.zip"):
                 # default zip produced for accession but local zip may have no accession number
                 for f in os.listdir(_fileDir):
-                    if f.endswith(".zip"):  
-                        redirect("/{}/{}".format(_report,f))      
+                    if f.endswith(".zip"):
+                        redirect("/{}/{}".format(_report,f))
             if not _fileExists:
                 self.cntlr.addToLog("http://localhost:{}/{}".format(self.port,file), messageCode="localViewer:fileNotFound",level=logging.DEBUG)
             return static_file(_file, root=_fileDir, headers=self.noCacheHeaders) # extra_headers modification to py-bottle

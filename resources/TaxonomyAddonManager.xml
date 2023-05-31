@@ -444,12 +444,10 @@
     </TaxonomyAddon>
     <TaxonomyAddon>
       <Taxonomy>oef-2023.xsd</Taxonomy>
-      <DefinitionFiles>
-        <string>oef-2023_doc.xsd</string>
-      </DefinitionFiles>
+      <DefinitionFiles/>
       <ReferenceFiles/>
     </TaxonomyAddon>
-    <TaxonomyAddon>
+     <TaxonomyAddon>
       <Taxonomy>rr-2010-02-28.xsd</Taxonomy>
       <DefinitionFiles>
         <string>rr-doc-2010-02-28.xml</string>
@@ -505,9 +503,6 @@
     </TaxonomyAddon>
     <TaxonomyAddon>
       <Taxonomy>rxp-2023.xsd</Taxonomy>
-      <DefinitionFiles>
-        <string>rxp-2023_doc.xsd</string>
-      </DefinitionFiles>
       <ReferenceFiles>
         <string>rxp-2023_ref.xsd</string>
       </ReferenceFiles>
@@ -515,7 +510,7 @@
     <TaxonomyAddon>
       <Taxonomy>snj-2023.xsd</Taxonomy>
       <DefinitionFiles>
-        <string>snj-2023_doc.xml</string>
+        <string>snj-2023_doc.xsd</string>
       </DefinitionFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>

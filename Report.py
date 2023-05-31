@@ -3,7 +3,7 @@
 :mod:`EdgarRenderer.Report`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
-Data and content created by government employees within the scope of their employment 
+Data and content created by government employees within the scope of their employment
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
@@ -20,7 +20,6 @@ import arelle.XbrlConst
 from . import Utils
 Filing = None
 from arelle.XbrlConst import qnIXbrl11Hidden
-
 
 xlinkRole = '{' + arelle.XbrlConst.xlink + '}role' # constant belongs in XbrlConsts`headingList
 
@@ -428,10 +427,10 @@ class Report(object):
 
 
     def doVectorsOverlap(self, rowsOrCols, rowOrColStr):
-        # zip takes multiple lists and zips them together and gives you tuples. the star character basically takes a list or 
+        # zip takes multiple lists and zips them together and gives you tuples. the star character basically takes a list or
         # set of lists and makes each one an argument for zip(). The lists here are basically lists of true/false values,
-        # where true means that the cell is occupied and false means it's empty. then i do some boolean math and since True == 1, 
-        # and false == 0, you can sum the tuple that zip provides and if the sum is greater than 1, you know that you that 
+        # where true means that the cell is occupied and false means it's empty. then i do some boolean math and since True == 1,
+        # and false == 0, you can sum the tuple that zip provides and if the sum is greater than 1, you know that you that
         # for some position the vectors overlap, so you can't combine them.
         z = zip(*[[cell is not None for cell in self.generateCellVector(rowOrColStr, rowOrCol.index)[1]] for rowOrCol in rowsOrCols])
         return any(sum(trueFalseTuple) > 1 for trueFalseTuple in z)
@@ -600,8 +599,8 @@ class Report(object):
                         #factFootnoteDict is a defaultdict, so returns [] not keyError
                         # we need to sort it, otherwise the ordering will change each time we run and filers will wonder why their footnotes are changing
                         footnoteListForThisCell = sorted((self.filing.factFootnoteDict.get(cell.fact) or []), key=lambda thing : thing[1])
-                        for footnoteResource, footnoteText in footnoteListForThisCell: 
-                            try: 
+                        for footnoteResource, footnoteText in footnoteListForThisCell:
+                            try:
                                 # if no exception, we have already added this footnote to footnoteDict, so we go and get it's index.
                                 cell.footnoteNumberSet.add(footnoteDict[footnoteResource])
                             except KeyError:
@@ -632,7 +631,7 @@ class Report(object):
 
                 if len(rowOrColSet) > 0:
                     rowOrCol.footnoteNumberSet = rowOrColSet # set attribute of row or col
-                    
+
                     # go back through these sets and remove footnotes that have been promoted to rows or columns
                     for footnoteNumberSet in listOfFootnoteNumberSetsForNonEmptyCells:
                         footnoteNumberSet -= rowOrColSet
@@ -668,10 +667,10 @@ class Report(object):
                             if previousCell is not None:
                                 previousCell.showCurrencySymbol = previousCellCode is not None
                             cell.showCurrencySymbol = currentCellUnitID is not None
-                        
+
                         previousCellCode = currentCellUnitID
                         previousCell = cell
-    
+
                 if previousCell is not None:
                     previousCell.showCurrencySymbol = previousCellCode is not None
 
@@ -776,8 +775,8 @@ class Report(object):
             if not col.isHidden:
                 self.generateRowOrColHeading('col', col, col.factAxisMemberGroup.factAxisMemberColList, noHeadingsForTheseAxesSet, None)
 
-        # we keep track of the mostRecentSegmentTitleRow because we don't want to relist the same set of members in the rows beneath it, 
-        # would be redundant.  so we keep track of the most recent segment title row, and the members it contains, and don't reprint those 
+        # we keep track of the mostRecentSegmentTitleRow because we don't want to relist the same set of members in the rows beneath it,
+        # would be redundant.  so we keep track of the most recent segment title row, and the members it contains, and don't reprint those
         # members when we're generating row headers.  since segment title rows are only on rows, this doesn't effect cols.
         mostRecentSegmentTitleRow = None
         rowUnitHeadingDefaultDict = defaultdict(list)
@@ -848,16 +847,16 @@ class Report(object):
                         headingList[-1] = headingList[-1] + ' ('+ factAxisMember.memberLabel + ')'
                 else:
                     if      (not isinstance(pseudoAxisName,str)
-                             and Utils.isEfmStandardNamespace(pseudoAxisName.namespaceURI) 
+                             and Utils.isEfmStandardNamespace(pseudoAxisName.namespaceURI)
                              and pseudoAxisName.localName == 'StatementScenarioAxis'
                              and Utils.isEfmStandardNamespace(factAxisMember.member.namespaceURI)
                              and factAxisMember.member.localName == 'RestatementAdjustmentMember'):
                         noDateRepetitionFlag = True
-                    headingList += [factAxisMember.memberLabel]     
+                    headingList += [factAxisMember.memberLabel]
             elif factAxisMember.memberIsDefault and self.cube.isTransposed:
-                substituteForEmptyHeading = factAxisMember.memberLabel      
+                substituteForEmptyHeading = factAxisMember.memberLabel
             previousPseudoAxisNames += [pseudoAxisName]
-        
+
         if rowOrColStr == 'row':
             thisLayoutDirectionHasPeriodAxis = self.embedding.rowPeriodPosition != -1
         else:
@@ -875,7 +874,7 @@ class Report(object):
                 headingList = [heading]
             else:
                 headingList = [heading + ' at ' + strDate]
-                       
+
         if monthsEndedText is not None and self.embedding.columnPeriodPosition != -1:
             headingList = [monthsEndedText] + headingList
         if headingList == [] and 'primary' not in previousPseudoAxisNames:
@@ -915,7 +914,7 @@ class Report(object):
 
 
     # this function is used to append the unit to the end of a row if the units are on the columns and not promoted and
-    # if all facts in the row are using the same unit. 
+    # if all facts in the row are using the same unit.
     def appendUnitsToRowsIfUnitsOnColsAndRowHasOnlyOneUnit(self, row):
         # the length is 1, so let's pull out the first in list.
         unitType, arelleFactSet = list(row.unitTypeToFactSetDefaultDict.items())[0]
@@ -943,7 +942,7 @@ class Report(object):
         for row in self.rowList:
             if not row.isHidden and row.IsCalendarTitle:
                 coordinateListWithoutPeriod = tuple([row.elementQnameStr]+row.coordinateListWithoutUnitPeriodPrimary) # TODO - pretend unit can't appear on rows
-                mergeableRows[coordinateListWithoutPeriod] += [row]        
+                mergeableRows[coordinateListWithoutPeriod] += [row]
         for rowList in mergeableRows.values():
             for index, thisRow in enumerate(rowList):
                 if index > 0:
@@ -981,7 +980,7 @@ class Report(object):
         SubElement(self.rootETree, 'DisplayLabelColumn').text = str(not self.cube.isUnlabeled).casefold()
 
         SubElement(self.rootETree, 'ShowElementNames').text = str(self.cube.isElements).casefold()
-        
+
         if self.RoundingOption is None:
             SubElement(self.rootETree, 'RoundingOption')
         else:
@@ -999,7 +998,7 @@ class Report(object):
             SubElement(footnote, 'Note').text = footnoteText
         SubElement(self.rootETree, 'IsEquityReport').text = 'false'
 
-        ReportName = self.shortName 
+        ReportName = self.shortName
         if self.filing.verboseHeadingsForDebugging:
             ReportName += ' ---- {}'.format(self.cube.linkroleUri)
         SubElement(self.rootETree, 'ReportName').text = ReportName
@@ -1029,7 +1028,7 @@ class Report(object):
             SubElement(contextRefETree, 'ContextID').text = context.id
             SubElement(contextRefETree, 'EntitySchema').text = context.entityIdentifier[0]
             SubElement(contextRefETree, 'EntityValue').text = context.entityIdentifier[1]
-            
+
             startEndContext = self.filing.startEndContextDict.get((context.startDatetime, context.endDatetime))
             if startEndContext is not None:
                 SubElement(contextRefETree, 'PeriodType').text = startEndContext.periodTypeStr
@@ -1064,7 +1063,7 @@ class Report(object):
             numeratorMeasureETree = SubElement(upsETree, 'NumeratorMeasure')
             for measure in unit.measures[0]:
                 self.emitUPSHelper(numeratorMeasureETree, measure)
- 
+
             if len(unit.measures[1]) > 0:
                 denominatorMeasureETree = SubElement(upsETree, 'DenominatorMeasure')
                 for measure in unit.measures[1]:
@@ -1097,7 +1096,7 @@ class Report(object):
         reportSummary.firstAnchor = None
         reportSummary.uniqueAnchor = None
         reportSummary.htmlAnchors = self.controller.roleHasHtmlAnchor[self.cube.linkroleUri]
-        cubeCount = 0 
+        cubeCount = 0
         while cubeCount < 3: # if every fact appears in 3 or more reports, don't even bother.
             cubeCount += 1
             for row in self.rowList:
@@ -1127,7 +1126,7 @@ class Report(object):
                             reportSummary.uniqueAnchor = anchor
                             anchor['unique'] = True # flag makes it easier later to see when first same as unique
                             return
-            
+
 
     def writeHtmlAndOrXmlFiles(self, reportSummary):
         baseNameBeforeExtension = self.filing.fileNamePrefix + str(self.cube.fileNumber)
@@ -1149,7 +1148,7 @@ class Report(object):
 
     def writeHtmlFile(self, baseNameBeforeExtension, tree, reportSummary):
         baseName = baseNameBeforeExtension + '.htm'
-        reportSummary.htmlFileName = baseName     
+        reportSummary.htmlFileName = baseName
         for _transform, _fileNameBase in (
             ((self.filing.transform, self.filing.fileNameBase),) + (
             ((self.filing.transformDissem, self.filing.dissemFileNameBase),) if self.filing.transformDissem else ())):
@@ -1172,12 +1171,31 @@ class Report(object):
         factList = []
         yMax = 0.0
         yMin = 0.0
+        isOefBarChartFact = re.compile('^\{http://xbrl.sec.gov/oef/.*\}AnnlRtrPct$') # WcH in a hurry 4/6/2023
         for row in self.rowList:
             for fact in row.factList:
-                if      (re.compile('^http://xbrl\.(us|sec\.gov)/rr/.*').match(fact.qname.namespaceURI) and
-                         re.compile('^AnnualReturn[0-9]{4}$').match(fact.qname.localName)):
-                    year = fact.qname.localName.casefold().partition('annualreturn')[2]
-                    if fact.isNil: 
+                m = Utils.isBarChartFactRegex.match(fact.qname.clarkNotation)
+                if m is not None:
+                    year = m.group('year')
+                    if fact.isNil:
+                        factValue = None # no special handling of zeroes in the bar chart generator
+                    else:
+                        factValue = float(fact.value) * 100
+                        if yMax < factValue:
+                            yMax = factValue
+                        if yMin > factValue:
+                            yMin = factValue
+                    factList += [(year, factValue)]
+                    continue # WcH in a hurry 4/6/2023 starts here
+                m = re.match(isOefBarChartFact,fact.qname.clarkNotation)
+                if m is not None:
+                    if fact.context.isInstantPeriod:
+                        year = fact.context.instantDatetime.year
+                    elif fact.context.isStartEndPeriod:
+                        year = fact.context.endDatetime.year
+                    else:
+                        continue
+                    if fact.isNil:
                         factValue = None # no special handling of zeroes in the bar chart generator
                     else:
                         factValue = float(fact.value) * 100
@@ -1199,7 +1217,7 @@ class Report(object):
         from matplotlib.pyplot import figure, cm
         from matplotlib import __version__ as matplotlib__version__
 
-        # Determine array sizes depending on input data set    
+        # Determine array sizes depending on input data set
         topOfGradientColor = cm.colors.hex2color('#B5DBEF')
         bottomOfGradientColor = wht = cm.colors.hex2color('#FFFFFF')
         blumd = cm.colors.hex2color('#6BC3DE')
@@ -1211,7 +1229,7 @@ class Report(object):
         blugrd_r = cm.colors.LinearSegmentedColormap.from_list('blugrd_r',[bludk,blumd],256)
         redgrd = cm.colors.LinearSegmentedColormap.from_list('redgrd',[redmd,reddk],256)
         redgrd_r = cm.colors.LinearSegmentedColormap.from_list('redgrd_r',[reddk,redmd],256)
-    
+
 
         numYears = len(factList)
         if numYears > 20:
@@ -1220,7 +1238,7 @@ class Report(object):
                                     _("In ''%(linkroleName)s'', the embedded report created by the fact %(fact)s with context "
                                       "%(contextID)s, there are %(numYears)s Annual Return Facts, but there must not be more than 20."),
                                     edgarCode="rq-2608-Too-Many-Annual-Return-Facts",
-                                    modelObject=self.embedding.factThatContainsEmbeddedCommand, 
+                                    modelObject=self.embedding.factThatContainsEmbeddedCommand,
                                     linkrole=self.cube.linkroleUri, linkroleDefinition=self.cube.definitionText,
                                     linkroleName=self.cube.shortName,
                                     fact=self.embedding.factThatContainsEmbeddedCommand.qname, contextID=self.embedding.factThatContainsEmbeddedCommand.contextID,
@@ -1238,7 +1256,7 @@ class Report(object):
         fig = figure(figsize = (numYears*0.5, 2.5))
 
         # Determine actual plot area and gradient and shading
-        subplot = fig.add_subplot(111, xlim=xLim, ylim=yLim, autoscale_on=False, 
+        subplot = fig.add_subplot(111, xlim=xLim, ylim=yLim, autoscale_on=False,
                                   **{("axisbg", "facecolor")[matplotlib__version__ >= "2"]: wht})
         subplot.imshow([[.7, .7],[.5,.5]], interpolation='bicubic', cmap=gradientColorMap, extent=(xLim[0], xLim[1], yLim[0], yLim[1]), alpha=1)
 
@@ -1352,7 +1370,7 @@ class Row(object):
         rowETree = SubElement(self.report.rowsETree, 'Row', FlagID='0')
         self.emitRowHeader(rowETree, index)
         cellsETree = SubElement(rowETree, 'Cells')
-        unlabeledSegmentTitle = self.isSegmentTitle and self.report.cube.isUnlabeled 
+        unlabeledSegmentTitle = self.isSegmentTitle and self.report.cube.isUnlabeled
 
         for i, col in enumerate(self.report.colList):
             if not col.isHidden:
@@ -1446,7 +1464,7 @@ class Row(object):
         SubElement(rowETree, 'IsEquityAdjustmentRow').text = 'false'
 
         # TODO: Accomodate cases where startLabel and endLabel are in not-fully-formed rollforward.
-        SubElement(rowETree, 'IsBeginningBalance').text = str(Utils.isPeriodStartLabel(self.preferredLabel)).casefold()        
+        SubElement(rowETree, 'IsBeginningBalance').text = str(Utils.isPeriodStartLabel(self.preferredLabel)).casefold()
         SubElement(rowETree, 'IsEndingBalance').text    = str(Utils.isPeriodEndLabel(self.preferredLabel)).casefold()
         SubElement(rowETree, 'IsReverseSign').text      = str(Utils.isNegatedLabel(self.preferredLabel)).casefold()
         if self.preferredLabel is not None:
@@ -1477,7 +1495,7 @@ class Row(object):
                 for refrel in relationshipList:
                     ref = refrel.toModelObject
                     if ref is not None:
-                        try:                     
+                        try:
                             references += [(ref.attrib[xlinkRole],ref)]
                         except KeyError:
                             pass
@@ -1489,7 +1507,7 @@ class Row(object):
                         referencesText += 'Reference '+str(i+1)+': '+role+'\n'
                         for e in ref.iter():
                             if e.text is not None:
-                                text = e.text.strip()                                
+                                text = e.text.strip()
                                 if len(text)>0:
                                     referencesText += ' -'+e.localName+' '+text+'\n'
 
@@ -1503,10 +1521,10 @@ class Row(object):
 
         if self.factAxisMemberGroup is not None: # could be an abstract row or something like that
             otherAxisOnRows = any(fam.pseudoAxisName not in {'period', 'unit', 'primary'} for fam in self.factAxisMemberGroup.factAxisMemberRowList)
-    
+
             SubElement(rowETree, 'hasSegments').text = str(otherAxisOnRows).casefold()
             SubElement(rowETree, 'hasScenarios').text = 'false'
-        
+
             # BEGIN MCU
             mcuETree = SubElement(rowETree, 'MCU')
             #SubElement(mcuETree, 'KeyName')
@@ -1516,7 +1534,7 @@ class Row(object):
                     self.report.emitContextRef(mcuETree, self.factAxisMemberGroup.factAxisMemberRowList, self.context)
                 elif otherAxisOnRows:
                     self.report.emitContextRef(mcuETree, self.factAxisMemberGroup.factAxisMemberRowList, None)
-    
+
             if self.report.embedding.rowPrimaryPosition != -1 and self.factAxisMemberGroup.fact.unit is not None:
                 # the primary pseudoaxis is on the rows, so show the units for that fact
                 self.report.emitUPS(mcuETree, self.factAxisMemberGroup.fact.unit)
@@ -1563,7 +1581,7 @@ class Column(object):
             #message = ErrorMgr.getError('COLUMN_WITHOUT_CONTEXT_WARNING').format(report.cube.shortName, errorStr, self.index)
             filing.modelXbrl.debug("debug",
                                    _('In "%(cube)s%(error)s, column %(column)s has no context.'),
-                                    modelObject=factAxisMemberGroup.fact, 
+                                    modelObject=factAxisMemberGroup.fact,
                                     cube=report.cube.shortName, error=errorStr, column=self.index)
         self.startEndContext = startEndContext
         if self.startEndContext is None:
@@ -1571,7 +1589,7 @@ class Column(object):
             #message = ErrorMgr.getError('COLUMN_WITHOUT_CONTEXT_WARNING').format(report.cube.shortName, errorStr, self.index)
             filing.modelXbrl.debug("debug",
                                    _('In "%(cube)s%(error)s, column %(column)s has no startEndContext.'),
-                                    modelObject=factAxisMemberGroup.fact, 
+                                    modelObject=factAxisMemberGroup.fact,
                                     cube=report.cube.shortName, error=errorStr, column=self.index)
         self.unitTypeToFactSetDefaultDict = defaultdict(set)
         if report.embedding.columnPrimaryPosition != -1 and factAxisMemberGroup.preferredLabel is not None:
@@ -1626,7 +1644,7 @@ class Column(object):
                 if cell is not None and cell.showCurrencySymbol:
                     SubElement(columnETree, 'CurrencySymbol').text = cell.currencySymbol
                     break
-                
+
 
 
 
@@ -1699,13 +1717,13 @@ class Cell(object):
         SubElement(cellETree, 'IsRatio').text = str(IsRatio).casefold()
 
         dataTypeSet = {'NonNegativePure4Type', 'NonPositivePure4Type', 'pureItemType', 'NonNegativeMonetaryType', 'NonPositiveMonetaryType'}
-        SubElement(cellETree, 'DisplayZeroAsNone').text = str(self.filing.isRR and fact.concept.typeQname.localName in dataTypeSet).casefold()
+        SubElement(cellETree, 'DisplayZeroAsNone').text = str(self.filing.isRRorOEF and fact.concept.typeQname.localName in dataTypeSet).casefold()
 
         # handle scaling
         numericAmount, roundedNumericAmount = self.handleScalingAndPrecision(IsNumeric, NumericAmount)
         SubElement(cellETree, 'NumericAmount').text = str(numericAmount)
         SubElement(cellETree, 'RoundedNumericAmount').text = str(roundedNumericAmount)
- 
+
         # note the typo here, NonNumbericText not NonNumericText.  this is legacy and we can't change it.
         if self.NonNumericText == '':
             SubElement(cellETree, 'NonNumbericText')
@@ -1820,7 +1838,7 @@ class Cell(object):
                                           "is a bar chart figure that has zero facts. If a bar chart figure is not wanted here, "
                                           "consider removing the text block fact; otherwise, determine why all its facts are being filtered out."),
                                         edgarCode="rq-2607-Bar-Chart-Has-No-Facts",
-                                        modelObject=embedding.factThatContainsEmbeddedCommand, 
+                                        modelObject=embedding.factThatContainsEmbeddedCommand,
                                         linkrole=embedding.cube.linkroleUri, linkroleDefinition=embedding.cube.definitionText,
                                         linkroleName=embedding.cube.shortName, fact=embedding.factThatContainsEmbeddedCommand.qname,
                                         contextID=embedding.factThatContainsEmbeddedCommand.contextID)
@@ -1880,32 +1898,32 @@ class Cell(object):
 # this is broken.
 #===============================================================================
 #     def handleGrouped(self):
-# 
+#
 #         #[(r.level, r.coordinateList, r.IsAbstractGroupTitle) for r in self.rowList if not r.isHidden]
 #         #[(str(fam.member), fam.memberLabel, fam.pseudoAxisName, fam.pseudoAxisName in self.embedding.groupedAxisQnameSet) for fam in row.factAxisMemberGroup.factAxisMemberRowList]
 #         #row.index
 #         #memberStack
-# 
+#
 #         counter = 0
 #         prevRow = None
 #         memberStack = []
-# 
+#
 #         while counter < len(self.rowList):
-# 
+#
 #             row = self.rowList[counter]
 #             #             nextRow = None
 #             #             if counter + 1 < len(self.rowList):
 #             #                 nextRow = self.rowList[counter + 1]
-# 
+#
 #             if row.isHidden:
 #                 counter += 1
 #                 continue
-# 
+#
 #             if prevRow is None or row.groupedCoordinateList != prevRow.groupedCoordinateList:
 #                 for i, factAxisMember in enumerate(row.factAxisMemberGroup.factAxisMemberRowList):
 #                     if factAxisMember.pseudoAxisName not in self.embedding.groupedAxisQnameSet:
 #                         continue
-# 
+#
 #                     # if we're about to push a new abstract row onto the stack, but first we might need to close some open
 #                     # axes with some dummy rows.
 #                     while len(memberStack) > i > 0:
@@ -1920,28 +1938,28 @@ class Cell(object):
 #                     #         self.rowList.insert(counter, emptyTotalAbstractRow)
 #                     #         counter += 1
 #                     #===========================================================
-# 
+#
 #                     if prevRow is None or row.coordinateList[i] != prevRow.coordinateList[i]:
 #                         # we push nothing to the stack because there's still a level there.
 #                         if factAxisMember.member is None:
 #                             memberStack += [(None, None)]
-# 
+#
 #                         # we create an abstract row and push to the stack, later we will close.
 #                         else:
 #                             openingAbstractRow = Row(self.filing, self, index=counter, IsAbstractGroupTitle=True, level=len(memberStack))
 #                             openingAbstractRow.headingList = [factAxisMember.memberLabel]
 #                             self.rowList.insert(counter, openingAbstractRow)
 #                             counter += 1
-# 
+#
 #                             totalLabel = self.filing.memberDict[factAxisMember.member].arelleConcept.label(preferredLabel = Utils.totalRole,lang=self.filing.controller.labelLangs)
 #                             memberStack += [(factAxisMember.member, totalLabel)]
-# 
+#
 #                     # if we haven't written a sequence of rows with the same groupedCoordinateList, we close anyways.
 #                     elif factAxisMember.member is None and len(memberStack) > 0:
 #                         member, totalLabel = memberStack.pop()
 #                         if not (member == totalLabel == None):
 #                             row.headingList = [totalLabel]
-# 
+#
 #             # if we enter check below, we've already written a sequence of rows with the same groupedCoordinateList, now
 #             # we have to be on the lookout for the total row to close it.
 #             elif    (len(row.factAxisMemberGroup.factAxisMemberRowList) > len(memberStack) > 0 and
@@ -1949,16 +1967,16 @@ class Cell(object):
 #                 member, totalLabel = memberStack.pop()
 #                 if not (member == totalLabel == None):
 #                     row.headingList = [totalLabel]
-# 
+#
 #             row.level = len(memberStack)
 #             prevRow = self.rowList[counter]
 #             counter += 1
-# 
+#
 #         # if we go through all the rows, but the stack isn't empty yet, then there are missing total rows, so pop them and make rows.
 #         while len(memberStack) > 0:
 #             counter = self.groupedHelperForMissingTotalRow(memberStack, counter)
-# 
-# 
+#
+#
 #     def groupedHelperForMissingTotalRow(self, memberStack, counter):
 #         member, totalLabel = memberStack.pop()
 #         if member == totalLabel == None:
