@@ -227,7 +227,8 @@ class Filing(object):
 
         fs_doc_pattern = r'(10-[QK]|[24]0-F)(/A)?'
         self.isDefinitelyFs = self.edgarDocType is not None and re.match(fs_doc_pattern,self.edgarDocType) or self.isSdr
-        self.isDefinitelyNotFs = not self.isDefinitelyFs and (self.isRR or self.isVip or self.isN3N4N6 or self.isN2Prospectus or self.isProxy or self.isBb or self.isRxp)
+        self.isN1a = self.isRR or (self.isOEF and not self.isNcsr)
+        self.isDefinitelyNotFs = not self.isDefinitelyFs and (self.isN1a or self.isVip or self.isN3N4N6 or self.isN2Prospectus or self.isProxy or self.isRxp)
 
         nsWithFacts = set(qn.namespaceURI for qn in modelXbrl.factsByQname.keys() if qn)
         self.isOnlyDei = all(deiPattern.match(ns) for ns in nsWithFacts)
@@ -546,7 +547,7 @@ class Filing(object):
                 else:
                     isEmbeddedCommand = False
 
-                if not isEmbeddedCommand and re.compile('[a-zA-Z-]+:[a-zA-Z]+').match(fact.value): # regex is too restrictive
+                if not isEmbeddedCommand and re.compile('[^:]+:[^:]+').match(fact.value): # regex for exactly one colon.
                     try:
                         prefix, ignore, localName = fact.value.partition(':')
                         namespaceURI = self.modelXbrl.prefixedNamespaces[prefix]
