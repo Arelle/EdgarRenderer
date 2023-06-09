@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
 	<!-- Required meta tags -->
@@ -35,7 +35,7 @@
 						<span class="reboot d-md-none d-lg-inline">Menu</span>
 						<span class="reboot sr-only sr-only-focusable">Menu</span>
 					</a>
-					<div class="reboot dropdown-menu z-index-max">
+					<div class="reboot dropdown-menu">
 						<a id="menu-dropdown-information" data-test="menu-dropdown-information"
 							class="reboot dropdown-item click text-body" tabindex="1">Information</a>
 						<a id="form-information-instance" data-test="form-information-instance"
@@ -74,7 +74,7 @@
 										Search Options</span>
 								</i>
 							</button>
-							<div class="reboot dropdown-menu z-index-max px-2">
+							<div class="reboot dropdown-menu px-2">
 								<div class="reboot form-check">
 									<input disabled class="reboot form-check-input meta-required" type="checkbox"
 										name="search-options" value="1" checked tabindex="3">
@@ -184,7 +184,7 @@
 						<span class="reboot d-md-none d-lg-inline">Data</span>
 						<span class="reboot sr-only sr-only-focusable">Data</span>
 					</a>
-					<div class="reboot dropdown-menu z-index-max">
+					<div class="reboot dropdown-menu">
 						<form id="nav-filter-dropdown" data-name="data-dropdown" class="reboot px-2">
 							<div class="reboot form-check">
 								<input class="reboot form-check-input" type="radio" name="data-radios" value="0" checked
@@ -247,7 +247,7 @@
 						<span class="reboot d-md-none d-lg-inline">Tags</span>
 						<span class="reboot sr-only sr-only-focusable">Tags</span>
 					</a>
-					<div class="reboot dropdown-menu z-index-max">
+					<div class="reboot dropdown-menu">
 						<form id="nav-filter-tags-dropdown" data-name="tags-dropdown" class="reboot px-2">
 							<div class="reboot form-check">
 								<input class="reboot form-check-input" type="radio" name="tags-radios" value="0"
@@ -286,11 +286,11 @@
 						<span class="reboot sr-only sr-only-focusable">More Filters</span>
 						<span title="Total active filters." class="reboot badge badge-warning"></span>
 					</a>
-					<div class="reboot dropdown-menu dropdown-menu-width z-index-max">
+					<div class="reboot dropdown-menu dropdown-menu-width">
 						<label class="reboot dropdown-item-text d-none performance-concern">
 							Selecting any of the below will take a few moments.</label>
 						<div class="reboot accordion" id="more-filters-accordion">
-							<form class="reboot mb-0" data-test="more-filters-form">
+							<form class="reboot" data-test="more-filters-form">
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
 										<a href="#" data-test="Period" data-target="#user-filters-periods"
@@ -311,7 +311,7 @@
 									</div>
 								</div>
 							</form>
-							<form class="reboot mb-0">
+							<form>
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
 										<a href="#" data-test="Measures" data-target="#user-filters-measures"
@@ -332,7 +332,7 @@
 									</div>
 								</div>
 							</form>
-							<form class="reboot mb-0">
+							<form>
 								<div class="reboot mx-1">
 									<div class="reboot  px-0 py-0">
 										<a href="#" data-test="Axis" data-target="#user-filters-axis"
@@ -381,7 +381,7 @@
 									</div>
 								</div>
 							</form>
-							<form class="reboot mb-0">
+							<form>
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
 										<a href="#" data-test="Members" data-target="#user-filters-members"
@@ -431,7 +431,7 @@
 									</div>
 								</div>
 							</form>
-							<form class="reboot mb-0">
+							<form>
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
 										<a href="#" data-test="Scale" data-target="#user-filters-scales"
@@ -452,7 +452,7 @@
 									</div>
 								</div>
 							</form>
-							<form class="reboot mb-0">
+							<form>
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
 										<a href="#" data-test="Balance" data-target="#user-filters-balances"
@@ -506,8 +506,7 @@
 						<i class="reboot nav-loading fas fa-link"></i>
 						<span class="reboot d-md-none d-lg-inline">Links</span>
 					</a>
-					<div id="links-dropdown-content"
-						class="reboot dropdown-menu dropdown-menu-width w-auto z-index-max"></div>
+					<div id="links-dropdown-content" class="reboot dropdown-menu dropdown-menu-width w-auto"></div>
 				</li>
 			</ul>
 			<ul class="reboot navbar-nav pull-right bg-inherit">
@@ -546,7 +545,7 @@
 					<button class="reboot dropdown btn btn-sec" type="button" data-toggle="dropdown" tabindex="2">
 						<i class="reboot nav-loading fas fa-cog"></i>
 					</button>
-					<div class="reboot dropdown-menu px-2 z-index-max">
+					<div class="reboot dropdown-menu px-2">
 						<div class="reboot form-check">
 							<input class="reboot form-check-input" type="radio" name="sections-search-options" value="1"
 								checked tabindex="2">

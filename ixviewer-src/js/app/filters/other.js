@@ -668,7 +668,7 @@ var FiltersOther = {
         'W4' : /^\s*([Tt]onga)\s*$/,
         'W5' : /^\s*([Tt]rinidad\s+[Aa]nd\s+[Tt]obago)\s*$/,
         'W6' : /^\s*([Tt]unisia)\s*$/,
-        'W8' : /^\s*([Tt][u\u00fc]rk(ey|iye))\s*$/,
+        'W8' : /^\s*([Tt]urkey)\s*$/,
         '2E' : /^\s*([Tt]urkmenistan)\s*$/,
         'W7' : /^\s*([Tt]urks\s+[Aa]nd\s+[Cc]aicos\s+[Ii]slands)\s*$/,
         '2G' : /^\s*([Tt]uvalu)\s*$/,
