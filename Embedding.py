@@ -3,7 +3,7 @@
 :mod:`EdgarRenderer.Embedding`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
-Data and content created by government employees within the scope of their employment 
+Data and content created by government employees within the scope of their employment
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
@@ -31,7 +31,7 @@ class FactAxisMember(object):
         self.axisMemberPositionTuple = axisMemberPositionTuple
         self.memberLabel = memberLabel
         self.memberIsDefault = memberIsDefault
-        
+
     def __str__(self):
         return "[{}={}]".format(self.pseudoAxisName, self.member)
 
@@ -93,8 +93,8 @@ class Embedding(object):
 
         if self.cube.isStatementOfEquity:
             self.localnamesMovedToColumns = []
-            self.localnamesMovedToRows = []   
-          
+            self.localnamesMovedToRows = []
+
             if len(self.cube.timeAxis) > 0:
                 self.commandTextListOfLists += [['row', 'period', 'compact', '*']]
 
@@ -112,15 +112,41 @@ class Embedding(object):
                 if axisQname in axes:  # the axes that have not been moved to rows already
                     self.localnamesMovedToColumns += [axisQname.localName]
                     self.commandTextListOfLists += [['column', axisQname, 'compact', '*']]
-            
+
             if len(self.cube.unitAxis) > 0:
                 self.commandTextListOfLists += [['column', 'unit', 'compact', '*']]
 
             if self.controller.debugMode:  # when in debug mode elevate this to the Filing Summary log.
-                self.controller.logDebug("In''{}'', moved {} to Columns and {} to rows.".format(self.cube.shortName, 
+                self.controller.logDebug("In''{}'', moved {} to Columns and {} to rows.".format(self.cube.shortName,
                                         self.localnamesMovedToColumns, self.localnamesMovedToRows))
 
             self.controller.logDebug("Equity Command List {}".format(self.commandTextListOfLists))
+        elif self.cube.linkroleUri in ('http://xbrl.sec.gov/rxp/role/Detail'# TODO: Wch first cut at customized rxp rendering, looks crummy
+                                       # WcH the problem here is that only 'compact' keyword works right now.
+                                       ,'http://xbrl.sec.gov/rxp/role/ByCategory'
+                                       ,'http://xbrl.sec.gov/rxp/role/ByProject'
+                                       ,'http://xbrl.sec.gov/rxp/role/ByGovernment'):
+            leAxisQname = None
+            for ignore, axisQname, ignore in orderedListOfOrderAxisQnameTuples:
+                if axisQname.localName == 'LegalEntityAxis' and self.cube.linkroleUri.endswith('ByCategory'):
+                    leAxisQname= axisQname
+                    continue
+                token = 'compact' # WcH experiments with this have unsatisfactory results
+                self.commandTextListOfLists += [['row', axisQname, token, '*']]
+
+            if len(self.cube.timeAxis) > 0:
+                self.commandTextListOfLists += [['row', 'period', 'compact', '*']]
+
+            if leAxisQname is not None:
+                self.commandTextListOfLists += [['column', leAxisQname, 'compact', '*']]
+                self.commandTextListOfLists += [['row', 'primary', 'compact', '*']]
+            else:
+                self.commandTextListOfLists += [['column', 'primary', 'compact', '*']]
+
+            if len(self.cube.unitAxis) > 0:
+                self.commandTextListOfLists += [['column', 'unit', 'compact', '*']]
+
+            #print(self.commandTextListOfLists) # wch for debug
 
         elif self.cube.cubeType == 'statement' or self.filing.hasEmbeddings or self.cube.isElements:
             generatedCommandTextListOfLists = []
@@ -254,7 +280,7 @@ class Embedding(object):
                 fact=self.factThatContainsEmbeddedCommand.qname,
                 contextID=self.factThatContainsEmbeddedCommand.contextID,
                 iftransposed=("", " after transposition")[self.cube.isTransposed],
-                roworcol=missingRowOrColStr, colorrow=presentRowOrColStr, 
+                roworcol=missingRowOrColStr, colorrow=presentRowOrColStr,
                 axes=', '.join([str(command.pseudoAxis) for command in commandsToPrint]),
                 messageCodes=_msgCodes)
             self.isEmbeddingOrReportBroken = True
@@ -273,7 +299,7 @@ class Embedding(object):
         else:
             primaryRowOrColStr = 'col'
             primaryIndex = len(self.rowCommands) + self.columnPrimaryPosition
-            
+
         # if any typed dimensions, get values to order them
         for pseudoAxis, (giveMemGetPositionDict, ignore) in self.cube.axisAndMemberOrderDict.items():
             if isinstance(pseudoAxis, arelle.ModelValue.QName) and "!?isTypedDimensionAxis?!" in giveMemGetPositionDict:
@@ -363,7 +389,7 @@ class Embedding(object):
                 factAxisMember = self.generateFactAxisMemberForNonPrimary(fact, axisIndex, periodStartEndLabel, pseudoAxisName, getMemberOnAxisForFactDict)
                 if factAxisMember is None:
                     return []
-                factAxisMemberTupleList += [(factAxisMember, rowOrColStr)] 
+                factAxisMemberTupleList += [(factAxisMember, rowOrColStr)]
 
         # the same element can be listed by the presentationGroup multiple times, even with the same label, so generateFactAxisMemberLabelListForPrimary()
         # returns a list, but if it's empty, generateFactAxisMemberLabelListForPrimary() found no matches and we won't enter the for loop, so it is
@@ -401,7 +427,7 @@ class Embedding(object):
         # because periodStartLabel and periodEndLabel can have facts that expand into multiple facts, hence
         # the list.  this lookup has to work.
         factAxisMemberLabelList = []
-        if 'primary' not in self.getMemberPositionsOnAxisDictOfDicts: 
+        if 'primary' not in self.getMemberPositionsOnAxisDictOfDicts:
             return factAxisMemberLabelList
         getMemberPositionsOnAxisDict = self.getMemberPositionsOnAxisDictOfDicts['primary']
         for positionOnPrimaryAxis, labelRole in getMemberPositionsOnAxisDict[fact.qname]:
@@ -422,10 +448,10 @@ class Embedding(object):
                              (Utils.durationEndRoleError == labelRole and Utils.isPeriodEndLabel(originalLabelRole)))):
                             #errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.factThatContainsEmbeddedCommand)
                             #message = ErrorMgr.getError('INSTANT_DURATION_CONFLICT_WARNING').format(shortName, errorStr, str(qname), Utils.strFactValue(fact))
-                            # TBD: not same as 6.12.7 test, do we replace anyway 
+                            # TBD: not same as 6.12.7 test, do we replace anyway
                             self.filing.modelXbrl.debug("debug",
                                 _("In \"%(linkroleName)s\", element %(conceptTo)s has period type 'duration' but is given a preferred label %(preferredLabelValue)s when shown under parent %(conceptFrom)s.  The preferred label will be ignored."),
-                                modelObject=fact, conceptTo=qname, conceptFrom=parentQname, linkrole=linkroleUri, 
+                                modelObject=fact, conceptTo=qname, conceptFrom=parentQname, linkrole=linkroleUri,
                                 linkroleDefinition=shortName, linkroleName=shortName,
                                 preferredLabel=originalLabelRole, preferredLabelValue=originalLabelRole)
                 else:
@@ -466,10 +492,10 @@ class Embedding(object):
                         errorStr = Utils.printErrorStringToDisambiguateEmbeddedOrNot(self.factThatContainsEmbeddedCommand)
                         #message = ErrorMgr.getError('AXIS_HAS_NO_DEFAULT').format(self.cube.shortName, errorStr, fact.qname, fact.contextID, axis.arelleConcept.qname)
                         self.filing.modelXbrl.debug("debug",
-                                _('In "%(cube)s"%(error)s, the fact %(element)s with context %(context)s was filtered because the ' 
+                                _('In "%(cube)s"%(error)s, the fact %(element)s with context %(context)s was filtered because the '
                                   'axis %(axis)s has no default.'),
                                 modelObject=self.factThatContainsEmbeddedCommand,
-                                cube=self.cube.shortName, error=errorStr, element=fact.qname, context=fact.contextID, 
+                                cube=self.cube.shortName, error=errorStr, element=fact.qname, context=fact.contextID,
                                 axis=axis.arelleConcept.qname)
                         return None
                 if pseudoAxisName in self.cube.defaultFilteredOutAxisSet:  # this isn't checked earlier to give the above warning a chance to be issued
@@ -500,7 +526,7 @@ class Embedding(object):
                 getMemberPositionsOnAxisDict[filingMember] = len(getMemberPositionsOnAxisDict)
             memberPositionOnAxis = getMemberPositionsOnAxisDict[filingMember]
             memberLabel = "{}: {}".format(
-                    self.cube.labelDict[pseudoAxisName], 
+                    self.cube.labelDict[pseudoAxisName],
                     "(nil)" if memberQname.typedMemberIsNil else memberQname.typedValue)
             memberIsDefault = False
         else: # explicit member is not a default

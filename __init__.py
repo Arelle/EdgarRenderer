@@ -3,7 +3,7 @@
 :mod:`EdgarRenderer.EdgarRenderer`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
-Data and content created by government employees within the scope of their employment 
+Data and content created by government employees within the scope of their employment
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 
 This plug-in is an adaptation of the gitHub arelle/EdgarRenderer EdgarRenderer.py into
@@ -14,19 +14,19 @@ as no information from an invocation ever appears in the file system.  (It would
 kernel access within the operating system to access insider information within processor
 memory of a running instance.)
 
-Modifications to the original EdgarRenderer source code are done under the Arelle(r) 
+Modifications to the original EdgarRenderer source code are done under the Arelle(r)
 license and protected by usual Arelle copyright and license.  GitHub allows one to
 inspect the changes log of the plugin branch from the SEC contributed branch to identify
 modifications to the original.
 
 This code is in gitHub/arelle/EdgarRenderer the edgr154 branch.
 
-Installable applications are available with this module for Windows and MacOS on 
+Installable applications are available with this module for Windows and MacOS on
 http://arelle.org/download.  The GUI versions run this code after selecting the
 EdgarRenderer plugin (help->manage plugins, click select, select EdgarRenderer).
 
 For command line operation, install arelle somewhere, and on Windows run arelleCmdLine.
-On MacOS, at Arelle.app, with terminal shell, cd /Applications/Arelle.app/Contents/MacOS/, 
+On MacOS, at Arelle.app, with terminal shell, cd /Applications/Arelle.app/Contents/MacOS/,
 and type in ./arelleCmdLine --about (or other parameters as needed).
 
 To run from source code, libraries required are the following or newer:
@@ -41,13 +41,13 @@ To run from source code, libraries required are the following or newer:
         pip install openpyxl-2.1.4-py2.py3-none-any.whl
 
 To debug under eclipse from a normal eclipse project of Arelle it is suggested to check out
-EdgarRenderer[edgr154] from GitHub under the arelle plugin directory (e.g., this file would be 
-plugin/EdgarRenderer/__init__.py). Note that EdgarGenderer is not part of Arelle itself, 
-it is in .gitignore in the top level Arelle directory.  
+EdgarRenderer[edgr154] from GitHub under the arelle plugin directory (e.g., this file would be
+plugin/EdgarRenderer/__init__.py). Note that EdgarGenderer is not part of Arelle itself,
+it is in .gitignore in the top level Arelle directory.
 
-Alternatively on a Mac or linux system one may soft link to the eclipse project's plugin 
-directory from a different directory containing a local copy of the EdgarRenderer plugin 
-project.  Either way eclipse can debug and modify EdgarRenderer source code when debugging 
+Alternatively on a Mac or linux system one may soft link to the eclipse project's plugin
+directory from a different directory containing a local copy of the EdgarRenderer plugin
+project.  Either way eclipse can debug and modify EdgarRenderer source code when debugging
 and inspecting Arelle.  On a Mac or Linux the soft link command would be:
 
    ln -s ...EdgarRenderer (parent of this file) ...arelle/plugin (the eclipse project directory of plugin)
@@ -59,91 +59,91 @@ the file system) and a single output zip (all in memory, not on the file system)
 a) when invoking via arelleCmdLine.py:
 
    python3.4 arelleCmdLine.py (or arelleCmdLine, windows, or ./arelleCmdLine, Mac)
-   -f "/mydir/test/filingInstanceXsdAndLinkbases.zip" 
-   -o "/mydir/test/out.zip" 
-   --plugins EdgarRenderer # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
-   --disclosureSystem efm-pragmatic 
+   -f "/mydir/test/filingInstanceXsdAndLinkbases.zip"
+   -o "/mydir/test/out.zip"
+   --plugins EdgarRenderer # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer"
+   --disclosureSystem efm-pragmatic
    --logFile mylogfilename.xxx
    --debugMode
-   
-   Specifying --logFile mylogfilename.txt (or .xml, .json) captures the log output in the 
+
+   Specifying --logFile mylogfilename.txt (or .xml, .json) captures the log output in the
    zip file with the specified file name.  The suffix should be .xml or .json to get detailed logging parameters in
    the respective format.
-   
+
     Adding --debugMode allows uncaught exceptions to provide a trace-back to eclipse, remove that
     for production.  Internet connectivity is by default offline at SEC, so override in this case.
-    
+
     If in a closed environment with all taxonomies in Taxonomy Packages or preloaded to cache, add
-       --internetConnectivity offline 
+       --internetConnectivity offline
 
 
 b) when invoking via REST interface (built in webserver or cgi-bin server):
 
     1) simple curl request or equivalent in code:
-    
-    curl -X POST "-HContent-type: application/zip" 
-        -T amd.zip 
-        -o out.zip 
+
+    curl -X POST "-HContent-type: application/zip"
+        -T amd.zip
+        -o out.zip
         "http://localhost:8080/rest/xbrl/validation?efm-pragmatic&media=zip&plugins=EdgarRenderer&logFile=log.xml"
 
         (-T specifies zip of the filing, -o the file to store rendering results)
         (use log.txt if a text log files is desired instead)
-        
+
     2) to not load EdgarRenderer dynamically, it must be active in plugins.json (as set up by GUI)
     (sibling to the caches directoryexcept Mac where it's under ~/Library/Application Support/Arelle)
-    
+
     then omit &plugins=EdgarRenderer
-    
+
     the &logFile parameter specifies providing the log output in specified format in zip file (as noted above)
-    
+
 To run (as in EDGAR) with output report files added to the submission directory
 
    python3.4 arelleCmdLine.py  (or arelleCmdLine for Win/Mac apps)
-   -f "/mydir/test/amd.zip" 
-   -r "/mydir/test"  <<- the submission + output reports directory 
+   -f "/mydir/test/amd.zip"
+   -r "/mydir/test"  <<- the submission + output reports directory
    --logFile logToBuffer or an specify an xml log file <<- required to save log messages into filing summary
-   --plugins 'EdgarRenderer' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer" 
+   --plugins 'EdgarRenderer' # if installed in plugins, else full path to it: /mydir/myplugins/EdgarRenderer"
    --disclosureSystem efm-pragmatic
-   
-   Note that the -r "out" directory is cleared on each run to assure no prior run files get inter 
-   
+
+   Note that the -r "out" directory is cleared on each run to assure no prior run files get inter
+
 The filename parameter (-f) may be a JSON structure (as used in EDGAR itself) to pass in
 more information about the filing (see validate/EFM/__init__.py) such as:
 
    for a single instance filing, such as an SDR K form (without \n's pretty printed below):
-   
-      -f '[{"file": "/Users/joe/.../gpc_gd1-20130930.htm", 
-             "cik": "0000350001", 
+
+      -f '[{"file": "/Users/joe/.../gpc_gd1-20130930.htm",
+             "cik": "0000350001",
              "cikNameList": {"0001306276":"BIGS FUND TRUST CO"},
-             "submissionType":"SDR-A", 
-             "exhibitType":"EX-99.K SDR.INS", 
-             "accessionNumber":"0001125840-15-000159"}]' 
-    
+             "submissionType":"SDR-A",
+             "exhibitType":"EX-99.K SDR.INS",
+             "accessionNumber":"0001125840-15-000159"}]'
+
     for multiple instances (SDR-L's), add more of the {"file": ...} entries.
-    
+
     for Windows called from Java, the JSON must be quoted as thus:
-        -f "[{\"file\":\"z:\\Documents\\...\\gpc_gd1-20130930.htm\", 
-            \"cik\": \"0000350001\", 
+        -f "[{\"file\":\"z:\\Documents\\...\\gpc_gd1-20130930.htm\",
+            \"cik\": \"0000350001\",
             \"cikNameList\": {\"0000350001\":\"BIG FUND TRUST CO\"},
-            \"submissionType\":\"SDR-A\", \"exhibitType\":\"EX-99.K SDR.INS\"}]"  
-               
+            \"submissionType\":\"SDR-A\", \"exhibitType\":\"EX-99.K SDR.INS\"}]"
+
 To build an installable cx_Freeze binary, (tested on Ubuntu), uncomment the entries in Arelle's
 setup.py that are marked for EdgarRenderer.
-    
+
 Required if running under Java (using runtime.exec) on Windows, suggested always:
 
     if xdgConfigHome or environment variable XDG_CONFIG_HOME are set:
     please set environment variable MPLCONFIGDIR to same location as xdgConfigHome/XDG_CONFIG_HOME
     (to prevent matlib crash under runtime.exe with Java)
-        
+
 Language of labels:
 
     Multi-language labels will select first the label language, secondly en-US if different from label language, and lastly qname.
     Command line (and Web API) may override system language for labels with parameter --labelLang
     GUI may use tools->language labels setting to override system language for labels
-        
+
 """
-VERSION = '3.23.1'
+VERSION = '3.23.2'
 
 from collections import defaultdict
 from arelle import PythonUtil
@@ -167,7 +167,7 @@ for t in ("schemaRef", "linkbaseRef", "roleRef", "arcroleRef", "loc", "arc"):
 
 def allowableBytesForEdgar(bytestr):
     # encode xml-legal ascii bytes not acceptable to EDGAR
-    return re.sub(b"[\\^\x7F]", lambda m: b"&#x%X;" % ord(m[0]), bytestr) 
+    return re.sub(b"[\\^\x7F]", lambda m: b"&#x%X;" % ord(m[0]), bytestr)
 
 ###############
 
@@ -242,7 +242,7 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
 class EdgarRenderer(Cntlr.Cntlr):
     """
     .. class:: EdgarRenderer()
-    
+
     Initialization sets up for platform via Cntlr.Cntlr.
     """
 
@@ -304,7 +304,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.defaultValueDict['failFile'] = 'errorLog.log'
         self.defaultValueDict['filingsFolder'] = 'Filings'
         self.defaultValueDict['htmlReportFormat'] = 'Complete'
-        self.defaultValueDict['internetConnectivity'] = 'online' # HF change to online default 'offline' 
+        self.defaultValueDict['internetConnectivity'] = 'online' # HF change to online default 'offline'
         self.defaultValueDict['noEquity'] = str(False)
         self.defaultValueDict['processingFolder'] = 'Processing'
         self.defaultValueDict['processingFrequency'] = '10'
@@ -361,7 +361,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.logDebug("{}=\t{}".format(prop, value))
             return value
 
-        # options applicable to rendering in either mode: 
+        # options applicable to rendering in either mode:
         options.renderingService = setProp('renderingService', options.renderingService, rangeList=['Instance','Daemon'])
         options.reportFormat = setProp('reportFormat', options.reportFormat, rangeList=['Html', 'Xml', 'HtmlAndXml', 'None'])
         options.htmlReportFormat = setProp('htmlReportFormat', options.htmlReportFormat, rangeList=['Complete','Fragment'])
@@ -468,7 +468,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         #setResourceFile('reportXslt', options.reportXslt, 'INVALID_CONFIG_REPORTXSLT')
         options.reportXslt = setResourceFile('reportXslt', options.reportXslt, "Cannot find report xslt {}")
         options.reportXsltDissem = setResourceFile('reportXsltDissem', options.reportXsltDissem, "Cannot find dissemination report xslt {}")
-        # Report XSLT is required when reportFormat contains 'Html'.     
+        # Report XSLT is required when reportFormat contains 'Html'.
         if self.reportXslt is None and 'html' in self.reportFormat.casefold():
             raise Exception('No {} specified when {}={} requires it.'.format('reportXslt', 'reportFormat', self.reportFormat))
 
@@ -479,7 +479,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         options.renderingLogsXslt = setResourceFile('renderingLogsXslt', options.renderingLogsXslt, "Cannot find rendering logs xslt {}")
 
         # Excel XSLT is optional, but do report if you can't find it.
-        #setResourceFile('excelXslt', options.excelXslt, 'INVALID_CONFIG_EXCELXSLT')  
+        #setResourceFile('excelXslt', options.excelXslt, 'INVALID_CONFIG_EXCELXSLT')
         # if options.excelXslt is "True" from web interface, it has no no string value, e.g., &excelXslt (looks like True here)
         options.excelXslt = setResourceFile('excelXslt', "" if options.excelXslt == True else options.excelXslt, "Cannot find excel xslt {}")
 
@@ -550,7 +550,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         #setResourceFile('reportXslt', options.reportXslt, 'INVALID_CONFIG_REPORTXSLT')
         self.reportXslt = options.reportXslt
         self.reportXsltDissem = options.reportXsltDissem
-        # Report XSLT is required when reportFormat contains 'Html'.     
+        # Report XSLT is required when reportFormat contains 'Html'.
         if self.reportXslt is None and 'html' in self.reportFormat.casefold():
             raise Exception('No {} specified when {}={} requires it.'.format('reportXslt', 'reportFormat', self.reportFormat))
 
@@ -561,7 +561,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.renderingLogsXslt = options.renderingLogsXslt
 
         # Excel XSLT is optional, but do report if you can't find it.
-        #setResourceFile('excelXslt', options.excelXslt, 'INVALID_CONFIG_EXCELXSLT')  
+        #setResourceFile('excelXslt', options.excelXslt, 'INVALID_CONFIG_EXCELXSLT')
         self.excelXslt = options.excelXslt
 
         self.logMessageTextFile = options.logMessageTextFile
@@ -634,7 +634,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 if not zipfound and Utils.isZipFilename(file):
                     inputFileSource = join(self.filingsFolder, file)
                     self.processingFolder = IoManager.createNewFolder(self,self.originalProcessingFolder,file)
-                    # reportsFolder = normpath(join(self.processingFolder,options.reportsFolder)) 
+                    # reportsFolder = normpath(join(self.processingFolder,options.reportsFolder))
                     processingFileSource = join(self.processingFolder, file)
                     if not exists(inputFileSource): continue  # it got deleted before we could process it.
                     self.logDebug(_("Found a new zip file to process; moving {} to Processing folder ").format(inputFileSource))
@@ -644,7 +644,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         zipfound = True
                     except IOError as err:
                         self.logError(str(err))
-                        #self.logError(_(ErrorMgr.getError('FILING_MOVE_ERROR').format(self.processingFolder)))              
+                        #self.logError(_(ErrorMgr.getError('FILING_MOVE_ERROR').format(self.processingFolder)))
                         self.logError(_("Could not remove {}").format(self.processingFolder))
                         try: removedirs(self.processingFolder)
                         except IOError: continue
@@ -841,7 +841,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         _fileName = _hrefUrlParts[0].rpartition("/")[2]
                         _sourceLine = _ref.get("sourceLine")
                         if _sourceLine:
-                            _source = "{} line {}".format(_fileName, _sourceLine) 
+                            _source = "{} line {}".format(_fileName, _sourceLine)
                             if "refLine" not in _msgArgs:
                                 _msgArgs["refLine"] = _sourceLine
                         else:
@@ -856,10 +856,10 @@ class EdgarRenderer(Cntlr.Cntlr):
                             else:
                                 _msgArgs["refSources2_n"] = _source
                         _fileLines[_fileName].add(_sourceLine)
-            if logRec.refs:               
+            if logRec.refs:
                 _msgArgs["refSources"] = Cntlr.logRefsFileLines(logRec.refs)
             _text = logParamEscapePattern.sub(r"{\1}", # substitute java {{x} into py {{x}}} but leave {{x}} as it was
-                    _msgText   
+                    _msgText
                     ).format(**_msgArgs) # now uses {...} parameters in arelleMessagesText
         except KeyError:
             pass # not replacable messageCode or a %(xxx)s format arg was not in the logRec arcs or it's a $() java function reference
@@ -930,7 +930,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                             target = join(self.reportsFolder, filename)
                             if exists(target): remove(target)
                             filing.writeFile(target, file.read())
-                    
+
                 self.logDebug("Instance post-processing complete {:.3f} secs.".format(time.time() - _startedAt))
 
                 # temporary work-around to create SDR summaryDict
@@ -1077,10 +1077,10 @@ class EdgarRenderer(Cntlr.Cntlr):
                 self.success = False # force postprocessingFailure
 
             cntlr.edgarRedlineDocs.clear()
-            
+
         # close filesource (which may have been an archive), regardless of success above
         filesource.close()
-            
+
         if not self.success and self.isDaemon: # not successful
             self.postprocessFailure(filing.options)
 
@@ -1092,11 +1092,11 @@ class EdgarRenderer(Cntlr.Cntlr):
         if xlWriter:
             xlWriter.save()
             xlWriter.close()
-            del self.xlWriter 
+            del self.xlWriter
             self.logDebug("Excel rendering complete")
         modelXbrl.profileStat(_("total"), time.time() - self.firstStartedAt)
         if options.collectProfileStats and modelXbrl:
-            modelXbrl.logProfileStats() 
+            modelXbrl.logProfileStats()
         def copyResourceToReportFolder(filename):
             source = join(self.resourcesFolder, filename)
             if self.reportZip:
@@ -1105,7 +1105,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 target = join(self.reportsFolder, filename)
                 if not exists(target):
                     os.makedirs(self.reportsFolder, exist_ok=True)
-                    shutil.copyfile(source, target) 
+                    shutil.copyfile(source, target)
         if 'html' in (self.reportFormat or "").casefold() or self.summaryXslt is not None:
             copyResourceToReportFolder("Show.js")
             copyResourceToReportFolder("report.css")
@@ -1124,28 +1124,28 @@ class EdgarRenderer(Cntlr.Cntlr):
                 shutil.copyfile(source, target)
         self.modelManager.close(modelXbrl)
         self.logDebug("Instance post-processing complete")
-        
-        summary = Summary.Summary(self)    
+
+        summary = Summary.Summary(self)
         rootETree = summary.buildSummaryETree()
         IoManager.writeXmlDoc(rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
         if self.summaryXslt and len(self.summaryXslt) > 0 :
             summary_transform = etree.XSLT(etree.parse(self.summaryXslt))
             result = summary_transform(rootETree, asPage=etree.XSLT.strparam('true'))
             IoManager.writeHtmlDoc(result, self.reportZip, self.reportsFolder, 'FilingSummary.htm')
-        if self.auxMetadata: 
+        if self.auxMetadata:
             summary.writeMetaFiles()
-     
+
         if not self.reportZip and self.zipOutputFile:
             # The output must be zipped.
-            zipdir = self.reportsFolder      
-            self.zipOutputFile = join(zipdir, self.zipOutputFile)    
+            zipdir = self.reportsFolder
+            self.zipOutputFile = join(zipdir, self.zipOutputFile)
             if self.entrypoint == self.zipOutputFile:  # Check absolute path destinations
                 #message = ErrorMgr.getError('INPUT_OUTPUT_SAME').format(self.zipOutputFile)
                 self.logWarn("Input and output files are the same: {}".format(self.zipOutputFile))
             self.logDebug(_("Creating output {} containing rendering results and other input files."
                            ).format(self.zipOutputFile))
             try:
-                zf = zipfile.ZipFile(self.zipOutputFile, 'w', allowZip64=False)                                             
+                zf = zipfile.ZipFile(self.zipOutputFile, 'w', allowZip64=False)
                 for f in os.listdir(self.reportsFolder):
                     if not Utils.isZipFilename(f) and not isdir(f) and not IoManager.isFileHidden(f):
                         IoManager.moveToZip(zf, join(zipdir, f), basename(f))
@@ -1155,14 +1155,14 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.logDebug(_("Rendering results zip file {} populated").format(self.zipOutputFile))
             if self.isDaemon:
                 try:
-                    result = IoManager.move_clobbering_file(self.zipOutputFile, self.deliveryFolder) 
+                    result = IoManager.move_clobbering_file(self.zipOutputFile, self.deliveryFolder)
                     IoManager.move_clobbering_file(options.entrypoint, self.doneFile)
                     self.logDebug(_("Successfully post-processed to {}.").format(result))
                 except OSError as err:
                     #self.logError(_(ErrorMgr.getError('POST_PROCESSING_ERROR').format(err)))
                     self.logError(_("Failure: Post-processing I/O or OS error: {}").format(err))
         if self.deleteProcessedFilings:
-            for folder in self.createdFolders: shutil.rmtree(folder,ignore_errors=True) 
+            for folder in self.createdFolders: shutil.rmtree(folder,ignore_errors=True)
     '''
 
     def postprocessFailure(self, options):
@@ -1201,7 +1201,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 self.logError(_("Failure: Post-processing I/O or OS error: {}").format(err))
 
 
-    
+
     def addToLog(self, message, messageArgs={}, messageCode='error', file=MODULENAME, level=logging.DEBUG):
         # Master log and error/warning msg handler
         messageDict = {'fatal':logging.FATAL
@@ -1288,7 +1288,7 @@ def edgarRendererGuiViewMenuExtender(cntlr, viewMenu, *args, **kwargs):
     erViewMenu.add_checkbutton(label=_("Show Filing Data"), underline=0, variable=cntlr.showFilingData, onvalue=True, offvalue=False)
     cntlr.redlineMode = BooleanVar(value=cntlr.config.get("edgarRendererRedlineMode", True))
     cntlr.redlineMode.trace("w", setRedlineMode)
-    erViewMenu.add_checkbutton(label=_("Show Redlining"), underline=0, variable=cntlr.redlineMode, onvalue=True, offvalue=False, 
+    erViewMenu.add_checkbutton(label=_("Show Redlining"), underline=0, variable=cntlr.redlineMode, onvalue=True, offvalue=False,
                                         state="normal" if cntlr.showFilingData.get() else "disabled")
     cntlr.showTablesMenu = BooleanVar(value=cntlr.config.get("edgarRendererShowTablesMenu", True))
     cntlr.showTablesMenu.trace("w", setShowTablesMenu)
@@ -1318,7 +1318,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
                 _ixRedline = ""
         else:
             _reportXslt =  ('InstanceReport.xslt', 'InstanceReportTable.xslt')[_combinedReports]
-            _summaryXslt = ('Summarize.xslt', '')[_combinedReports] # no FilingSummary.htm for Rall.htm production  
+            _summaryXslt = ('Summarize.xslt', '')[_combinedReports] # no FilingSummary.htm for Rall.htm production
             if cntlr.redlineMode.get():
                 _ixRedline = "?redline=true"
             else:

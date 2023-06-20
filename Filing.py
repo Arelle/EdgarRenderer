@@ -3,7 +3,7 @@
 :mod:`EdgarRenderer.Filing`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
-Data and content created by government employees within the scope of their employment 
+Data and content created by government employees within the scope of their employment
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
@@ -67,9 +67,6 @@ def mainFun(controller, modelXbrl, outputFolderName):
     # handle excel writing
     xlWriter = None
     if controller.excelXslt:
-        nsWithFacts = set(qn.namespaceURI for qn in modelXbrl.factsByQname.keys() if qn)
-        controller.hasXlout = (any(usGaapOrIfrsPattern.match(ns) for ns in nsWithFacts) or
-                               all(deiPattern.match(ns) for ns in nsWithFacts) )
         if filing.hasEmbeddings:
             modelXbrl.debug("debug",
                             _("Excel XSLT is not applied to instance %(instance)s having embedded commands."),
@@ -108,7 +105,7 @@ def mainFun(controller, modelXbrl, outputFolderName):
             Utils.embeddingGarbageCollect(embedding)
         controller.logDebug("R{} total {:.3f} secs.".format(cube.fileNumber, time.time() - _funStartedAt))
         Utils.cubeGarbageCollect(cube)
-        
+
     _funStartedAt = time.time()
 
     # now we make sure that every cube referenced by embedded command facts actually gets embedded.  this might not happen
@@ -153,8 +150,8 @@ def mainFun(controller, modelXbrl, outputFolderName):
     if len(filing.unusedFactSet) > 0:
         filing.handleUncategorizedCube(xlWriter)
         controller.nextUncategorizedFileNum -= 1
-        
-    controller.instanceSummaryList += [Summary.InstanceSummary(filing, modelXbrl)]  
+
+    controller.instanceSummaryList += [Summary.InstanceSummary(filing, modelXbrl)]
     controller.logDebug("Filing finish {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
     return filing.reportSummaryList
 
@@ -180,23 +177,63 @@ class Filing(object):
 
         self.hasEmbeddings = False
         self.disallowEmbeddings = True
-        
-        # These namespaces contain elements treated specially in some ways.
-        self.rrNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('sec.gov/rr/20',n) is not None),None)
-        self.investNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('sec.gov/invest/20',n) is not None),None)
-        self.usgaapNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('fasb.org/us-gaap/20',n) is not None),None)
-        self.ifrsNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('ifrs.org/taxonomy/20.*/ifrs',n) is not None),None)
-        self.deiNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('sec.gov/dei/20',n) is not None), None)
-        self.srtNamespace = next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('fasb.org/srt/20',n) is not None),None)
-        self.isRR = self.rrNamespace is not None
-        self.isInvestTaxonomyInDTS = self.investNamespace is not None
-        self.isN2Prospectus = not self.isRR and any(
-            f.xValue in {'N-2', 'N-2/A', 'N-2ASR', 'N-2MEF', 'N-2 POSASR', '497'}
-            for f in self.modelXbrl.factsByLocalName["DocumentType"])
-        self.isProspectus = bool(next((n for n in self.modelXbrl.namespaceDocs.keys() if n is not None and re.search('sec.gov/vip',n) is not None),None))
-        self.isFeeExhibit = bool(next((n for n in self.modelXbrl.roleTypes.keys() if n is not None and re.search('/role/document/feesTable',n) is not None),None))
 
-        
+        # These namespaces contain elements treated specially in some ways.
+        # SEC and FASB namespaces have the same structure, IFRS namespaces not so much.
+        self.stdNsTokens = set()
+        self.ifrsNamespace = self.usgaapNamespace = self.deiNamespace = None
+        nspattern = re.compile('.*(xbrl\.(sec\.gov|fasb\.org)/(?P<prefix>[^/]+)/20.*|ifrs\.org/taxonomy/20[^/]*/(?P<other>ifrs)).*')
+        for n in self.modelXbrl.namespaceDocs.keys():
+            if n is None: continue
+            m = nspattern.match(n)
+            if m is None: continue
+            tk = m.groupdict()['prefix']
+            if tk is not None and len(tk) > 0:
+                self.stdNsTokens.add(tk)
+                if tk == 'us-gaap': self.usgaapNamespace = n
+                elif tk == 'dei': self.deiNamespace = n
+            tk = m.groupdict()['other']
+            if tk is not None and len(tk) > 0:
+                self.stdNsTokens.add(tk)
+                self.ifrsNamespace = n
+
+        self.isRR = 'rr' in self.stdNsTokens
+        self.isOEF = 'oef' in self.stdNsTokens
+        self.isRRorOEF = self.isRR or self.isOEF
+        self.isVip = 'vip' in self.stdNsTokens
+        self.isN3N4N6 = self.isVip
+        self.isIfrs = 'ifrs' in self.stdNsTokens
+        self.isUsgaap = 'us-gaap' in self.stdNsTokens
+        self.isRxp = 'rxp' in self.stdNsTokens
+        self.isBb = 'bb' in self.stdNsTokens
+
+        self.isFeeExhibit = bool(next((n for n in self.modelXbrl.roleTypes.keys()
+                                        if n is not None and re.search('/role/document/feesSummaryTable',n) is not None),None))
+
+        self.edgarDocType = next((f.xValue for f in self.modelXbrl.factsByLocalName["DocumentType"]
+                                      if (f.xValue is not None and f.context is not None and not f.context.hasSegment)),None)
+
+        n2_doc_pattern = r'497|N-2(/A|ASR|MEF| POSAR)?'
+        self.isN2Prospectus = not(self.isRR) and self.edgarDocType is not None and bool(re.match(n2_doc_pattern,self.edgarDocType))
+
+        ncsr_doc_pattern = r'N-CSRS?(/A)?'
+        self.isNcsr = self.edgarDocType is not None and bool(re.match(ncsr_doc_pattern,self.edgarDocType))
+
+        proxy_doc_pattern = r'DEF ?14.*'
+        self.isProxy = self.edgarDocType is not None and bool(re.match(proxy_doc_pattern,self.edgarDocType))
+
+        sdr_exh_pattern = r'EX-99.[KL] SDR.*'
+        self.isSdr = self.edgarDocType is not None and bool(re.match(sdr_exh_pattern,self.edgarDocType))
+
+        fs_doc_pattern = r'(10-[QK]|[24]0-F)(/A)?'
+        self.isDefinitelyFs = self.edgarDocType is not None and re.match(fs_doc_pattern,self.edgarDocType) or self.isSdr
+        self.isN1a = self.isRR or (self.isOEF and not self.isNcsr)
+        self.isDefinitelyNotFs = not self.isDefinitelyFs and (self.isN1a or self.isVip or self.isN3N4N6 or self.isN2Prospectus or self.isProxy or self.isRxp)
+
+        nsWithFacts = set(qn.namespaceURI for qn in modelXbrl.factsByQname.keys() if qn)
+        self.isOnlyDei = all(deiPattern.match(ns) for ns in nsWithFacts)
+        controller.hasXlout = (not self.isDefinitelyNotFs or self.isOnlyDei)
+
         self.builtinEquityColAxes = [('dei',self.deiNamespace,'LegalEntityAxis'),
                                      ('ifrs-full',self.ifrsNamespace,'ComponentsOfEquityAxis'),
                                      ('us-gaap',self.usgaapNamespace,'StatementEquityComponentsAxis'),
@@ -229,7 +266,7 @@ class Filing(object):
                                  ,arelle.ModelValue.QName('ifrs-full',self.ifrsNamespace,'StatementOfChangesInEquityLineItems')
                                  ]
         self.segmentHeadingStopList = [arelle.ModelValue.QName(x,y,z) for x,y,z in self.builtinEquityRowAxes]
-        
+
         self.factToEmbeddingDict = {}
         self.factFootnoteDict = defaultdict(list)
         self.startEndContextDict = {}
@@ -326,24 +363,24 @@ class Filing(object):
                 for linkroleUri in {pcrel.linkrole for pcrel in parentChildRelationshipSet.modelRelationshipsFrom[concept]}:
                     # although valid XBRL has at most one default, we don't assume it; instead we act like it's a set of defaults.
                     # check to see whether the defaults are all children of the axis in this presentation group.
-                    defaultChildSet = {pcrel.toModelObject 
+                    defaultChildSet = {pcrel.toModelObject
                                        for pcrel in Utils.modelRelationshipsTransitiveFrom(parentChildRelationshipSet, concept, linkroleUri, set())
                                        if pcrel.toModelObject in defaultSet}
                     if (len(defaultSet)==0  # axis had no default at all
                             or defaultSet != defaultChildSet):
                         cube = self.cubeDict[linkroleUri]
-                        cube.defaultFilteredOutAxisSet.add(concept.qname)             
+                        cube.defaultFilteredOutAxisSet.add(concept.qname)
 
             # print warnings of missing defaults for each cube
             for cube in self.cubeDict.values():
                 if len(cube.defaultFilteredOutAxisSet) > 0:
                     self.modelXbrl.debug("debug",
                                          _("In \"%(linkroleName)s\", the children of axes %(axes)s do not include their defaults."),
-                                         modelObject=self.modelXbrl.modelDocument, linkroleName=cube.shortName, 
+                                         modelObject=self.modelXbrl.modelDocument, linkroleName=cube.shortName,
                                          axes=cube.defaultFilteredOutAxisSet)
 
             footnoteRelationships = self.modelXbrl.relationshipSet('XBRL-footnotes')
-            
+
             # initialize elements
             for qname, factSet in self.modelXbrl.factsByQname.items():
 
@@ -361,7 +398,7 @@ class Filing(object):
                             elif fact.xmlLang in ('en-US','en-us'): discriminator = 'aa-AA' # en-US comes first.  en-us is canonical form
                             elif fact.xmlLang is None: discriminator = 'aa-AA' # no lang means en-US
                             else: discriminator = fact.xmlLang # followed by all others
-                        return (fact.contextID,discriminator,fact.sourceline) # sourceLine is the tiebreaker              
+                        return (fact.contextID,discriminator,fact.sourceline) # sourceLine is the tiebreaker
                     sortedFactList = sorted(factSet, key = factSortKey)
                     while len(sortedFactList) > 0:
                         firstFact = sortedFactList.pop(0)
@@ -388,9 +425,9 @@ class Filing(object):
                             if firstFact.unit is not None:
                                 qnameContextIDUnitStr += ', unit ' + firstFact.unitID
                             self.modelXbrl.debug("debug",
-                                                 _("There are multiple facts with %(contextUnitIds)s. The first fact on line %(lineNumOfFactWeAreKeeping)s of the instance " 
+                                                 _("There are multiple facts with %(contextUnitIds)s. The first fact on line %(lineNumOfFactWeAreKeeping)s of the instance "
                                                    "document will be rendered, and the rest at line(s) %(linesDiscarded)s will not."),
-                                                 modelObject=[firstFact]+discardedFactList, contextUnitIds=qnameContextIDUnitStr, 
+                                                 modelObject=[firstFact]+discardedFactList, contextUnitIds=qnameContextIDUnitStr,
                                                  lineNumOfFactWeAreKeeping=lineNumOfFactWeAreKeeping,
                                                  linesDiscarded=', '.join(discardedLineNumberList))
 
@@ -399,7 +436,7 @@ class Filing(object):
                         if not self.validatedForEFM:
                             self.modelXbrl.error("xbrl:schemaImportMissing", # use standard Arelle message for this
                                     _("Instance fact missing schema definition: %(elements)s"),
-                                    modelObject=fact, elements=fact.prefixedName) 
+                                    modelObject=fact, elements=fact.prefixedName)
                         break
                     elif fact.isTuple:
                         if not self.validatedForEFM:
@@ -412,12 +449,12 @@ class Filing(object):
                     elif fact.concept.type is None:
                         if not self.validatedForEFM:
                             self.modelXbrl.warning("xbrl:typeDeclarationMissing",
-                                                   _("The Type declaration for Element %(fact)s is either broken or missing. The " 
+                                                   _("The Type declaration for Element %(fact)s is either broken or missing. The "
                                                     "Element will be ignored."),
                                                    modelObject=fact, fact=qname)
                         break
                     elif fact.context is None or (not fact.context.isForeverPeriod and fact.context.endDatetime is None):
-                        continue # don't break, still might be good facts. we print the error if a context is broken later 
+                        continue # don't break, still might be good facts. we print the error if a context is broken later
 
                     self.elementDict[qname] = Element(fact.concept)
                     break # we don't need to look at more facts from the fact set, we're just trying to make elements.
@@ -444,7 +481,7 @@ class Filing(object):
                 if relationship.fromModelObject not in dupFactFootnoteOrigin:
                     # only process firstFact footnotes on this pass
                     self.factFootnoteDict[relationship.fromModelObject].append((relationship.toModelObject, relationship.toModelObject.viewText()))
-                    
+
             # now the duplicates, if footnote not already in the firstFact footnotes list
             for relationship in footnoteRelationships.modelRelationships:
                 dupFirstFact = dupFactFootnoteOrigin.get(relationship.fromModelObject)
@@ -458,7 +495,7 @@ class Filing(object):
                             break
                     if not _contentsDuplicated:
                         self.factFootnoteDict[dupFirstFact].append((relationship.toModelObject, relationship.toModelObject.viewText()))
-                        
+
             facts = self.modelXbrl.facts
 
         for context in self.modelXbrl.contexts.values():
@@ -510,7 +547,7 @@ class Filing(object):
                 else:
                     isEmbeddedCommand = False
 
-                if not isEmbeddedCommand and re.compile('[a-zA-Z-]+:[a-zA-Z]+').match(fact.value): # regex is too restrictive
+                if not isEmbeddedCommand and re.compile('[^:]+:[^:]+').match(fact.value): # regex for exactly one colon.
                     try:
                         prefix, ignore, localName = fact.value.partition(':')
                         namespaceURI = self.modelXbrl.prefixedNamespaces[prefix]
@@ -519,10 +556,10 @@ class Filing(object):
                             self.factToQlabelsDict[fact] = [qname]
                     except KeyError:
                         pass
-                    
-                if (not isEmbeddedCommand 
-                    and fact.concept is not None 
-                    and fact.concept.isEnumeration2Item 
+
+                if (not isEmbeddedCommand
+                    and fact.concept is not None
+                    and fact.concept.isEnumeration2Item
                     and type(fact.xValue)==list):
                     self.factToQlabelsDict[fact] = []
                     for qname in fact.xValue:
@@ -553,11 +590,11 @@ class Filing(object):
             for arelleDimension in fact.context.qnameDims.values():
                 dimensionConcept = arelleDimension.dimension
                 memberConcept = arelleDimension.member
-                if dimensionConcept is None: 
+                if dimensionConcept is None:
                     if not self.validatedForEFM: # use Arelle validation message
                         self.modelXbrl.error("xbrldie:TypedMemberNotTypedDimensionError" if arelleDimension.isTyped else "xbrldie:ExplicitMemberNotExplicitDimensionError",
                             _("Context %(contextID)s %(dimension)s %(value)s is not an appropriate dimension item"),
-                            modelObject=(arelleDimension,fact), contextID=fact.context.id, 
+                            modelObject=(arelleDimension,fact), contextID=fact.context.id,
                             dimension=arelleDimension.prefixedName, value=arelleDimension.dimensionQname,
                             messageCodes=("xbrldie:TypedMemberNotTypedDimensionError", "xbrldie:ExplicitMemberNotExplicitDimensionError"))
 
@@ -565,12 +602,12 @@ class Filing(object):
                     if not self.validatedForEFM: # use Arelle validation message
                         self.modelXbrl.error("xbrldie:ExplicitMemberUndefinedQNameError",
                             _("Context %(contextID)s explicit dimension %(dimension)s member %(value)s is not a global member item"),
-                            modelObject=(arelleDimension,fact), contextID=fact.context.id, 
+                            modelObject=(arelleDimension,fact), contextID=fact.context.id,
                             dimension=arelleDimension.dimensionQname, value=arelleDimension.memberQname)
                 elif arelleDimension.isTyped and arelleDimension.typedMember.xValid < VALID:
                     self.modelXbrl.debug("debug",
                         _("Context %(contextID)s typed dimension %(dimension)s member %(value)s is not an xml schema validated value"),
-                        modelObject=(arelleDimension,fact), contextID=fact.context.id, 
+                        modelObject=(arelleDimension,fact), contextID=fact.context.id,
                         dimension=arelleDimension.dimensionQname, value=arelleDimension.typedMember.text)
                 else:
                     try:
@@ -619,7 +656,7 @@ class Filing(object):
 
 
     def checkForEmbeddedCommandAndProcessIt(self, fact):
-        # partition('~') on a string breaks up a string into a tuple with before the first ~, the ~, and then after the ~. 
+        # partition('~') on a string breaks up a string into a tuple with before the first ~, the ~, and then after the ~.
         ignore, tilde, rightOfTilde = fact.value.partition('~')
         if tilde == '':
             return False
@@ -661,7 +698,7 @@ class Filing(object):
                                        "Each iterator can only start with 'row' or 'column'."),
                                      edgarCode="rq-2604-Embedding-Command-Malformed-Direction-Token",
                                      modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
-                                     linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri), 
+                                     linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri),
                                      token=token0, position=tokenCounter)
                 return False
 
@@ -709,7 +746,7 @@ class Filing(object):
                                       "underscore, and element name."),
                                     edgarCode="rq-2604-Embedding-Command-Malformed-Axis",
                                     modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
-                                    linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri), 
+                                    linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri),
                                     token=token1, position=tokenCounter)
                 return False
 
@@ -731,7 +768,7 @@ class Filing(object):
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_UNITCELL_USED_WARNING').format(token2, tokenCounter, errorStr)
                 self.modelXbrl.info("info",
-                                    _("The token at position %(position)s in the list of tokens in %(list)s, is unitcell. " 
+                                    _("The token at position %(position)s in the list of tokens in %(list)s, is unitcell. "
                                         "Currently, this keyword is not supported and was replaced with compact."),
                                     modelObject=fact, position=tokenCounter, list=errorStr)
             else:
@@ -742,7 +779,7 @@ class Filing(object):
                                        "%(contextID)s, the style keyword %(style)s is not one of 'compact' or 'nodisplay'."),
                                      edgarCode="rq-2604-Embedding-Command-Malformed-Style-Token",
                                      modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
-                                     linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri), 
+                                     linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri),
                                      style=token2)
                 return False
 
@@ -752,7 +789,7 @@ class Filing(object):
                 tempList += [commandTextList.pop(0)]
 
             invalidTokens = []
-            for tokenMember in tempList: 
+            for tokenMember in tempList:
                 tokenCounter += 1
                 if '_' in tokenMember:
                     qn = arelle.ModelValue.qname(fact, tokenMember.replace('_',':',1))
@@ -765,7 +802,7 @@ class Filing(object):
                     listToAddToOutput += [tokenMember]
                 else:
                     invalidTokens.append(tokenMember)
-                    
+
             if invalidTokens:
                 errorStr = Utils.printErrorStringToDiscribeEmbeddedTextBlockFact(fact)
                 #message = ErrorMgr.getError('EMBEDDED_COMMAND_INVALID_MEMBER_NAME_ERROR').format(tokenMember, tokenCounter, errorStr)
@@ -775,7 +812,7 @@ class Filing(object):
                                        "valid member qnames."),
                                      edgarCode="rq-2604-Embedding-Command-Malformed-Member",
                                      modelObject=fact, linkrole=linkroleUri, fact=fact.qname, contextID=fact.contextID,
-                                     linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri), 
+                                     linkroleDefinition=self.modelXbrl.roleTypeDefinition(linkroleUri), linkroleName=self.modelXbrl.roleTypeName(linkroleUri),
                                      tokenlist=", ".join(invalidTokens))
                 return False
 
@@ -784,7 +821,7 @@ class Filing(object):
         cube.isEmbedded = True
         self.hasEmbeddings = True
         self.disallowEmbeddings = False
-        
+
         embedding = Embedding.Embedding(self, cube, outputList, factThatContainsEmbeddedCommand = fact)
         cube.embeddingList += [embedding]
         self.factToEmbeddingDict[fact] = embedding
@@ -825,7 +862,7 @@ class Filing(object):
         uncategorizedCube.fileNumber = self.controller.nextUncategorizedFileNum
         uncategorizedCube.shortName = uncategorizedCube.definitionText = 'Uncategorized Items - ' + self.entrypoint
         uncategorizedCube.isElements = True
-        
+
         # now run populateAndLinkClasses() again and let it re-populate and re-link everything from scratch but let it do so
         # only with filing.unusedFactSet as it's fact set and with only the uncategorizedCube, and no other cubes.
         self.cubeDict[uncategorizedCube.linkroleUri] = uncategorizedCube
@@ -957,11 +994,11 @@ class Filing(object):
         else:
             report.generateRowAndOrColHeadingsGeneralCase()
         self.controller.logDebug("R{} headings {:.3f} secs.".format(cube.fileNumber, time.time() - _rStartedAt)); _rStartedAt = time.time()
-        
+
         report.emitRFile()
         self.controller.logDebug("R{} emit RFile {:.3f} secs.".format(cube.fileNumber, time.time() - _rStartedAt))
 
-        if xlWriter and self.controller.hasXlout: # not (self.isRR or self.isProspectus or self.isN2Prospectus or self.isFeeExhibit):
+        if xlWriter and self.controller.hasXlout: # not (self.isRR or self.isVip or self.isN2Prospectus or self.isFeeExhibit):
             # we pass the cube's shortname since it doesn't have units and stuff tacked onto the end.
             _rStartedAt = time.time()
             xlWriter.createWorkSheet(cube.fileNumber, cube.shortName)
@@ -988,25 +1025,25 @@ class Filing(object):
         for col in visibleColumns:
             if col.startEndContext.numMonths < maxMonths and len(col.factList) < minToKeep:
                 self.modelXbrl.info("info",
-                                    _("Columns in cash flow \"%(presentationGroup)s\" have maximum duration %(maxDuration)s months and at least %(minNumValues)s " 
-                                      "values. Shorter duration columns must have at least one fourth (%(minToKeep)s) as many values. " 
+                                    _("Columns in cash flow \"%(presentationGroup)s\" have maximum duration %(maxDuration)s months and at least %(minNumValues)s "
+                                      "values. Shorter duration columns must have at least one fourth (%(minToKeep)s) as many values. "
                                       "Column \"%(startEndContext)s\" is shorter (%(months)s months) and has only %(numValues)s values, so it is being removed."),
-                                    modelObject=self.modelXbrl.modelDocument, presentationGroup=report.shortName, 
+                                    modelObject=self.modelXbrl.modelDocument, presentationGroup=report.shortName,
                                     maxDuration=maxMonths, minNumValues=minFacts, minToKeep=minToKeep, startEndContext=col.startEndContext,
                                     months=col.startEndContext.numMonths, numValues=len(col.factList))
                 col.hide()
                 didWeHideAnyCols = True
                 remainingVisibleColumns.remove(col)
-                for fact in col.factList: 
+                for fact in col.factList:
                     appearsInOtherColumn = False
                     for otherCol in remainingVisibleColumns:
                         if fact in otherCol.factList:
                             appearsInOtherColumn = True
                             break
                     if not appearsInOtherColumn:
-                        # first kick this fact out of report.embedding.factAxisMemberGroupList, our defacto list of facts 
+                        # first kick this fact out of report.embedding.factAxisMemberGroupList, our defacto list of facts
                         report.embedding.factAxisMemberGroupList = \
-                                [FAMG for FAMG in report.embedding.factAxisMemberGroupList if FAMG.fact != fact] 
+                                [FAMG for FAMG in report.embedding.factAxisMemberGroupList if FAMG.fact != fact]
                         try:
                             self.usedOrBrokenFactDefDict[fact].remove(report.embedding)
                         except KeyError:
@@ -1068,7 +1105,7 @@ class Filing(object):
 
                 self.modelXbrl.info("info",
                                     _("In \"%(presentationGroup)s\", column(s) %(columns)s are contained in other reports, so were removed by flow through suppression."),
-                                    modelObject=self.modelXbrl.modelDocument, presentationGroup=cube.shortName, 
+                                    modelObject=self.modelXbrl.modelDocument, presentationGroup=cube.shortName,
                                     columns=', '.join([str(col.index + 1)+"("+col.context.id+")" for col in columnsToKill]))
                 Utils.hideEmptyRows(report.rowList)
 
@@ -1077,7 +1114,7 @@ class Filing(object):
         for fact, role, ignore1, linkroleUri, shortName, definitionText in self.skippedFactsList:
             if fact in self.unusedFactSet:
                 # we skipped over this fact because it could not be placed
-                # Produce a string explaining for this instant fact why it could not be presented 
+                # Produce a string explaining for this instant fact why it could not be presented
                 # with a periodStart or periodEnd label in this presentation group.
                 value = Utils.strFactValue(fact, preferredLabel=role)
                 endTime = fact.context.period.stringValue.strip()
@@ -1091,7 +1128,7 @@ class Filing(object):
                                _('In "%(linkroleName)s", fact %(fact)s with value %(value)s and preferred label %(preferredLabelValue)s, '
                                  'was not shown because there are no facts in a duration %(startOrEnd)s at %(date)s. Change the preferred label role or add facts.'),
                                 modelObject=fact, fact=fact.qname, value=value,  startOrEnd=word, date=endTime,
-                                preferredLabel=role, preferredLabelValue=role, 
+                                preferredLabel=role, preferredLabelValue=role,
                                 linkrole=linkroleUri, linkroleDefinition=definitionText, linkroleName=shortName)
 
 class ReportSummary(object):
@@ -1145,12 +1182,12 @@ class StartEndContext(object):
             modifiedEndTime = datetime.datetime(datetime.MAXYEAR,12,31,0,0)
         delta = dateutil.relativedelta.relativedelta(modifiedEndTime, self.startTime)
         return delta.years * 12 + delta.months
-    
+
     def startOrInstantTime(self):
         if self.startTime is None:
             return self.endTime
         return self.startTime
-    
+
     def __str__(self):
         if self.periodTypeStr=='instant':
             return "[{}]".format(self.endTimePretty[:10])
@@ -1209,7 +1246,7 @@ class Member(object):
     @property
     def typedMemberSortKey(self):
         return self.typedKey or self.typedValue
-        
+
     def linkAxis(self, axisObj):
         self.axis = axisObj
     def linkParent(self, parentObj):
@@ -1224,7 +1261,7 @@ class Member(object):
             return False
         if (self.arelleConcept is None) ^ (other.arelleConcept is None):
             return False # both must be typed or explicit
-        if self.arelleConcept is not None: 
+        if self.arelleConcept is not None:
             # explicit dimension
             return self.arelleConcept.prefixedName == other.arelleConcept.prefixedName
         # typed dimension

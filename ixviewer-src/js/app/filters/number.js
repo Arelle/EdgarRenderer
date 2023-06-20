@@ -37,8 +37,7 @@ var FiltersNumber = {
         element.hasAttribute("scale") && parseInt(element.getAttribute("scale"))
           ? parseInt(element.getAttribute("scale"))
           : 0;
-
-      if (scale > 0) {
+      if (scale > 1) {
         var periodIndex = input.indexOf(".");
         if (periodIndex !== -1) {
           var inputArray = input.split(".");
@@ -47,6 +46,11 @@ var FiltersNumber = {
         input = input.padEnd(input.length + Math.abs(scale), 0);
         input = input.replace(".", "");
         input = [input.slice(0, scale), input.slice(scale)].join("");
+      } else if (scale === 1) {
+        // we move the decimal point one position to the right
+        // example: 1.00000 => 10.0000
+        var inputArray = input.split(".");
+        input = (input * 10).toFixed(inputArray[1].length);
       } else if (scale < 0) {
         var absScale = Math.abs(scale);
         var divScale = "1";

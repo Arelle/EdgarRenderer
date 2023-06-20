@@ -3,7 +3,7 @@
 :mod:`EdgarRenderer.PresentationGroup`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
-Data and content created by government employees within the scope of their employment 
+Data and content created by government employees within the scope of their employment
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
@@ -182,7 +182,7 @@ class PresentationGroup(object):
             for rootNode in self.rootNodeList:
                 # later on we're going to need to decide whether to print a warning about if multiple root nodes are being used, so here we keep track of
                 # everything under each root node.  the idea is that if multiple root nodes are being used, the ordering is arbitrary by label, not controlled
-                # in an intentional way by the filer. 
+                # in an intentional way by the filer.
                 setOfConcepts = set()
                 self.doPreorderTraversal(rootNode, giveMemGetPositionDictPrimary, {}, False, setOfConcepts, visited)
                 self.cube.rootNodeToConceptSetDict[rootNode] = setOfConcepts
@@ -193,9 +193,9 @@ class PresentationGroup(object):
 
 
     # as we do our preorder traversal of the graph, the size of the visited set will increases one by one. therefore,
-    # we can use len(visited) for ordering.  if later we sort all of the axes by their order, it will 
-    # in the order of a preorder traversal of the presentation group.  the order won't be simple like 1,2,3, it might 
-    # be 5, 20, 53, ... but sorting in increasing order will order axes in the order of a preorder traversal.  we do 
+    # we can use len(visited) for ordering.  if later we sort all of the axes by their order, it will
+    # in the order of a preorder traversal of the presentation group.  the order won't be simple like 1,2,3, it might
+    # be 5, 20, 53, ... but sorting in increasing order will order axes in the order of a preorder traversal.  we do
     # this trick several times below too.
     def doPreorderTraversal(self, node, giveMemGetPositionDictPrimary, giveMemGetPositionDictAxis, parentIsAnAxis, setOfConcepts, visited):
         if self.cube.noFactsOrAllFactsSuppressed:
@@ -307,7 +307,7 @@ class PresentationGroup(object):
             if kid.arelleRelationship is not None:
                 self.filing.modelXbrl.debug("debug",
                                           _('%(tabs)s%(concept)s    order: %(order)s    preferred label: %(label)s'),
-                                          modelObject=kid.arelleConcept, tabs=tabString, 
+                                          modelObject=kid.arelleConcept, tabs=tabString,
                                           concept=kid.arelleConcept.qname, order=kid.arelleRelationship.order, label=kid.arelleRelationship.preferredLabel)
             else: # it's a Member or default
                 self.filing.controller.logTrace(tabString + (str(kid.arelleConcept.qname) if kid.arelleConcept is not None else "(missing concept)"))

@@ -3,7 +3,7 @@
 :mod:`EdgarRenderer.Cube`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
-Data and content created by government employees within the scope of their employment 
+Data and content created by government employees within the scope of their employment
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
@@ -123,7 +123,7 @@ class Cube(object):
         cubeName = re.sub('\s*\{\s*((?P<t>transposed)|(?P<u>unlabeled)|(?P<e>elements))\s*\}\s*', handleIndex, cubeName, flags=re.IGNORECASE)
 
         isTransposed = isUnlabeled = isElements = False
-        if indexList[0] < 99999: # if transposed is present, the first one of the three mentioned wins 
+        if indexList[0] < 99999: # if transposed is present, the first one of the three mentioned wins
             lowestPosition = indexList.index(min(indexList))
             if lowestPosition == 0:
                 isTransposed = True
@@ -150,23 +150,23 @@ class Cube(object):
             self.filing.modelXbrl.warning("EFM.6.26.01",
                 _("The presentation group \"%(linkroleName)s\" contains %(axisSet)s, which either has (have) no default member "
                   "in the presentation group. Since every fact is defaulted on this (these) axe(s), all facts have been filtered out."),
-                 modelObject=self.filing.modelXbrl, 
+                 modelObject=self.filing.modelXbrl,
                  linkrole=self.linkroleUri, linkroleDefinition=self.definitionText,
                  linkroleName=self.shortName, axisSet=axesStr)
 
 
     def handlePeriodStartEndLabel(self,discoveredDurations=[]):
         # for facts presented with startLabel or end label, make new facts with matching contexts
-        # and append them to the initial list of facts. Therefore, one fact may become many if 
+        # and append them to the initial list of facts. Therefore, one fact may become many if
         # a periodStart(End)Label is used for an instant fact and there are many contexts that begin(end)
         # at that point in time.
-        # references the cube.periodStartEndLabelDict  
+        # references the cube.periodStartEndLabelDict
         # will side effect cube.periodStartEndLabelDict if there is a duration fact with period start/end label.
         # will generally side effect self.factMemberships by appending to it.
-        
+
         initialDurationSet = set([x[1]['period'] for x in self.factMemberships if x[1]['period'].periodTypeStr=='duration'])
 
-        def matchingDurationSet(iFxm,preferredLabel): 
+        def matchingDurationSet(iFxm,preferredLabel):
             # iFxm = instant Fact - axis - membership tuple.
             # return set of tuples consisting of start/end time tuple and start/end role
             _, iAxm, _ = iFxm # iAxm = instant AxisMembership
@@ -178,22 +178,22 @@ class Cube(object):
             listOfDurations = initialDurationSet
             if len(discoveredDurations) > 0:
                 listOfDurations = discoveredDurations
-            for dPeriod in listOfDurations: 
+            for dPeriod in listOfDurations:
                 if preferredLabelIsStart:
                     dTimeToMatch = dPeriod.startTime
                 else:
                     dTimeToMatch = dPeriod.endTime
                 if dTimeToMatch == iTime:
                     _durations.add(dPeriod)
-            return {((d.startTime,d.endTime),preferredLabel) for d in _durations} 
+            return {((d.startTime,d.endTime),preferredLabel) for d in _durations}
 
         initialSize = len(self.factMemberships)
         self.controller.logDebug("factMembership at {} in {}".format(initialSize,self.definitionText))
         # list of new fact memberships (aka fact locations) to be created from instants.
         newFactMemberships= list()
         # set of instants with periodStart or periodEnd that could not be matched to a duration.
-        skippedFactMembershipSet = set() 
-        
+        skippedFactMembershipSet = set()
+
         for factMembership in self.factMemberships:
             fact, axisMemberLookupDict, role = factMembership
             # The startEndPreferredLabelList shows what label roles the presentation linkbase expected to be present.
@@ -207,7 +207,7 @@ class Cube(object):
                 if len(startAndEndLabelsSet)==0:
                     for role in startEndPreferredLabelList:
                         skippedFactMembershipSet.add((fact,role,self,self.linkroleUri,self.shortName,self.definitionText))
-                   
+
                 for startEndTuple, preferredLabel in startAndEndLabelsSet:
                     try: # if startEndContext exists, find it
                         newStartEndContext = self.filing.startEndContextDict[startEndTuple]
@@ -228,11 +228,11 @@ class Cube(object):
             moments = sorted(list({fxm[1]['period'].endTime for fxm in self.factMemberships}))
             if len(moments) > 1:
                 self.filing.modelXbrl.info("info",
-                    _("In \"%(linkroleName)s\", no matching durations for %(numFacts)s instant facts presented with start or end " 
-                      "preferred labels. Now inferring durations to form columns. Simplify the presentation " 
+                    _("In \"%(linkroleName)s\", no matching durations for %(numFacts)s instant facts presented with start or end "
+                      "preferred labels. Now inferring durations to form columns. Simplify the presentation "
                       "to get a more compact layout."),
                     modelObject=self.filing.modelXbrl.modelDocument, linkroleName=self.shortName, numFacts=len(skippedFactSet))
-                intervals = []                
+                intervals = []
                 for i,endTime in enumerate(moments[1:]):
                     startTime = moments[i]
                     intervals += [Filing.StartEndContext(None,(startTime,endTime))]
@@ -273,7 +273,7 @@ class Cube(object):
                     edgarCode="rq-2603-No-Matching-Durations",
                     modelObject=self.filing.modelXbrl, linkrole=self.linkroleUri, linkroleDefinition=self.definitionText,
                     linkroleName=self.shortName)
-                self.isStatementOfEquity = False # no movements, warn the user it is probably not what they wanted                
+                self.isStatementOfEquity = False # no movements, warn the user it is probably not what they wanted
                 sortedList = list(self.timeAxis) # start over
 
         else:
@@ -321,7 +321,7 @@ class Cube(object):
                 self.controller.logDebug("Context {} was not part of a complete Movement".format(contextID))
         return sortedList # from SurvivorsOfMovementAnalysis
 
-            
+
     def rearrangeGiveMemGetPositionDict(self,axisQname,giveMemGetPositionDict):
         memberList = [item[0] for item in sorted(giveMemGetPositionDict.items(),key=lambda item : item[1])]
         builtinAxisOrders = self.filing.builtinAxisOrders
@@ -331,13 +331,13 @@ class Cube(object):
             self.controller.logDebug("Special sort of {} {} needed".format(axisQname,giveMemGetPositionDict))
             prefix = axis.prefix
             nsuri = axis.namespaceURI
-            ordering = [arelle.ModelObject.QName(prefix,nsuri,name) for name in members]   
-            overrideordering = [arelle.ModelObject.QName(prefix,nsuri,name) for name in lastmembers]                        
+            ordering = [arelle.ModelObject.QName(prefix,nsuri,name) for name in members]
+            overrideordering = [arelle.ModelObject.QName(prefix,nsuri,name) for name in lastmembers]
             memberList = Utils.heapsort(memberList,(lambda x,y: Utils.compareInOrdering(x,y,ordering,overrideordering)))
             giveMemGetPositionDict = dict([(x,i) for i,x in enumerate(memberList)])
             self.controller.logDebug("Resulted in {}".format(giveMemGetPositionDict))
         return giveMemGetPositionDict
-       
+
 
     def printCube(self):
         self.controller.logTrace('\n\n**************** '+self.linkroleUri)
@@ -350,15 +350,15 @@ class Cube(object):
                 if member in self.hasMembers:
                     text += '\tmember: {!s}\n'.format(member.memberValue)
         self.controller.logTrace(text)
-  
+
         text = '\naxisAndMemberOrderDict:\n'
         for pseudoaxisQname in self.axisAndMemberOrderDict:
             text += '\t{!s}\n'.format(pseudoaxisQname)
         self.controller.logTrace(text)
-  
+
         self.controller.logTrace('\ndefaultFilteredOutAxisSet\n')
         for c in self.defaultFilteredOutAxisSet:
             self.controller.logTrace('\t{!s}\n'.format(c))
- 
+
         self.controller.logTrace('\n\npresentationGroup:')
         self.presentationGroup.printPresentationGroup()

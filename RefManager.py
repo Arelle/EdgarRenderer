@@ -3,7 +3,7 @@
 :mod:`EdgarRenderer.RefManager`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
-Data and content created by government employees within the scope of their employment 
+Data and content created by government employees within the scope of their employment
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
@@ -30,7 +30,7 @@ class RefManager(object):
     # method getUrls on CntlrAddOnManager
     # returns: set of strings representing additional linkbases to be loaded.
     # return the set of URLs that must be loaded due to the presence of schemas in the DTS.
-    def getUrls(self,modelXbrl): 
+    def getUrls(self,modelXbrl):
         urls = set()
         from urllib.parse import urlparse,urljoin
         namespacesInFacts = {f.qname.namespaceURI for f in modelXbrl.facts if f.qname is not None}

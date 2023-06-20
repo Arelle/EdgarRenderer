@@ -551,7 +551,7 @@ var FiltersValue = {
             
           }
           case 'date-year-month-day' : {
-            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateyearmonthday(elementToFormat));
+            return FiltersNumber.numberFormatting(elementToFormat, FiltersDate.dateYearMonthDay(elementToFormat));
             
           }
           case 'date-year-monthname-en' : {

@@ -3,7 +3,7 @@
 :mod:`EdgarRenderer.Utils`
 ~~~~~~~~~~~~~~~~~~~
 Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Commission.
-Data and content created by government employees within the scope of their employment 
+Data and content created by government employees within the scope of their employment
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 import re, sys, math, logging
@@ -42,8 +42,8 @@ efmStandardAuthorities = ["sec.gov", "fasb.org", "xbrl.org", "xbrl.us", "w3.org"
 def isRate(fact, filing):
     return   (isFactTypeEqualToOrDerivedFrom(fact, isPercentItemTypeQname) or
              (isFactTypeEqualToOrDerivedFrom(fact, isPureItemTypeQname) and
-                (isEfmInvestNamespace(fact.qname.namespaceURI) or filing.isRR)) or
-             (fact.unit is not None and fact.unit.isSingleMeasure and 
+                (isEfmInvestNamespace(fact.qname.namespaceURI) or filing.isRRorOEF)) or
+             (fact.unit is not None and fact.unit.isSingleMeasure and
               any(utrEntry.unitId == 'Rate' for utrEntry in fact.utrEntries.copy())))
 
 def printErrorStringToDisambiguateEmbeddedOrNot(embeddedCommandFact):
@@ -79,8 +79,10 @@ isEfmRegex = re.compile('.*[0-9]{8}((_(cal|def|lab|pre))?\.xml|\.xsd)$')
 isInlineRegex = re.compile('.*\.htm$')
 isZipRegex = re.compile('.*\.zip$')
 isHttpRegex = re.compile('^http(s)?://.*')
+isSecNamespaceRegex = re.compile('^http(s)?://xbrl.sec.gov/.*')
 isEfmStandardNamespaceRegex = re.compile('^http(s)?://.*(' + "|".join(efmStandardAuthorities) + ")/.*")
 isEfmInvestNamespaceRegex = re.compile('^http(s)?://.*(' + "|".join(efmStandardAuthorities) + ")/invest.*")
+isBarChartFactRegex = re.compile('^\{http://xbrl.sec.gov/(?P<family>rr|oef)/.*\}AnnualReturn(?P<year>[0-9]{4})')
 
 def isImageFilename(path):
     return isImageRegex.match(path) and True
@@ -175,7 +177,7 @@ def handleDuration(valueStr):
                        (None if matchObj.group('s') is None else Decimal(matchObj.group('s')), 'second')]
 
         # this section is to inteligently handle zeros.  if a duration has a zero and other numbers, ignore the zeros.
-        # So, P0Y1M is just one month.  if they're all zeros, just print the biggest so P0Y0M and P0Y both print 0 years.        
+        # So, P0Y1M is just one month.  if they're all zeros, just print the biggest so P0Y0M and P0Y both print 0 years.
         numStrsSet = {tup[0] for tup in orderedList}
         allZeroOrNone = numStrsSet <= {Decimal(0), None}
         someZeroSomeNot = not allZeroOrNone and Decimal(0) in numStrsSet
@@ -210,7 +212,7 @@ def handleDuration(valueStr):
     # regex besides 'P' has a '?' after it, meaning that it may or may not actually be there.  so, lookAhead1 says that
     # something needs to follow P.
 
-    # lookAhead2 makes sure that something comes after T, because again in the non-look-ahead part of the regex, 
+    # lookAhead2 makes sure that something comes after T, because again in the non-look-ahead part of the regex,
     # everything after T is optional.
 
     # so lookahead 1 and 2 are basically conditions, and the rest of the regex actually consumes the xs:duration pattern.
@@ -221,7 +223,7 @@ def handleDuration(valueStr):
     TAndAfter = '(T' + lookAhead2 + '((?P<h>\d+)H)?((?P<min>\d+)M)?((?P<s>\d+|\d+\.\d+)S)?)?'
 
     # probably don't need to strip with fact.xValue?
-    return re.sub(re.compile(beforeT + TAndAfter), durationPrettyPrint, valueStr.strip()) 
+    return re.sub(re.compile(beforeT + TAndAfter), durationPrettyPrint, valueStr.strip())
 
 
 def strFactValue(fact, preferredLabel=None, filing=None, report=None):
@@ -401,7 +403,7 @@ class RenderingException(Exception):
         self.args = ( self.__repr__(), )
     def __repr__(self):
         return _('[{0}] exception {1}').format(self.code, self.message)
-    
+
 class Errmsg(object):
     def __init__(self, messageCode, message):
         self.msgCode = messageCode

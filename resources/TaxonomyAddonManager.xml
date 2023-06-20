@@ -443,6 +443,11 @@
       <ReferenceFiles/>
     </TaxonomyAddon>
     <TaxonomyAddon>
+      <Taxonomy>oef-2023.xsd</Taxonomy>
+      <DefinitionFiles/>
+      <ReferenceFiles/>
+    </TaxonomyAddon>
+     <TaxonomyAddon>
       <Taxonomy>rr-2010-02-28.xsd</Taxonomy>
       <DefinitionFiles>
         <string>rr-doc-2010-02-28.xml</string>
@@ -495,6 +500,18 @@
       <ReferenceFiles>
         <string>rr-2023_ref.xsd</string>
       </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>rxp-2023.xsd</Taxonomy>
+      <ReferenceFiles>
+        <string>rxp-2023_ref.xsd</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>snj-2023.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>snj-2023_doc.xsd</string>
+      </DefinitionFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
       <Taxonomy>sic-2009-01-31.xsd</Taxonomy>
@@ -1011,6 +1028,52 @@
         <string>linkbases/ifrs_7/ref_ifrs_7_2022-03-24.xml</string>
         <string>linkbases/ifrs_8/ref_ifrs_8_2022-03-24.xml</string>
         <string>linkbases/sic_29/ref_sic_29_2022-03-24.xml</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+  <TaxonomyAddon>
+      <Taxonomy>full_ifrs-cor_2023-03-23.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>labels/doc_full_ifrs-en_2023-03-23.xml</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>linkbases/ias_1/ref_ias_1_2023-03-23.xml</string>
+        <string>linkbases/ias_10/ref_ias_10_2023-03-23.xml</string>
+        <string>linkbases/ias_12/ref_ias_12_2023-03-23.xml</string>
+        <string>linkbases/ias_16/ref_ias_16_2023-03-23.xml</string>
+        <string>linkbases/ias_19/ref_ias_19_2023-03-23.xml</string>
+        <string>linkbases/ias_2/ref_ias_2_2023-03-23.xml</string>
+        <string>linkbases/ias_20/ref_ias_20_2023-03-23.xml</string>
+        <string>linkbases/ias_21/ref_ias_21_2023-03-23.xml</string>
+        <string>linkbases/ias_23/ref_ias_23_2023-03-23.xml</string>
+        <string>linkbases/ias_24/ref_ias_24_2023-03-23.xml</string>
+        <string>linkbases/ias_26/ref_ias_26_2023-03-23.xml</string>
+        <string>linkbases/ias_27/ref_ias_27_2023-03-23.xml</string>
+        <string>linkbases/ias_29/ref_ias_29_2023-03-23.xml</string>
+        <string>linkbases/ias_33/ref_ias_33_2023-03-23.xml</string>
+        <string>linkbases/ias_34/ref_ias_34_2023-03-23.xml</string>
+        <string>linkbases/ias_36/ref_ias_36_2023-03-23.xml</string>
+        <string>linkbases/ias_37/ref_ias_37_2023-03-23.xml</string>
+        <string>linkbases/ias_38/ref_ias_38_2023-03-23.xml</string>
+        <string>linkbases/ias_40/ref_ias_40_2023-03-23.xml</string>
+        <string>linkbases/ias_41/ref_ias_41_2023-03-23.xml</string>
+        <string>linkbases/ias_7/ref_ias_7_2023-03-23.xml</string>
+        <string>linkbases/ias_8/ref_ias_8_2023-03-23.xml</string>
+        <string>linkbases/ifric_2/ref_ifric_2_2023-03-23.xml</string>
+        <string>linkbases/ifric_5/ref_ifric_5_2023-03-23.xml</string>
+        <string>linkbases/ifrs_1/ref_ifrs_1_2023-03-23.xml</string>
+        <string>linkbases/ifrs_12/ref_ifrs_12_2023-03-23.xml</string>
+        <string>linkbases/ifrs_13/ref_ifrs_13_2023-03-23.xml</string>
+        <string>linkbases/ifrs_14/ref_ifrs_14_2023-03-23.xml</string>
+        <string>linkbases/ifrs_15/ref_ifrs_15_2023-03-23.xml</string>
+        <string>linkbases/ifrs_16/ref_ifrs_16_2023-03-23.xml</string>
+        <string>linkbases/ifrs_17/ref_ifrs_17_2023-03-23.xml</string>
+        <string>linkbases/ifrs_2/ref_ifrs_2_2023-03-23.xml</string>
+        <string>linkbases/ifrs_3/ref_ifrs_3_2023-03-23.xml</string>
+        <string>linkbases/ifrs_5/ref_ifrs_5_2023-03-23.xml</string>
+        <string>linkbases/ifrs_6/ref_ifrs_6_2023-03-23.xml</string>
+        <string>linkbases/ifrs_7/ref_ifrs_7_2023-03-23.xml</string>
+        <string>linkbases/ifrs_8/ref_ifrs_8_2023-03-23.xml</string>
+        <string>linkbases/sic_29/ref_sic_29_2023-03-23.xml</string>
       </ReferenceFiles>
     </TaxonomyAddon>
   </TaxonomyList>

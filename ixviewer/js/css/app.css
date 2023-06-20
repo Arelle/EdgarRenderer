@@ -380,3 +380,7 @@ body {
 .no-hover:hover {
 	cursor: initial;
 }
+
+.z-index-max {
+	z-index: 2147483647;
+}

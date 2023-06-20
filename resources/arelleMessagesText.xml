@@ -1111,6 +1111,166 @@ FootnoteLink {footnoteLinkNumber} has disallowed role {linkrole}</message>
 [dq-0544-Custom-Axis] Contexts {contextIDs} use dimension {dimension} in namespace {namespace} but {axis} in {taxonomy} is preferred. {refSources}
 </message>
 
+<message code="EFM.6.05.44.customAxis"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="397"
+         args="edgarCode dimension namespace axis taxonomy contextIDs">
+[dq-0544-Custom-Axis] Contexts {contextIDs} use dimension {dimension} in namespace {namespace} but {axis} in {taxonomy} is preferred. {refSources}
+</message>
+
+<message code="EFM.6.05.45.cover-page-fact-not-visible"
+         level="(dynamic)"
+         module="plugin/validate/EFM/Filing.py" line="2717"
+         args="edgarCode subType countUnreferenced verb elements">
+[dq-0545-Cover-Page-Fact-Not-Visible] Submission type {subType} has {countUnreferenced} cover page fact(s) in ix:hidden that {verb} be visible or referenced by an -sec-ix-hidden style property: {elements}. {refSources}
+</message>
+
+<message code="EFM.6.05.57.classIdMemberNotAxisMember"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="1008"
+         args="edgarCode classIdMember subType">
+[dq-0557-Class-Id-Member-Not-Axis-Member] Submission type {subType} should have {classIdMember} as a member of the Class Axis. {refSources}
+</message>
+
+<message code="EFM.6.05.57.classIdMemberNotDeclared"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="999"
+         args="edgarCode classIdMember subType">
+[dq-0557-Class-Id-Member-Not-Declared] Submission type {subType} should have {classIdMember} declared as a domainItemType element.
+</message>
+
+<message code="EFM.6.05.57.classIdMemberNotInContext"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="1014"
+         args="edgarCode classIdMember subType">
+[dq-0557-Class-Id-Member-Not-In-Context] Submission type {subType} should have a context with {classIdMember} as a member of the Class Axis.
+</message>
+
+<message code="EFM.6.05.58.exhibitDocumentType"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="1024"
+         args="contextID documentType exhibitType">
+[rxp-0558-Exhibit-Document-Type] The value for dei:DocumentType, {documentType}, is not allowed for {exhibitType} attachments.
+</message>
+
+<message code="EFM.6.05.58.customElementDeclaration"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="2184"
+         args="schemaName disallowance concept">
+[rxp-0558-Custom-Element-Declaration] {schemaName} contained a disallowed {disallowance} declaration for element {concept}. Use a standard RXP element instead. {refSources}
+</message>
+
+<message code="EFM.6.05.58.03"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="2296"
+         args="context fact1 fact2 fact2NotNil edgarCode">
+[rxp-0558-Context-Required-Facts] The Context {context} has a {fact1} and is missing required {fact2NotNil}fact {fact2}. {refSources}
+</message>
+
+<message code="EFM.6.05.58.04"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="2303"
+         args="edgarCode context currency">
+[rxp-055804-Conversion-Method-Value] A value cannot be given for rxp:Cm in context {context} because the payment is in the reporting currency {currency}.
+</message>
+
+<message code="EFM.6.05.58.05"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="2338"
+         args="edgarCode">
+[rxp-055805-Amount-For-Required-12-Months-Period] Amount rxp:A missing for reporting currency and matching 12 months preceeding dei:DocumentPeriodEndDate.
+</message>
+
+<message code="EFM.6.05.58.07"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="2312"
+         args="edgarCode context paymentType">
+[rxp-055807-Category-Total-Existence] Payment type {paymentType} was reported in context {context} but there is no fact with element {paymentType} in the Required Context. {refSources}
+</message>
+
+<message code="EFM.6.05.58.09"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="2328"
+         args="edgarCode context dimension">
+[rxp-055809-Project-Payment-Amount-Existence] A payment for each project axis member is required.  Provide a value for element rxp:Pr with value {dimension} in context {context}. {refSources}
+</message>
+<message code="EFM.6.05.44.customAxis"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="397"
+         args="edgarCode dimension namespace axis taxonomy contextIDs">
+[dq-0544-Custom-Axis] Contexts {contextIDs} use dimension {dimension} in namespace {namespace} but {axis} in {taxonomy} is preferred. {refSources}
+</message>
+
+<message code="EFM.6.05.45.cover-page-fact-not-visible"
+         level="(dynamic)"
+         module="plugin/validate/EFM/Filing.py" line="2717"
+         args="edgarCode subType countUnreferenced verb elements">
+[dq-0545-Cover-Page-Fact-Not-Visible] Submission type {subType} has {countUnreferenced} cover page fact(s) in ix:hidden that {verb} be visible or referenced by an -sec-ix-hidden style property: {elements}. {refSources}
+</message>
+
+<message code="EFM.6.05.57.classIdMemberNotAxisMember"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="1008"
+         args="edgarCode classIdMember subType">
+[dq-0557-Class-Id-Member-Not-Axis-Member] Submission type {subType} should have {classIdMember} as a member of the Class Axis. {refSources}
+</message>
+
+<message code="EFM.6.05.57.classIdMemberNotDeclared"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="999"
+         args="edgarCode classIdMember subType">
+[dq-0557-Class-Id-Member-Not-Declared] Submission type {subType} should have {classIdMember} declared as a domainItemType element.
+</message>
+
+<message code="EFM.6.05.57.classIdMemberNotInContext"
+         level="warning"
+         module="plugin/validate/EFM/Filing.py" line="1014"
+         args="edgarCode classIdMember subType">
+[dq-0557-Class-Id-Member-Not-In-Context] Submission type {subType} should have a context with {classIdMember} as a member of the Class Axis.
+</message>
+
+<message code="EFM.6.05.58.exhibitDocumentType"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="1024"
+         args="contextID documentType exhibitType">
+[rxp-0558-Exhibit-Document-Type] The value for dei:DocumentType, {documentType}, is not allowed for {exhibitType} attachments.
+</message>
+
+<message code="EFM.6.05.58.03"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="2296"
+         args="context fact1 fact2 fact2NotNil edgarCode">
+[rxp-0558-Context-Required-Facts] The Context {context} has a {fact1} and is missing required {fact2NotNil}fact {fact2}. {refSources}
+</message>
+
+<message code="EFM.6.05.58.04"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="2303"
+         args="edgarCode context currency">
+[rxp-055804-Conversion-Method-Value] A value cannot be given for rxp:Cm in context {context} because the payment is in the reporting currency {currency}.
+</message>
+
+<message code="EFM.6.05.58.05"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="2338"
+         args="edgarCode">
+Amount rxp:A missing for reporting currency and matching 12 months preceeding dei:DocumentPeriodEndDate.
+</message>
+
+<message code="EFM.6.05.58.07"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="2312"
+         args="edgarCode context paymentType">
+[rxp-055807-Category-Total-Existence] Payment type {paymentType} was reported in context {context} but there is no fact with element {paymentType} in the Required Context. {refSources}
+</message>
+
+<message code="EFM.6.05.58.09"
+         level="error"
+         module="plugin/validate/EFM/Filing.py" line="2328"
+         args="edgarCode context dimension">
+[rxp-055809-Project-Payment-Amount-Existence] A payment for each project axis member is required.  Provide a value for element rxp:Pr with value {dimension} in context {context}. {refSources}
+</message>
+
 <message code="EFM.6.07.01"
          level="error"
          module="ValidateFilingDTS.py" line="49"
@@ -1640,14 +1800,14 @@ Concept {concept} is monetary without a balance and must have a documentation la
 [rq-1209-Presented-Units-Incomplete-Order] Units of measure {foundMeasureSet} were found in ''{linkroleName}'' but the facts presented use these additional units of measure: {missingMeasureSet}.  Add presentation relationships to provide a definite ordering of these additional units in output.
 </message>
 
-<message code="EFM.6.12.10"
+<message code="EFM.6.12.10.relationshipNotPermitted"
          level="error"
          module="validate/Filing.py" line="2540"
          args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
 [du-1210-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
 
-<message code="EFM.6.12.11"
+<message code="EFM.6.12.11.relationshipNotPermitted"
          level="error"
          module="validate/Filing.py" line="2540"
          args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
@@ -1689,24 +1849,36 @@ Concept {concept} is monetary without a balance and must have a documentation la
 [du-1405-Facts-In-Calculations-Presentation-Missing] Context {contextId} has facts of elements {conceptFrom} and {conceptTo}, with a calculation relationship in {linkroleDefinition}, but these elements are not in any common corresponding presentation relationship group.  The calculation relationship is in {refSource}.
 </message>
 
-<message code="EFM.6.14.06"
+<message code="EFM.6.14.06.relationshipNotPermitted"
          level="error"
          module="validate/Filing.py" line="2552"
          args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
 [du-1406-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
 
-<message code="EFM.6.14.07"
+<message code="EFM.6.14.07.relationshipNotPermitted"
          level="error"
          module="validate/Filing.py" line="2552"
          args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
 [du-1407-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
-<message code="EFM.6.14.08"
+<message code="EFM.6.14.08.relationshipNotPermitted"
          level="error"
          module="validate/Filing.py" line="2552"
          args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
 [du-1408-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+<message code="EFM.6.14.09.relationshipNotPermitted"
+         level="error"
+         module="validate/Filing.py" line="3196"
+         args="arcrole conceptFrom conceptTo linkroleDefinition">
+[du-1409-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+<message code="EFM.6.14.10.relationshipNotPermitted"
+         level="error"
+         module="validate/Filing.py" line="3196"
+         args="arcrole conceptFrom conceptTo linkroleDefinition">
+[du-1410-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
 
 
@@ -1804,24 +1976,54 @@ Axis {dimension} in DRS role {linkrole}, missing targetrole consecutive relation
 </message>
 -->
 
-<message code="EFM.6.16.10"
+<message code="EFM.6.16.10.relationshipNotPermitted"
          level="error"
          module="validate/Filing.py" line="2570"
          args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
 [du-1610-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
 
-<message code="EFM.6.16.11"
+<message code="EFM.6.16.11.relationshipNotPermitted"
          level="error"
          module="validate/Filing.py" line="2570"
          args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
 [du-1611-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
-<message code="EFM.6.16.12"
+<message code="EFM.6.16.12.relationshipNotPermitted"
          level="error"
          module="validate/Filing.py" line="2570"
          args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
 [du-1612-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+<message code="EFM.6.16.13.relationshipNotPermitted"
+         level="error"
+         module="validate/Filing.py" line="3196"
+         args="arcrole conceptFrom conceptTo linkroleDefinition">
+[du-1613-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+<message code="EFM.6.16.14.04"
+         level="error"
+         module="validate/Filing.py" line="2258"
+         args="member roles">
+[rxp-161404-Member-Multiple-RXP-Roles] Member concept {member} appears in more than one RXP role: {roles}. {refSources}
+</message>
+<message code="EFM.6.16.14.relationshipNotPermitted"
+         level="error"
+         module="validate/Filing.py" line="3196"
+         args="arcrole conceptFrom conceptTo linkroleDefinition">
+[du-1614-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+<message code="EFM.6.16.14.roleSourceNotPermitted"
+         level="error"
+         module="validate/Filing.py" line="3190"
+         args="arcrole conceptFrom conceptTo linkroleDefinition">
+[du-1614-Role-Source-Not-Permitted] The {arcrole} relationship source, {conceptFrom}, to {conceptTo}, link role %{inkroleDefinition}, is not permitted. {refSources}
+</message>
+<message code="EFM.6.16.14.targetRoleNotPermitted"
+         level="error"
+         module="validate/Filing.py" line="3196"
+         args="arcrole conceptFrom conceptTo linkroleDefinition">
+[du-1614-TargetRole-Not-Permitted] The {arcrole} relationship targetRole from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
 
 
@@ -1873,328 +2075,6 @@ Axis {dimension} in DRS role {linkrole}, missing targetrole consecutive relation
 [cp-0540-SRT-Members-For-SRT-Axes]  Taxonomy axes from the SRT taxonomy should use SRT or extension members for the following IFRS member concepts: {ifrsSrtConceptsUsed}.
 </message>
  -->
- 
-<!-- Note: EFM 6.23 is not currently in effect.  WcH comments nested in here have been stripped of xml comment markup.
-<message code="EFM.6.23.01"
-         level="error"
-         module="ValidateFiling.py" line="104"
-         args="filename">
-[rxd-2301-EX-2.01-Valid-File-Extension] The document type and naming of "{filename}" naming is not consistent with one or more of the following:
-
-EX-2.01.INS - XBRL Instance document (Required) *.xml
-EX-2.01.SCH - XBRL Taxonomy Extension Schema document *.xsd
-EX-2.01.REF - XBRL Taxonomy Extension Reference Linkbase document *.xml
-EX-2.01.CAL - XBRL Taxonomy Extension Calculation Linkbase document *.xml
-EX-2.01.DEF - XBRL Taxonomy Extension Definition Linkbase document *.xml
-EX-2.01.LAB - XBRL Taxonomy Extension Labels Linkbase document *.xml
-EX-2.01.PRE - XBRL Taxonomy Extension Presentation Linkbase document *.xml
-
-Please ensure that you comply with the document type and naming provided.
-</message>
-
-Note: WcH comments are not xml commented to allow whole section to be commented out
-WcH 6.23.01.noLinkElement would be caught by EDGARLink but is useful for offline validation
-<message code="EFM.6.23.01.noLinkElement"
-         level="error"
-         module="ValidateFilingDTS.py" line="610"
-         args="filename">
-[rxd-2301-EX-2.01-Valid-File-Extension] Invalid linkbase file name: {filename}, has no extended link element, cannot determine link type.
-</message>
-
-NOTE THAT EFM.6.23.02 can only be detected in Edgar, as Arelle will only load a single INS
-
-<message code="EFM.6.23.03"
-         level="error"
-         module="ValidateFiling.py" line="860"
-         args="contextID documentType submissionType">
-[rxd-2303-EX-2.01-Document-Submission-Type-Value] The value for dei:DocumentType, {documentType}, does not match the submission type, {subType}.
-</message>
-
-<message code="EFM.6.23.04"
-         level="error"
-         module="ValidateFiling.py" line="860"
-         args="contextID documentType exhibitType">
-[rxd-2304-EX-101-Document-Type-Value] The value for dei:DocumentType, {documentType}, is not allowed for EX-101.INS attachments.
-</message>
-
-<message code="EFM.6.23.05"
-         level="error"
-         module="ValidateFiling.py" line="860"
-         args="contextID documentType exhibitType">
-[rxd-2305-EX-2.01-Document-Type-Value] The value for dei:DocumentType, {documentType}, is not allowed for EX-2.01.INS attachments. 
-</message>
-
-<message code="EFM.6.23.06"
-         level="error"
-         module="ValidateFiling.py" line="1004"
-         args="documentType">
-[rxd-2306-Amendment-Number-Existence] The value for dei:DocumentType, {documentType}, requires a value for rxd:AmendmentNumber in the Required Context.
-</message>
-
-<message code="EFM.6.23.07"
-         level="error"
-         module="ValidateFiling.py" line="1008"
-         args="instance">
-[rxd-2307-RXD-Schema-Existence] The DTS of {instance} must use a standard schema from Family SD in edgartaxonomies.xml.
-</message>
-
-<message code="EFM.6.23.08"
-         level="error"
-         module="ValidateFiling.py" line="975"
-         args="instance">
-[rxd-2308-RXD-Presentation-Existence] The DTS of {instance} must use a standard presentation linkbase from Family RXD in edgartaxonomies.xml.
-</message>
-
-<message code="EFM.6.23.09"
-         level="error"
-         module="ValidateFiling.py" line="979"
-         args="instance">
-[rxd-2309-RXD-Definition-Existence] The DTS of {instance} must use a standard definition linkbase from Family RXD in edgartaxonomies.xml.
-</message>
-
-<message code="EFM.6.23.10"
-         level="error"
-         module="ValidateFiling.py" line="967"
-         args="instance">
-[rxd-2310-RXD-Version-Value] The DTS of {instance} must use only one version of the RXD schema.
-</message>
-
-<message code="EFM.6.23.11"
-         level="error"
-         module="ValidateFiling.py" line="990"
-         args="instance">
-[rxd-2311-Country-Version-Value] The DTS of {instance} must use only one version of the COUNTRY schema.
-</message>
-
-<message code="EFM.6.23.12"
-         level="error"
-         module="ValidateFiling.py" line="1039"
-         args="schemaName name concept">
-[rxd-2312-Custom-Element-Value] {schemaName} contained a non-abstract declaration for {name} that is not a Text Block.  Use a standard element or change the type to Text Block.
-</message>
-
-<message code="EFM.6.23.13"
-         level="error"
-         module="ValidateFiling.py" line="1043"
-         args="schemaName name concept">
-[rxd-2313-Custom-Dimension-Existence] {schemaName} contained a declaration for {name} that is not allowed.  Use dimensions from a standard schema instead.</message>
-
-<message code="EFM.6.23.14"
-         level="error"
-         module="ValidateFiling.py" line="1051"
-         args="linkbaseName linkrole source target">
-[rxd-2314-Dimension-Domain-Relationship-Existence] In {linkbaseName} the target of the dimension-domain relationship in role {linkrole} from {source} to {target} must be the default member of {source}.
-</message>
-
-<message code="EFM.6.23.15"
-         level="error"
-         module="ValidateFiling.py" line="1090"
-         args="linkrole linkrole2 source target target2">
-[rxd-2315-Consecutive-Domain-Member-Relationships-Existence] The domain-member relationship in {linkrole}s from {source}s to {target}s is consecutive with domain-member relationship in {linkrole2}s to {target2}s. 
-</message>
-
-<message code="EFM.6.23.16"
-         level="error"
-         module="ValidateFiling.py" line="1072"
-         args="member dimension1 linkrole1 dimension2 linkrole2">
-[rxd-2316-Member-Multiple-Axis-Existence] Member element {member} appears in more than one axis: {dimension1} and {dimension2}.  Use distinct members for the Project, Country, Government, Legal Entity, Business Segment and Payment Type axes. 
-</message>
-
-<message code="EFM.6.23.17"
-         level="error"
-         module="ValidateFiling.py" line="1078"
-         args="member linkrole">
-[rxd-2317-Payment-Type-Dimension-Value] The member {member} of dimension rxd:PaymentTypeAxis in link role {linkrole} must be a QName with namespace that begins with "http://xbrl.sec.gov/rxd/".
-</message>
-
-<message code="EFM.6.23.18"
-         level="error"
-         module="ValidateFiling.py" line="1082"
-         args="member linkrole">
-[rxd-2318-Country-Dimension-Member-Value] The member {member} of dimension rxd:CountryAxisAxis in link role {linkrole} must be a QName with namespace that begins with "http://xbrl.sec.gov/country/".
-</message>
-
-<message code="EFM.6.23.19"
-         level="error"
-         module="ValidateFiling.py" line="1170"
-         args="context dimension">
-[rxd-2319-Project-Payment-Amount-Existence] A payment for each project axis member is required.  Provide a value for element rxd:Pr with value {dimension} in context {context}.
-</message>
-
-<message code="EFM.6.23.20"
-         level="error"
-         module="ValidateFiling.py" line="1123"
-         args="context dimension member fact">
-[rxd-2320-Project-Payment-Type-Existence] A payments type for each project is required.  Provide a value for element rxd:P in context {context} with axis {dimension} and member {member}.
-</message>
-
-<message code="EFM.6.23.21"
-         level="error"
-         module="ValidateFiling.py" line="1178"
-         args="context dimension member">
-[rxd-2321-Government-Payment-Amount-Existence] A payment amount for each government is required.  Provide a value for element rxd:Gv with value {member}.
-</message>
-
-<message code="EFM.6.23.22"
-         level="error"
-         module="ValidateFiling.py" line="1123"
-         args="context dimension member fact">
-[rxd-2322-Government-Payment-Type-Existence] A total of payments for each government is required.  Provide a value for element rxd:Payments in context {context}.
-</message>
-
-<message code="EFM.6.23.23"
-         level="error"
-         module="ValidateFiling.py" line="1183"
-         args="context paymentType">
-[rxd-2323-Category-Total-Existence] Payment type {paymentType} was reported in context {context} but there is no fact with element {paymentType} in the Required Context.
-</message>
-
-<message code="EFM.6.23.24"
-         level="error"
-         module="ValidateFiling.py" line="1142"
-         args="context fact1 fact2 fact2NotNil">
-[rxd-2324-Payment-Currency-Existence] The currency of each payment is required.  Provide a value for element rxd:Cu in context {context}.
-</message>
-
-<message code="EFM.6.23.25"
-         level="error"
-         module="ValidateFiling.py" line="1142"
-         args="context fact1 fact2 fact2NotNil">
-[rxd-2325-Payment-Date-Existence] The financial period (fiscal year) of each payment is required.  Provide a value for element rxd:D in context {context}.
-</message>
-
-<message code="EFM.6.23.26"
-         level="error"
-         module="ValidateFiling.py" line="1023"
-         args="fyEndDate reportingPeriod">
-[rxd-2326-Fiscal-Year-End-Date-Value] The financial period {reportingPeriod} does not match the fiscal year end {fyEndDate}.
-</message>
-
-<message code="EFM.6.23.27"
-         level="error"
-         module="ValidateFiling.py" line="1030"
-         args="reportingPeriod">
-[rxd-2327-Payment-Financial-Period-Existence] The financial period {reportingPeriod} does not match rxd:D in any facts.
-</message>
-
-<message code="EFM.6.23.28"
-         level="error"
-         module="ValidateFiling.py" line="1142"
-         args="context fact1 fact2 fact2NotNil">
-[rxd-2328-Payment-Government-Existence] The government receiving each payment is required.  Provide a fact for element rxd:Gv in context {context}.
-</message>
-
-<message code="EFM.6.23.29"
-         level="error"
-         module="ValidateFiling.py" line="1142"
-         args="context fact1 fact2 fact2NotNil">
-[rxd-2329-Payment-Country-Existence] The country receiving each payment is required.  Provide a value for element rxd:Co in context {context}.
-</message>
-
-<message code="EFM.6.23.30"
-         level="error"
-         module="ValidateFiling.py" line="1104"
-         args="fact value context domain">
-[rxd-2330-Project-Value] The value of rxd:Pr must be a member of a Project Axis.  Change the value of rxd:Pr in context {context} to a member of rxd:ProjectAxis or add {value} to the members of rxd:ProjectAxis.
-</message>
-
-<message code="EFM.6.23.31"
-         level="error"
-         module="ValidateFiling.py" line="1104"
-         args="fact value context domain">
-[rxd-2331-Government-Value] The value of rxd:Gv must be a member of the Government Axis.  Change the value of rxd:Gv in context {context} to a member of rxd:GovernmentAxis or add {value} to the members of rxd:GovernmentAxis.
-</message>
-
-<message code="EFM.6.23.32"
-         level="error"
-         module="ValidateFiling.py" line="1192"
-         args="value context endDate">
-[rxd-2332-Date-Value] The value of rxd:D in context {context}, {value}, is not equal to {endDate}.  Change the context end date or the value.
-</message>
-
-<message code="EFM.6.23.33"
-         level="error"
-         module="ValidateFiling.py" line="1104"
-         args="fact value context domain">
-[rxd-2333-Segment-Value] The value of rxd:Sm must be a member of the Business Segment Axis.  Change the value of rxd:Sm in context {context} to a member of rxd:BusinessSegmentAxis or add {value} to the members of rxd:BusinessSegmentAxis.
-</message>
-
-<message code="EFM.6.23.34"
-         level="error"
-         module="ValidateFiling.py" line="1104"
-         args="fact value context domain">
-[rxd-2334-Entity-Value] The value of rxd:E must be a member of a Legal Entity Axis.  Change the value of rxd:E in context {context} to a member of rxd:LegalEntityAxis or add {value} to the members of rxd:LegalEntityAxis.
-</message>
-
-<message code="EFM.6.23.35"
-         level="error"
-         module="ValidateFiling.py" line="1142"
-         args="context fact1 fact2 fact2NotNil">
-[rxd-2335-In-Kind-Method-Existence] rxd:Km has a value in context {context} if and only if the In-kind flag rxd:K is Y in that context. Provide both or neither.
-</message>
-
-<message code="EFM.6.23.36"
-         level="error"
-         module="ValidateFiling.py" line="901"
-         args="contextID documentType elementName">
-[rxd-2336-Reporting-Currency-Existence] The Required Context does not have a dei:EntityReportingCurrencyISOCode fact.
-</message>
-
-<message code="EFM.6.23.37"
-         level="error"
-         module="ValidateFiling.py" line="1148"
-         args="fact context unit currency">
-[rxd-2337-Payment-Unit-Value] An {fact} fact in context {context} has unit {unit} not matching the dei:EntityReportingCurrencyISOCode {currency}.
-</message>
-
-<message code="EFM.6.23.38"
-         level="error"
-         module="ValidateFiling.py" line="1155"
-         args="context currency">
-[rxd-2338-Conversion-Method-Value] A value cannot be given for rxd:Cm in context {context} because the payment is in the reporting currency {currency}.
-</message>
-
-<message code="EFM.6.23.39"
-         level="error"
-         module="ValidateFiling.py" line="1142"
-         args="context fact1 fact2 fact2NotNil">
-[rxd-2339-Conversion-Method-Currency-Value] A value cannot be given for rxd:Cm in context {context} because there is not a non-nil rxd:Cu in that context.
-</message>
-
-<message code="EFM.6.23.40"
-         level="error"
-         module="ValidateFiling.py" line="1187"
-         args="context">
-[rxd-2340-Amount-Line-Existence] There is a fact with element rxd:A in context {context} not defining its payment number.
-</message>
-
-<message code="EFM.6.23.41"
-         level="error"
-         module="ValidateFiling.py" line="1161"
-         args="context unit currency">
-[rxd-2341-Amount-Currency-Existence] The unit {unit} of rxd:A in context {context} is not consistent with the value {currency} of rxd:Cu.  Change one or the other to match.
-</message>
-
-<message code="EFM.6.23.42"
-         level="error"
-         module="ValidateFiling.py" line="1142"
-         args="context fact1 fact2 fact2NotNil">
-[rxd-2342-In-Kind-Amount-Existence] The in-kind flag fact rxd:K is in a context {context} without an amount rxd:A fact.  Remove the rxd:K fact or add an rxd:A fact in this context.</message>
-
-<message code="EFM.6.23.43"
-         level="error"
-         module="ValidateFiling.py" line="1142"
-         args="context fact1 fact2 fact2NotNil">
-[rxd-2343-Project-Amount-Existence] The project name fact rxd:Pr is in a context {context} without an amount rxd:A fact.  Remove the rxd:Pr fact or add an rxd:A fact in this context.
-</message>
-
-<message code="EFM.6.23.44"
-         level="error"
-         module="ValidateFiling.py" line="1128"
-         args="context value">
-[rxd-2344- Country-Value] The value of rxd:Co in context {context}, {value}, is not in the domain of rxd:CountryAxis. Change the value of rxd:Co or add it {value} to the Country Axis.
-</message>
--->
 
 <message code="EFM.6.26.01"
          level="warning"
@@ -2302,37 +2182,39 @@ Example:
 <message code="dq-{efmSection}-{tag}-Unexpected">[dq-{efmSection}-{tag}-Unexpected] Submission type {subType} {severityVerb} not have a value for {tag} in the {context}. {refSources}</message>
 <message code="dq-{efmSection}-{taxonomy}-Facts-Unexpected">[dq-{efmSection}-{taxonomy}-Facts-Unexpected]Submission type {subType} {severityVerb} not report {taxonomy} namespace facts. {refSources}</message>
 <message code="dq-{efmSection}-{taxonomy}-Version-Required">[dq-{efmSection}-{taxonomy}-Version-Required]Submission type {subType} {severityVerb} use {taxonomy} version {earliestTaxonomy} or later.</message>
-<message code="dq-{efmSection}-Taxonomy-Url-Required">[dq-{efmSection}-Taxonomy-Url-Required]Submission type {subType} document type {docType} {severityVerb} contain a taxonomy URL {taxonomy} in its DTS.</message>
+<message code="dq-{efmSection}-Taxonomy-Url-Required">[dq-{efmSection}-Taxonomy-Url-Required]Submission type {subType} document type {docType} {severityVerb} contain a taxonomy URL matching {taxonomyPattern} in its DTS.</message>
 <message code="dq-{efmSection}-{tag}-{value}">[dq-{efmSection}-{tag}-{value}] In submission type {subType}, {tag} value {severityVerb} have {value} in the {context}. {refSources}</message>
-<message code="dq-{efmSection}-{tag}-Value">[dq-{efmSection}-{tag}-Value] In submission type {subType}, {tag} value {severityVerb} have {value} in the {context}. {refSources}</message>
-<message code="dq-{efmSection}-{tag}-{otherTag}">[dq-{efmSection}-{tag}-{otherTag}] In submission type {subType}, {tag} value {severityVerb} have value &quot;{value}&quot; in the same context as {otherTag}, {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-Value">[dq-{efmSection}-{tag}-Value] In submission type {subType}, {tag} value {severityVerb} be {qualifier}{expectedValue} in the {context}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTag}">[dq-{efmSection}-{tag}-{otherTag}] In submission type {subType}, {tag} value {severityVerb} have value {value} in the same context as {otherTag}, {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Missing">[dq-{efmSection}-{tag}-{otherTag}-Missing] In submission type {subType}, {tag} requires {otherTag} in the same context, {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{tag}-Value-{otherTag}-Missing">[dq-{efmSection}-{tag}-Value-{otherTag}-Missing] In submission type {subType}, {tag} value &quot;{value}&quot; requires {otherTag} in the same context, {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-Value-{otherTag}-Missing">[dq-{efmSection}-{tag}-Value-{otherTag}-Missing] In submission type {subType}, {tag} value, {value}, requires {otherTag} in the same context, {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTags}-Missing">[dq-{efmSection}-{tag}-{otherTags}-Missing] In submission type {subType}, {tag} requires a non-empty value for at least one of {otherTags} in the same context, {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Exclusive">[dq-{efmSection}-{tag}-{otherTag}-Exclusive] In submission type {subType}, either {tag} or {otherTag} {severityVerb} have a value, but not both, in context, {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-Exclusive">[dq-{efmSection}-{tags}-Exclusive] In submission type {subType}, only one of {tags} {severityVerb} have a value, but not both, in context, {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{tags}-Exclusive-Values">[dq-{efmSection}-{tags}-Exclusive-Values] In submission type {subType}, exactly one of {tags} {severityVerb} have the value &quot;{value}&quot; and the others {severityVerb} have the value &quot;{otherValue}&quot;.</message>
+<message code="dq-{efmSection}-{tags}-Exclusive-Values">[dq-{efmSection}-{tags}-Exclusive-Values] In submission type {subType}, exactly one of {tags} {severityVerb} have the value {value} and the others {severityVerb} have the value {otherValue}.</message>
 <message code="dq-{efmSection}-{tags}-Exclusive-Value">[dq-{efmSection}-{tags}-Exclusive-Value] In submission type {subType}, only one of {tags} {severityVerb} have a value {value}.</message>
+<message code="dq-{efmSection}-{tags}-Exclusive-Presence">[dq-{efmSection}-{tags}-Exclusive-Presence] In submission type {subType}, one of {tags} {severityVerb} be present in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-Inclusive">[dq-{efmSection}-{tags}-Inclusive] In submission type {subType}, at least one of {tags} {severityVerb} have a value. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-Both">[dq-{efmSection}-{tags}-Both] In submission type {subType}, both or neither of {tags} {severityVerb} have a value. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Dependency">[dq-{efmSection}-{tag}-{otherTag}-Dependency] In submission type {subType}, {tag} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{tag}-{otherTag}-Value-Dependency">[dq-{efmSection}-{tag}-{otherTag}-Value-Dependency]In submission type {subType}, {tag} {severityVerb} have the value &quot;{value}&quot;  if and only if {otherTag} has the value &quot;{value}&quot;  in context {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTag}-Value-Dependency">[dq-{efmSection}-{tag}-{otherTag}-Value-Dependency] In submission type {subType}, {tag} {severityVerb} have the value {value}  if and only if {otherTag} has the value {value} in context {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-Value-{otherTag}-Dependency">[dq-{efmSection}-{tag}-Value-{otherTag}-Dependency] In submission type {subType}, when {tag} has the value {value} {otherTag} {severityVerb} have a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTags}-Dependency">[dq-{efmSection}-{tag}-{otherTags}-Dependency] In submission type {subType}, {tag} {severityVerb} have a value if one of {otherTags} has a value in context {contextID}. {refSources}</message>
-<message code="dq-{efmSection}-{tag}-{otherTag}-Dependent-Value">[dq-{efmSection}-{tag}-{otherTag}-Dependent-Value] In submission type {subType}, {tag} {severityVerb} be provided if and only if {otherTag} has value &quot;{value}&quot; in context {contextID}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{otherTag}-Dependent-Value">[dq-{efmSection}-{tag}-{otherTag}-Dependent-Value] In submission type {subType}, {tag} {severityVerb} be provided if and only if {otherTag} has value {value} in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Inclusive">[dq-{efmSection}-{tag}-{otherTag}-Inclusive] In submission type {subType}, either {tag} or {otherTag} should have a value, or both. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Exclusive-Dependency">[dq-{efmSection}-{tag}-{otherTag}-Exclusive-Dependency] In submission type {subType}, {tag} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-{otherTag}-Exclusive-Dependency">[dq-{efmSection}-{tags}-{otherTag}-Exclusive-Dependency] In submission type {subType}, one of {tags} {severityVerb} have a value if and only if {otherTag} has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-{otherTags}-Exclusive-Dependency">[dq-{efmSection}-{tags}-{otherTags}-Exclusive-Dependency] In submission type {subType}, one of {tags} {severityVerb} have a value if one of {otherTags} has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tags}-Mutual-Dependency">[dq-{efmSection}-{tags}-Mutual-Dependency]In submission type {subType}, all of {tags} {severityVerb} have a value if any of them has a value in context {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{headerTag}-Dependency">[dq-{efmSection}-{tag}-{headerTag}-Dependency] In submission type {subType}, {tag} {severityVerb} have a value if and only if header element {headerTag} is provided. {refSources}</message>
-<message code="dq-{efmSection}-{tag}-{headerTag}-Dependent-Value">[dq-{efmSection}-{tag}-{headerTag}-Dependent-Value] In submission type {subType}, when {tag} has a value &quot;{value}&quot;, header element {headerTag} {severityVerb} have a value &quot;{otherValue}&quot;. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{headerTag}-Dependent-Value">[dq-{efmSection}-{tag}-{headerTag}-Dependent-Value] In submission type {subType}, when {tag} has a value {value}, header element {headerTag} {severityVerb} have a value {otherValue}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-Security-Axes">[dq-{efmSection}-{tag}-Security-Axes] In submission type {subType}, {tag} {severityVerb} have values without axes if a single non-ADR member, otherwise in separate contexts by axis member, but not both, in contexts {contextIDs}. {refSources}</message>
 <message code="dq-0514-Hidden-Cover-Page-Fact-Not-Referenced">[dq-0514-Hidden-Cover-Page-Fact-Not-Referenced] Submission type {subType} has {n} cover page fact(s) in ix:hidden that were not referenced by any -sec-ix-hidden style property: (namesOfTags). {refSources}</message>
-<message code="dq-0540-{tag}-Value">[dq-0540-{tag}-Value] In submission type {subType}, {tag} value &quot;{value}&quot;, is not equivalent to header element {headerTag} value &quot;{valueOfHeaderTag}&quot; in the {context}. {refSources}</message>
-<message code="dq-0540-CurrentFiscalYearEndDate-Registrant-Value">[dq-0540-CurrentFiscalYearEndDate-Registrant-Value] In submission type {subType}, {tag} value &quot;{value}&quot;, {severityVerb} match the Entity Registrant Fiscal Year End Date &quot;{valueOfHeaderTag}&quot; on record within EDGAR. {refSources}</message>
-<message code="dq-0540-CurrentFiscalYearEndDate-Submission-Value">[dq-0540-CurrentFiscalYearEndDate-Submission-Value] In submission type {subType}, {tag} value &quot;{value}&quot;, does not match the Submission Header Fiscal Year End Date &quot;{valueOfHeaderTag}&quot;. {refSources}</message>
+<message code="dq-0540-{tag}-Value">[dq-0540-{tag}-Value] In submission type {subType}, {tag} value {value}, is not equivalent to header element {headerTag} value, {valueOfHeaderTag}, in the {context}. {refSources}</message>
+<message code="dq-0540-CurrentFiscalYearEndDate-Registrant-Value">[dq-0540-CurrentFiscalYearEndDate-Registrant-Value] In submission type {subType}, {tag} value, {value}, {severityVerb} match the Entity Registrant Fiscal Year End Date {valueOfHeaderTag} on record within EDGAR. {refSources}</message>
+<message code="dq-0540-CurrentFiscalYearEndDate-Submission-Value">[dq-0540-CurrentFiscalYearEndDate-Submission-Value] In submission type {subType}, {tag} value, {value}, does not match the Submission Header Fiscal Year End Date {valueOfHeaderTag}. {refSources}</message>
 <message code="dq-0540-EntityExTransitionPeriod-EntityEmergingGrowthCompany-Dependency">[dq-0540-EntityExTransitionPeriod-EntityEmergingGrowthCompany-Dependency] In submission type {subType}, EntityExTransitionPeriod must have a value if EntityEmergingGrowthCompany has value &quot;true&quot; in context {contextID}, else it should not be provided. {refSources}</message>
-<message code="dq-0540-{headerTag}-Unexpected">[dq-0540-{headerTag}-Unexpected] Header element {headerTag} value &quot;{value}&quot; is not applicable for {subType} submission type. {refSources}</message>
+<message code="dq-0540-{headerTag}-Unexpected">[dq-0540-{headerTag}-Unexpected] Header element {headerTag} value {value} is not applicable for {subType} submission type. {refSources}</message>
 
 <!--  DQCRT templated messages -->
 <!-- template
@@ -2351,6 +2233,7 @@ Example:
 <message code="dqc-0009-Element-A-Must-Be-Less-Than-Or-Equal-To-Element-B-Pension">[dqc-0009-Element-A-Must-Be-Less-Than-Or-Equal-To-Element-B] The value of {lesserName}, {lesserValue}, should be less than or equal to {greaterName}, {greaterValue}. {lesserName} is a subset of {greaterName}. The properties of this {lesserName} fact are: Context: {contextID}, Unit: {unitID}, Rule Element Id: {ruleElementId}. {refSources}</message>
 <message code="dqc-0009-Element-A-Must-Be-Less-Than-Or-Equal-To-Element-B-Future-Contributions">[dqc-0009-Element-A-Must-Be-Less-Than-Or-Equal-To-Element-B] The value of {lesserName}, {lesserValue}, should be less than or equal to {greaterName}, {greaterValue}. The value of the remaining contribution for the year should be less than or equal to the expected contributions for the entire year. The properties of this {lesserName} fact are: Context: {contextID}, Unit: {unitID}, Rule Element Id: {ruleElementId}. {refSources}</message>
 <message code="dqc-0009-Element-A-Must-Be-Less-Than-Or-Equal-To-Element-B-Benefit-Obligation">[dqc-0009-Element-A-Must-Be-Less-Than-Or-Equal-To-Element-B] The value of {lesserName}, {lesserValue}, should be less than or equal to {greaterName}, {greaterValue}. {lesserName} must be less than or equal to {greaterName}, as it does not include assumptions about future compensation levels. The properties of this {lesserName} fact are: Context: {contextID}, Unit: {unitID}, Rule Element Id: {ruleElementId}. {refSources}</message>
+<message code="dqc-0013-Negative-Values-With-Dependence">[dqc-0013-Negative-Values-With-Dependence] It is expected that {name} with a value of {value} will be reported with a value equal to or greater than zero if net income before tax is positive. In this case net income before tax is {incomeBeforeTax}. The value reported for the tax rate reconciliation item is less than zero. The preparer should consider if the value is input correctly for this assertion and, after considering the appropriateness of the input, if incorrect, input the amount as a positive (i.e., absolute) value and provide a negated label, if desired, for rendering purposes.  The properties of this {name} fact are: Context: {contextID}, Unit: {unitID}. {refSources}</message>
 <message code="dqc-0015-Negative-Values">[dqc-0015-Negative-Values] Fact {name} has a value of {value} which is less than zero. This element should not have a negative value. The preparer should consider if the value is input correctly for this assertion and, after considering the appropriateness of the input, if incorrect, input the amount as a positive (i.e., absolute) value and provide a negated label. The properties of this {name} fact are: Context: {contextID}, Unit: {unitID}, Rule Element Id: {ruleElementId}. {refSources}</message>
 <message code="dqc-0033-Document-Period-End-Date-Context">[dqc-0033-Document-Period-End-Date-Context] The ending date of {endDate} used for {name} must be the same as the Document Period End Date, {documentPeriodEndDate}. The properties of this {name} fact are Context: {contextID}, Unit: {unitID}, Rule Element Id: {ruleElementId}. {refSources}</message>
 <message code="dqc-0036-Document-Period-End-Date-Context-Fact-Value-Check">[dqc-0036-Document-Period-End-Date-Context-Fact-Value-Check] The ending date of {endDate} used for {name} must be the same as the Document Period End Date, {documentPeriodEndDate}. The properties of this {name} fact are Context: {contextID}, Rule Element Id: {ruleElementId}. {refSources}</message>
@@ -2359,11 +2242,18 @@ Example:
 <message code="dqc-0043-Incorrect-Calculation-Weights-In-Operating-Cash-Flows-debit">[dqc-0043-Incorrect-Calculation-Weights-In-Operating-Cash-Flows] The concept {bottomName} is included in the calculation of {topName}.{bottomName} is a debit balance type concept representing a natural cash inflow in the reconciliation of net income (loss) to {topName}. A debit balance type concept should always be assigned a positive one (+1) calculation weight as it is an addition to net income (loss) to reconcile to {topName}.{bottomName} has been incorrectly provided a negative one (-1) calculation weight in the extension taxonomy. Correct the calculation weight to positive one (+1) and input the value as a positive amount if it is an addition of a non-cash expense or loss, a decrease in an asset, or an increase in a liability. If the value is an increase in an asset or a decrease in a liability and {bottomName} is the correct concept, input a negative value. Rule Element Id: {ruleElementId}. {refSources}</message>
 <message code="dqc-0043-Incorrect-Calculation-Weights-In-Operating-Cash-Flows-">[dqc0043-Incorrect-Calculation-Weights-In-Operating-Cash-Flows-] The concept {bottomName} is included in the calculation of {topName}.{bottomName} does not have a balance type attribute. If {bottomName}, by definition, represents a natural cash inflow (i.e., a non-cash add-back, decrease in an asset, or an increase in a liability) in the reconciliation of net income (loss) to {topName}, then the concept should be given a positive one (+1) calculation weight. If {bottomName}, by definition, represents a natural cash outflow (i.e., a non-cash reduction, an increase in an asset, or a decrease in a liability) in the reconciliation of net income (loss) to {topName}, then the concept should be given a negative one (-1) calculation weight. The significant portion of values input to the Instance are expected to be absolute; the values are debits or credits, not positive or negative. As there is no balance type attribute, the positive input would represent the value that is consistent with the substance of the concept, as defined. Rule Element Id: {ruleElementId}. {refSources}</message>
 <message code="dqc-0044-Accrual-Items-Used-In-Investing-Or-Financing-Cash-Flow-Reconciliation">[dqc-0044-Accrual-Items-Used-In-Investing-Or-Financing-Cash-Flow-Reconciliation] The concept {name} with a value of {value} is an accrual-based item in the US GAAP taxonomy that is included in the sum of cash provided by (used in) investing activities in the cash flows of the extension taxonomy.  Accrual-based concepts do not belong and should not be included in the investing section of the cash flows statement of the extension taxonomy. The properties of this {name} fact are Context: {contextID}, Unit: {unitID}, Rule Element Id: {ruleElementId}. {refSources}</message>
+<message code="dqc-0047-Calculation-Descendants-with-No-Balance-Type">[dqc-0047-Calculation-Descendants-with-No-Balance-Type] In the company's extension taxonomy the concept {parentName} includes {childName} as a summation-child. The concept {childName}  should not appear as a child of {parentName} because it does not have a balance type. Increase (Decrease) items without balance attributes are used in a roll forward and should not be used in the cash flow statement as they represent the impact on the balance sheet item which is the opposite of the impact on cash. {refSources}</message>
 <message code="dqc-0048-Required-Calculation-Parent-Element-In-The-Cash-Flow-Statement">[dqc-0048-Required-Calculation-Parent-Element-In-The-Cash-Flow-Statement] The filing should include in the cash flow statement calculation linkbase(s) {linkRole} - {linkroleDefinition} one of the following elements as the root(first element) of the calculation tree to represent the aggregate change in cash for the period: CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect, CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseExcludingExchangeRateEffect, NetCashProvidedByUsedInContinuingOperations (As long as the element NetCashProvidedByUsedInDiscontinuedOperations is also included the reconciliation between opening and closing cash). The calculation linkbase in the filing has the following root elements defined: {rootNames}. Rule Element Id: {ruleElementId}. {refSources}</message>
 <message code="dqc-0048-Required-Calculation-Parent-Element-In-The-Cash-Flow-Statement-No-Roles">[dqc-0048-Required-Calculation-Parent-Element-In-The-Cash-Flow-Statement] The filing should include in the cash flow statement calculation linkbase(s) one of the following elements as the root(first element) of the calculation tree to represent the aggregate change in cash for the period: CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect, CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseExcludingExchangeRateEffect, NetCashProvidedByUsedInContinuingOperations (As long as the element NetCashProvidedByUsedInDiscontinuedOperations is also included the reconciliation between opening and closing cash). The calculation linkbase in the filing has no relationships for the role(s): {linkRoles}. Rule Element Id: {ruleElementId}. {refSources}</message>
+<message code="dqc-0053-Excluded-Members-from-an-Axis">[dqc-0053-Excluded-Members-from-an-Axis] The member, {member} is used on the {axis} with element {factName} with a value of ${value}. The  {member} member should not be used with the {axis} in linkrole {linkRole}. {refSources}</message>
+<message code="dqc-0053-Excluded-Members-from-an-Axis-No-Facts">[dqc-0053-Excluded-Members-from-an-Axis-No-Facts] The member, {member} is used on the {axis}.  There are no facts associated with this member and axis. {member} members should not be used with the {axis} in linkrole {linkRole}. {refSources}</message>
+<message code="dqc-0057-Cash-Flow-Opening-and-Closing-Balances-7494">[dqc-0057-Cash-Flow-Opening-and-Closing-Balances-7494] One of the following elements {elementNames} should appear as the opening and closing balance in the cash flow statement using the group {role}. Instead the following balance items have been used in this statement {balanceElements}. Depending if ASU-2016-18 has been adopted at least one of the opening and closing balance items listed must be used in the cash flow statement. {refSources}</message>
+<message code="dqc-0057-Cash-Flow-Opening-and-Closing-Balances-9728">[dqc-0057-Cash-Flow-Opening-and-Closing-Balances-9728] One of the following elements {elementNames} should appear as the opening and closing balance in the cash flow statement using the group {role}. Instead the following balance items have been used in this statement {balanceElements}. Due to the implementaion of ASU-2016-18 at least one of the opening and closing balance items listed must be used in the cash flow statement. {refSources}</message>
 <message code="dqc-0060-Element-Dependence-For-Specific-Elements">[dqc-0060-Element-Dependence-For-Specific-Elements] The fact {name} has been reported with a value of {value}. However no value has been reported for dependent element(s): {dependentElements}. The properties of this {name} fact are Context: {contextID}, Unit: {unitID}, Rule Element Id: {ruleElementId}. {refSources}</message>
+<message code="dqc-0071-Revenue/Cost-Single-Member">[dqc-0071-Revenue/Cost-Single-Member] The filing has reported a value for the element {name} with a value of {value} using the ProductOrServiceAxis in the role {role} on the table {table}. However, the only member used to disaggregate the total for {name} was the member {member}. If only one member is used on this axis then the filer should either: 1. Retag the filing using the element TypeOfRevenueExtensibleList/TypeOfCostGoodOrServiceExtensibleList with a value of {member} and the member {member} should be removed from the value as it represents the aggregate value of {name}; or, 2. Tag the aggregate value of {name} with a value of {value} without the product of service axis. This rule will not generate an error if the aggregate value of {name} is reported.  The properties of this {name} fact are: Context: {contextID}, Unit: {unitID}. {refSources}</message>
+<message code="dqc-0073-Plan-Asset-Categories-Permissible-Line-Items">[dqc-0073-Plan-Asset-Categories-Permissible-Line-Items] The concept {name} with a value of {value} is used with the DefinedBenefitPlanByPlanAssetCategoriesAxis. This element cannot be used with this axis.  The properties of this {name} fact are: Context: {contextID}, Unit: {unitID}.  The allowable list of elements that can be used are as follows: {allowableNames}. {refSources}</message>
 <message code="dqc-0079-Extension-Members">[dqc-0079-Extension-Members] {member} is an extension member on the axis {axis} that was reported in the extension taxonomy, but duplicates a concept, {replacement}, that exists in the SEC Non-GAAP taxonomies. Rule Element Id: {ruleElementId}. {refSources}</message>
-
+<message code="dqc-0084-Durational-Aggregation">[dqc-0084-Durational-Aggregation] Sum of the cumulative periods of {sumPeriods} for {name} does not match the reported total of {value}, a difference of {difference}. Period values are: {periods}. This rule takes into account possible rounding of values across periods and the decimals associated with each fact. This rule used a tolerance of {tolerance} which is calculated by taking the lowest decimal value used in the calculation of {minDecimals}. If there is a difference between the sum of the periods and the aggregate value reported the difference may be due to incorrect decimals associated with the individual fact values. The filer should check that the fact values do not have a decimal value that implies a higher level of accuracy than intended. In those rare cases where there are small immaterial differences that are less than 1% of the total and decimals are zero the rule can be overidden. This is performed by creating an extension element called ImmaterialDifferenceFlag. If this element has any value in any context in the instance then the immaterial difference will not result in an error. The rule excludes elements in the base taxonomy that cannot be aggregated such as an average, maximum or minimum value. The properties of this {name} fact are: Context: {contextID}, Unit: {unitID}. {refSources}</message>
 
 <!-- these need attention
 <message code="EFM.N/A"

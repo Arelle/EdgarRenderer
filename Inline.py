@@ -1,4 +1,4 @@
-''' 
+'''
 Inline XBRL Document Set (formerly a) plug-in.
 
 Supports opening manifest file that identifies inline documents of a document set.
@@ -29,7 +29,7 @@ DEFAULT_INSTANCE_EXT = ".xml"  # the extension on the instance to be saved
 DEFAULT_DISTINGUISHING_SUFFIX = "_htm."  # suffix tacked onto the base name of the source inline document
 USUAL_INSTANCE_EXTS = {"xml", "xbrl"}
 
-def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, reportSummaryList, suffix="_htm.", iext=".xml"):  
+def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, reportSummaryList, suffix="_htm.", iext=".xml"):
     if (modelXbrl is None): return
     if modelXbrl.modelDocument.type not in (Type.INLINEXBRL, Type.INLINEXBRLDOCUMENTSET):
         cntlr.logTrace(_("No Inline XBRL document."))
@@ -44,7 +44,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, reportSummaryL
                 saveTargetPath = os.path.basename(path) + suffix + 'zip'
             elif cntlr.reportsFolder is not None:
                 saveTargetPath = os.path.join(cntlr.reportsFolder, os.path.basename(path) + suffix + 'zip')
-    else: return       
+    else: return
     if modelDocument.type == Type.INLINEXBRLDOCUMENTSET:
         targetBasename = os.path.basename(modelDocument.targetDocumentPreferredFilename)
         targetSchemaRefs = modelDocument.targetDocumentSchemaRefs
@@ -75,15 +75,15 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, reportSummaryL
                 if refDoc.uri not in filingFiles:
                     filingFiles.add(refDoc.uri)
                     addRefDocs(refDoc)
-        addRefDocs(modelDocument) 
-    
+        addRefDocs(modelDocument)
+
     else:
          if cntlr.reportZip:
              filingZip = cntlr.reportZip
 
     saveTargetDocument(filing, modelXbrl, targetFilename, targetSchemaRefs,
                        outputZip=filingZip, filingFiles=filingFiles, suffix=suffix, iext=iext)
-        
+
     if options.saveTargetFiling:
         instDir = os.path.dirname(modelDocument.uri)  # TODO: will this work if the modelDocument was remote?
         for refFile in filingFiles:
@@ -91,14 +91,14 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, reportSummaryL
                 fileStream = filing.readFile(refFile, binary=True)[0]  # returned in a tuple
                 filingZip.writestr(modelDocument.relativeUri(refFile), fileStream.read())
                 fileStream.close()
-                
-    if options.saveTargetFiling and filingZip:          
+
+    if options.saveTargetFiling and filingZip:
         filingZip.close()
     if cntlr.reportZip and saveTargetPath:
         zipStream.seek(0)
         cntlr.reportZip.writestr(saveTargetPath, zipStream.read())
         zipStream.close()
-     
+
 def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocumentSchemaRefs,
                        outputZip=None, filingFiles=None,
                        suffix=DEFAULT_DISTINGUISHING_SUFFIX, iext=DEFAULT_INSTANCE_EXT):
@@ -121,6 +121,6 @@ def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocument
         if getattr(modelXbrl, "isTestcaseVariation", False):
             modelXbrl.extractedInlineInstance = True # for validation comparison
         modelXbrl.modelManager.showStatus(_("Saved extracted instance"), clearAfter=5000)
-        return # there can only be one "InlineDocumentSet.CreateTargetInstance" but just to be sure 
+        return # there can only be one "InlineDocumentSet.CreateTargetInstance" but just to be sure
     cntlr.logTrace(_("Unable to save extracted document, missing plugin class \"InlineDocumentSet.CreateTargetInstance\"."))
 

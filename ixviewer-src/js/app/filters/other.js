@@ -274,7 +274,7 @@ var FiltersOther = {
         'TO' : /^\s*([Tt]onga)\s*$/,
         'TT' : /^\s*([Tt]rinidad\s+[Aa]nd\s+[Tt]obago)\s*$/,
         'TN' : /^\s*([Tt]unisia)\s*$/,
-        'TR' : /^\s*([Tt]urkey)\s*$/,
+        'TR' : /^\s*([Tt][u\u00fc]rk(ey|iye))\s*$/,
         'TM' : /^\s*([Tt]urkmenistan)\s*$/,
         'TC' : /^\s*([Tt]urks\s+[Aa]nd\s+[Cc]aicos\s+[Ii]slands)\s*$/,
         'TV' : /^\s*([Tt]uvalu)\s*$/,
