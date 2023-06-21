@@ -2184,7 +2184,8 @@ Example:
 <message code="dq-{efmSection}-{taxonomy}-Version-Required">[dq-{efmSection}-{taxonomy}-Version-Required]Submission type {subType} {severityVerb} use {taxonomy} version {earliestTaxonomy} or later.</message>
 <message code="dq-{efmSection}-Taxonomy-Url-Required">[dq-{efmSection}-Taxonomy-Url-Required]Submission type {subType} document type {docType} {severityVerb} contain a taxonomy URL matching {taxonomyPattern} in its DTS.</message>
 <message code="dq-{efmSection}-{tag}-{value}">[dq-{efmSection}-{tag}-{value}] In submission type {subType}, {tag} value {severityVerb} have {value} in the {context}. {refSources}</message>
-<message code="dq-{efmSection}-{tag}-Value">[dq-{efmSection}-{tag}-Value] In submission type {subType}, {tag} value {severityVerb} be {qualifier}{expectedValue} in the {context}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-{expectedValue}">[dq-{efmSection}-{tag}-{value}] In submission type {subType}, {tag} value, {value}, {severityVerb} have {expectedValue} in the {context}. {refSources}</message>
+<message code="dq-{efmSection}-{tag}-Value">[dq-{efmSection}-{tag}-Value] In submission type {subType}, {tag} value, {value}, {severityVerb} be {qualifier}{expectedValue} in the {context}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}">[dq-{efmSection}-{tag}-{otherTag}] In submission type {subType}, {tag} value {severityVerb} have value {value} in the same context as {otherTag}, {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-{otherTag}-Missing">[dq-{efmSection}-{tag}-{otherTag}-Missing] In submission type {subType}, {tag} requires {otherTag} in the same context, {contextID}. {refSources}</message>
 <message code="dq-{efmSection}-{tag}-Value-{otherTag}-Missing">[dq-{efmSection}-{tag}-Value-{otherTag}-Missing] In submission type {subType}, {tag} value, {value}, requires {otherTag} in the same context, {contextID}. {refSources}</message>
