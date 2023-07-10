@@ -26,10 +26,8 @@
   <xsl:variable name="isRxp" select="0 &lt; (count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'sec.gov/rxp/20')]))"/>
   <xsl:variable name="isUsgaapOrIfrs" select="0 &lt; (count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'fasb.org/us-gaap/20')]) + count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'fasb.org/srt/20')]) + count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'ifrs.org/taxonomy/20') and contains(.,'/ifrs-full')]))"/>
   <xsl:variable name="isOnlyDei" select="(0 &lt; count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'sec.gov/dei/20')])) and (0 = count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[not(contains(.,'sec.gov/dei/20'))]))"/>
-  <xsl:variable name="isNotFinancialStatement">
-    <!-- only real financial statements get multipart menus with levels I, II, III, IV -->
-    <xsl:value-of select="$isRxp or $isN1a or $isn3n4n6  or $isn2prospectus  or $isfeeexhibit  or $isNcsr or $isProxy or $isSdr or $isOnlyDei "/>
-  </xsl:variable>
+  <!-- only real financial statements get multipart menus with levels I, II, III, IV -->
+  <xsl:variable name="isNotFinancialStatement" select="$isRxp or $isN1a or $isn3n4n6 or $isn2prospectus or $isfeeexhibit or $isNcsr or $isProxy or $isSdr or $isOnlyDei"/>
   <!-- only real financial statements and dei-only 8-k's get useless excel output -->
   <xsl:variable name="mayHaveExcel" select="$isOnlyDei or not($isNotFinancialStatement)"/>
 <!-- uncomment these while you look for syntax errors
