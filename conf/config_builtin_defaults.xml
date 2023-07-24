@@ -28,6 +28,7 @@
   <validateEFM>False</validateEFM>
   <zipOutputFile />
   <includeLogsInSummary>True</includeLogsInSummary>
+  <includeLogsInSummaryDissem>False</includeLogsInSummaryDissem>
   <processXsltInBrowser>False</processXsltInBrowser>
   <logMessageTextFile>arelleMessagesText.xml</logMessageTextFile>
 </configuration>
