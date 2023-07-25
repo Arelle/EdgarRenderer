@@ -18,7 +18,7 @@ from arelle.XmlUtil import addChild, copyIxFootnoteHtml, elementChildSequence
 from arelle.UrlUtil import isHttpUrl
 from arelle.ValidateFilingText import CDATApattern
 from arelle.XbrlConst import standardLabel, documentationLabel, terseLabel
-from arelle.XmlValidate import VALID
+from arelle.XmlValidateConst import VALID
 import os, zipfile, io
 from optparse import SUPPRESS_HELP
 from lxml.etree import XML, XMLSyntaxError
