@@ -33,5 +33,6 @@
   <!-- zipXbrlFilesToOutput: Boolean for EDGAR to copy input xbrl files to a zip in the <reportsFolder> when an accession number is provided in the input parameters; default is False -->
   <zipXbrlFilesToOutput>True</zipXbrlFilesToOutput>
   <includeLogsInSummary>True</includeLogsInSummary>
+  <includeLogsInSummaryDissem>False</includeLogsInSummaryDissem>
   <logMessageTextFile>arelleMessagesText.xml</logMessageTextFile>
 </configuration>

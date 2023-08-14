@@ -152,6 +152,7 @@ from arelle import (Cntlr, FileSource, ModelDocument, XmlUtil, Version, ModelVal
                     ViewFileRelationshipSet, ViewFileTests, ViewFileRssFeed, ViewFileRoleTypes)
 from arelle.PluginManager import pluginClassMethods
 from arelle.ValidateFilingText import elementsWithNoContent
+from arelle.XmlValidateConst import VALID
 from . import RefManager, IoManager, Inline, Utils, Filing, Summary
 import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os, re, io, tempfile
 from lxml import etree
@@ -226,6 +227,7 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     parser.add_option("--includeLogsInSummary", action="store_true", dest="includeLogsInSummary", help=_("Set flag to copy log entries into <logs> in FilingSummary.xml."))
     parser.add_option("--includeLogsInSummaryDissem", action="store_true", dest="includeLogsInSummaryDissem", help=_("Set flag to copy log entries into <logs> in FilingSummary.xml for dissemination."))
     parser.add_option("--noLogsInSummary", action="store_false", dest="includeLogsInSummary", help=_("Unset flag to copy log entries into <logs> in FilingSummary.xml."))
+    parser.add_option("--noLogsInSummaryDissem", action="store_false", dest="includeLogsInSummaryDissem", help=_("Unset flag to copy log entries into <logs> in FilingSummary.xml for dissemination."))
     parser.add_option("--processXsltInBrowser", action="store_true", dest="processXsltInBrowser", help=_("Set flag to process XSLT transformation in browser (e.g., rendering logs)."))
     parser.add_option("--noXsltInBrowser", action="store_false", dest="processXsltInBrowser", help=_("Unset flag to process XSLT transformation in browser (e.g., rendering logs)."))
     parser.add_option("--noEquity", action="store_true", dest="noEquity", help=_("Set flag to suppress special treatment of Equity Statements. "))
@@ -262,8 +264,8 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.createdFolders = []
         self.success = True
         self.labelLangs = ['en-US','en-GB'] # list by WcH 7/14/2017, priority of label langs, en-XX always falls back to en anyway
-        if not hasattr(cntlr, "edgarRedlineDocs"): # in GUI mode initialized before this class init
-            cntlr.edgarRedlineDocs = {}
+        if not hasattr(cntlr, "edgarEditedDocs"): # in GUI mode initialized before this class init
+            cntlr.edgarEditedDocs = {}
 
     # wrap controler properties as needed
 
@@ -793,6 +795,49 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.renderedFiles = filing.renderedFiles # filing-level rendered files
         if not success:
             self.success = False
+        # remove any inline invalid facts
+        for ixdsHtmlRootElt in getattr(modelXbrl, "ixdsHtmlElements", ()):
+            doc = ixdsHtmlRootElt.modelDocument
+            _ixHidden = doc.ixNStag + "hidden"
+            hasEditedFact = False
+            elementsToRemove = []
+            for e in ixdsHtmlRootElt.iter(doc.ixNStag + "nonNumeric", doc.ixNStag + "nonFraction", doc.ixNStag + "fraction"):
+                if getattr(e, "xValid", 0) < VALID:
+                    e.set("title", f"Removed invalid ix:{e.tag.rpartition('}')[2]} element, fact {e.qname} contextId {e.contextID}")
+                    for attr in e.keys():
+                        if attr not in ("id", "title"):
+                            etree.strip_attributes(e, attr)
+                    if e.getparent().tag == _ixHidden:
+                        e.addprevious(etree.Comment(f"Removed invalid ix:{e.tag.rpartition('}')[2]} element, fact {e.qname} contextId {e.contextID}: \"{e.text}\""))
+                        elementsToRemove.append(e)
+                    elif (e.getparent().tag == "{http://www.w3.org/1999/xhtml}body" or
+                        any(c.tag in ("{http://www.w3.org/1999/xhtml}table", "{http://www.w3.org/1999/xhtml}div")
+                            for c in e.iterchildren())):
+                        e.tag = "{http://www.w3.org/1999/xhtml}div"
+                    else:
+                        e.tag = "{http://www.w3.org/1999/xhtml}span"
+                    hasEditedFact = True
+                ''' deferred: for arelle inline viewer
+                else:
+                    if not e.id:
+                        id = f"f{e.objectIndex}"
+                        if id in doc.idObjects:
+                            for i in range(1000):
+                                uid = f"{id}_{i}"
+                                if uid not in doc.idObjects:
+                                    id = uid
+                                    break
+                        e.set("id", id)
+                        doc.idObjects[id] = e
+                        hasEditedFact = True
+                '''
+            for e in elementsToRemove: # remove ix hidden invalid elements
+                e.getparent().remove(e)
+            if hasEditedFact:
+                if not hasattr(self, "edgarEditedDocs"):
+                    self.cntlr.edgarEditedDocs = {}
+                self.cntlr.edgarEditedDocs[doc.basename] = doc # causes it to be rewritten out
+
         # block closing filesource when modelXbrl closes because it's used by filingEnd (and may be an archive)
         modelXbrl.closeFileSource = False
         modelXbrl.profileStat(_("EdgarRenderer process instance {}").format(report.basenames[0]))
@@ -961,7 +1006,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                             os.mkdir(dissemReportsFolder)
                     if dissemReportsFolder:
                         # redline-removed docs have self-closed <p> and other elements which must not be self-closed when saved
-                        for doc in cntlr.edgarRedlineDocs.values():
+                        for doc in cntlr.edgarEditedDocs.values():
                             doc.parser.set_element_class_lookup(None) # modelXbrl class features are already closed now, block class lookup
                             for e in doc.xmlRootElement.iter():
                                 # check if no text, no children and not self-closable element for EDGAR
@@ -993,8 +1038,9 @@ class EdgarRenderer(Cntlr.Cntlr):
                         self.logDebug("FilingSummary XSLT transform {:.3f} secs.".format(time.time() - _startedAt))
                         self.renderedFiles.add("FilingSummary.htm")
                     if (self.summaryXsltDissem or self.reportXsltDissem) and not self.includeLogsInSummaryDissem and self.summaryHasLogEntries:
+                        #print("trace removing summary logs")
                         summary.removeSummaryLogs() # produce filing summary without logs
-                        IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml')
+                        IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml.dissem')
                     self.logDebug("Write filing summary complete")
                     if self.auxMetadata or filing.hasInlineReport:
                         summary.writeMetaFiles()
@@ -1018,8 +1064,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                                 _xbrldir = os.path.dirname(filepath)
                                 for reportedFile in sorted(report.reportedFiles):
                                     if reportedFile not in xbrlZip.namelist():
-                                        if reportedFile in cntlr.edgarRedlineDocs:
-                                            doc = cntlr.edgarRedlineDocs[reportedFile]
+                                        if reportedFile in cntlr.edgarEditedDocs:
+                                            doc = cntlr.edgarEditedDocs[reportedFile]
                                             # redline removed file is not readable in encoded version, create from dom in memory
                                             xbrlZip.writestr(reportedFile, allowableBytesForEdgar(
                                                              etree.tostring(doc.xmlRootElement, encoding="ASCII", xml_declaration=True)).decode('utf-8'))
@@ -1045,8 +1091,8 @@ class EdgarRenderer(Cntlr.Cntlr):
 
                 # save documents with removed redlines (only when saving dissemReportsFolder)
                 if dissemReportsFolder:
-                    for reportedFile, modelDocument in cntlr.edgarRedlineDocs.items():
-                        target = join(dissemReportsFolder, reportedFile) + ".redlineRemoved"
+                    for reportedFile, modelDocument in cntlr.edgarEditedDocs.items():
+                        target = join(dissemReportsFolder, reportedFile) + ".dissem"
                         os.makedirs(self.reportsFolder, exist_ok=True)
                         filing.writeFile(target, allowableBytesForEdgar(
                             etree.tostring(modelDocument.xmlRootElement, encoding="ASCII", xml_declaration=True)))
@@ -1076,7 +1122,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 self.logDebug(_("Exception in filing end processing, traceback: {}").format(traceback.format_exception(*sys.exc_info())))
                 self.success = False # force postprocessingFailure
 
-            cntlr.edgarRedlineDocs.clear()
+            cntlr.edgarEditedDocs.clear()
 
         # close filesource (which may have been an archive), regardless of success above
         filesource.close()
@@ -1323,8 +1369,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
                 _ixRedline = "?redline=true"
             else:
                 _ixRedline = ""
-        if not hasattr(cntlr, "edgarRedlineDocs"):
-            cntlr.edgarRedlineDocs = {}
+        if not hasattr(cntlr, "edgarEditedDocs"):
+            cntlr.edgarEditedDocs = {}
         isNonEFMorGFMinline = (not getattr(cntlr.modelManager.disclosureSystem, "EFMplugin", False) and
                                modelXbrl.modelDocument.type in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INLINEXBRLDOCUMENTSET))
         # may use GUI mode to process a single instance or test suite
@@ -1543,9 +1589,9 @@ def edgarRendererRemoveRedlining(modelDocument, *args, **kwargs):
                             setattr(e0, prop, (getattr(e0, prop) or "") + e.tail)
                         e.getparent().remove(e)
         if rlRemoved:
-            if not hasattr(cntlr, "edgarRedlineDocs"):
-                cntlr.edgarRedlineDocs = {}
-            cntlr.edgarRedlineDocs[modelDocument.basename] = modelDocument
+            if not hasattr(cntlr, "edgarEditedDocs"):
+                cntlr.edgarEditedDocs = {}
+            cntlr.edgarEditedDocs[modelDocument.basename] = modelDocument
 
 __pluginInfo__ = {
     'name': 'Edgar Renderer',

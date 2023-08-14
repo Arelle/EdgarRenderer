@@ -18,7 +18,7 @@ from arelle.XmlUtil import addChild, copyIxFootnoteHtml, elementChildSequence
 from arelle.UrlUtil import isHttpUrl
 from arelle.ValidateFilingText import CDATApattern
 from arelle.XbrlConst import standardLabel, documentationLabel, terseLabel
-from arelle.XmlValidate import VALID
+from arelle.XmlValidateConst import VALID
 import os, zipfile, io
 from optparse import SUPPRESS_HELP
 from lxml.etree import XML, XMLSyntaxError
@@ -109,12 +109,12 @@ def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocument
     for pluginXbrlMethod in pluginClassMethods("InlineDocumentSet.CreateTargetInstance"):
         targetInstance = pluginXbrlMethod(modelXbrl, targetUrl, targetDocumentSchemaRefs, filingFiles,
                                           # no lang on xbrl:xbrl, specific xml:lang on elements which aren't en-US
-                                          baseXmlLang=None, defaultXmlLang="en-US")
+                                          baseXmlLang=None, defaultXmlLang="en-US", skipInvalid=True)
         if outputZip:
             targetInstance.saveInstance(overrideFilepath=targetUrl, outputZip=outputZip, updateFileHistory=False, xmlcharrefreplace=True, edgarcharrefreplace=True)
         else:
             fh = io.StringIO();
-            targetInstance.saveInstance(overrideFilepath=targetUrl, outputFile=fh, updateFileHistory=False, xmlcharrefreplace=True, edgarcharrefreplace=True)
+            targetInstance.saveInstance(overrideFilepath=targetUrl, outputFile=fh, updateFileHistory=False, xmlcharrefreplace=True, edgarcharrefreplace=True, skipInvalid=True)
             fh.seek(0)
             filing.writeFile(targetUrl, fh.read())
             fh.close()
