@@ -143,7 +143,7 @@ Language of labels:
     GUI may use tools->language labels setting to override system language for labels
 
 """
-VERSION = '3.23.2'
+VERSION = '3.23.2.3'
 
 from collections import defaultdict
 from arelle import PythonUtil
@@ -808,7 +808,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         if attr not in ("id", "title"):
                             etree.strip_attributes(e, attr)
                     if e.getparent().tag == _ixHidden:
-                        e.addprevious(etree.Comment(f"Removed invalid ix:{e.tag.rpartition('}')[2]} element, fact {e.qname} contextId {e.contextID}: \"{e.text}\""))
+                        e.addprevious(etree.Comment(f"Removed invalid ix:{e.tag.rpartition('}')[2]} element, fact {e.qname} contextId {e.contextID}: \"{(e.text or '').replace('--','- -')}\""))
                         elementsToRemove.append(e)
                     elif (e.getparent().tag == "{http://www.w3.org/1999/xhtml}body" or
                         any(c.tag in ("{http://www.w3.org/1999/xhtml}table", "{http://www.w3.org/1999/xhtml}div")

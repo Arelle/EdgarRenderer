@@ -374,6 +374,15 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
+      <Taxonomy>ffd-2023.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>ffd-2023_doc.xsd</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>ffd-2023_ref.xsd</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>invest-2011-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>invest-doc-2011-01-31.xml</string>
