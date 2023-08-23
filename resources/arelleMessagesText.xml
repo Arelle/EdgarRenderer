@@ -520,25 +520,25 @@ Link:{elementName} not child of link:linkbase or xbrli:instance
 [cp-0502-Prohibited-Html] {validatedObjectLabel} has nested &lt;table> elements. {refSources}
 </message>
 
-<message code="EFM.6.03.02.sdrHasNonSdrExhibit"
+<message code="EFM.6.03.02.sdrHasNonSdrAttachment"
          level="error"
          module="EFM/__init__.py" line="309"
-         args="documentType exhibitType">
-[cp-0302-Sdr-Has-Non-Sdr-Exhibit] An SDR filing contains non-SDR exhibit type {exhibitType} document type {documentType}.
+         args="attachmentDocumentType deiDocumentType">
+[cp-0302-Sdr-Has-Non-Sdr-Attachment] An SDR filing contains non-SDR attachment document type {attachmentDocumentType} dei document type {deiDocumentType}.
 </message>
 
 <message code="EFM.6.03.02.sdrMissingFiles"
          level="error"
          module="EFM/__init__.py" line="297"
-         args="docType missingFiles">
-[cp-0302-Sdr-Missing-Files] {docType} report missing files: {missingFiles}.
+         args="deiDocumentType missingFiles">
+[cp-0302-Sdr-Missing-Files] {deiDocumentType} report missing files: {missingFiles}.
 </message>
 
 <message code="EFM.6.03.02.sdrMissingStandardSchema"
          level="error"
          module="EFM/__init__.py" line="303"
-         args="docType missingFiles">
-[cp-0302-Sdr-Missing-Standard-Schema] {documentType} submission must use a US GAAP standard schema.
+         args="deiDocumentType missingFiles">
+[cp-0302-Sdr-Missing-Standard-Schema] {deiDocumentType} submission must use a US GAAP standard schema.
 </message>
 
 <!--WcH 6.03.03 would be caught by EDGARLink but is useful for offline validation -->
@@ -615,8 +615,8 @@ Invalid linkbase file name: {filename}, expected {expectedFilename}
 <message code="EFM.6.03.08.moreThanOneIns"
          level="error"
          module="EFM/__init__.py" line="285"
-         args="exhibitType">
-[cp-0308-More-Than-One-Ins] The submission contains more than one instance for exhibit type {exhibitType}.  Remove all but one or change the exhibit types.
+         args="attachmentDocumentType">
+[cp-0308-More-Than-One-Ins] The submission contains more than one instance for attachment document type {attachmentDocumentType}.  Remove all but one or change the attachment document types.
 </message>
 
 <message code="EFM.6.03.08.sdrHasMultipleKreports"
@@ -645,7 +645,7 @@ Invalid linkbase file name: {filename}, expected {expectedFilename}
          level="error"
          module="ValidateFiling.py" line="125"
          args="scheme context identifier">
-[cp-0501-Entity-Identifier-Scheme] Your identifier for the CIK code, {identifier}, or scheme {scheme}, in context {context}, did not adhere to the standard naming convention of &lt;identifier scheme="http://www.sec.gov/CIK">xxxxxxxxxx&lt;/identifier>.  Please recheck your submission and comply with the standard naming convention.
+[cp-0501-Entity-Identifier-Scheme] Your identifier for the CIK code, {identifier}, or scheme {scheme}, in context {context}, did not adhere to the standard naming convention of &lt;identifier scheme="http://www.sec.gov/CIK">xxxxxxxxxx&lt;/identifier>.  Please recheck your submission and comply with the standard naming convention. {refSources}
 </message>
 
 <!--
@@ -661,7 +661,7 @@ Invalid entity identifier {entityIdentifierName}: {entityIdentifer}
          level="error"
          module="ValidateFiling.py" line="139"
          args="entityIdentifierName entityIdentifer entityIdentifer2 filerIdentifier">
-[cp-0503-Non-Matching-Cik] The submission CIK, {filerIdentifier} does not match either the EntityCentralIndexKey, {entityIdentifer}, or context identifier CIK(s) {entityIdentifer}, {entityIdentifer2}, or is not 10 digits, for required context(s).  Please include a correct matching EntityCentralIndexKey and context identifier CIK(s) in the filing.
+[cp-0503-Non-Matching-Cik] The submission CIK, {filerIdentifier} does not match either the EntityCentralIndexKey, {entityIdentifer}, or context identifier CIK(s) {entityIdentifer}, {entityIdentifer2}, or is not 10 digits, for required context(s).  Please include a correct matching EntityCentralIndexKey and context identifier CIK(s) in the filing. {refSources}
 </message>
 
 <message code="EFM.6.05.04"
@@ -1150,7 +1150,7 @@ FootnoteLink {footnoteLinkNumber} has disallowed role {linkrole}</message>
          level="error"
          module="plugin/validate/EFM/Filing.py" line="1024"
          args="contextID documentType exhibitType">
-[rxp-0558-Exhibit-Document-Type] The value for dei:DocumentType, {documentType}, is not allowed for {exhibitType} attachments.
+[rxp-0558-Exhibit-Document-Type] The value for dei:DocumentType, {deiDocumentType}, is not allowed for {exhibitDocumentType} attachments.
 </message>
 
 <message code="EFM.6.05.58.customElementDeclaration"
@@ -1399,7 +1399,7 @@ Taxonomy schema {schema} namespace {targetNamespace} prefix {prefix} must not ha
          level="error"
          module="ValidateFilingDTS.py" line="501"
          args="arcroleType">
-[du-0715-Arcrole-Definition-/Missing]  Relationship role declaration {arcroleType} is missing a definition, in {refSource}.  Please provide a definition.
+[du-0715-Arcrole-Definition-Missing]  Relationship role declaration {arcroleType} is missing a definition, in {refSource}.  Please provide a definition.
 </message>
 
 <message code="EFM.6.07.16"
@@ -1814,6 +1814,13 @@ Concept {concept} is monetary without a balance and must have a documentation la
 [du-1211-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
 
+<message code="EFM.6.12.12.relationshipNotPermitted"
+         level="error"
+         module="validate/Filing.py" line="2540"
+         args="arc arcrole linkrole linkroleDefinition conceptFrom conceptTo">
+[du-1212-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+
 <message code="EFM.6.14.01"
          level="error"
          module="ValidateXbrlDTS.py" line="964"
@@ -1879,6 +1886,12 @@ Concept {concept} is monetary without a balance and must have a documentation la
          module="validate/Filing.py" line="3196"
          args="arcrole conceptFrom conceptTo linkroleDefinition">
 [du-1410-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+<message code="EFM.6.14.11.relationshipNotPermitted"
+         level="error"
+         module="validate/Filing.py" line="3196"
+         args="arcrole conceptFrom conceptTo linkroleDefinition">
+[du-1411-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
 
 
@@ -2003,9 +2016,9 @@ Axis {dimension} in DRS role {linkrole}, missing targetrole consecutive relation
 </message>
 <message code="EFM.6.16.14.04"
          level="error"
-         module="validate/Filing.py" line="2258"
-         args="member roles">
-[rxp-161404-Member-Multiple-RXP-Roles] Member concept {member} appears in more than one RXP role: {roles}. {refSources}
+         module="validate/Filing.py" line="3467"
+         args="member roles taxonomy">
+[rxp-161404-Member-Multiple-RXP-Roles] Member concept {member} appears in more than one {taxonomy} role: {roles}. {refSources}
 </message>
 <message code="EFM.6.16.14.relationshipNotPermitted"
          level="error"
@@ -2024,6 +2037,30 @@ Axis {dimension} in DRS role {linkrole}, missing targetrole consecutive relation
          module="validate/Filing.py" line="3196"
          args="arcrole conceptFrom conceptTo linkroleDefinition">
 [du-1614-TargetRole-Not-Permitted] The {arcrole} relationship targetRole from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+<message code="EFM.6.16.15.01"
+         level="error"
+         module="validate/Filing.py" line="3467"
+         args="member roles taxonomy">
+[rxp-161501-Member-Multiple-SHR-Roles] Member concept {member} appears in more than one {taxonomy} role: {roles}. {refSources}
+</message>
+<message code="EFM.6.16.15.relationshipNotPermitted"
+         level="error"
+         module="validate/Filing.py" line="3196"
+         args="arcrole conceptFrom conceptTo linkroleDefinition">
+[du-1615-Relationship-Not-Permitted] The {arcrole} relationship from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
+</message>
+<message code="EFM.6.16.15.roleSourceNotPermitted"
+         level="error"
+         module="validate/Filing.py" line="3190"
+         args="arcrole conceptFrom conceptTo linkroleDefinition">
+[du-1615-Role-Source-Not-Permitted] The {arcrole} relationship source, {conceptFrom}, to {conceptTo}, link role %{inkroleDefinition}, is not permitted. {refSources}
+</message>
+<message code="EFM.6.16.15.targetRoleNotPermitted"
+         level="error"
+         module="validate/Filing.py" line="3196"
+         args="arcrole conceptFrom conceptTo linkroleDefinition">
+[du-1615-TargetRole-Not-Permitted] The {arcrole} relationship targetRole from {conceptFrom} to {conceptTo}, link role {linkroleDefinition}, is not permitted. {refSources}
 </message>
 
 

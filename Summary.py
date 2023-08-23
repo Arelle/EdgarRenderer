@@ -235,7 +235,9 @@ class Summary(object):
 
     def writeMetaFiles(self):
         def innerWriteMetaFiles():
-            roots = {'version' : metaversion}
+            roots = OrderedDict()
+            roots['version'] = metaversion
+            instance = roots['instance'] = OrderedDict() # preserve instances order
             refs = roots['std_ref'] = OrderedDict() # preserve pairs order
             pairs = [(i, ref) for ref, i in self.referencePositionDict.items()]
             pairs.sort(key=lambda x: x[0])
@@ -243,9 +245,8 @@ class Summary(object):
                 i, ref = pair
                 rDict = refs['r'+str(i)] = OrderedDict() # preserve references order
                 for (att, val) in ref:  rDict[att] = val
-            roots['instance'] = OrderedDict()
             for s in self.summaryList:
-                root = roots['instance'][' '.join(s.dtsroots)] = OrderedDict() # preserve order
+                root = instance[' '.join(s.dtsroots)] = OrderedDict() # preserve order
                 if s.customPrefix is not None: root['nsprefix'] = s.customPrefix
                 if s.customNamespace is not None: root['nsuri'] = s.customNamespace
                 root['dts'] = s.dts
@@ -316,7 +317,7 @@ class Summary(object):
                 file = io.StringIO()
             else:
                 file = None
-            IoManager.writeJsonDoc(roots,file)
+            IoManager.writeJsonDoc(roots,file,sort_keys=False) # preserve order, don't sort
             self.controller.renderedFiles.add(EJson)
             if file is not None:
                 file.seek(0)
