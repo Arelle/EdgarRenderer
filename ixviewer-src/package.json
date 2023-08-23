@@ -1,0 +1,117 @@
+{
+  "name": "ixviewer-2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev-serve-analyze": "webpack serve --config ./webpack.config.js --mode development --env copy analyze",
+    "dev-serve": "webpack serve --config ./webpack.config.js --mode development --env copy",
+    "prod-serve-analyze": "webpack serve --config ./webpack.config.js --mode production --env copy analyze",
+    "prod-serve": "webpack serve --config ./webpack.config.js --mode production --env copy --port 8085",
+    "production": "webpack --config ./webpack.config.js --mode production",
+    "sandbox": "webpack --config ./webpack.config.js --mode production --env copy",
+    "sandbox-serve": "webpack serve --config ./webpack.config.js --mode production --env copy",
+    "unit-test": "node ./node_modules/karma/bin/karma start ./karma.config.js",
+    "get-filings": "node ./src/get-filings/index.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.0",
+    "@popperjs/core": "^2.11.8",
+    "bignumber.js": "^9.1.1",
+    "bootstrap": "^5.3.0",
+    "cheerio": "^1.0.0-rc.12",
+    "flexsearch": "^0.7.31",
+    "latest-version": "^7.0.0",
+    "nomnoml": "^1.6.2",
+    "safe-buffer": "^5.2.1",
+    "stream": "0.0.2",
+    "tslog": "^4.8.2",
+    "vanilla-picker": "^2.12.1",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {
+    "@types/bootstrap": "^5.2.6",
+    "@types/glob": "^8.1.0",
+    "@types/he": "^1.2.0",
+    "@types/jasmine": "^4.3.5",
+    "@types/node": "^18.16.19",
+    "@types/webpack-env": "^1.18.1",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "add-asset-html-webpack-plugin": "^6.0.0",
+    "ajv": "^8.12.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.8.1",
+    "css-minimizer-webpack-plugin": "^4.2.2",
+    "eslint": "^8.44.0",
+    "eslint-webpack-plugin": "^4.0.1",
+    "html-loader": "^4.2.0",
+    "html-webpack-plugin": "^5.5.3",
+    "inquirer": "^9.2.8",
+    "jasmine": "^4.6.0",
+    "karma": "^6.4.2",
+    "karma-chrome-launcher": "^3.2.0",
+    "karma-coverage": "^2.2.1",
+    "karma-jasmine": "^5.1.0",
+    "karma-jasmine-html-reporter": "^2.1.0",
+    "karma-webpack": "^5.0.0",
+    "mini-css-extract-plugin": "^2.7.6",
+    "node-fetch": "^3.3.1",
+    "ora": "^6.3.1",
+    "purgecss": "^5.0.0",
+    "purgecss-webpack-plugin": "^5.0.0",
+    "sass": "^1.63.6",
+    "sass-loader": "^13.3.2",
+    "style-loader": "^3.3.3",
+    "ts-loader": "^9.4.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5",
+    "webpack": "^5.88.1",
+    "webpack-bundle-analyzer": "^4.9.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "xml2js": "^0.6.0"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 8,
+      "sourceType": "module"
+    },
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "rules": {
+      "semi-style": [
+        "error",
+        "last"
+      ],
+      "@typescript-eslint/no-var-requires": 0,
+      "@typescript-eslint/no-explicit-any": "warn",
+      "no-console": 0,
+      "semi": 0,
+      "@typescript-eslint/no-non-null-assertion": 0,
+      "prefer-arrow-callback": "error",
+      "@typescript-eslint/ban-types": [
+        "error",
+        {
+          "extendDefaults": true,
+          "types": {
+            "{}": false
+          }
+        }
+      ]
+    }
+  }
+}

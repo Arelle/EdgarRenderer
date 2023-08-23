@@ -148,6 +148,18 @@ class Embedding(object):
 
             #print(self.commandTextListOfLists) # wch for debug
 
+        elif self.cube.isRepurchasesDetail:
+            self.commandTextListOfLists += [['column', 'primary', 'compact', '*']]
+            if len(self.cube.unitAxis) > 0:
+                self.commandTextListOfLists += [['column', 'unit', 'compact', '*']]
+            if len(self.cube.timeAxis) > 0:
+                self.commandTextListOfLists += [['row', 'period', 'compact', '*']]
+            for _ignore, axisQname, _ignore in orderedListOfOrderAxisQnameTuples:
+                if not axisQname.localName in ('period','primary','unit'):
+                    self.commandTextListOfLists += [['row', axisQname, 'compact', '*']]
+
+            # print(self.commandTextListOfLists) # wch for debug
+
         elif self.cube.cubeType == 'statement' or self.filing.hasEmbeddings or self.cube.isElements:
             generatedCommandTextListOfLists = []
 

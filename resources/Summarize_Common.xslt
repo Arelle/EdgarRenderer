@@ -10,27 +10,29 @@
   <xsl:variable name="majorversion" select="substring-before(/FilingSummary/Version,'.')"/>
   <xsl:variable name="nreports" select="count(/FilingSummary/MyReports/Report)"/>
   <xsl:variable name="nbooks" select="count(/FilingSummary/MyReports/Report[ReportType='Book'])"/>
-  <!--  HF 2017-11-16: isrr detects rr when either instance imports an rr taxonomy or uses an rr link role -->
-  <xsl:variable name="isrr" select="0 &lt; count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'sec.gov/rr/20')]) + count(/FilingSummary/MyReports/Report[contains(Role,'http://xbrl.sec.gov/rr')])"/>
-  <xsl:variable name="isoef" select="0 &lt; count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'sec.gov/oef/20')]) + count(/FilingSummary/MyReports/Report[contains(Role,'http://xbrl.sec.gov/oef')])"/>
-  <!-- WH 2021-12-08: test for CEF/BDC prospectus type -->
-  <xsl:variable name="isn2prospectus" select="not($isrr) and 0 &lt; count(/FilingSummary/InputFiles/File/@doctype[.='N-2' or .='N-2/A' or .='N-2ASR' or .='N-2MEF' or .='N-2 POSASR' or .='497'])"/>
-  <!-- WH 2021-08-22: branch on filing types other than rr and financial statements. -->
-  <xsl:variable name="isn3n4n6" select="0 &lt; count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'sec.gov/vip')])"/>
-  <xsl:variable name="isfeeexhibit" select="0 &lt; count(/FilingSummary/MyReports/Report/Role[contains(.,'/role/document/feesSummaryTable')])"/>
-  <!-- WH 2023-03-26 N-CSR is yet different as is DEF 14.  All this branching should be done on form and submission type prior to dts namespaces -->
-  <xsl:variable name="isNcsr" select="0 &lt; count(/FilingSummary/InputFiles/File/@doctype[starts-with(.,'N-CSR')])"/>
-  <xsl:variable name="isProxy" select="0 &lt; count(/FilingSummary/InputFiles/File/@doctype[starts-with(.,'DEF') or starts-with(.,'PRE')])"/>
-  <xsl:variable name="isN1a" select="not($isNcsr) and ($isrr or $isoef)"/>
-  <xsl:variable name="isSdr" select="0 &lt; count(/FilingSummary/InputFiles/File/@doctype[contains(.,'SDR')])"/>
-  <xsl:variable name="isRxp" select="0 &lt; (count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'sec.gov/rxp/20')]))"/>
-  <xsl:variable name="isUsgaapOrIfrs" select="0 &lt; (count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'fasb.org/us-gaap/20')]) + count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'fasb.org/srt/20')]) + count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'ifrs.org/taxonomy/20') and contains(.,'/ifrs-full')]))"/>
-  <xsl:variable name="isOnlyDei" select="(0 &lt; count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[contains(.,'sec.gov/dei/20')])) and (0 = count(/FilingSummary/BaseTaxonomies/BaseTaxonomy[not(contains(.,'sec.gov/dei/20'))]))"/>
+  
+  <xsl:variable name="doc1" select="(/FilingSummary/InputFiles/File[@doctype])[1]/@original or (/FilingSummary/InputFiles[@doctype])[1]/@instance"/>
+  <xsl:variable name="isrr" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isRR"/>
+  <xsl:variable name="isoef" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isOEF"/>
+  <xsl:variable name="isn2prospectus" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isN2Prospectus"/>
+  <xsl:variable name="isn3n4n6" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isVip"/>
+  <xsl:variable name="isfeeexhibit" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isFeeExhibit"/>
+  <xsl:variable name="isNcsr" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isNcsr"/>
+  <xsl:variable name="isProxy" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isProxy"/>
+  <xsl:variable name="isN1a" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isN1a"/>
+  <xsl:variable name="isSdr" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isSdr"/>
+  <xsl:variable name="isOnlyShr" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isOnlyShr"/>
+  <xsl:variable name="isRxp" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isRxp"/>
+  <xsl:variable name="isUsgaap" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isUsgaap"/>
+  <xsl:variable name="isIfrs" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isIfrs"/>
+  <xsl:variable name="isOnlyDei" select="/FilingSummary/InputFiles/File[@instance=$doc1 or @original=$doc1]/@isOnlyDei"/>
   <!-- only real financial statements get multipart menus with levels I, II, III, IV -->
-  <xsl:variable name="isNotFinancialStatement" select="$isRxp or $isN1a or $isn3n4n6 or $isn2prospectus or $isfeeexhibit or $isNcsr or $isProxy or $isSdr or $isOnlyDei"/>
+  <xsl:variable name="isDefinitelyNotFs" select="$isOnlyShr or $isRxp or $isN1a or $isn3n4n6  or $isn2prospectus  or $isfeeexhibit  or $isNcsr or $isProxy or $isSdr or $isOnlyDei or $isOnlyShr"/>
   <!-- only real financial statements and dei-only 8-k's get useless excel output -->
-  <xsl:variable name="mayHaveExcel" select="$isOnlyDei or not($isNotFinancialStatement)"/>
+  <xsl:variable name="mayHaveExcel" select="$isOnlyDei or not($isDefinitelyNotFs)"/>
+
 <!-- uncomment these while you look for syntax errors
+
 <xsl:variable name="xslt"/><xsl:variable name="processXsltInBrowser"/><xsl:variable name="filingDocUrlPrefix"/><xsl:variable name="fetchprefix"/><xsl:variable name="fetchWrapsXmlInHtml"/><xsl:variable name="includeLogs"/><xsl:variable name="includeDir"/><xsl:variable name="includeExcel"/><xsl:variable name="imagesDir"/><xsl:variable name="filingDocUrlPrefixQuoted"/><xsl:variable name="metaLinksSuffixQuoted"/><xsl:variable name="ixHtmlPath"/>
 -->
   <xsl:variable name="nlogs">
@@ -90,6 +92,12 @@
         <link rel="stylesheet" type="text/css" href="{$includeDir}/interactive.css"/>
         <link rel="stylesheet" type="text/css" href="{$includeDir}/report.css"/>
         <link rel="stylesheet" type="text/css" href="{$includeDir}/print.css" media="print"/>
+        <xsl:comment>
+        <xsl:value-of select="concat('isDefinitelyNotFs=',$isDefinitelyNotFs)"/>
+        </xsl:comment>
+                <xsl:comment>
+        <xsl:value-of select="concat('isrr=',$isrr)"/>
+        </xsl:comment>
         <style type="text/css">
           #menu{
             font-family:Helvetica, Arial, sans-serif;
@@ -152,6 +160,10 @@
             display:block;
           }
           li.octave {border-top: 1px solid black;}
+          ul#menu li.ix > a 
+          /* wasabi */ 
+          {background-color: #afd77f}
+          /* grey poupon {background-color: #ead28f} */
         </style>
         <script type="text/javascript">
           <xsl:text>var InstanceReportXslt = "</xsl:text>
@@ -174,7 +186,7 @@
             </xsl:choose>
           </xsl:if><![CDATA[
           var parentreport = new Array();//]]>
-                    <xsl:apply-templates mode="parentreportarray" select="MyReports/Report"/>                    
+                    <xsl:apply-templates mode="parentreportarray" select="MyReports/Report"/>
                     <xsl:text disable-output-escaping="yes"><![CDATA[  
     var url_path = "]]></xsl:text>
         <xsl:value-of select="$filingDocUrlPrefix"/>
@@ -191,7 +203,7 @@
       var doc;
       var jqxhr=$.ajax({type: "GET",
                         url: url,
-                        async: false});                        
+                        async: false});
       // code for IE
       if (window.ActiveXObject) {
          doc = new ActiveXObject("Msxml2.FreeThreadedDOMDocument.3.0");
@@ -447,9 +459,7 @@
                       <xsl:with-param name="position">1</xsl:with-param>
                       <xsl:with-param name="menucat">0</xsl:with-param>
                       <xsl:with-param name="prev_instance"/>
-                      <xsl:with-param name="not_fstmt">
-                        <xsl:value-of select="$isNotFinancialStatement"/>
-                      </xsl:with-param>
+                      <xsl:with-param name="not_fstmt" select="$isDefinitelyNotFs"/>
                     </xsl:call-template>
                   </ul>
                 </div>
@@ -463,20 +473,22 @@
       </body>
     </html>
   </xsl:template>
-  <xsl:variable name="default_menu_group_title">
+  <xsl:template name="default_menu_group_title">
     <xsl:choose>
-      <xsl:when test="$isrr">Risk Return Reports</xsl:when>
-      <xsl:when test="$isn2prospectus or $isn3n4n6">Prospectus</xsl:when>
-      <xsl:when test="$isfeeexhibit">Fee Exhibit</xsl:when>
-      <xsl:when test="$isNcsr">Reports</xsl:when>
-      <xsl:when test="$isProxy">Reports</xsl:when>
-      <xsl:when test="$isOnlyDei">Reports</xsl:when>
-      <xsl:when test="$isRxp">Reports</xsl:when>
+      <xsl:when test="$isrr = 'true'">Risk/Return Reports</xsl:when>
+      <xsl:when test="$isn2prospectus  = 'true' or $isn3n4n6  = 'true'">Prospectus</xsl:when>
+      <xsl:when test="$isfeeexhibit  = 'true'">Fee Exhibit</xsl:when>
+      <xsl:when test="$isOnlyShr = 'true'">Repurchases</xsl:when>
+      <xsl:when test="$isNcsr  = 'true'">Reports</xsl:when>
+      <xsl:when test="$isProxy  = 'true'">Reports</xsl:when>
+      <xsl:when test="$isOnlyDei  = 'true'">Reports</xsl:when>
+      <xsl:when test="$isRxp = 'true'">Reports</xsl:when>
+      <xsl:when test="$isDefinitelyNotFs = 'true'">Reports</xsl:when>
       <xsl:otherwise>
         <xsl:text>Notes to the Financial Statements</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
-  </xsl:variable>
+  </xsl:template>
   <xsl:template name="menuGroups">
     <!-- tail recursive template over myReports, current context FilingSummary -->
     <!-- note that the thing callsed menu_cat0, menu_cat1, refers only to the numerical sequence -->
@@ -513,17 +525,11 @@
           </li>
         </xsl:if>
       </xsl:when>
-      <xsl:when test="$not_fstmt = 'true'">
+     <!-- <xsl:when test="$not_fstmt = 'true'">
         <xsl:if test="$instance != $prev_instance">
-          <xsl:variable name="doctype">
-            <xsl:value-of select="(/FilingSummary/InputFiles/File[.=$instance]/@doctype)"/>
-          </xsl:variable>
-          <xsl:variable name="original">
-            <xsl:value-of select="(/FilingSummary/InputFiles/File[.=$instance]/@original)"/>
-          </xsl:variable>
-          <xsl:variable name="instance_is_inline">
-            <xsl:value-of select="translate(substring($instance,string-length($instance)-3),'HTM','htm') = '.htm' or substring($instance,string-length($instance)-5) = '.xhtml' or substring($instance,string-length($instance)-4) = '.html'"/>
-          </xsl:variable>
+          <xsl:variable name="doctype" select="(/FilingSummary/InputFiles/File[.=$instance]/@doctype)"/>
+          <xsl:variable name="original" select="(/FilingSummary/InputFiles/File[.=$instance]/@original)"/>
+          <xsl:variable name="instance_is_inline" select="translate(substring($instance,string-length($instance)-3),'HTM','htm') = '.htm' or substring($instance,string-length($instance)-5) = '.xhtml' or substring($instance,string-length($instance)-4) = '.html'"/>
           <xsl:if test="$original != ''">
             <li class="accordion ">
               <xsl:choose>
@@ -545,7 +551,7 @@
           <a id="menu_cat0" href="#">
             <xsl:value-of select="$default_menu_group_title"/>
           </a>
-          <!-- all the reports are under this single category -->
+          --><!-- all the reports are under this single category --><!--
           <ul>
             <xsl:for-each select="MyReports/Report[Role]">
               <li class="accordion" style="margin-left:{$depth * 2}em">
@@ -561,15 +567,10 @@
             </xsl:for-each>
           </ul>
         </li>
-       
-        <xsl:call-template name="menuGroups">
-          <xsl:with-param name="depth" select="$depth"/>
-          <xsl:with-param name="position" select="1 + count(MyReports/Report)"/>
-          <xsl:with-param name="menucat" select="1"/>
-          <xsl:with-param name="not_fstmt" select="$not_fstmt"/>
-        </xsl:call-template>
-      </xsl:when>
+-->
       <xsl:otherwise>
+        <xsl:comment>OTHERWISE</xsl:comment>
+        <xsl:comment><xsl:value-of select="concat('not_fstmt=',$not_fstmt)"/></xsl:comment>
         <xsl:variable name="this_cat">
           <xsl:for-each select="MyReports/Report[position()=$position]">
             <xsl:call-template name="menu_name">
@@ -588,35 +589,34 @@
           </xsl:call-template>
         </xsl:variable>
         <xsl:if test="$instance != $prev_instance">
-          <xsl:variable name="doctype">
-            <xsl:value-of select="(/FilingSummary/InputFiles/File[.=$instance]/@doctype)"/>
-          </xsl:variable>
-          <xsl:variable name="original">
-            <xsl:value-of select="(/FilingSummary/InputFiles/File[.=$instance]/@original)"/>
-          </xsl:variable>
-          <xsl:variable name="instance_is_inline">
-            <xsl:value-of select="translate(substring($instance,string-length($instance)-3),'HTM','htm') = '.htm' or substring($instance,string-length($instance)-5) = '.xhtml'"/>
-          </xsl:variable>
+          <xsl:variable name="doctype" select="(/FilingSummary/InputFiles/File[.=$instance]/@doctype)"/>
+          <xsl:variable name="original" select="(/FilingSummary/InputFiles/File[.=$instance]/@original)"/>
+          <xsl:variable name="instance_is_inline" select="translate(substring($instance,string-length($instance)-3),'HTM','htm') = '.htm' or substring($instance,string-length($instance)-5) = '.xhtml'"/>
           <xsl:if test="$original != ''">
-              <li class="accordion octave">
+            <xsl:comment><xsl:value-of select="concat('instance=',$instance)"/></xsl:comment>
+            <xsl:comment><xsl:value-of select="concat('prev_instance=',$prev_instance)"/></xsl:comment>
+              <li>
                 <xsl:choose>
                   <xsl:when test="$instance_is_inline = 'true'">
-                  <a href="javascript:window.location=applyRedline('{$ixHtmlPath}?doc={$filingDocUrlPrefixQuoted}{$original}&amp;xbrl=true{$metaLinksSuffixQuoted}')">
-                    <xsl:value-of select="$doctype"/>
-                  </a>
+                    <xsl:attribute name="class">accordion octave ix</xsl:attribute>
+                    <a href="javascript:window.location=applyRedline('{$ixHtmlPath}?doc={$filingDocUrlPrefixQuoted}{$original}&amp;xbrl=true{$metaLinksSuffixQuoted}')">
+                      <xsl:value-of select="$doctype"/>
+                    </a>
                   </xsl:when>
                   <xsl:otherwise>
                   <a href="{$filingDocUrlPrefix}{$original}">
+                    <xsl:attribute name="class">accordion</xsl:attribute>
                     <xsl:value-of select="$doctype"/>
                   </a>
                   </xsl:otherwise>
-                </xsl:choose>                
-              </li>              
+                </xsl:choose>
+              </li>
            </xsl:if>
-        </xsl:if>        
+        </xsl:if>
         <xsl:variable name="octave_divider">
           <xsl:choose>
             <xsl:when test="$menucat = 0 and not($instance)"> octave</xsl:when>
+            <xsl:when test="$depth != 0"/>
             <xsl:when test="$instance != $prev_instance and not(/FilingSummary/InputFiles/File[.=$instance]/@original)"> octave</xsl:when>
             <xsl:otherwise/>
           </xsl:choose>
@@ -640,13 +640,14 @@
             </xsl:for-each>
           </ul>
         </li>
+        <xsl:comment><xsl:value-of select="'tail recursion'"/></xsl:comment>
         <!-- tail recursion -->
         <xsl:call-template name="menuGroups">
           <xsl:with-param name="depth" select="($depth)"/>
           <xsl:with-param name="position" select="$next_cat_position"/>
           <xsl:with-param name="menucat" select="($menucat + 1)"/>
           <xsl:with-param name="prev_instance" select="$instance"/>
-          <xsl:with-param name="not_stmt" select="$not_fstmt"/>
+          <xsl:with-param name="not_fstmt" select="$not_fstmt"/>
         </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
@@ -699,6 +700,9 @@
       <xsl:when test="$that != $cat">
         <xsl:value-of select="$pos"/>
       </xsl:when>
+      <xsl:when test="MyReports/Report[position() = $pos]/@instance != MyReports/Report[position() = ($pos - 1)]/@instance">
+        <xsl:value-of select="$pos"/>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="next_cat_position">
           <xsl:with-param name="pos" select="($pos + 1)"/>
@@ -715,8 +719,12 @@
     <xsl:variable name="is6">
       <xsl:call-template name="isUncategorized"/>
     </xsl:variable>
+    <xsl:variable name="isRrMenuItem">
+      <xsl:call-template name="isRiskReturn"/>
+    </xsl:variable>
     <xsl:choose>
       <xsl:when test="$is6='true'">Uncategorized</xsl:when>
+      <xsl:when test="$isRrMenuItem= 'true'">Risk/Return</xsl:when>
       <xsl:otherwise>
         <xsl:variable name="is5">
           <xsl:call-template name="isDetail"/>
@@ -754,9 +762,12 @@
                     <xsl:choose>
                       <!-- we have seen no statements yet, stick to cover -->
                       <xsl:when test="$is2='true'">
+                      <xsl:message>
+                      <xsl:value-of select="concat('not_fstmt=',$not_fstmt)"/></xsl:message>
                         <xsl:choose>
                           <xsl:when test="$not_fstmt = 'true'">
-                            <xsl:value-of select="$default_menu_group_title"/>
+                            
+                            <xsl:call-template name="default_menu_group_title"/>
                           </xsl:when>
                           <xsl:otherwise>Notes to Financial Statements</xsl:otherwise>
                         </xsl:choose>

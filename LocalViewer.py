@@ -8,7 +8,9 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 from arelle.webserver.bottle import static_file, redirect
 from arelle.LocalViewer import LocalViewer
 import os, logging, sys
+import regex as re
 
+ixviewerDirFilesPattern = re.compile(r"^ix(-dev)?.x?html|^browser-error.html|^css/|^images/|^[a-z0-9.-]+min\.(js|css)(\.map)?$|^[a-z0-9]+\.(ttf|woff2)$")
 
 class _LocalViewer(LocalViewer):
     # plugin-specific local file handler
@@ -21,17 +23,12 @@ class _LocalViewer(LocalViewer):
             if len(refererPathParts) >= 4 and refererPathParts[3].isnumeric():
                 _report = refererPathParts[3]
                 _file = file
-        if (_file.startswith("ix.html") # although in ixviewer, it refers relatively to ixviewer/
-            or _file.startswith("ix-dev.html")
-            or _file.startswith("browser-error.html")
-            or _file.startswith("css/")
-            or (_file.startswith("images/") and os.path.exists(os.path.join(self.reportsFolders[0], 'ixviewer', _file)))
-            or _file.startswith("js/")):
+        if _report == "include": # really in include subtree
+            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'include'))
+        if ixviewerDirFilesPattern.match(_file): # although in ixviewer, it refers relatively to ixviewer/
             return static_file(_file, root=os.path.join(self.reportsFolders[0], 'ixviewer'))
         if _file.startswith("/ixviewer"): # ops gateway
             return static_file(_file, root=self.reportsFolders[0][:-1])
-        if _report == "include": # really in include subtree
-            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'include'))
         if _file.startswith("include/"): # really in ixviewer subtree (Workstation Images are in distribution include)
             return static_file(_file[8:], root=os.path.join(self.reportsFolders[0], 'include'))
         if _file.startswith("images/") or  _file.startswith("Images/"): # really in ixviewer subtree (Workstation Images are in distribution include)

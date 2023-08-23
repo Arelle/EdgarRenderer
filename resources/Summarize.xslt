@@ -13,7 +13,7 @@
   <xsl:param name="includeExcel">true</xsl:param>
   <xsl:variable name="includeDir">/include</xsl:variable>
   <xsl:variable name="imagesDir">/images</xsl:variable>
-  <xsl:variable name="ixHtmlPath">ix.html</xsl:variable>
+  <xsl:variable name="ixHtmlPath">ix.xhtml</xsl:variable>
   <xsl:variable name="fetchprefix"></xsl:variable>
   <xsl:variable name="filingDocUrlPrefix"></xsl:variable>
   <xsl:variable name="filingDocUrlPrefixQuoted"></xsl:variable>

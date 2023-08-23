@@ -6,7 +6,8 @@ Data and content created by government employees within the scope of their emplo
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
-import sys, traceback, os.path, re, math, io, logging
+import sys, traceback, os.path, math, io, logging
+import regex as re
 from collections import defaultdict, OrderedDict
 from lxml.etree import Element, SubElement, ElementDepthFirstIterator
 import arelle.ModelDocument, arelle.ModelDtsObject, arelle.XbrlConst

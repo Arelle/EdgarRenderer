@@ -12,7 +12,7 @@
   <xsl:param name="includeExcel">true</xsl:param>
   <xsl:variable name="includeDir">/include</xsl:variable>
   <xsl:variable name="imagesDir">/images</xsl:variable>
-  <xsl:variable name="ixHtmlPath">/ixviewer/ix.html</xsl:variable>
+  <xsl:variable name="ixHtmlPath">/ixviewer/ix.xhtml</xsl:variable>
 
   <xsl:variable name="fetchprefix">/ft/viewexhibitfiler.html?filename=</xsl:variable>
   <xsl:variable name="fetch_ix_prefixquoted"><![CDATA[/ft/viewexhibitfiler.html?filename=]]></xsl:variable>

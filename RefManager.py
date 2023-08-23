@@ -7,7 +7,8 @@ Data and content created by government employees within the scope of their emplo
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
-import os.path, re, lxml, time
+import os.path, lxml, time
+import regex as re
 import arelle.ModelDocument
 from arelle.FileSource import openFileSource
 

@@ -10,7 +10,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 from os import getpid, remove, makedirs, listdir # , getenv
 from os.path import basename, isfile, abspath, isdir, dirname, exists, join, splitext, normpath
 from io import IOBase
-import json, re, shutil, sys, datetime, os, zipfile
+import json, shutil, sys, datetime, os, zipfile
+import regex as re
 import arelle.XbrlConst
 from lxml.etree import tostring as treeToString
 from . import Utils
