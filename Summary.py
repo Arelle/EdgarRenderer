@@ -18,6 +18,9 @@ metaversion = "2.2"
 EJson = 'MetaLinks' + ".json"
 SFile = 'FilingSummary' + ".xml"
 
+INSTANCE = arelle.ModelDocument.Type.INSTANCE
+INLINEXBRL = arelle.ModelDocument.Type.INLINEXBRL
+
 def mergeCountDicts(iterable, dictAttribute=None, key=None):
     'Return a dictionary merged from a collection of dictionaries, with values summed.'
     newdict = defaultdict(int)
@@ -203,18 +206,42 @@ class Summary(object):
                     self.eTreeLogsElement = logs # for removal on dissem pass if needed
 
         inputFilesEtree = SubElement(self.rootETree, 'InputFiles')
+        inputFileList = []
         sourceDict = self.controller.sourceDict
-        for l in [self.controller.instanceList, self.controller.inlineList, self.controller.otherXbrlList]:
-            for file in sorted(l, key=lambda f: os.path.basename(f)):
-                s = SubElement(inputFilesEtree, 'File')
-                if file in sourceDict and sourceDict[file][0] is not None and sourceDict[file][1] is not None:
-                    (doctype, original) = sourceDict[file]
-                    s.set('doctype', doctype)
-                    s.set('original', os.path.basename(original))
-                elif file in self.controller.inlineList:
-                    s.set('doctype','(Source)')
-                    s.set('original', os.path.basename(file))
-                s.text = str(os.path.basename(file))
+        # example sourceDict as set upon initialization of the controller.
+        # dict: {'i19201gd1-20081231.htm': ('8-K', 'i19201gd1-20081231.htm'), 'i19201gd2-20081231.htm': ('8-K', 'i19201gd2-20081231.htm')}
+        for summary in self.instanceSummaryList:
+            _filing = summary.filing
+            _edgarDocType = summary.edgarDocType
+            _modelXbrl = _filing.modelXbrl
+            #_displayUri = _modelXbrl.displayUri
+            #_uriDir = _modelXbrl.uriDir
+            for k, v in summary.dts.items():
+                for rl, _files in v.items():
+                    if k not in ['inline', 'instance'] and rl not in ['local']: continue
+                    for _file in _files:
+                        _file = os.path.basename(_file)
+                        if _file in inputFileList: continue
+                        inputFileList.append(_file)
+                        s = SubElement(inputFilesEtree, 'File')
+                        s.text = _file
+                        if k in ['inline','instance']:
+                            # yes, a single .htm file can appear in more than one IXDS.
+                            if _edgarDocType is not None:
+                                s.set('doctype',_edgarDocType)
+                            else:
+                                s.set('doctype','(Source)')
+                            for p in ['isShr','isDefinitelyFs','isDefinitelyNotFs','isFeeExhibit',''
+                                             ,'isIfrs','isN1a','isN2Prospectus','isN3N4N6','isNcsr'
+                                             ,'isOEF','isOnlyDei','isProxy','isRR','isRRorOEF','isRxp'
+                                             ,'isOnlyShr','isSdr','isUsgaap','isVip']: # isOnlyShr!!!  contains(.,'F-SR') or contains(.,'EX-26')])"/>
+                                if getattr(_filing,p,False):
+                                    s.set(p,'true')
+                            if _file in sourceDict and sourceDict[_file][1] is not None:
+                                s.set('original', os.path.basename(sourceDict[_file][1]))
+                            elif _file in self.controller.inlineList:
+                                s.set('original', os.path.basename(_file))
+                            s.text = str(os.path.basename(_file))
         supplementalFilesEtree = SubElement(self.rootETree, 'SupplementalFiles')
         for file in self.controller.supplementalFileList:
             SubElement(supplementalFilesEtree, 'File').text = str(file)
@@ -381,7 +408,9 @@ class InstanceSummary(object):
         self.customNamespace = None
         self.roleDefinitionDict = dict()
 
-        # do not hang on to filing or modelXbrl, just collect the statistics.
+        # collect the statistics.
+        self.filing = filing
+        self.modelXbrl = modelXbrl
         self.dts = defaultdict(lambda: defaultdict(list)) # self.dts['instance']['local'] returns a list
         self.hasStdNamespace = set()
         self.hasRRorOEF = self.hasOef = self.hasRR = self.hasVip = self.hasFeeExhibit = False

@@ -146,8 +146,17 @@ export class Development {
 
                 const viewer = document.createElement('td');
                 const a = document.createElement('a');
-                current.link = current.link.replace(`src/assets`, `./assets`);
-                
+
+                if (Object.prototype.hasOwnProperty.call(current, `multiple_files`)) {
+                    // multiple-files look like ?doc=/assets
+                    // needs to look like ?doc=./assets
+                    current.link = current.link.replace(`/assets`, `./assets`);
+                } else {
+                    // multiple-files look like ?doc=src/assets
+                    // needs to look like ?doc=./assets
+                    current.link = current.link.replace(`src/assets`, `./assets`);
+                }
+
                 a.setAttribute('href', `${window.location.href}${current.link}`);
                 a.setAttribute(`target`, `_blank`);
                 const viewerText = document.createTextNode(`Go See`);

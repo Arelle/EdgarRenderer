@@ -1313,7 +1313,7 @@ Warning: Taxonomy schema {schema} namespace {targetNamespace} has date later tha
          level="error"
          module="ValidateFilingDTS.py" line="136"
          args="schema targetNamespace">
-[du-0707-Recommended-Prefix-Disallowed]  The schema does not supply a prefix for {targetNamespace} without an underscore character, in file {schema}. Please provide or change a prefix
+[du-0707-Recommended-Prefix-Disallowed]  The schema does not supply a prefix for {targetNamespace} without an underscore character, in file {schema}. Please provide or change a prefix.
 </message>
 
 <!-- share previous message
@@ -1324,6 +1324,13 @@ Warning: Taxonomy schema {schema} namespace {targetNamespace} has date later tha
 Taxonomy schema {schema} namespace {targetNamespace} prefix {prefix} must not have an '_'
 </message>
 -->
+
+<message code="EFM.6.07.07.multipleRecommendedPrefixes"
+         level="error"
+         module="ValidateFilingDTS.py" line="136"
+         args="schema targetNamespace">
+[du-0707-Multiple-Recommended-Prefixes]  The schema must supply a single prefix for %(targetNamespace)s but there are %(count)s in file %(schema)s.
+</message>
 
 <message code="EFM.6.07.08"
          level="error"

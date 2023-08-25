@@ -1,4 +1,5 @@
 import fs from "fs";
+import fse from "fs-extra";
 import fetch from "node-fetch";
 export class Filing {
   filings;
@@ -8,6 +9,7 @@ export class Filing {
 
   async init() {
     let index = 1;
+    await this.copyImportantFilings();
     for await (const filing of this.filings) {
       // we only GET the filing if the directory of filing.id does NOT exsist
       try {
@@ -38,7 +40,7 @@ export class Filing {
             `Skipping (Instance URL not what we expected): ${filing.id}`
           );
         } else {
-          await this.writeToFS(filing, meta, summary,instance, html);
+          await this.writeToFS(filing, meta, summary, instance, html);
         }
         index++;
       }
@@ -68,7 +70,7 @@ export class Filing {
     }
   }
 
-  async writeToFS(filing, meta,summary, instance, html) {
+  async writeToFS(filing, meta, summary, instance, html) {
     fs.mkdir(
       `./src/assets/filings/${filing.id}`,
       { recursive: true },
@@ -140,6 +142,17 @@ export class Filing {
           );
         }
       }
+    );
+  }
+
+  async copyImportantFilings() {
+    const copyDirectoy = async (source, destination) => {
+      fse.copy(source, destination);
+    };
+
+    await copyDirectoy(
+      `./src/assets/important-filings/`,
+      `./src/assets/filings/`
     );
   }
 }

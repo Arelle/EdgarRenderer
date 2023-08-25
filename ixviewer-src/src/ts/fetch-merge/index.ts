@@ -965,7 +965,7 @@ export class FetchAndMerge {
                         return actualFootnote?._text;
                     } else {
                         // TODO we need way more cases
-                        return footnotes['link:footnote']._text.join('');
+                        return footnotes['link:footnote']['xhtml:span'] ? footnotes['link:footnote']['xhtml:span']._text : footnotes['link:footnote']._text.join('')
                     }
                 }
             }
