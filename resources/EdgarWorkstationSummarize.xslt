@@ -68,7 +68,7 @@
   <xsl:param name="accessionNumber">PROVIDED-BY-ARELLE-FILE-ARGUMENT-OBJECT</xsl:param>
   <xsl:variable name="includeDir">include</xsl:variable>
   <xsl:variable name="imagesDir">Images</xsl:variable>
-  <xsl:variable name="ixHtmlPath">ixviewer/ix.xhtml</xsl:variable>
+  <xsl:variable name="ixHtmlPath">ixviewer/ix.html</xsl:variable>
 
   <xsl:variable name="fetchprefix"><![CDATA[DisplayDocument.do?step=docOnly&accessionNumber=]]></xsl:variable>
   <xsl:variable name="fetch_ix_prefixquoted"><![CDATA[../DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D]]></xsl:variable>

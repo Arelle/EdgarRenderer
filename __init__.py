@@ -734,7 +734,13 @@ class EdgarRenderer(Cntlr.Cntlr):
         # skip rendering if major errors and abortOnMajorError
         # errorCountDuringValidation = len(Utils.xbrlErrors(modelXbrl))
         # won't work for all possible logHandlers (some emit immediately)
-        errorCountDuringValidation = sum(1 for e in modelXbrl.errors if isinstance(e, str)) # don't count assertion results dict if formulas ran
+        attachmentDocumentType = getattr(modelXbrl, "efmAttachmentDocumentType", "(none)")
+        isRunningUnderTestcase = modelXbrl.modelManager.loadedModelXbrls[0].modelDocument.type in ModelDocument.Type.TESTCASETYPES
+        # strip on error if preceding primary inline instance had no error and exhibitType strips on error
+        stripFilingOnError = self.success and bool(
+                             filing.exhibitTypesStrippingOnErrorPattern.match(attachmentDocumentType))
+        errorCountDuringValidation = sum(1 for e in modelXbrl.errors if isinstance(e, str) and not e.startswith("DQC.")) # don't count assertion results dict if formulas ran
+        success = True
         if errorCountDuringValidation > 0:
             if self.abortOnMajorError: # HF renderer raises exception on major errors: self.modelManager.abortOnMajorError:
                 self.logFatal(_("Not attempting to render after {} validation errors").format(
@@ -743,10 +749,12 @@ class EdgarRenderer(Cntlr.Cntlr):
                 return
             else:
                 self.logInfo(_("Ignoring {} Validation errors because abortOnMajorError is not set.").format(errorCountDuringValidation))
+                if not isRunningUnderTestcase:
+                    success = False
         modelXbrl.profileActivity()
         self.setProcessingFolder(modelXbrl.fileSource, report.filepaths[0]) # use first of possibly multi-doc IXDS files
         # if not reportZip and reportsFolder is relative, make it relative to source file location (on first report)
-        if not filing.reportZip and self.initialReportsFolder and len(filing.reports) == 1:
+        if success and not filing.reportZip and self.initialReportsFolder and len(filing.reports) == 1:
             if not os.path.isabs(self.initialReportsFolder):
                 # try input file's directory
                 if os.path.exists(self.processingFolder) and os.access(self.processingFolder, os.W_OK | os.X_OK):
@@ -777,11 +785,16 @@ class EdgarRenderer(Cntlr.Cntlr):
                 self.otherXbrlList.append(reportedFile)
         RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
         self.loopnum = getattr(self, "loopnum", 0) + 1
+        reportSummaryList = None
         try:
-            reportSummaryList = Filing.mainFun(self, modelXbrl, self.reportsFolder)
-            Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, reportSummaryList)
-            del reportSummaryList # dereference
-            success = True
+            if success: # no instance errors from prior validation workflow
+                reportSummaryList = Filing.mainFun(self, modelXbrl, self.reportsFolder)
+                # recheck for errors
+                if (stripFilingOnError and sum(1 for e in modelXbrl.errors if isinstance(e, str)) > 0):
+                    success = False
+                    self.logDebug(_("Stripping filing due to {} preceding validation errors.").format(errorCountDuringValidation))
+            if success:
+                Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, reportSummaryList)
         except Utils.RenderingException as ex:
             success = False # error message provided at source where exception was raised
             self.logDebug(_("RenderingException after {} validation errors: {}").format(errorCountDuringValidation, ex))
@@ -793,9 +806,19 @@ class EdgarRenderer(Cntlr.Cntlr):
             else:
                 self.logWarn(_("The rendering engine was unable to {} due to an internal error.  This is not considered an error in the filing.").format(action, errorCountDuringValidation))
             self.logDebug(_("Exception traceback: {}").format(traceback.format_exception(*sys.exc_info())))
+        del reportSummaryList # dereference
         self.renderedFiles = filing.renderedFiles # filing-level rendered files
         if not success:
-            self.success = False
+            if stripFilingOnError:
+                modelXbrl.log("INFO-RESULT",
+                              "EFM.stripExhibit",
+                              _("Attachment {} has errors requiring stripping its files").format(attachmentDocumentType),
+                              modelXbrl=modelXbrl,
+                              exhibitType=attachmentDocumentType,
+                              files="|".join(sorted(report.reportedFiles)))
+                filing.reports.remove(report) # remove stripped report from filing (so it won't be in zip)
+            else:
+                self.success = False
         # remove any inline invalid facts
         for ixdsHtmlRootElt in getattr(modelXbrl, "ixdsHtmlElements", ()):
             doc = ixdsHtmlRootElt.modelDocument
@@ -1350,7 +1373,7 @@ def edgarRendererGuiStartLogging(modelXbrl, mappedUri, normalizedUri, filepath, 
         modelXbrl.modelManager.cntlr.logHandler.startLogBuffering() # accumulate validation and rendering warnings and errors
     return False # called for class 'ModelDocument.IsPullLoadable'
 
-def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
+def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
     """ run EdgarRenderer using GUI interactions for a single instance or testcases """
     if cntlr.hasGui and modelXbrl.modelDocument:
         from arelle.ValidateFilingText import referencedFiles
@@ -1458,7 +1481,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             hasInlineReport = hasInlineReport,
             arelleUnitTests = {},
             writeFile=guiWriteFile,
-            readFile=guiReadFile
+            readFile=guiReadFile,
+            exhibitTypesStrippingOnErrorPattern=kwargs.get("exhibitTypesStrippingOnErrorPattern")
         )
         if "accessionNumber" in parameters:
             filing.accessionNumber = parameters["accessionNumber"][1]
@@ -1506,14 +1530,11 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             )
             reports.append(report)
             del instDocs # dereference
-            for f in instanceModelXbrl.factsByLocalName["DocumentType"]:
-                cntx = f.context
-                if cntx is not None and not cntx.hasSegment and f.xValue:
-                    report.deiDocumentType = f.xValue # find document type for mustard menu
-                    break
-            edgarRendererXbrlRun(cntlr, options, instanceModelXbrl, filing, report)
+            if "setReportAttrs" in kwargs:
+                kwargs["setReportAttrs"](report, instanceModelXbrl)
             if cntlr.validateBeforeRendering.get():
                 Validate.validate(instanceModelXbrl)
+            edgarRendererXbrlRun(cntlr, options, instanceModelXbrl, filing, report)
         edgarRenderer = filing.edgarRenderer
         reportsFolder = edgarRenderer.reportsFolder
         edgarRendererFilingEnd(cntlr, options, modelXbrl.fileSource, filing)
@@ -1642,7 +1663,7 @@ __pluginInfo__ = {
     # remove redline markups when appropriate
     'ModelDocument.Discover': edgarRendererRemoveRedlining,
     # GUI operation startup (renders all reports of an input instance or test suite)
-    'CntlrWinMain.Xbrl.Loaded': edgarRendererGuiRun,
+    'EdgarRenderer.Gui.Run': edgarRendererGuiRun,
     # GUI operation, add View -> EdgarRenderer submenu for GUI options
     'CntlrWinMain.Menu.View': edgarRendererGuiViewMenuExtender,
     # identify expected severity of test cases for EdgarRenderer testcases processing

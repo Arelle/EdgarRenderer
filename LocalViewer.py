@@ -10,7 +10,7 @@ from arelle.LocalViewer import LocalViewer
 import os, logging, sys
 import regex as re
 
-ixviewerDirFilesPattern = re.compile(r"^ix(-dev)?.x?html|^browser-error.html|^css/|^images/|^[a-z0-9.-]+min\.(js|css)(\.map)?$|^[a-z0-9]+\.(ttf|woff2)$")
+ixviewerDirFilesPattern = re.compile(r"^ix(-dev)?.x?html|^browser-error.html|^css/|^images/|^js/|^[a-z0-9.-]+min\.(js|css)(\.map)?$|^[a-z0-9]+\.(ttf|woff2)$")
 
 class _LocalViewer(LocalViewer):
     # plugin-specific local file handler
@@ -39,9 +39,12 @@ class _LocalViewer(LocalViewer):
             return static_file(_file[9:], root=os.path.join(self.reportsFolders[0], 'ixviewer'))
         if _report.isnumeric(): # in reportsFolder folder
             # is it an EDGAR workstation query parameter
-            if _file == "DisplayDocument.do" and "filename" in request.query:
-                _file = request.query["filename"]
-                self.cntlr.addToLog("  ?filename={}".format(_file), messageCode="localViewer:get",level=logging.DEBUG)
+            if _file == "DisplayDocument.do":
+                if "filename" in request.query:
+                    _file = request.query["filename"]
+                    self.cntlr.addToLog("  ?filename={}".format(_file), messageCode="localViewer:get",level=logging.DEBUG)
+                else:
+                    self.cntlr.addToLog("  ?" + ", ".join([f"{k}={v}" for k,v in request.query.items()]),level=logging.DEBUG)
             # check if file is in the current or parent directory (may bve
             _fileDir = self.reportsFolders[int(_report)]
             _fileExists = False
@@ -56,7 +59,10 @@ class _LocalViewer(LocalViewer):
                     if f.endswith(".zip"):
                         redirect("/{}/{}".format(_report,f))
             if not _fileExists:
-                self.cntlr.addToLog("http://localhost:{}/{}".format(self.port,file), messageCode="localViewer:fileNotFound",level=logging.DEBUG)
+                queryParams = ", ".join([f"{k}={v}" for k,v in request.query.items()])
+                if queryParams:
+                    queryParams = "?" + queryParams
+                self.cntlr.addToLog("http://localhost:{}/{}{}".format(self.port,file,queryParams), messageCode="localViewer:fileNotFound",level=logging.DEBUG)
             return static_file(_file, root=_fileDir, headers=self.noCacheHeaders) # extra_headers modification to py-bottle
         return static_file(file, root="/") # probably can't get here unless path is wrong
 

@@ -1153,13 +1153,6 @@ FootnoteLink {footnoteLinkNumber} has disallowed role {linkrole}</message>
 [rxp-0558-Exhibit-Document-Type] The value for dei:DocumentType, {deiDocumentType}, is not allowed for {exhibitDocumentType} attachments.
 </message>
 
-<message code="EFM.6.05.58.customElementDeclaration"
-         level="error"
-         module="plugin/validate/EFM/Filing.py" line="2184"
-         args="schemaName disallowance concept">
-[rxp-0558-Custom-Element-Declaration] {schemaName} contained a disallowed {disallowance} declaration for element {concept}. Use a standard RXP element instead. {refSources}
-</message>
-
 <message code="EFM.6.05.58.03"
          level="error"
          module="plugin/validate/EFM/Filing.py" line="2296"
@@ -1316,21 +1309,13 @@ Warning: Taxonomy schema {schema} namespace {targetNamespace} has date later tha
 [du-0707-Recommended-Prefix-Disallowed]  The schema does not supply a prefix for {targetNamespace} without an underscore character, in file {schema}. Please provide or change a prefix.
 </message>
 
-<!-- share previous message
-<message code="EFM.6.07.07"
-         level="error"
-         module="ValidateFilingDTS.py" line="140"
-         args="schema targetNamespace prefix">
-Taxonomy schema {schema} namespace {targetNamespace} prefix {prefix} must not have an '_'
-</message>
--->
-
 <message code="EFM.6.07.07.multipleRecommendedPrefixes"
          level="error"
          module="ValidateFilingDTS.py" line="136"
          args="schema targetNamespace">
 [du-0707-Multiple-Recommended-Prefixes]  The schema must supply a single prefix for %(targetNamespace)s but there are %(count)s in file %(schema)s.
 </message>
+
 
 <message code="EFM.6.07.08"
          level="error"

@@ -208,11 +208,10 @@ class Filing(object):
         self.isRxp = 'rxp' in self.stdNsTokens
         self.isShr = 'shr' in self.stdNsTokens
 
-        self.isFeeExhibit = bool(next((n for n in self.modelXbrl.roleTypes.keys()
-                                        if n is not None and re.search('/role/document/feesSummaryTable',n) is not None),None))
-
         self.edgarDocType = next((f.xValue for f in self.modelXbrl.factsByLocalName["DocumentType"]
                                       if (f.xValue is not None and f.context is not None and not f.context.hasSegment)),None)
+
+        self.isFeeExhibit = self.edgarDocType in ['EX-FILING FEES']
 
         n2_doc_pattern = r'497|N-2(/A|ASR|MEF| POSAR)?'
         self.isN2Prospectus = not(self.isRR) and self.edgarDocType is not None and bool(re.match(n2_doc_pattern,self.edgarDocType))
@@ -236,7 +235,7 @@ class Filing(object):
 
         nsWithFacts = set(qn.namespaceURI for qn in modelXbrl.factsByQname.keys() if qn)
         self.isOnlyDei = all(deiPattern.match(ns) for ns in nsWithFacts)
-        controller.hasXlout = (not self.isDefinitelyNotFs or self.isOnlyDei)
+        controller.hasXlout = getattr(controller,'hasXlout',False) or not self.isDefinitelyNotFs or self.isOnlyDei
 
         self.builtinEquityColAxes = [('dei',self.deiNamespace,'LegalEntityAxis'),
                                      ('ifrs-full',self.ifrsNamespace,'ComponentsOfEquityAxis'),

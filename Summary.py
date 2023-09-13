@@ -208,12 +208,14 @@ class Summary(object):
         inputFilesEtree = SubElement(self.rootETree, 'InputFiles')
         inputFileList = []
         sourceDict = self.controller.sourceDict
-        # example sourceDict as set upon initialization of the controller.
+        # example sourceDict as set upon initialization of the controller.  For a multi-htm instance:
         # dict: {'i19201gd1-20081231.htm': ('8-K', 'i19201gd1-20081231.htm'), 'i19201gd2-20081231.htm': ('8-K', 'i19201gd2-20081231.htm')}
         for summary in self.instanceSummaryList:
             _filing = summary.filing
             _edgarDocType = summary.edgarDocType
             _modelXbrl = _filing.modelXbrl
+            _filing.isDefinitelyFs = _filing.isDefinitelyFs or any(isStatement(r.longName) for r in summary.reportSummaryList)
+            _filing.isDefinitelyNotFs = not _filing.isDefinitelyFs and _filing.isNcsr
             #_displayUri = _modelXbrl.displayUri
             #_uriDir = _modelXbrl.uriDir
             for k, v in summary.dts.items():
@@ -229,7 +231,10 @@ class Summary(object):
                             # yes, a single .htm file can appear in more than one IXDS.
                             if _edgarDocType is not None:
                                 s.set('doctype',_edgarDocType)
+                            elif _file in sourceDict and bool(sourceDict[_file][0]):
+                                s.set('doctype',sourceDict[_file][0])
                             else:
+                                print('how did we get here? _file={}, sourceDict={}'.format(_file,sourceDict),file=sys.stderr)
                                 s.set('doctype','(Source)')
                             for p in ['isShr','isDefinitelyFs','isDefinitelyNotFs','isFeeExhibit',''
                                              ,'isIfrs','isN1a','isN2Prospectus','isN3N4N6','isNcsr'
@@ -415,7 +420,10 @@ class InstanceSummary(object):
         self.hasStdNamespace = set()
         self.hasRRorOEF = self.hasOef = self.hasRR = self.hasVip = self.hasFeeExhibit = False
 
-        self.edgarDocType = filing.edgarDocType
+        self.edgarDocType = getattr(modelXbrl,'efmAttachmentDocumentType',
+                                    next((f.xValue for f in modelXbrl.factsByLocalName["DocumentType"]
+                                         if (f.xValue is not None and f.context is not None and not f.context.hasSegment))
+                                          ,None))
 
         for uri,doc in sorted(modelXbrl.urlDocs.items(), key=lambda i: i[0]): # change to url from discovery order. i[1].objectIndex
             if doc.type == arelle.ModelDocument.Type.INLINEXBRLDOCUMENTSET:
@@ -573,7 +581,7 @@ class InstanceSummary(object):
                         self.qnameReferenceDict[fromConcept.qname.clarkNotation].add(r)
 
         # build a dictionary tree of the eventual JSON output.
-        self.tagDict = {}
+        self.tagDict = OrderedDict()
         for concept in conceptInUseSet:
             self.tagDict[concept.attrib['id']] = {'xbrltype' : (concept.typeQname).localName
                                                   ,'nsuri': concept.qname.namespaceURI
