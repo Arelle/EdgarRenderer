@@ -3,16 +3,16 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
+import * as bootstrap from "bootstrap";
 import { Constants } from "../constants";
 import { ConstantsFunctions } from "../constants/functions";
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 import { HelpersUrl } from "../helpers/url";
 
 export const Links = {
 
   init: () => {
     Links.populate();
-    Links.absoluteLinks();
   },
 
   populate: () => {
@@ -80,6 +80,14 @@ export const Links = {
       const text = document.createTextNode(current.slug);
 
       a.append(text);
+      a.addEventListener('click', () => {
+        Links.updateCurrent(index);
+      });
+      a.addEventListener('keyup', () => {
+        Links.updateCurrent(index);
+      });
+
+
 
       const span = document.createElement('span');
       current.table ? span.classList.add('fact-total-count') : span.classList.add('fact-file-total-count');
@@ -105,16 +113,14 @@ export const Links = {
         const a = document.createElement('a');
         a.classList.add('nav-link');
         a.setAttribute('href', '#');
-        a.setAttribute('data-link', '#fact-table');
-        a.setAttribute('data-bs-toggle', 'offcanvas');
-        a.setAttribute('data-bs-target', '#fact-table-container');
+        a.setAttribute('data-container', '#fact-table-container');
+        // a.setAttribute('data-bs-toggle', 'offcanvas');
+        // a.setAttribute('data-bs-target', '#fact-table-container');
         a.addEventListener('click', () => {
-          a.classList.toggle('active');
-          Links.updateCurrent(a.classList.contains('active'));
+          Links.updateCurrent(index + 1);
         });
         a.addEventListener('keyup', () => {
-          a.classList.toggle('active');
-          Links.updateCurrent(a.classList.contains('active'));
+          Links.updateCurrent(index + 1);
         });
         const text = document.createTextNode(`Fact Table`);
         a.append(text);
@@ -125,7 +131,7 @@ export const Links = {
         span.classList.add('bg-sec');
         span.classList.add('ms-1');
 
-        const factText = document.createTextNode(FactMap.getFactCount(true));
+        const factText = document.createTextNode(FactMap.getFactCount());
 
         span.append(factText);
         a.append(span);
@@ -134,6 +140,33 @@ export const Links = {
         container?.append(li);
       }
       // END Fact Table
+      // Fact Charts
+      if (index === Constants.getInlineFiles.length - 1) {
+        const li = document.createElement('li');
+        li.classList.add('nav-item');
+        const a = document.createElement('a');
+        a.classList.add('nav-link');
+        a.setAttribute('href', '#');
+        a.setAttribute('data-container', '#facts-breakdown-container');
+
+
+        //a.setAttribute('data-bs-toggle', 'offcanvas');
+        //a.setAttribute('data-bs-target', '#facts-breakdown-container');
+        a.addEventListener('click', () => {
+          //a.classList.toggle('active');
+          Links.updateCurrent(index + 2);
+        });
+        a.addEventListener('keyup', () => {
+          // a.classList.toggle('active');
+          Links.updateCurrent(index + 2);
+        });
+        const text = document.createTextNode(`Facts Chart`);
+        a.append(text);
+
+        li.append(a);
+        container?.append(li);
+      }
+      // Fact Charts
     });
   },
 
@@ -168,40 +201,31 @@ export const Links = {
     });
   },
 
-  updateCurrent: (activeFactTable = false) => {
-
-
-    // const badge = a.querySelector('.text-bg-light')
-    // if (badge) {
-    //   badge.classList.remove('text-bg-light');
-    //   badge.classList.add('bg-sec');
-    // }
-
-    Constants.getInlineFiles.forEach((current) => {
-      if (activeFactTable) {
-        current.current = false;
-      }
-    });
-    Links.update();
-
+  updateCurrent: (navIndex: number) => {
     const tabs = Array.from(document.getElementById('tabs-container')?.querySelectorAll('a.nav-link') as NodeListOf<Element>);
+
     tabs.forEach((element, index: number) => {
-      if (activeFactTable) {
-        if (index !== tabs.length - 1) {
-          element.classList.remove('active');
-          const badge = element.querySelector('.text-bg-light')
-          if (badge) {
-            badge.classList.remove('text-bg-light');
-            badge.classList.add('bg-sec');
-          }
-        } else {
-          // since we remove it, add it back (counterproductive, i know)
-          element.classList.add('active');
-          const badge = element.querySelector('.text-bg-light')
-          if (badge) {
-            badge.classList.remove('text-bg-light');
-            badge.classList.add('bg-sec');
-          }
+      const badge = element.querySelector('.text-bg-light');
+      if (index !== navIndex) {
+        element.classList.remove('active');
+        if (badge) {
+          badge.classList.remove('text-bg-light');
+          badge.classList.add('bg-sec');
+        }
+        if (element.hasAttribute('data-container')) {
+          const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(element.getAttribute('data-container') as string);
+          offcanvas.hide();
+        }
+      }
+      if (index === navIndex) {
+        element.classList.add('active');
+        if (badge) {
+          badge.classList.add('text-bg-light');
+          badge.classList.remove('bg-sec');
+        }
+        if (element.hasAttribute('data-container')) {
+          const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(element.getAttribute('data-container') as string);
+          offcanvas.show();
         }
       }
     });

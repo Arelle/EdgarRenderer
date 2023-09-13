@@ -165,6 +165,7 @@ export const FactPages = {
         const aTag = document.createElement('a');
         aTag.setAttribute('href', current[property]);
         aTag.setAttribute('target', '_blank');
+        aTag.setAttribute('rel', 'noopener noreferrer');
 
         if (property === 'URI') {
           const small = document.createElement('small');
@@ -186,6 +187,8 @@ export const FactPages = {
           const aTag = document.createElement('a');
           aTag.setAttribute('href', current[property]);
           aTag.setAttribute('target', '_blank');
+          aTag.setAttribute('rel', 'noopener noreferrer');
+
           const aContent = document.createTextNode(current[property]);
           aTag.appendChild(aContent);
           tdElement.appendChild(aTag);

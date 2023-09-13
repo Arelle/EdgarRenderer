@@ -4,7 +4,7 @@
  */
 
 import { ConstantsFunctions } from "../constants/functions";
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 import { Facts } from "../facts";
 import { ModalsCommon } from "./common";
 import { ModalsFormInformation } from "./form-information";

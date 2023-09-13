@@ -20,9 +20,13 @@ export class SetCustomCSS {
       {
         //TODO?
         "box-shadow": `inset 0px 2px 0px #${taggedData}, inset 0px -2px 0px #${taggedData}`,
-        // "border-top": "2px solid #" + taggedData,
-        // "border-bottom": "2px solid #" + taggedData,
         display: "inline"
+      },
+
+      '#dynamic-xbrl-form [enabled-fact="true"][continued-fact="false"]:hover':
+      {
+        //TODO?
+        'background-color': `#${tagShading}`,
       },
 
       '#dynamic-xbrl-form [enabled-fact="true"][continued-main-fact="true"]':
@@ -32,15 +36,16 @@ export class SetCustomCSS {
       '#dynamic-xbrl-form [enabled-fact="true"][continued-main-fact="true"][text-block-fact="true"]':
       {
         "box-shadow":
-          `-2px 0px 0px 0px #${taggedData}, 2px 0px 0px 0px #${taggedData}`
+          `-2px 0px 0px 0px #${taggedData}, 2px 0px 0px 0px #${taggedData}`,
       },
 
-      '#dynamic-xbrl-form [enabled-fact="true"][text-block-fact="true"]':
+      '#dynamic-xbrl-form [enabled-fact="true"][text-block-fact="true"] >':
       {
         "box-shadow":
           `-2px 0px 0px 0px #${taggedData}, 2px 0px 0px 0px #${taggedData}`,
         "border-top": "none",
-        "border-bottom": "none"
+        "border-bottom": "none",
+        //'background-color': `#${taggedData}`,
       },
 
       '#dynamic-xbrl-form [highlight-fact="true"]': {

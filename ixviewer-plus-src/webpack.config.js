@@ -1,11 +1,9 @@
-const nomnoml = require("nomnoml");
 const path = require(`path`);
 const glob = require("glob");
 const webpack = require(`webpack`);
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require(`html-webpack-plugin`);
-// const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const { PurgeCSSPlugin } = require("purgecss-webpack-plugin");
 const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
@@ -41,23 +39,6 @@ module.exports = (
             patterns: [{ from: "src/assets", to: "assets" }],
           })
         : false,
-
-      // new AddAssetHtmlPlugin(
-      //   argv.mode === `production`
-      //     ? []
-      //     : [
-      //         // {
-      //         //   filepath: require.resolve(
-      //         //     `./node_modules/graphre/dist/graphre.js`
-      //         //   ),
-      //         // },
-      //         {
-      //           filepath: require.resolve(
-      //             `./node_modules/nomnoml/dist/nomnoml.js`
-      //           ),
-      //         },
-      //       ]
-      // ),
 
       new PurgeCSSPlugin({
         paths: glob.sync(`${path.join(__dirname, "./src")}/**/*`, {
@@ -99,7 +80,12 @@ module.exports = (
             configFile: path.resolve(__dirname, `tsconfig.json`),
             transpileOnly: true,
           },
-          exclude: [path.resolve(__dirname, `../node_modules`)],
+          exclude: [
+            path.resolve(__dirname, `../node_modules`),
+            argv.mode === `production`
+              ? path.resolve(__dirname, `./src/ts/**/*.development.ts`)
+              : null,
+          ].filter(Boolean),
         },
         // load SCSS
         {
@@ -146,7 +132,6 @@ module.exports = (
     devtool: argv.mode === `production` ? `source-map` : `inline-source-map`,
 
     devServer: {
-      // open: true,
       compress: true,
       port: 3000,
       static: path.resolve(__dirname, `./dist`),

@@ -35,13 +35,17 @@
                             <a id="menu-dropdown-information" data-test="menu-dropdown-information"
                                 class="dropdown-item click text-body" tabindex="1">Information</a>
                             <a id="form-information-instance" data-test="form-information-instance"
-                                class="dropdown-item click text-body" target="_blank" tabindex="1">Save XBRL
+                                class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer"
+                                tabindex="1">Save
+                                XBRL
                                 Instance</a>
                             <a id="form-information-zip" data-test="form-information-zip"
-                                class="dropdown-item click text-body" target="_blank" tabindex="1">Save XBRL Zip
+                                class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer"
+                                tabindex="1">Save XBRL Zip
                                 File</a>
                             <a id="form-information-html" data-test="form-information-html"
-                                class="dropdown-item click text-body" target="_blank" tabindex="1">Open as
+                                class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer"
+                                tabindex="1">Open as
                                 HTML</a>
                             <a id="menu-dropdown-settings" data-test="menu-dropdown-settings"
                                 class="dropdown-item click text-body" tabindex="1">Settings</a>
@@ -504,35 +508,36 @@
             <div class="offcanvas-body">
                 <form id="sections-menu-search-submit" data-name="sections-menu-search" class="my-2 my-lg-0 input-group"
                     novalidate="true">
-                    <div id="sections-search-additional" class="input-group-prepend d-none">
-                        <button class="dropdown btn btn-sec" type="button" data-bs-toggle="dropdown" tabindex="2">
-                            <i class="nav-loading fas fa-cog"></i>
-                        </button>
-                        <div class="dropdown-menu px-2">
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="radio" name="sections-search-options"
-                                        value="1" checked="true" tabindex="2" />
-                                    <span>Search in All.</span>
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="radio" name="sections-search-options"
-                                        value="2" tabindex="2" />
-                                    <span>Search in Internal Sections Only.</span>
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="radio" name="sections-search-options"
-                                        value="3" tabindex="2" />
-                                    <span>Search in External Sections Only.</span>
-                                </label>
+
+                    <div class="input-group">
+                        <div id="sections-search-additional" class="input-group-prepend d-none">
+                            <button class="dropdown btn btn-sec" type="button" data-bs-toggle="dropdown" tabindex="2">
+                                <i class="nav-loading fas fa-cog"></i>
+                            </button>
+                            <div class="dropdown-menu px-2">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="sections-search-options"
+                                            value="1" checked="true" tabindex="2" />
+                                        <span>Search in All Instances.</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="sections-search-options"
+                                            value="2" tabindex="2" />
+                                        <span>Search in Current Instance only.</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="sections-search-options"
+                                            value="3" tabindex="2" />
+                                        <span>Search in Other Instances(s) only.</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="input-group">
                         <input type="text" class="form-control" id="sections-search" data-test="sections-search"
                             placeholder="Search Sections" aria-label="Search all Sections by their associated label."
                             name="search-sections" tabindex="2" required="true" />
@@ -982,11 +987,32 @@
                         <option value="50">50 Facts per page</option>
                     </select>
                 </span>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
                 <div>
                     <table id="fact-table" class="table"></table>
+                </div>
+            </div>
+        </div>
+
+        <div id="facts-breakdown-container" class="offcanvas offcanvas-bottom" data-bs-scroll="true"
+            data-bs-backdrop="false">
+            <div class="offcanvas-header d-flex justify-content-between">
+                <h5 class="offcanvas-title">Facts Chart</h5>
+
+            </div>
+            <div class="offcanvas-body">
+                <div id="facts-breakdown" class="h-100">
+                    <div class="row h-100">
+                        <div class="h-100 card">
+                            <div class="card-body h-25">
+                                <h5 class="card-title" id="chart-title-1"></h5>
+                                <h6 class="card-subtitle my-2" id="chart-subtitle-1"></h6>
+                                <div id="chart-select-1"></div>
+                            </div>
+                            <div id="chart-1" class="h-75">Not enough data to form graph.</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

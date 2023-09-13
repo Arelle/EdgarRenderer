@@ -3,13 +3,47 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
+import { Reference, SingleFact } from "../interface/fact";
 import { FormInformation } from "../interface/form-information";
+import { Meta } from "../interface/meta";
 
 export const Constants: {
   version: string,
   scrollPosition: string,
   hoverOption: boolean,
-  getInstanceFiles: Array<{}>,
+  getInstanceFiles: Array<{
+    current: boolean,
+    formInformation: {
+      axisCustom: number,
+      axisStandard: number,
+      baseTaxonomies: { [key: string]: number },
+      contextCount: number,
+      dts: { [key: string]: { [key: string]: Array<string> } },
+      elementCount: number,
+      entityCount: 1,
+      hidden: { [key: string]: number },
+      keyCustom: number,
+      keyStandard: number,
+      memberCustom: number,
+      memberStandard: number,
+      nsprefix: string,
+      nsuri: string,
+      segmentCount: number,
+      unitcount: number,
+    },
+    instance: number,
+    map: Map<string, SingleFact>,
+    metaInstance: Meta,
+    xhtmls: Array<{
+      current: boolean,
+      loaded: boolean,
+      slug: string,
+      url: string,
+      xhtml: string,
+    }>,
+    xmlSlug: Array<string>,
+    xmlUrls: Array<string>,
+  }>,
   getInlineFiles: Array<{
     current: boolean,
     loaded: boolean,
@@ -18,6 +52,8 @@ export const Constants: {
     table?: boolean
   }>,
   getFormInformation: FormInformation,
+  getStdRef: { [key: string]: Reference },
+
 } = {
 
   version: "23.1",

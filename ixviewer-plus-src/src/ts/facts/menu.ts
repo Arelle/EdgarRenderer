@@ -3,7 +3,7 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 import { Pagination } from "../pagination";
 import { UserFiltersState } from "../user-filters/state";
 import { FactsGeneral } from "./general";

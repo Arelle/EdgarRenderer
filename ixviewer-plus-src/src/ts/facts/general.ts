@@ -4,7 +4,7 @@
  */
 
 import { ErrorsMinor } from "../errors/minor";
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 import { ModalsCommon } from "../modals/common";
 import { ConstantsFunctions } from "../constants/functions";
 import { HelpersUrl } from "../helpers/url";

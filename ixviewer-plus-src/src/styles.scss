@@ -156,6 +156,11 @@ kbd {
   z-index: 100;
 }
 
+#facts-breakdown-container {
+  height: calc(100vh - 85px);
+  z-index: 100;
+}
+
 body {
   overflow: hidden;
 }

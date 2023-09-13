@@ -10,8 +10,8 @@ export const SectionsSearch = {
   submit: () => {
 
     // 1 => All Sections
-    // 2 => Show Internal Sections Only
-    // 3 => Show External Sections Only
+    // 2 => Show Current Instance Only
+    // 3 => Show External Instance(s) Only
 
     const options = document.querySelectorAll('[name="sections-search-options"]');
 

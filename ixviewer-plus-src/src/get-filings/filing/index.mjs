@@ -152,7 +152,7 @@ export class Filing {
 
     await copyDirectoy(
       `./src/assets/important-filings/`,
-      `./src/assets/filings/`
+      `./src/assets/filings/important`
     );
   }
 }

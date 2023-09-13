@@ -38,11 +38,16 @@ Run these in a terminal from the root of your project
    - `npm run unit-test`
 6. Get Filings from RSS Feed(s) **follow the prompt in the terminal**
    - `npm run get-filings`
+7. Run the project in Sandbox mode (for our local testing server)
+   - `npm run sandbox`
+8. Build the PRODUCTION application (to go to SEC.gov, WorkStation, Etc...) all necessary files will be placed in {{project_root}}/dist/\**
+   - `npm run production`
 
 ## NOTES
 
 - If you are developing and need filings to develop against:
   1.  Run `npm run get-filings`.
+      - Answer all prompts in the terminal, allow script to run (could take a while)
   2.  Once that is accomplished, run `npm run dev-serve` OR `npm run dev-serve-analyze`.
   3.  Open a browser and navigate to: `http://localhost:3000/ix.xhtml`
   4.  You will be presented with a table of all filings that you gathered during step 1.

@@ -6,7 +6,7 @@
 import { Modals } from ".";
 import { ErrorsMinor } from "../errors/minor";
 import { FactPages } from "./fact-pages";
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 
 export const ModalsContinuedAt = {
 

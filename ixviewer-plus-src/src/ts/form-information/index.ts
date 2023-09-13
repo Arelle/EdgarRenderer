@@ -17,11 +17,8 @@ export const FormInformation = {
   },
 
   xbrlInstance: () => {
-
-    const instance = (HelpersUrl.getExternalFile as unknown as string).substring(0, (HelpersUrl.getExternalFile as unknown as string).lastIndexOf('.')) + '_htm.xml';
-
-    document.getElementById('form-information-instance')?.setAttribute('href', instance);
-
+    const currentInstance = Constants.getInstanceFiles.find(element => element.current);
+    document.getElementById('form-information-instance')?.setAttribute('href', currentInstance.xmlUrls[0]);
   },
 
   xbrlZip: () => {
@@ -41,20 +38,17 @@ export const FormInformation = {
       zipFileName = adsh + '-xbrl.zip';
       zip = url.substring(0, index) + "/" + zipFileName;
     }
-
     document.getElementById('form-information-zip')?.setAttribute('href', zip);
 
   },
 
   xbrlHtml: () => {
-
-    document.getElementById('form-information-html')?.setAttribute('href', HelpersUrl.getExternalFile);
-
+    const currentXHTML = Constants.getInstanceFiles.find(element => element.current).xhtmls.find(element => element.current);
+    document.getElementById('form-information-html')?.setAttribute('href', currentXHTML.url);
   },
 
   version: () => {
     document.getElementById('form-information-version')!.innerText = 'Version: ' + Constants.version;
-
   }
 
 };

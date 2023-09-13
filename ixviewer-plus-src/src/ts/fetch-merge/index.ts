@@ -2,7 +2,7 @@ import * as cheerio from 'cheerio';
 import * as convert from 'xml-js';
 import { Meta, Xbrltype, reference } from '../interface/meta';
 import { Context, DeiAmendmentFlagAttributes, Instance, LinkFootnote, LinkFootnoteArc, LinkLOC, Units } from '../interface/instance';
-import { Facts, SingleFact } from '../interface/fact';
+import { Reference, SingleFact } from '../interface/fact';
 import { Logger, ILogObj } from 'tslog';
 
 /* Created by staff of the U.S. Securities and Exchange Commission.
@@ -22,17 +22,46 @@ export class FetchAndMerge {
         summary: string,
     };
     private customPrefix: undefined | string;
-    private currentInstance;
+    private currentInstance: Array<{
+        current: boolean;
+        formInformation: {
+            axisCustom: number;
+            axisStandard: number;
+            baseTaxonomies: { [key: string]: number; };
+            contextCount: number;
+            dts: { [key: string]: { [key: string]: Array<string>; }; };
+            elementCount: number;
+            entityCount: 1;
+            hidden: { [key: string]: number; };
+            keyCustom: number;
+            keyStandard: number;
+            memberCustom: number;
+            memberStandard: number;
+            nsprefix: string;
+            nsuri: string;
+            segmentCount: number;
+            unitcount: number;
+        };
+        instance: number;
+        map: Map<string, SingleFact>;
+        metaInstance: Meta;
+        xhtmls: Array<{
+            current: boolean;
+            loaded: boolean;
+            slug: string;
+            url: string;
+            xhtml: string;
+        }>;
+        xmlSlug: Array<string>;
+        xmlUrls: Array<string>;
+    }> | undefined;
     private std_ref;
     private sections;
-    private metaVersion;
+    private metaVersion: string | undefined;
     private instance;
 
     constructor(input: {
         absolute: string,
-        partial: boolean,
-        map: boolean | Map<string, Facts>,
-        customPrefix: undefined | string,
         params: {
             doc: string,
             'doc-file': string,
@@ -40,7 +69,10 @@ export class FetchAndMerge {
             redline: boolean,
             metalinks: string,
             'metalinks-file': string,
-        }
+        },
+        instance: number | null,
+        std_ref: { [key: string]: Reference }
+
     }) {
         this.absolute = input.absolute;
         this.partial = input.partial;
@@ -117,13 +149,16 @@ export class FetchAndMerge {
                             const fact = { name: '', contextRef: '', instance: null };
                             const additional = metaLinksSections.find(element => element.shortName === current.ShortName._text);
                             if (additional) {
+
                                 fact.instance = additional.instance;
                                 if (additional.uniqueAnchor) {
                                     fact.name = additional.uniqueAnchor.name;
                                     fact.contextRef = additional.uniqueAnchor.contextRef;
-                                } else if (additional.firstAnchors) {
+                                    fact.file = additional.uniqueAnchor.baseRef;
+                                } else if (additional.firstAnchor) {
                                     fact.name = additional.firstAnchor.name;
                                     fact.contextRef = additional.firstAnchor.contextRef;
+                                    fact.file = additional.firstAnchor.baseRef;
                                 }
                             }
                             const index = accumulator.findIndex(element => element.name === mapCategoryName(current.MenuCategory._text))
@@ -132,7 +167,7 @@ export class FetchAndMerge {
                                     {
                                         sort: +current.Position._text,
                                         name: current.ShortName._text,
-                                        file: current._attributes.instance,
+                                        // file: current._attributes.instance,
                                         fact: fact,
                                     }
 
@@ -239,7 +274,10 @@ export class FetchAndMerge {
                 if (instanceKeys.includes(XHTMLSlug)) {
                     const instanceObjects = Object.keys(data.instance).map((current, index) => {
 
-                        data.instance[current].report[Object.keys(data.instance[current].report)[0]].instance = index;
+                        Object.keys(data.instance[current].report).forEach((report) => {
+                            data.instance[current].report[report].instance = index;
+                        });
+
                         sections = Object.assign(sections, data.instance[current].report);
                         const xhtmls = current.split(' ').map((element) => {
                             return {
@@ -292,6 +330,10 @@ export class FetchAndMerge {
                     if (response.status >= 200 && response.status <= 299) {
                         return response.text();
                     } else {
+                        const indexOf = this.currentInstance.xmlUrls.indexOf(current);
+                        if (indexOf >= 0) {
+                            this.currentInstance.xmlUrls.splice(indexOf, 1);
+                        }
                         throw Error(`${response.status.toString()}, Could not find XML Instance Document`);
                     }
                 }).then((data) => {
@@ -326,22 +368,34 @@ export class FetchAndMerge {
     }
 
     buildInitialMap(instance: Instance) {
-        const context = instance.xbrl.context;
-        const unit = instance.xbrl.unit;
-        const footnote = instance.xbrl['link:footnoteLink'];
-        delete instance.xbrl.context;
-        delete instance.xbrl.unit;
-        delete instance.xbrl._attributes;
-        delete instance.xbrl['link:schemaRef'];
-        delete instance.xbrl['link:footnoteLink'];
+
+        const getInstancePrefix = (instance) => {
+            const options = Object.keys(instance).filter(element => element.endsWith(':xbrl'))[0];
+            return options ? options.split(':')[0] : false;
+        };
+        const prefix = getInstancePrefix(instance);
+
+        const xbrlKey = prefix ? `${(prefix as string)}:xbrl` : 'xbrl';
+        const contextKey = prefix ? `${(prefix as string)}:context` : 'context';
+        const unitKey = prefix ? `${(prefix as string)}:unit` : 'unit';
+
+        const context = instance[xbrlKey][contextKey];
+        const unit = instance[xbrlKey][unitKey];
+        const footnote = instance[xbrlKey]['link:footnoteLink'];
+
+        delete instance[xbrlKey][contextKey];
+        delete instance[xbrlKey][unitKey];
+        delete instance[xbrlKey]._attributes;
+        delete instance[xbrlKey]['link:schemaRef'];
+        delete instance[xbrlKey]['link:footnoteLink'];
         this.setPeriodText(context);
         this.setSegmentData(context);
         this.setMeasureText(unit);
         const map = new Map();
         let factCounter = 0;
-        for (const key in instance.xbrl) {
-            if (Array.isArray(instance.xbrl[key])) {
-                instance.xbrl[key].forEach((current: { _attributes: DeiAmendmentFlagAttributes; _text: string; }) => {
+        for (const key in instance[xbrlKey]) {
+            if (Array.isArray(instance[xbrlKey][key])) {
+                instance[xbrlKey][key].forEach((current: { _attributes: DeiAmendmentFlagAttributes; _text: string; }) => {
                     const attributes = { ...current._attributes };
                     const id = attributes.id ? attributes.id : `fact-identifier-${factCounter}`;
                     delete attributes.id;
@@ -356,6 +410,7 @@ export class FetchAndMerge {
                         isNegativeOnly: this.isFactNegativeOnly(current._text),
                         isHTML: this.isFactHTML(current._text),
                         period: this.setPeriodInfo(attributes.contextRef, context),
+                        period_dates: this.setPeriodDatesInfo(attributes.contextRef, context),
                         segment: this.setSegmentInfo(attributes.contextRef, context),
                         measure: this.setMeasureInfo(attributes.unitRef, unit),
                         scale: this.setScaleInfo(attributes.scale),
@@ -371,7 +426,7 @@ export class FetchAndMerge {
                     });
                 });
             } else {
-                const attributes = { ...instance.xbrl[key]._attributes };
+                const attributes = { ...instance[xbrlKey][key]._attributes };
                 const id = attributes.id ? attributes.id : `fact-identifier-${factCounter}`;
                 delete attributes.id;
 
@@ -380,12 +435,13 @@ export class FetchAndMerge {
                     name: key,
                     ix: id,
                     id: `fact-identifier-${factCounter++}`,
-                    value: this.isFactHTML(instance.xbrl[key]._text) ? this.updateValueToRemoveIDs(instance.xbrl[key]._text) : instance.xbrl[key]._text,
-                    isAmountsOnly: this.isFactAmountsOnly(instance.xbrl[key]._text),
-                    isTextOnly: !this.isFactAmountsOnly(instance.xbrl[key]._text),
-                    isNegativeOnly: this.isFactNegativeOnly(instance.xbrl[key]._text),
-                    isHTML: this.isFactHTML(instance.xbrl[key]._text),
+                    value: this.isFactHTML(instance[xbrlKey][key]._text) ? this.updateValueToRemoveIDs(instance[xbrlKey][key]._text) : instance[xbrlKey][key]._text,
+                    isAmountsOnly: this.isFactAmountsOnly(instance[xbrlKey][key]._text),
+                    isTextOnly: !this.isFactAmountsOnly(instance[xbrlKey][key]._text),
+                    isNegativeOnly: this.isFactNegativeOnly(instance[xbrlKey][key]._text),
+                    isHTML: this.isFactHTML(instance[xbrlKey][key]._text),
                     period: this.setPeriodInfo(attributes.contextRef, context),
+                    period_dates: this.setPeriodDatesInfo(attributes.contextRef, context),
                     segment: this.setSegmentInfo(attributes.contextRef, context),
                     measure: this.setMeasureInfo(attributes.unitRef, unit),
                     scale: this.setScaleInfo(attributes.scale),
@@ -396,7 +452,7 @@ export class FetchAndMerge {
                     isHighlight: false,
                     isSelected: false,
                     filter: {
-                        content: this.getTextFromHTML(instance.xbrl[key]._text),
+                        content: this.getTextFromHTML(instance[xbrlKey][key]._text),
                     },
                 });
             }
@@ -551,6 +607,7 @@ export class FetchAndMerge {
             if (current.xhtml) {
                 let $ = cheerio.load(current.xhtml, {});
                 $ = this.fixImages($);
+                $ = this.fixLinks($);
                 $ = this.hiddenFacts($);
                 $ = this.redLineFacts($);
                 $ = this.excludeFacts($);
@@ -576,6 +633,35 @@ export class FetchAndMerge {
             const items = foundImagesArray.length;
             const log: Logger<ILogObj> = new Logger();
             log.debug(`\nFetchAndMerge.fixImages() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
+        }
+        return $;
+    }
+
+    fixLinks($: cheerio.CheerioAPI) {
+        const startPerformance = performance.now();
+        const foundLinksArray = Array.from($('[data-link],[href]'));
+        foundLinksArray.forEach((current) => {
+            if (Object.prototype.hasOwnProperty.call(current.attribs, 'href')) {
+                if (current.attribs.href.startsWith('http://') ||
+                    current.attribs.href.startsWith('https://') ||
+                    current.attribs.href.startsWith('#')) {
+                    // already an absolute url, just add tabindex=18
+                    $(current).attr('tabindex', '18');
+                } else {
+                    // create an absolute url, add tabindex=18
+                    $(current).attr('tabindex', '18');
+                    $(current).attr('href', `${this.absolute}${current.attribs.href}`);
+                }
+            }
+            if (Object.prototype.hasOwnProperty.call(current.attribs, 'data-link')) {
+                $(current).attr('tabindex', '18');
+            }
+        });
+        const endPerformance = performance.now();
+        if (!PRODUCTION) {
+            const items = foundLinksArray.length;
+            const log: Logger<ILogObj> = new Logger();
+            log.debug(`\nFetchAndMerge.fixLinks() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
         }
         return $;
     }
@@ -761,6 +847,7 @@ export class FetchAndMerge {
             if (current.period) {
                 if (current.period.instant) {
                     const date = new Date(current.period.instant._text);
+                    current.period._array = [`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`];
                     current.period._text = `As of ${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
 
                 } else if (current.period.startDate && current.period.endDate) {
@@ -769,6 +856,10 @@ export class FetchAndMerge {
 
                     const yearDiff = endDate.getFullYear() - startDate.getFullYear();
                     const monthDiff = endDate.getMonth() - startDate.getMonth() + (yearDiff * 12);
+                    current.period._array = [
+                        `${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}`,
+                        `${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`
+                    ];
                     if (monthDiff <= 0) {
                         current.period._text = `${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()} - ${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`;
                     } else {
@@ -791,6 +882,17 @@ export class FetchAndMerge {
         });
         if (factContext && factContext.period) {
             return factContext.period._text;
+        }
+    }
+
+    setPeriodDatesInfo(contextRef: string, context: [Context]) {
+        // we go through and find the 'id' in context that equals contextRef 
+        context = Array.isArray(context) ? context : [context];
+        const factContext = context?.find((element) => {
+            return element._attributes.id === contextRef;
+        });
+        if (factContext && factContext.period) {
+            return factContext.period._array;
         }
     }
 
@@ -965,7 +1067,13 @@ export class FetchAndMerge {
                         return actualFootnote?._text;
                     } else {
                         // TODO we need way more cases
-                        return footnotes['link:footnote']['xhtml:span'] ? footnotes['link:footnote']['xhtml:span']._text : footnotes['link:footnote']._text.join('')
+                        if (!Array.isArray(footnotes['link:footnote']._text)) {
+                            return footnotes['link:footnote']._text;
+                        } else if (Array.isArray(footnotes['link:footnote']._text)) {
+                            return footnotes['link:footnote']._text.join('');
+                        } else if (footnotes['link:footnote']['xhtml:span']) {
+                            return footnotes['link:footnote']['xhtml:span']._text;
+                        }
                     }
                 }
             }

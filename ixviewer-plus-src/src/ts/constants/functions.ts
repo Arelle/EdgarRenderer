@@ -4,11 +4,9 @@
  */
 
 import { Constants } from ".";
-// ^^^ gives unit test failure
 import { FactsTable } from "../facts/table";
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 import * as bootstrap from "bootstrap";
-// import { FlexSearch } from "../flex-search";
 import { App } from "../app";
 import { HelpersUrl } from "../helpers/url";
 
@@ -138,19 +136,6 @@ export const ConstantsFunctions = {
         // throw error, something super strnage has occured
       }
     });
-
-    // const requestedFile = document.querySelector(`#dynamic-xbrl-form [filing-url='${fileToChangeTo}']`);
-    // if (requestedFile) {
-    //   Array.from(document.querySelectorAll(`#dynamic-xbrl-form [filing-url]`)).forEach((current) => {
-    //     current.getAttribute('filing-url') === fileToChangeTo ? current.classList.remove('d-none') : current.classList.add('d-none');
-    //   });
-    //   Constants.getInlineFiles.forEach((current) => {
-    //     current.slug === fileToChangeTo ? current.current = true : current.current = false;
-    //   });
-    //   App.additionalSetup();
-    // } else {
-    //   // throw error, something super strnage has occured
-    // }
   },
 
 }

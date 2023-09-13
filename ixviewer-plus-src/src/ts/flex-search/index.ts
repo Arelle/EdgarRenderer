@@ -1,5 +1,5 @@
 import { Document as FlexSearchDocument } from "flexsearch";
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 import { Facts } from "../facts";
 import { UserFiltersDropdown } from "../user-filters/dropdown";
 import { UserFiltersState } from "../user-filters/state";

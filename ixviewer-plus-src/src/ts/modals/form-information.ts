@@ -6,7 +6,7 @@
 import * as bootstrap from "bootstrap";
 import { Modals } from ".";
 import { Constants } from "../constants";
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 import { ConstantsFunctions } from "../constants/functions";
 
 export const ModalsFormInformation = {

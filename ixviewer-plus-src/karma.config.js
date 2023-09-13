@@ -36,5 +36,5 @@ function webpackConfig() {
   delete config.entry;
   delete config.output;
   delete config.devServer;
-  return config({ env: { copy: true }, argv: { mode: "production" } });
+  return config({ env: { copy: false }, argv: { mode: "development" } });
 }

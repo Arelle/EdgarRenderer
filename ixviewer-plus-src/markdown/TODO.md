@@ -90,6 +90,10 @@
 
 - http://localhost:3000/ix.xhtml?doc=assets/filings/0001213900-23-033930/f20f2022_bancodechile.htm (takes forever, maybe never finishes)
 
-- multi-file changing doesn't update url
+- ~~multi-file changing doesn't update url~~
 
-- multi-instance, once user changes instances filtering appears to not work 
+- ~~multi-instance, once user changes instances filtering appears to not work~~
+
+- ~~http://localhost:3000/ix.xhtml?doc=./assets/filings/0001903596-23-000691/clnv_s1.htm# - chart is not ordered~~
+
+- ~~fact table (show/hide) button needs to change.~~

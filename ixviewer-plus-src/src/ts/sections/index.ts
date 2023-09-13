@@ -6,7 +6,7 @@
 import { Constants } from "../constants";
 import { ConstantsFunctions } from "../constants/functions";
 import { ErrorsMinor } from "../errors/minor";
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 import { FiltersReports } from "../filters/reports";
 import { HelpersUrl } from "../helpers/url";
 
@@ -103,6 +103,9 @@ export const Sections = {
       return;
     }
     if (!Sections.populatedSections) {
+      if (Constants.getInstanceFiles.length > 1) {
+        document.getElementById("sections-search-additional")?.classList.remove("d-none");
+      }
       Sections.populate({}, null);
       Sections.populatedSections = true;
     }
@@ -138,29 +141,11 @@ export const Sections = {
       if (!Sections.populatedSections) {
         Sections.populateParentCollapse({ ...current, ...additionalInfo });
       }
-      // Sections.filterParentCollapse(Sections.searchObject, [{ ...current, ...additionalInfo }]);
 
-      //  Sections.updateBadgeCount([{ ...current, ...additionalInfo }]);
-    })
-
-
-    // setupArray.forEach((current, index) => {
-    //   const additionalInfo = {
-    //     parentId: "tagged-sections-" + index,
-    //     badgeId: "tagged-sections-badge-" + index,
-    //     containerId: "tagged-sections-container-" + index,
-    //     open: false,
-    //   };
-    //   if (additionalInfo.containerId === idToKeepOpen) {
-    //     additionalInfo.open = true;
-    //   }
-    //   if (!Sections.populatedSections) {
-    //     Sections.populateParentCollapse({ ...current, ...additionalInfo });
-    //   }
-    //   Sections.filterParentCollapse(Sections.searchObject, [{ ...current, ...additionalInfo }]);
-
-    //   Sections.updateBadgeCount([{ ...current, ...additionalInfo }]);
-    // });
+      Sections.filterParentCollapse(Sections.searchObject, [{ ...current, ...additionalInfo }]);
+      Sections.updateBadgeCount([{ ...current, ...additionalInfo }]);
+    });
+    Sections.populatedSections = true;
   },
 
   filterParentCollapse: (searchObject: { type: number, value: string } | {} = {}, setupArray: Array<{
@@ -168,10 +153,9 @@ export const Sections = {
   }>) => {
     setupArray.forEach((current: { containerId: string; }) => {
 
-      const liElements = document.querySelectorAll(
+      const liElementsArray = Array.from(document.querySelectorAll(
         "#" + current.containerId + " li"
-      );
-      const liElementsArray = Array.prototype.slice.call(liElements);
+      ));
 
       if (Object.prototype.hasOwnProperty.call(searchObject, `value`)) {
         if (document.getElementById(current.containerId)) {
@@ -188,7 +172,7 @@ export const Sections = {
                 li.classList.add("d-flex");
                 li.classList.remove("d-none");
               }
-            } else if (searchObject['type'] === 2 && !li.hasAttribute("baseref")) {
+            } else if (searchObject['type'] === 2 && !li.hasAttribute("fact-instance")) {
               // search internal sections ONLY
               if (
                 !li.hasAttribute("baseref") &&
@@ -202,7 +186,7 @@ export const Sections = {
                 li.classList.add("d-flex");
                 li.classList.remove("d-none");
               }
-            } else if (searchObject['type'] === 3 && li.hasAttribute("baseref")) {
+            } else if (searchObject['type'] === 3 && li.hasAttribute("fact-instance")) {
               // search external sections ONLY
               if (
                 li.textContent &&
@@ -344,7 +328,6 @@ export const Sections = {
     listGroup.classList.add("list-group");
     listGroup.classList.add("list-group-flush");
     input.children.forEach((current) => {
-
       const fact = FactMap.getByNameContextRef(current.fact.name, current.fact.contextRef);
       const list = document.createElement("li");
       fact ? list.setAttribute("fact-id", fact.id) : list.setAttribute("fact-name", current.fact.name);
@@ -357,7 +340,7 @@ export const Sections = {
         list.appendChild(icon);
       }
       if (!fact) {
-        list.setAttribute("fact-file", current.file);
+        list.setAttribute("fact-file", current.fact.file);
         list.setAttribute("fact-instance", current.fact.instance);
         const icon = document.createElement("i");
         icon.classList.add("fas");

@@ -3,6 +3,7 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
+import { FactsChart } from "./facts/chart";
 import { FactsMenu } from "./facts/menu";
 import { FactsTable } from "./facts/table";
 import { FormInformation } from "./form-information";
@@ -185,9 +186,14 @@ export class Listeners {
         factsMenu?.addEventListener('shown.bs.offcanvas', (event: Event) =>
             FactsMenu.toggle(event as MouseEvent | KeyboardEvent));
 
-        // facts-menu-button
+        // fact-menu-button
         const factTableMenu = document.getElementById('fact-table-container');
         factTableMenu?.addEventListener('shown.bs.offcanvas', () => FactsTable.toggle(true));
         factTableMenu?.addEventListener('hidden.bs.offcanvas', () => FactsTable.toggle(false));
+
+        // facts-breakdown-button
+        const factsBreakdownMenu = document.getElementById('facts-breakdown-container');
+        factsBreakdownMenu?.addEventListener('shown.bs.offcanvas', () => FactsChart.toggle(true));
+        factsBreakdownMenu?.addEventListener('hidden.bs.offcanvas', () => FactsChart.toggle(false));
     }
 }

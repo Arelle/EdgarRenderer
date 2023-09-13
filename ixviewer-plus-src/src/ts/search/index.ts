@@ -4,7 +4,7 @@
  */
 
 import { ConstantsFunctions } from "../constants/functions";
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 import { FactsGeneral } from "../facts/general";
 import { FlexSearch } from "../flex-search";
 import { UserFiltersState } from "../user-filters/state";

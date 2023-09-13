@@ -1,8 +1,7 @@
 import * as bootstrap from "bootstrap";
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 import { ConstantsFunctions } from "../constants/functions";
 import { Constants } from "../constants";
-import { Links } from "../links";
 
 /* Created by staff of the U.S. Securities and Exchange Commission.
  * Data and content created by government employees within the scope of their employment
@@ -119,7 +118,6 @@ export const FactsTable = {
                 // send user to the first XHTML file
                 Constants.getInlineFiles[0].current = true;
             }
-            Links.updateCurrent(false);
         }
     },
 
@@ -479,8 +477,9 @@ export const FactsTable = {
         const text = document.createTextNode('Show');
         button.append(text);
         button.addEventListener('click', () => {
-            const abc = document.querySelector(`[hidden-fact-row= "${index}"]`);
-            abc?.classList.contains('d-none') ? abc?.classList.remove('d-none') : abc?.classList.add('d-none')
+            const hiddenFactRow = document.querySelector(`[hidden-fact-row= "${index}"]`);
+            hiddenFactRow?.classList.contains('d-none') ? hiddenFactRow?.classList.remove('d-none') : hiddenFactRow?.classList.add('d-none');
+            button.textContent = hiddenFactRow?.classList.contains('d-none') ? `Show` : `Hide`;
         });
         return button;
     },

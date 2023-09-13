@@ -4,7 +4,7 @@
  */
 import * as bootstrap from "bootstrap";
 import { Constants } from "../constants";
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 import { ModalsCommon } from "../modals/common";
 import { ModalsNested } from "../modals/nested";
 
@@ -16,7 +16,7 @@ import { ConstantsFunctions } from "../constants/functions";
 
 export const Facts = {
   updateFactCount: () => {
-    const factCount = FactMap.getFactCount(true);
+    const factCount = FactMap.getFactCount();
     FactsTable.update();
     const factTotalElementsArray = Array.from(document.querySelectorAll(
       ".fact-total-count"
@@ -104,56 +104,65 @@ export const Facts = {
   },
 
   inViewPort: (unobserveAfter = false) => {
-    const allFactIdentifiers = Array.from(document.querySelectorAll('[id^=fact-identifier-], [continued-main-fact-id]'));
+    const allFactIdentifiers = Array.from(document.getElementById('dynamic-xbrl-form').querySelectorAll('[id^=fact-identifier-], [continued-main-fact-id], [data-link]'));
     const observer = new IntersectionObserver(entries => {
       entries.forEach(({ target, isIntersecting }) => {
 
         if (isIntersecting) {
-          if (!target.getAttribute('listeners')) {
-            Facts.setListeners(target as HTMLElement);
-          }
-          const fact = FactMap.getByID(target.getAttribute('continued-main-fact-id') || target.getAttribute('id') as string) as unknown as SingleFact;
+          if (target.hasAttribute('data-link')) {
+            target.addEventListener('click', () => {
+              ConstantsFunctions.changeInlineFiles(target.getAttribute('data-link') as string);
+            });
+            target.addEventListener('keyup', () => {
+              ConstantsFunctions.changeInlineFiles(target.getAttribute('data-link') as string);
+            });
+          } else {
+            if (!target.getAttribute('listeners')) {
+              Facts.setListeners(target as HTMLElement);
+            }
+            const fact = FactMap.getByID(target.getAttribute('continued-main-fact-id') || target.getAttribute('id') as string) as unknown as SingleFact;
 
-          target.setAttribute('tabindext', `18`);
-          target.setAttribute('enabled-fact', `${fact.isEnabled}`);
-          target.setAttribute('highlight-fact', `${fact.isHighlight}`);
-          if (fact.xbrltype === 'textBlockItemType' && !target.hasAttribute("text-block-fact")) {
-            // text block fact is on the screen
-            target.setAttribute("text-block-fact", 'true');
-            const leftSpan = document.createElement("span");
-            leftSpan.setAttribute(
-              "class",
-              "float-left text-block-indicator-left position-absolute"
-            );
-            leftSpan.title =
-              "One or more textblock facts are between this symbol and the right side symbol.";
-            target.parentNode?.insertBefore(leftSpan, target);
+            target.setAttribute('tabindext', `18`);
+            target.setAttribute('enabled-fact', `${fact.isEnabled}`);
+            target.setAttribute('highlight-fact', `${fact.isHighlight}`);
+            if (fact.xbrltype === 'textBlockItemType' && !target.hasAttribute("text-block-fact")) {
+              // text block fact is on the screen
+              target.setAttribute("text-block-fact", 'true');
+              const leftSpan = document.createElement("span");
+              leftSpan.setAttribute(
+                "class",
+                "float-left text-block-indicator-left position-absolute"
+              );
+              leftSpan.title =
+                "One or more textblock facts are between this symbol and the right side symbol.";
+              target.parentNode?.insertBefore(leftSpan, target);
 
-            const rightSpan = document.createElement("span");
-            rightSpan.setAttribute(
-              "class",
-              "float-right text-block-indicator-right position-absolute"
-            );
-            rightSpan.title =
-              "One or more textblock facts are between this symbol and the left side symbol.";
-            target.parentNode?.insertBefore(rightSpan, target);
+              const rightSpan = document.createElement("span");
+              rightSpan.setAttribute(
+                "class",
+                "float-right text-block-indicator-right position-absolute"
+              );
+              rightSpan.title =
+                "One or more textblock facts are between this symbol and the left side symbol.";
+              target.parentNode?.insertBefore(rightSpan, target);
 
-          }
-          if (target.hasAttribute("continued-main-fact")) {
-            const getContinuedIDs = (id: string, mainID: string) => {
-              // let's ensure we haven't already added the necessary html attributes to the element
-              if (fact.continuedIDs && !fact.continuedIDs.includes(id)) {
-                Facts.setListeners(document.querySelector(`[id="${id}"]`) as HTMLElement);
-                document.querySelector(`[id="${id}"]`)?.setAttribute("continued-main-fact-id", mainID);
-                document.querySelector(`[id="${id}"]`)?.setAttribute("continued-fact", "true");
-                target.setAttribute('tabindext', `18`);
-                fact.continuedIDs.push(id);
-                if (document.querySelector(`[id="${id}"]`)?.hasAttribute("continuedat")) {
-                  getContinuedIDs(document.querySelector(`[id="${id}"]`)?.getAttribute("continuedat") as string, mainID);
+            }
+            if (target.hasAttribute("continued-main-fact")) {
+              const getContinuedIDs = (id: string, mainID: string) => {
+                // let's ensure we haven't already added the necessary html attributes to the element
+                if (fact.continuedIDs && !fact.continuedIDs.includes(id)) {
+                  Facts.setListeners(document.querySelector(`[id="${id}"]`) as HTMLElement);
+                  document.querySelector(`[id="${id}"]`)?.setAttribute("continued-main-fact-id", mainID);
+                  document.querySelector(`[id="${id}"]`)?.setAttribute("continued-fact", "true");
+                  target.setAttribute('tabindext', `18`);
+                  fact.continuedIDs.push(id);
+                  if (document.querySelector(`[id="${id}"]`)?.hasAttribute("continuedat")) {
+                    getContinuedIDs(document.querySelector(`[id="${id}"]`)?.getAttribute("continuedat") as string, mainID);
+                  }
                 }
-              }
-            };
-            getContinuedIDs(target.getAttribute("continuedat") as string, target.getAttribute("id") as string);
+              };
+              getContinuedIDs(target.getAttribute("continuedat") as string, target.getAttribute("id") as string);
+            }
           }
         }
         unobserveAfter ? observer.unobserve(target) : null;

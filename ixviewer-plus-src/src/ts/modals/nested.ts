@@ -8,7 +8,7 @@ import { ModalsCommon } from "./common";
 import { ModalsContinuedAt } from "./continued-at";
 import { FactPages } from "./fact-pages";
 import { Constants } from "../constants";
-import { FactMap } from "../fact-map";
+import { FactMap } from "../facts/map";
 import { ConstantsFunctions } from "../constants/functions";
 import { Pagination } from "../pagination";
 

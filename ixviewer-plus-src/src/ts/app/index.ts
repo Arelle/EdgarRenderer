@@ -1,16 +1,13 @@
 import { Logger, ILogObj } from "tslog";
 import { Constants } from "../constants";
 import { ConstantsFunctions } from "../constants/functions";
-import { Development } from "../development";
 import { ErrorsMajor } from "../errors/major";
-import { FactMap } from "../fact-map";
 import { Facts } from "../facts";
 import { FetchAndMerge } from "../fetch-merge";
 import { FlexSearch } from "../flex-search";
 import { HelpersUrl } from "../helpers/url";
 import { Links } from "../links";
 import { SingleFact } from "../interface/fact";
-//import { FormInformation } from "../interface/form-information";
 import { Meta } from "../interface/meta";
 
 /* Created by staff of the U.S. Securities and Exchange Commission.
@@ -27,7 +24,7 @@ export const App = {
             document.getElementById('html-pagination')?.classList.toggle('d-none');
             document.getElementById('xbrl-form-loading')!.classList.remove('d-none');
             const currentInstance = Constants.getInstanceFiles.find(element => element.current);
-            xhtmlUrl = currentInstance?.xhtmls.find(element => element.current)?.slug;
+            xhtmlUrl = currentInstance?.xhtmls.find(element => element.current)?.slug as string;
         }
         HelpersUrl.init(xhtmlUrl, () => {
             if (HelpersUrl.getAllParams && HelpersUrl.getAllParams!["metalinks"] &&
@@ -47,9 +44,6 @@ export const App = {
                         absolute: HelpersUrl.getFormAbsoluteURL,
                         instance: loadInstance ? Constants.getInstanceFiles : null,
                         std_ref: Constants.getStdRef
-                        // partial: instance ? true : false,
-                        // map: instance ? FactMap.map : false,
-                        // customPrefix: Constants.getFormInformation.nsPrefix,
                     });
                     worker.onmessage = (event) => {
                         if (event && event.data) {
@@ -66,25 +60,24 @@ export const App = {
                     const data = {
                         params: HelpersUrl.getAllParams,
                         absolute: HelpersUrl.getFormAbsoluteURL,
-                        partial: internalUrl ? true : false,
-                        map: internalUrl ? FactMap.map : false,
-                        customPrefix: Constants.getFormInformation.nsprefix
+                        instance: loadInstance ? Constants.getInstanceFiles : null,
+                        std_ref: Constants.getStdRef
                     };
-
                     const fetchAndMerge = new FetchAndMerge(data);
                     fetchAndMerge.init().then(data => {
                         callback(App.handleFetchAndMerge(data.all, loadInstance));
-
                     });
                 }
             } else {
-                document.getElementById('xbrl-form-loading')!.classList.add('d-none');
+                document.getElementById('xbrl-form-loading')?.classList.add('d-none');
                 Facts.updateFactCount();
                 ErrorsMajor.urlParams();
 
                 callback(false);
                 if (!PRODUCTION) {
-                    new Development();
+                    import('../development/index.development').then(module => {
+                        new module.Development();
+                    });
                 }
             }
         });
@@ -148,7 +141,7 @@ export const App = {
         if (input.error) {
             document.getElementById('xbrl-form-loading')!.classList.add('d-none');
             Constants.getInlineFiles = [];
-            input.message.forEach((current: string) => {
+            input.message?.forEach((current: string) => {
                 ErrorsMajor.message(current);
             });
             ErrorsMajor.urlParams();
@@ -168,6 +161,7 @@ export const App = {
             FlexSearch.init(currentInstance.map);
 
             document.getElementById('html-pagination')?.classList.toggle('d-none');
+            const startPerformance = performance.now();
             currentInstance.xhtmls.forEach((current) => {
                 if (current.xhtml) {
                     const parser = new DOMParser();
@@ -176,10 +170,15 @@ export const App = {
                     const section = document.createElement('section');
                     section.setAttribute('filing-url', current.slug);
                     !current.current ? section.classList.add('d-none') : null;
-                    section.append(htmlDoc.querySelector('body') as HTMLElement)
+                    section.append(htmlDoc.querySelector('body') as HTMLElement);
                     document.getElementById('dynamic-xbrl-form')?.append(section);
                 }
             });
+            const endPerformance = performance.now();
+            if (!PRODUCTION) {
+                const log: Logger<ILogObj> = new Logger();
+                log.debug(`\nAdding XHTML completed in: ${(endPerformance - startPerformance).toFixed(2)}ms`);
+            }
             ConstantsFunctions.setTitle();
             return true;
         }
