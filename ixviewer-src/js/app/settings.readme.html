@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>settings.readme</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><p>Created by staff of the U.S. Securities and Exchange Commission.<br>
+Data and content created by government employees within the scope of their employment are not subject to domestic copyright protection. 17 U.S.C. 105.</p>
+<h1 id="settings.js-readme">settings.js README</h1>
+<h2 id="purpose">Purpose</h2>
+<p>High level Developer information regarding the user settings of the entire IXViewer, notably the Color Scheme</p>
+<h2 id="variables">Variables</h2>
+<ul>
+<li>N/A</li>
+</ul>
+<h2 id="functions">Functions</h2>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Glossary/IIFE">IIFE</a> begins customizing the application based on saved User color scheme (on initial load by user). All settings are saved via <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Local_storage">Local Storage</a>
+<ul>
+<li>Arguments: N/A</li>
+<li>Run <code>setCustomCSS()</code></li>
+<li>Get <code>taggedData</code>  as stored string or set to default</li>
+<li>Get <code>searchResults</code> as stored string or set to default</li>
+<li>Get <code>selectedFact</code> as stored string or set to default</li>
+<li>Get <code>tagShading</code> as stored string or set to default</li>
+<li>Set Array of Objects that corresponds to <strong>Diagram #1</strong></li>
+<li>Loop over the above Array setting a new instance of <code>Picker</code> with cooresponding options
+<ul>
+<li>popup: false, the popup doesn’t quite work correctly when it’s already in a modal</li>
+<li>editorFormat: ‘hex’ we want hexidecimals</li>
+<li>alpha: true IFF #tag-shading-color-picker</li>
+<li>onDone: set Local Storage</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>We change the text of the Done and Cancel Buttons</li>
+<li>Add onclick function on Reset
+<ul>
+<li>Set Local Storage to reset value</li>
+<li>Set color of picker to reset value</li>
+<li>Run <code>setCustomCSS()</code></li>
+</ul>
+</li>
+<li><code>setCustomCSS()</code>
+<ul>
+<li>Arguments: N/A</li>
+<li>Get <code>taggedData</code>  as stored string or set to default</li>
+<li>Get <code>searchResults</code> as stored string or set to default</li>
+<li>Get <code>selectedFact</code> as stored string or set to default</li>
+<li>Get <code>tagShading</code> as stored string or set to default</li>
+<li>Set an complex Object that corresponds to <strong>Diagram #2</strong></li>
+<li>Create a CSS String based on the complex Object above</li>
+<li>Add the above CSS String to the document with Attribute #customized-styles</li>
+<li>Add Custom Styles to Document</li>
+</ul>
+</li>
+</ul>
+<h2 id="related">Related</h2>
+<ul>
+<li>N/A</li>
+</ul>
+<h2 id="diagrams">Diagrams</h2>
+<h3 id="section">#1</h3>
+<div class="mermaid"><svg xmlns="http://www.w3.org/2000/svg" id="mermaid-svg-wSZtLJ8KB63fxlMo" width="100%" style="max-width: 563.796875px;" viewBox="0 0 563.796875 350"><g transform="translate(-12, -12)"><g class="output"><g class="clusters"></g><g class="edgePaths"><g class="edgePath" style="opacity: 1;"><path class="path" d="M95.84375,43L120.84375,43L181.984375,43" marker-end="url(#arrowhead210)" style="fill:none"></path><defs><marker id="arrowhead210" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M92.5625,139L120.84375,139L180.078125,139" marker-end="url(#arrowhead211)" style="fill:none"></path><defs><marker id="arrowhead211" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M93.9140625,235L120.84375,235L171.390625,235" marker-end="url(#arrowhead212)" style="fill:none"></path><defs><marker id="arrowhead212" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M85.421875,331L120.84375,331L145.84375,331" marker-end="url(#arrowhead213)" style="fill:none"></path><defs><marker id="arrowhead213" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g></g><g class="edgeLabels"><g class="edgeLabel" transform="" style="opacity: 1;"><g transform="translate(0,0)" class="label"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel" transform="" style="opacity: 1;"><g transform="translate(0,0)" class="label"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel" transform="" style="opacity: 1;"><g transform="translate(0,0)" class="label"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel"></span></div></foreignObject></g></g><g class="edgeLabel" transform="" style="opacity: 1;"><g transform="translate(0,0)" class="label"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel"></span></div></foreignObject></g></g></g><g class="nodes"><g class="node" id="A" transform="translate(57.921875,43)" style="opacity: 1;"><rect rx="0" ry="0" x="-37.921875" y="-23" width="75.84375" height="46"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-27.921875,-13)"><foreignObject width="55.84375" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">selector</div></foreignObject></g></g></g><g class="node" id="AA" transform="translate(356.8203125,43)" style="opacity: 1;"><rect rx="0" ry="0" x="-174.8359375" y="-23" width="349.671875" height="46"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-164.8359375,-13)"><foreignObject width="329.671875" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">ID attribute of element in ix.html or ix-dev.html</div></foreignObject></g></g></g><g class="node" id="B" transform="translate(57.921875,139)" style="opacity: 1;"><rect rx="0" ry="0" x="-34.640625" y="-23" width="69.28125" height="46"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-24.640625,-13)"><foreignObject width="49.28125" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">default</div></foreignObject></g></g></g><g class="node" id="BB" transform="translate(356.8203125,139)" style="opacity: 1;"><rect rx="0" ry="0" x="-176.7421875" y="-23" width="353.484375" height="46"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-166.7421875,-13)"><foreignObject width="333.484375" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">current color as set by user, or the default value</div></foreignObject></g></g></g><g class="node" id="C" transform="translate(57.921875,235)" style="opacity: 1;"><rect rx="0" ry="0" x="-35.9921875" y="-23" width="71.984375" height="46"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-25.9921875,-13)"><foreignObject width="51.984375" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">storage</div></foreignObject></g></g></g><g class="node" id="CC" transform="translate(356.8203125,235)" style="opacity: 1;"><rect rx="0" ry="0" x="-185.4296875" y="-23" width="370.859375" height="46"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-175.4296875,-13)"><foreignObject width="350.859375" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">Local Storage key, so that it will be saved correctly</div></foreignObject></g></g></g><g class="node" id="D" transform="translate(57.921875,331)" style="opacity: 1;"><rect rx="0" ry="0" x="-27.5" y="-23" width="55" height="46"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-17.5,-13)"><foreignObject width="35" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">reset</div></foreignObject></g></g></g><g class="node" id="DD" transform="translate(356.8203125,331)" style="opacity: 1;"><rect rx="0" ry="0" x="-210.9765625" y="-23" width="421.953125" height="46"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-200.9765625,-13)"><foreignObject width="401.953125" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">Default color, if user selects reset, this value will be saved</div></foreignObject></g></g></g></g></g></g></svg></div>
+<h3 id="section-1">#2</h3>
+<div class="mermaid"><svg xmlns="http://www.w3.org/2000/svg" id="mermaid-svg-QrzEzXhNxlPdbpuu" width="100%" style="max-width: 441.890625px;" viewBox="0 0 441.890625 62"><g transform="translate(-12, -12)"><g class="output"><g class="clusters"></g><g class="edgePaths"><g class="edgePath" style="opacity: 1;"><path class="path" d="M129.6875,43L154.6875,43L179.6875,43" marker-end="url(#arrowhead220)" style="fill:none"></path><defs><marker id="arrowhead220" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g></g><g class="edgeLabels"><g class="edgeLabel" transform="" style="opacity: 1;"><g transform="translate(0,0)" class="label"><foreignObject width="0" height="0"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel"></span></div></foreignObject></g></g></g><g class="nodes"><g class="node" id="A" transform="translate(74.84375,43)" style="opacity: 1;"><rect rx="0" ry="0" x="-54.84375" y="-23" width="109.6875" height="46"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-44.84375,-13)"><foreignObject width="89.6875" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">CSS Selector</div></foreignObject></g></g></g><g class="node" id="AA" transform="translate(312.7890625,43)" style="opacity: 1;"><rect rx="0" ry="0" x="-133.1015625" y="-23" width="266.203125" height="46"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-123.1015625,-13)"><foreignObject width="246.203125" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">CSS Rules including dynamic colors</div></foreignObject></g></g></g></g></g></g></svg></div>
+</div>
+</body>
+
+</html>

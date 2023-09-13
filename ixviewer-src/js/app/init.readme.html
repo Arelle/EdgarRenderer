@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>init.readme</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><p>Created by staff of the U.S. Securities and Exchange Commission.<br>
+Data and content created by government employees within the scope of their employment are not subject to domestic copyright protection. 17 U.S.C. 105.</p>
+<h1 id="init.js-readme">init.js README</h1>
+<h2 id="purpose">Purpose</h2>
+<p>High level Developer information regarding the initialization of the entire IXViewer.</p>
+<h2 id="variables">Variables</h2>
+<ul>
+<li>N/A</li>
+</ul>
+<h2 id="functions">Functions</h2>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Glossary/IIFE">IIFE</a> begins entire application (on initial load by user).
+<ul>
+<li>Arguments: N/A</li>
+<li>Run <code>AppInit.init()</code></li>
+<li>If <code>AppInit.init()</code> has a callback of <code>true</code>
+<ul>
+<li>Run <code>AppInit.initialSetup()</code></li>
+</ul>
+</li>
+<li>If <code>AppInit.init()</code> has a callback of <code>false</code>
+<ul>
+<li>Run <code>ErrorsMajor.inactive()</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>AppInit.init</code>
+<ul>
+<li>Arguments:
+<ul>
+<li>internalUrl
+<ul>
+<li>If empty, get XHTML location via URL (typical)</li>
+<li>Else user is in a multi-form, and is requesting another form</li>
+</ul>
+</li>
+<li>callback</li>
+</ul>
+</li>
+<li>Run <code>AppInit.emptySidebars()</code></li>
+<li>Run <code>AjaxForm.init()</code>.</li>
+<li>Run <code>HelpersUrl.init()</code></li>
+<li>If <code>HelpersUrl.init()</code> has a callback of <code>true</code>
+<ul>
+<li>Run <code>AjaxForm.init()</code></li>
+<li>If <code>AjaxForm.init()</code> has a callback of <code>true</code>
+<ul>
+<li>Run <code>Images.updateLinks()</code></li>
+<li>If <code>HelpersUrl.getAnchorTag</code>, scroll user to proper location.</li>
+<li><code>callback(true)</code> indicating the application is good</li>
+</ul>
+</li>
+<li>If <code>AjaxForm.init()</code> has a callback of <code>false</code>
+<ul>
+<li>Run <code>ErrorsMajor.formLinksNotFound()</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>If <code>HelpersUrl.init()</code> has a callback of <code>false</code>
+<ul>
+<li>Hide Loading section from User</li>
+<li>Run <code>Taxonomies.updateTaxonomyCount()</code></li>
+<li>Run <code>ErrorsMajor.urlParams()</code></li>
+<li><code>callback(false)</code> indicating an error has occurred</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>AppInit.initialSetup</code>
+<ul>
+<li>Arguments: N/A</li>
+<li>Run <code>AjaxMeta.init()</code>.</li>
+<li>Run <code>Taxonomies.AddEventAttributes()</code></li>
+<li>Run <code>Links.init()</code></li>
+<li>If <code>AjaxMeta.init()</code> has a callback of <code>true</code>
+<ul>
+<li>We find all disabled classes and attributes under .navbar and remove these classes or attributes, as they are now usable to the User.</li>
+</ul>
+</li>
+<li>If <code>AjaxMeta.init()</code> has a callback of <code>false</code>
+<ul>
+<li>We find all disabled classes and attributes under .navbar that do not contain the meta-required CSS class, and remove these classes or attributes, as the User will have limited functionality based on the MetaLinks.json not loading properly.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>AppInit.additionalSetup</code>
+<ul>
+<li>Arguments: N/A</li>
+<li>This function is only used if the User changes XHTML forms (in a multi-form)</li>
+<li>Run <code>Taxonomies.addEventAttributes()</code></li>
+<li>Run <code>Taxonomies.setFilterAttributes()</code></li>
+<li>Run <code>Links.init()</code></li>
+<li>Run <code>Sections.formChange()</code></li>
+<li>Run <code>TaxonomiesMenu.formChange()</code></li>
+</ul>
+</li>
+<li><code>AppInit.emptySidebars</code>
+<ul>
+<li>Arguments: N/A</li>
+<li>This function exists for when a User changes XHTML forms (in a muti-form), however is ran in single-form and multi-forms</li>
+<li>Set <code>UserFiltersMoreFiltersPeriodSetUp.filtersSet = false</code></li>
+<li>Set <code>UserFiltersMoreFiltersMeasureSetUp.filtersSet = false</code></li>
+<li>Set <code>UserFiltersMoreFiltersAxesSetUp.filtersSet = false</code></li>
+<li>Set <code>UserFiltersMoreFiltersScaleSetUp.filtersSet = false</code></li>
+<li>Set <code>#error-container</code> innerHTML to empty</li>
+<li>Adds Loading indicator to all Taxonomy Counters</li>
+<li>Empties Sections Sidebar, and adds Loading Message</li>
+<li>Empties Facts Sidebar (including pagination), and adds Loading Message.</li>
+</ul>
+</li>
+</ul>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="./ajax/form.readme.html">AjaxForm</a></li>
+<li><a href="./ajax/meta.readme.html">AjaxMeta</a></li>
+<li><a href="./constants/index.readme.html">Constants</a></li>
+<li><a href="./errors/major.readme.html">ErrorsMajor</a></li>
+<li><a href="./helpers/url.readme.html">HelpersUrl</a></li>
+<li><a href="./images/index.readme.html">Images</a></li>
+<li><a href="./links/index.readme.html">Links</a></li>
+<li><a href="./sections/index.readme.html">Sections</a></li>
+<li><a href="./taxonomies/index.readme.html">Taxonomies</a></li>
+<li><a href="./sections/menu.readme.html">TaxonomiesMenu</a></li>
+<li><a href="./user-filters/more-filters-axes-set-up.readme.html">UserFiltersMoreFiltersAxesSetUp</a></li>
+<li><a href="./user-filters/more-filters-measure-set-up.readme.html">UserFiltersMoreFiltersMeasureSetUp</a></li>
+<li><a href="./user-filters/more-filters-period-set-up.readme.html">UserFiltersMoreFiltersPeriodSetUp</a></li>
+<li><a href="./user-filters/more-filters-scale-set-up.readme.html">UserFiltersMoreFiltersScaleSetUp</a></li>
+</ul>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,102 @@
+{
+  "env": {
+  	"dow": {
+  	  "url": "?doc=../documents/dow/dow-20131231.htm",
+  	  "fact-count": "3,257",
+  	  "links-dropdown-options": [],
+  	  "menu-information": {
+  	  	"company": {
+  	  		"name": "DOW CHEMICAL CO /DE/",
+  	  		"cik": "0000029915",
+  	  		"document": "10-K",
+  	  		"period": "December 31, 2013",
+  	  		"fiscal": "2013 / FY",
+  	  		"fiscal-end": "--12-31",
+  	  		"amendment": "false"
+  	  	},
+  	  	"tags": {
+  	  		"total-facts": "3,257",
+  	  		"version": "2.0",
+  	  		"primary": ["614", "75%", "202", "25%", "816"],
+  	  		"axis": ["45", "85%", "8", "15%", "53"],
+  	  		"member": ["99", "35%", "184", "65%", "283"],
+  	  		"total": ["758", "66%", "394", "34%", "1152"]
+  	  	},
+  	  	"files": {
+  	  		"inline": ["dow-20131231.htm"],
+  	  		"schema": ["dow-20131231.xsd"],
+  	  		"label": ["dow-20131231_lab.xml"],
+  	  		"calc": ["dow-20131231_cal.xml"],
+  	  		"pre": ["dow-20131231_pre.xml"],
+  	  		"def": ["dow-20131231_def.xml"]
+  	  	},
+  	  	"additional": {
+  	  		"http://fasb.org/us-gaap/2016-01-31": "40",
+  	  		"http://www.dow.com/20131231": "9",
+  	  		"http://xbrl.sec.gov/dei/2014-01-31": "6",
+  	  		"http://xbrl.sec.gov/invest/2013-01-31": "1",
+  	  		"Total": "56"
+  	  	}
+  	  },
+  	  "xbrl-instance": "../documents/dow/dow-20131231_htm.xml",
+  	  "xbrl-zip": "../documents/dow/dow-20131231.zip",
+  	  "html": "../documents/dow/dow-20131231.htm",
+  	  "sections": {
+  	  	"options": {
+  	  		"Document Entity Information": 1,
+  	  		"Financial Statements": 7,
+  	  		"Notes to the Financials": 133,
+  	  		"RR Summaries": 3
+  	  	},
+  	  	"search": {
+  	  		"Test, return nothing": {
+  	  			"Document Entity Information": 0,
+  	  			"Financial Statements": 0,
+  	  			"Notes to the Financials": 0,
+  	  			"RR Summaries": 0
+  	  		},
+  	  		"revenue": {
+  	  		  	"Document Entity Information": 0,
+  	  			"Financial Statements": 0,
+  	  			"Notes to the Financials": 1,
+  	  			"RR Summaries": 0
+  	  		},
+  	  		"consolidated": {
+  	  		  	"Document Entity Information": 0,
+  	  			"Financial Statements": 7,
+  	  			"Notes to the Financials": 9,
+  	  			"RR Summaries": 1
+  	  		}
+  	  	}
+  	  },
+  	  "global-search": {
+  	  	"revenue": "85",
+  	  	"Revenue": "70",
+  	  	"1,234": "0",
+  	  	"10-K": "2"
+  	  },
+  	  "data": [
+  	    "3,066",
+  	    "191",
+  	    "520",
+  	    "306",
+  	    "56"
+  	  ],
+  	  "tags": [
+  	    "2,702",
+  	    "555"
+  	  ],
+  	  "more-filters": {
+  	    "Period": "80",
+  	    "Measures": "22",
+  	    "Axis": "53",
+  	    "Scale": "5",
+  	    "Balance": "2"
+  	  }
+  	}
+  },
+  "requestTimeout": 20000,
+  "baseUrl": "https://sp-us-deraodp01.ix.sec.gov:28443/ix-eer295/ixviewer/ix.html",
+  "viewportWidth": 1600,
+  "viewportHeight": 1000
+}

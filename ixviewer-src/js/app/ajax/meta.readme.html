@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>meta.readme</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><p>Created by staff of the U.S. Securities and Exchange Commission.<br>
+Data and content created by government employees within the scope of their employment are not subject to domestic copyright protection. 17 U.S.C. 105.</p>
+<h1 id="meta.js-readme">meta.js README</h1>
+<h2 id="purpose">Purpose</h2>
+<p>High level Developer information regarding the Ajax Meta functionality</p>
+<h2 id="variables">Variables</h2>
+<ul>
+<li>N/A</li>
+</ul>
+<h2 id="functions">Functions</h2>
+<ul>
+<li><code>AjaxMeta.init()</code>
+<ul>
+<li>Arguments:
+<ul>
+<li>callback</li>
+</ul>
+</li>
+<li>If <code>HelpersUrl.getAllParams</code> is set
+<ul>
+<li>Get <code>HelpersUrl.getAllParams['doc']</code></li>
+<li>Ensure the User is shown the Loading Section</li>
+<li>Create new <a href="https://developer.mozilla.org/en-US/docs/Glossary/XHR_%28XMLHttpRequest%29">XHR</a> function</li>
+<li>Begin XHR with <code>HelpersUrl.getAllParams['doc']</code></li>
+<li>If the XHR <code>readystate</code> is <strong>4</strong> and the status is <strong>200</strong>
+<ul>
+<li>Run <code>Errors.checkFileSizeForLimits()</code></li>
+<li>Find <code>&lt;html&gt;</code> attributes via Regex for example <code>&lt;html xmlns:ix="http://www.xbrl.org/2013/inlineXBRL" ...&gt;</code></li>
+<li>Run <code>ConstantsFunctions.setHTMLAttributes()</code> based on the above step</li>
+<li>Set #dynamic-xbrl-form as the response from the XHR request</li>
+<li>Run <code>ConstantsFunctions.setHTMLPrefix()</code></li>
+<li>Find <code>&lt;body&gt;</code> style attributes via Regex for example <code>&lt;body style="color: orange;"&gt;</code></li>
+<li>Run <code>ConstantsFunctions.setParentContainerStyles()</code> based on the above step</li>
+<li>Hide the Loading Section from the User</li>
+<li><code>callback(true)</code> indicating the application is good</li>
+</ul>
+</li>
+<li>If the XHR <code>readystate</code> is <strong>4</strong> and the status is not <strong>200</strong>
+<ul>
+<li>Hide the Loading Section from the User</li>
+<li><code>callback(false)</code> indicating an error has occurred</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>If <code>HelpersUrl.getAllParams</code> is not set
+<ul>
+<li>Hide the Loading Section from the User</li>
+<li><code>callback(false)</code> indicating an error has occurred</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="http://www.google.com">ConstantsFunctions</a></li>
+<li><a href="http://www.google.com">Errors</a></li>
+<li><a href="http://www.google.com">ErrorsMinor</a></li>
+<li><a href="http://www.google.com">HelpersUrl</a></li>
+</ul>
+</div>
+</body>
+
+</html>
