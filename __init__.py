@@ -1503,7 +1503,6 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
                     for ixDoc in doc.referencesDocument.keys():
                         if ixDoc.type == ModelDocument.Type.INLINEXBRL:
                             addRefDocs(ixDoc)
-                    return
                 for refDoc in doc.referencesDocument.keys():
                     if refDoc.filepath and refDoc.filepath.startswith(sourceDir):
                         reportedFile = refDoc.filepath[len(sourceDir)+1:]
