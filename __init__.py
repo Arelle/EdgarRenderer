@@ -116,7 +116,7 @@ more information about the filing (see validate/EFM/__init__.py) such as:
              "cik": "0000350001",
              "cikNameList": {"0001306276":"BIGS FUND TRUST CO"},
              "submissionType":"SDR-A",
-             "exhibitType":"EX-99.K SDR.INS",
+             "attachmentDocumentType":"EX-99.K SDR.INS",
              "accessionNumber":"0001125840-15-000159"}]'
 
     for multiple instances (SDR-L's), add more of the {"file": ...} entries.
@@ -125,7 +125,7 @@ more information about the filing (see validate/EFM/__init__.py) such as:
         -f "[{\"file\":\"z:\\Documents\\...\\gpc_gd1-20130930.htm\",
             \"cik\": \"0000350001\",
             \"cikNameList\": {\"0000350001\":\"BIG FUND TRUST CO\"},
-            \"submissionType\":\"SDR-A\", \"exhibitType\":\"EX-99.K SDR.INS\"}]"
+            \"submissionType\":\"SDR-A\", \"attachmentDocumentType\":\"EX-99.K SDR.INS\"}]"
 
 To build an installable cx_Freeze binary, (tested on Ubuntu), uncomment the entries in Arelle's
 setup.py that are marked for EdgarRenderer.
@@ -143,18 +143,19 @@ Language of labels:
     GUI may use tools->language labels setting to override system language for labels
 
 """
-VERSION = '3.23.2.3'
+VERSION = '3.23.3'
 
 from collections import defaultdict
 from arelle import PythonUtil
-from arelle import (Cntlr, FileSource, ModelDocument, XmlUtil, Version, ModelValue, Locale, PluginManager, WebCache, ModelFormulaObject,
+from arelle import (Cntlr, FileSource, ModelDocument, XmlUtil, Version, ModelValue, Locale, PluginManager, WebCache, ModelFormulaObject, Validate,
                     ViewFileFactList, ViewFileFactTable, ViewFileConcepts, ViewFileFormulae,
                     ViewFileRelationshipSet, ViewFileTests, ViewFileRssFeed, ViewFileRoleTypes)
 from arelle.PluginManager import pluginClassMethods
 from arelle.ValidateFilingText import elementsWithNoContent
-from arelle.XmlValidateConst import VALID
+from arelle.XmlValidate import VALID
 from . import RefManager, IoManager, Inline, Utils, Filing, Summary
-import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os, re, io, tempfile
+import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os, io, tempfile
+import regex as re
 from lxml import etree
 from os import getcwd, remove, removedirs
 from os.path import join, isfile, exists, dirname, basename, isdir
@@ -733,7 +734,13 @@ class EdgarRenderer(Cntlr.Cntlr):
         # skip rendering if major errors and abortOnMajorError
         # errorCountDuringValidation = len(Utils.xbrlErrors(modelXbrl))
         # won't work for all possible logHandlers (some emit immediately)
-        errorCountDuringValidation = sum(1 for e in modelXbrl.errors if isinstance(e, str)) # don't count assertion results dict if formulas ran
+        attachmentDocumentType = getattr(modelXbrl, "efmAttachmentDocumentType", "(none)")
+        isRunningUnderTestcase = modelXbrl.modelManager.loadedModelXbrls[0].modelDocument.type in ModelDocument.Type.TESTCASETYPES
+        # strip on error if preceding primary inline instance had no error and exhibitType strips on error
+        stripFilingOnError = self.success and bool(
+                             filing.exhibitTypesStrippingOnErrorPattern.match(attachmentDocumentType))
+        errorCountDuringValidation = sum(1 for e in modelXbrl.errors if isinstance(e, str) and not e.startswith("DQC.")) # don't count assertion results dict if formulas ran
+        success = True
         if errorCountDuringValidation > 0:
             if self.abortOnMajorError: # HF renderer raises exception on major errors: self.modelManager.abortOnMajorError:
                 self.logFatal(_("Not attempting to render after {} validation errors").format(
@@ -742,10 +749,12 @@ class EdgarRenderer(Cntlr.Cntlr):
                 return
             else:
                 self.logInfo(_("Ignoring {} Validation errors because abortOnMajorError is not set.").format(errorCountDuringValidation))
+                if not isRunningUnderTestcase:
+                    success = False
         modelXbrl.profileActivity()
         self.setProcessingFolder(modelXbrl.fileSource, report.filepaths[0]) # use first of possibly multi-doc IXDS files
         # if not reportZip and reportsFolder is relative, make it relative to source file location (on first report)
-        if not filing.reportZip and self.initialReportsFolder and len(filing.reports) == 1:
+        if success and not filing.reportZip and self.initialReportsFolder and len(filing.reports) == 1:
             if not os.path.isabs(self.initialReportsFolder):
                 # try input file's directory
                 if os.path.exists(self.processingFolder) and os.access(self.processingFolder, os.W_OK | os.X_OK):
@@ -776,11 +785,16 @@ class EdgarRenderer(Cntlr.Cntlr):
                 self.otherXbrlList.append(reportedFile)
         RefManager.RefManager(self.resourcesFolder).loadAddedUrls(modelXbrl, self)  # do this after validation.
         self.loopnum = getattr(self, "loopnum", 0) + 1
+        reportSummaryList = None
         try:
-            reportSummaryList = Filing.mainFun(self, modelXbrl, self.reportsFolder)
-            Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, reportSummaryList)
-            del reportSummaryList # dereference
-            success = True
+            if success: # no instance errors from prior validation workflow
+                reportSummaryList = Filing.mainFun(self, modelXbrl, self.reportsFolder)
+                # recheck for errors
+                if (stripFilingOnError and sum(1 for e in modelXbrl.errors if isinstance(e, str)) > 0):
+                    success = False
+                    self.logDebug(_("Stripping filing due to {} preceding validation errors.").format(errorCountDuringValidation))
+            if success:
+                Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, reportSummaryList)
         except Utils.RenderingException as ex:
             success = False # error message provided at source where exception was raised
             self.logDebug(_("RenderingException after {} validation errors: {}").format(errorCountDuringValidation, ex))
@@ -792,9 +806,19 @@ class EdgarRenderer(Cntlr.Cntlr):
             else:
                 self.logWarn(_("The rendering engine was unable to {} due to an internal error.  This is not considered an error in the filing.").format(action, errorCountDuringValidation))
             self.logDebug(_("Exception traceback: {}").format(traceback.format_exception(*sys.exc_info())))
+        del reportSummaryList # dereference
         self.renderedFiles = filing.renderedFiles # filing-level rendered files
         if not success:
-            self.success = False
+            if stripFilingOnError:
+                modelXbrl.log("INFO-RESULT",
+                              "EFM.stripExhibit",
+                              _("Attachment {} has errors requiring stripping its files").format(attachmentDocumentType),
+                              modelXbrl=modelXbrl,
+                              exhibitType=attachmentDocumentType,
+                              files="|".join(sorted(report.reportedFiles)))
+                filing.reports.remove(report) # remove stripped report from filing (so it won't be in zip)
+            else:
+                self.success = False
         # remove any inline invalid facts
         for ixdsHtmlRootElt in getattr(modelXbrl, "ixdsHtmlElements", ()):
             doc = ixdsHtmlRootElt.modelDocument
@@ -980,18 +1004,18 @@ class EdgarRenderer(Cntlr.Cntlr):
 
                 # temporary work-around to create SDR summaryDict
                 if not self.sourceDict and any(
-                        report.documentType # HF: believe condition wrong: and report.documentType.endswith(" SDR")
+                        report.deiDocumentType # HF: believe condition wrong: and report.documentType.endswith(" SDR")
                         for report in filing.reports): # filesource will not be None
                     for report in filing.reports:
                         for i, basename in enumerate(report.basenames): # has multiple entries for multi-document IXDS
                             filepath = report.filepaths[i]
                             if report.isInline:
-                                self.sourceDict[basename] = (report.documentType, basename)
+                                self.sourceDict[basename] = (report.deiDocumentType, basename)
                             else:
                                 for ext in (".htm", ".txt"):
                                     sourceFilepath = filepath.rpartition(".")[0] + ext
                                     if filesource.exists(sourceFilepath):
-                                        self.sourceDict[basename] = (report.documentType, os.path.basename(sourceFilepath))
+                                        self.sourceDict[basename] = (report.deiDocumentType, os.path.basename(sourceFilepath))
                                         break
 
                 summary = Summary.Summary(self)
@@ -1349,7 +1373,7 @@ def edgarRendererGuiStartLogging(modelXbrl, mappedUri, normalizedUri, filepath, 
         modelXbrl.modelManager.cntlr.logHandler.startLogBuffering() # accumulate validation and rendering warnings and errors
     return False # called for class 'ModelDocument.IsPullLoadable'
 
-def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
+def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
     """ run EdgarRenderer using GUI interactions for a single instance or testcases """
     if cntlr.hasGui and modelXbrl.modelDocument:
         from arelle.ValidateFilingText import referencedFiles
@@ -1421,48 +1445,25 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
             modelXbrl.efmOptions = options  # save options in testcase's modelXbrl
         if modelXbrl.modelDocument.type not in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INSTANCE, ModelDocument.Type.INLINEXBRLDOCUMENTSET):
             return
-        reportedFiles = set()
-        if modelXbrl.modelDocument.type == ModelDocument.Type.INLINEXBRLDOCUMENTSET:
-            for ixDoc in modelXbrl.modelDocument.referencesDocument.keys():
-                if ixDoc.type == ModelDocument.Type.INLINEXBRL:
-                    reportedFiles.add(ixDoc.basename)
-        else:
-            reportedFiles.add(modelXbrl.modelDocument.basename)
-        reportedFiles |= referencedFiles(modelXbrl)
-        sourceDir = modelXbrl.modelDocument.filepathdir
-        def addRefDocs(doc):
-            if doc.type == ModelDocument.Type.INLINEXBRLDOCUMENTSET:
-                for ixDoc in doc.referencesDocument.keys():
+        reports = []
+        multiInstanceModelXbrls = [modelXbrl] + getattr(modelXbrl, "supplementalModelXbrls", [])
+        entrypointFiles = []
+        hasInlineReport = False
+        for instanceModelXbrl in multiInstanceModelXbrls:
+            instanceModelDocument = instanceModelXbrl.modelDocument
+            if instanceModelDocument.type == ModelDocument.Type.INLINEXBRLDOCUMENTSET:
+                hasInlineReport = True
+                _ixdsFiles = []
+                for ixDoc in instanceModelDocument.referencesDocument.keys():
                     if ixDoc.type == ModelDocument.Type.INLINEXBRL:
-                        addRefDocs(ixDoc)
-                return
-            for refDoc in doc.referencesDocument.keys():
-                if refDoc.filepath and refDoc.filepath.startswith(sourceDir):
-                    reportedFile = refDoc.filepath[len(sourceDir)+1:]
-                    if reportedFile not in reportedFiles:
-                        reportedFiles.add(reportedFile)
-                        addRefDocs(refDoc)
-        addRefDocs(modelXbrl.modelDocument)
-        instDocs = ([modelXbrl.modelDocument] if modelXbrl.modelDocument.type != ModelDocument.Type.INLINEXBRLDOCUMENTSET
-                    else [])+ [ixDoc
-                               for ixDoc in sorted(modelXbrl.modelDocument.referencesDocument.keys(), key=lambda d: d.objectIndex)
-                               if ixDoc.type == ModelDocument.Type.INLINEXBRL]
-        report = PythonUtil.attrdict( # simulate report
-            isInline = modelXbrl.modelDocument.type in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INLINEXBRLDOCUMENTSET),
-            reportedFiles = reportedFiles,
-            renderedFiles = set(),
-            entryPoint = {"file": modelXbrl.modelDocument.uri},
-            url = modelXbrl.modelDocument.uri,
-            filepaths = [doc.filepath for doc in instDocs],
-            basenames = [doc.basename for doc in instDocs],
-            documentType = None
-        )
-        del instDocs # dereference
-        for f in modelXbrl.factsByLocalName["DocumentType"]:
-            cntx = f.context
-            if cntx is not None and not cntx.hasSegment and f.xValue:
-                report.documentType = f.xValue # find document type for mustard menu
-                break
+                        _ixdsFiles.append({"file":instanceModelDocument.uri})
+                entrypointFiles.append({"ixds":_ixdsFiles,
+                                        "file":instanceModelDocument.uri}) # for filingEnd to find directory
+                entrypointFiles.append({})
+            else:
+                if instanceModelDocument.type == ModelDocument.Type.INLINEXBRL:
+                    hasInlineReport = True
+                entrypointFiles.append({"file":instanceModelDocument.uri})
         def guiWriteFile(filepath, data):
             outdir = os.path.dirname(filepath)
             if not os.path.exists(outdir): # may be a subdirectory of out dir
@@ -1474,21 +1475,66 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
         filing = PythonUtil.attrdict( # simulate filing
             filesource = modelXbrl.fileSource,
             reportZip = None,
-            entrypointfiles = [{"file":modelXbrl.modelDocument.uri}],
+            entrypointfiles = entrypointFiles,
             renderedFiles = set(),
-            reports = [report],
-            hasInlineReport = report.isInline,
+            reports = reports,
+            hasInlineReport = hasInlineReport,
             arelleUnitTests = {},
             writeFile=guiWriteFile,
-            readFile=guiReadFile
+            readFile=guiReadFile,
+            exhibitTypesStrippingOnErrorPattern=kwargs.get("exhibitTypesStrippingOnErrorPattern")
         )
         if "accessionNumber" in parameters:
             filing.accessionNumber = parameters["accessionNumber"][1]
         edgarRendererFilingStart(cntlr, options, {}, filing)
-        if cntlr.validateBeforeRendering.get():
-            cntlr.modelManager.validate()
+        for instanceModelXbrl in multiInstanceModelXbrls:
+            instanceModelDocument = instanceModelXbrl.modelDocument
+            reportedFiles = set()
+            if instanceModelDocument.type == ModelDocument.Type.INLINEXBRLDOCUMENTSET:
+                for ixDoc in instanceModelDocument.referencesDocument.keys():
+                    if ixDoc.type == ModelDocument.Type.INLINEXBRL:
+                        reportedFiles.add(ixDoc.basename)
+            else:
+                reportedFiles.add(instanceModelDocument.basename)
+            reportedFiles |= referencedFiles(instanceModelXbrl)
+            sourceDir = instanceModelDocument.filepathdir
+            def addRefDocs(doc):
+                if doc.type == ModelDocument.Type.INLINEXBRLDOCUMENTSET:
+                    for ixDoc in doc.referencesDocument.keys():
+                        if ixDoc.type == ModelDocument.Type.INLINEXBRL:
+                            addRefDocs(ixDoc)
+                for refDoc in doc.referencesDocument.keys():
+                    if refDoc.filepath and refDoc.filepath.startswith(sourceDir):
+                        reportedFile = refDoc.filepath[len(sourceDir)+1:]
+                        if reportedFile not in reportedFiles:
+                            reportedFiles.add(reportedFile)
+                            addRefDocs(refDoc)
+            addRefDocs(instanceModelDocument)
+            instDocs = ([instanceModelDocument] if instanceModelDocument.type != ModelDocument.Type.INLINEXBRLDOCUMENTSET
+                        else [])+ [ixDoc
+                                   for ixDoc in sorted(instanceModelDocument.referencesDocument.keys(), key=lambda d: d.objectIndex)
+                                   if ixDoc.type == ModelDocument.Type.INLINEXBRL]
+            uri = instanceModelDocument.uri
+            if instanceModelDocument.type == ModelDocument.Type.INLINEXBRLDOCUMENTSET:
+                uri = instanceModelDocument.targetDocumentPreferredFilename.replace(".xbrl",".htm")
+            report = PythonUtil.attrdict( # simulate report
+                isInline = instanceModelDocument.type in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INLINEXBRLDOCUMENTSET),
+                reportedFiles = reportedFiles,
+                renderedFiles = set(),
+                entryPoint = {"file": uri},
+                url = uri,
+                filepaths = [doc.filepath for doc in instDocs],
+                basenames = [doc.basename for doc in instDocs],
+                deiDocumentType = None
+            )
+            reports.append(report)
+            del instDocs # dereference
+            if "setReportAttrs" in kwargs:
+                kwargs["setReportAttrs"](report, instanceModelXbrl)
+            if cntlr.validateBeforeRendering.get():
+                Validate.validate(instanceModelXbrl)
+            edgarRendererXbrlRun(cntlr, options, instanceModelXbrl, filing, report)
         edgarRenderer = filing.edgarRenderer
-        edgarRendererXbrlRun(cntlr, options, modelXbrl, filing, report)
         reportsFolder = edgarRenderer.reportsFolder
         edgarRendererFilingEnd(cntlr, options, modelXbrl.fileSource, filing)
         cntlr.logHandler.endLogBuffering() # block other GUI processes from using log buffer
@@ -1541,7 +1587,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, attach, *args, **kwargs):
                     filingSummaryTree = etree.parse(os.path.join(edgarRenderer.reportsFolder, "FilingSummary.xml"))
                     for reportElt in filingSummaryTree.iter(tag="Report"):
                         if reportElt.get("instance"):
-                            openingUrl = "ix.html?doc={}&xbrl=true".format(reportElt.get("instance"))
+                            openingUrl = "ix.xhtml?doc={}&xbrl=true".format(reportElt.get("instance"))
                             break
                 if not openingUrl: # open SEC Mustard Menu
                     openingUrl = ("FilingSummary.htm", "Rall.htm")[_combinedReports]
@@ -1616,7 +1662,7 @@ __pluginInfo__ = {
     # remove redline markups when appropriate
     'ModelDocument.Discover': edgarRendererRemoveRedlining,
     # GUI operation startup (renders all reports of an input instance or test suite)
-    'CntlrWinMain.Xbrl.Loaded': edgarRendererGuiRun,
+    'EdgarRenderer.Gui.Run': edgarRendererGuiRun,
     # GUI operation, add View -> EdgarRenderer submenu for GUI options
     'CntlrWinMain.Menu.View': edgarRendererGuiViewMenuExtender,
     # identify expected severity of test cases for EdgarRenderer testcases processing

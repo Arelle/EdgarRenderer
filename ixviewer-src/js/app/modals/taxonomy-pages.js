@@ -39,28 +39,32 @@ var TaxonomyPages = {
       },
       {
         label: "Period",
-        value: FiltersContextref.getPeriod(element.getAttribute("contextref"))
+        // var periodDate = FiltersContextref.getPeriod(
+        //   current.parentElement.getAttribute("id"),
+        //   current
+        // );
+        value: FiltersContextref.getPeriod(element.getAttribute("contextRef"))
       },
       {
         label: "Axis",
-        value: FiltersContextref.getAxis(element.getAttribute("contextref")),
+        value: FiltersContextref.getAxis(element.getAttribute("contextRef")),
         html: true
       },
       {
         label: "Member",
-        value: FiltersContextref.getMember(element.getAttribute("contextref")),
+        value: FiltersContextref.getMember(element.getAttribute("contextRef")),
         html: true
       },
       {
         label: "Typed Member",
         value: FiltersContextref.getTypedMember(
-          element.getAttribute("contextref")
+          element.getAttribute("contextRef")
         )
       },
       {
         label: "Explicit Member",
         value: FiltersContextref.getExplicitMember(
-          element.getAttribute("contextref")
+          element.getAttribute("contextRef")
         )
       },
       {
@@ -215,7 +219,7 @@ var TaxonomyPages = {
       FiltersName.getAuthRefs(element.getAttribute("name")) || [];
     var additionalRefs = [];
     var allAuthRefsViaDimension =
-      FiltersContextref.getAxis(element.getAttribute("contextref"), true) ||
+      FiltersContextref.getAxis(element.getAttribute("contextRef"), true) ||
       null;
     if (allAuthRefsViaDimension) {
       var allAuthRefsViaDimensionArray = allAuthRefsViaDimension.split(" ");
@@ -229,7 +233,7 @@ var TaxonomyPages = {
       });
     }
     var allAuthRefsViaMember =
-      FiltersContextref.getMember(element.getAttribute("contextref"), true) ||
+      FiltersContextref.getMember(element.getAttribute("contextRef"), true) ||
       null;
     if (allAuthRefsViaMember) {
       var allAuthRefsViaMemberArray = allAuthRefsViaMember.split(" ");
@@ -251,7 +255,6 @@ var TaxonomyPages = {
     // please note we are not using document.createDocumentFragment()
     // here because of an odd issue with IE
     var elementsToReturn = document.createElement("tbody");
-
 
     if (uniqueAuthRefs) {
       uniqueAuthRefs.forEach(function (current) {

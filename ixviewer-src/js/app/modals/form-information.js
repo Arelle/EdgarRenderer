@@ -36,7 +36,7 @@ var ModalsFormInformation = {
     
     ModalsFormInformation.carouselData();
     
-    document.getElementById('form-information-modal-title').innerText = ModalsFormInformation.carouselInformation[0]['dialog-title'];
+    document.getElementById('form-information-modal-title').innerHTML = ModalsFormInformation.carouselInformation[0]['dialog-title'];
     
     $('#form-information-modal-carousel').carousel(0);
     
@@ -54,7 +54,7 @@ var ModalsFormInformation = {
                   '[data-slide-to="' + previousActiveIndicator + '"]').classList.remove('active');
               document.getElementById('form-information-carousel-indicators').querySelector(
                   '[data-slide-to="' + newActiveIndicator + '"]').classList.add('active');
-              document.getElementById('form-information-modal-title').innerText = ModalsFormInformation.carouselInformation[event['to']]['dialog-title'];
+              document.getElementById('form-information-modal-title').innerHTML = ModalsFormInformation.carouselInformation[event['to']]['dialog-title'];
             });
   },
   

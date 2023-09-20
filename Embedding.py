@@ -10,6 +10,7 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 from collections import defaultdict
 import arelle.ModelValue
 from . import Utils
+import regex as re
 Filing = None
 
 class FactAxisMemberGroup(object):
@@ -147,6 +148,30 @@ class Embedding(object):
                 self.commandTextListOfLists += [['column', 'unit', 'compact', '*']]
 
             #print(self.commandTextListOfLists) # wch for debug
+
+        elif self.cube.isRepurchasesDetail:
+            self.commandTextListOfLists += [['column', 'primary', 'compact', '*']]
+            if len(self.cube.unitAxis) > 0:
+                self.commandTextListOfLists += [['column', 'unit', 'compact', '*']]
+            if len(self.cube.timeAxis) > 0:
+                self.commandTextListOfLists += [['row', 'period', 'compact', '*']]
+            for _ignore, axisQname, _ignore in orderedListOfOrderAxisQnameTuples:
+                if not axisQname.localName in ('period','primary','unit'):
+                    self.commandTextListOfLists += [['row', axisQname, 'compact', '*']]
+
+            # print(self.commandTextListOfLists) # wch for debug
+
+        elif bool(re.search("/ffd/role/",self.cube.linkroleUri)):
+            self.commandTextListOfLists += [['column', 'primary', 'compact', '*']]
+            if len(self.cube.unitAxis) > 0:
+                self.commandTextListOfLists += [['column', 'unit', 'compact', '*']]
+            if len(self.cube.timeAxis) > 0:
+                self.commandTextListOfLists += [['row', 'period', 'compact', '*']]
+            for _ignore, axisQname, _ignore in orderedListOfOrderAxisQnameTuples:
+                if not axisQname.localName in ('period','primary','unit'):
+                    self.commandTextListOfLists += [['row', axisQname, 'compact', '*']]
+
+            # print(self.commandTextListOfLists) # wch for debug
 
         elif self.cube.cubeType == 'statement' or self.filing.hasEmbeddings or self.cube.isElements:
             generatedCommandTextListOfLists = []

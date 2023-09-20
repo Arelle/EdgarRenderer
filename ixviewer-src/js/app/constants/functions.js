@@ -41,9 +41,21 @@ var ConstantsFunctions = {
   setParentContainerStyles: function (input) {
     if (typeof input === "string" && input.length > 0) {
       var tempHTML = document.createElement("html");
-      tempHTML.innerHTML = input;
+      var parser = new DOMParser();
 
-      if (tempHTML.querySelector("body").hasAttribute("style")) {
+      var xhtmlDoc = parser.parseFromString(input, "application/xhtml+xml");
+
+      var nodeList = Array.prototype.slice.call(
+        xhtmlDoc.querySelectorAll("body > *")
+      );
+      for (var i = 0; i < nodeList.length; i++) {
+        tempHTML.append(nodeList[i]);
+      }
+
+      if (
+        tempHTML.querySelector("body") &&
+        tempHTML.querySelector("body").hasAttribute("style")
+      ) {
         document
           .getElementById("dynamic-xbrl-form")
           .setAttribute(

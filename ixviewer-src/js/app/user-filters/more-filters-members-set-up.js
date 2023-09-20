@@ -17,19 +17,19 @@ var UserFiltersMoreFiltersMembersSetUp = {
     var foundDimensionsArray = Array.prototype.slice.call(foundDimensions);
     var tempArray = [];
     foundDimensionsArray.forEach(function (current) {
-      if (current && current["innerText"]) {
-        if (current["innerText"].trim().split(":").length > 1) {
+      if (current && current.textContent) {
+        if (current.textContent.trim().split(":").length > 1) {
           var tempObject = {
             parentID: current.closest("[id]").getAttribute("id"),
-            name: current["innerText"].trim(),
-            label: current["innerText"].trim().split(":")[1].endsWith("Member")
-              ? current["innerText"]
+            name: current.textContent.trim(),
+            label: current.textContent.trim().split(":")[1].endsWith("Member")
+              ? current.textContent
                   .trim()
                   .split(":")[1]
                   .replace(/([A-Z])/g, " $1")
                   .trim()
                   .slice(0, -7)
-              : current["innerText"]
+              : current.textContent
                   .trim()
                   .split(":")[1]
                   .replace(/([A-Z])/g, " $1")
@@ -47,20 +47,20 @@ var UserFiltersMoreFiltersMembersSetUp = {
             if (name.endsWith(".domain")) {
               name = name.substring(0, name.length - 7);
             }
-            if (current.innerText) {
-              name = name + "_" + current.innerText;
+            if (current.textContent) {
+              name = name + "_" + current.textContent;
             }
 
             var tempObject = {
               parentID: current.closest("[id]").getAttribute("id"),
               name: name,
-              label: current["innerText"].trim().endsWith("Member")
-                ? current["innerText"]
+              label: current.textContent.trim().endsWith("Member")
+                ? current.textContent
                     .trim()
                     .replace(/([A-Z])/g, " $1")
                     .trim()
                     .slice(0, -7)
-                : current["innerText"]
+                : current.textContent
                     .trim()
                     .replace(/([A-Z])/g, " $1")
                     .trim(),
@@ -129,10 +129,10 @@ var UserFiltersMoreFiltersMembersSetUp = {
         0
       );
       UserFiltersMoreFiltersMembersSetUp.populate();
-      document.getElementById("filters-members-count").innerText =
+      document.getElementById("filters-members-count").innerHTML =
         UserFiltersMoreFiltersMembersSetUp.membersOptions.length;
     } else {
-      document.getElementById("filters-members-count").innerText = 0;
+      document.getElementById("filters-members-count").innerHTML = 0;
     }
     callback();
   },

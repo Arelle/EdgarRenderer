@@ -18,7 +18,6 @@ var AppInit = {
         AjaxForm.init(function (formLoaded) {
           if (formLoaded) {
             Images.updateLinks();
-            // Links.init();
 
             // TODO maybe put this somewhere better
             if (HelpersUrl.getAnchorTag) {

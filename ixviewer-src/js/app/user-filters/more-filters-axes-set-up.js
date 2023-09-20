@@ -50,7 +50,7 @@ var UserFiltersMoreFiltersAxesSetUp = {
       return 0;
     });
 
-    document.getElementById("filters-axis-count").innerText =
+    document.getElementById("filters-axis-count").innerHTML =
       UserFiltersMoreFiltersAxesSetUp.axisOptions.length;
 
     UserFiltersMoreFiltersAxesSetUp.populate();
@@ -94,6 +94,7 @@ var UserFiltersMoreFiltersAxesSetUp = {
       div2.classList.add("reboot");
 
       var input = document.createElement("input");
+      input.setAttribute("id", "filter-axes-option-" + index);
       input.setAttribute("title", "Select/Deselect this option.");
       input.setAttribute("type", "checkbox");
       input.setAttribute("tabindex", "9");

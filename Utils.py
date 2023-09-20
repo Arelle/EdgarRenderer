@@ -6,7 +6,8 @@ Edgar(tm) Renderer was created by staff of the U.S. Securities and Exchange Comm
 Data and content created by government employees within the scope of their employment
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
-import re, sys, math, logging
+import sys, math, logging
+import regex as re
 import arelle.XbrlConst
 
 durationStartRoleError = "durationStartRoleError"  # fake role URI to indicate that a periodStart label role was put on a duration concept.

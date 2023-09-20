@@ -13,7 +13,8 @@ from matplotlib import use as matplotlib_use
 # must initialize matplotlib to not use tkinter or $DISPLAY (before other imports)
 matplotlib_use("Agg")
 
-import os, re, datetime, decimal, io, time
+import os, datetime, decimal, io, time
+import regex as re
 from collections import defaultdict
 from lxml.etree import Element, SubElement, XSLT, tostring as treeToString
 import arelle.XbrlConst
@@ -83,6 +84,7 @@ class Report(object):
             coordinateListWithoutUnit = []
             coordinateListWithoutUnitPeriod = []
             coordinateListWithoutUnitPeriodPrimary = []
+            coordinateListWithoutUnitPrimary = []
             #groupedCoordinateList = []
             fact = factAxisMemberGroup.fact
             preferredLabel = factAxisMemberGroup.preferredLabel
@@ -119,6 +121,8 @@ class Report(object):
                         coordinateListWithoutUnitPeriod += [axisMemberPositionTuple]
                         if pseudoAxisName != 'primary':
                             coordinateListWithoutUnitPeriodPrimary += [axisMemberPositionTuple]
+                    if pseudoAxisName != 'primary':
+                        coordinateListWithoutUnitPrimary += [axisMemberPositionTuple]
 
             # if isElements, every single fact should have it's own row and altogether, there should be exactly one column.
             # it looks like 3 columns, but really the style sheet makes those columns.
@@ -148,6 +152,7 @@ class Report(object):
                                     coordinateListWithoutUnit=coordinateListWithoutUnit,
                                     coordinateListWithoutUnitPeriod=coordinateListWithoutUnitPeriod,
                                     coordinateListWithoutUnitPeriodPrimary=coordinateListWithoutUnitPeriodPrimary,
+                                    coordinateListWithoutUnitPrimary=coordinateListWithoutUnitPrimary,
                                     IsCalendarTitle=IsCalendarTitle, elementQname=fact.qname)
                                     #groupedCoordinateList=groupedCoordinateList, IsCalendarTitle=IsCalendarTitle, elementQname=fact.qname)
                     self.rowList += [rowOrCol]
@@ -678,13 +683,19 @@ class Report(object):
     def makeSegmentTitleRows(self):
         counter = 0
         prevRow = None
-        forbiddenAxisSet = {'primary', 'unit', 'period'}.union({axisTriple[0] for axisTriple in self.promotedAxes})
+        forbiddenAxisSet = {'primary', 'unit'}
+        coordinateList = 'coordinateListWithoutUnitPrimary'
+        if self.cube.forbidsDatesInSegmentTitleRows:
+            forbiddenAxisSet |= {'period'}
+            coordinateList = 'coordinateListWithoutUnitPeriodPrimary'
+
+        forbiddenAxisSet |= {axisTriple[0] for axisTriple in self.promotedAxes}
 
         while counter < len(self.rowList):
 
             row = self.rowList[counter]
             if      (not row.isHidden and
-                     (prevRow == None or row.coordinateListWithoutUnitPeriodPrimary != prevRow.coordinateListWithoutUnitPeriodPrimary)):
+                     (prevRow == None or vars(row)[coordinateList] != vars(prevRow)[coordinateList])):
 
                 prevRow = self.rowList[counter]
 
@@ -1312,6 +1323,7 @@ class Row(object):
     def __init__(self, filing, report, startEndContext=None, index=None, factAxisMemberGroup=None,
                  coordinateList=[], coordinateListWithoutPrimary=[], coordinateListWithoutUnit=[],
                  coordinateListWithoutUnitPeriod=[], coordinateListWithoutUnitPeriodPrimary=[],
+                 coordinateListWithoutUnitPrimary=[],
                  isSegmentTitle=False, IsCalendarTitle=False, IsAbstractGroupTitle=False, elementQname=None, level=0):
         self.filing = filing
         self.report = report
@@ -1325,6 +1337,7 @@ class Row(object):
         self.coordinateListWithoutUnit = coordinateListWithoutUnit
         self.coordinateListWithoutUnitPeriod = coordinateListWithoutUnitPeriod
         self.coordinateListWithoutUnitPeriodPrimary = coordinateListWithoutUnitPeriodPrimary
+        self.coordinateListWithoutUnitPrimary = coordinateListWithoutUnitPrimary
         #self.groupedCoordinateList = groupedCoordinateList
         self.headingList = []
         self.axisInSegmentTitleHeaderBoolList = []

@@ -45,7 +45,7 @@ var ModalsCommon = {
 
     ModalsCommon.carouselData(element);
 
-    document.getElementById("taxonomy-modal-title").innerText =
+    document.getElementById("taxonomy-modal-title").innerHTML =
       ModalsCommon.carouselInformation[0]["dialog-title"];
 
     document.getElementById("taxonomy-modal-subtitle").innerHTML =
@@ -67,7 +67,7 @@ var ModalsCommon = {
         .getElementById("taxonomy-modal-carousel-indicators")
         .querySelector('[data-slide-to="' + newActiveIndicator + '"]')
         .classList.add("active");
-      document.getElementById("taxonomy-modal-title").innerText =
+      document.getElementById("taxonomy-modal-title").innerHTML =
         ModalsCommon.carouselInformation[event["to"]]["dialog-title"];
       ModalsCommon.currentDetailTab = newActiveIndicator;
     });

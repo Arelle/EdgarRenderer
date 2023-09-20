@@ -55,7 +55,7 @@ var UserFiltersGeneral = {
   
   setEnabledTaxonomies : function( ) {
     
-    var foundTaxonomies = document.getElementById('dynamic-xbrl-form').querySelectorAll('[contextref]');
+    var foundTaxonomies = document.getElementById('dynamic-xbrl-form').querySelectorAll('[contextRef]');
     var foundTaxonomiesArray = Array.prototype.slice.call(foundTaxonomies);
     foundTaxonomies.forEach(function( current ) {
       if ( UserFiltersGeneral.getAllFilteredData.indexOf(current) >= 0 ) {
@@ -68,7 +68,7 @@ var UserFiltersGeneral = {
   },
   
   resetAllFilteredData : function( ) {
-    var foundTaxonomies = document.getElementById('dynamic-xbrl-form').querySelectorAll('[contextref]');
+    var foundTaxonomies = document.getElementById('dynamic-xbrl-form').querySelectorAll('[contextRef]');
     
     var foundTaxonomiesArray = Array.prototype.slice.call(foundTaxonomies);
     

@@ -80,7 +80,7 @@ var ModalsNested = {
       }
     }
     
-    var nestedTaxonomies = element.querySelectorAll('[contextref]');
+    var nestedTaxonomies = element.querySelectorAll('[contextRef]');
     var nestedTaxonomiesArray = Array.prototype.slice.call(nestedTaxonomies);
     
     if ( nestedTaxonomiesArray.length ) {
@@ -142,8 +142,8 @@ var ModalsNested = {
   createLabelCarousel : function( ) {
     var titleCarousel = document.createDocumentFragment();
     
-    document.getElementById('nested-page').innerText = 1;
-    document.getElementById('nested-count').innerText = ModalsNested.getAllElementIDs.length;
+    document.getElementById('nested-page').innerHTML = 1;
+    document.getElementById('nested-count').innerHTML = ModalsNested.getAllElementIDs.length;
     
     ModalsNested.getAllElementIDs.forEach(function( current, index ) {
       
@@ -248,7 +248,7 @@ var ModalsNested = {
           
           $('#modal-taxonomy-nested-content-carousel').carousel(0);
           
-          document.getElementById('nested-page').innerText = (event['to'] + 1);
+          document.getElementById('nested-page').innerHTML = (event['to'] + 1);
           ModalsNested.createContentCarousel(event['to']);
           $('#modal-taxonomy-nested-content-carousel').carousel(defaultTab);
           ModalsCommon.currentDetailTab = defaultTab;

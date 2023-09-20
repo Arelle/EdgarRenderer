@@ -6,7 +6,8 @@ Data and content created by government employees within the scope of their emplo
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
-import sys, traceback, os.path, re, math, io, logging
+import sys, traceback, os.path, math, io, logging
+import regex as re
 from collections import defaultdict, OrderedDict
 from lxml.etree import Element, SubElement, ElementDepthFirstIterator
 import arelle.ModelDocument, arelle.ModelDtsObject, arelle.XbrlConst
@@ -16,6 +17,9 @@ from . import IoManager, Utils
 metaversion = "2.2"
 EJson = 'MetaLinks' + ".json"
 SFile = 'FilingSummary' + ".xml"
+
+INSTANCE = arelle.ModelDocument.Type.INSTANCE
+INLINEXBRL = arelle.ModelDocument.Type.INLINEXBRL
 
 def mergeCountDicts(iterable, dictAttribute=None, key=None):
     'Return a dictionary merged from a collection of dictionaries, with values summed.'
@@ -202,18 +206,47 @@ class Summary(object):
                     self.eTreeLogsElement = logs # for removal on dissem pass if needed
 
         inputFilesEtree = SubElement(self.rootETree, 'InputFiles')
+        inputFileList = []
         sourceDict = self.controller.sourceDict
-        for l in [self.controller.instanceList, self.controller.inlineList, self.controller.otherXbrlList]:
-            for file in sorted(l, key=lambda f: os.path.basename(f)):
-                s = SubElement(inputFilesEtree, 'File')
-                if file in sourceDict and sourceDict[file][0] is not None and sourceDict[file][1] is not None:
-                    (doctype, original) = sourceDict[file]
-                    s.set('doctype', doctype)
-                    s.set('original', os.path.basename(original))
-                elif file in self.controller.inlineList:
-                    s.set('doctype','(Source)')
-                    s.set('original', os.path.basename(file))
-                s.text = str(os.path.basename(file))
+        # example sourceDict as set upon initialization of the controller.  For a multi-htm instance:
+        # dict: {'i19201gd1-20081231.htm': ('8-K', 'i19201gd1-20081231.htm'), 'i19201gd2-20081231.htm': ('8-K', 'i19201gd2-20081231.htm')}
+        for summary in self.instanceSummaryList:
+            _filing = summary.filing
+            _edgarDocType = summary.edgarDocType
+            _modelXbrl = _filing.modelXbrl
+            _filing.isDefinitelyFs = _filing.isDefinitelyFs or any(isStatement(r.longName) for r in summary.reportSummaryList)
+            _filing.isDefinitelyNotFs = not _filing.isDefinitelyFs and _filing.isNcsr
+            #_displayUri = _modelXbrl.displayUri
+            #_uriDir = _modelXbrl.uriDir
+            for k, v in summary.dts.items():
+                for rl, _files in v.items():
+                    if k not in ['inline', 'instance'] and rl not in ['local']: continue
+                    for _file in _files:
+                        _file = os.path.basename(_file)
+                        if _file in inputFileList: continue
+                        inputFileList.append(_file)
+                        s = SubElement(inputFilesEtree, 'File')
+                        s.text = _file
+                        if k in ['inline','instance']:
+                            # yes, a single .htm file can appear in more than one IXDS.
+                            if _edgarDocType is not None:
+                                s.set('doctype',_edgarDocType)
+                            elif _file in sourceDict and bool(sourceDict[_file][0]):
+                                s.set('doctype',sourceDict[_file][0])
+                            else:
+                                print('how did we get here? _file={}, sourceDict={}'.format(_file,sourceDict),file=sys.stderr)
+                                s.set('doctype','(Source)')
+                            for p in ['isShr','isDefinitelyFs','isDefinitelyNotFs','isFeeExhibit',''
+                                             ,'isIfrs','isN1a','isN2Prospectus','isN3N4N6','isNcsr'
+                                             ,'isOEF','isOnlyDei','isProxy','isRR','isRRorOEF','isRxp'
+                                             ,'isOnlyShr','isSdr','isUsgaap','isVip']: # isOnlyShr!!!  contains(.,'F-SR') or contains(.,'EX-26')])"/>
+                                if getattr(_filing,p,False):
+                                    s.set(p,'true')
+                            if _file in sourceDict and sourceDict[_file][1] is not None:
+                                s.set('original', os.path.basename(sourceDict[_file][1]))
+                            elif _file in self.controller.inlineList:
+                                s.set('original', os.path.basename(_file))
+                            s.text = str(os.path.basename(_file))
         supplementalFilesEtree = SubElement(self.rootETree, 'SupplementalFiles')
         for file in self.controller.supplementalFileList:
             SubElement(supplementalFilesEtree, 'File').text = str(file)
@@ -235,7 +268,9 @@ class Summary(object):
 
     def writeMetaFiles(self):
         def innerWriteMetaFiles():
-            roots = {'version' : metaversion}
+            roots = OrderedDict()
+            roots['version'] = metaversion
+            instance = roots['instance'] = OrderedDict() # preserve instances order
             refs = roots['std_ref'] = OrderedDict() # preserve pairs order
             pairs = [(i, ref) for ref, i in self.referencePositionDict.items()]
             pairs.sort(key=lambda x: x[0])
@@ -243,9 +278,8 @@ class Summary(object):
                 i, ref = pair
                 rDict = refs['r'+str(i)] = OrderedDict() # preserve references order
                 for (att, val) in ref:  rDict[att] = val
-            roots['instance'] = OrderedDict()
             for s in self.summaryList:
-                root = roots['instance'][' '.join(s.dtsroots)] = OrderedDict() # preserve order
+                root = instance[' '.join(s.dtsroots)] = OrderedDict() # preserve order
                 if s.customPrefix is not None: root['nsprefix'] = s.customPrefix
                 if s.customNamespace is not None: root['nsuri'] = s.customNamespace
                 root['dts'] = s.dts
@@ -316,7 +350,7 @@ class Summary(object):
                 file = io.StringIO()
             else:
                 file = None
-            IoManager.writeJsonDoc(roots,file)
+            IoManager.writeJsonDoc(roots,file,sort_keys=False) # preserve order, don't sort
             self.controller.renderedFiles.add(EJson)
             if file is not None:
                 file.seek(0)
@@ -379,12 +413,17 @@ class InstanceSummary(object):
         self.customNamespace = None
         self.roleDefinitionDict = dict()
 
-        # do not hang on to filing or modelXbrl, just collect the statistics.
+        # collect the statistics.
+        self.filing = filing
+        self.modelXbrl = modelXbrl
         self.dts = defaultdict(lambda: defaultdict(list)) # self.dts['instance']['local'] returns a list
         self.hasStdNamespace = set()
         self.hasRRorOEF = self.hasOef = self.hasRR = self.hasVip = self.hasFeeExhibit = False
 
-        self.edgarDocType = filing.edgarDocType
+        self.edgarDocType = getattr(modelXbrl,'efmAttachmentDocumentType',
+                                    next((f.xValue for f in modelXbrl.factsByLocalName["DocumentType"]
+                                         if (f.xValue is not None and f.context is not None and not f.context.hasSegment))
+                                          ,None))
 
         for uri,doc in sorted(modelXbrl.urlDocs.items(), key=lambda i: i[0]): # change to url from discovery order. i[1].objectIndex
             if doc.type == arelle.ModelDocument.Type.INLINEXBRLDOCUMENTSET:
@@ -542,7 +581,7 @@ class InstanceSummary(object):
                         self.qnameReferenceDict[fromConcept.qname.clarkNotation].add(r)
 
         # build a dictionary tree of the eventual JSON output.
-        self.tagDict = {}
+        self.tagDict = OrderedDict()
         for concept in conceptInUseSet:
             self.tagDict[concept.attrib['id']] = {'xbrltype' : (concept.typeQname).localName
                                                   ,'nsuri': concept.qname.namespaceURI

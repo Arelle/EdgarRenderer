@@ -54,7 +54,7 @@ var FormInformation = {
   },
   
   version : function( ) {
-    document.getElementById('form-information-version').innerText = 'Version: ' + Constants.version;
+    document.getElementById('form-information-version').innerHTML = 'Version: ' + Constants.version;
     
   }
 

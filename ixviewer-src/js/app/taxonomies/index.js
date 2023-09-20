@@ -20,12 +20,12 @@ var Taxonomies = {
       foundTaxonomies = document
         .getElementById("dynamic-xbrl-form")
         .querySelectorAll(
-          '[contextref][enabled-taxonomy="true"][highlight-taxonomy="true"]'
+          '[contextRef][enabled-taxonomy="true"][highlight-taxonomy="true"]'
         );
     } else {
       foundTaxonomies = document
         .getElementById("dynamic-xbrl-form")
-        .querySelectorAll('[contextref][enabled-taxonomy="true"]');
+        .querySelectorAll('[contextRef][enabled-taxonomy="true"]');
     }
 
     var taxonomyCount = foundTaxonomies.length;
@@ -99,27 +99,27 @@ var Taxonomies = {
       if (hiddenElement) {
         // we now create an entirely new element based on the innerHTML
         // of current, and the attributes of hiddenElement
-        var newElement = '';
-        
-        newElement += '<' + hiddenElement.tagName.toLowerCase();
+        var newElement = document.createElement(hiddenElement.tagName);
+
         // add all of the necessary attributes
-        for ( var i = 0; i < hiddenElement.attributes.length; i++ ) {
-          var attribute = hiddenElement.attributes[i];
-          newElement += ' ' + attribute.name + '="' + attribute.value + '"';
+
+        for (var i = 0; i < hiddenElement.attributes.length; i++) {
+          var attr = hiddenElement.attributes[i];
+          newElement.setAttribute(attr.name, attr.value);
         }
-        
-        newElement += ' isadditionalitemsonly="true"';
-        newElement += ' ishiddenelement="true"';
-        newElement += '>';
-        newElement += current.innerHTML;
-        // close the tag
-        newElement += '</' + hiddenElement.tagName.toLowerCase() + '>';
-        
-        hiddenElement.removeAttribute('contextref');
-        hiddenElement.removeAttribute('name');
-        
-        current.innerHTML = newElement;
-        
+
+        newElement.setAttribute("isadditionalitemsonly", "true");
+        newElement.setAttribute("ishiddenelement", "true");
+
+        newElement.innerHTML = current.innerHTML;
+
+        hiddenElement.removeAttribute("contextRef");
+        hiddenElement.removeAttribute("name");
+
+        while (current.firstChild) {
+          current.removeChild(current.firstChild);
+        }
+        current.append(newElement);
       }
     });
 
@@ -150,103 +150,173 @@ var Taxonomies = {
   addEventAttributes: function () {
     var startPerformance = performance.now();
     Taxonomies.updateStyleTaxonomies();
-    
-    var foundTaxonomies = document.getElementById('dynamic-xbrl-form').querySelectorAll(
-        '[contextref], [continuedat], ' + Constants.getHTMLPrefix + '\\:continuation');
+
+    var excludeTags = document
+      .getElementById("dynamic-xbrl-form")
+      .querySelectorAll(Constants.getHTMLPrefix + "\\:exclude");
+    var excludeTagsArray = Array.prototype.slice.call(excludeTags);
+    excludeTagsArray.forEach(function (current) {
+      current.classList.add("no-hover");
+      current.addEventListener("click", function (event) {
+        // we stop the bubbles
+        event.stopPropagation();
+      });
+    });
+
+    var foundTaxonomies = document
+      .getElementById("dynamic-xbrl-form")
+      .querySelectorAll(
+        "[contextRef], [continuedat], " +
+          Constants.getHTMLPrefix +
+          "\\:continuation"
+      );
     var foundTaxonomiesArray = Array.prototype.slice.call(foundTaxonomies);
+
     var isChrome = window.chrome;
-    foundTaxonomiesArray
-        .forEach(function( current, index ) {
-          
-          if ( current.closest('table') ) {
-            current.setAttribute('inside-table', true);
-          } else {
-            current.setAttribute('inside-table', false);
-          }
-          
-          // we find all the facts prefix (for example: dei, us-gaap)
-          if ( current.hasAttribute('name') && current.getAttribute('name').split(':').length === 2 ) {
-            if ( Constants.getFactTypes.indexOf(current.getAttribute('name').split(':')[0].toUpperCase()) === -1 ) {
-              Constants.getFactTypes.push(current.getAttribute('name').split(':')[0].toUpperCase());
+    foundTaxonomiesArray.forEach(function (current, index) {
+      if (current.closest("table")) {
+        current.setAttribute("inside-table", true);
+      } else {
+        current.setAttribute("inside-table", false);
+      }
+
+      // we find all the facts prefix (for example: dei, us-gaap)
+      if (
+        current.hasAttribute("name") &&
+        current.getAttribute("name").split(":").length === 2
+      ) {
+        if (
+          Constants.getFactTypes.indexOf(
+            current.getAttribute("name").split(":")[0].toUpperCase()
+          ) === -1
+        ) {
+          Constants.getFactTypes.push(
+            current.getAttribute("name").split(":")[0].toUpperCase()
+          );
+        }
+      }
+      if (
+        current.tagName.toLowerCase().indexOf("continuation") === -1 &&
+        !current.hasAttribute("continuedat")
+      ) {
+        if (current.hasAttribute("name")) {
+          var metaInformation = Constants.getMetaTags.filter(function (
+            element
+          ) {
+            if (
+              element["original-name"] ===
+                current.getAttribute("name").replace(":", "_") &&
+              element["xbrltype"] === "textBlockItemType"
+            ) {
+              return true;
             }
-          }
-          if ( current.tagName.toLowerCase().indexOf('continuation') === -1 && !current.hasAttribute('continuedat') ) {
-            
-            if ( current.hasAttribute('name') ) {
-              
-              // since the text block is not consistent with he end of the name
-              // attribute, we also check for children
-              var textBlock = current.getAttribute('name').trim().endsWith('TextBlock');
-              if ( textBlock ) {
-                
-                current.setAttribute('text-block-taxonomy', true);
-                
-                var leftSpan = document.createElement('span');
-                leftSpan.setAttribute('class', 'float-left text-block-indicator-left position-absolute');
-                leftSpan.title = 'One or more textblock facts are between this symbol and the right side symbol.';
-                current.parentNode.insertBefore(leftSpan, current);
-                
-                var rightSpan = document.createElement('span');
-                rightSpan.setAttribute('class', 'float-right text-block-indicator-right position-absolute');
-                rightSpan.title = 'One or more textblock facts are between this symbol and the left side symbol.';
-                current.parentNode.insertBefore(rightSpan, current);
-              }
-            }
-            if ( current.hasAttribute('id') ) {
-              current.setAttribute('data-original-id', current.getAttribute('id'));
-            }
-            current.setAttribute('id', 'fact-identifier-' + index);
-            current.setAttribute('continued-taxonomy', false);
-          } else if ( current.tagName.toLowerCase().indexOf('continuation') === -1
-              && current.hasAttribute('continuedat') ) {
-            
-            var leftSpan = document.createElement('span');
-            leftSpan.setAttribute('class', 'float-left text-block-indicator-left position-absolute');
-            leftSpan.title = 'One or more textblock facts are between this symbol and the right side symbol.';
+            return false;
+          });
+
+          if (metaInformation.length > 0) {
+            current.setAttribute("text-block-taxonomy", true);
+
+            var leftSpan = document.createElement("span");
+            leftSpan.setAttribute(
+              "class",
+              "float-left text-block-indicator-left position-absolute"
+            );
+            leftSpan.title =
+              "One or more textblock facts are between this symbol and the right side symbol.";
             current.parentNode.insertBefore(leftSpan, current);
-            
-            var rightSpan = document.createElement('span');
-            rightSpan.setAttribute('class', 'float-right text-block-indicator-right position-absolute');
-            rightSpan.title = 'One or more textblock facts are between this symbol and the left side symbol.';
+
+            var rightSpan = document.createElement("span");
+            rightSpan.setAttribute(
+              "class",
+              "float-right text-block-indicator-right position-absolute"
+            );
+            rightSpan.title =
+              "One or more textblock facts are between this symbol and the left side symbol.";
             current.parentNode.insertBefore(rightSpan, current);
-            
-            current.setAttribute('continued-main-taxonomy', true);
-            if ( current.hasAttribute('id') ) {
-              current.setAttribute('data-original-id', current.getAttribute('id'));
-            }
-            current.setAttribute('id', 'fact-identifier-' + index);
-          } else if ( current.tagName.toLowerCase().indexOf('continuation') >= 0 ) {
-            
-            current.setAttribute('continued-taxonomy', true);
           }
-          
-          current.setAttribute('enabled-taxonomy', true);
-          current.setAttribute('highlight-taxonomy', false);
-          current.setAttribute('selected-taxonomy', false);
-          current.setAttribute('hover-taxonomy', false);
-          
-          current.setAttribute('onClick', 'Taxonomies.clickEvent(event, this)');
-          current.setAttribute('onKeyUp', 'Taxonomies.clickEvent(event, this)');
-          
-          current.setAttribute('onMouseEnter', 'Taxonomies.enterElement(event, this);');
-          current.setAttribute('onMouseLeave', 'Taxonomies.leaveElement(event, this);');
-          current.setAttribute('tabindex', '18');
-          if ( current.hasAttribute('contextref') && isChrome && foundTaxonomiesArray.length < 7500 ) {
-            Taxonomies.setFilterAttributes(current);
-          } else {
-            // we always want to set isAdditionalItemsOnly="boolean"
-            if ( !current.hasAttribute('isAdditionalItemsOnly') ) {
-              current.setAttribute('isAdditionalItemsOnly', TaxonomiesGeneral.isParentNodeHidden(current));
-            }
-          }
-          
-          // we want to wrap every fact with a common span
-          var span = document.createElement('span');
-          current.parentNode.insertBefore(span, current);
-          span.appendChild(current);
-          
-        });
-    
+        }
+        if (current.hasAttribute("id")) {
+          current.setAttribute("data-original-id", current.getAttribute("id"));
+        }
+        current.setAttribute("id", "fact-identifier-" + index);
+        current.setAttribute("continued-taxonomy", false);
+      } else if (
+        current.tagName.toLowerCase().indexOf("continuation") === -1 &&
+        current.hasAttribute("continuedat")
+      ) {
+        var leftSpan = document.createElement("span");
+        leftSpan.setAttribute(
+          "class",
+          "float-left text-block-indicator-left position-absolute"
+        );
+        leftSpan.title =
+          "One or more textblock facts are between this symbol and the right side symbol.";
+        current.parentNode.insertBefore(leftSpan, current);
+
+        var rightSpan = document.createElement("span");
+        rightSpan.setAttribute(
+          "class",
+          "float-right text-block-indicator-right position-absolute"
+        );
+        rightSpan.title =
+          "One or more textblock facts are between this symbol and the left side symbol.";
+        current.parentNode.insertBefore(rightSpan, current);
+
+        current.setAttribute("continued-main-taxonomy", true);
+        if (current.hasAttribute("id")) {
+          current.setAttribute("data-original-id", current.getAttribute("id"));
+        }
+        current.setAttribute("id", "fact-identifier-" + index);
+      } else if (current.tagName.toLowerCase().indexOf("continuation") >= 0) {
+        current.setAttribute("continued-taxonomy", true);
+      }
+
+      current.setAttribute("enabled-taxonomy", true);
+      current.setAttribute("highlight-taxonomy", false);
+      current.setAttribute("selected-taxonomy", false);
+      current.setAttribute("hover-taxonomy", false);
+
+      current.addEventListener("click", function () {
+        // eslint-disable-next-line no-invalid-this
+        Taxonomies.clickEvent(event, this);
+      });
+      current.addEventListener("keyup", function () {
+        // eslint-disable-next-line no-invalid-this
+        Taxonomies.clickEvent(event, this);
+      });
+
+      current.addEventListener("mouseenter", function () {
+        // eslint-disable-next-line no-invalid-this
+        Taxonomies.enterElement(event, this);
+      });
+
+      current.addEventListener("mouseleave", function () {
+        // eslint-disable-next-line no-invalid-this
+        Taxonomies.leaveElement(event, this);
+      });
+      current.setAttribute("tabindex", "18");
+      if (
+        current.hasAttribute("contextRef") &&
+        isChrome &&
+        foundTaxonomiesArray.length < 7500
+      ) {
+        Taxonomies.setFilterAttributes(current);
+      } else {
+        // we always want to set isAdditionalItemsOnly="boolean"
+        if (!current.hasAttribute("isAdditionalItemsOnly")) {
+          current.setAttribute(
+            "isAdditionalItemsOnly",
+            TaxonomiesGeneral.isParentNodeHidden(current)
+          );
+        }
+      }
+
+      // we want to wrap every fact with a common span
+      var span = document.createElement("span");
+      current.parentNode.insertBefore(span, current);
+      span.appendChild(current);
+    });
+
     Taxonomies.updateTaxonomyCount(null, true);
     var endPerformance = performance.now();
     console.debug(
@@ -265,7 +335,7 @@ var Taxonomies = {
         ) >= 0
       ) {
         if (
-          FiltersContextref.getDimensions(element.getAttribute("contextref"))
+          FiltersContextref.getDimensions(element.getAttribute("contextRef"))
             .length === 0
         ) {
           elementIsCalculationsOnly = true;
@@ -353,7 +423,6 @@ var Taxonomies = {
     if (event.keyCode && !(event.keyCode === 13 || event.keyCode === 32)) {
       return;
     }
-
     event.stopPropagation();
     event.preventDefault();
 
@@ -427,7 +496,7 @@ var Taxonomies = {
       "</div>";
     popoverHtml +=
       '<div class="reboot text-center p-2">' +
-      FiltersContextref.getPeriod(element.getAttribute("contextref")) +
+      FiltersContextref.getPeriod(element.getAttribute("contextRef")) +
       "</div>";
     popoverHtml +=
       '<p class="reboot text-center p-2">Click for additional information.</p>';

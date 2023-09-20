@@ -184,10 +184,10 @@ function setCustomCSS() {
     });
     document.querySelector(
       current["selector"] + " .picker_done button"
-    ).innerText = "Save";
+    ).innerHTML = "Save";
     document.querySelector(
       current["selector"] + " .picker_cancel button"
-    ).innerText = "Reset";
+    ).innerHTML = "Reset";
     document.querySelector(
       current["selector"] + " .picker_cancel button"
     ).onclick = function () {

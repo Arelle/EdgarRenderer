@@ -612,7 +612,7 @@ describe('Unit Test Application Code', function() {
 
   });
 
-  context('app/filters/contextref.js - FiltersContextref', function() {
+  context('app/filters/contextRef.js - FiltersContextref', function() {
 
     it('Object exists', function() {
       cy.window().should('have.property', 'FiltersContextref');
@@ -770,7 +770,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.calINDayMonthYear({
-          'innerText': '11 Pausha 1921'
+          'innerHTML': '11 Pausha 1921'
         })).to.equal('2000-01-01');
 
       });
@@ -793,7 +793,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateDayMonth({
-          'innerText': '03/02'
+          'innerHTML': '03/02'
         })).to.equal('--02-03');
 
       });
@@ -816,7 +816,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateDayMonthDK({
-          'innerText': '27. february'
+          'innerHTML': '27. february'
         })).to.equal('--02-27');
 
       });
@@ -839,7 +839,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateDayMonthEN({
-          'innerText': '30th day of January'
+          'innerHTML': '30th day of January'
         })).to.equal('--01-30');
 
       });
@@ -862,7 +862,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateDayMonthYear({
-          'innerText': '12.02.09'
+          'innerHTML': '12.02.09'
         })).to.equal('2009-02-12');
 
       });
@@ -885,7 +885,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateDayMonthYearDK({
-          'innerText': '7. feb 2009'
+          'innerHTML': '7. feb 2009'
         })).to.equal('2009-02-07');
 
       });
@@ -908,7 +908,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateDayMonthYearEN({
-          'innerText': '30th day of January, March and April, 1969'
+          'innerHTML': '30th day of January, March and April, 1969'
         })).to.equal('1969-04-30');
 
       });
@@ -931,7 +931,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateDayMonthYearIN({
-          'innerText': '19 सितंबर 2012'
+          'innerHTML': '19 सितंबर 2012'
         })).to.equal('2012-09-19');
 
       });
@@ -954,7 +954,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateDotEU({
-          'innerText': '25.12.2009'
+          'innerHTML': '25.12.2009'
         })).to.equal('2009-12-25');
 
       });
@@ -977,7 +977,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateDotUS({
-          'innerText': '12.25.2010'
+          'innerHTML': '12.25.2010'
         })).to.equal('2010-12-25');
 
       });
@@ -1000,7 +1000,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateEraYearMonthDayJP({
-          'innerText': '平成元年5月31日'
+          'innerHTML': '平成元年5月31日'
         })).to.equal('1989-05-31');
 
       });
@@ -1023,7 +1023,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateEraYearMonthJP({
-          'innerText': '平成元年5月'
+          'innerHTML': '平成元年5月'
         })).to.equal('1989-05');
 
       });
@@ -1046,7 +1046,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateLongMonthYear({
-          'innerText': 'January 2012'
+          'innerHTML': 'January 2012'
         })).to.equal('2012-01');
 
       });
@@ -1069,7 +1069,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateLongUK({
-          'innerText': '25 July 07'
+          'innerHTML': '25 July 07'
         })).to.equal('2007-07-25');
 
       });
@@ -1092,7 +1092,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateLongUS({
-          'innerText': 'July 21, 08'
+          'innerHTML': 'July 21, 08'
         })).to.equal('2008-07-21');
 
       });
@@ -1115,7 +1115,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateLongYearMonth({
-          'innerText': '09 July'
+          'innerHTML': '09 July'
         })).to.equal('2009-07');
 
       });
@@ -1138,7 +1138,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateMonthDay({
-          'innerText': '09/28'
+          'innerHTML': '09/28'
         })).to.equal('--09-28');
 
       });
@@ -1161,7 +1161,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateMonthDayEN({
-          'innerText': 'Jan 02'
+          'innerHTML': 'Jan 02'
         })).to.equal('--01-02');
 
       });
@@ -1184,7 +1184,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateMonthDayYear({
-          'innerText': '12.02.09'
+          'innerHTML': '12.02.09'
         })).to.equal('2009-12-02');
 
       });
@@ -1207,7 +1207,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateMonthDayYearEN({
-          'innerText': 'January, March and April the 30th, 1969'
+          'innerHTML': 'January, March and April the 30th, 1969'
         })).to.equal('1969-01-30');
 
       });
@@ -1230,7 +1230,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateMonthYear({
-          'innerText': '04 2018'
+          'innerHTML': '04 2018'
         })).to.equal('2018-04');
 
       });
@@ -1253,7 +1253,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateMonthYearDK({
-          'innerText': 'Jan 2013'
+          'innerHTML': 'Jan 2013'
         })).to.equal('2013-01');
 
       });
@@ -1276,7 +1276,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateMonthYearEN({
-          'innerText': 'January, March and April, 1969'
+          'innerHTML': 'January, March and April, 1969'
         })).to.equal('1969-01');
 
       });
@@ -1299,7 +1299,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateMonthYearIN({
-          'innerText': 'सितंबर २०१२'
+          'innerHTML': 'सितंबर २०१२'
         })).to.equal('2012-09');
 
       });
@@ -1322,7 +1322,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateShortDayMonthUK({
-          'innerText': '08 Feb'
+          'innerHTML': '08 Feb'
         })).to.equal('--04-08');
 
       });
@@ -1345,7 +1345,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateShortEU({
-          'innerText': 'TODO'
+          'innerHTML': 'TODO'
         })).to.equal('TODO');
 
       });
@@ -1368,7 +1368,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateShortMonthDayUS({
-          'innerText': 'Feb 22'
+          'innerHTML': 'Feb 22'
         })).to.equal('--02-22');
 
       });
@@ -1391,7 +1391,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateShortMonthYear({
-          'innerText': 'Feb 08'
+          'innerHTML': 'Feb 08'
         })).to.equal('2008-02');
 
       });
@@ -1414,7 +1414,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateShortUK({
-          'innerText': '17 Jun 12'
+          'innerHTML': '17 Jun 12'
         })).to.equal('2012-06-17');
 
       });
@@ -1437,7 +1437,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateShortUS({
-          'innerText': 'Feb 23, 12'
+          'innerHTML': 'Feb 23, 12'
         })).to.equal('2012-02-23');
 
       });
@@ -1460,7 +1460,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateShortYearMonth({
-          'innerText': '12 Feb'
+          'innerHTML': '12 Feb'
         })).to.equal('2012-02');
 
       });
@@ -1483,7 +1483,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateSlashDayMonthEU({
-          'innerText': '23/12'
+          'innerHTML': '23/12'
         })).to.equal('--12-23');
 
       });
@@ -1506,7 +1506,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateSlashEU({
-          'innerText': '8/2/12'
+          'innerHTML': '8/2/12'
         })).to.equal('2012-02-08');
 
       });
@@ -1529,7 +1529,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateSlashMonthDayUS({
-          'innerText': '2/24'
+          'innerHTML': '2/24'
         })).to.equal('--02-24');
 
       });
@@ -1552,7 +1552,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateSlashUS({
-          'innerText': '12/23/14'
+          'innerHTML': '12/23/14'
         })).to.equal('2014-12-23');
 
       });
@@ -1575,7 +1575,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateYearMonthCJK({
-          'innerText': '2010年5月'
+          'innerHTML': '2010年5月'
         })).to.equal('2010-05');
 
       });
@@ -1598,7 +1598,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateYearMonthDay({
-          'innerText': '09 02 21'
+          'innerHTML': '09 02 21'
         })).to.equal('2009-02-21');
 
       });
@@ -1621,7 +1621,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateYearMonthDayCJK({
-          'innerText': '2010年5月31日'
+          'innerHTML': '2010年5月31日'
         })).to.equal('2010-05-31');
 
       });
@@ -1644,7 +1644,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.dateYearMonthEN({
-          'innerText': '1969, January, March and April'
+          'innerHTML': '1969, January, March and April'
         })).to.equal('1969-04');
 
       });
@@ -1667,7 +1667,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersDate.durYear({
-          'innerText': '2015'
+          'innerHTML': '2015'
         })).to.equal('P2015Y0M0D');
 
       });
@@ -1857,7 +1857,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersNumber.numComma({
-          'innerText': '100000'
+          'innerHTML': '100000'
         })).to.equal('100,000');
 
       });
@@ -1882,7 +1882,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersNumber.numCommaDecimal({
-          'innerText': '1,123'
+          'innerHTML': '1,123'
         })).to.equal('1.123');
 
       });
@@ -1905,7 +1905,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersNumber.numCommaDot({
-          'innerText': '1,234'
+          'innerHTML': '1,234'
         })).to.equal('1234');
 
       });
@@ -1928,7 +1928,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersNumber.numDash({
-          'innerText': '-'
+          'innerHTML': '-'
         })).to.equal('0');
 
       });
@@ -1951,7 +1951,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersNumber.numDotComma({
-          'innerText': '1,234.00'
+          'innerHTML': '1,234.00'
         })).to.equal('1.23400');
 
       });
@@ -1974,7 +1974,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         // expect(win.FiltersNumber.numDotDecimal({
-        // 'innerText' : '123,456789.23'
+        // 'innerHTML' : '123,456789.23'
         // })).to.equal('123,456,789.23');
 
       });
@@ -1997,7 +1997,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersNumber.numDotDecimalIN({
-          'innerText': '1,00,00,000'
+          'innerHTML': '1,00,00,000'
         })).to.equal('10000000');
 
       });
@@ -2020,7 +2020,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersNumber.numSpaceComma({
-          'innerText': '123 456'
+          'innerHTML': '123 456'
         })).to.equal('123456');
 
       });
@@ -2043,7 +2043,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersNumber.numSpaceDot({
-          'innerText': '123 456'
+          'innerHTML': '123 456'
         })).to.equal('123456');
 
       });
@@ -2066,7 +2066,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersNumber.numUnitDecimal({
-          'innerText': '5,123 - ??? -'
+          'innerHTML': '5,123 - ??? -'
         })).to.equal(errMessage);
 
       });
@@ -2089,7 +2089,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersNumber.numUnitDecimalIN({
-          'innerText': '1,000 rupees 50 paise'
+          'innerHTML': '1,000 rupees 50 paise'
         })).to.equal('1000.50');
 
       });
@@ -2112,7 +2112,7 @@ describe('Unit Test Application Code', function() {
         })).to.equal(errMessage);
 
         expect(win.FiltersNumber.numWordsEn({
-          'innerText': 'forty two'
+          'innerHTML': 'forty two'
         })).to.equal('42');
 
       });
@@ -2785,13 +2785,13 @@ describe('Unit Test Application Code', function() {
 
                   // so we will want to do:
                   // expect(win[current][nestedCurrent]({
-                  // 'innerText' : validInput
+                  // 'innerHTML' : validInput
                   // })).to.equal(validValue);
 
                   Object.keys(objectOfFormats[currentFormat]['valid']).forEach((validValue) => {
                     objectOfFormats[currentFormat]['valid'][validValue].forEach((validInput) => {
                       expect(win[current][nestedCurrent]({
-                        'innerText': validInput
+                        'innerHTML': validInput
                       })).to.equal(validValue);
                     });
                   });
@@ -2799,7 +2799,7 @@ describe('Unit Test Application Code', function() {
                   Object.keys(objectOfFormats[currentFormat]['invalid']).forEach((validValue) => {
                     objectOfFormats[currentFormat]['invalid'][validValue].forEach((validInput) => {
                       expect(win[current][nestedCurrent]({
-                        'innerText': validInput
+                        'innerHTML': validInput
                       })).to.contains('Format Error:');
                     });
                   });

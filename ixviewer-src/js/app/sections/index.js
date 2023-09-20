@@ -36,7 +36,7 @@ var Sections = {
     Sections.setSelectedAttributes(element);
     var taxonomyElement = TaxonomiesGeneral.getElementByNameContextref(
       element.getAttribute("name"),
-      element.getAttribute("contextref")
+      element.getAttribute("contextRef")
     );
 
     if (taxonomyElement) {
@@ -355,13 +355,13 @@ var Sections = {
     listGroup.classList.add("list-group-flush");
     objectOfInfo.forEach(function (current) {
       var name = "";
-      var contextref = "";
+      var contextRef = "";
       var baseref = "";
       var sameBaseRef = true;
 
       if (current["firstAnchor"]) {
         name = current["firstAnchor"]["name"];
-        contextref = current["firstAnchor"]["contextRef"];
+        contextRef = current["firstAnchor"]["contextRef"];
         baseref = current["firstAnchor"]["baseRef"];
         if (current["firstAnchor"]["baseRef"]) {
           sameBaseRef =
@@ -369,7 +369,7 @@ var Sections = {
         }
       } else if (current["uniqueAnchor"]) {
         name = current["uniqueAnchor"]["name"];
-        contextref = current["uniqueAnchor"]["contextRef"];
+        contextRef = current["uniqueAnchor"]["contextRef"];
         baseref = current["uniqueAnchor"]["baseRef"];
         if (current["uniqueAnchor"]["baseRef"]) {
           sameBaseRef =
@@ -378,7 +378,7 @@ var Sections = {
       }
       var list = document.createElement("li");
       list.setAttribute("name", name);
-      list.setAttribute("contextref", contextref);
+      list.setAttribute("contextRef", contextRef);
       list.classList.add("reboot");
       list.classList.add("click");
       list.classList.add("list-group-item");

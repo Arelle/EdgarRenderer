@@ -7,7 +7,7 @@ Data and content created by government employees within the scope of their emplo
 are not subject to domestic copyright protection. 17 U.S.C. 105.
 """
 
-import re
+import regex as re
 from collections import defaultdict
 import arelle.ModelObject
 from . import Utils
@@ -44,6 +44,10 @@ class Cube(object):
         self.rootNodeToConceptSetDict = {}
         self.isStatementOfEquity = False
         self.isStatementOfCashFlows = False
+
+        self.isRepurchasesDetail = linkroleUri in ('http://xbrl.sec.gov/shr/role/exh/IssrOrAfflRepurchsBySecurity',)
+        self.forbidsDatesInSegmentTitleRows = not (self.isUncategorizedFacts or self.isRepurchasesDetail)
+        self.sortPeriodAxisDescending = not self.isRepurchasesDetail
 
         modelRoleTypes = filing.modelXbrl.roleTypes[linkroleUri]
         if modelRoleTypes:
@@ -277,7 +281,7 @@ class Cube(object):
                 sortedList = list(self.timeAxis) # start over
 
         else:
-            sortedList.sort(key = lambda startEndContext : startEndContext.endTime, reverse=True)
+            sortedList.sort(key = lambda startEndContext : startEndContext.endTime, reverse=self.sortPeriodAxisDescending)
             sortedList.sort(key = lambda startEndContext : startEndContext.numMonths)
             # this next step just orders by "duration" then by "instant" because d comes before i in the alphabet, corny.
             sortedList.sort(key = lambda startEndContext : startEndContext.periodTypeStr)

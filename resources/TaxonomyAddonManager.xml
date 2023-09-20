@@ -4,6 +4,9 @@
   <ReferencesPath>Taxonomy\Reference</ReferencesPath>
   <TaxonomyList>
     <TaxonomyAddon>
+      <Taxonomy>shr-2023.xsd<!-- No add-ons --></Taxonomy>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>country-2009-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>country-doc-2009-01-31.xml</string>
@@ -528,6 +531,9 @@
         <string>sic-doc-2009-01-31.xml</string>
       </DefinitionFiles>
       <ReferenceFiles/>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>shr-2023.xsd<!-- No add-ons --></Taxonomy>
     </TaxonomyAddon>
     <TaxonomyAddon>
       <Taxonomy>sic-2011-01-31.xsd</Taxonomy>

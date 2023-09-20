@@ -13,7 +13,7 @@ var FiltersNumber = {
   numberFormatting: function (element, input, canonicalize) {
     // return 0 if No|None...etc
     var regex = /^\s*([Nn]o(ne)?|[Nn]il|[Zz]ero)\s*$/;
-    if (regex.exec(element.innerText)) {
+    if (regex.exec(element.textContent)) {
       return "0";
     }
 
@@ -30,7 +30,7 @@ var FiltersNumber = {
         element.getAttribute("xsi:nil") === true
       ) {
         return "nil";
-      } else if (element.innerHTML === "\u2014") {
+      } else if (element.textContent === "\u2014") {
         return input;
       }
       var scale =
@@ -122,44 +122,37 @@ var FiltersNumber = {
   },
 
   numComma: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
-      if (isNaN(element.innerText)) {
+    if (element && typeof element === "object" && element["textContent"]) {
+      if (isNaN(element.textContent)) {
         return "Format Error: Num Comma";
       }
-      return parseInt(element.innerText).toLocaleString();
+      return parseInt(element.textContent).toLocaleString();
     }
     return "Format Error: Num Comma";
   },
 
   numDotDecimal: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
+    if (element && typeof element === "object" && element["textContent"]) {
       var regex = /^\s*[0-9]{1,3}([, \xA0]?[0-9]{3})*(\.[0-9]+)?\s*$/;
 
-      if (regex.exec(element.innerText)) {
-        return element.innerText
+      if (regex.exec(element.textContent)) {
+        return element.textContent
           .replace(/\,/g, "")
           .replace(/ /g, "")
           .replace("/\u00A0/g", "");
-        return FiltersNumber.numberFormatting(
-          element,
-          element.innerText
-            .replace(/\,/g, "")
-            .replace(/ /g, "")
-            .replace("/\u00A0/g", "")
-        );
       }
     }
     return "Format Error: Num Dot Decimal";
   },
 
   numDotDecimalTR4: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
+    if (element && typeof element === "object" && element["textContent"]) {
       if (
         /^[ \t\n\r]*[, \xA00-9]*(\.[ \xA00-9]+)?[ \t\n\r]*$/.exec(
-          element.innerText
+          element.textContent
         )
       ) {
-        return element.innerText
+        return element.textContent
           .replace(/\,/g, "")
           .replace(/ /g, "")
           .replace("/\u00A0/g", "");
@@ -169,13 +162,13 @@ var FiltersNumber = {
   },
 
   numDotDecimalAposTR5: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
+    if (element && typeof element === "object" && element["textContent"]) {
       if (
         /^[ \t\n\r]*[,\x27\x60\xB4\u2019\u2032 \xA00-9]*(\.[ \xA00-9]+)?[ \t\n\r]*$/.exec(
-          element.innerText
+          element.textContent
         )
       ) {
-        return element.innerText
+        return element.textContent
           .replace(/\,/g, "")
           .replace("/\x27/g", "")
           .replace("/\x60/g", "")
@@ -216,11 +209,11 @@ var FiltersNumber = {
   },
 
   numCommaDecimal: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
+    if (element && typeof element === "object" && element["textContent"]) {
       var regex = /^\s*[0-9]{1,3}([. \xA0]?[0-9]{3})*(,[0-9]+)?\s*$/;
 
-      if (regex.exec(element.innerText)) {
-        return element.innerText
+      if (regex.exec(element.textContent)) {
+        return element.textContent
           .replace(/\./g, "")
           .replace(/\,/g, ".")
           .replace(/ /g, "")
@@ -231,13 +224,13 @@ var FiltersNumber = {
   },
 
   numCommaDecimalTR4: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
+    if (element && typeof element === "object" && element["textContent"]) {
       if (
         /^[ \t\n\r]*[\. \xA00-9]*(,[ \xA00-9]+)?[ \t\n\r]*$/.exec(
-          element.innerText
+          element.textContent
         )
       ) {
-        return element.innerText
+        return element.textContent
           .replace(/\./g, "")
           .replace(/\,/g, ".")
           .replace(/ /g, "")
@@ -248,13 +241,13 @@ var FiltersNumber = {
   },
 
   numCommaDecimalAposTR5: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
+    if (element && typeof element === "object" && element["textContent"]) {
       if (
         /^[ \t\n\r]*[\.\x27\x60\xB4\u2019\u2032 \xA00-9]*(,[ \xA00-9]+)?[ \t\n\r]*$/.exec(
-          element.innerText
+          element.textContent
         )
       ) {
-        return element.innerText
+        return element.textContent
           .replace(/\./g, "")
           .replace(/\,/g, ".")
           .replace("/\x27/g", "")
@@ -270,34 +263,34 @@ var FiltersNumber = {
   },
 
   numCommaDot: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
-      if (isNaN(element.innerText.replace(",", ""))) {
+    if (element && typeof element === "object" && element["textContent"]) {
+      if (isNaN(element.textContent.replace(",", ""))) {
         return "Format Error: Num Comma Dot";
       }
-      return element.innerText.replace(",", "");
+      return element.textContent.replace(",", "");
     }
     return "Format Error: Num Comma Dot";
   },
 
   numDash: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
-      return element.innerText.replace("-", "0");
+    if (element && typeof element === "object" && element["textContent"]) {
+      return element.textContent.replace("-", "0");
     }
     return "Format Error: Num Dash";
   },
 
   numDotComma: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
-      return element.innerText.replace(".", "").replace(",", ".");
+    if (element && typeof element === "object" && element["textContent"]) {
+      return element.textContent.replace(".", "").replace(",", ".");
     }
     return "Format Error: Num Dot Comma";
   },
 
   numDotDecimalIN: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
+    if (element && typeof element === "object" && element["textContent"]) {
       var regex =
         /^(([0-9]{1,2}[, \xA0])?([0-9]{2}[, \xA0])*[0-9]{3})([.][0-9]+)?$|^([0-9]+)([.][0-9]+)?$/;
-      var result = regex.exec(element.innerText);
+      var result = regex.exec(element.textContent);
       if (result) {
         var lastM = "";
         var fraction;
@@ -329,26 +322,26 @@ var FiltersNumber = {
   },
 
   numSpaceComma: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
-      return element.innerText.replace(" ", "").replace(",", ".");
+    if (element && typeof element === "object" && element["textContent"]) {
+      return element.textContent.replace(" ", "").replace(",", ".");
     }
     return "Format Error: Num Space Comma";
   },
 
   numSpaceDot: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
-      return element.innerText.replace(" ", "");
+    if (element && typeof element === "object" && element["textContent"]) {
+      return element.textContent.replace(" ", "");
     }
     return "Format Error: Num Space Dot";
   },
 
   numUnitDecimal: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
+    if (element && typeof element === "object" && element["textContent"]) {
       var regex =
         /^([0]|([1-9][0-9]{0,2}([.,\uFF0C\uFF0E]?[0-9]{3})*))[^0-9,.\uFF0C\uFF0E]+([0-9]{1,2})[^0-9,.\uFF0C\uFF0E]*$/;
 
       var result = regex.exec(
-        FiltersNumber.jpDigitsToNormal(element.innerText)
+        FiltersNumber.jpDigitsToNormal(element.textContent)
       );
       if (result) {
         return (
@@ -368,10 +361,10 @@ var FiltersNumber = {
   },
 
   numUnitDecimalIN: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
+    if (element && typeof element === "object" && element["textContent"]) {
       var regex =
         /^(([0-9]{1,2}[, \xA0])?([0-9]{2}[, \xA0])*[0-9]{3})([^0-9]+)([0-9]{1,2})([^0-9]*)$|^([0-9]+)([^0-9]+)([0-9]{1,2})([^0-9]*)$/;
-      var result = regex.exec(element.innerText);
+      var result = regex.exec(element.textContent);
       if (result) {
         var m2 = [];
         for (var i = 0; i < result.length; i++) {
@@ -390,10 +383,10 @@ var FiltersNumber = {
   },
 
   numUnitDecimalTR4: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
+    if (element && typeof element === "object" && element["textContent"]) {
       var m =
         /^([0-9\uff10-\uff19\.,\uff0c]+)([^0-9\uff10-\uff19\.,\uff0c][^0-9\uff10-\uff19]*)([0-9\uff10-\uff19]{1,2})[^0-9\uff10-\uff19]*$/.exec(
-          element.innerText
+          element.textContent
         );
       if (m && ConstantsNumber.lastindex(m) > 1) {
         var majorValue = m[1]
@@ -414,10 +407,10 @@ var FiltersNumber = {
   },
 
   numUnitDecimalAposTR5: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
+    if (element && typeof element === "object" && element["textContent"]) {
       var m =
         /^([0-9\uff10-\uff19\.,\uff0c\x27\x60\xB4\u2019\u2032\uFF07]+)([^0-9\uff10-\uff19\.,\uff0c\x27\x60\xB4\u2019\u2032\uFF07][^0-9\uff10-\uff19]*)([0-9\uff10-\uff19]{1,2})[^0-9\uff10-\uff19]*$/.exec(
-          element.innerText
+          element.textContent
         );
       if (m && ConstantsNumber.lastindex(m) > 1) {
         var majorValue = m[1]
@@ -443,19 +436,19 @@ var FiltersNumber = {
   },
 
   numWordsEn: function (element) {
-    if (element && typeof element === "object" && element["innerText"]) {
+    if (element && typeof element === "object" && element["textContent"]) {
       var regex = /^\s*([Nn]o(ne)?|[Nn]il|[Zz]ero)\s*$/;
 
-      if (regex.exec(element.innerText)) {
+      if (regex.exec(element.textContent)) {
         return "0";
-      } else if (element.innerText.trim().length > 0) {
+      } else if (element.textContent.trim().length > 0) {
         var secondRegex =
           /^\s*(((((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))\s+[Qq]uintillion(\s*,\s*|\s+|$))?(((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))\s+[Qq]uadrillion(\s*,\s*|\s+|$))?(((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))\s+[Tt]rillion(\s*,\s*|\s+|$))?(((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))\s+[Bb]illion(\s*,\s*|\s+|$))?(((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))\s+[Mm]illion(\s*,\s*|\s+|$))?((((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))\s+[Tt]housand((\s*,\s*|\s+)((([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?)))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)\s+[Hh]undred(\s+(and\s+)?(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|(([Oo]ne|[Tt](wo|hree|en|welve|hirteen)|[Ff](our(teen)?|ive|ifteen)|[Ss](ix(teen)?|even(teen)?)|[Ee](ight(een)?|leven)|[Nn]ine(teen)?)|([Tt](wenty|hirty)|[Ff](orty|ifty)|[Ss](ixty|eventy)|[Ee]ighty|[Nn]inety)(([\u058A\u05BE\u2010\u2011\u2012\u2013\u2014\u2015\uFE58\uFE63\uFF0D-]|\s+)([Oo]ne|[Tt](wo|hree)|[Ff](our|ive)|[Ss](ix|even)|[Ee]ight|[Nn]ine))?))?)|[Zz]ero|[Nn]o(ne)?|[Nn]il)\s*$/;
-        var result = secondRegex.exec(element.innerText);
-        if (element.innerText.length > 0 && result) {
+        var result = secondRegex.exec(element.textContent);
+        if (element.textContent.length > 0 && result) {
           var thirdRegex = /,|\sand\s/g;
 
-          var returnString = element.innerText
+          var returnString = element.textContent
             .trim()
             .toLowerCase()
             .replace(thirdRegex, " ");

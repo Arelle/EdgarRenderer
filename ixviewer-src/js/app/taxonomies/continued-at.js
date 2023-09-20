@@ -17,7 +17,7 @@ var TaxonomiesContinuedAt = {
     var continuedAtParentIndex = 0;
     var order = 0;
     foundContinuedAtTotalElementsArray.forEach(function( current, index ) {
-      if ( current.getAttribute('contextref') ) {
+      if ( current.getAttribute('contextRef') ) {
         // these are the parents
         current.setAttribute('continued-at-taxonomy', continuedAtParentIndex);
         current.setAttribute('continued-at-order', order);
@@ -79,7 +79,7 @@ var TaxonomiesContinuedAt = {
   
   dynamicallyFindContextRefForHover : function( element, hover, parentElement ) {
     
-    if ( element && element && element.hasAttribute('contextref') ) {
+    if ( element && element && element.hasAttribute('contextRef') ) {
       TaxonomiesContinuedAt.updateHoverEffectOnAllChildren(element, hover);
     } else if ( element && element.hasAttribute('id') ) {
       TaxonomiesContinuedAt.dynamicallyFindContextRefForHover(document.getElementById('dynamic-xbrl-form')

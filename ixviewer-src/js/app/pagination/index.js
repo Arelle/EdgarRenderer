@@ -527,8 +527,20 @@ var Pagination = {
           "</option>";
       }
     }
-    document.getElementById("taxonomies-menu-page-select").innerHTML =
-      pageSelectHTML;
+    var parser = new DOMParser();
+    var xhtmlDoc = parser.parseFromString(
+      pageSelectHTML,
+      "application/xhtml+xml"
+    );
+
+    var nodeList = Array.prototype.slice.call(
+      xhtmlDoc.querySelectorAll("body > *")
+    );
+    for (var i = 0; i < nodeList.length; i++) {
+      document
+        .getElementById("taxonomies-menu-page-select")
+        .append(nodeList[i]);
+    }
   },
 
   goToPage: function (event, element) {

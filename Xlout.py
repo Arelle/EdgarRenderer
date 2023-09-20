@@ -13,7 +13,8 @@ At this moment, Xlout.py requires openpyxl 2.1.4, it does not work with openpyxl
 
 """
 
-import os.path, re, datetime, time, lxml, decimal, collections, openpyxl.cell, openpyxl.styles, openpyxl.utils, openpyxl.worksheet.dimensions
+import os.path, datetime, time, lxml, decimal, collections, openpyxl.cell, openpyxl.styles, openpyxl.utils, openpyxl.worksheet.dimensions
+import regex as re
 from . import IoManager
 from lxml.etree import tostring as treeToString
 

@@ -58,12 +58,12 @@ var UserFiltersDropdown = {
     moreFiltersCount += UserFiltersState.getScale.length;
     
     if ( moreFiltersCount > 0 ) {
-      document.getElementById('nav-filter-more').querySelector('.badge').innerText = moreFiltersCount;
+      document.getElementById('nav-filter-more').querySelector('.badge').innerHTML = moreFiltersCount;
       document.getElementById('nav-filter-more').setAttribute('title', 'This filter is in use.');
       document.getElementById('nav-filter-more').classList.add('text-warning');
       // UserFiltersDropdown.filterActive = true;
     } else {
-      document.getElementById('nav-filter-more').querySelector('.badge').innerText = '';
+      document.getElementById('nav-filter-more').querySelector('.badge').innerHTML = '';
       document.getElementById('nav-filter-more').removeAttribute('title');
       document.getElementById('nav-filter-more').classList.remove('text-warning');
     }

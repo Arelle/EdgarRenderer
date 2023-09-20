@@ -10,7 +10,8 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 from os import getpid, remove, makedirs, listdir # , getenv
 from os.path import basename, isfile, abspath, isdir, dirname, exists, join, splitext, normpath
 from io import IOBase
-import json, re, shutil, sys, datetime, os, zipfile
+import json, shutil, sys, datetime, os, zipfile
+import regex as re
 import arelle.XbrlConst
 from lxml.etree import tostring as treeToString
 from . import Utils
@@ -60,12 +61,12 @@ def writeHtmlDoc(filing, root, reportZip, reportFolder, filename):
     elif reportFolder is not None:
         filing.writeFile(os.path.join(reportFolder, filename), htmlText)
 
-def writeJsonDoc(lines, pathOrStream):
+def writeJsonDoc(lines, pathOrStream, sort_keys=True):
     if isinstance(pathOrStream, str):
         with open(pathOrStream, mode='w') as f:
-            json.dump(lines, f, sort_keys=True, indent=jsonIndent)
+            json.dump(lines, f, sort_keys=sort_keys, indent=jsonIndent)
     elif isinstance(pathOrStream, IOBase): # path is an open file
-        json.dump(lines, pathOrStream, sort_keys=True, indent=jsonIndent)
+        json.dump(lines, pathOrStream, sort_keys=sort_keys, indent=jsonIndent)
 
 def moveToZip(zf, abspath, zippath):
     if isfile(abspath) and not isFileHidden(abspath):

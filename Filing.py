@@ -9,12 +9,13 @@ are not subject to domestic copyright protection. 17 U.S.C. 105.
 
 from gettext import gettext as _
 from collections import defaultdict
-import os, re, math, datetime, dateutil.relativedelta, lxml, sys, time
+import os, math, datetime, dateutil.relativedelta, lxml, sys, time
+import regex as re
 import arelle.ModelValue, arelle.XbrlConst
 from arelle.ModelDtsObject import ModelConcept
 from arelle.ModelObject import ModelObject
 from arelle.XmlUtil import collapseWhitespace
-from arelle.XmlValidateConst import VALID, VALID_NO_CONTENT
+from arelle.XmlValidate import VALID, VALID_NO_CONTENT
 from lxml import etree
 
 from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
@@ -205,13 +206,12 @@ class Filing(object):
         self.isIfrs = 'ifrs' in self.stdNsTokens
         self.isUsgaap = 'us-gaap' in self.stdNsTokens
         self.isRxp = 'rxp' in self.stdNsTokens
-        self.isBb = 'bb' in self.stdNsTokens
-
-        self.isFeeExhibit = bool(next((n for n in self.modelXbrl.roleTypes.keys()
-                                        if n is not None and re.search('/role/document/feesSummaryTable',n) is not None),None))
+        self.isShr = 'shr' in self.stdNsTokens
 
         self.edgarDocType = next((f.xValue for f in self.modelXbrl.factsByLocalName["DocumentType"]
                                       if (f.xValue is not None and f.context is not None and not f.context.hasSegment)),None)
+
+        self.isFeeExhibit = self.edgarDocType in ['EX-FILING FEES']
 
         n2_doc_pattern = r'497|N-2(/A|ASR|MEF| POSAR)?'
         self.isN2Prospectus = not(self.isRR) and self.edgarDocType is not None and bool(re.match(n2_doc_pattern,self.edgarDocType))
@@ -225,14 +225,17 @@ class Filing(object):
         sdr_exh_pattern = r'EX-99.[KL] SDR.*'
         self.isSdr = self.edgarDocType is not None and bool(re.match(sdr_exh_pattern,self.edgarDocType))
 
+        only_shr_pattern = r'EX-26|F-SR'
+        self.isOnlyShr = self.edgarDocType is not None and bool(re.match(only_shr_pattern,self.edgarDocType))
+
         fs_doc_pattern = r'(10-[QK]|[24]0-F)(/A)?'
         self.isDefinitelyFs = self.edgarDocType is not None and re.match(fs_doc_pattern,self.edgarDocType) or self.isSdr
         self.isN1a = self.isRR or (self.isOEF and not self.isNcsr)
-        self.isDefinitelyNotFs = not self.isDefinitelyFs and (self.isN1a or self.isVip or self.isN3N4N6 or self.isN2Prospectus or self.isProxy or self.isRxp)
+        self.isDefinitelyNotFs = not self.isDefinitelyFs and (self.isN1a or self.isVip or self.isN3N4N6 or self.isN2Prospectus or self.isProxy or self.isRxp or self.isOnlyShr)
 
         nsWithFacts = set(qn.namespaceURI for qn in modelXbrl.factsByQname.keys() if qn)
         self.isOnlyDei = all(deiPattern.match(ns) for ns in nsWithFacts)
-        controller.hasXlout = (not self.isDefinitelyNotFs or self.isOnlyDei)
+        controller.hasXlout = getattr(controller,'hasXlout',False) or not self.isDefinitelyNotFs or self.isOnlyDei
 
         self.builtinEquityColAxes = [('dei',self.deiNamespace,'LegalEntityAxis'),
                                      ('ifrs-full',self.ifrsNamespace,'ComponentsOfEquityAxis'),
