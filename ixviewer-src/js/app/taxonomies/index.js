@@ -99,26 +99,27 @@ var Taxonomies = {
       if (hiddenElement) {
         // we now create an entirely new element based on the innerHTML
         // of current, and the attributes of hiddenElement
-        var newElement = "";
+        var newElement = document.createElement(hiddenElement.tagName);
 
-        newElement += "<" + hiddenElement.tagName.toLowerCase();
         // add all of the necessary attributes
+
         for (var i = 0; i < hiddenElement.attributes.length; i++) {
-          var attribute = hiddenElement.attributes[i];
-          newElement += " " + attribute.name + '="' + attribute.value + '"';
+          var attr = hiddenElement.attributes[i];
+          newElement.setAttribute(attr.name, attr.value);
         }
 
-        newElement += ' isadditionalitemsonly="true"';
-        newElement += ' ishiddenelement="true"';
-        newElement += ">";
-        newElement += current.innerHTML;
-        // close the tag
-        newElement += "</" + hiddenElement.tagName.toLowerCase() + ">";
+        newElement.setAttribute("isadditionalitemsonly", "true");
+        newElement.setAttribute("ishiddenelement", "true");
+
+        newElement.innerHTML = current.innerHTML;
 
         hiddenElement.removeAttribute("contextRef");
         hiddenElement.removeAttribute("name");
 
-        current.innerHTML = newElement;
+        while (current.firstChild) {
+          current.removeChild(current.firstChild);
+        }
+        current.append(newElement);
       }
     });
 

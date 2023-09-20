@@ -38,7 +38,18 @@ var Links = {
         current.hasAttribute("style") &&
         /sec-extract\s?:\s?exhibit/gi.test(current.getAttribute("style"))
       ) {
-        // we do nothing with this link, as we want it to take the user to the correct exhibit
+        if (
+          current.getAttribute("href").indexOf("http://") === 0 ||
+          current.getAttribute("href").indexOf("https://") === 0
+        ) {
+          // we do nothing with this link, as we want it to take the user to the correct exhibit
+        } else {
+          // we ensure the href is an absolute url
+          current.setAttribute(
+            "href",
+            HelpersUrl.getFormAbsoluteURL + current.getAttribute("href")
+          );
+        }
       } else {
         HelpersUrl.addLinkattributes(current);
       }
