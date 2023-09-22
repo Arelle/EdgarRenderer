@@ -948,7 +948,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # logMessageText needed for successful and unsuccessful termination
         self.loadLogMessageText()
 
-        if self.success:
+        if self.success or not self.noRenderingWithError:
             try:
                 if self.xlWriter and self.hasXlout:
                     _startedAt = time.time()
