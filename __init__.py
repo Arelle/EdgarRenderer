@@ -239,6 +239,7 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     parser.add_option("--logMessageTextFile", action="store", dest="logMessageTextFile", help=_("Log message text file."))
     # always use a buffering log handler (even if file or std out)
     parser.add_option("--logToBuffer", action="store_true", dest="logToBuffer", default=True, help=SUPPRESS_HELP)
+    parser.add_option("--noRenderingWithError", action="store_true", dest="noRenderingWithError", help=_("Prevent rendering action when exhibit instance validation encountered error(s), blocking R file and extracted xml instance generation for that exhibit instance."))
 
 
 
@@ -292,6 +293,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # when there are no config file and no command line arguments.
         self.defaultValueDict = defaultdict(lambda:None)
         self.defaultValueDict['abortOnMajorError'] = str(False)
+        self.defaultValueDict['noRenderingWithError'] = str(False)
         self.defaultValueDict['archiveFolder'] = 'Archive'
         self.defaultValueDict['auxMetadata'] = str(False)
         self.defaultValueDict['copyInlineFilesToOutput'] = str(False)
@@ -396,6 +398,7 @@ class EdgarRenderer(Cntlr.Cntlr):
 
         # inherited flag: options.abortOnMajorError = setFlag('abortOnMajorError', options.abortOnMajorError)
         setFlag('abortOnMajorError', options.abortOnMajorError)
+        setFlag('noRenderingWithError', options.noRenderingWithError)
         options.totalClean = setFlag('totalClean', options.totalClean)
         options.noEquity = setFlag('noEquity', options.noEquity)
         options.auxMetadata = setFlag('auxMetadata', options.auxMetadata)
@@ -519,6 +522,7 @@ class EdgarRenderer(Cntlr.Cntlr):
 
         # inherited flag: options.abortOnMajorError = setFlag('abortOnMajorError', options.abortOnMajorError)
         self.abortOnMajorError = options.abortOnMajorError
+        self.noRenderingWithError = options.noRenderingWithError
         self.totalClean = options.totalClean
         self.noEquity = options.noEquity
         self.auxMetadata = options.auxMetadata
@@ -737,8 +741,8 @@ class EdgarRenderer(Cntlr.Cntlr):
         attachmentDocumentType = getattr(modelXbrl, "efmAttachmentDocumentType", "(none)")
         isRunningUnderTestcase = modelXbrl.modelManager.loadedModelXbrls[0].modelDocument.type in ModelDocument.Type.TESTCASETYPES
         # strip on error if preceding primary inline instance had no error and exhibitType strips on error
-        stripFilingOnError = self.success and bool(
-                             filing.exhibitTypesStrippingOnErrorPattern.match(attachmentDocumentType))
+        stripExhibitOnError = self.success and bool(
+                              filing.exhibitTypesStrippingOnErrorPattern.match(attachmentDocumentType))
         errorCountDuringValidation = sum(1 for e in modelXbrl.errors if isinstance(e, str) and not e.startswith("DQC.")) # don't count assertion results dict if formulas ran
         success = True
         if errorCountDuringValidation > 0:
@@ -787,13 +791,13 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.loopnum = getattr(self, "loopnum", 0) + 1
         reportSummaryList = None
         try:
-            if success: # no instance errors from prior validation workflow
+            if success or not self.noRenderingWithError: # no instance errors from prior validation workflow
                 reportSummaryList = Filing.mainFun(self, modelXbrl, self.reportsFolder)
                 # recheck for errors
-                if (stripFilingOnError and sum(1 for e in modelXbrl.errors if isinstance(e, str)) > 0):
+                if (stripExhibitOnError and sum(1 for e in modelXbrl.errors if isinstance(e, str)) > 0):
                     success = False
                     self.logDebug(_("Stripping filing due to {} preceding validation errors.").format(errorCountDuringValidation))
-            if success:
+            if success or not self.noRenderingWithError:
                 Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, reportSummaryList)
         except Utils.RenderingException as ex:
             success = False # error message provided at source where exception was raised
@@ -809,7 +813,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         del reportSummaryList # dereference
         self.renderedFiles = filing.renderedFiles # filing-level rendered files
         if not success:
-            if stripFilingOnError:
+            if stripExhibitOnError:
                 modelXbrl.log("INFO-RESULT",
                               "EFM.stripExhibit",
                               _("Attachment {} has errors requiring stripping its files").format(attachmentDocumentType),
@@ -1425,6 +1429,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
             utrValidate = None,
             validateEFM = None,
             abortOnMajorError = False, # inherited
+            noRenderingWithError = False,
             processingFolder = None,
             processInZip = None,
             reportsFolder = "out" if cntlr.showFilingData.get() else None, # default to reports subdirectory of source input

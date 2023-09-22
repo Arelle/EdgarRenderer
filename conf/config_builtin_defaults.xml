@@ -13,6 +13,7 @@
   <renderingLogsXslt>RenderingLogs.xslt</renderingLogsXslt>
   <summaryXslt>Summarize.xslt</summaryXslt>
   <abortOnMajorError>True</abortOnMajorError>
+  <noRenderingWithError>False</noRenderingWithError>
   <auxMetadata>False</auxMetadata>
   <deleteProcessedFilings>True</deleteProcessedFilings>
   <debugMode>False</debugMode>
