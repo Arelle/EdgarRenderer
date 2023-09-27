@@ -7,7 +7,8 @@ import { ErrorsMinor } from "../errors/minor";
 import { FactMap } from "../facts/map";
 import { ModalsCommon } from "../modals/common";
 import { ConstantsFunctions } from "../constants/functions";
-import { HelpersUrl } from "../helpers/url";
+import { Pagination } from "../pagination";
+import { Constants } from "../constants";
 
 export const FactsGeneral = {
 
@@ -29,24 +30,17 @@ export const FactsGeneral = {
     ) {
       return;
     }
-
-
-    const fact = FactMap.getByID(element.getAttribute('data-id'));
+    const fact = FactMap.getByID(element.getAttribute('data-id') as string);
     if (fact) {
       FactMap.setIsSelected(fact.id);
-      if (fact.file && !fact.isAdditional) {
-        // fact file is known, let's go to the correct file
-        ConstantsFunctions.changeInlineFiles(fact.file);
-        const factElement = document.querySelector(`#dynamic-xbrl-form [filing-url="${fact.file}"] #${fact.id}`);
-        factElement?.scrollIntoView({
-          behavior: 'smooth',
-          //block: Constants.scrollPosition,
-          inline: "nearest"
-        });
-      } else if (fact.isAdditional) {
-        // fact file is NOT known, show fact modal, and tell user we can't go to the fact in the XHTML
-        ConstantsFunctions.changeInlineFiles(fact.file);
-        //fact.isAdditional ? null : ErrorsMinor.factNotFound();
+      const currentInstance = Constants.getInstanceFiles.find(element => element.current);
+      const currentXHTML = currentInstance?.xhtmls.find(element => element.current);
+      if (fact.file) {
+        if (currentXHTML?.slug !== fact.file) {
+          ConstantsFunctions.changeInlineFiles(fact.file);
+        } else {
+          Pagination.setSelectedFact(element, fact);
+        }
       } else {
         ErrorsMinor.factNotFound();
       }
@@ -64,11 +58,10 @@ export const FactsGeneral = {
     aElement
       .setAttribute('class',
         'text-body border-bottom click text-decoration-none click list-group-item list-group-item-action p-1');
-
-    aElement.setAttribute('selected-fact', factInfo.isSelected);
-    if (factInfo.id) {
-      aElement.setAttribute('data-id', factInfo.id);
-      aElement.setAttribute('data-href', factInfo.file);
+    aElement.setAttribute('selected-fact', `${factInfo?.isSelected}`);
+    if (factInfo?.id) {
+      aElement.setAttribute('data-id', factInfo?.id);
+      aElement.setAttribute('data-href', factInfo?.file);
 
     }
     aElement.setAttribute('tabindex', '13');
@@ -85,7 +78,7 @@ export const FactsGeneral = {
 
     const pElement = document.createElement('p');
     pElement.setAttribute('class', 'mb-1 font-weight-bold word-break');
-    const pElementContent = document.createTextNode(ConstantsFunctions.getFactLabel(factInfo.labels));
+    const pElementContent = document.createTextNode(ConstantsFunctions.getFactLabel(factInfo?.labels));
 
     pElement.appendChild(pElementContent);
 
@@ -97,18 +90,19 @@ export const FactsGeneral = {
     const pElement2 = document.createElement('p');
     pElement2.setAttribute('class', 'mb-1');
 
-    const pElementContent2 = document.createTextNode(factInfo.period);
+    const pElementContent2 = document.createTextNode(factInfo?.period as string);
     pElement2.appendChild(pElementContent2);
 
     const pElement3 = document.createElement('p');
     pElement3.setAttribute('class', 'lead');
-    const pElement3Content = document.createTextNode(factInfo.isHTML || factInfo.isContinued ? 'Click to see Fact.' : factInfo.value);
+    const pElement3Content = document.createTextNode(factInfo?.isHTML || factInfo?.isContinued ? 'Click to see Fact.' : factInfo.value);
     pElement3.appendChild(pElement3Content);
 
     const smallElement2 = document.createElement('small');
-    const currentFile = factInfo.file === HelpersUrl.getAllParams['doc-file'];
-    smallElement2.setAttribute('class', `${currentFile ? 'text-primary' : 'text-success'}`);
-    const smallElementContent2 = document.createTextNode(factInfo.file ? factInfo.file : 'Unknown Location');
+    const currentInstance = Constants.getInstanceFiles.find(element => element.current);
+    const currentXHTML = currentInstance?.xhtmls.find(element => element.current);
+    smallElement2.setAttribute('class', `${currentXHTML?.slug === factInfo?.file ? 'text-primary' : 'text-success'}`);
+    const smallElementContent2 = document.createTextNode(factInfo?.file ? factInfo.file : 'Unknown Location');
     smallElement2.appendChild(smallElementContent2);
 
     aElement.appendChild(divElement);

@@ -3,7 +3,6 @@ import { FactMap } from "../facts/map";
 import { Facts } from "../facts";
 import { UserFiltersDropdown } from "../user-filters/dropdown";
 import { UserFiltersState } from "../user-filters/state";
-//import { Facts } from "../interface/fact";
 import { Fact } from "../interface/instance";
 import { SingleFact } from "../interface/fact";
 

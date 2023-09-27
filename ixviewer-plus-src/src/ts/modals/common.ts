@@ -77,10 +77,17 @@ export const ModalsCommon = {
     });
 
     document.getElementById('fact-modal-copy-content')?.addEventListener('click', (event: MouseEvent) => {
-      Modals.copyContent(event, 'fact-modal-carousel', 'fact-copy-paste');
+      Modals.copyContent(event, 'fact-modal-carousel', 'fact-copy-content');
     });
     document.getElementById('fact-modal-copy-content')?.addEventListener('keyup', (event: KeyboardEvent) => {
-      Modals.copyContent(event, 'fact-modal-carousel', 'fact-copy-paste');
+      Modals.copyContent(event, 'fact-modal-carousel', 'fact-copy-content');
+    });
+
+    document.getElementById('fact-copy-content')?.addEventListener('click', (event: MouseEvent) => {
+      Modals.copyContent(event, 'fact-modal-carousel', 'fact-copy-content');
+    });
+    document.getElementById('fact-copy-content')?.addEventListener('keyup', (event: KeyboardEvent) => {
+      Modals.copyContent(event, 'fact-modal-carousel', 'fact-copy-content');
     });
 
     document.getElementById('fact-modal-compress')?.addEventListener('click', (event: MouseEvent) => {
@@ -198,7 +205,7 @@ export const ModalsCommon = {
     const factInfo = FactMap.getByID(id as string);
     if (factInfo) {
       if (!PRODUCTION) {
-        console.table(factInfo);
+        //console.table(factInfo);
       }
       // we now render one slide at a time!
       FactPages.firstPage(factInfo, 'fact-modal-carousel-page-1');

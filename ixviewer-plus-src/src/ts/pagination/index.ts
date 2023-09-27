@@ -7,6 +7,8 @@ import * as bootstrap from "bootstrap";
 import { Constants } from "../constants";
 import { ErrorsMinor } from "../errors/minor";
 import { FactsGeneral } from "../facts/general";
+import { ConstantsFunctions } from "../constants/functions";
+import { SingleFact } from "../interface/fact";
 
 export const Pagination = {
 
@@ -19,9 +21,7 @@ export const Pagination = {
     Pagination.getCurrentPage = 1;
     Pagination.getTotalPages = Math.ceil(Pagination.getArray.length / Constants.getPaginationPerPage);
     Pagination.getPaginationTemplate(Pagination.getCurrentPage);
-
     Pagination.setPageSelect();
-
   },
 
   reset: () => {
@@ -69,13 +69,16 @@ export const Pagination = {
 
     const arrayForPage = Pagination.getArray.slice(beginAt, endAt);
     arrayForPage.forEach((current) => {
-      elementToReturn.appendChild(FactsGeneral.getFactListTemplate(current, Pagination.getModalAction));
+      elementToReturn.appendChild(FactsGeneral.getFactListTemplate(current));
     });
+
     while (document.querySelector(Pagination.getPaginationSelector)?.firstChild) {
       document.querySelector(Pagination.getPaginationSelector)?.firstChild?.remove();
     }
 
     document.querySelector(Pagination.getPaginationSelector)?.appendChild(elementToReturn);
+
+    ConstantsFunctions.emptyHTMLByID(`facts-menu-page-select`);
     Pagination.setPageSelect();
   },
 
@@ -98,7 +101,6 @@ export const Pagination = {
   },
 
   nextPage: () => {
-
     Pagination.getCurrentPage = Pagination.getCurrentPage + 1;
     Pagination.getPaginationTemplate(Pagination.getCurrentPage);
   },
@@ -162,21 +164,17 @@ export const Pagination = {
       return element >= 0;
     });
     if (selectedFact.length === 0) {
-
       const element = FactsGeneral.getMenuFactByDataID(currentFacts[0]);
-      FactsGeneral.goTo(event, element, true);
+      FactsGeneral.goTo(event, element as HTMLElement);
     } else {
-
       if ((selectedFact[0] + 1) >= currentFacts.length) {
-
         if ((Pagination.getCurrentPage - 1) !== (Pagination.getTotalPages - 1)) {
-
           Pagination.nextPage();
           Pagination.nextFact(event, element);
         }
       } else {
         const element = FactsGeneral.getMenuFactByDataID(currentFacts[selectedFact[0] + 1]);
-        FactsGeneral.goTo(event, element, true);
+        FactsGeneral.goTo(event, element as HTMLElement);
       }
     }
   },
@@ -335,8 +333,6 @@ export const Pagination = {
 
     const elementToReturn = document.createDocumentFragment();
 
-    Pagination.setPageSelect();
-
     const divElement = document.createElement('div');
     divElement.setAttribute('class', 'w-100 d-flex justify-content-between py-2 px-1');
 
@@ -415,11 +411,10 @@ export const Pagination = {
     elementToReturn.appendChild(divElement);
 
     return elementToReturn;
-
   },
 
   setPageSelect: () => {
-    const fragment = document.createDocumentFragment();
+    const select = document.getElementById('facts-menu-page-select');
     const option = document.createElement('option');
     option.setAttribute('value', 'null');
     const optionText = document.createTextNode('Select a Page');
@@ -432,15 +427,19 @@ export const Pagination = {
       if ((i + 1) === Pagination.getCurrentPage) {
         option.setAttribute('selected', 'true');
       }
-      fragment.append(option);
+      select!.append(option);
     }
-    document.getElementById('facts-menu-page-select')!.append(fragment);
+    select?.addEventListener('change', (event) => {
+      Pagination.goToPage(event?.target?.value as number);
+    });
+
+
   },
 
-  goToPage: (element: { value: string | number; }) => {
+  goToPage: (pageNumber: number) => {
+    if (!isNaN(pageNumber)) {
+      Pagination.getCurrentPage = +pageNumber;
 
-    if (element && element.value && !isNaN(element.value)) {
-      Pagination.getCurrentPage = parseInt(element.value);
       Pagination.getPaginationTemplate(Pagination.getCurrentPage);
     }
   },
@@ -455,7 +454,6 @@ export const Pagination = {
     }
     event.preventDefault();
     event.stopPropagation();
-
     if ((event.target as HTMLElement) && (event.target as HTMLElement).hasAttribute('data-id')) {
       if (document.getElementById('facts-menu')?.classList.contains('show')) {
         Pagination.findFactAndGoTo((event.target as HTMLElement).getAttribute('data-id') as string);
@@ -486,6 +484,21 @@ export const Pagination = {
     } else {
       ErrorsMinor.factNotActive();
     }
+  },
+
+  setSelectedFact: (element: HTMLElement, fact: SingleFact) => {
+    const allFactsInMenu = Array.from(document.querySelectorAll(`#facts-menu-list-pagination .list-group-item`));
+    allFactsInMenu.forEach(current => {
+      current.setAttribute('selected-fact', 'false');
+    });
+    element.setAttribute('selected-fact', 'true');
+
+    const factElement = document.querySelector(`#dynamic-xbrl-form [filing-url="${fact.file}"] #${fact.id}`);
+    factElement?.scrollIntoView({
+      behavior: 'smooth',
+      //block: Constants.scrollPosition,
+      inline: "nearest"
+    });
   },
 
   scrollToSelectedFact: () => {

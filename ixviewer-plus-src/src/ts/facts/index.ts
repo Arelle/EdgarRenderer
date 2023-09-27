@@ -104,7 +104,7 @@ export const Facts = {
   },
 
   inViewPort: (unobserveAfter = false) => {
-    const allFactIdentifiers = Array.from(document.getElementById('dynamic-xbrl-form').querySelectorAll('[id^=fact-identifier-], [continued-main-fact-id], [data-link]'));
+    const allFactIdentifiers = Array.from(document?.getElementById('dynamic-xbrl-form')?.querySelectorAll('[id^=fact-identifier-], [continued-main-fact-id], [data-link]') || []);
     const observer = new IntersectionObserver(entries => {
       entries.forEach(({ target, isIntersecting }) => {
 
@@ -125,7 +125,8 @@ export const Facts = {
             target.setAttribute('tabindext', `18`);
             target.setAttribute('enabled-fact', `${fact.isEnabled}`);
             target.setAttribute('highlight-fact', `${fact.isHighlight}`);
-            if (fact.xbrltype === 'textBlockItemType' && !target.hasAttribute("text-block-fact")) {
+            target.setAttribute("text-block-fact", 'false');
+            if (fact.xbrltype === 'textBlockItemType') {
               // text block fact is on the screen
               target.setAttribute("text-block-fact", 'true');
               const leftSpan = document.createElement("span");

@@ -124,6 +124,10 @@ export class Listeners {
             }, 500)
         });
 
+        document.getElementById('global-search')?.addEventListener('blur', () => {
+            Search.suggestionsEmpty();
+        });
+
         document.getElementById('search-btn-clear')?.addEventListener("click", () => {
             Search.clear();
         });

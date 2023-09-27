@@ -3,6 +3,16 @@ module.exports = (config) => {
     "./node_modules/bootstrap/dist/js/bootstrap.bundle.js",
     { pattern: "./src/ts/**/*.spec.+(ts|js)", watched: true, type: "js" },
   ];
+
+  const webpackConfig = () => {
+    const config = require("./webpack.config.js");
+    delete config.context;
+    delete config.entry;
+    delete config.output;
+    delete config.devServer;
+    return config({ env: { copy: true }, argv: { mode: "production" } });
+  };
+
   config.set({
     client: {
       jasmine: {
@@ -30,11 +40,11 @@ module.exports = (config) => {
   });
 };
 
-function webpackConfig() {
-  const config = require("./webpack.config.js");
-  delete config.context;
-  delete config.entry;
-  delete config.output;
-  delete config.devServer;
-  return config({ env: { copy: false }, argv: { mode: "development" } });
-}
+// function webpackConfig() {
+//   const config = require("./webpack.config.js");
+//   delete config.context;
+//   delete config.entry;
+//   delete config.output;
+//   delete config.devServer;
+//   return config({ env: { copy: false }, argv: { mode: "production" } });
+// }

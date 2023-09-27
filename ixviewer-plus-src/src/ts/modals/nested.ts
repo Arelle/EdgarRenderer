@@ -5,7 +5,6 @@
 import * as bootstrap from "bootstrap";
 import { Modals } from ".";
 import { ModalsCommon } from "./common";
-import { ModalsContinuedAt } from "./continued-at";
 import { FactPages } from "./fact-pages";
 import { Constants } from "../constants";
 import { FactMap } from "../facts/map";
@@ -69,10 +68,10 @@ export const ModalsNested = {
     const dialogTitle1 = document.createTextNode(ModalsNested.getAllElementIDs.length.toString());
     span1.appendChild(dialogTitle1);
     document.getElementById('nested-count')?.firstElementChild?.replaceWith(span1);
-
     ModalsNested.getAllElementIDs.forEach((current) => {
+      const factID = current.getAttribute('continued-main-fact-id') ? current.getAttribute('continued-main-fact-id') : current.getAttribute('id');
+      const factInfo = FactMap.getByID(factID);
 
-      const factInfo = FactMap.getByID(current.id);
       const nestedFactName = ConstantsFunctions.getFactLabel(factInfo.labels);
 
       const divTitleElement = document.createElement('div');
@@ -270,50 +269,24 @@ export const ModalsNested = {
     }
   },
 
-  createCarousel: (element: HTMLElement, index: string, isContinued: boolean) => {
-
-    const elementsToReturn = document.createDocumentFragment();
-
-    const divElement = document.createElement('div');
-    divElement.setAttribute('id', 'fact-nested-modal-carousel-' + index);
-    divElement.setAttribute('class', 'carousel');
-    divElement.setAttribute('data-bs-interval', "false");
-    divElement.setAttribute('data-keyboard', "true");
-
-    const divNestedElement = document.createElement('div');
-    divNestedElement.setAttribute('class', 'carousel-inner');
-    divNestedElement.setAttribute('data-bs-interval', "false");
-    divNestedElement.setAttribute('data-bs-keyboard', "true");
-
-    if (isContinued) {
-      divNestedElement.appendChild(ModalsContinuedAt.carouselData(element, true));
-      divElement.appendChild(divNestedElement);
-
-      elementsToReturn.appendChild(divElement);
-      return elementsToReturn;
-
-    }
-
-    divNestedElement.appendChild(ModalsCommon.carouselData(element));
-    divElement.appendChild(divNestedElement);
-
-    elementsToReturn.appendChild(divElement);
-
-    return elementsToReturn;
-
-  },
-
   focusOnContent: () => {
     document.getElementById(`modal-fact-nested-content-carousel-page-${ModalsNested.currentSlide}`)?.focus();
   },
 
   carouselData: (element: HTMLElement) => {
-    const factInfo = FactMap.getByID(element.getAttribute('id') as string);
+    let factID;
+    if (Array.isArray(element)) {
+      factID = element[0].getAttribute('continued-main-fact-id') ? element[0].getAttribute('continued-main-fact-id') : element[0].getAttribute('id');
+    } else {
+      factID = element.getAttribute('continued-main-fact-id') ? element.getAttribute('continued-main-fact-id') : element.getAttribute('id');
+    }
+    const factInfo = FactMap.getByID(factID as string);
     FactPages.firstPage(factInfo, 'modal-fact-nested-content-carousel-page-1');
     FactPages.secondPage(factInfo, 'modal-fact-nested-content-carousel-page-2');
     FactPages.thirdPage(factInfo, 'modal-fact-nested-content-carousel-page-3');
     FactPages.fourthPage(factInfo, 'modal-fact-nested-content-carousel-page-4');
     ConstantsFunctions.getCollapseToFactValue();
+
   },
 
   dynamicallyAddControls: () => {

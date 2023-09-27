@@ -750,6 +750,8 @@ export class FetchAndMerge {
 
                 $(current).attr('ix', $(current).attr('id'));
                 $(current).attr('id', this.updateMap($(current)?.attr('ix') as string, $(current), currentSlug));
+                // Array.from($(current).find(`[contextRef]`)).length ? $(current).attr('nested-facts', 'true') : $(current).attr('nested-facts', 'false');
+                //console.log(Array.from($(current).find(`[contextRef]`)).length);
             }
             if (!$(current).prop('tagName').toLowerCase().endsWith("continuation") &&
                 $(current).attr("continuedat")

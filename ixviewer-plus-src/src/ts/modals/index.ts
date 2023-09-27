@@ -73,16 +73,13 @@ export const Modals = {
     if (Object.prototype.hasOwnProperty.call(event, 'key') && !((event as KeyboardEvent).key === 'Enter' || (event as KeyboardEvent).key === 'Space')) {
       return;
     }
-
     if (!document.getElementById(copyPasteElement)?.classList.contains('d-none')) {
       document.getElementById(copyPasteElement)?.classList.add('d-none');
     } else {
       const sectionToPopulate = '#' + copyPasteElement;
       document.getElementById(copyPasteElement)?.classList.remove('d-none');
 
-      const foundCarouselPages = document.getElementById(elementIdToCopy)?.querySelectorAll('.carousel-item');
-      const foundCarouselPagesArray = Array.prototype.slice.call(foundCarouselPages);
-
+      const foundCarouselPagesArray = Array.from(document.getElementById(elementIdToCopy)?.querySelectorAll('.carousel-item') || []);
       // TODO should we just put all of the innerText automatically into the
       // users clipboard?
 
@@ -91,7 +88,6 @@ export const Modals = {
       let textToCopy = '';
 
       foundCarouselPagesArray.forEach((current) => {
-
         const foundInformation = current.querySelectorAll('table > * > tr');
         const foundInformationArray = Array.prototype.slice.call(foundInformation);
 
@@ -117,7 +113,8 @@ export const Modals = {
           }
         });
       });
-      document.querySelector(sectionToPopulate + ' textarea')!.innerHTML = textToCopy;
+      const text = document.createTextNode(textToCopy.trim());
+      document.querySelector(sectionToPopulate + ' textarea')!.append(text);
     }
   },
 

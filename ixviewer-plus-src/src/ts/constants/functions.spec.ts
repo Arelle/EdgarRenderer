@@ -86,9 +86,5 @@ describe('/src/ts/constants/functions.ts', () => {
         it('returns void', () => {
             expect(ConstantsFunctions.changeInlineFiles('')).toEqual(undefined);
         });
-
-        // it('returns void', () => {
-        //     expect(ConstantsFunctions.changeInlineFiles('test')).toEqual(undefined);
-        // });
     });
 });
