@@ -164,12 +164,21 @@ export const App = {
             const startPerformance = performance.now();
             currentInstance.xhtmls.forEach((current) => {
                 if (current.xhtml) {
+
                     const parser = new DOMParser();
                     const htmlDoc = parser.parseFromString(current.xhtml, 'text/html');
+
                     document.getElementById('xbrl-form-loading')!.classList.add('d-none');
                     const section = document.createElement('section');
                     section.setAttribute('filing-url', current.slug);
                     !current.current ? section.classList.add('d-none') : null;
+                    if (current.current) {
+                        for (let i = 0; i < htmlDoc?.querySelector('html')!.attributes.length; i++) {
+                            document.querySelector('html')?.setAttribute(
+                                (htmlDoc.querySelector('html')?.attributes[i].name as string),
+                                (htmlDoc.querySelector('html')?.attributes[i].value as string));
+                        }
+                    }
                     section.append(htmlDoc.querySelector('body') as HTMLElement);
                     document.getElementById('dynamic-xbrl-form')?.append(section);
                 }

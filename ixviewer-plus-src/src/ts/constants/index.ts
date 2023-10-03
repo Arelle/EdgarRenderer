@@ -11,6 +11,10 @@ export const Constants: {
   version: string,
   scrollPosition: string,
   hoverOption: boolean,
+  getHTMLAttributes: object,
+  getPaginationPerPage: number,
+  getHtmlOverallFactsCount: string | null,
+  getMetaSourceDocuments: Array<{}>,
   getInstanceFiles: Array<{
     current: boolean,
     formInformation: {
@@ -53,11 +57,14 @@ export const Constants: {
   }>,
   getFormInformation: FormInformation,
   getStdRef: { [key: string]: Reference },
-
+  getMetaReports: Array<{}>,
+  getMetaTags: Array<{}>,
+  getMetaCustomPrefix: null | string,
+  getMetaDts: object,
+  getMetaDocuments: () => object
 } = {
 
   version: "23.1",
-
 
   scrollPosition: localStorage.getItem("scrollPosition") || "start",
 
@@ -71,17 +78,7 @@ export const Constants: {
 
   getMetaSourceDocuments: [],
 
-  getFactTypes: [],
-
-  getHTMLPrefix: null,
-
   getMetaTags: [],
-
-  getMetaCalculationsParentTags: [],
-
-  getMetaCalculations: [],
-
-  getMetaEntityCounts: null,
 
   getInstanceFiles: [],
 
@@ -93,13 +90,7 @@ export const Constants: {
 
   getFormInformation: {},
 
-  getMetaStandardReference: [],
-
-  getMetaVersion: null,
-
   getMetaCustomPrefix: null,
-
-  getMetaHidden: null,
 
   getMetaDts: null,
 
@@ -111,6 +102,4 @@ export const Constants: {
     }
     return null;
   },
-
-  getFormattingObject: {}
 };

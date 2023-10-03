@@ -12,7 +12,8 @@
     "sandbox": "webpack --config ./webpack.config.js --mode production --env copy",
     "sandbox-serve": "webpack serve --config ./webpack.config.js --mode production --env copy",
     "unit-test": "node ./node_modules/karma/bin/karma start ./karma.config.js",
-    "get-filings": "node ./src/get-filings/index.mjs"
+    "get-filings-menu": "node ./src/get-filings/index.mjs",
+    "get-filings": "node ./src/get-filings/index.mjs --no-prompt"
   },
   "author": "",
   "license": "ISC",

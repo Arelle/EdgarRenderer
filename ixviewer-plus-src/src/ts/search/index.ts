@@ -100,14 +100,14 @@ export const Search = {
         value: [valueToSearchFor],
         'options': optionsArray
       };
-      const results = FlexSearch.searchFacts(objectForState, true);
+      const results: Array<string> | undefined = FlexSearch.searchFacts(objectForState, true);
       const ul = document.getElementById('suggestions') as HTMLElement;
-      results.slice(0, 3).forEach((current: string) => {
+      results?.slice(0, 3).forEach((current: string) => {
         const template = FactsGeneral.getFactListTemplate(current);
         ul.append(template as unknown as HTMLElement);
       });
 
-      if (results.length > 5) {
+      if (results!.length > 5) {
         const li = document.createElement('li');
         li.classList.add('list-group-item');
         li.classList.add('not-numbered');
@@ -152,5 +152,10 @@ export const Search = {
 
       return li;
     }
-  }
+  },
+
+  suggestionsEmpty: () => {
+    ConstantsFunctions.emptyHTMLByID('suggestions')
+  },
+
 }

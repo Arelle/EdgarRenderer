@@ -86,9 +86,7 @@ export const Links = {
       a.addEventListener('keyup', () => {
         Links.updateCurrent(index);
       });
-
-
-
+      
       const span = document.createElement('span');
       current.table ? span.classList.add('fact-total-count') : span.classList.add('fact-file-total-count');
 
@@ -98,6 +96,11 @@ export const Links = {
       current.table ? null : span.setAttribute('filing-slug', current.slug);
 
       const factText = document.createTextNode(FactMap.getFactCountForFile(current.slug, true));
+
+      span.setAttribute('data-bs-toggle', 'popover');
+      span.setAttribute('data-bs-trigger', 'hover');
+      span.setAttribute('data-bs-title', 'Active Fact Count');
+      span.setAttribute('data-bs-content', 'This number reflects the number of active facts in this section.');
 
       span.append(factText);
       a.append(span);
@@ -114,8 +117,7 @@ export const Links = {
         a.classList.add('nav-link');
         a.setAttribute('href', '#');
         a.setAttribute('data-container', '#fact-table-container');
-        // a.setAttribute('data-bs-toggle', 'offcanvas');
-        // a.setAttribute('data-bs-target', '#fact-table-container');
+
         a.addEventListener('click', () => {
           Links.updateCurrent(index + 1);
         });
@@ -130,6 +132,11 @@ export const Links = {
         span.classList.add('badge');
         span.classList.add('bg-sec');
         span.classList.add('ms-1');
+
+        span.setAttribute('data-bs-toggle', 'popover');
+        span.setAttribute('data-bs-trigger', 'hover');
+        span.setAttribute('data-bs-title', 'Active Fact Count');
+        span.setAttribute('data-bs-content', 'This number reflects the number of active facts in this section.');
 
         const factText = document.createTextNode(FactMap.getFactCount());
 
@@ -149,15 +156,10 @@ export const Links = {
         a.setAttribute('href', '#');
         a.setAttribute('data-container', '#facts-breakdown-container');
 
-
-        //a.setAttribute('data-bs-toggle', 'offcanvas');
-        //a.setAttribute('data-bs-target', '#facts-breakdown-container');
         a.addEventListener('click', () => {
-          //a.classList.toggle('active');
           Links.updateCurrent(index + 2);
         });
         a.addEventListener('keyup', () => {
-          // a.classList.toggle('active');
           Links.updateCurrent(index + 2);
         });
         const text = document.createTextNode(`Facts Chart`);
@@ -166,8 +168,10 @@ export const Links = {
         li.append(a);
         container?.append(li);
       }
-      // Fact Charts
+      // END Fact Charts
     });
+    const popoverTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    popoverTriggerList.forEach(popoverTiggerElement => new bootstrap.Popover(popoverTiggerElement));
   },
 
   update: () => {
@@ -202,8 +206,8 @@ export const Links = {
   },
 
   updateCurrent: (navIndex: number) => {
+    Constants.getInstanceFiles.length > 1 ? navIndex++ : null;
     const tabs = Array.from(document.getElementById('tabs-container')?.querySelectorAll('a.nav-link') as NodeListOf<Element>);
-
     tabs.forEach((element, index: number) => {
       const badge = element.querySelector('.text-bg-light');
       if (index !== navIndex) {

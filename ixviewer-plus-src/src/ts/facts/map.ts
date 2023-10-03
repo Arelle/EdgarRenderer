@@ -274,21 +274,24 @@ export const FactMap: {
     },
 
     setIsSelected: (input: string | null) => {
-        const selected = Array.from(document.querySelectorAll(`[selected-fact="true"]`));
-        selected.forEach((current) => {
-            current.setAttribute('selected-fact', 'false');
-        });
-        const toSelect = Array.from(document.querySelectorAll(`[data-id="${input}"], [id="${input}"]`));
-        toSelect.forEach((current) => {
-            current.setAttribute('selected-fact', 'true');
+        FactMap.map.forEach((currentValue) => {
+            if (input === currentValue.id) {
+                currentValue.isSelected = true;
+            } else {
+                currentValue.isSelected = false;
+            }
         });
     },
 
 
     getTagLine: () => {
-        const breakdown = Array.from(new Map([...FactMap.map]), (entry) => {
+        return Array.from(new Map([...(FactMap.map as Map<string, Facts>)]), (entry: [string, Facts]) => {
             if (entry[1].isAmountsOnly) {
-                return { name: entry[1].name, period_dates: entry[1].period_dates, value: +entry[1].value };
+                return {
+                    name: entry[1].name,
+                    period_dates: entry[1].period_dates,
+                    value: +entry[1].value,
+                };
             }
         }).filter(Boolean).reduce((
             acc: Array<{ name: string, data: Array<{ period_dates: Array<string>, value: number }> }> = [],
@@ -306,7 +309,6 @@ export const FactMap: {
         }).sort((first, second) => {
             return first.name.localeCompare(second.name);
         });
-        return breakdown;
     },
 
 };

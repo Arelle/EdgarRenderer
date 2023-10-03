@@ -152,7 +152,7 @@ export class Development {
 
                 const contextrefs = document.createElement('td');
                 contextrefs.classList.add('text-center');
-                const contextrefsText = document.createTextNode(current['contextrefs'].toString());
+                const contextrefsText = document.createTextNode(current['contextrefs'].toLocaleString('en-US'));
                 contextrefs.append(contextrefsText);
                 tr.append(contextrefs);
 

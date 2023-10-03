@@ -14,6 +14,7 @@ export interface SingleFact {
     isTextOnly: boolean;
     isNegativeOnly: boolean;
     isHTML: boolean;
+    isSelected: boolean;
     period: string;
     scale: null;
     decimals?: Decimals | null;
@@ -21,7 +22,6 @@ export interface SingleFact {
     footnote: null | string;
     isEnabled: boolean;
     isHighlight: boolean;
-    isSelected: boolean;
     references: Array<Reference | null>;
     calculations: Array<Calculation[]>;
     labels: LabelElement[];

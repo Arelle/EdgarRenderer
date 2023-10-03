@@ -26,7 +26,7 @@ export class SetCustomCSS {
       '#dynamic-xbrl-form [enabled-fact="true"][continued-fact="false"]:hover':
       {
         //TODO?
-        'background-color': `#${tagShading}`,
+        'background-color': `${tagShading}`,
       },
 
       '#dynamic-xbrl-form [enabled-fact="true"][continued-main-fact="true"]':
@@ -54,6 +54,12 @@ export class SetCustomCSS {
 
       '#dynamic-xbrl-form [highlight-fact="true"] > *': {
         "background-color": `#${searchResults} !important`
+      },
+
+      '#dynamic-xbrl-form [selected-fact="true"]':
+      {
+        border: `3px solid #${selectedFact} !important`,
+        display: "inline"
       },
 
       '#dynamic-xbrl-form [selected-fact="true"][continued-main-fact="true"]':

@@ -23,9 +23,7 @@ export const FactsChart = {
         if (breakdown.length) {
             const chart = document.getElementById(`chart-1`);
             const myChart = echarts.init(chart);
-
             const createGraph = (input = 0) => {
-
                 const chosenFact: {
                     name: string,
                     data: Array<{
@@ -42,15 +40,16 @@ export const FactsChart = {
 
                 const chartSubTitle = document.createTextNode(chosenFact.name);
                 document.getElementById('chart-subtitle-1')?.append(chartSubTitle);
-
                 const data = new Set();
                 chosenFact.data = chosenFact.data.reduce((accumulator, current, index) => {
-                    if (current.period_dates.length === 1) {
-                        accumulator[index] = { period_dates: current.period_dates[0], value: current.value };
-                    } else {
-                        accumulator = accumulator.concat(current.period_dates.map((currentNested) => {
-                            return { period_dates: currentNested, value: current.value };
-                        }));
+                    if (current.period_dates) {
+                        if (current.period_dates.length === 1) {
+                            accumulator[index] = { period_dates: current.period_dates[0], value: current.value };
+                        } else {
+                            accumulator = accumulator.concat(current.period_dates.map((currentNested) => {
+                                return { period_dates: currentNested, value: current.value };
+                            }));
+                        }
                     }
                     return accumulator;
                 }, []).filter((element) => {
@@ -66,7 +65,7 @@ export const FactsChart = {
                 const option = {
 
                     tooltip: {
-                        trigger: 'item'
+                        trigger: 'item',
                     },
                     legend: {
                         orient: 'vertical',
