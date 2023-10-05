@@ -234,7 +234,7 @@ class Summary(object):
                             elif _file in sourceDict and bool(sourceDict[_file][0]):
                                 s.set('doctype',sourceDict[_file][0])
                             else:
-                                print('how did we get here? _file={}, sourceDict={}'.format(_file,sourceDict),file=sys.stderr)
+                                # print('how did we get here? _file={}, sourceDict={}'.format(_file,sourceDict),file=sys.stderr)
                                 s.set('doctype','(Source)')
                             for p in ['isShr','isDefinitelyFs','isDefinitelyNotFs','isFeeExhibit',''
                                              ,'isIfrs','isN1a','isN2Prospectus','isN3N4N6','isNcsr'
