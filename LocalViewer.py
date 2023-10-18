@@ -11,6 +11,16 @@ import os, logging, sys
 import regex as re
 
 ixviewerDirFilesPattern = re.compile(r"^ix(-dev)?.x?html|^browser-error.html|^css/|^images/|^js/|^[a-z0-9.-]+min\.(js|css)(\.map)?$|^[a-z0-9]+\.(ttf|woff2)$")
+extMimeType = {
+    ".xhtml": "application/xhtml+xml",
+    ".html":  "text/html",
+    ".htm":   "text/html",
+    ".js":    "text/javascript",
+    ".css":    "text/css",
+    ".gif":    "image/gif",
+    ".jpg":    "image/jpeg",
+    ".json":   "application/json"
+    }
 
 class _LocalViewer(LocalViewer):
     # plugin-specific local file handler
@@ -26,7 +36,8 @@ class _LocalViewer(LocalViewer):
         if _report == "include": # really in include subtree
             return static_file(_file, root=os.path.join(self.reportsFolders[0], 'include'))
         if ixviewerDirFilesPattern.match(_file): # although in ixviewer, it refers relatively to ixviewer/
-            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'ixviewer'))
+            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'ixviewer'),
+                               mimetype=extMimeType.get(os.path.splitext(file)[1], None))
         if _file.startswith("/ixviewer"): # ops gateway
             return static_file(_file, root=self.reportsFolders[0][:-1])
         if _file.startswith("include/"): # really in ixviewer subtree (Workstation Images are in distribution include)
