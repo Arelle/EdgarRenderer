@@ -429,9 +429,12 @@ export const Pagination = {
       }
       select!.append(option);
     }
-    select?.addEventListener('change', (event) => {
-      Pagination.goToPage(event?.target?.value as number);
-    });
+    if (!select?.hasAttribute('listener')) {
+      select?.setAttribute('listener', 'true');
+      select?.addEventListener('change', (event) => {
+        Pagination.goToPage(event?.target?.value as number);
+      });
+    }
 
 
   },
@@ -496,7 +499,7 @@ export const Pagination = {
     const factElement = document.querySelector(`#dynamic-xbrl-form [filing-url="${fact.file}"] #${fact.id}`);
     factElement?.scrollIntoView({
       behavior: 'smooth',
-      //block: Constants.scrollPosition,
+      block: Constants.scrollPosition,
       inline: "nearest"
     });
   },
@@ -506,7 +509,7 @@ export const Pagination = {
       '[selected-fact="true"]');
     if (elementToScrollTo) {
       elementToScrollTo.scrollIntoView({
-        'block': Constants.scrollPosition
+        'block': Constants.scrollPosition as string
       });
     }
   }

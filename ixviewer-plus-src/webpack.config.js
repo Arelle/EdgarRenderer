@@ -8,6 +8,7 @@ const { PurgeCSSPlugin } = require("purgecss-webpack-plugin");
 const BundleAnalyzerPlugin =
   require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const ESLintPlugin = require("eslint-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = (
   env = { copy: true, analyze: false },
@@ -21,7 +22,10 @@ module.exports = (
     plugins: [
       new HtmlWebpackPlugin({
         inject: `body`,
+        minify: false,
         xhtml: true,
+        useShortDoctype: false,
+        showErrors: true,
         template: `./src/index.xhtml`,
         filename: `ix.xhtml`,
       }),
@@ -49,6 +53,7 @@ module.exports = (
       new ESLintPlugin({
         extensions: ["ts"],
       }),
+
       env.analyze ? new BundleAnalyzerPlugin() : false,
 
       argv.mode === `production` ? false : false,
@@ -56,6 +61,8 @@ module.exports = (
       new webpack.DefinePlugin({
         PRODUCTION: env.copy ? false : true,
       }),
+
+      new CleanWebpackPlugin(),
     ].filter(Boolean),
 
     output: {
@@ -64,7 +71,6 @@ module.exports = (
           ? `[name].bundle.[contenthash].min.js`
           : `[name].bundle.js`,
       path: path.resolve(__dirname, `./dist`),
-      clean: true,
     },
 
     module: {

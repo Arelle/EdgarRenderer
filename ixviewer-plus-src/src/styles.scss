@@ -5,6 +5,13 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts/";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "~@fortawesome/fontawesome-free/scss/solid.scss";
 
+#dynamic-xbrl-form section {
+  all: initial;
+  * {
+    all: revert;
+  }
+}
+
 kbd {
   background-color: inherit;
   color: inherit;

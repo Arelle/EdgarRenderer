@@ -2,7 +2,8 @@
  * Data and content created by government employees within the scope of their employment 
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
-
+//WS example url:
+// https://secws-edgar-janeway.apps.stg.edg.ix.sec.gov/AR/ixviewer/ix-dev.xhtml?doc=../DisplayDocument.do?step=docOnly&accessionNumber=0001684417-23-800279&interpretedFormat=true&redline=false&filename=e62201020gd-20081231.htm&xbrl=true&metalinks=../DisplayDocument.do?step=docOnly&accessionNumber=0001684417-23-800279&interpretedFormat=true&redline=false&filename=MetaLinks.json
 import { Constants } from "../constants";
 import { ErrorsMajor } from "../errors/major";
 
@@ -111,34 +112,54 @@ export const HelpersUrl: {
   },
 
   returnURLParamsAsObject: (url) => {
-
     const urlParams = new URLSearchParams(url);
     const objToReturn = {};
-    for (const entry of urlParams.entries()) {
-      if (entry[1].endsWith('.htm') || entry[1].endsWith('.html') || entry[1].endsWith('.xhtml')) {
-        entry[0] = 'doc';
-        entry[1] = decodeURIComponent(entry[1]);
-        const docFile = entry[1].substring(entry[1]
-          .lastIndexOf('/') + 1);
-        objToReturn['doc-file'] = docFile;
-      } else if (entry[1].endsWith('.json')) {
-        entry[1] = decodeURIComponent(entry[1]);
-        entry[1] = entry[1].replace('interpretedFormat=true', 'interpretedFormat=false');
-        objToReturn['metalinks-file'] = 'MetaLinks.json';
-      }
-      
-      objToReturn[entry[0]] = entry[1];
-    }
-    if (!Object.prototype.hasOwnProperty.call(objToReturn, `metalinks`)) {
-      const metalinks = objToReturn['doc'].replace(objToReturn['doc-file'], 'MetaLinks.json');
-      objToReturn['metalinks'] = metalinks;
-      objToReturn['metalinks-file'] = 'MetaLinks.json';
-    }
+    const urlParamsAsObject = Object.fromEntries(urlParams);
+    const isWorkStation = Object.prototype.hasOwnProperty.call(urlParamsAsObject, 'accessionNumber') &&
+      Object.prototype.hasOwnProperty.call(urlParamsAsObject, 'xbrl') &&
+      Object.prototype.hasOwnProperty.call(urlParamsAsObject, 'interpretedFormat');
 
-    if (!Object.prototype.hasOwnProperty.call(objToReturn, `summary`)) {
-      const summary = objToReturn['doc'].replace(objToReturn['doc-file'], 'FilingSummary.xml');
-      objToReturn['summary'] = summary;
-      objToReturn['summary-file'] = 'FilingSummary.xml';
+    for (const entry of urlParams.entries()) {
+      if (isWorkStation) {
+
+        const fileUrl = `${urlParamsAsObject['doc']}&accessionNumber=${urlParamsAsObject['accessionNumber']}&interpretedFormat=${urlParamsAsObject['interpretedFormat']}&redline=${urlParamsAsObject['redline']}`;
+
+        if (entry[1].endsWith('.htm') || entry[1].endsWith('.html') || entry[1].endsWith('.xhtml')) {
+          objToReturn['doc'] = `${fileUrl}&filename=${entry[1]}`;
+          objToReturn['doc-file'] = entry[1];
+        } else if (entry[0] === 'metalinks') {
+          objToReturn['metalinks'] = `${fileUrl.replace('interpretedFormat=true', 'interpretedFormat=false')}&filename=MetaLinks.json`;
+          objToReturn['metalinks-file'] = 'MetaLinks.json';
+          objToReturn['summary'] = `${fileUrl.replace('interpretedFormat=true', 'interpretedFormat=false')}&filename=FilingSummary.xml`;
+          objToReturn['summary-file'] = 'FilingSummary.xml';
+        } else {
+          objToReturn[entry[0]] = entry[1];
+        }
+
+      } else {
+        if (entry[1].endsWith('.htm') || entry[1].endsWith('.html') || entry[1].endsWith('.xhtml')) {
+          entry[0] = 'doc';
+          entry[1] = decodeURIComponent(entry[1]);
+          const docFile = entry[1].substring(entry[1]
+            .lastIndexOf('/') + 1);
+          objToReturn['doc-file'] = docFile;
+        } else if (entry[1].endsWith('.json')) {
+          entry[1] = decodeURIComponent(entry[1]);
+          entry[1] = entry[1].replace('interpretedFormat=true', 'interpretedFormat=false');
+          objToReturn['metalinks-file'] = 'MetaLinks.json';
+        }
+        objToReturn[entry[0]] = entry[1];
+        if (!Object.prototype.hasOwnProperty.call(objToReturn, `metalinks`)) {
+          const metalinks = objToReturn['doc'].replace(objToReturn['doc-file'], 'MetaLinks.json');
+          objToReturn['metalinks'] = metalinks;
+          objToReturn['metalinks-file'] = 'MetaLinks.json';
+        }
+        if (!Object.prototype.hasOwnProperty.call(objToReturn, `summary`)) {
+          const summary = objToReturn['doc'].replace(objToReturn['doc-file'], 'FilingSummary.xml');
+          objToReturn['summary'] = summary;
+          objToReturn['summary-file'] = 'FilingSummary.xml';
+        }
+      }
     }
     return objToReturn;
 
@@ -221,7 +242,7 @@ export const HelpersUrl: {
     const absoluteURL = formUrl.substr(0, formUrl.lastIndexOf('/') + 1);
 
     HelpersUrl.getFormAbsoluteURL = absoluteURL;
-
+    
     return true;
 
   },

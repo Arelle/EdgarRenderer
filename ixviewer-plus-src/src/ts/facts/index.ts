@@ -104,12 +104,26 @@ export const Facts = {
   },
 
   inViewPort: (unobserveAfter = false) => {
-    const allFactIdentifiers = Array.from(document?.getElementById('dynamic-xbrl-form')?.querySelectorAll('[id^=fact-identifier-], [continued-main-fact-id], [data-link]') || []);
+    const allFactIdentifiers = Array.from(document?.getElementById('dynamic-xbrl-form')?.querySelectorAll('[id^=fact-identifier-], [continued-main-fact-id], [data-link], [xhtml-change]') || []);
     const observer = new IntersectionObserver(entries => {
       entries.forEach(({ target, isIntersecting }) => {
 
         if (isIntersecting) {
-          if (target.hasAttribute('data-link')) {
+          if (target.hasAttribute('xhtml-change')) {
+            const file = (href: string) => {
+              return document.getElementById(href.slice(1))?.closest(`[filing-url]`);
+            }
+            const fileToChangeTo = file(target.getAttribute('href') as string);
+            if (fileToChangeTo && fileToChangeTo.getAttribute('filing-url')) {
+              target.addEventListener('click', () => {
+                ConstantsFunctions.changeInlineFiles(fileToChangeTo.getAttribute('filing-url') as string);
+              });
+              target.addEventListener('keyup', () => {
+                ConstantsFunctions.changeInlineFiles(fileToChangeTo.getAttribute('filing-url') as string);
+              });
+            }
+
+          } else if (target.hasAttribute('data-link')) {
             target.addEventListener('click', () => {
               ConstantsFunctions.changeInlineFiles(target.getAttribute('data-link') as string);
             });
@@ -209,7 +223,8 @@ export const Facts = {
     ) {
       return;
     }
-
+    document.getElementById("fact-modal")?.classList.add("d-none");
+    document.getElementById("fact-nested-modal")?.classList.add("d-none");
     const elementRecursion = (element: HTMLElement): { href: string, _target: string } | null => {
       if (element.hasAttribute('href')) {
         return {
@@ -232,7 +247,6 @@ export const Facts = {
       return false;
     } else {
       const id = element.hasAttribute('continued-main-fact-id') ? element.getAttribute('continued-main-fact-id') : element.getAttribute('id');
-
       FactMap.setIsSelected(id as string);
       Facts.addURLParam(id as string);
       if (Facts.isElementNested(element)) {

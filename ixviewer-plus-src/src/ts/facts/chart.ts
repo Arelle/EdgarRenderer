@@ -19,7 +19,6 @@ export const FactsChart = {
     chart1: () => {
         const breakdown = FactMap.getTagLine();
 
-
         if (breakdown.length) {
             const chart = document.getElementById(`chart-1`);
             const myChart = echarts.init(chart);

@@ -1,1 +1,1469 @@
-<?xml version="1.0" encoding="UTF-8" ?> <html xmlns="http://www.w3.org/1999/xhtml"><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/><link rel="shortcut icon" type="image/x-icon" href="https://www.sec.gov/favicon.ico"/><title>Inline Viewer</title><link href="styles.c0f256f9d48e2926751d.min.css" rel="stylesheet"/></head><body><noscript>This application relies heavily on JavaScript, you will need to allow JavaScript to use this application.</noscript><div class="w-100 border-bottom"><nav class="navbar navbar-expand-md navbar-dark navbar-height bg-sec pl-0"><button class="navbar-toggler ml-1" type="button" data-test="" data-bs-toggle="collapse" data-bs-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">Inline Viewer</button><div class="navbar-height collapse navbar-collapse bg-sec w-100" data-test="main-navbar" id="main-navbar"><ul class="navbar-nav mr-auto bg-inherit"><li class="nav-item dropdown my-auto ml-1"><a id="menu-dropdown-link" data-test="menu-dropdown-link" class="nav-link dropdown-toggle click disabled" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="1" accesskey="1"><i class="nav-loading fas fa-bars" title="Menu"></i> <span class="d-md-none d-lg-inline">Menu</span> <span class="sr-only sr-only-focusable">Menu</span></a><div class="dropdown-menu"><a id="menu-dropdown-information" data-test="menu-dropdown-information" class="dropdown-item click text-body" tabindex="1">Information</a> <a id="form-information-instance" data-test="form-information-instance" class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer" tabindex="1">Save XBRL Instance</a> <a id="form-information-zip" data-test="form-information-zip" class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer" tabindex="1">Save XBRL Zip File</a> <a id="form-information-html" data-test="form-information-html" class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer" tabindex="1">Open as HTML</a> <a id="menu-dropdown-settings" data-test="menu-dropdown-settings" class="dropdown-item click text-body" tabindex="1">Settings</a> <a id="form-information-help" data-bs-toggle="offcanvas" data-bs-target="#help-menu" class="dropdown-item click text-body" tabindex="1">Help</a> <span id="form-information-version" class="dropdown-item-text text-body" tabindex="1"></span></div></li><li class="nav-item my-auto ml-1"><a id="sections-dropdown-link" data-bs-toggle="offcanvas" data-bs-target="#sections-menu" class="nav-link click disabled meta-required" tabindex="2" accesskey="2"><i class="fas fa-layer-group" title="Sections"></i> <span class="d-md-none d-lg-inline">Sections</span> <span class="sr-only sr-only-focusable">Sections</span></a></li><li class="nav-item my-auto ml-1 mr-1"><form id="global-search-form" data-test="global-search-form" class="my-2 my-lg-0 input-group disabled" novalidate="true"><div class="input-group"><button data-name="global-search-options" class="dropdown btn btn-outline-light disabled" type="button" data-bs-toggle="dropdown" tabindex="3"><i class="nav-loading fas fa-cog" title="Additional Search Options"><span class="sr-only sr-only-focusable">Additional Search Options</span></i></button><div class="dropdown-menu px-2"><div class="form-check"><label class="form-check-label mb-0"><input disabled="true" class="form-check-input meta-required" type="checkbox" name="search-options" value="1" checked="true" tabindex="3"/> <span>Include Fact Name</span></label></div><div class="form-check"><label class="form-check-label mb-0"><input disabled="true" class="form-check-input meta-required" type="checkbox" name="search-options" value="2" checked="true" tabindex="3"/> <span>Include Fact Content</span></label></div><div class="form-check"><label class="form-check-label mb-0"><input disabled="true" class="form-check-input meta-required" type="checkbox" name="search-options" value="3" checked="true" tabindex="3"/> <span>Include Labels</span></label></div><div class="form-check"><label class="form-check-label mb-0"><input disabled="true" class="form-check-input meta-required" type="checkbox" name="search-options" value="4" tabindex="3"/> <span>Include Definitions</span></label></div><div class="form-check"><label class="form-check-label mb-0"><input disabled="true" class="form-check-input meta-required" type="checkbox" name="search-options" value="5" tabindex="3"/> <span>Include Dimensions</span></label></div><div class="form-check"><label class="form-check-label mb-0"><input disabled="true" class="form-check-input meta-required" type="checkbox" name="search-options" value="6" tabindex="3"/> <span>Include References</span></label></div></div><input class="form-control disabled" id="global-search" data-test="global-search" placeholder="Search Facts" disabled="true" aria-label="Search all Facts and highlight them accordingly." tabindex="4"/> <button id="search-btn-clear" data-name="global-search-clear" class="btn btn-outline-light disabled" type="button" tabindex="5"><i class="nav-loading fas fa-times-circle" title="Clear Search"></i> <span class="sr-only sr-only-focusable">Clear Search</span></button> <button class="btn btn-outline-light disabled" type="submit" tabindex="6"><i class="nav-loading fas fa-search" title="Submit Search"></i> <span class="sr-only sr-only-focusable">Submit Search</span></button></div><ul class="list-group position-fixed suggestions" id="suggestions"></ul></form></li><li class="nav-item dropdown my-auto ml-1"><a href="#" id="nav-filter-data" data-test="nav-filter-data" class="nav-link dropdown-toggle disabled click" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="7" accesskey="3"><i class="nav-loading fas fa-list-alt" title="Data"></i> <span class="d-md-none d-lg-inline">Data</span> <span class="sr-only sr-only-focusable">Data</span></a><div class="dropdown-menu"><form id="nav-filter-dropdown" data-name="data-dropdown" class="px-2"><div class="form-check"><label class="form-check-label mb-0"><input class="form-check-input" type="radio" name="data-radios" value="0" checked="true" tabindex="7"/> All</label></div><div class="form-check"><label class="form-check-label mb-0"><input class="form-check-input" type="radio" name="data-radios" value="1" tabindex="7"/> <span>Amounts Only</span></label></div><div class="form-check"><label class="form-check-label mb-0"><input class="form-check-input" type="radio" name="data-radios" value="2" tabindex="7"/> <span>Text Only</span></label></div><div class="form-check"><label class="form-check-label mb-0"><input class="form-check-input meta-required" type="radio" name="data-radios" value="3" disabled="true" tabindex="7"/> <span>Calculations Only</span></label></div><div class="form-check"><label class="form-check-label mb-0"><input class="form-check-input" type="radio" name="data-radios" value="4" tabindex="7"/> <span>Negatives Only</span></label></div><div class="form-check"><label class="form-check-label mb-0"><input class="form-check-input" type="radio" name="data-radios" value="5" tabindex="7"/> <span>Additional Items Only</span></label></div></form></div></li><li class="nav-item dropdown my-auto ml-1"><a href="#" id="nav-filter-tags" data-test="nav-filter-tags" class="nav-link dropdown-toggle disabled click" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="8" accesskey="4"><i class="nav-loading fas fa-tags" title="Tags"></i> <span class="d-md-none d-lg-inline">Tags</span> <span class="sr-only sr-only-focusable">Tags</span></a><div class="dropdown-menu"><form id="nav-filter-tags-dropdown" data-name="tags-dropdown" class="px-2"><div class="form-check"><label class="form-check-label mb-0"><input class="form-check-input" type="radio" name="tags-radios" value="0" aria-label="Radio Button for All Tag Types" checked="true" tabindex="8"/> <span>All</span></label></div><div class="form-check"><label class="form-check-label mb-0"><input class="form-check-input" type="radio" name="tags-radios" value="1" aria-label="Radio Button for Standard Only Tag Types" tabindex="8"/> <span>Standard Only</span></label></div><div class="form-check"><label class="form-check-label mb-0"><input class="form-check-input meta-required" type="radio" name="tags-radios" value="2" disabled="true" aria-label="Radio Button for Custom Only Tag Types" tabindex="8"/> <i title="Facts whose tags are outside the realm of DEI, US-GAAP, etc." class="far fa-question-circle"></i> <span>Custom Only</span></label></div></form></div></li><li class="nav-item dropdown my-auto ml-1"><a id="nav-filter-more" class="nav-link dropdown-toggle disabled click" role="button" data-bs-toggle="dropdown" data-bs-auto-close="false" aria-haspopup="true" aria-expanded="false" tabindex="9" accesskey="5"><i id="loading-more-filters" class="nav-loading fas fa-filter" title="More Filters"></i> <span class="d-md-none d-lg-inline">More Filters</span> <span class="sr-only sr-only-focusable">More Filters</span> <span title="Total active filters." class="badge text-bg-secondary"></span></a><div class="dropdown-menu dropdown-menu-width"><div class="accordion" id="more-filters-accordion"><form class="mb-0" data-test="more-filters-form"><div class="mx-1"><div class="px-0 py-0"><a data-test="Period" data-bs-target="#user-filters-periods" data-bs-toggle="collapse" class="d-flex justify-content-between align-items-center w-100 click text-primary" tabindex="9"><span>Periods</span> <span data-test="Period-count" id="filters-periods-count" class="badge text-bg-secondary"><i class="fa fa-regular fa-clock"></i></span></a></div><div id="user-filters-periods" class="collapse height-200 overflow-y-auto" data-parent="#more-filters-accordion"><div class="list-group list-group-flush"></div></div></div></form><form class="mb-0"><div class="mx-1"><div class="px-0 py-0"><a data-test="Measures" data-bs-target="#user-filters-measures" data-bs-toggle="collapse" class="d-flex justify-content-between align-items-center w-100 click text-primary" tabindex="9"><span>Measures</span> <span data-test="Measures-count" id="filters-measures-count" class="badge text-bg-secondary"><i class="fa fa-regular fa-clock"></i></span></a></div><div id="user-filters-measures" class="collapse height-200 overflow-y-auto" data-parent="#more-filters-accordion"><div class="list-group list-group-flush"></div></div></div></form><form class="mb-0"><div class="mx-1"><div class="px-0 py-0"><a data-test="Axis" data-bs-target="#user-filters-axis" data-bs-toggle="collapse" class="d-flex justify-content-between align-items-center w-100 click text-primary" tabindex="9"><span>Axis</span> <span data-test="Axis-count" id="filters-axis-count" class="badge text-bg-secondary"><i class="fa fa-regular fa-clock"></i></span></a></div><div id="user-filters-axis" class="collapse height-200 overflow-y-auto" data-parent="#more-filters-accordion"><div class="list-group list-group-flush d-none"><div class="d-flex justify-content-between align-items-center w-100 px-1"><div class="form-check"><label class="form-check-label mb-0"><input id="axes-all-0" title="Select/Deselect all options below." class="form-check-input" type="checkbox" tabindex="9"/> <a href="#axes-filters-accordion-0" data-bs-toggle="collapse" tabindex="9">Explicit</a></label></div><span class="badge text-bg-secondary" id="axis-explicit-count"></span></div></div><div class="list-group list-group-flush d-none"><div class="d-flex justify-content-between align-items-center w-100 px-1"><div class="form-check"><label class="form-check-label mb-0"><input id="axes-all-1" title="Select/Deselect all options below." class="form-check-input" type="checkbox" tabindex="9"/> <a href="#axes-filters-accordion-1" data-bs-toggle="collapse" tabindex="9">Typed</a></label></div><span class="badge text-bg-secondary" id="axis-typed-count"></span></div></div></div></div></form><form class="mb-0"><div class="mx-1"><div class="px-0 py-0"><a data-test="Members" data-bs-target="#user-filters-members" data-bs-toggle="collapse" class="d-flex justify-content-between align-items-center w-100 click text-primary" tabindex="9"><span>Members</span> <span data-test="Members-count" id="filters-members-count" class="badge text-bg-secondary"><i class="fa fa-regular fa-clock"></i></span></a></div><div id="user-filters-members" class="collapse height-200 overflow-y-auto" data-parent="#more-filters-accordion"><div class="list-group list-group-flush d-none"><div class="d-flex justify-content-between align-items-center w-100 px-1"><div class="form-check"><label class="form-check-label mb-0"><input id="members-all-0" title="Select/Deselect all options below." class="form-check-input" type="checkbox" tabindex="9"/> <a data-bs-target="#members-filters-accordion-0" data-bs-toggle="collapse" tabindex="9">Explicit</a></label></div><span class="badge text-bg-secondary" id="members-explicit-count"></span></div></div><div class="list-group list-group-flush d-none"><div class="d-flex justify-content-between align-items-center w-100 px-1"><div class="form-check"><label class="form-check-label mb-0"><input id="members-all-1" title="Select/Deselect all options below." class="form-check-input" type="checkbox" tabindex="9"/> <a data-bs-target="#members-filters-accordion-1" data-bs-toggle="collapse" tabindex="9">Typed</a></label></div><span class="badge text-bg-secondary" id="members-typed-count"></span></div></div></div></div></form><form class="mb-0"><div class="mx-1"><div class="px-0 py-0"><a data-test="Scale" data-bs-target="#user-filters-scales" data-bs-toggle="collapse" class="d-flex justify-content-between align-items-center w-100 click text-primary" tabindex="9"><span>Scale</span> <span data-test="Scale-count" id="filters-scales-count" class="badge text-bg-secondary"><i class="fa fa-regular fa-clock"></i></span></a></div><div id="user-filters-scales" class="collapse height-200 overflow-y-auto" data-parent="#more-filters-accordion"><div class="list-group list-group-flush"></div></div></div></form><form class="mb-0"><div class="mx-1"><div class="px-0 py-0"><a data-test="Balance" data-bs-target="#user-filters-balances" data-bs-toggle="collapse" class="d-flex justify-content-between align-items-center w-100 click text-primary" tabindex="9"><span>Balance</span> <span data-test="Balance-count" id="filters-balances-count" class="badge text-bg-secondary">2</span></a></div><div id="user-filters-balances" class="collapse height-200 overflow-y-auto" data-parent="#more-filters-accordion"><div class="d-flex justify-content-between align-items-center w-100 px-2"><div class="form-check"><label class="form-check-label mb-0"><input id="user-filters-balances-debit" title="Select/Deselect this option." class="form-check-input" type="checkbox" tabindex="9"/> <span>Debit</span></label></div></div><div class="d-flex justify-content-between align-items-center w-100 px-2"><div class="form-check"><label class="form-check-label mb-0"><input id="user-filters-balances-credit" title="Select/Deselect this option." class="form-check-input" type="checkbox" tabindex="9"/> <span>Credit</span></label></div></div></div></div></form></div></div></li><li id="current-filters-reset" data-test="current-filters-reset" class="nav-item d-none my-auto ml-1"><a href="#" id="current-filters-reset-all" data-name="current-filters-reset" class="nav-link dropdown-toggle text-danger disabled click" tabindex="11" accesskey="7"><i class="nav-loading fas fa-redo"></i> <span class="d-md-none d-lg-inline">Reset All Filters</span></a></li><li id="links-dropdown" data-test="links-dropdown" class="nav-item dropdown d-none my-auto ml-1"><a href="#" id="additional-links-dropdown" class="nav-link dropdown-toggle disabled click" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="12" accesskey="8"><i class="nav-loading fas fa-link"></i> <span class="d-md-none d-lg-inline">Links</span></a><div id="links-dropdown-content" class="dropdown-menu dropdown-menu-width w-auto"></div></li></ul><ul class="navbar-nav bg-inherit"><li class="nav-item my-auto ml-1"><a id="facts-menu-button" data-bs-toggle="offcanvas" data-bs-target="#facts-menu" tabindex="13" class="nav-link click" accesskey="9">Facts <span class="fact-total-count badge text-bg-light"><i class="fa fa-regular fa-clock"></i></span></a></li></ul></div></nav><ul id="tabs-container" class="nav nav-pills position-relative nav-underline justify-content-center"></ul></div><div class="main-container"><div id="error-container" data-test="error-container" class="px-0"></div><div id="xbrl-form-loading" data-test="xbrl-form-loading" class="jumbotron h-100"><h2 class="display-4 text-center"><i class="fa fa-regular fa-clock"></i> <span>Loading Inline Form.</span></h2></div><div id="sections-menu" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false"><div class="offcanvas-header"><h5>Tagged Sections</h5><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button></div><div class="offcanvas-body"><form id="sections-menu-search-submit" data-name="sections-menu-search" class="my-2 my-lg-0 input-group" novalidate="true"><div class="input-group"><div id="sections-search-additional" class="input-group-prepend d-none"><button class="dropdown btn btn-sec" type="button" data-bs-toggle="dropdown" tabindex="2"><i class="nav-loading fas fa-cog"></i></button><div class="dropdown-menu px-2"><div class="form-check"><label class="form-check-label"><input class="form-check-input" type="radio" name="sections-search-options" value="1" checked="true" tabindex="2"/> <span>Search in All Instances.</span></label></div><div class="form-check"><label class="form-check-label"><input class="form-check-input" type="radio" name="sections-search-options" value="2" tabindex="2"/> <span>Search in Current Instance only.</span></label></div><div class="form-check"><label class="form-check-label"><input class="form-check-input" type="radio" name="sections-search-options" value="3" tabindex="2"/> <span>Search in Other Instances(s) only.</span></label></div></div></div><input class="form-control" id="sections-search" data-test="sections-search" placeholder="Search Sections" aria-label="Search all Sections by their associated label." name="search-sections" tabindex="2" required="true"/> <button id="section-menu-search-btn-clear" data-name="sections-menu-search-clear" class="btn btn-sec" type="reset" tabindex="2"><i class="nav-loading fas fa-times-circle" title="Clear Sections Search"></i> <span class="sr-only sr-only-focusable">Clear Sections Search</span></button> <button class="btn btn-sec" type="submit" tabindex="2"><i class="nav-loading fas fa-search" title="Submit Sections Search"></i> <span class="sr-only sr-only-focusable">Submit Sections Search</span></button></div></form><hr/><div class="accordion" id="tagged-sections"></div></div></div><div id="help-menu" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false"><div class="offcanvas-header"><h5>Help</h5><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button></div><div class="offcanvas-body"><div class="accordion" id="help-sections"><div class="card"><div class="card-header px-0 py-0"><h5 class="mb-0"><button class="btn btn-link d-flex justify-content-between align-items-center w-100" type="button" data-bs-toggle="collapse" data-bs-target="#help-getting-started"><span class="font-size-1">Getting Started</span></button></h5></div><div id="help-getting-started" class="collapse" data-parent="#help-sections"><p class="m-2">The Inline XBRL viewer allows a user to quickly and easily review details of the tagged information in an Inline document by automatically placing a top and bottom highlight border around each tagged numeric fact and left and right border for each block tagged fact. Hovering over a tagged fact will highlight (shade) all content related to the tagged fact, and clicking on a tagged fact will reveal its tagging details in the Fact Review Window. Navigation, search and filter options are also provided to easily refine and identify specific types of tagged information.</p></div></div><div class="card"><div class="card-header px-0 py-0"><h5 class="mb-0"><button class="btn btn-link d-flex justify-content-between align-items-center w-100" type="button" data-bs-toggle="collapse" data-bs-target="#help-fact-review-window"><span class="font-size-1">Fact Review Window</span></button></h5></div><div id="help-fact-review-window" class="collapse" data-parent="#help-sections"><p class="m-2">The Fact Review Window shows the tagging details for the currently selected fact, which is highlighted with a solid blue border. There are four categories of fact detail which can be viewed; an "N/A" value indicates there is no available information for the item within the given category:</p><ul><li>Attributes - All primary information (as applicable) describing the tagged fact including period, sign, decimals, dimensional detail (axes and members), scale, measure and data type.</li><li>Labels - Detailed documentation (definition) for the tag used, and other labels.</li><li>References - Authoritative reference information (as applicable) for the selected tag.</li><li>Calculation - Balance and calculation hierarchy details (numeric non-dimensioned items only).</li></ul></div></div><div class="card"><div class="card-header px-0 py-0"><h5 class="mb-0"><button class="btn btn-link d-flex justify-content-between align-items-center w-100" type="button" data-bs-toggle="collapse" data-bs-target="#help-search"><span class="font-size-1">Searching</span></button></h5></div><div id="help-search" class="collapse" data-parent="#help-sections"><p class="m-2">There are two ways to search the document: FACTS AND SECTIONS. To search information, enter a keyword in a search box and select the magnifying glass icon to return matching results. Search operators "and" (via "AND" or "&amp;") and "or" (via "OR" or "|") are available to further refine a search.</p><p class="m-2"><strong>FACTS</strong></p><p class="m-2">The Search Facts box can be used to find tagged facts matching entered keywords. By default, tag name, tag labels, and tagged content are included in Search. Tagged facts matching the search criteria are shown with a yellow-colored (default) shading on the page and appear in the Facts List. Select the "X" button to the left of the magnifying glass icon to clear the search.</p><p class="m-2">The content included in Search can be increased to included tag definitions, dimensions, and authoritative references by selecting the cog / wheel icon to the left of the search box. See Settings for more information.</p><p class="m-2"><strong>SECTIONS</strong></p><p class="m-2">The Search Sections box can be used to filter the tagged sections of the financial statements.</p></div></div><div class="card"><div class="card-header px-0 py-0"><h5 class="mb-0"><button class="btn btn-link d-flex justify-content-between align-items-center w-100" type="button" data-bs-toggle="collapse" data-bs-target="#help-filter"><span class="font-size-1">Filters</span></button></h5></div><div id="help-filter" class="collapse" data-parent="#help-sections"><p class="m-2">Filters change the number of highlighted facts and items in the fact list by providing several ways to review and pinpoint certain tagged information. Multiple filters can be used at once.</p><p class="m-2"><strong>DATA FILTERS</strong></p><p class="m-2">These filter options allow the user to refine the highlighted tagged facts by data type:</p><ul><li>All - Displays all tagged data (default)</li><li>Amounts Only - Numeric facts only</li><li>Text Only - Textual facts only</li><li>Calculations Only - Numeric facts participating in a calculation only</li><li>Negatives Only - Negative Numeric amounts only</li><li>Additional Items Only - Tagged facts without a corresponding HTML presentation (i.e., hidden facts) only</li></ul><p class="m-2"><strong>TAGS FILTER</strong></p><p class="m-2">These filters allow the user to refine the highlighted facts by tag type:</p><ul><li>All - Displays all tagged data (default)</li><li>Standard Only- Facts with standard tags from a common fact (e.g., US_GAAP, IFRS, DEI).</li><li>Custom Only - Facts with extension "custom" tags unique to the entity's document.</li></ul><p class="m-2"><strong>MORE FILTERS</strong></p><p class="m-2">Additional filters that allow user to further refine the highlighted facts:</p><ul><li>Periods - List of all used context years and reporting periods</li><li>Measures - List of all used units of measure (e.g., US Dollars); as applicable</li><li>Axis - List of all used axis (dimensions); as applicable (dimensions); as applicable</li><li>Scale - List of all used scaled options (e.g., thousands, millions); as applicable</li><li>Balance - Debit, credit; as applicable</li></ul><p class="m-2">Multiple filters work in conjunction with each other. For example, selecting the "Amounts Only" Data filter and "Custom Only" Tags filter will highlight only numeric tagged facts using custom tags and list them in the fact list. Active filters are displayed in the Filter toolbar as they are selected. Active filters can be removed individually by unchecking or selecting ALL option for each filter, or all at once via the "Reset All Filters" option.</p></div></div><div class="card"><div class="card-header px-0 py-0"><h5 class="mb-0"><button class="btn btn-link d-flex justify-content-between align-items-center w-100" type="button" data-bs-toggle="collapse" data-bs-target="#help-facts-results-list"><span class="font-size-1">Facts List (Results)</span></button></h5></div><div id="help-facts-results-list" class="collapse" data-parent="#help-sections"><p class="m-2">On the toolbar, select the "count" to the right of the word Facts (e.g., Facts 234) to reveal the Facts List results - a navigable listing of all currently highlighted tagged facts. The count represents the current number of facts.</p><p class="m-2">By default, all tagged facts are displayed in the Fact List Results. The list content and count reflects the currently highlighted facts (i.e., both Filters and Search criteria refine the list to match the highlighted tagged facts). Navigation controls are available to move through the list as well as move the current view to the corresponding highlighted fact location automatically. When a fact in the Facts Results List is selected, it will reveal the Fact Review Window.</p><p class="m-2">Certain letters may appear to the right of an item in the Fact Result list to indicate a certain property. If the letter "A" appears for a fact, it indicates the fact is additional data (i.e., hidden with potentially no corresponding HTML presentation). If the letter "C" appears, the fact is tagged with a custom tag. If the letter "D" appears, the fact is tagged with dimensional information.</p></div></div><div class="card"><div class="card-header px-0 py-0"><h5 class="mb-0"><button class="btn btn-link d-flex justify-content-between align-items-center w-100" type="button" data-bs-toggle="collapse" data-bs-target="#help-tagged-sections"><span class="font-size-1">Sections</span></button></h5></div><div id="help-tagged-sections" class="collapse" data-parent="#help-sections"><p class="m-2">The SECTIONS toolbar item provides a listing of the tagged sections of the Inline document. Sections are divided into three groups:</p><ul><li>Document &amp; Entity Information</li><li>Financial Statements</li><li>Notes to the Financial Statements</li></ul><p class="m-2">By expanding a group and selecting a section item in the listing, Inline XBRL viewer will navigate to that section. When the Tagged Sections feature is open, the Search Sections box will additionally filter the list of sections to only those sections that match the entered criteria.</p></div></div><div class="card"><div class="card-header px-0 py-0"><h5 class="mb-0"><button class="btn btn-link d-flex justify-content-between align-items-center w-100" type="button" data-bs-toggle="collapse" data-bs-target="#help-tagged-menu"><span class="font-size-1">Menu</span></button></h5></div><div id="help-tagged-menu" class="collapse" data-parent="#help-sections"><p class="m-2"><strong>Information</strong></p><p class="m-2">The Information menu item provides additional detail about the current Inline document and customizable viewer settings.</p><ul><li>Company and Document - Basic company and document information</li><li>Tags - Fact and tag (standard and custom) information</li><li>Files - Files used</li><li>Additional Items - Additional hidden data that's been tagged but potentially does not have a corresponding location in the HTML</li></ul><p class="m-2"><strong>Save XBRL Instance</strong></p><p class="m-2">The Save XBRL Instance menu item allows an XBRL instance document (*.xml) that is extracted from the Inline document to be saved locally for use by software supporting the XBRL format.</p><p class="m-2"><strong>Save XBRL Zip</strong></p><p class="m-2">The Save XBRL Zip menu item allows a zip file (*.zip) that contains the as-provided XBRL instance document and related custom fact files to be saved locally.</p><p class="m-2"><strong>Settings</strong></p><p class="m-2">The Settings menu item provides the ability to customize Viewer features.</p><p class="m-2"><strong>Tagged Fact Hover</strong></p><ul><li>On - Displays the hover fact review window for any tagged fact*</li><li>Off - Hides the hover fact review window for any tagged fact (default)</li></ul><p class="m-2">* May impact performance with certain web browsers.</p><p class="m-2"><strong>Auto Scrolling Position </strong>(This setting will have no effect on IE 10 or Safari)</p><ul><li>Top - Selecting a fact from the Sections Menu or the Fact Menu will automatically scroll that element to the Top of the Inline XBRL viewer window (default)</li><li>Center - Selecting a fact from the Sections Menu or the Fact Menu will automatically scroll that element to the middle of the Inline XBRL viewer window</li></ul><p class="m-2"><strong>Highlight Colors</strong> (Use the save and reset buttons to save the selected setting or reset to default)</p><ul><li>Tagged Data - Change the highlight color of the tagged fact border</li><li>Search Results - Change the background color of tagged items matching the Search results</li><li>Selected Fact - Change the color of highlight border used to identify the currently selected fact</li><li>Tag Shading (hover) - Change the color of the shading applied to tagged data on hover</li></ul><p class="m-2"><strong>Search Options</strong></p><ul><li>Include Labels - Extends Search to include tag labels</li><li>Include Definitions - Extends Search to include tag definitions</li><li>Include Dimensions - Extends Search to include dimensional detail</li><li>Include References - Extends Search to include authoritative reference information. Optionally specify the reference parts to include in the search (e.g., topic, subtopic, section)</li></ul><p class="m-2"><strong>Help</strong>(this content)</p><p class="m-2"><strong>Version</strong></p><p class="m-2">Indicates the current build of the Inline XBRL viewer application.</p></div></div></div></div></div><div id="facts-menu" class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false"><div class="offcanvas-header"><h5>Facts</h5><span class="fact-total-count badge bg-sec"><i class="fa fa-regular fa-clock"></i> </span><button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button></div><div class="offcanvas-body py-0"><div id="facts-menu-list-pagination" class="d-flex flex-column flex-fill h-100 w-100"><div class="pagination"></div><div class="form-group"><select id="facts-menu-page-select" class="form-select" aria-label="Quickly jump to a page in the Fact Menu." tabindex="13"><option>Select Page</option></select></div><div class="list-group list-group-flush overflow-x-auto w-100"></div></div></div></div><nav><ul id="html-pagination" class="pagination pagination-sm mb-0 form-pages d-none"><li class="page-item"><a class="page-link text-body" href="#" tabindex="13" id="to-top-btn"><i class="fas fa-lg fa-angle-double-left"></i></a></li><li class="page-item"><a class="page-link text-body" href="#" tabindex="13" id="to-prev-btn"><i class="fas fa-lg fa-angle-left"></i></a></li><li class="page-item"><a class="page-link text-body" href="#" tabindex="13" id="to-next-btn"><i class="fas fa-lg fa-angle-right"></i></a></li><li class="page-item"><a class="page-link text-body" href="#" tabindex="13" id="to-bottom-btn"><i class="fas fa-lg fa-angle-double-right"></i></a></li></ul></nav><div id="fact-table-container" class="offcanvas offcanvas-bottom" data-bs-scroll="true" data-bs-backdrop="false"><div class="offcanvas-header d-flex justify-content-between"><h5 class="offcanvas-title">Fact Table</h5><span><nav aria-label="Facts Table Navigation"><ul class="pagination pagination-sm"><li class="page-item"><a id="fact-table-pagination-first" class="page-link text-body" href="#" tabindex="13"><i class="fas fa-lg fa-angle-double-left"></i></a></li><li class="page-item"><a id="fact-table-pagination-prev" class="page-link text-body" href="#" tabindex="13"><i class="fas fa-lg fa-angle-left"></i></a></li><li class="page-item"><a id="fact-table-pagination-next" class="page-link text-body" href="#" tabindex="13"><i class="fas fa-lg fa-angle-right"></i></a></li><li id="fact-table-pagination-last" class="page-item"><a class="page-link text-body" href="#" tabindex="13"><i class="fas fa-lg fa-angle-double-right"></i></a></li></ul></nav></span><span id="fact-table-pagination-info"><span></span> </span><span><select id="fact-table-pagination-size" class="form-select form-select-sm" aria-label="Fact Table Size Selection"><option value="10">10 Facts per page</option><option value="25">25 Facts per page</option><option value="50">50 Facts per page</option></select></span></div><div class="offcanvas-body"><div><table id="fact-table" class="table"></table></div></div></div><div id="facts-breakdown-container" class="offcanvas offcanvas-bottom" data-bs-scroll="true" data-bs-backdrop="false"><div class="offcanvas-header d-flex justify-content-between"><h5 class="offcanvas-title">Facts Chart</h5></div><div class="offcanvas-body"><div id="facts-breakdown" class="h-100"><div class="row h-100"><div class="h-100 card"><div class="card-body h-25"><h5 class="card-title" id="chart-title-1"></h5><h6 class="card-subtitle my-2" id="chart-subtitle-1"></h6><div id="chart-select-1"></div></div><div id="chart-1" class="h-75">Not enough data to form graph.</div></div></div></div></div></div><div id="dynamic-xbrl-form" class="position-relative"></div></div><div id="form-information-modal" data-test="form-information-modal" class="dialog-box fixed-dialog-box d-none bg-white"><div class="dialog-header bg-sec text-white px-1 d-flex justify-content-between"><p id="form-information-modal-title" data-test="form-information-modal-title" class="lead mb-0"><span></span></p><div class="dialog-header-actions"><i id="form-information-modal-drag" title="Click and drag to move this Dialog Box." class="fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="14"></i> <i id="dialog-box-copy-content" title="Click to Copy all Dialog Box Content." class="fas fa-copy m-1 click" tabindex="14"></i> <i id="dialog-box-close" data-name="Form Information Modal" title="Click to Close this Dialog Box." class="fas fa-times m-1 click" tabindex="14"></i></div></div><div class="dialog-content"><div id="form-information-copy-paste" class="form-group d-none"><label for="dialog-content-copy-content-textarea">Copy and Paste Below Content.</label> <a id="dialog-content-copy-content" class="float-end click color-inherit" tabindex="14"><i class="fas fa-times-circle mt-2"></i> </a><textarea class="form-control" rows="5" tabindex="14" id="dialog-content-copy-content-textarea"></textarea></div><div id="form-information-modal-carousel" class="carousel" data-interval="false" data-ride="carousel"><div class="carousel-inner"><div class="carousel-item table-responsive active"><table class="table table-striped table-sm"><tbody id="form-information-modal-carousel-page-1" tabindex="14"><tr><td class="text-center"><i class="fa fa-regular fa-clock"></i></td></tr></tbody></table></div><div class="carousel-item table-responsive"><table class="table table-striped table-bordered table-sm"><tbody id="form-information-modal-carousel-page-2" tabindex="14"><tr><td class="text-center"><i class="fa fa-regular fa-clock"></i></td></tr></tbody></table></div><div class="carousel-item table-responsive" id="form-information-modal-carousel-page-3"><table class="table table-striped table-sm"><tbody id="form-information-modal-carousel-page" tabindex="14"><tr><td class="text-center"><i class="fa fa-regular fa-clock"></i></td></tr></tbody></table></div><div class="carousel-item table-responsive"><table class="table table-striped table-sm"><tbody id="form-information-modal-carousel-page-4" tabindex="14"><tr><td class="text-center"><i class="fa fa-regular fa-clock"></i></td></tr></tbody></table></div></div></div></div><div class="dialog-footer d-flex justify-content-around"><button id="form-information-prev" data-test="form-information-prev" class="btn btn-link text-dark" data-bs-target="#form-information-modal-carousel" role="button" data-bs-slide="prev" tabindex="14"><i class="fas fa-chevron-left" title="Previous"></i> <span class="sr-only">Previous</span></button><div id="form-information-carousel-indicators" class="carousel-indicators mx-0 my-3 p-initial"></div><button id="form-information-next" data-test="form-information-next" class="btn btn-link text-dark" data-bs-target="#form-information-modal-carousel" role="button" data-bs-slide="next" tabindex="14"><i class="fas fa-chevron-right" title="Next"></i> <span class="sr-only">Next</span></button></div></div><div id="settings-modal" data-test="settings-modal" class="dialog-box fixed-dialog-box d-none bg-white"><div class="dialog-header bg-sec text-white px-1 d-flex justify-content-between"><p id="settings-modal-title" data-test="settings-modal-title" class="lead mb-0">Settings</p><div class="dialog-header-actions"><i id="settings-modal-drag" title="Click and drag to move this Dialog Box." class="fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="15"></i> <i id="settings-modal-close" data-name="Settings Modal" title="Click to Close this Dialog Box." class="fas fa-times m-1 click" tabindex="15"></i></div></div><div class="dialog-content"><form><div class="form-group row"><label class="col-sm-4 col-form-label" tabindex="15" for="hover-option-select">Hover over Fact for quick information.</label> <select id="hover-option-select" class="col-sm-8 form-select" tabindex="15"><option value="true">On</option><option value="false">Off</option></select></div><div class="form-group row"><label class="col-sm-4 col-form-label" tabindex="15" for="scroll-position-select">Auto Scrolling Position</label> <select id="scroll-position-select" class="col-sm-8 form-select" tabindex="15"><option value="start">Top</option><option value="center">Center</option></select> <small class="form-text text-muted col-sm-12" tabindex="15">Selecting a fact from the Sections Menu or the Fact Menu will automatically scroll that element to the (Top, or Middle) of the viewer window. This setting will have no use on IE 10, or Safari.</small></div><hr/><div class="form-group row"><label class="col-sm-4 col-form-label" tabindex="15" for="tagged-data-color-picker"><span class="tagged-data-example-1">Tagged Data</span></label><div class="col-sm-4"><span><input id="tagged-data-color-picker" class="form-control w-75 float-start settings-height" type="color" tabindex="15"/> <button id="tagged-data-color-picker-reset" type="button" class="btn btn-secondary btn-sm settings-height"><i class="fa-solid fa-rotate-left"></i></button></span></div></div><hr/><div class="form-group row"><label class="col-sm-4 col-form-label" tabindex="15" for="search-results-color-picker"><span class="search-results-example-1">Search Results</span></label><div class="col-sm-4"><span><input id="search-results-color-picker" class="form-control w-75 float-start settings-height" type="color" tabindex="15"/> <button id="search-results-color-picker-reset" type="button" class="btn btn-secondary btn-sm settings-height"><i class="fa-solid fa-rotate-left"></i></button></span></div></div><hr/><div class="form-group row"><label class="col-sm-4 col-form-label" tabindex="15" for="selected-fact-color-picker"><span class="selected-fact-example-1">Selected Fact</span></label><div class="col-sm-4"><span><input id="selected-fact-color-picker" class="form-control w-75 float-start settings-height" type="color" tabindex="15"/> <button id="selected-fact-color-picker-reset" type="button" class="btn btn-secondary btn-sm settings-height"><i class="fa-solid fa-rotate-left"></i></button></span></div></div><hr/><div class="form-group row"><label class="col-sm-4 col-form-label" tabindex="15" for="tag-shading-color-picker"><span class="tag-shading-exmple-1">Tag Shading (hover)</span></label><div class="col-sm-4"><span><input id="tag-shading-color-picker" class="form-control w-75 float-start settings-height" type="color" tabindex="15"/> <input id="tag-shading-color-picker-range" class="form-range w-75 float-start settings-height" type="range" min="0" max="10"/> <button id="tag-shading-color-picker-reset" type="button" class="btn btn-secondary btn-sm settings-height"><i class="fa-solid fa-rotate-left"></i></button></span></div></div><hr/><div class="form-group row"><label class="col-sm-4 col-form-label" tabindex="15" for="text-block-color-picker"><span class="text-block-exmple-1">Text Block Indicators</span></label><div class="col-sm-4"><span><input id="text-block-color-picker" class="form-control w-75 float-start settings-height" type="color" tabindex="15"/> <button id="text-block-color-picker-reset" type="button" class="btn btn-secondary btn-sm settings-height"><i class="fa-solid fa-rotate-left"></i></button></span></div></div></form></div><div class="dialog-footer d-flex justify-content-around"></div></div><div id="fact-modal" class="dialog-box fixed-dialog-box d-none bg-white"><div class="dialog-header bg-sec text-white px-1 d-flex justify-content-between"><p id="fact-modal-title" class="lead mb-0"><span></span></p><div class="dialog-header-actions"><i id="fact-modal-drag" title="Click and drag to move this Dialog Box." class="fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="16"></i> <i id="fact-modal-jump" title="Click to see this in the Facts sidebar." class="fas fa-directions m-1 click" tabindex="16"></i> <i id="fact-modal-copy-content" class="fas fa-copy m-1 click" tabindex="16"></i> <i id="fact-modal-compress" class="fas fa-compress m-1 click d-none" tabindex="16"></i> <i id="fact-modal-expand" class="fas fa-expand m-1 click" tabindex="16"></i> <i id="fact-modal-close" class="fas fa-times m-1 click" tabindex="16"></i></div></div><div class="dialog-content"><p id="fact-modal-subtitle" class="text-center font-weight-bold"><span></span></p><div id="fact-copy-content" class="form-group d-none"><label for="fact-copy-content-textarea">Copy and Paste Below Content.</label> <a id="fact-copy-content" class="float-end click color-inherit" tabindex="16"><i class="fas fa-times-circle mt-2"></i> </a><textarea class="form-control" rows="5" tabindex="16" name="fact-copy-content" id="fact-copy-content-textarea"></textarea></div><div id="fact-modal-carousel" class="carousel" data-interval="false" data-keyboard="false"><div class="carousel-inner"><div class="carousel-item table-responsive active"><table class="table table-striped table-sm" id="fact-modal-carousel-page-1" tabindex="16"><tbody><tr><td class="text-center"><i class="fa fa-regular fa-clock"></i></td></tr></tbody></table></div><div class="carousel-item table-responsive"><table class="table table-striped table-sm" id="fact-modal-carousel-page-2" tabindex="16"><tbody><tr><td class="text-center"><i class="fa fa-regular fa-clock"></i></td></tr></tbody></table></div><div class="carousel-item table-responsive"><table class="table table-striped table-sm" id="fact-modal-carousel-page-3" tabindex="16"><tbody><tr><td class="text-center"><i class="fa fa-regular fa-clock"></i></td></tr></tbody></table></div><div class="carousel-item table-responsive"><table class="table table-striped table-sm" id="fact-modal-carousel-page-4" tabindex="16"><tbody><tr><td class="text-center"><i class="fa fa-regular fa-clock"></i></td></tr></tbody></table></div></div></div></div><div class="dialog-footer d-flex justify-content-around"><button data-test="modal-fact-prev" class="btn btn-link text-dark" data-bs-target="#fact-modal-carousel" data-bs-slide="next" role="button" tabindex="16"><i class="fas fa-chevron-left" title="Previous"></i> <span class="sr-only">Previous</span></button><div id="fact-modal-carousel-indicators" class="carousel-indicators mx-0 my-3 p-initial"></div><button data-test="modal-fact-next" class="btn btn-link text-dark" data-bs-target="#fact-modal-carousel" data-bs-slide="next" role="button" tabindex="16"><i class="fas fa-chevron-right" title="Next"></i> <span class="sr-only">Next</span></button></div></div><div id="fact-nested-modal" class="dialog-box fixed-dialog-box d-none bg-white"><div class="dialog-header bg-sec text-white px-1 d-flex justify-content-between"><p class="lead mb-0">Nested Facts <span id="nested-page"><span></span></span> <span>/</span> <span id="nested-count"><span></span></span></p><div class="dialog-header-actions"><i id="fact-nested-modal-drag" title="Click and drag to move this Dialog Box." class="fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="17"></i> <i id="nested-fact-modal-jump" title="Click to see this in the Facts sidebar." class="fas fa-directions m-1 click" tabindex="17"></i> <i id="fact-nested-modal-copy-content" class="fas fa-copy m-1 click" tabindex="17"></i> <i id="fact-nested-modal-compress" class="fas fa-compress m-1 click d-none" tabindex="17"></i> <i id="fact-nested-modal-expand" class="fas fa-expand m-1 click" tabindex="17"></i> <i id="fact-nested-modal-close" class="fas fa-times m-1 click" tabindex="17"></i></div></div><div class="dialog-content pt-0"><div id="modal-nested-fact-labels" class="carousel" data-bs-interval="false" data-bs-keyboard="false"><div class="d-flex"><button data-test="modal-fact-nested-prev" class="btn btn-link text-dark" data-bs-target="#modal-nested-fact-labels" role="button" data-bs-slide="prev" tabindex="17"><i class="fas fa-chevron-left" title="Previous"></i> <span class="sr-only">Previous</span></button><div id="modal-fact-nested-label-carousel" class="carousel-inner"></div><button data-test="modal-fact-nested-next" class="btn btn-link text-dark" data-bs-target="#modal-nested-fact-labels" role="button" data-bs-slide="next" tabindex="17"><i class="fas fa-chevron-right" title="Next"></i> <span class="sr-only">Next</span></button></div></div><div id="fact-nested-copy-paste" class="form-group d-none"><label for="fact-nested-copy-content-textarea">Copy and Paste Below Content.</label> <a id="fact-nested-copy-content" class="float-end click color-inherit" tabindex="17"><i class="fas fa-times-circle mt-2"></i> </a><textarea class="form-control" rows="5" tabindex="17" name="fact-nested-copy-content" id="fact-nested-copy-content-textarea"></textarea></div><div id="modal-fact-nested-content-carousel" class="carousel" data-bs-interval="false" data-bs-keyboard="false"><div class="carousel-inner"><div class="carousel-item table-responsive active"><table class="table table-striped table-sm" id="modal-fact-nested-content-carousel-page-1"><tbody tabindex="17"><tr><td class="text-center"><i class="fas fa-spinner fas-spin"></i></td></tr></tbody></table></div><div class="carousel-item table-responsive"><table class="table table-striped table-bordered table-sm" id="modal-fact-nested-content-carousel-page-2"><tbody tabindex="17"><tr><td class="text-center"><i class="fa fa-regular fa-clock"></i></td></tr></tbody></table></div><div class="carousel-item table-responsive"><table class="table table-striped table-sm" id="modal-fact-nested-content-carousel-page-3"><tbody tabindex="17"><tr><td class="text-center"><i class="fa fa-regular fa-clock"></i></td></tr></tbody></table></div><div class="carousel-item table-responsive"><table class="table table-striped table-sm" id="modal-fact-nested-content-carousel-page-4"><tbody tabindex="17"><tr><td class="text-center"><i class="fa fa-regular fa-clock"></i></td></tr></tbody></table></div></div></div></div><div id="fact-nested-nav-controls" class="dialog-footer d-flex justify-content-around"><button data-test="modal-fact-prev" class="btn btn-link text-dark" data-bs-target="#modal-fact-nested-content-carousel" role="button" data-bs-slide="prev" tabindex="17"><i class="fas fa-chevron-left" title="Previous"></i> <span class="sr-only">Previous</span></button><ol id="fact-nested-modal-carousel-indicators" class="carousel-indicators mx-0 my-3 p-initial"></ol><button data-test="modal-fact-next" class="btn btn-link text-dark" data-bs-target="#modal-fact-nested-content-carousel" role="button" data-bs-slide="next" tabindex="17"><i class="fas fa-chevron-right" title="Next"></i> <span class="sr-only">Next</span></button></div></div><script defer="defer" src="ix-viewer.bundle.532a0c68c0e38ead3d60.min.js"></script></body></html>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+
+
+<head>
+    <!-- Required meta tags -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="https://www.sec.gov/favicon.ico" />
+    <title>Inline Viewer</title>
+<link href="styles.b46bba50e3d672ad7758.min.css" rel="stylesheet"/></head>
+
+<body>
+    <noscript>
+        This application relies heavily on JavaScript, you
+        will need to allow JavaScript to use this application.
+    </noscript>
+    <div class="w-100 border-bottom">
+        <nav class="navbar navbar-expand-md navbar-dark navbar-height bg-sec pl-0">
+            <button class="navbar-toggler ml-1" type="button" data-test="" data-bs-toggle="collapse"
+                data-bs-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false"
+                aria-label="Toggle navigation">Inline Viewer</button>
+            <div class="navbar-height collapse navbar-collapse bg-sec w-100" data-test="main-navbar" id="main-navbar">
+                <ul class="navbar-nav mr-auto bg-inherit">
+                    <li class="nav-item dropdown my-auto ml-1">
+                        <a id="menu-dropdown-link" data-test="menu-dropdown-link"
+                            class="nav-link dropdown-toggle click disabled" role="button" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" tabindex="1" accesskey="1">
+                            <i class="nav-loading fas fa-bars" title="Menu"></i>
+                            <span class="d-md-none d-lg-inline">Menu</span>
+                            <span class="sr-only sr-only-focusable">Menu</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a id="menu-dropdown-information" data-test="menu-dropdown-information"
+                                class="dropdown-item click text-body" tabindex="1">Information</a>
+                            <a id="form-information-instance" data-test="form-information-instance"
+                                class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer"
+                                tabindex="1">Save
+                                XBRL
+                                Instance</a>
+                            <a id="form-information-zip" data-test="form-information-zip"
+                                class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer"
+                                tabindex="1">Save XBRL Zip
+                                File</a>
+                            <a id="form-information-html" data-test="form-information-html"
+                                class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer"
+                                tabindex="1">Open as
+                                HTML</a>
+                            <a id="menu-dropdown-settings" data-test="menu-dropdown-settings"
+                                class="dropdown-item click text-body" tabindex="1">Settings</a>
+                            <a id="form-information-help" data-bs-toggle="offcanvas" data-bs-target="#help-menu"
+                                class="dropdown-item click text-body" tabindex="1">Help</a>
+                            <span id="form-information-version" class="dropdown-item-text text-body"
+                                tabindex="1"></span>
+                        </div>
+                    </li>
+                    <li class="nav-item my-auto ml-1">
+                        <a id="sections-dropdown-link" data-bs-toggle="offcanvas" data-bs-target="#sections-menu"
+                            class="nav-link click disabled meta-required" tabindex="2" accesskey="2">
+                            <i class="fas fa-layer-group" title="Sections"></i>
+                            <span class="d-md-none d-lg-inline">Sections</span>
+                            <span class="sr-only sr-only-focusable">Sections</span>
+                        </a>
+                    </li>
+                    <li class="nav-item my-auto ml-1 mr-1">
+                        <form id="global-search-form" data-test="global-search-form"
+                            class="my-2 my-lg-0 input-group disabled" novalidate="true">
+                            <div class="input-group">
+                                <button data-name="global-search-options"
+                                    class="dropdown btn btn-outline-light disabled" type="button"
+                                    data-bs-toggle="dropdown" tabindex="3">
+                                    <i class="nav-loading fas fa-cog" title="Additional Search Options">
+                                        <span class="sr-only sr-only-focusable">Additional
+                                            Search Options</span>
+                                    </i>
+                                </button>
+                                <div class="dropdown-menu px-2">
+                                    <div class="form-check">
+                                        <label class="form-check-label mb-0">
+                                            <input disabled="true" class="form-check-input meta-required"
+                                                type="checkbox" name="search-options" value="1" checked="true"
+                                                tabindex="3" />
+                                            <span>Include Fact Name</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label mb-0">
+                                            <input disabled="true" class="form-check-input meta-required"
+                                                type="checkbox" name="search-options" value="2" checked="true"
+                                                tabindex="3" />
+                                            <span>Include Fact Content</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label mb-0">
+                                            <input disabled="true" class="form-check-input meta-required"
+                                                type="checkbox" name="search-options" value="3" checked="true"
+                                                tabindex="3" />
+                                            <span>Include Labels</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label mb-0">
+                                            <input disabled="true" class="form-check-input meta-required"
+                                                type="checkbox" name="search-options" value="4" tabindex="3" />
+                                            <span>Include Definitions</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label mb-0">
+                                            <input disabled="true" class="form-check-input meta-required"
+                                                type="checkbox" name="search-options" value="5" tabindex="3" />
+                                            <span>Include Dimensions</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label mb-0">
+                                            <input disabled="true" class="form-check-input meta-required"
+                                                type="checkbox" name="search-options" value="6" tabindex="3" />
+                                            <span>Include References</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <input type="text" class="form-control disabled" id="global-search"
+                                    data-test="global-search" placeholder="Search Facts" disabled="true"
+                                    aria-label="Search all Facts and highlight them accordingly." tabindex="4" />
+
+                                <button id="search-btn-clear" data-name="global-search-clear"
+                                    class="btn btn-outline-light disabled" type="button" tabindex="5">
+                                    <i class="nav-loading fas fa-times-circle" title="Clear Search"></i>
+                                    <span class="sr-only sr-only-focusable">
+                                        Clear Search</span>
+                                </button>
+                                <button class="btn btn-outline-light disabled" type="submit" tabindex="6">
+                                    <i class="nav-loading fas fa-search" title="Submit Search"></i>
+                                    <span class="sr-only sr-only-focusable">
+                                        Submit Search</span>
+                                </button>
+                            </div>
+                            <ul class="list-group position-fixed suggestions" id="suggestions"></ul>
+                        </form>
+                    </li>
+                    <li class="nav-item dropdown my-auto ml-1">
+                        <a href="#" id="nav-filter-data" data-test="nav-filter-data"
+                            class="nav-link dropdown-toggle disabled click" role="button" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" tabindex="7" accesskey="3">
+                            <i class="nav-loading fas fa-list-alt" title="Data"></i>
+                            <span class="d-md-none d-lg-inline">Data</span>
+                            <span class="sr-only sr-only-focusable">Data</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <form id="nav-filter-dropdown" data-name="data-dropdown" class="px-2">
+                                <div class="form-check">
+                                    <label class="form-check-label mb-0">
+                                        <input class="form-check-input" type="radio" name="data-radios" value="0"
+                                            checked="true" tabindex="7" />
+                                        All
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label mb-0">
+                                        <input class="form-check-input" type="radio" name="data-radios" value="1"
+                                            tabindex="7" />
+                                        <span>Amounts Only</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label mb-0">
+                                        <input class="form-check-input" type="radio" name="data-radios" value="2"
+                                            tabindex="7" />
+                                        <span>Text Only</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label mb-0">
+                                        <input class="form-check-input meta-required" type="radio" name="data-radios"
+                                            value="3" disabled="true" tabindex="7" />
+                                        <span>Calculations Only</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label mb-0">
+                                        <input class="form-check-input" type="radio" name="data-radios" value="4"
+                                            tabindex="7" />
+                                        <span>Negatives Only</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label mb-0">
+                                        <input class="form-check-input" type="radio" name="data-radios" value="5"
+                                            tabindex="7" />
+                                        <span>Additional Items Only</span>
+                                    </label>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown my-auto ml-1">
+                        <a href="#" id="nav-filter-tags" data-test="nav-filter-tags"
+                            class="nav-link dropdown-toggle disabled click" role="button" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false" tabindex="8" accesskey="4">
+                            <i class="nav-loading fas fa-tags" title="Tags"></i>
+                            <span class="d-md-none d-lg-inline">Tags</span>
+                            <span class="sr-only sr-only-focusable">Tags</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <form id="nav-filter-tags-dropdown" data-name="tags-dropdown" class="px-2">
+                                <div class="form-check">
+                                    <label class="form-check-label mb-0">
+                                        <input class="form-check-input" type="radio" name="tags-radios" value="0"
+                                            aria-label="Radio Button for All Tag Types" checked="true" tabindex="8" />
+                                        <span>All</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label mb-0">
+                                        <input class="form-check-input" type="radio" name="tags-radios" value="1"
+                                            aria-label="Radio Button for Standard Only Tag Types" tabindex="8" />
+                                        <span>Standard Only</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label mb-0">
+                                        <input class="form-check-input meta-required" type="radio" name="tags-radios"
+                                            value="2" disabled="true"
+                                            aria-label="Radio Button for Custom Only Tag Types" tabindex="8" />
+                                        <i title="Facts whose tags are outside the realm of DEI, US-GAAP, etc."
+                                            class="far fa-question-circle"></i>
+                                        <span>Custom Only</span>
+                                    </label>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown my-auto ml-1">
+                        <a id="nav-filter-more" class="nav-link dropdown-toggle disabled click" role="button"
+                            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true"
+                            aria-expanded="false" tabindex="9" accesskey="5">
+                            <i id="loading-more-filters" class="nav-loading fas fa-filter" title="More Filters"></i>
+                            <span class="d-md-none d-lg-inline">More Filters</span>
+                            <span class="sr-only sr-only-focusable">More Filters</span>
+                            <span title="Total active filters." class="badge text-bg-secondary"></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-width">
+                            <div class="accordion" id="more-filters-accordion">
+                                <form class="mb-0" data-test="more-filters-form">
+                                    <div class="mx-1">
+                                        <div class="px-0 py-0">
+                                            <a data-test="Period" data-bs-target="#user-filters-periods"
+                                                data-bs-toggle="collapse"
+                                                class="d-flex justify-content-between align-items-center w-100 click text-primary"
+                                                tabindex="9">
+                                                <span>Periods</span>
+                                                <span data-test="Period-count" id="filters-periods-count"
+                                                    class="badge text-bg-secondary">
+                                                    <i class="fa fa-regular fa-clock"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="user-filters-periods" class="collapse height-200 overflow-y-auto"
+                                            data-parent="#more-filters-accordion">
+                                            <!-- Below is populated dynamically VIA JS -->
+                                            <div class="list-group list-group-flush"></div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <form class="mb-0">
+                                    <div class="mx-1">
+                                        <div class="px-0 py-0">
+                                            <a data-test="Measures" data-bs-target="#user-filters-measures"
+                                                data-bs-toggle="collapse"
+                                                class="d-flex justify-content-between align-items-center w-100 click text-primary"
+                                                tabindex="9">
+                                                <span>Measures</span>
+                                                <span data-test="Measures-count" id="filters-measures-count"
+                                                    class="badge text-bg-secondary">
+                                                    <i class="fa fa-regular fa-clock"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="user-filters-measures" class="collapse height-200 overflow-y-auto"
+                                            data-parent="#more-filters-accordion">
+                                            <!-- Below is populated dynamically VIA JS -->
+                                            <div class="list-group list-group-flush"></div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <form class="mb-0">
+                                    <div class="mx-1">
+                                        <div class=" px-0 py-0">
+                                            <a data-test="Axis" data-bs-target="#user-filters-axis"
+                                                data-bs-toggle="collapse"
+                                                class="d-flex justify-content-between align-items-center w-100 click text-primary"
+                                                tabindex="9">
+                                                <span>Axis</span>
+                                                <span data-test="Axis-count" id="filters-axis-count"
+                                                    class="badge text-bg-secondary">
+                                                    <i class="fa fa-regular fa-clock"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="user-filters-axis" class="collapse height-200 overflow-y-auto"
+                                            data-parent="#more-filters-accordion">
+                                            <div class="list-group list-group-flush d-none">
+                                                <div
+                                                    class="d-flex justify-content-between align-items-center w-100 px-1">
+                                                    <div class="form-check">
+                                                        <label class="form-check-label mb-0">
+                                                            <input id="axes-all-0"
+                                                                title="Select/Deselect all options below."
+                                                                class="form-check-input" type="checkbox" tabindex="9" />
+                                                            <a href="#axes-filters-accordion-0"
+                                                                data-bs-toggle="collapse" tabindex="9">Explicit</a>
+                                                        </label>
+                                                    </div>
+                                                    <span class="badge text-bg-secondary"
+                                                        id="axis-explicit-count"></span>
+                                                </div>
+                                            </div>
+                                            <!-- Below is populated dynamically VIA JS -->
+                                            <div class="list-group list-group-flush d-none">
+                                                <div
+                                                    class="d-flex justify-content-between align-items-center w-100 px-1">
+                                                    <div class="form-check">
+                                                        <label class="form-check-label mb-0">
+                                                            <input id="axes-all-1"
+                                                                title="Select/Deselect all options below."
+                                                                class="form-check-input" type="checkbox" tabindex="9" />
+                                                            <a href="#axes-filters-accordion-1"
+                                                                data-bs-toggle="collapse" tabindex="9">Typed</a>
+                                                        </label>
+                                                    </div>
+                                                    <span class="badge text-bg-secondary" id="axis-typed-count"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <form class="mb-0">
+                                    <div class="mx-1">
+                                        <div class="px-0 py-0">
+                                            <a data-test="Members" data-bs-target="#user-filters-members"
+                                                data-bs-toggle="collapse"
+                                                class="d-flex justify-content-between align-items-center w-100 click text-primary"
+                                                tabindex="9">
+                                                <span>Members</span>
+                                                <span data-test="Members-count" id="filters-members-count"
+                                                    class="badge text-bg-secondary">
+                                                    <i class="fa fa-regular fa-clock"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="user-filters-members" class="collapse height-200 overflow-y-auto"
+                                            data-parent="#more-filters-accordion">
+                                            <div class="list-group list-group-flush d-none">
+                                                <div
+                                                    class="d-flex justify-content-between align-items-center w-100 px-1">
+                                                    <div class="form-check">
+                                                        <label class="form-check-label mb-0">
+                                                            <input id="members-all-0"
+                                                                title="Select/Deselect all options below."
+                                                                class="form-check-input" type="checkbox" tabindex="9" />
+                                                            <a href="#members-filters-accordion-0"
+                                                                data-bs-toggle="collapse" tabindex="9">Explicit</a>
+                                                        </label>
+                                                    </div>
+                                                    <span class="badge text-bg-secondary"
+                                                        id="members-explicit-count"></span>
+                                                </div>
+                                            </div>
+                                            <!-- Below is populated dynamically VIA JS -->
+                                            <div class="list-group list-group-flush d-none">
+                                                <div
+                                                    class="d-flex justify-content-between align-items-center w-100 px-1">
+                                                    <div class="form-check">
+                                                        <label class="form-check-label mb-0">
+                                                            <input id="members-all-1"
+                                                                title="Select/Deselect all options below."
+                                                                class="form-check-input" type="checkbox" tabindex="9" />
+                                                            <a href="#members-filters-accordion-1"
+                                                                data-bs-toggle="collapse" tabindex="9">Typed</a>
+                                                        </label>
+                                                    </div>
+                                                    <span class="badge text-bg-secondary"
+                                                        id="members-typed-count"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <form class="mb-0">
+                                    <div class="mx-1">
+                                        <div class="px-0 py-0">
+                                            <a data-test="Scale" data-bs-target="#user-filters-scales"
+                                                data-bs-toggle="collapse"
+                                                class="d-flex justify-content-between align-items-center w-100 click text-primary"
+                                                tabindex="9">
+                                                <span>Scale</span>
+                                                <span data-test="Scale-count" id="filters-scales-count"
+                                                    class="badge text-bg-secondary">
+                                                    <i class="fa fa-regular fa-clock"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="user-filters-scales" class="collapse height-200 overflow-y-auto"
+                                            data-parent="#more-filters-accordion">
+                                            <!-- Below is populated dynamically VIA JS -->
+                                            <div class="list-group list-group-flush"></div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <form class="mb-0">
+                                    <div class="mx-1">
+                                        <div class="px-0 py-0">
+                                            <a data-test="Balance" data-bs-target="#user-filters-balances"
+                                                data-bs-toggle="collapse"
+                                                class="d-flex justify-content-between align-items-center w-100 click text-primary"
+                                                tabindex="9">
+                                                <span>Balance</span>
+                                                <span data-test="Balance-count" id="filters-balances-count"
+                                                    class="badge text-bg-secondary">2</span>
+                                            </a>
+                                        </div>
+                                        <div id="user-filters-balances" class="collapse height-200 overflow-y-auto"
+                                            data-parent="#more-filters-accordion">
+                                            <div class="d-flex justify-content-between align-items-center w-100 px-2">
+                                                <div class="form-check">
+                                                    <label class="form-check-label mb-0">
+                                                        <input id="user-filters-balances-debit"
+                                                            title="Select/Deselect this option."
+                                                            class="form-check-input" type="checkbox" tabindex="9" />
+                                                        <span>Debit</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center w-100 px-2">
+                                                <div class="form-check">
+                                                    <label class="form-check-label mb-0">
+                                                        <input id="user-filters-balances-credit"
+                                                            title="Select/Deselect this option."
+                                                            class="form-check-input" type="checkbox" tabindex="9" />
+                                                        <span>Credit</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                    <li id="current-filters-reset" data-test="current-filters-reset"
+                        class="nav-item d-none my-auto ml-1">
+                        <a href="#" id="current-filters-reset-all" data-name="current-filters-reset"
+                            class="nav-link dropdown-toggle text-danger disabled click" tabindex="11" accesskey="7">
+                            <i class="nav-loading fas fa-redo"></i>
+                            <span class="d-md-none d-lg-inline">Reset All
+                                Filters</span>
+                        </a>
+                    </li>
+                    <li id="links-dropdown" data-test="links-dropdown" class="nav-item dropdown d-none my-auto ml-1">
+                        <a href="#" id="additional-links-dropdown" class="nav-link dropdown-toggle disabled click"
+                            role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            tabindex="12" accesskey="8">
+                            <i class="nav-loading fas fa-link"></i>
+                            <span class="d-md-none d-lg-inline">Links</span>
+                        </a>
+                        <div id="links-dropdown-content" class="dropdown-menu dropdown-menu-width w-auto"></div>
+                    </li>
+                </ul>
+                <ul class="navbar-nav bg-inherit">
+                    <li class="nav-item my-auto ml-1">
+                        <a id="facts-menu-button" data-bs-toggle="offcanvas" data-bs-target="#facts-menu" tabindex="13"
+                            class="nav-link click" accesskey="9">
+                            Facts
+                            <span class="fact-total-count badge text-bg-light">
+                                <i class="fa fa-regular fa-clock"></i>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <ul id="tabs-container" class="nav nav-pills position-relative nav-underline justify-content-center">
+        </ul>
+    </div>
+
+    <div class="main-container">
+
+        <div id="error-container" data-test="error-container" class="px-0">
+            <!-- Below is populated dynamically VIA JS (error messages) -->
+        </div>
+
+        <div id="xbrl-form-loading" data-test="xbrl-form-loading" class="jumbotron h-100">
+            <h2 class="display-4 text-center">
+                <i class="fa fa-regular fa-clock"></i>
+                <span>Loading Inline Form.</span>
+            </h2>
+        </div>
+
+        <div id="sections-menu" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false">
+            <div class="offcanvas-header">
+                <h5>Tagged Sections</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <form id="sections-menu-search-submit" data-name="sections-menu-search" class="my-2 my-lg-0 input-group"
+                    novalidate="true">
+
+                    <div class="input-group">
+                        <div id="sections-search-additional" class="input-group-prepend d-none">
+                            <button class="dropdown btn btn-sec" type="button" data-bs-toggle="dropdown" tabindex="2">
+                                <i class="nav-loading fas fa-cog"></i>
+                            </button>
+                            <div class="dropdown-menu px-2">
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="sections-search-options"
+                                            value="1" checked="true" tabindex="2" />
+                                        <span>Search in All Instances.</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="sections-search-options"
+                                            value="2" tabindex="2" />
+                                        <span>Search in Current Instance only.</span>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio" name="sections-search-options"
+                                            value="3" tabindex="2" />
+                                        <span>Search in Other Instances(s) only.</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="text" class="form-control" id="sections-search" data-test="sections-search"
+                            placeholder="Search Sections" aria-label="Search all Sections by their associated label."
+                            name="search-sections" tabindex="2" required="true" />
+
+                        <button id="section-menu-search-btn-clear" data-name="sections-menu-search-clear"
+                            class="btn btn-sec" type="reset" tabindex="2">
+                            <i class="nav-loading fas fa-times-circle" title="Clear Sections Search"></i>
+                            <span class="sr-only sr-only-focusable">Clear
+                                Sections Search</span>
+                        </button>
+                        <button class="btn btn-sec" type="submit" tabindex="2">
+                            <i class="nav-loading fas fa-search" title="Submit Sections Search"></i>
+                            <span class="sr-only sr-only-focusable">Submit
+                                Sections Search</span>
+                        </button>
+                    </div>
+                </form>
+                <hr />
+                <div class="accordion" id="tagged-sections">
+                    <!-- Below is populated dynamically VIA JS -->
+                </div>
+            </div>
+        </div>
+
+        <div id="help-menu" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false">
+            <div class="offcanvas-header">
+                <h5>Help</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="accordion" id="help-sections">
+                    <div class="card">
+                        <div class="card-header px-0 py-0">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-getting-started">
+                                    <span class="font-size-1">Getting Started</span>
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="help-getting-started" class="collapse" data-parent="#help-sections">
+                            <p class="m-2">The Inline XBRL viewer allows a user
+                                to quickly and easily review details of the tagged information in
+                                an Inline document by automatically placing a top and bottom
+                                highlight border around each tagged numeric fact and left and
+                                right border for each block tagged fact. Hovering over a tagged
+                                fact will highlight (shade) all content related to the tagged
+                                fact, and clicking on a tagged fact will reveal its tagging
+                                details in the Fact Review Window. Navigation, search and filter
+                                options are also provided to easily refine and identify specific
+                                types of tagged information.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header px-0 py-0">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-fact-review-window">
+                                    <span class="font-size-1">Fact Review Window</span>
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="help-fact-review-window" class="collapse" data-parent="#help-sections">
+                            <p class="m-2">The Fact Review Window shows the tagging
+                                details for the currently selected fact, which is highlighted
+                                with a solid blue border. There are four categories of fact detail
+                                which can be viewed; an "N/A" value indicates there is no
+                                available information for the item within the given category:</p>
+                            <ul>
+                                <li>Attributes - All primary information (as
+                                    applicable) describing the tagged fact including period, sign,
+                                    decimals, dimensional detail (axes and members), scale, measure
+                                    and data type.</li>
+                                <li>Labels - Detailed documentation
+                                    (definition) for the tag used, and other labels.</li>
+                                <li>References - Authoritative reference
+                                    information (as applicable) for the selected tag.</li>
+                                <li>Calculation - Balance and calculation
+                                    hierarchy details (numeric non-dimensioned items only).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header px-0 py-0">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-search">
+                                    <span class="font-size-1">Searching</span>
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="help-search" class="collapse" data-parent="#help-sections">
+                            <p class="m-2">There are two ways to search the
+                                document: FACTS AND SECTIONS. To search information, enter a
+                                keyword in a search box and select the magnifying glass icon to
+                                return matching results. Search operators "and" (via "AND" or
+                                "&amp;") and "or" (via "OR" or "|") are available to further refine a
+                                search.</p>
+                            <p class="m-2">
+                                <strong>FACTS</strong>
+                            </p>
+                            <p class="m-2">The Search Facts box can be used to find
+                                tagged facts matching entered keywords. By default, tag name, tag
+                                labels, and tagged content are included in Search. Tagged facts
+                                matching the search criteria are shown with a yellow-colored
+                                (default) shading on the page and appear in the Facts List.
+                                Select the "X" button to the left of the magnifying glass icon to
+                                clear the search.</p>
+                            <p class="m-2">The content included in Search can be increased to
+                                included tag definitions, dimensions, and authoritative
+                                references by selecting the cog / wheel icon to the left of the
+                                search box. See Settings for more information.</p>
+
+                            <p class="m-2">
+                                <strong>SECTIONS</strong>
+                            </p>
+                            <p class="m-2">The Search Sections box can be used to
+                                filter the tagged sections of the financial statements.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header px-0 py-0">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-filter">
+                                    <span class="font-size-1">Filters</span>
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="help-filter" class="collapse" data-parent="#help-sections">
+                            <p class="m-2">Filters change the number of highlighted
+                                facts and items in the fact list by providing several ways to
+                                review and pinpoint certain tagged information. Multiple filters
+                                can be used at once.</p>
+                            <p class="m-2">
+                                <strong>DATA FILTERS</strong>
+                            </p>
+                            <p class="m-2">These filter options allow the user to
+                                refine the highlighted tagged facts by data type:</p>
+                            <ul>
+                                <li>All - Displays all tagged data (default)</li>
+                                <li>Amounts Only - Numeric facts only</li>
+                                <li>Text Only - Textual facts only</li>
+                                <li>Calculations Only - Numeric facts
+                                    participating in a calculation only</li>
+                                <li>Negatives Only - Negative Numeric amounts
+                                    only</li>
+                                <li>Additional Items Only - Tagged facts
+                                    without a corresponding HTML presentation (i.e., hidden facts)
+                                    only</li>
+                            </ul>
+                            <p class="m-2">
+                                <strong>TAGS FILTER</strong>
+                            </p>
+                            <p class="m-2">These filters allow the user to refine
+                                the highlighted facts by tag type:</p>
+                            <ul>
+                                <li>All - Displays all tagged data (default)</li>
+                                <li>Standard Only- Facts with standard tags
+                                    from a common fact (e.g., US_GAAP, IFRS, DEI).</li>
+                                <li>Custom Only - Facts with extension
+                                    "custom" tags unique to the entity's document.</li>
+                            </ul>
+                            <p class="m-2">
+                                <strong>MORE FILTERS</strong>
+                            </p>
+                            <p class="m-2">Additional filters that allow user to
+                                further refine the highlighted facts:</p>
+                            <ul>
+                                <li>Periods - List of all used context years
+                                    and reporting periods</li>
+                                <li>Measures - List of all used units of
+                                    measure (e.g., US Dollars); as applicable</li>
+                                <li>Axis - List of all used axis
+                                    (dimensions); as applicable (dimensions); as applicable</li>
+                                <li>Scale - List of all used scaled options
+                                    (e.g., thousands, millions); as applicable</li>
+                                <li>Balance - Debit, credit; as applicable</li>
+                            </ul>
+                            <p class="m-2">Multiple filters work in conjunction
+                                with each other. For example, selecting the "Amounts Only" Data
+                                filter and "Custom Only" Tags filter will highlight only numeric
+                                tagged facts using custom tags and list them in the fact list.
+                                Active filters are displayed in the Filter toolbar as they are
+                                selected. Active filters can be removed individually by
+                                unchecking or selecting ALL option for each filter, or all at
+                                once via the "Reset All Filters" option.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header px-0 py-0">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-facts-results-list">
+                                    <span class="font-size-1">Facts List (Results)</span>
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="help-facts-results-list" class="collapse" data-parent="#help-sections">
+                            <p class="m-2">On the toolbar, select the "count" to
+                                the right of the word Facts (e.g., Facts 234) to reveal the Facts
+                                List results - a navigable listing of all currently highlighted
+                                tagged facts. The count represents the current number of facts.</p>
+                            <p class="m-2">By default, all tagged facts are
+                                displayed in the Fact List Results. The list content and count
+                                reflects the currently highlighted facts (i.e., both Filters and
+                                Search criteria refine the list to match the highlighted tagged
+                                facts). Navigation controls are available to move through the
+                                list as well as move the current view to the corresponding
+                                highlighted fact location automatically. When a fact in the Facts
+                                Results List is selected, it will reveal the Fact Review Window.</p>
+                            <p class="m-2">Certain letters may appear to the right
+                                of an item in the Fact Result list to indicate a certain
+                                property. If the letter "A" appears for a fact, it indicates the
+                                fact is additional data (i.e., hidden with potentially no
+                                corresponding HTML presentation). If the letter "C" appears, the
+                                fact is tagged with a custom tag. If the letter "D" appears, the
+                                fact is tagged with dimensional information.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header px-0 py-0">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-tagged-sections">
+                                    <span class="font-size-1">Sections</span>
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="help-tagged-sections" class="collapse" data-parent="#help-sections">
+                            <p class="m-2">The SECTIONS toolbar item provides a
+                                listing of the tagged sections of the Inline document. Sections
+                                are divided into three groups:</p>
+                            <ul>
+                                <li>Document &amp; Entity Information</li>
+                                <li>Financial Statements</li>
+                                <li>Notes to the Financial Statements</li>
+                            </ul>
+                            <p class="m-2">By expanding a group and selecting a
+                                section item in the listing, Inline XBRL viewer will navigate to that section.
+                                When the Tagged Sections feature is open, the Search Sections box
+                                will additionally filter the list of sections to only those
+                                sections that match the entered criteria.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header px-0 py-0">
+                            <h5 class="mb-0">
+                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-tagged-menu">
+                                    <span class="font-size-1">Menu</span>
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="help-tagged-menu" class="collapse" data-parent="#help-sections">
+                            <p class="m-2">
+                                <strong>Information</strong>
+                            </p>
+                            <p class="m-2">The Information menu item provides
+                                additional detail about the current Inline document and
+                                customizable viewer settings.</p>
+                            <ul>
+                                <li>Company and Document - Basic company and document
+                                    information</li>
+                                <li>Tags - Fact and tag (standard and custom)
+                                    information</li>
+                                <li>Files - Files used</li>
+                                <li>Additional Items - Additional hidden data
+                                    that's been tagged but potentially does not have a corresponding
+                                    location in the HTML</li>
+                            </ul>
+                            <p class="m-2">
+                                <strong>Save XBRL Instance</strong>
+                            </p>
+                            <p class="m-2">The Save XBRL Instance menu item allows
+                                an XBRL instance document (*.xml) that is extracted from the
+                                Inline document to be saved locally for use by software
+                                supporting the XBRL format.</p>
+                            <p class="m-2">
+                                <strong>Save XBRL Zip</strong>
+                            </p>
+                            <p class="m-2">The Save XBRL Zip menu item allows a zip
+                                file (*.zip) that contains the as-provided XBRL instance document
+                                and related custom fact files to be saved locally.</p>
+                            <p class="m-2">
+                                <strong>Settings</strong>
+                            </p>
+                            <p class="m-2">The Settings menu item provides the
+                                ability to customize Viewer features.</p>
+                            <p class="m-2">
+                                <strong>Tagged Fact Hover</strong>
+                            </p>
+                            <ul>
+                                <li>On - Displays the hover fact review
+                                    window for any tagged fact*</li>
+                                <li>Off - Hides the hover fact review window
+                                    for any tagged fact (default)</li>
+                            </ul>
+                            <p class="m-2">* May impact performance with certain
+                                web browsers.</p>
+                            <p class="m-2">
+                                <strong>Auto Scrolling Position </strong>(This setting will have
+                                no effect on IE 10 or Safari)
+                            </p>
+                            <ul>
+                                <li>Top - Selecting a fact from the Sections
+                                    Menu or the Fact Menu will automatically scroll that element to
+                                    the Top of the Inline XBRL viewer window (default)</li>
+                                <li>Center - Selecting a fact from the
+                                    Sections Menu or the Fact Menu will automatically scroll that
+                                    element to the middle of the Inline XBRL viewer window</li>
+                            </ul>
+                            <p class="m-2">
+                                <strong>Highlight Colors</strong> (Use the save and reset buttons
+                                to save the selected setting or reset to default)
+                            </p>
+                            <ul>
+                                <li>Tagged Data - Change the highlight color
+                                    of the tagged fact border</li>
+                                <li>Search Results - Change the background
+                                    color of tagged items matching the Search results</li>
+                                <li>Selected Fact - Change the color of
+                                    highlight border used to identify the currently selected fact</li>
+                                <li>Tag Shading (hover) - Change the color of
+                                    the shading applied to tagged data on hover</li>
+                            </ul>
+                            <p class="m-2">
+                                <strong>Search Options</strong>
+                            </p>
+                            <ul>
+                                <!-- <li >Match Case - Matches the specific case of
+                                    the entered Search keyword</li> -->
+                                <li>Include Labels - Extends Search to
+                                    include tag labels</li>
+                                <li>Include Definitions - Extends Search to
+                                    include tag definitions</li>
+                                <li>Include Dimensions - Extends Search to
+                                    include dimensional detail</li>
+                                <li>Include References - Extends Search to
+                                    include authoritative reference information. Optionally specify
+                                    the reference parts to include in the search (e.g., topic,
+                                    subtopic, section)</li>
+                            </ul>
+                            <p class="m-2">
+                                <strong>Help</strong>(this content)
+                            </p>
+                            <p class="m-2">
+                                <strong>Version</strong>
+                            </p>
+                            <p class="m-2">Indicates the current build of the Inline XBRL viewer
+                                application.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="facts-menu" class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false">
+            <div class="offcanvas-header">
+
+                <h5>Facts</h5>
+
+                <span class="fact-total-count badge bg-sec">
+                    <i class="fa fa-regular fa-clock"></i>
+                </span>
+
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+
+            <div class="offcanvas-body py-0">
+                <div id="facts-menu-list-pagination" class="d-flex flex-column flex-fill h-100 w-100">
+                    <div class="pagination"></div>
+                    <div class="form-group">
+                        <select id="facts-menu-page-select" class="form-select"
+                            aria-label="Quickly jump to a page in the Fact Menu." tabindex="13">
+                            <option>Select Page</option>
+                        </select>
+                    </div>
+                    <div class="list-group list-group-flush overflow-x-auto w-100"></div>
+                </div>
+            </div>
+        </div>
+
+        <nav>
+            <ul id="html-pagination" class="pagination pagination-sm mb-0 form-pages d-none">
+                <li class="page-item">
+                    <a class="page-link text-body" href="#" tabindex="13" id="to-top-btn">
+                        <i class="fas fa-lg fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link text-body" href="#" tabindex="13" id="to-prev-btn">
+                        <i class="fas fa-lg fa-angle-left"></i>
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a class="page-link text-body" href="#" tabindex="13" id="to-next-btn">
+                        <i class="fas fa-lg fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item ">
+                    <a class="page-link text-body" href="#" tabindex="13" id="to-bottom-btn">
+                        <i class="fas fa-lg fa-angle-double-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div id="fact-table-container" class="offcanvas offcanvas-bottom" data-bs-scroll="true"
+            data-bs-backdrop="false">
+            <div class="offcanvas-header d-flex justify-content-between">
+                <h5 class="offcanvas-title">Fact Table</h5>
+                <span>
+                    <nav aria-label="Facts Table Navigation">
+                        <ul class="pagination pagination-sm">
+                            <li class="page-item">
+                                <a id="fact-table-pagination-first" class="page-link text-body" href="#" tabindex="13">
+                                    <i class="fas fa-lg fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a id="fact-table-pagination-prev" class="page-link text-body" href="#" tabindex="13">
+                                    <i class="fas fa-lg fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a id="fact-table-pagination-next" class="page-link text-body" href="#" tabindex="13">
+                                    <i class="fas fa-lg fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li id="fact-table-pagination-last" class="page-item">
+                                <a class="page-link text-body" href="#" tabindex="13">
+                                    <i class="fas fa-lg fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </span>
+                <span id="fact-table-pagination-info">
+                    <span></span>
+                </span>
+                <span>
+                    <select id="fact-table-pagination-size" class="form-select form-select-sm"
+                        aria-label="Fact Table Size Selection">
+                        <option value="10">10 Facts per page</option>
+                        <option value="25">25 Facts per page</option>
+                        <option value="50">50 Facts per page</option>
+                    </select>
+                </span>
+            </div>
+            <div class="offcanvas-body">
+                <div>
+                    <table id="fact-table" class="table"></table>
+                </div>
+            </div>
+        </div>
+
+        <div id="facts-breakdown-container" class="offcanvas offcanvas-bottom" data-bs-scroll="true"
+            data-bs-backdrop="false">
+            <div class="offcanvas-header d-flex justify-content-between">
+                <h5 class="offcanvas-title">Facts Chart</h5>
+
+            </div>
+            <div class="offcanvas-body">
+                <div id="facts-breakdown" class="h-100">
+                    <div class="row h-100">
+                        <div class="h-100 card">
+                            <div class="card-body h-25">
+                                <h5 class="card-title" id="chart-title-1"></h5>
+                                <h6 class="card-subtitle my-2" id="chart-subtitle-1"></h6>
+                                <div id="chart-select-1"></div>
+                            </div>
+                            <div id="chart-1" class="h-75">Not enough data to form graph.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dynamic-xbrl-form" class="position-relative"></div>
+    </div>
+
+    <div id="form-information-modal" data-test="form-information-modal"
+        class="dialog-box fixed-dialog-box d-none bg-white">
+        <div class="dialog-header bg-sec text-white px-1 d-flex justify-content-between">
+            <p id="form-information-modal-title" data-test="form-information-modal-title" class="lead mb-0">
+                <span></span>
+            </p>
+            <div class="dialog-header-actions">
+                <i id="form-information-modal-drag" title="Click and drag to move this Dialog Box."
+                    class="fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="14"></i>
+
+                <i id="dialog-box-copy-content" title="Click to Copy all Dialog Box Content."
+                    class="fas fa-copy m-1 click" tabindex="14"></i>
+
+                <i id="dialog-box-close" data-name="Form Information Modal" title="Click to Close this Dialog Box."
+                    class="fas fa-times m-1 click" tabindex="14"></i>
+
+            </div>
+        </div>
+        <div class="dialog-content">
+            <div id="form-information-copy-paste" class="form-group d-none">
+                <label for="dialog-content-copy-content-textarea">Copy and Paste Below Content.</label>
+                <a id="dialog-content-copy-content" class="float-end click color-inherit" tabindex="14">
+                    <i class="fas fa-times-circle mt-2"></i>
+                </a>
+                <textarea class="form-control" rows="5" tabindex="14"
+                    id="dialog-content-copy-content-textarea"></textarea>
+            </div>
+            <div id="form-information-modal-carousel" class="carousel" data-interval="false" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item table-responsive active">
+                        <table class="table table-striped table-sm">
+                            <tbody id="form-information-modal-carousel-page-1" tabindex="14">
+                                <!-- Below is populated dynamically VIA JS -->
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="fa fa-regular fa-clock"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="carousel-item table-responsive">
+                        <table class="table table-striped table-bordered table-sm">
+                            <tbody id="form-information-modal-carousel-page-2" tabindex="14">
+                                <!-- Below is populated dynamically VIA JS -->
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="fa fa-regular fa-clock"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="carousel-item table-responsive" id="form-information-modal-carousel-page-3">
+
+                        <table class="table table-striped table-sm">
+                            <tbody id="form-information-modal-carousel-page" tabindex="14">
+                                <!-- Below is populated dynamically VIA JS -->
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="fa fa-regular fa-clock"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="carousel-item table-responsive">
+                        <table class="table table-striped table-sm">
+                            <tbody id="form-information-modal-carousel-page-4" tabindex="14">
+                                <!-- Below is populated dynamically VIA JS -->
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="fa fa-regular fa-clock"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dialog-footer d-flex justify-content-around">
+            <button id="form-information-prev" data-test="form-information-prev" class="btn btn-link text-dark"
+                data-bs-target="#form-information-modal-carousel" role="button" data-bs-slide="prev" tabindex="14">
+                <i class="fas fa-chevron-left" title="Previous"></i>
+                <span class="sr-only">Previous</span>
+            </button>
+            <div id="form-information-carousel-indicators" class="carousel-indicators mx-0 my-3 p-initial">
+            </div>
+            <button id="form-information-next" data-test="form-information-next" class="btn btn-link text-dark"
+                data-bs-target="#form-information-modal-carousel" role="button" data-bs-slide="next" tabindex="14">
+                <i class="fas fa-chevron-right" title="Next"></i>
+                <span class="sr-only">Next</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="settings-modal" data-test="settings-modal" class="dialog-box fixed-dialog-box d-none bg-white">
+        <div class="dialog-header bg-sec text-white px-1 d-flex justify-content-between">
+            <p id="settings-modal-title" data-test="settings-modal-title" class="lead mb-0">Settings</p>
+            <div class="dialog-header-actions">
+                <i id="settings-modal-drag" title="Click and drag to move this Dialog Box."
+                    class="fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="15"></i>
+
+                <i id="settings-modal-close" data-name="Settings Modal" title="Click to Close this Dialog Box."
+                    class="fas fa-times m-1 click" tabindex="15"></i>
+            </div>
+        </div>
+        <div class="dialog-content">
+            <form>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" tabindex="15" for="hover-option-select">
+                        Hover over Fact for quick information.
+                    </label>
+                    <select id="hover-option-select" class="col-sm-8 form-select" tabindex="15">
+                        <option value="true">On</option>
+                        <option value="false">Off</option>
+                    </select>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" tabindex="15" for="scroll-position-select">
+                        Auto Scrolling Position
+                    </label>
+                    <select id="scroll-position-select" class="col-sm-8 form-select" tabindex="15">
+                        <option value="start">Top</option>
+                        <option value="center">Center</option>
+                    </select>
+                    <small class="form-text text-muted col-sm-12" tabindex="15">Selecting
+                        a fact from the Sections Menu or the Fact Menu will automatically
+                        scroll that element to the (Top, or Middle) of the viewer window.
+                        This setting will have no use on IE 10, or Safari.</small>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" tabindex="15" for="tagged-data-color-picker">
+                        <span class="tagged-data-example-1">Tagged Data</span>
+                    </label>
+                    <div class="col-sm-4">
+                        <span>
+                            <input id="tagged-data-color-picker" class="form-control w-75 float-start settings-height"
+                                type="color" tabindex="15" />
+                            <button id="tagged-data-color-picker-reset" type="button"
+                                class="btn btn-secondary btn-sm settings-height">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" tabindex="15" for="search-results-color-picker">
+                        <span class="search-results-example-1">
+                            Search Results
+                        </span>
+                    </label>
+                    <div class="col-sm-4">
+                        <span>
+                            <input id="search-results-color-picker"
+                                class="form-control w-75 float-start settings-height" type="color" tabindex="15" />
+                            <button id="search-results-color-picker-reset" type="button"
+                                class="btn btn-secondary btn-sm settings-height">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" tabindex="15" for="selected-fact-color-picker">
+                        <span class="selected-fact-example-1">Selected Fact</span>
+                    </label>
+                    <div class="col-sm-4">
+                        <span>
+                            <input id="selected-fact-color-picker" class="form-control w-75 float-start settings-height"
+                                type="color" tabindex="15" />
+                            <button id="selected-fact-color-picker-reset" type="button"
+                                class="btn btn-secondary btn-sm settings-height">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" tabindex="15" for="tag-shading-color-picker">
+                        <span class="tag-shading-exmple-1">
+                            Tag Shading (hover)</span>
+                    </label>
+                    <div class="col-sm-4">
+                        <span>
+                            <input id="tag-shading-color-picker" class="form-control w-75 float-start settings-height"
+                                type="color" tabindex="15" />
+                            <input id="tag-shading-color-picker-range"
+                                class="form-range w-75 float-start settings-height" type="range" min="0" max="10" />
+                            <button id="tag-shading-color-picker-reset" type="button"
+                                class="btn btn-secondary btn-sm settings-height">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <hr />
+                <div class="form-group row">
+                    <label class="col-sm-4 col-form-label" tabindex="15" for="text-block-color-picker">
+                        <span class="text-block-exmple-1">Text Block Indicators</span>
+                    </label>
+                    <div class="col-sm-4">
+                        <span>
+                            <input id="text-block-color-picker" class="form-control w-75 float-start settings-height"
+                                type="color" tabindex="15" />
+                            <button id="text-block-color-picker-reset" type="button"
+                                class="btn btn-secondary btn-sm settings-height">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="dialog-footer d-flex justify-content-around"></div>
+    </div>
+
+    <div id="fact-modal" class="dialog-box fixed-dialog-box d-none bg-white">
+        <div class="dialog-header bg-sec text-white px-1 d-flex justify-content-between">
+            <p id="fact-modal-title" class="lead mb-0"><span></span></p>
+            <div class="dialog-header-actions">
+
+                <i id="fact-modal-drag" title="Click and drag to move this Dialog Box."
+                    class="fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="16"></i>
+
+                <i id="fact-modal-jump" title="Click to see this in the Facts sidebar."
+                    class="fas fa-directions m-1 click" tabindex="16"></i>
+                <i id="fact-modal-copy-content" class="fas fa-copy m-1 click" tabindex="16"></i>
+
+                <i id="fact-modal-compress" class="fas fa-compress m-1 click d-none" tabindex="16"></i>
+
+                <i id="fact-modal-expand" class="fas fa-expand m-1 click" tabindex="16"></i>
+
+                <i id="fact-modal-close" class="fas fa-times m-1 click" tabindex="16"></i>
+            </div>
+        </div>
+        <div class="dialog-content">
+            <p id="fact-modal-subtitle" class="text-center font-weight-bold"><span></span></p>
+            <div id="fact-copy-content" class="form-group d-none">
+                <label for="fact-copy-content-textarea">Copy and Paste Below Content.</label>
+                <a id="fact-copy-content-close" class="float-end click color-inherit" tabindex="16" type="button">
+                    <i class="fas fa-times-circle mt-2"></i>
+                </a>
+                <textarea class="form-control" rows="5" tabindex="16" name="fact-copy-content"
+                    id="fact-copy-content-textarea"></textarea>
+            </div>
+            <div id="fact-modal-carousel" class="carousel" data-interval="false" data-keyboard="false">
+                <div class="carousel-inner">
+                    <div class="carousel-item table-responsive active">
+                        <table class="table table-striped table-sm" id="fact-modal-carousel-page-1" tabindex="16">
+                            <!-- Below is populated dynamically VIA JS -->
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="fa fa-regular fa-clock"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="carousel-item table-responsive">
+                        <table class="table table-striped table-sm" id="fact-modal-carousel-page-2" tabindex="16">
+                            <!-- Below is populated dynamically VIA JS -->
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="fa fa-regular fa-clock"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="carousel-item table-responsive">
+                        <table class="table table-striped table-sm" id="fact-modal-carousel-page-3" tabindex="16">
+                            <!-- Below is populated dynamically VIA JS -->
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="fa fa-regular fa-clock"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="carousel-item table-responsive">
+                        <table class="table table-striped table-sm" id="fact-modal-carousel-page-4" tabindex="16">
+                            <!-- Below is populated dynamically VIA JS -->
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="fa fa-regular fa-clock"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dialog-footer d-flex justify-content-around">
+            <button data-test="modal-fact-prev" class="btn btn-link text-dark" data-bs-target="#fact-modal-carousel"
+                data-bs-slide="next" role="button" tabindex="16">
+                <i class="fas fa-chevron-left" title="Previous"></i>
+                <span class="sr-only">Previous</span>
+            </button>
+            <div id="fact-modal-carousel-indicators" class="carousel-indicators mx-0 my-3 p-initial"></div>
+
+            <button data-test="modal-fact-next" class="btn btn-link text-dark" data-bs-target="#fact-modal-carousel"
+                data-bs-slide="next" role="button" tabindex="16">
+                <i class="fas fa-chevron-right" title="Next"></i>
+                <span class="sr-only">Next</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="fact-nested-modal" class="dialog-box fixed-dialog-box d-none bg-white">
+        <div class="dialog-header bg-sec text-white px-1 d-flex justify-content-between">
+            <p class="lead mb-0">
+                Nested Facts
+                <span id="nested-page"><span></span></span>
+                <span>/</span>
+                <span id="nested-count"><span></span></span>
+            </p>
+            <div class="dialog-header-actions">
+                <i id="fact-nested-modal-drag" title="Click and drag to move this Dialog Box."
+                    class="fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="17"></i>
+
+                <i id="nested-fact-modal-jump" title="Click to see this in the Facts sidebar."
+                    class="fas fa-directions m-1 click" tabindex="17"></i>
+
+                <i id="fact-nested-modal-copy-content" class="fas fa-copy m-1 click" tabindex="17"></i>
+
+                <i id="fact-nested-modal-compress" class="fas fa-compress m-1 click d-none" tabindex="17"></i>
+
+                <i id="fact-nested-modal-expand" class="fas fa-expand m-1 click" tabindex="17"></i>
+
+                <i id="fact-nested-modal-close" class="fas fa-times m-1 click" tabindex="17"></i>
+            </div>
+        </div>
+        <div class="dialog-content pt-0">
+            <div id="modal-nested-fact-labels" class="carousel" data-bs-interval="false" data-bs-keyboard="false">
+                <div class="d-flex">
+                    <button data-test="modal-fact-nested-prev" class="btn btn-link text-dark"
+                        data-bs-target="#modal-nested-fact-labels" role="button" data-bs-slide="prev" tabindex="17">
+                        <i class="fas fa-chevron-left" title="Previous"></i>
+                        <span class="sr-only">Previous</span>
+                    </button>
+                    <div id="modal-fact-nested-label-carousel" class="carousel-inner">
+                        <!-- Below is populated dynamically VIA JS -->
+                    </div>
+                    <button data-test="modal-fact-nested-next" class="btn btn-link text-dark"
+                        data-bs-target="#modal-nested-fact-labels" role="button" data-bs-slide="next" tabindex="17">
+                        <i class="fas fa-chevron-right" title="Next"></i>
+                        <span class="sr-only">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div id="fact-nested-copy-paste" class="form-group d-none">
+                <label for="fact-nested-copy-content-textarea">Copy and Paste Below Content.</label>
+                <a id="fact-nested-copy-content" class="float-end click color-inherit" tabindex="17">
+                    <i class="fas fa-times-circle mt-2"></i>
+                </a>
+                <textarea class="form-control" rows="5" tabindex="17" name="fact-nested-copy-content"
+                    id="fact-nested-copy-content-textarea"></textarea>
+            </div>
+            <div id="modal-fact-nested-content-carousel" class="carousel" data-bs-interval="false"
+                data-bs-keyboard="false">
+                <div class="carousel-inner">
+                    <div class="carousel-item table-responsive active">
+                        <table class="table table-striped table-sm" id="modal-fact-nested-content-carousel-page-1">
+                            <tbody tabindex="17">
+                                <!-- Below is populated dynamically VIA JS -->
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="fas fa-spinner fas-spin"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="carousel-item table-responsive">
+                        <table class="table table-striped table-bordered table-sm"
+                            id="modal-fact-nested-content-carousel-page-2">
+                            <tbody tabindex="17">
+                                <!-- Below is populated dynamically VIA JS -->
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="fa fa-regular fa-clock"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="carousel-item table-responsive">
+                        <table class="table table-striped table-sm" id="modal-fact-nested-content-carousel-page-3">
+                            <tbody tabindex="17">
+                                <!-- Below is populated dynamically VIA JS -->
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="fa fa-regular fa-clock"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="carousel-item table-responsive">
+                        <table class="table table-striped table-sm" id="modal-fact-nested-content-carousel-page-4">
+                            <tbody tabindex="17">
+                                <!-- Below is populated dynamically VIA JS -->
+                                <tr>
+                                    <td class="text-center">
+                                        <i class="fa fa-regular fa-clock"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="fact-nested-nav-controls" class="dialog-footer d-flex justify-content-around">
+            <button data-test="modal-fact-prev" class="btn btn-link text-dark"
+                data-bs-target="#modal-fact-nested-content-carousel" role="button" data-bs-slide="prev" tabindex="17">
+                <i class="fas fa-chevron-left" title="Previous"></i>
+                <span class="sr-only">Previous</span>
+            </button>
+            <ol id="fact-nested-modal-carousel-indicators" class="carousel-indicators mx-0 my-3 p-initial">
+                <!-- Below is populated dynamically VIA JS -->
+            </ol>
+            <button data-test="modal-fact-next" class="btn btn-link text-dark"
+                data-bs-target="#modal-fact-nested-content-carousel" role="button" data-bs-slide="next" tabindex="17">
+                <i class="fas fa-chevron-right" title="Next"></i>
+                <span class="sr-only">Next</span>
+            </button>
+        </div>
+    </div>
+<script defer="defer" src="ix-viewer.bundle.513f9b7d7480143ae6e6.min.js"></script></body>
+
+</html>

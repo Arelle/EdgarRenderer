@@ -58,7 +58,7 @@ export const UserFiltersMoreFiltersAxesSetUp = {
       input.setAttribute("type", "checkbox");
       input.setAttribute("tabindex", "9");
       input.classList.add("form-check-input");
-      input.setAttribute('name', current.toString());
+      input.setAttribute('name', current.value);
       input.addEventListener("click", () => {
         UserFiltersMoreFiltersAxes.clickEvent(current.value);
       });

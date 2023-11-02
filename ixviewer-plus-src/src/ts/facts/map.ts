@@ -95,14 +95,20 @@ export const FactMap: {
             return entry[1].segment ? entry[1].segment.map((current) => {
                 if (current.type) {
                     return { type: current.type, value: current.axis };
+                } else if (Array.isArray(current)) {
+                    return current.map((nestedCurrent) => {
+                        return { type: nestedCurrent.type, value: nestedCurrent.axis };
+                    });
                 }
-            }).filter(Boolean) : null;
+            }).flat().filter(Boolean) : null;
         }).filter(Boolean);
+
         const unique = [...new Map(axis.flat().map(item => [item['value'], item])).values()].sort((a, b) => {
             if (a.value.split(':')[1] < b.value.split(':')[1]) return -1;
             if (a.value.split(':')[1] > b.value.split(':')[1]) return 1;
             return 0;
         });
+
         return unique;
     },
 
@@ -111,8 +117,12 @@ export const FactMap: {
             return entry[1].segment ? entry[1].segment.map((current) => {
                 if (current.dimension) {
                     return { type: current.type, value: current.dimension };
+                } else if (Array.isArray(current)) {
+                    return current.map((nestedCurrent) => {
+                        return { type: nestedCurrent.type, value: nestedCurrent.dimension };
+                    });
                 }
-            }).filter(Boolean) : null;
+            }).flat().filter(Boolean) : null;
         }).filter(Boolean);
         const unique = [...new Map(members.flat().map(item => [item['value'], item])).values()].sort((a, b) => {
             if (a.value.split(':')[1] < b.value.split(':')[1]) return -1;
@@ -305,10 +315,23 @@ export const FactMap: {
             }
             return acc;
         }, []).filter(element => {
-            return element.data.length > 1 ? element : null;
+            //const data = new Set();
+            element.data = element.data.map(nestedElement => {
+                const data = new Set();
+                nestedElement.period_dates.filter((finalElement) => {
+                    if (data.has(finalElement.period_dates)) {
+                        return false;
+                    }
+                    data.add(finalElement.period_dates);
+                    return true;
+                });
+                return nestedElement.period_dates.length > 1 ? nestedElement : null;
+            }).filter(Boolean);
+            return element.data.length > 1;
         }).sort((first, second) => {
             return first.name.localeCompare(second.name);
         });
+
     },
 
 };

@@ -9,6 +9,7 @@ import { FactMap } from "../facts/map";
 import * as bootstrap from "bootstrap";
 import { App } from "../app";
 import { HelpersUrl } from "../helpers/url";
+import { Modals } from "../modals";
 
 
 
@@ -79,6 +80,8 @@ export const ConstantsFunctions = {
   },
 
   changeInstance: (instance: number, baseref: string | null, callback: (arg0: boolean) => void) => {
+    Modals.close(new Event(''));
+
     Constants.getInstanceFiles.forEach((current) => {
       current.current = current.instance === instance ? true : false;
       current.xhtmls.forEach((xhtml, index) => {
@@ -116,6 +119,7 @@ export const ConstantsFunctions = {
   },
 
   changeInlineFiles: (fileToChangeTo: string) => {
+
     const offCanvasElement = document.getElementById('fact-table-container');
     const offCanvas = bootstrap.Offcanvas.getInstance(offCanvasElement as HTMLElement);
     offCanvasElement?.removeEventListener('hidden.bs.offcanvas', () => FactsTable.toggle(false));
@@ -131,7 +135,6 @@ export const ConstantsFunctions = {
         Constants.getInlineFiles.forEach((current) => {
           current.slug === fileToChangeTo ? current.current = true : current.current = false;
         });
-        App.additionalSetup();
       } else {
         // throw error, something super strnage has occured
       }

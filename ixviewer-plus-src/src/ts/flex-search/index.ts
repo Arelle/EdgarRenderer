@@ -14,31 +14,14 @@ export class FlexSearch {
 
     static indexCount: number;
 
-    constructor() {
-        this.buildDocument();
-    }
-
-    buildDocument() {
-        this.document = new FlexSearchDocument({
-            document: {
-                id: 'id',
-                index: [
-                    'content', 'raw', 'name', 'contextRef', 'labels', 'definitions', 'period',
-                    'measure', 'axis', 'member', 'scale', 'balance', 'custom', 'amount',
-                    'text', 'calculation', 'negative', 'additional', 'dimensions',
-                    'topic', 'subtopic', 'paragraph', 'publisher', 'section'
-                ]
-            }
-        });
-    }
-
 
     static init(mapOfFacts: Map<string, SingleFact>): void {
         this.document = new FlexSearchDocument({
+            tokenize: 'full',
             document: {
                 id: 'id',
                 index: [
-                    'content', 'raw', 'name', 'contextRef', 'labels', 'definitions', 'period',
+                    'content', 'raw', 'factname', 'contextRef', 'labels', 'definitions', 'period',
                     'measure', 'axis', 'member', 'scale', 'balance', 'custom', 'amount',
                     'text', 'calculation', 'negative', 'additional', 'dimensions',
                     'topic', 'subtopic', 'paragraph', 'publisher', 'section'
@@ -65,7 +48,7 @@ export class FlexSearch {
                     'id': currentIndex,
                     'content': `${currentValue?.filter?.content}`,
                     'raw': currentValue?.format ? `${currentValue?.raw.toString()}` : null,
-                    'name': currentValue?.name,
+                    'factname': currentValue?.name,
                     'contextRef': currentValue?.contentRef,
                     'labels': currentValue.filter?.labels,
                     'definitions': currentValue?.filter?.definitions,
@@ -97,7 +80,7 @@ export class FlexSearch {
     static searchFacts(searchOptions, suggest = false) {
         const optionFields = [
             null,
-            'name',
+            'factname',
             'content',
             'labels',
             'definitions',
@@ -113,8 +96,7 @@ export class FlexSearch {
                         bool: 'or',
                         limit: FlexSearch.indexCount,
                     });
-                }
-                if (optionFields[current] === 'references') {
+                } else if (optionFields[current] === 'references') {
                     // we add multiple
                     acc.push({
                         field: 'topic',

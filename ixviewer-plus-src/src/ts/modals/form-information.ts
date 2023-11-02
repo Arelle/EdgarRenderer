@@ -146,6 +146,7 @@ export const ModalsFormInformation = {
   },
 
   firstSlide: () => {
+    ConstantsFunctions.emptyHTMLByID('form-information-modal-carousel-page-1');
     const possibleLabels = [
       {
         'label': 'Company Name',
@@ -197,6 +198,8 @@ export const ModalsFormInformation = {
   },
 
   secondSlide: () => {
+    ConstantsFunctions.emptyHTMLByID('form-information-modal-carousel-page-2');
+
     const primaryTotal = Constants.getFormInformation.keyStandard + Constants.getFormInformation.keyCustom;
 
     const axisTotal = Constants.getFormInformation.axisStandard + Constants.getFormInformation.axisCustom;
@@ -351,6 +354,7 @@ export const ModalsFormInformation = {
   },
 
   thirdSlide: () => {
+    ConstantsFunctions.emptyHTMLByID('form-information-modal-carousel-page-3');
     const nsPrefix = (Constants.getFormInformation.nsprefix) ? Constants.getFormInformation.nsprefix.toUpperCase() + ' ' : '';
     const possibleLabels = [
       {
@@ -430,6 +434,7 @@ export const ModalsFormInformation = {
   },
 
   fourthSlide: () => {
+    ConstantsFunctions.emptyHTMLByID('form-information-modal-carousel-page-4');
     const possibleLabels = [{
       'label': 'Taxonomy',
       'value': 'Count',
