@@ -59,7 +59,6 @@ export class FetchAndMerge {
     private sections;
     private metaVersion: string | undefined;
     private instance;
-
     constructor(input: {
         absolute: string,
         params: {
@@ -116,9 +115,10 @@ export class FetchAndMerge {
             ]).then((allResponses) => {
                 this.metaVersion = allResponses[0].version;
                 this.std_ref = allResponses[0].std_ref;
-                if (allResponses[0].error) {
+                if (allResponses.some((element) => element.error)) {
+                    const messageIndex = allResponses.find((element) => element.error);
                     return {
-                        all: { error: true, message: [allResponses[0].message] }
+                        all: { error: true, message: [messageIndex.message] }
                     }
                 } else {
                     this.currentInstance = allResponses[0].instance?.filter(element => element.current)[0];
@@ -134,9 +134,10 @@ export class FetchAndMerge {
                             "Policies": "Accounting Policies",
                             "Tables": "Notes Tables",
                             "Details": "Notes Details",
-                            "RR_Summaries": "RR Summaries",
                             "Prospectus": "Prospectus",
+                            "RR_Summaries": "RR Summaries",
                             "Fee_Exhibit": "RR Summaries",
+                            "Risk/Return": "RR Summaries"
                         };
                         if (options[input]) {
                             return options[input];
@@ -146,10 +147,9 @@ export class FetchAndMerge {
                     const metaLinksSections = Object.values(allResponses[0].sections);
                     this.sections = allResponses[1].MyReports.Report.reduce((accumulator, current) => {
                         if (current && current.MenuCategory && current.Position && current.ShortName && current._attributes) {
-                            const fact = { name: '', contextRef: '', instance: null };
+                            let fact = { name: '', contextRef: '', instance: null };
                             const additional = metaLinksSections.find(element => element.shortName === current.ShortName._text);
                             if (additional) {
-
                                 fact.instance = additional.instance;
                                 if (additional.uniqueAnchor) {
                                     fact.name = additional.uniqueAnchor.name;
@@ -159,15 +159,18 @@ export class FetchAndMerge {
                                     fact.name = additional.firstAnchor.name;
                                     fact.contextRef = additional.firstAnchor.contextRef;
                                     fact.file = additional.firstAnchor.baseRef;
+                                } else {
+                                    // MetaLinks.json does NOT have sufficient information for this section category
+                                    // we remove it from being used.
+                                    fact = null;
                                 }
                             }
                             const index = accumulator.findIndex(element => element.name === mapCategoryName(current.MenuCategory._text))
-                            if (index !== -1) {
+                            if (index !== -1 && fact) {
                                 accumulator[index].children.push(
                                     {
                                         sort: +current.Position._text,
                                         name: current.ShortName._text,
-                                        // file: current._attributes.instance,
                                         fact: fact,
                                     }
 
@@ -181,7 +184,7 @@ export class FetchAndMerge {
                                     }
                                     return 0;
                                 });
-                            } else {
+                            } else if (fact) {
                                 accumulator.push({
                                     name: mapCategoryName(current.MenuCategory._text),
                                     children: [
@@ -199,7 +202,6 @@ export class FetchAndMerge {
                         return accumulator;
                     }, []);
                 }
-
                 return Promise.all([
                     XHTMLandInstance(allResponses[0], true)
                 ]).then(data => {
@@ -217,12 +219,14 @@ export class FetchAndMerge {
     }
 
     fetchXHTML() {
-        const promises = this.currentInstance.xhtmls.map((current: { url: string }) => {
+        const promises = this.currentInstance?.xhtmls.map((current: { url: string }) => {
             return new Promise((resolve) =>
                 fetch(current.url, {
                     headers: {
                         "Content-Type": "application/xhtml+xml"
-                    }
+                    },
+                    mode: 'no-cors',
+                    credentials: 'include'
                 }).then((response) => {
                     if (response.status >= 200 && response.status <= 299) {
                         return response.text();
@@ -260,7 +264,7 @@ export class FetchAndMerge {
         inlineFiles?: Array<{ slug: string, current: boolean, loaded: boolean }>
     }> {
         return new Promise((resolve) => {
-            return fetch(this.params.metalinks).then((response) => {
+            return fetch(this.params.metalinks, { credentials: 'include' }).then((response) => {
                 if (response.status >= 200 && response.status <= 299) {
                     return response.json();
                 } else {
@@ -311,7 +315,7 @@ export class FetchAndMerge {
 
     fetchSummary() {
         return new Promise((resolve) => {
-            return fetch(this.params.summary).then((response) => {
+            return fetch(this.params.summary, { credentials: 'include' }).then((response) => {
                 if (response.status >= 200 && response.status <= 299) {
                     return response.text();
                 } else {
@@ -334,12 +338,12 @@ export class FetchAndMerge {
                         if (indexOf >= 0) {
                             this.currentInstance.xmlUrls.splice(indexOf, 1);
                         }
-                        throw Error(`${response.status.toString()}, Could not find XML Instance Document`);
+                        throw Error(`${response.status.toString()}`);
                     }
-                }).then((data) => {
+                }, { credentials: 'include' }).then((data) => {
                     resolve({ instance: data });
                 }).catch((error) => {
-                    resolve({ error: true, message: error });
+                    resolve({ error: true, message: `${error}, Could not find "XML Instance Data"` })
                 }));
         });
         return Promise.all(promises).then((xmlInstances) => {
@@ -347,7 +351,7 @@ export class FetchAndMerge {
             if (instance && instance[0]) {
                 return JSON.parse(convert.xml2json(instance[0].instance as unknown as string, { compact: true }))
             } else {
-                return instance[0];
+                return xmlInstances[0];
             }
         });
     }
@@ -523,6 +527,38 @@ export class FetchAndMerge {
 
                     currentValue.references = [...new Set(references)].map((current) => {
                         return this.std_ref[current];
+                    }).filter(Boolean);
+                    // this order specifically for Fact References
+                    // any other key => value will be ignored and not shown to the user
+                    const requiredOrder = [
+                        `Publisher`,
+                        `Name`,
+                        `Number`,
+                        `Chapter`,
+                        `Article`,
+                        `Number Exhibit Section`,
+                        `Subsection`,
+                        `Paragraph`,
+                        `Subparagraph`,
+                        `Sentence`,
+                        `Clause`,
+                        `Subclause`,
+                        `Example`,
+                        `Footnote`,
+                        `URI`,
+                        `URIDate`,
+                    ];
+
+                    currentValue.references = currentValue.references.map((singleReference) => {
+                        return Object.keys(singleReference).reduce((accumulator, current) => {
+                            const index = requiredOrder.findIndex(element => element === current);
+                            if (index !== -1) {
+                                const returnObject = {};
+                                returnObject[current] = singleReference[current];
+                                accumulator[index] = returnObject;
+                            }
+                            return accumulator;
+                        }, new Array(Object.keys(singleReference).length).fill(null)).filter(Boolean);
                     });
                 }
 
@@ -606,9 +642,10 @@ export class FetchAndMerge {
         this.currentInstance.xhtmls.forEach((current) => {
             if (current.xhtml) {
                 let $ = cheerio.load(current.xhtml, {});
+                $ = this.hiddenFacts($);
                 $ = this.fixImages($);
                 $ = this.fixLinks($);
-                $ = this.hiddenFacts($);
+                // $ = this.hiddenFacts($);
                 $ = this.redLineFacts($);
                 $ = this.excludeFacts($);
                 const updates = this.attributeFacts($, this.currentInstance.map, current.slug);
@@ -647,6 +684,10 @@ export class FetchAndMerge {
                     current.attribs.href.startsWith('#')) {
                     // already an absolute url, just add tabindex=18
                     $(current).attr('tabindex', '18');
+                    // this anchor tag does not exsist in the current XHTML file
+                    if (current.attribs.href.startsWith('#') && current.attribs.href.slice(1) && $(`#${current.attribs.href.slice(1)}`).length === 0) {
+                        $(current).attr('xhtml-change', 'true');
+                    }
                 } else {
                     // create an absolute url, add tabindex=18
                     $(current).attr('tabindex', '18');
@@ -669,14 +710,19 @@ export class FetchAndMerge {
     hiddenFacts($: cheerio.CheerioAPI) {
         const startPerformance = performance.now();
         const foundElements = Array.from($('[style*="-ix-hidden"]')).slice(0, 1000);
+
         foundElements.forEach((current) => {
             const updatedStyle = Object.values($(current).css(["-sec-ix-hidden", "-esef-ix-hidden"]) as {}).filter(Boolean)[0];
             const hiddenElement = $(`#${updatedStyle}`);
             if ($(hiddenElement).length) {
+                // console.log($(hiddenElement));
                 // we now create an entirely new element based on the innerHTML
                 // of current, and the attributes of hiddenElement
                 const cheerioElement = $(`<${$(hiddenElement).prop('tagName')?.toLowerCase().replace(`:`, `\\:`)}>`);
+                //const id = $(hiddenElement).attr('id');
+
                 for (const key in $(hiddenElement).attr()) {
+
                     $(cheerioElement).attr(key, $(hiddenElement).attr(key));
                 }
                 $(cheerioElement).attr('isadditionalitemsonly', 'true');
@@ -685,6 +731,14 @@ export class FetchAndMerge {
                 $(hiddenElement).removeAttr('id');
                 $(hiddenElement).removeAttr('contextref');
                 $(hiddenElement).removeAttr('name');
+
+                //console.log($(cheerioElement).attr('id'));
+                $(current).html($(cheerioElement));
+                if ($(cheerioElement).attr('id') === 'id3VybDovL2RvY3MudjEvZG9jOjU1M2Q3M2I4N2RhYjQ2MzQ5ZjlmNTI3Y2YwNzZjMzlhL3NlYzo1NTNkNzNiODdkYWI0NjM0OWY5ZjUyN2NmMDc2YzM5YV82MS9mcmFnOmI0ZGUyZDM0ZWE4NTRjMTc4NmFjYWIyYzRjZWRiMmQ2L3RleHRyZWdpb246YjRkZTJkMzRlYTg1NGMxNzg2YWNhYjJjNGNlZGIyZDZfNDAwNTE_70ac34fc-cc35-4fb1-ad12-4d0f52202d63') {
+                    console.log($(current).html());
+                }
+            } else {
+                console.log('empty!');
             }
         });
         const endPerformance = performance.now();
@@ -750,8 +804,6 @@ export class FetchAndMerge {
 
                 $(current).attr('ix', $(current).attr('id'));
                 $(current).attr('id', this.updateMap($(current)?.attr('ix') as string, $(current), currentSlug));
-                // Array.from($(current).find(`[contextRef]`)).length ? $(current).attr('nested-facts', 'true') : $(current).attr('nested-facts', 'false');
-                //console.log(Array.from($(current).find(`[contextRef]`)).length);
             }
             if (!$(current).prop('tagName').toLowerCase().endsWith("continuation") &&
                 $(current).attr("continuedat")

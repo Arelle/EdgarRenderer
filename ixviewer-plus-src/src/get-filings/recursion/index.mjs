@@ -101,6 +101,10 @@ export class Recursion {
 
   async writeFilesToJSON(input) {
     input = JSON.stringify(input);
+    fs.unlinkSync("./src/ts/development/input.json");
+    fs.unlinkSync("./cypress/fixtures/filings/index.json");
+
     fs.writeFileSync("./src/ts/development/input.json", input, "utf8");
+    fs.writeFileSync("./cypress/fixtures/filings/index.json", input, "utf8");
   }
 }

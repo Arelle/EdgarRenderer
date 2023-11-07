@@ -130,7 +130,6 @@ export const Sections = {
 
   populate: (searchObject: object, idToKeepOpen: string | null) => {
     Sections.searchObject = searchObject;
-
     Constants.getMetaReports.forEach((current, index) => {
       const additionalInfo = {
         parentId: `tagged-sections-${index}`,

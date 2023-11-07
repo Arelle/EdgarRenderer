@@ -7,6 +7,7 @@ import { FactsChart } from "./facts/chart";
 import { FactsMenu } from "./facts/menu";
 import { FactsTable } from "./facts/table";
 import { FormInformation } from "./form-information";
+import { Modals } from "./modals";
 import { ModalsFormInformation } from "./modals/form-information";
 import { ModalsSettings } from "./modals/settings";
 import { Scroll } from "./scroll";
@@ -175,6 +176,22 @@ export class Listeners {
 
         document.getElementById('scroll-position-select')?.addEventListener("change", (event: Event) => {
             ModalsSettings.scrollPosition(event);
+        });
+
+        document.getElementById('fact-copy-content-close')?.addEventListener('click', (event: MouseEvent) => {
+            Modals.copyContent(event, 'fact-modal-carousel', 'fact-copy-content');
+        });
+
+        document.getElementById('fact-copy-content-close')?.addEventListener('keyup', (event: KeyboardEvent) => {
+            Modals.copyContent(event, 'fact-modal-carousel', 'fact-copy-content');
+        });
+
+        document.getElementById('fact-nested-copy-content')?.addEventListener('click', (event: MouseEvent) => {
+            Modals.copyContent(event, 'modal-fact-nested-content-carousel', 'fact-nested-copy-paste');
+        });
+
+        document.getElementById('fact-nested-copy-content')?.addEventListener('keyup', (event: KeyboardEvent) => {
+            Modals.copyContent(event, 'modal-fact-nested-content-carousel', 'fact-nested-copy-paste');
         });
         // scroll-position-select
         // scrollPosition

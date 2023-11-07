@@ -11,6 +11,7 @@
     "production": "webpack --config ./webpack.config.js --mode production",
     "sandbox": "webpack --config ./webpack.config.js --mode production --env copy",
     "sandbox-serve": "webpack serve --config ./webpack.config.js --mode production --env copy",
+    "automated-test": "webpack serve --config ./webpack.config.js --mode production --env copy automate",
     "unit-test": "node ./node_modules/karma/bin/karma start ./karma.config.js",
     "get-filings-menu": "node ./src/get-filings/index.mjs",
     "get-filings": "node ./src/get-filings/index.mjs --no-prompt"
@@ -43,6 +44,7 @@
     "@typescript-eslint/parser": "^5.62.0",
     "add-asset-html-webpack-plugin": "^6.0.0",
     "ajv": "^8.12.0",
+    "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.8.1",
     "css-minimizer-webpack-plugin": "^4.2.2",

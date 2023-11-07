@@ -154,53 +154,53 @@ export const FactPages = {
   thirdPage: (factInfo, idToFill: string) => {
 
     const elementsToReturn = document.createElement("tbody");
-
     factInfo.references.forEach((current, index, array) => {
-      for (const property in current) {
+      current.forEach((nestedCurrent) => {
+        for (const [key, val] of Object.entries(nestedCurrent)) {
+          const trElement = document.createElement("tr");
 
-        const trElement = document.createElement("tr");
+          const thElement = document.createElement("th");
 
-        const thElement = document.createElement("th");
-
-        const aTag = document.createElement('a');
-        aTag.setAttribute('href', current[property]);
-        aTag.setAttribute('target', '_blank');
-        aTag.setAttribute('rel', 'noopener noreferrer');
-
-        if (property === 'URI') {
-          const small = document.createElement('small');
-          const smallContent = document.createTextNode(' (Will Leave SEC Website)');
-          small.appendChild(smallContent);
-          const thContent = document.createTextNode(`${property}`);
-          thElement.appendChild(thContent);
-          thElement.appendChild(small);
-        } else {
-          const thContent = document.createTextNode(property);
-          thElement.appendChild(thContent);
-        }
-
-        const tdElement = document.createElement("td");
-
-        const divElement = document.createElement("div");
-
-        if (property === 'URI') {
           const aTag = document.createElement('a');
-          aTag.setAttribute('href', current[property]);
+          aTag.setAttribute('href', val);
           aTag.setAttribute('target', '_blank');
           aTag.setAttribute('rel', 'noopener noreferrer');
 
-          const aContent = document.createTextNode(current[property]);
-          aTag.appendChild(aContent);
-          tdElement.appendChild(aTag);
-        } else {
-          const divContent = document.createTextNode(current[property]);
-          divElement.appendChild(divContent);
-          tdElement.appendChild(divElement);
+          if (val === 'URI') {
+            const small = document.createElement('small');
+            const smallContent = document.createTextNode(' (Will Leave SEC Website)');
+            small.appendChild(smallContent);
+            const thContent = document.createTextNode(`${key}`);
+            thElement.appendChild(thContent);
+            thElement.appendChild(small);
+          } else {
+            const thContent = document.createTextNode(key);
+            thElement.appendChild(thContent);
+          }
+
+          const tdElement = document.createElement("td");
+
+          const divElement = document.createElement("div");
+
+          if (val === 'URI') {
+            const aTag = document.createElement('a');
+            aTag.setAttribute('href', val);
+            aTag.setAttribute('target', '_blank');
+            aTag.setAttribute('rel', 'noopener noreferrer');
+
+            const aContent = document.createTextNode(val);
+            aTag.appendChild(aContent);
+            tdElement.appendChild(aTag);
+          } else {
+            const divContent = document.createTextNode(val);
+            divElement.appendChild(divContent);
+            tdElement.appendChild(divElement);
+          }
+          trElement.appendChild(thElement);
+          trElement.appendChild(tdElement);
+          elementsToReturn.appendChild(trElement);
         }
-        trElement.appendChild(thElement);
-        trElement.appendChild(tdElement);
-        elementsToReturn.appendChild(trElement);
-      }
+      });
       if (index !== array.length) {
         const trEmptyElement = document.createElement("tr");
         const tdEmptyElement = document.createElement("td");

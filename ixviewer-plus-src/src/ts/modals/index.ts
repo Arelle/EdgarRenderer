@@ -70,7 +70,8 @@ export const Modals = {
   },
 
   copyContent: (event: MouseEvent | KeyboardEvent, elementIdToCopy: string, copyPasteElement: string) => {
-    if (Object.prototype.hasOwnProperty.call(event, 'key') && !((event as KeyboardEvent).key === 'Enter' || (event as KeyboardEvent).key === 'Space')) {
+    if (Object.prototype.hasOwnProperty.call(event, 'key') &&
+      !((event as KeyboardEvent).key === 'Enter' || (event as KeyboardEvent).key === 'Space')) {
       return;
     }
     if (!document.getElementById(copyPasteElement)?.classList.contains('d-none')) {
@@ -119,7 +120,7 @@ export const Modals = {
   },
 
   closeCopy: (input: string) => {
-    document.getElementById(input)?.classList.add('d-none');
+    (document.getElementById(input) as HTMLElement).classList.add('d-none');
   },
 
   expandToggle: (

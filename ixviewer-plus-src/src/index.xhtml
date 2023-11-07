@@ -1,7 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 
-<head lang="en">
+
+
+<head>
     <!-- Required meta tags -->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -236,7 +239,7 @@
                     </li>
                     <li class="nav-item dropdown my-auto ml-1">
                         <a id="nav-filter-more" class="nav-link dropdown-toggle disabled click" role="button"
-                            data-bs-toggle="dropdown" data-bs-auto-close="false" aria-haspopup="true"
+                            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="true"
                             aria-expanded="false" tabindex="9" accesskey="5">
                             <i id="loading-more-filters" class="nav-loading fas fa-filter" title="More Filters"></i>
                             <span class="d-md-none d-lg-inline">More Filters</span>
@@ -362,7 +365,7 @@
                                                             <input id="members-all-0"
                                                                 title="Select/Deselect all options below."
                                                                 class="form-check-input" type="checkbox" tabindex="9" />
-                                                            <a data-bs-target="#members-filters-accordion-0"
+                                                            <a href="#members-filters-accordion-0"
                                                                 data-bs-toggle="collapse" tabindex="9">Explicit</a>
                                                         </label>
                                                     </div>
@@ -379,7 +382,7 @@
                                                             <input id="members-all-1"
                                                                 title="Select/Deselect all options below."
                                                                 class="form-check-input" type="checkbox" tabindex="9" />
-                                                            <a data-bs-target="#members-filters-accordion-1"
+                                                            <a href="#members-filters-accordion-1"
                                                                 data-bs-toggle="collapse" tabindex="9">Typed</a>
                                                         </label>
                                                     </div>
@@ -1265,7 +1268,7 @@
             <p id="fact-modal-subtitle" class="text-center font-weight-bold"><span></span></p>
             <div id="fact-copy-content" class="form-group d-none">
                 <label for="fact-copy-content-textarea">Copy and Paste Below Content.</label>
-                <a id="fact-copy-content" class="float-end click color-inherit" tabindex="16">
+                <a id="fact-copy-content-close" class="float-end click color-inherit" tabindex="16" type="button">
                     <i class="fas fa-times-circle mt-2"></i>
                 </a>
                 <textarea class="form-control" rows="5" tabindex="16" name="fact-copy-content"

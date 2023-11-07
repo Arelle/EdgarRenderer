@@ -42,8 +42,10 @@ Run these in a terminal from the root of your project
    - `npm run get-filings`
 8. Run the project in Sandbox mode (for our local testing server)
    - `npm run sandbox`
-9. Build the PRODUCTION application (to go to SEC.gov, WorkStation, Etc...) all necessary files will be placed in {{project_root}}/dist/\**
+9. Build the PRODUCTION application (to go to SEC.gov, WorkStation, Etc...) all necessary files will be placed in {{project_root}}/dist/\*\*
    - `npm run production`
+10. Build the project in Automated Testing Mode (with Cypress which has serious issues with XHTML)
+    - `npm run automated-test`
 
 ## NOTES
 

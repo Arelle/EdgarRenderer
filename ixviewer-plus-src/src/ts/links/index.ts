@@ -86,7 +86,7 @@ export const Links = {
       a.addEventListener('keyup', () => {
         Links.updateCurrent(index);
       });
-      
+
       const span = document.createElement('span');
       current.table ? span.classList.add('fact-total-count') : span.classList.add('fact-file-total-count');
 
@@ -196,6 +196,7 @@ export const Links = {
     // all element data-link will be the form url
     event.preventDefault();
     ConstantsFunctions.changeInlineFiles(element.getAttribute('data-link') as string);
+    Links.update();
   },
 
   clickEventInstance: (event: MouseEvent | KeyboardEvent, instance: number) => {

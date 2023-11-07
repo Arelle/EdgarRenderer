@@ -115,7 +115,6 @@ export const App = {
     },
 
     handleFetchAndMerge: (
-
         input: {
             error?: boolean;
             message?: Array<string>;
@@ -144,7 +143,6 @@ export const App = {
             input.message?.forEach((current: string) => {
                 ErrorsMajor.message(current);
             });
-            ErrorsMajor.urlParams();
             return false;
         } else {
             const currentInstance = input.instance?.filter(element => element.current)[0];
@@ -157,7 +155,6 @@ export const App = {
                 ConstantsFunctions.emptyHTMLByID('dynamic-xbrl-form');
             }
             ConstantsFunctions.setFormInformation(currentInstance.formInformation);
-            new FlexSearch();
             FlexSearch.init(currentInstance.map);
 
             document.getElementById('html-pagination')?.classList.toggle('d-none');

@@ -437,6 +437,7 @@ export const FactsTable = {
         const table = document.createElement('table');
         table.classList.add('table');
         const elementsToReturn = document.createElement("tbody");
+        // console.log(FactMap.getByID(id).references);
         FactMap.getByID(id).references.forEach((current) => {
             for (const property in current) {
 
@@ -444,14 +445,14 @@ export const FactsTable = {
 
                 const thElement = document.createElement("th");
 
-                const thContent = document.createTextNode(property);
+                const thContent = document.createTextNode(Object.keys(current[property])[0]);
                 thElement.appendChild(thContent);
 
                 const tdElement = document.createElement("td");
 
                 const divElement = document.createElement("div");
 
-                const divContent = document.createTextNode(current[property]);
+                const divContent = document.createTextNode(Object.values(current[property])[0]);
                 divElement.appendChild(divContent);
                 tdElement.appendChild(divElement);
 

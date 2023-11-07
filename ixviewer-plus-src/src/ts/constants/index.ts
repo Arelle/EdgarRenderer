@@ -64,7 +64,7 @@ export const Constants: {
   getMetaDocuments: () => object
 } = {
 
-  version: "23.1",
+  version: "23.4",
 
   scrollPosition: localStorage.getItem("scrollPosition") || "start",
 

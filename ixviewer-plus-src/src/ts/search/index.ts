@@ -72,9 +72,7 @@ export const Search = {
       });
       return regex;
     }
-
     return input;
-
   },
 
   suggestions: () => {

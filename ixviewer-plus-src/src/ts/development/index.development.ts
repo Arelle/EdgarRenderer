@@ -54,8 +54,7 @@ export class Development {
         container?.append(ul);
         container?.append(div);
         this.createTable('tab-0-pane');
-        //this.createFlowChart1('tab-1-pane');
-        this.createFlowChart('tab-1-pane');
+        this.createFlowCharts('tab-1-pane');
 
         const triggerTabList = Array.from(document.querySelectorAll('#tabs button'));
         triggerTabList.forEach((current) => {
@@ -160,7 +159,7 @@ export class Development {
                 const sec = document.createElement('td');
                 if (current['sec'].length) {
                     const asec = document.createElement('a');
-                    asec.setAttribute('href', `${current['sec'][0]}`);
+                    asec.setAttribute('href', `https://www.sec.gov/ix?doc=${current['sec'][0]}`);
                     asec.setAttribute(`target`, `_blank`);
                     const viewerTextsec = document.createTextNode(`Go See`);
                     asec.append(viewerTextsec);
@@ -187,7 +186,12 @@ export class Development {
         container?.append(table);
     }
 
-    createFlowChart(containerId: string) {
+    createFlowCharts(containerId: string) {
+        this.firstFlowChart(containerId);
+        this.secondFlowChart(containerId);
+    }
+
+    firstFlowChart(containerId: string) {
         const container = document.getElementById(containerId);
         const rightContainer = document.createElement('div');
         rightContainer.classList.add('w-50');
@@ -199,7 +203,7 @@ export class Development {
         rightContainer.append(h3);
         const canvas = document.createElement('canvas');
         canvas.setAttribute('id', 'target-canvas2');
-        canvas.classList.add('h-100');
+        canvas.classList.add('h-50');
         canvas.classList.add('overflow-y-auto');
         rightContainer.append(canvas);
 
@@ -219,11 +223,7 @@ export class Development {
             ul.append(li);
         });
         rightContainer.append(ul);
-
-
-
         container?.append(rightContainer);
-
         const canvasElement = document.getElementById('target-canvas2');
         const source = `
         [<start>] -> 
@@ -239,7 +239,78 @@ export class Development {
         [<table> Multi-Instance (User Interaction) | Sections | Tab Bar] -> [Web Worker?]
         `;
         nomnoml.draw(canvasElement as HTMLCanvasElement, source);
+    }
 
+    secondFlowChart(containerId: string) {
+        const container = document.getElementById(containerId);
+        const rightContainer = document.createElement('div');
+        rightContainer.classList.add('w-50');
+        rightContainer.classList.add('h-100');
+        rightContainer.classList.add('float-start');
+        const h3 = document.createElement('h3');
+        const h3Text = document.createTextNode(`Required Files (XHTML(s), XML(s), JSON)`);
+        h3.append(h3Text);
+        rightContainer.append(h3);
+        // const canvas = document.createElement('canvas');
+        // canvas.setAttribute('id', 'target-canvas2');
+        // canvas.classList.add('h-100');
+        // canvas.classList.add('overflow-y-auto');
+        // rightContainer.append(canvas);
+
+        const ol = document.createElement('ol');
+        ol.classList.add('list-group');
+        ol.classList.add('list-group-numbered');
+        const text = [
+            {
+                title: `XHTML File(s)`,
+                content: `XHTML file(s). 
+                This is the file that the user can see and interact with. 
+                Atleast one file must exist, there may also be many. 
+                We get all XHTML Files onload of the application.`
+            },
+            {
+                title: `Meta Links`,
+                content: `JSON File. 
+                This file holds additional information for the facts that exsist within the filing. 
+                Also has supplemental information for the Sections menu.`
+            },
+            {
+                title: `Filing Summary`,
+                content: `XML File. 
+                This file contains the necessary information to build the Sections menu.`
+            },
+            {
+                title: `XBRL Instance`,
+                content: `XML File. 
+                This file holds the majority of the information for the Facts that exsist within the Filing.`
+            },
+        ];
+        text.forEach((current) => {
+            const li = document.createElement('li');
+            li.classList.add('list-group-item');
+            li.classList.add('d-flex');
+            li.classList.add('justify-content-between');
+            li.classList.add('align-items-start');
+
+            const div = document.createElement('div');
+            div.classList.add('ms-2');
+            div.classList.add('me-auto');
+
+            const div2 = document.createElement('div');
+            div2.classList.add('fw-bold');
+
+            const div2Text = document.createTextNode(current.title);
+            div2.append(div2Text);
+            div.append(div2);
+
+            const divText = document.createTextNode(current.content);
+            div.append(divText);
+
+            li.append(div);
+            ol.append(li);
+        });
+        rightContainer.append(ol);
+        container?.append(rightContainer);
     }
 
 }
