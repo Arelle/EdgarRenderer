@@ -44,7 +44,6 @@ class Cube(object):
         self.rootNodeToConceptSetDict = {}
         self.isStatementOfEquity = False
         self.isStatementOfCashFlows = False
-
         self.isRepurchasesDetail = linkroleUri in ('http://xbrl.sec.gov/shr/role/exh/IssrOrAfflRepurchsBySecurity',)
         self.forbidsDatesInSegmentTitleRows = not (self.isUncategorizedFacts or self.isRepurchasesDetail)
         self.sortPeriodAxisDescending = not self.isRepurchasesDetail
