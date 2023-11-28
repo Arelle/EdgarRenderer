@@ -193,6 +193,8 @@ def htmlLoader(modelXbrl, mappedUri, filepath, *args, **kwargs):
     modelXbrl.loadedFromHTML = True
     return doc
 
+def load_plugin_url():
+    return __file__
 
 __pluginInfo__ = {
     # Do not use _( ) in pluginInfo itself (it is applied later, after loading

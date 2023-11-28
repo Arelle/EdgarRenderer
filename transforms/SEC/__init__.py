@@ -296,6 +296,9 @@ def loadSECtransforms(customTransforms, *args, **kwargs):
         qname(ixtSEC, "ixt-sec:entityfilercategoryen"): entityfilercategoryen
     })
 
+def load_plugin_url():
+    return __file__
+
 __pluginInfo__ = {
     'name': 'SEC Inline Transforms',
     'version': '19.2', # SEC version

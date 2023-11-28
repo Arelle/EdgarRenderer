@@ -161,6 +161,8 @@ def dislosureSystemTypes(disclosureSystem, *args, **kwargs):
 def disclosureSystemConfigURL(disclosureSystem, *args, **kwargs):
     return os.path.join(os.path.dirname(os.path.dirname(__file__)), "config.xml")
 
+def load_plugin_url():
+    return __file__
 
 __pluginInfo__ = {
     # Do not use _( ) in pluginInfo itself (it is applied later, after loading

@@ -1644,6 +1644,9 @@ def edgarRendererRemoveRedlining(modelDocument, *args, **kwargs):
                 cntlr.edgarEditedDocs = {}
             cntlr.edgarEditedDocs[modelDocument.basename] = modelDocument
 
+def load_plugin_url():
+    return __file__
+
 __pluginInfo__ = {
     'name': 'Edgar Renderer',
     'version': VERSION,

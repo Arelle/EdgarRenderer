@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools~=69.0", "wheel~=0.42", "setuptools_scm[toml]~=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sec-experience"
+dynamic = ['version']
+readme = "README.md"
+license = {text = "Apache-2.0"}
+description = "SEC Experience Arelle Plugin"
+authors = [
+    {name = "StructuredData@sec.gov", email = "StructuredData@sec.gov"}
+]
+keywords = ["arelle", "plugin", "xbrl", "sec", "edgar"]
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: End Users/Desktop',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: Apache Software License',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Operating System :: OS Independent',
+    'Topic :: Text Processing :: Markup :: XML'
+]
+requires-python = ">=3.8"
+
+# https://setuptools.pypa.io/en/latest/userguide/entry_point.html#entry-points-for-plugins
+[project.entry-points."arelle.plugin"]
+EdgarRenderer = "EdgarRenderer:load_plugin_url"
+"transforms/SEC" = "transforms.SEC:load_plugin_url"
+"validate/EFM" = "validate.EFM:load_plugin_url"
+"validate/EFM/tools/CheckTxmyRefs" = "validate.EFM.tools.CheckTxmyRefs:load_plugin_url"
+"validate/EFM-htm" = "validate.EFM_htm:load_plugin_url"
+
+[project.urls]
+"Homepage" = "https://sec.gov/"
+
+[tool.setuptools]
+platforms = ["any"]
+
+[tool.setuptools.packages.find]
+namespaces = false
+
+[tool.setuptools_scm]
+write_to = "_version.py"
