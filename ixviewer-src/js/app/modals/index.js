@@ -83,7 +83,7 @@ var Modals = {
       var foundCarouselPages = document.getElementById(elementIdToCopy).querySelectorAll('.carousel-item');
       var foundCarouselPagesArray = Array.prototype.slice.call(foundCarouselPages);
       
-      // TODO should we just put all of the innerHTML automatically into the
+      // TODO should we just put all of the innerText automatically into the
       // users clipboard?
       
       // th elements are the keys
@@ -97,8 +97,8 @@ var Modals = {
         
         foundInformationArray.forEach(function( nestedCurrent ) {
           
-          if ( nestedCurrent.querySelector('th') && nestedCurrent.querySelector('th').innerHTML ) {
-            textToCopy += nestedCurrent.querySelector('th').innerHTML.trim() + ' : ';
+          if ( nestedCurrent.querySelector('th') && nestedCurrent.querySelector('th').innerText ) {
+            textToCopy += nestedCurrent.querySelector('th').innerText.trim() + ' : ';
           }
           
           if ( nestedCurrent.querySelector('td') ) {
@@ -107,11 +107,11 @@ var Modals = {
               var largeTaxonomySelector = nestedCurrent.querySelector('td #collapse-modal');
               
               textToCopy += '\n';
-              textToCopy += largeTaxonomySelector.innerHTML.trim().replace(/(\r\n|\n|\r)/gm, '');
+              textToCopy += largeTaxonomySelector.innerText.trim().replace(/(\r\n|\n|\r)/gm, '');
               textToCopy += '\n';
               
-            } else if ( nestedCurrent.querySelector('td').innerHTML ) {
-              textToCopy += nestedCurrent.querySelector('td').innerHTML.trim().replace(/(\r\n|\n|\r)/gm, '');
+            } else if ( nestedCurrent.querySelector('td').innerText ) {
+              textToCopy += nestedCurrent.querySelector('td').innerText.trim().replace(/(\r\n|\n|\r)/gm, '');
               textToCopy += '\n';
             }
           }

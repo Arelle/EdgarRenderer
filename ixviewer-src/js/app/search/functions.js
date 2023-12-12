@@ -33,13 +33,13 @@ var SearchFunctions = {
     if ( element ) {
       if ( Taxonomies.isElementContinued(element) ) {
         var tempContinuedElements = ModalsNested.dynamicallyFindContinuedTaxonomies(element, [ ]);
-        var continuedElementsinnerHTML = '';
+        var continuedElementsInnerText = '';
         for ( var i = 0; i < tempContinuedElements.length; i++ ) {
           if ( tempContinuedElements[i].textContent ) {
-            continuedElementsinnerHTML += ' ' + tempContinuedElements[i].textContent.trim();
+            continuedElementsInnerText += ' ' + tempContinuedElements[i].textContent.trim();
           }
         }
-        return continuedElementsinnerHTML;
+        return continuedElementsInnerText;
       }
       return element.textContent;
     }
@@ -60,25 +60,25 @@ var SearchFunctions = {
   },
   
   elementDimensionsForRegex : function( element ) {
-    if ( element && element.hasAttribute('contextRef') ) {
-      var dimensionContainer = document.getElementById(element.getAttribute('contextRef')).querySelectorAll(
+    if ( element && element.hasAttribute('contextref') ) {
+      var dimensionContainer = document.getElementById(element.getAttribute('contextref')).querySelectorAll(
           '[dimension]');
-      var dimensionContainerinnerHTML = '';
+      var dimensionContainerInnerText = '';
       
       for ( var i = 0; i < dimensionContainer.length; i++ ) {
-        if ( dimensionContainer[i].innerHTML ) {
-          dimensionContainerinnerHTML += ' ' + dimensionContainer[i].innerHTML;
+        if ( dimensionContainer[i].innerText ) {
+          dimensionContainerInnerText += ' ' + dimensionContainer[i].innerText;
         }
       }
-      return dimensionContainerinnerHTML;
+      return dimensionContainerInnerText;
     }
   },
   
   elementReferencesForRegex : function( element, searchOptions ) {
-    if ( element && element.hasAttribute('contextRef') ) {
+    if ( element && element.hasAttribute('contextref') ) {
       var allAuthRefs = FiltersName.getAuthRefs(element.getAttribute('name')) || [ ];
       var additionalRefs = [ ];
-      var allAuthRefsViaDimension = FiltersContextref.getAxis(element.getAttribute('contextRef'), true);
+      var allAuthRefsViaDimension = FiltersContextref.getAxis(element.getAttribute('contextref'), true);
       if ( allAuthRefsViaDimension ) {
         allAuthRefsViaDimension = allAuthRefsViaDimension.split(' ');
         allAuthRefsViaDimension.forEach(function( current, index ) {
@@ -87,7 +87,7 @@ var SearchFunctions = {
           });
         });
       }
-      var allAuthRefsViaMember = FiltersContextref.getMember(element.getAttribute('contextRef'), true);
+      var allAuthRefsViaMember = FiltersContextref.getMember(element.getAttribute('contextref'), true);
       if ( allAuthRefsViaMember ) {
         allAuthRefsViaMember = allAuthRefsViaMember.split(' ');
         allAuthRefsViaMember.forEach(function( current, index ) {

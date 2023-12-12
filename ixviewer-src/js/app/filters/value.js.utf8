@@ -838,7 +838,7 @@ var FiltersValue = {
       
     } else {
       var simpleSpan = document.createElement('div');
-      var simpleSpanContent = document.createTextNode(element.innerHTML);
+      var simpleSpanContent = document.createTextNode(element.innerText);
       simpleSpan.appendChild(simpleSpanContent);
       elementChildren.push(simpleSpan);
     }
@@ -868,7 +868,7 @@ var FiltersValue = {
     if ( element.nodeName.toLowerCase() === 'table' ) {
       element.classList.add('table');
     }
-    element.removeAttribute('contextRef');
+    element.removeAttribute('contextref');
     element.removeAttribute('name');
     element.removeAttribute('id');
     element.removeAttribute('escape');

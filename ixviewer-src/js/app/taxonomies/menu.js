@@ -49,10 +49,10 @@ var TaxonomiesMenu = {
     
     if ( Object.keys(UserFiltersState.getUserSearch).length === 0 ) {
       enabledTaxonomies = document.getElementById('dynamic-xbrl-form').querySelectorAll(
-          '[contextRef][enabled-taxonomy="true"]');
+          '[contextref][enabled-taxonomy="true"]');
     } else {
       enabledTaxonomies = document.getElementById('dynamic-xbrl-form').querySelectorAll(
-          '[contextRef][enabled-taxonomy="true"][highlight-taxonomy="true"]');
+          '[contextref][enabled-taxonomy="true"][highlight-taxonomy="true"]');
     }
     
     var enabledTaxonomiesArray = TaxonomiesGeneral.specialSort(Array.prototype.slice.call(enabledTaxonomies));

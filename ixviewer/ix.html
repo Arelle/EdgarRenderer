@@ -1,14 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
 	<!-- Required meta tags -->
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<!-- Check Browser, as well as Hostname and set JS, CSS, Favicon path based on that-->
 
-	<script type="text/javascript">
-		//<![CDATA[
+	<!-- Favicon -->
+	<!-- cpcommit -->
+	<!-- <link rel="shortcut icon" type="image/x-icon" href="https://www.sec.gov/favicon.ico"> -->
+
+	<script>
 		(function () {
 			var hostName = window.location.hostname;
 
@@ -31,49 +34,34 @@
 			}
 			if (browserAccepted) {
 
-				var styles = [
-					'/css/custom-bootstrap.css',
-					'/lib/fontawesome/css/all.min.css',
-					'/css/app.css',
-				];
-				for (var i = 0; i < styles.length; i++) {
-					var link = document.createElement('link');
-					link.setAttribute('rel', 'stylesheet');
-					link.setAttribute('href', pathToLibs + styles[i]);
-					document.head.append(link);
-				}
+				// css
+				document
+					.write('<link rel="stylesheet" href=' + pathToLibs + '/css/custom-bootstrap.css>');
+				document
+					.write('<link rel="stylesheet" href=' + pathToLibs + '/lib/fontawesome/css/all.min.css>');
+				document
+					.write('<link rel="stylesheet" href=' + pathToLibs + '/css/app.css>');
+
+				// js
+				document
+					.write('<script type="text/javascript" src="' + pathToLibs + '/lib/jquery-3.3.1.slim.min.js"><\/script>');
+				document
+					.write('<script type="text/javascript" src="' + pathToLibs + '/lib/popper.min.js"><\/script>');
+				document
+					.write('<script type="text/javascript" src="' + pathToLibs + '/lib/bootstrap.min.js"><\/script>');
+				document
+					.write('<script type="text/javascript" src="' + pathToLibs + '/lib/moment.js"><\/script>');
+				document
+					.write('<script type="text/javascript" src="' + pathToLibs + '/lib/vanilla-picker.min.js"><\/script>');
+				document
+					.write('<script type="text/javascript" src="' + pathToLibs + '/lib/he.js"><\/script>');
 
 				var date = new Date();
 				var todaysDate = date.getDate() + '-' + (date.getMonth() + 1) + '-'
 					+ date.getFullYear();
-				var scripts = [
-					'/lib/jquery-3.3.1.slim.min.js',
-					'/lib/popper.min.js',
-					'/lib/bootstrap.min.js',
-					'/lib/moment.js',
-					'/lib/vanilla-picker.min.js',
-					'/lib/he.js',
-					'/production.min.js?d=' + todaysDate
-				];
-				var scriptLoader = function (index) {
-					// since we are adding these dynamically (because of the different ENVs) 
-					// we need to ensure they load in the correct order
-					// hence we load one at a time, then the next, until there isn't another to load
-					var src = scripts[index];
-					var script = document.createElement('script');
-					script.setAttribute('type', 'text/javascript');
-					script.setAttribute('src', pathToLibs + src);
-					document.head.append(script);
-					script.onload = function () {
-						index++
-						if (scripts[index]) {
-							scriptLoader(index);
-						}
-
-					}
-
-				};
-				scriptLoader(0);
+				document.write('<script type = "text/javascript" defer=true src="'
+					+ pathToLibs + '/production.min.js?d=' + todaysDate
+					+ '"><\/script>');
 			} else {
 				// user us on a browser that we do not support
 				var currentUrl = window.location.href.split('?')[0];
@@ -84,7 +72,6 @@
 				window.location.href = browserError;
 			}
 		})();
-		//]]>
 	</script>
 	<title>Inline XBRL Viewer</title>
 </head>
@@ -107,7 +94,7 @@
 						<span class="reboot d-md-none d-lg-inline">Menu</span>
 						<span class="reboot sr-only sr-only-focusable">Menu</span>
 					</a>
-					<div class="reboot dropdown-menu z-index-max">
+					<div class="reboot dropdown-menu">
 						<a id="menu-dropdown-information" data-test="menu-dropdown-information"
 							class="reboot dropdown-item click text-body" tabindex="1">Information</a>
 						<a id="form-information-instance" data-test="form-information-instance"
@@ -136,7 +123,7 @@
 				</li>
 				<li class="reboot nav-item my-auto ml-1 mr-1">
 					<form id="global-search-form" data-test="global-search-form"
-						class="reboot my-2 my-lg-0 input-group disabled" novalidate="true">
+						class="reboot my-2 my-lg-0 input-group disabled" novalidate>
 						<div class="reboot input-group-prepend">
 							<button data-name="global-search-options"
 								class="reboot dropdown btn btn-outline-light disabled" type="button"
@@ -146,38 +133,38 @@
 										Search Options</span>
 								</i>
 							</button>
-							<div class="reboot dropdown-menu z-index-max px-2">
+							<div class="reboot dropdown-menu px-2">
 								<div class="reboot form-check">
-									<input disabled="true" class="reboot form-check-input meta-required" type="checkbox"
-										name="search-options" value="1" checked="true" tabindex="3" />
+									<input disabled class="reboot form-check-input meta-required" type="checkbox"
+										name="search-options" value="1" checked tabindex="3">
 									<label class="reboot form-check-label mb-0">
 										<span class="reboot">Include Fact Name</span>
 									</label>
 								</div>
 								<div class="reboot form-check">
-									<input disabled="true" class="reboot form-check-input meta-required" type="checkbox"
-										name="search-options" value="2" checked="true" tabindex="3" />
+									<input disabled class="reboot form-check-input meta-required" type="checkbox"
+										name="search-options" value="2" checked tabindex="3">
 									<label class="reboot form-check-label mb-0">
 										<span class="reboot">Include Fact Content</span>
 									</label>
 								</div>
 								<div class="reboot form-check">
-									<input disabled="true" class="reboot form-check-input meta-required" type="checkbox"
-										name="search-options" value="3" checked="true" tabindex="3" />
+									<input disabled class="reboot form-check-input meta-required" type="checkbox"
+										name="search-options" value="3" checked tabindex="3">
 									<label class="reboot form-check-label mb-0">
 										<span class="reboot">Include Labels</span>
 									</label>
 								</div>
 								<div class="reboot form-check">
-									<input disabled="true" class="reboot form-check-input meta-required" type="checkbox"
-										name="search-options" value="4" tabindex="3" />
+									<input disabled class="reboot form-check-input meta-required" type="checkbox"
+										name="search-options" value="4" tabindex="3">
 									<label class="reboot form-check-label mb-0">
 										<span class="reboot">Include Definitions</span>
 									</label>
 								</div>
 								<div class="reboot form-check">
-									<input disabled="true" class="reboot form-check-input meta-required" type="checkbox"
-										name="search-options" value="5" tabindex="3" />
+									<input disabled class="reboot form-check-input meta-required" type="checkbox"
+										name="search-options" value="5" tabindex="3">
 									<label class="reboot form-check-label mb-0">
 										<span class="reboot">Include Dimensions</span>
 									</label>
@@ -186,36 +173,36 @@
 									<span class="reboot dropdown-item-text">Reference
 										Options</span>
 									<div class="reboot form-check">
-										<input disabled="true" class="reboot form-check-input meta-required"
-											type="checkbox" name="search-options" value="6" tabindex="3" />
+										<input disabled class="reboot form-check-input meta-required" type="checkbox"
+											name="search-options" value="6" tabindex="3">
 										<label class="reboot form-check-label mb-0">
 											<span class="reboot">Include Topic</span>
 										</label>
 									</div>
 									<div class="reboot form-check">
-										<input disabled="true" class="reboot form-check-input meta-required"
-											type="checkbox" name="search-options" value="7" tabindex="3" />
+										<input disabled class="reboot form-check-input meta-required" type="checkbox"
+											name="search-options" value="7" tabindex="3">
 										<label class="reboot form-check-label mb-0">
 											<span class="reboot">Include Sub-Topic</span>
 										</label>
 									</div>
 									<div class="reboot form-check">
-										<input disabled="true" class="reboot form-check-input meta-required"
-											type="checkbox" name="search-options" value="8" tabindex="3" />
+										<input disabled class="reboot form-check-input meta-required" type="checkbox"
+											name="search-options" value="8" tabindex="3">
 										<label class="reboot form-check-label mb-0">
 											<span class="reboot">Include Paragraph</span>
 										</label>
 									</div>
 									<div class="reboot form-check">
-										<input disabled="true" class="reboot form-check-input meta-required"
-											type="checkbox" name="search-options" value="9" tabindex="3" />
+										<input disabled class="reboot form-check-input meta-required" type="checkbox"
+											name="search-options" value="9" tabindex="3">
 										<label class="reboot form-check-label mb-0">
 											<span class="reboot">Include Publisher</span>
 										</label>
 									</div>
 									<div class="reboot form-check">
-										<input disabled="true" class="reboot form-check-input meta-required"
-											type="checkbox" name="search-options" value="10" tabindex="3" />
+										<input disabled class="reboot form-check-input meta-required" type="checkbox"
+											name="search-options" value="10" tabindex="3">
 										<label class="reboot form-check-label mb-0">
 											<span class="disabled">Include Section</span>
 										</label>
@@ -223,7 +210,7 @@
 								</div>
 								<div class="reboot form-check">
 									<input class="reboot form-check-input" type="checkbox" name="search-options"
-										value="11" tabindex="3" />
+										value="11" tabindex="3">
 									<label class="reboot form-check-label mb-0">
 										<span class="reboot">Match Case</span>
 									</label>
@@ -231,8 +218,8 @@
 							</div>
 						</div>
 						<input type="text" class="reboot form-control disabled" id="global-search"
-							data-test="global-search" placeholder="Search Facts" disabled="true"
-							aria-label="Search all Facts and highlight them accordingly." tabindex="4" />
+							data-test="global-search" placeholder="Search Facts" disabled
+							aria-label="Search all Facts and highlight them accordingly." tabindex="4">
 						<div class="reboot input-group-append">
 							<button id="search-btn-clear" data-name="global-search-clear"
 								class="reboot btn btn-outline-light disabled" type="button" tabindex="5">
@@ -256,16 +243,16 @@
 						<span class="reboot d-md-none d-lg-inline">Data</span>
 						<span class="reboot sr-only sr-only-focusable">Data</span>
 					</a>
-					<div class="reboot dropdown-menu z-index-max">
+					<div class="reboot dropdown-menu">
 						<form id="nav-filter-dropdown" data-name="data-dropdown" class="reboot px-2">
 							<div class="reboot form-check">
-								<input class="reboot form-check-input" type="radio" name="data-radios" value="0"
-									checked="true" tabindex="7" />
+								<input class="reboot form-check-input" type="radio" name="data-radios" value="0" checked
+									tabindex="7">
 								<label class="reboot form-check-label mb-0">All</label>
 							</div>
 							<div class="reboot form-check">
 								<input class="reboot form-check-input" type="radio" name="data-radios" value="1"
-									tabindex="7" />
+									tabindex="7">
 								<label class="reboot form-check-label mb-0">
 									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
@@ -274,7 +261,7 @@
 							</div>
 							<div class="reboot form-check">
 								<input class="reboot form-check-input" type="radio" name="data-radios" value="2"
-									tabindex="7" />
+									tabindex="7">
 								<label class="reboot form-check-label mb-0">
 									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
@@ -283,7 +270,7 @@
 							</div>
 							<div class="reboot form-check">
 								<input class="reboot form-check-input meta-required" type="radio" name="data-radios"
-									value="3" disabled="true" tabindex="7" />
+									value="3" disabled tabindex="7">
 								<label class="reboot form-check-label mb-0">
 									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
@@ -292,7 +279,7 @@
 							</div>
 							<div class="reboot form-check">
 								<input class="reboot form-check-input" type="radio" name="data-radios" value="4"
-									tabindex="7" />
+									tabindex="7">
 								<label class="reboot form-check-label mb-0">
 									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
@@ -301,7 +288,7 @@
 							</div>
 							<div class="reboot form-check">
 								<input class="reboot form-check-input" type="radio" name="data-radios" value="5"
-									tabindex="7" />
+									tabindex="7">
 								<label class="reboot form-check-label mb-0">
 									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
@@ -319,16 +306,16 @@
 						<span class="reboot d-md-none d-lg-inline">Tags</span>
 						<span class="reboot sr-only sr-only-focusable">Tags</span>
 					</a>
-					<div class="reboot dropdown-menu z-index-max">
+					<div class="reboot dropdown-menu">
 						<form id="nav-filter-tags-dropdown" data-name="tags-dropdown" class="reboot px-2">
 							<div class="reboot form-check">
 								<input class="reboot form-check-input" type="radio" name="tags-radios" value="0"
-									aria-label="Radio Button for All Tag Types" checked="true" tabindex="8" />
+									aria-label="Radio Button for All Tag Types" checked tabindex="8">
 								<label class="reboot form-check-label mb-0">All</label>
 							</div>
 							<div class="reboot form-check">
 								<input class="reboot form-check-input" type="radio" name="tags-radios" value="1"
-									aria-label="Radio Button for Standard Only Tag Types" tabindex="8" />
+									aria-label="Radio Button for Standard Only Tag Types" tabindex="8">
 								<label class="reboot form-check-label mb-0">
 									<i title="The first time choosing this will take a few moments."
 										class="reboot far fa-clock d-none performance-concern"></i>
@@ -337,8 +324,7 @@
 							</div>
 							<div class="reboot form-check">
 								<input class="reboot form-check-input meta-required" type="radio" name="tags-radios"
-									value="2" disabled="true" aria-label="Radio Button for Custom Only Tag Types"
-									tabindex="8" />
+									value="2" disabled aria-label="Radio Button for Custom Only Tag Types" tabindex="8">
 								<label class="reboot form-check-label mb-0">
 									<i title="Facts whose tags are outside the realm of DEI, US-GAAP, etc."
 										class="reboot far fa-question-circle"></i>
@@ -359,11 +345,11 @@
 						<span class="reboot sr-only sr-only-focusable">More Filters</span>
 						<span title="Total active filters." class="reboot badge badge-warning"></span>
 					</a>
-					<div class="reboot dropdown-menu dropdown-menu-width z-index-max">
+					<div class="reboot dropdown-menu dropdown-menu-width">
 						<label class="reboot dropdown-item-text d-none performance-concern">
 							Selecting any of the below will take a few moments.</label>
 						<div class="reboot accordion" id="more-filters-accordion">
-							<form class="reboot mb-0" data-test="more-filters-form">
+							<form class="reboot" data-test="more-filters-form">
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
 										<a href="#" data-test="Period" data-target="#user-filters-periods"
@@ -384,7 +370,7 @@
 									</div>
 								</div>
 							</form>
-							<form class="reboot mb-0">
+							<form>
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
 										<a href="#" data-test="Measures" data-target="#user-filters-measures"
@@ -405,7 +391,7 @@
 									</div>
 								</div>
 							</form>
-							<form class="reboot mb-0">
+							<form>
 								<div class="reboot mx-1">
 									<div class="reboot  px-0 py-0">
 										<a href="#" data-test="Axis" data-target="#user-filters-axis"
@@ -426,7 +412,7 @@
 												class="reboot d-flex justify-content-between align-items-center w-100 px-1">
 												<div class="reboot form-check">
 													<input id="axes-all-0" title="Select/Deselect all options below."
-														class="reboot form-check-input" type="checkbox" tabindex="9" />
+														class="reboot form-check-input" type="checkbox" tabindex="9">
 													<label class="reboot form-check-label mb-0">
 														<a class="reboot" href="#axes-filters-accordion-0"
 															data-toggle="collapse" tabindex="9">Explicit</a>
@@ -442,7 +428,7 @@
 												class="reboot d-flex justify-content-between align-items-center w-100 px-1">
 												<div class="reboot form-check">
 													<input id="axes-all-1" title="Select/Deselect all options below."
-														class="reboot form-check-input" type="checkbox" tabindex="9" />
+														class="reboot form-check-input" type="checkbox" tabindex="9">
 													<label class="reboot form-check-label mb-0">
 														<a class="reboot" href="#axes-filters-accordion-1"
 															data-toggle="collapse" tabindex="9">Typed</a>
@@ -454,7 +440,7 @@
 									</div>
 								</div>
 							</form>
-							<form class="reboot mb-0">
+							<form>
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
 										<a href="#" data-test="Members" data-target="#user-filters-members"
@@ -475,7 +461,7 @@
 												class="reboot d-flex justify-content-between align-items-center w-100 px-1">
 												<div class="reboot form-check">
 													<input id="members-all-0" title="Select/Deselect all options below."
-														class="reboot form-check-input" type="checkbox" tabindex="9" />
+														class="reboot form-check-input" type="checkbox" tabindex="9">
 													<label class="reboot form-check-label mb-0">
 														<a class="reboot" href="#members-filters-accordion-0"
 															data-toggle="collapse" tabindex="9">Explicit</a>
@@ -491,7 +477,7 @@
 												class="reboot d-flex justify-content-between align-items-center w-100 px-1">
 												<div class="reboot form-check">
 													<input id="members-all-1" title="Select/Deselect all options below."
-														class="reboot form-check-input" type="checkbox" tabindex="9" />
+														class="reboot form-check-input" type="checkbox" tabindex="9">
 													<label class="reboot form-check-label mb-0">
 														<a class="reboot" href="#members-filters-accordion-1"
 															data-toggle="collapse" tabindex="9">Typed</a>
@@ -504,7 +490,7 @@
 									</div>
 								</div>
 							</form>
-							<form class="reboot mb-0">
+							<form>
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
 										<a href="#" data-test="Scale" data-target="#user-filters-scales"
@@ -525,7 +511,7 @@
 									</div>
 								</div>
 							</form>
-							<form class="reboot mb-0">
+							<form>
 								<div class="reboot mx-1">
 									<div class="reboot px-0 py-0">
 										<a href="#" data-test="Balance" data-target="#user-filters-balances"
@@ -544,7 +530,7 @@
 											<div class="reboot form-check">
 												<input id="user-filters-balances-debit"
 													title="Select/Deselect this option." class="reboot form-check-input"
-													type="checkbox" tabindex="9" />
+													type="checkbox" tabindex="9">
 												<label class="reboot form-check-label mb-0">Debit</label>
 											</div>
 										</div>
@@ -553,7 +539,7 @@
 											<div class="reboot form-check">
 												<input id="user-filters-balances-credit"
 													title="Select/Deselect this option." class="reboot form-check-input"
-													type="checkbox" tabindex="9" />
+													type="checkbox" tabindex="9">
 												<label class="reboot form-check-label mb-0">Credit</label>
 											</div>
 										</div>
@@ -579,8 +565,7 @@
 						<i class="reboot nav-loading fas fa-link"></i>
 						<span class="reboot d-md-none d-lg-inline">Links</span>
 					</a>
-					<div id="links-dropdown-content"
-						class="reboot dropdown-menu dropdown-menu-width w-auto z-index-max"></div>
+					<div id="links-dropdown-content" class="reboot dropdown-menu dropdown-menu-width w-auto"></div>
 				</li>
 			</ul>
 			<ul class="reboot navbar-nav pull-right bg-inherit">
@@ -614,26 +599,26 @@
 				</a>
 			</div>
 			<form id="sections-menu-search-submit" data-name="sections-menu-search"
-				class="reboot my-2 my-lg-0 input-group" novalidate="true">
+				class="reboot my-2 my-lg-0 input-group" novalidate>
 				<div id="sections-search-additional" class="reboot input-group-prepend d-none">
 					<button class="reboot dropdown btn btn-sec" type="button" data-toggle="dropdown" tabindex="2">
 						<i class="reboot nav-loading fas fa-cog"></i>
 					</button>
-					<div class="reboot dropdown-menu px-2 z-index-max">
+					<div class="reboot dropdown-menu px-2">
 						<div class="reboot form-check">
 							<input class="reboot form-check-input" type="radio" name="sections-search-options" value="1"
-								checked="true" tabindex="2" />
+								checked tabindex="2">
 							<label class="reboot form-check-label">Search in All.</label>
 						</div>
 						<div class="reboot form-check">
 							<input class="reboot form-check-input" type="radio" name="sections-search-options" value="2"
-								tabindex="2" />
+								tabindex="2">
 							<label class="reboot form-check-label">Search in Internal
 								Sections Only.</label>
 						</div>
 						<div class="reboot form-check">
 							<input class="reboot form-check-input" type="radio" name="sections-search-options" value="3"
-								tabindex="2" />
+								tabindex="2">
 							<label class="reboot form-check-label">Search in External
 								Sections Only.</label>
 						</div>
@@ -641,7 +626,7 @@
 				</div>
 				<input type="text" class="reboot form-control" id="sections-search" data-test="sections-search"
 					placeholder="Search Sections" aria-label="Search all Sections by their associated label."
-					name="search-sections" tabindex="2" required="true" />
+					name="search-sections" tabindex="2" required>
 				<div class="reboot input-group-append">
 					<button id="section-menu-search-btn-clear" data-name="sections-menu-search-clear"
 						class="reboot btn btn-sec" type="button" tabindex="2">
@@ -656,13 +641,14 @@
 					</button>
 				</div>
 			</form>
-			<hr />
-
+			<hr>
 
 			<div class="reboot accordion" id="tagged-sections">
 				<!-- Below is populated dynamically VIA JS -->
 			</div>
 		</div>
+
+
 
 		<div id="help-menu" data-test="help-menu"
 			class="reboot left-sidenav col-sm-3 bg-light overflow-x-auto invisible">
@@ -738,7 +724,7 @@
 							document: FACTS AND SECTIONS. To search information, enter a
 							keyword in a search box and select the magnifying glass icon to
 							return matching results. Search operators "and" (via "AND" or
-							"&amp;") and "or" (via "OR" or "|") are available to further refine a
+							"&") and "or" (via "OR" or "|") are available to further refine a
 							search.</p>
 						<p class="reboot m-2">
 							<strong>FACTS</strong>
@@ -876,7 +862,7 @@
 							listing of the tagged sections of the Inline document. Sections
 							are divided into three groups:</p>
 						<ul class="reboot">
-							<li class="reboot">Document &amp; Entity Information</li>
+							<li class="reboot">Document & Entity Information</li>
 							<li class="reboot">Financial Statements</li>
 							<li class="reboot">Notes to the Financial Statements</li>
 						</ul>
@@ -1161,7 +1147,7 @@
 						scroll that element to the (Top, or Middle) of the viewer window.
 						This setting will have no use on IE 10, or Safari.</small>
 				</div>
-				<hr class="reboot" />
+				<hr class="reboot">
 				<div class="reboot form-group row">
 					<label class="reboot col-sm-4 col-form-label" tabindex="15">
 						<span class="reboot tagged-data-example-1">Tagged Data</span>
@@ -1170,7 +1156,7 @@
 						<div class="reboot" id="tagged-data-color-picker" tabindex="15"></div>
 					</div>
 				</div>
-				<hr class="reboot" />
+				<hr>
 				<div class="reboot form-group row">
 					<label class="reboot col-sm-4 col-form-label" tabindex="15">
 						<span class="reboot search-results-example-1">Search
@@ -1180,7 +1166,7 @@
 						<div class="reboot" id="search-results-color-picker" tabindex="15"></div>
 					</div>
 				</div>
-				<hr class="reboot" />
+				<hr>
 				<div class="reboot form-group row">
 					<label class="reboot col-sm-4 col-form-label" tabindex="15">
 						<span class="reboot selected-fact-example-1">Selected Fact</span>
@@ -1189,7 +1175,7 @@
 						<div class="reboot" id="selected-fact-color-picker" tabindex="15"></div>
 					</div>
 				</div>
-				<hr class="reboot" />
+				<hr>
 				<div class="reboot form-group row">
 					<label class="reboot col-sm-4 col-form-label" tabindex="15">
 						<span class="reboot tag-shading-exmple-1">Tag Shading
@@ -1199,7 +1185,7 @@
 						<div class="reboot" id="tag-shading-color-picker" tabindex="15"></div>
 					</div>
 				</div>
-				<hr class="reboot" />
+				<hr>
 				<div class="reboot form-group row">
 					<label class="reboot col-sm-4 col-form-label" tabindex="15">
 						<span class="reboot text-block-exmple-1">Text Block Indicators</span>
