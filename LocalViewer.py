@@ -11,6 +11,7 @@ import os, logging, sys
 import regex as re
 
 ixviewerDirFilesPattern = re.compile(r"^ix(-dev)?.x?html|^browser-error.html|^css/|^images/|^js/|^[a-z0-9.-]+min\.(js|css)(\.map)?$|^[a-z0-9]+\.(ttf|woff2)$")
+webRootDirPattern = re.compile(r"^include$|^i[x-z]viewer")
 extMimeType = {
     ".xhtml": "application/xhtml+xml",
     ".html":  "text/html",
@@ -33,8 +34,8 @@ class _LocalViewer(LocalViewer):
             if len(refererPathParts) >= 4 and refererPathParts[3].isnumeric():
                 _report = refererPathParts[3]
                 _file = file
-        if _report == "include": # really in include subtree
-            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'include'))
+        if webRootDirPattern.match(_report):
+            return static_file(_file, root=os.path.join(self.reportsFolders[0], _report))
         if ixviewerDirFilesPattern.match(_file): # although in ixviewer, it refers relatively to ixviewer/
             return static_file(_file, root=os.path.join(self.reportsFolders[0], 'ixviewer'),
                                mimetype=extMimeType.get(os.path.splitext(file)[1], None))

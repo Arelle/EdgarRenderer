@@ -209,6 +209,7 @@
     var fetch_wraps_xml_in_html = "]]></xsl:text>
         <xsl:value-of select="$fetchWrapsXmlInHtml"/>
     	<xsl:text disable-output-escaping="yes"><![CDATA[";
+    var url_filing_dir = location.pathname.substring(0,location.pathname.lastIndexOf("/")+1);
     
     	
    function loadXmlDoc(url) {
@@ -565,7 +566,7 @@
                 <xsl:choose>
                   <xsl:when test="$instance_is_inline = 'true'">
                     <xsl:attribute name="class">accordion octave ix</xsl:attribute>
-                    <a href="javascript:window.location=applyRedline('{$ixHtmlPath}?doc={$filingDocUrlPrefixQuoted}{$original}&amp;xbrl=true{$metaLinksSuffixQuoted}')">
+                    <a href="javascript:window.location=applyRedline('{$ixHtmlPath}?doc={$filingDocUrlPrefixQuoted}{$docAbsPathPrefix}{$original}{$docAbsPathSuffix}&amp;xbrl=true{$metaLinksSuffixQuoted}')">
                     	<button type="button" class="btn btn-warning"><xsl:value-of select="$doctype"/></button>
                     </a>
                   </xsl:when>
