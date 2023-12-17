@@ -24,7 +24,7 @@ var ModalsContinuedAt = {
   getAllElements: [],
 
   dynamicallyFindContextRefForModal: function (element) {
-    if (element && element.hasAttribute("contextRef")) {
+    if (element && element.hasAttribute("contextref")) {
       ModalsContinuedAt.setAllElements(element);
     } else if (element && element.hasAttribute("id")) {
       ModalsContinuedAt.dynamicallyFindContextRefForModal(
@@ -79,7 +79,7 @@ var ModalsContinuedAt = {
       Modals.initDrag(document.getElementById("taxonomy-modal-drag"));
       ModalsContinuedAt.carouselData();
 
-      document.getElementById("taxonomy-modal-title").innerHTML =
+      document.getElementById("taxonomy-modal-title").innerText =
         ModalsContinuedAt.carouselInformation[0]["dialog-title"];
 
       document.getElementById("taxonomy-modal-subtitle").innerHTML =
@@ -102,7 +102,7 @@ var ModalsContinuedAt = {
           .getElementById("taxonomy-modal-carousel-indicators")
           .querySelector('[data-slide-to="' + newActiveIndicator + '"]')
           .classList.add("active");
-        document.getElementById("taxonomy-modal-title").innerHTML =
+        document.getElementById("taxonomy-modal-title").innerText =
           ModalsContinuedAt.carouselInformation[event["to"]]["dialog-title"];
         ModalsCommon.currentDetailTab = newActiveIndicator;
       });

@@ -43,7 +43,7 @@ var FiltersOther = {
   },
   
   countryNameEn : function( element ) {
-    if ( element && typeof element === 'object' && element['innerHTML'] ) {
+    if ( element && typeof element === 'object' && element['innerText'] ) {
       
       var regexOptions = {
         
@@ -299,7 +299,7 @@ var FiltersOther = {
       };
       
       for ( var option in regexOptions ) {
-        if ( regexOptions[option].exec(element['innerHTML']) && regexOptions[option].exec(element['innerHTML'])[0] ) {
+        if ( regexOptions[option].exec(element['innerText']) && regexOptions[option].exec(element['innerText'])[0] ) {
           return option;
         }
       }
@@ -308,7 +308,7 @@ var FiltersOther = {
   },
   
   stateProvNameEn : function( element ) {
-    if ( element && typeof element === 'object' && element['innerHTML'] ) {
+    if ( element && typeof element === 'object' && element['innerText'] ) {
       
       var regexOptions = {
         'AL' : /^\s*([Aa]labama)\s*$/,
@@ -384,7 +384,7 @@ var FiltersOther = {
       };
       
       for ( var option in regexOptions ) {
-        if ( regexOptions[option].exec(element['innerHTML']) && regexOptions[option].exec(element['innerHTML'])[0] ) {
+        if ( regexOptions[option].exec(element['innerText']) && regexOptions[option].exec(element['innerText'])[0] ) {
           return option;
         }
       }
@@ -393,7 +393,7 @@ var FiltersOther = {
   },
   
   exchNameEn : function( element ) {
-    if ( element && typeof element === 'object' && element['innerHTML'] ) {
+    if ( element && typeof element === 'object' && element['innerText'] ) {
       
       var regexOptions = {
         'BOX' : /^\s*(([Tt]he\s+)?[Bb][Oo][Xx]\s+[Ee]xchange(,?\s+[Ll][Ll][Cc])?)\s*$/,
@@ -419,7 +419,7 @@ var FiltersOther = {
         'NASDAQ' : /^\s*(([Tt]he\s+)?[Nn][Aa][Ss][Dd][Aa][Qq](\s+([Ss]tock|[Gg]lobal(\s+[Ss]elect)?)\s+[Mm]arket(,?\s+[Ll][Ll][Cc])?)?)\s*$/
       };
       for ( var option in regexOptions ) {
-        if ( regexOptions[option].exec(element['innerHTML']) && regexOptions[option].exec(element['innerHTML'])[0] ) {
+        if ( regexOptions[option].exec(element['innerText']) && regexOptions[option].exec(element['innerText'])[0] ) {
           return option;
         }
       }
@@ -428,7 +428,7 @@ var FiltersOther = {
   },
   
   edgarProvCountryEn : function( element ) {
-    if ( element && typeof element === 'object' && element['innerHTML'] ) {
+    if ( element && typeof element === 'object' && element['innerText'] ) {
       
       var regexOptions = {
         'B5' : /^\s*([Aa]merican\s+[Ss]amoa)\s*$/,
@@ -692,7 +692,7 @@ var FiltersOther = {
       };
       
       for ( var option in regexOptions ) {
-        if ( regexOptions[option].exec(element['innerHTML']) && regexOptions[option].exec(element['innerHTML'])[0] ) {
+        if ( regexOptions[option].exec(element['innerText']) && regexOptions[option].exec(element['innerText'])[0] ) {
           return option;
         }
       }
@@ -702,7 +702,7 @@ var FiltersOther = {
   },
   
   entityFilerCategoryEn : function( element ) {
-    if ( element && typeof element === 'object' && element['innerHTML'] ) {
+    if ( element && typeof element === 'object' && element['innerText'] ) {
       
       var regexOptions = {
         'Large Accelerated Filer' : /^\s*([Ll]arge\s+[Aa]ccelerated\s+[Ff]iler)\s*$/,
@@ -710,7 +710,7 @@ var FiltersOther = {
         'Non-accelerated Filer' : /^\s*([Nn]on[^\w]+[Aa]ccelerated\s+[Ff]iler)\s*$/
       };
       for ( var option in regexOptions ) {
-        if ( regexOptions[option].exec(element['innerHTML']) ) {
+        if ( regexOptions[option].exec(element['innerText']) ) {
           return option;
         }
       }
@@ -725,11 +725,11 @@ var FiltersOther = {
   
   zeroDash : function( element ) {
     
-    if ( element && typeof element === 'object' && element['innerHTML'] ) {
+    if ( element && typeof element === 'object' && element['innerText'] ) {
       
       var regex = /^\s*([-]| |\u002D|\u002D|\u058A|\u05BE|\u2010|\u2011|\u2012|\u2013|\u2014|\u2015|\uFE58|\uFE63|\uFF0D)\s*$/;
       
-      if ( regex.test(element.innerHTML) ) {
+      if ( regex.test(element.innerText) ) {
         return '0';
       }
     }

@@ -20,37 +20,37 @@ var FiltersUnitref = {
         if ( unitRefElement.querySelector(nameSpace + '\\:divide') ) {
           
           if ( (unitRefElement.querySelector(nameSpace + '\\:divide ' + nameSpace + '\\:unitnumerator') && unitRefElement
-              .querySelector(nameSpace + '\\:divide ' + nameSpace + '\\:unitnumerator').innerHTML.split(':').length > 1)
+              .querySelector(nameSpace + '\\:divide ' + nameSpace + '\\:unitnumerator').innerText.split(':').length > 1)
               && (unitRefElement.querySelector(nameSpace + '\\:divide ' + nameSpace + '\\:unitdenominator') && unitRefElement
-                  .querySelector(nameSpace + '\\:divide ' + nameSpace + '\\:unitdenominator').innerHTML.split(':').length > 1) ) {
+                  .querySelector(nameSpace + '\\:divide ' + nameSpace + '\\:unitdenominator').innerText.split(':').length > 1) ) {
             
-            return unitRefElement.querySelector(nameSpace + '\\:divide ' + nameSpace + '\\:unitnumerator').innerHTML
+            return unitRefElement.querySelector(nameSpace + '\\:divide ' + nameSpace + '\\:unitnumerator').innerText
                 .split(':')[1].toUpperCase()
                 + ' / '
-                + unitRefElement.querySelector(nameSpace + '\\:divide ' + nameSpace + '\\:unitdenominator').innerHTML
+                + unitRefElement.querySelector(nameSpace + '\\:divide ' + nameSpace + '\\:unitdenominator').innerText
                     .split(':')[1].toUpperCase();
           }
         } else if ( unitRefElement.querySelector('divide') ) {
           if ( (unitRefElement.querySelector('divide unitnumerator') && unitRefElement
-              .querySelector('divide unitnumerator').innerHTML.split(':').length > 1)
+              .querySelector('divide unitnumerator').innerText.split(':').length > 1)
               && (unitRefElement.querySelector('divide unitdenominator') && unitRefElement
-                  .querySelector('divide unitdenominator').innerHTML.split(':').length > 1) ) {
+                  .querySelector('divide unitdenominator').innerText.split(':').length > 1) ) {
             
-            return unitRefElement.querySelector('divide unitnumerator').innerHTML.split(':')[1].toUpperCase() + ' / '
-                + unitRefElement.querySelector('divide unitdenominator').innerHTML.split(':')[1].toUpperCase();
+            return unitRefElement.querySelector('divide unitnumerator').innerText.split(':')[1].toUpperCase() + ' / '
+                + unitRefElement.querySelector('divide unitdenominator').innerText.split(':')[1].toUpperCase();
           }
         }
         
         var measureWithNamespace = unitRefElement.querySelector(nameSpace + '\\:measure');
-        if ( measureWithNamespace && measureWithNamespace.innerHTML
-            && measureWithNamespace.innerHTML.split(':').length === 2 ) {
-          return measureWithNamespace.innerHTML.split(':')[1].toUpperCase();
+        if ( measureWithNamespace && measureWithNamespace.innerText
+            && measureWithNamespace.innerText.split(':').length === 2 ) {
+          return measureWithNamespace.innerText.split(':')[1].toUpperCase();
         }
         
         var measureWithoutNamespace = unitRefElement.querySelector('measure');
-        if ( measureWithoutNamespace && measureWithoutNamespace.innerHTML
-            && measureWithoutNamespace.innerHTML.split(':').length === 2 ) {
-          return measureWithoutNamespace.innerHTML.split(':')[1].toUpperCase();
+        if ( measureWithoutNamespace && measureWithoutNamespace.innerText
+            && measureWithoutNamespace.innerText.split(':').length === 2 ) {
+          return measureWithoutNamespace.innerText.split(':')[1].toUpperCase();
         }
         
       }

@@ -173,7 +173,7 @@ var ErrorsMinor = {
   metaLinksInstance : function( fileName ) {
     
     var content = document
-        .createTextNode('Full Inline XBRL viewing features for Exhibits are coming soon.');
+        .createTextNode('Inline XBRL viewing features are minimal because supporting file is not correct.');
     
     var element = document.createElement('div');
     element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');

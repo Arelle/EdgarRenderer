@@ -92,7 +92,7 @@ kbd {
 	cursor: pointer;
 }
 
-#dynamic-xbrl-form [contextRef]:hover {
+#dynamic-xbrl-form [contextref]:hover {
 	cursor: pointer;
 }
 

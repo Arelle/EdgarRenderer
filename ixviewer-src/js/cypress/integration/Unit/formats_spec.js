@@ -27,13 +27,13 @@ describe('Unit Test Application Code', function() {
 		                	
 		                  // so we will want to do:
 		                  // expect(win[current][nestedCurrent]({
-		                  // 'innerHTML' : validInput
+		                  // 'innerText' : validInput
 		                  // })).to.equal(validValue);
 		                	
 		                  Object.keys(objectOfFormats[currentFormat]['valid']).forEach((validValue) => {
 		                    objectOfFormats[currentFormat]['valid'][validValue].forEach((validInput) => {
 		                      expect(win[current][nestedCurrent]({
-		                        'innerHTML': validInput
+		                        'innerText': validInput
 		                      })).to.equal(validValue);
 		                    });
 		                  });
@@ -41,7 +41,7 @@ describe('Unit Test Application Code', function() {
 		                  Object.keys(objectOfFormats[currentFormat]['invalid']).forEach((validValue) => {
 		                    objectOfFormats[currentFormat]['invalid'][validValue].forEach((validInput) => {
 		                      expect(win[current][nestedCurrent]({
-		                        'innerHTML': validInput
+		                        'innerText': validInput
 		                      })).to.contains('Format Error:');
 		                    });
 		                  });
