@@ -70,7 +70,7 @@
   <xsl:variable name="imagesDir">Images</xsl:variable>
   
   <!--  For 23.4 testing uncomment ixviewer for production ixviewer -->  
-  <xsl:variable name="ixHtmlPath">/AR/ixviewer/ix.html</xsl:variable>
+  <xsl:variable name="ixHtmlPath">AR/ixviewer/ix.html</xsl:variable>
 
   <!--  For 23.4.1 testing uncomment iyviewer for ixviewer-plus preview -->
   <!--  <xsl:variable name="ixHtmlPath">/AR/ixyiewer/ix.xhtml</xsl:variable>  -->
@@ -78,7 +78,7 @@
   <xsl:variable name="docAbsPathPrefix"></xsl:variable>
   <xsl:variable name="docAbsPathSuffix"></xsl:variable>
   <xsl:variable name="fetchprefix"><![CDATA[DisplayDocument.do?step=docOnly&accessionNumber=]]></xsl:variable>
-  <xsl:variable name="fetch_ix_prefixquoted"><![CDATA[/AR/DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D]]></xsl:variable>
+  <xsl:variable name="fetch_ix_prefixquoted"><![CDATA[../../DisplayDocument.do%3Fstep%3DdocOnly%26accessionNumber%3D]]></xsl:variable>
   <xsl:variable name="fetchsuffix"><![CDATA[&interpretedFormat=true&redline=false&filename=]]></xsl:variable>  
   <xsl:variable name="fetchsuffixquoted"><![CDATA[%26interpretedFormat%3Dfalse%26redline%3Dfalse%26filename%3D]]></xsl:variable>
   <xsl:variable name="fetchraw"><![CDATA[&interpretedFormat=false&redline=false&filename=]]></xsl:variable>

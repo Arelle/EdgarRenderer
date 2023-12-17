@@ -12,6 +12,7 @@ import regex as re
 
 ixviewerDirFilesPattern = re.compile(r"^ix(-dev)?.x?html|^browser-error.html|^css/|^images/|^js/|^[a-z0-9.-]+min\.(js|css)(\.map)?$|^[a-z0-9]+\.(ttf|woff2)$")
 webRootDirPattern = re.compile(r"^include$|^i[x-z]viewer")
+wsRootDirPattern = re.compile(r"^(AR/)?(include|i[xy]viewer[^/]*)/(.*)$")
 extMimeType = {
     ".xhtml": "application/xhtml+xml",
     ".html":  "text/html",
@@ -29,6 +30,9 @@ class _LocalViewer(LocalViewer):
         if file == 'favicon.ico':
             return static_file("arelle.ico", root=self.cntlr.imagesDir, mimetype='image/vnd.microsoft.icon')
         _report, _sep, _file = file.partition("/")
+        if _report.startswith("DisplayDocument.do"):
+            _file = file
+            _report = str(len(self.reportsFolders) - 1)
         if file == "---xbrl.zip" and "referer" in request.headers: # no report number, get from referer header
             refererPathParts = request.headers["referer"].split("/")
             if len(refererPathParts) >= 4 and refererPathParts[3].isnumeric():
@@ -47,8 +51,9 @@ class _LocalViewer(LocalViewer):
             return static_file(_file[7:], root=os.path.join(self.reportsFolders[0], 'include'))
         if _report == "images": # really in ixviewer subtree (Workstation Images are in distribution include)
             return static_file(_file, root=os.path.join(self.reportsFolders[0], 'include'))
-        if _file.startswith("ixviewer/"): # really in ixviewer subtree
-            return static_file(_file[9:], root=os.path.join(self.reportsFolders[0], 'ixviewer'))
+        if wsRootDirPattern.match(_file): # really in ixviewer subtree
+            m = wsRootDirPattern.match(_file)
+            return static_file(m.group(3), root=os.path.join(self.reportsFolders[0], m.group(2)))
         if _report.isnumeric(): # in reportsFolder folder
             # is it an EDGAR workstation query parameter
             if _file == "DisplayDocument.do":
