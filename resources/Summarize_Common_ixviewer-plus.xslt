@@ -9,7 +9,7 @@
   <xsl:variable name="majorversion" select="substring-before(/FilingSummary/Version,'.')"/>
   <xsl:variable name="nreports" select="count(/FilingSummary/MyReports/Report)"/>
   <xsl:variable name="nbooks" select="count(/FilingSummary/MyReports/Report[ReportType='Book'])"/>
-
+  
   <xsl:variable name="doc1" select="(/FilingSummary/InputFiles/File[@doctype])[1]/@original"/>
   <xsl:variable name="isrr" select="/FilingSummary/InputFiles/File[@original=$doc1]/@isRR"/>
   <xsl:variable name="isoef" select="/FilingSummary/InputFiles/File[@original=$doc1]/@isOEF"/>
@@ -27,7 +27,7 @@
   <xsl:variable name="isOnlyDei" select="/FilingSummary/InputFiles/File[@original=$doc1]/@isOnlyDei"/>
   <xsl:variable name="isDefinitelyFs" select="/FilingSummary/InputFiles/File[@original=$doc1]/@isDefinitelyFs"/>
   <!-- only real financial statements get multipart menus with levels I, II, III, IV -->
-  <xsl:variable name="isDefinitelyNotFs" select="$isOnlyShr or $isRxp or $isN1a or $isn3n4n6  or $isn2prospectus  or $isfeeexhibit or $isProxy or $isSdr or $isOnlyDei
+  <xsl:variable name="isDefinitelyNotFs" select="$isOnlyShr or $isRxp or $isN1a or $isn3n4n6  or $isn2prospectus  or $isfeeexhibit or $isProxy or $isSdr or $isOnlyDei 
   									or ($isNcsr and not($isDefinitelyFs))
   									or not(/FilingSummary/MyReports/Report[@instance=$doc1]/MenuCategory[.='Statements'])"/>
   <!-- only real financial statements and dei-only 8-k's get useless excel output -->
@@ -106,49 +106,49 @@
             font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif; /* was Arial, Helvetia, sans-serif */
             font-size:11px;
           }
-
+          
           ul#menu {
           list-style-type:none;
           margin:0;
           padding:0;
           width:15em;
           border:1px solid #333;
-          background-color:#F5F5EB;
+          background-color:#FFFFFF; /* was light gray #F5F5EB; */
           }
-
+          
           ul#menu ul{
             list-style-type:none;
             margin:0;
             padding:0;
             width:15em;
-            background-color:#F5F5EB;
+            background-color:#FFFFFF; /* was light gray #F5F5EB; */
           }
-
+          
           ul#menu a{
             display:block;
             text-decoration:none;
           }
-
+          
           ul#menu li{
             margin-top:1px;
           }
-
+          
           ul#menu li a{
-            background:#F3D673;
+            background:#F7F7F7; /* was mustard #F3D673; */
             color:black;
             padding:0.5em;
           }
-
+          
           ul#menu li a:hover{
             background:#aaa;
           }
-
+          
           ul#menu li ul li a{
-            background:#F5F5EB;
-            color:#BF0023;
+            background:#FFFFFF; /* was light gray #F5F5EB; */
+            color: #0071EB; /* was brick red #BF0023; */
             padding-left:20px;
           }
-
+          
           ul#menu li ul li a:hover{
             background:#aaa;
             border-left:5px #000 solid;
@@ -162,7 +162,7 @@
 		  		background-color: #12659C; color: #0C213A;
 		   }
           li.octave {border-top: 1px solid black;}
-          ul#menu li.ix > a {background-color: #0C213A; color: #afd77f}
+          ul#menu li.ix > a {background-color: #0C213A; color: #FFFFFF;} /* was wasabi #afd77f} */
           button {
 		   	color: #212529;
 		    border-radius: 1rem;
@@ -199,7 +199,7 @@
           </xsl:if><![CDATA[
           var parentreport = new Array();//]]>
                     <xsl:apply-templates mode="parentreportarray" select="MyReports/Report"/>
-                    <xsl:text disable-output-escaping="yes"><![CDATA[
+                    <xsl:text disable-output-escaping="yes"><![CDATA[  
     var url_path = "]]></xsl:text>
         <xsl:value-of select="$filingDocUrlPrefix"/>
         <xsl:text disable-output-escaping="yes"><![CDATA[";
@@ -210,7 +210,7 @@
         <xsl:value-of select="$fetchWrapsXmlInHtml"/>
     	<xsl:text disable-output-escaping="yes"><![CDATA[";
     var url_filing_dir = location.pathname.substring(0,location.pathname.lastIndexOf("/")+1);
-
+    
     	
    function loadXmlDoc(url) {
       var doc;
@@ -221,16 +221,16 @@
       if (window.ActiveXObject) {
          doc = new ActiveXObject("Msxml2.FreeThreadedDOMDocument.3.0");
          doc.loadXML(jqxhr.responseText);
-      }
+      }      
       // code for other browsers
       else if (document.implementation && document.implementation.createDocument) {
          doc=document.implementation.createDocument("","",null);
          doc.async=true;
          doc = jqxhr.responseXML.documentElement;
-      }
+      }      
       return doc;
    }
-
+   
    function fixSrcAttr(src) {
       var uri = src.substr(0,5);
       // No change is needed if the 'src' attribute contains an embedded image
@@ -252,7 +252,7 @@
       }
       return url_path + src;
    }
-
+   
    function getReport(url, xsl_url) {
       var _url = url_path + url;
       if (xsl_url == null) { xsl_url = InstanceReportXslt; }
@@ -266,7 +266,7 @@
           success: function (data) { jQuery('#reportDiv').append(data)
                   .find('img').attr('src', function(i, val) { return fixSrcAttr(val);}).end();
               }
-          });
+          });            
       } else if (processXsltInBrowser == 'true') {
           $.ajax({
           type: "GET",
@@ -280,20 +280,20 @@
 					  data = data.replace(/<HTML><HEAD><TITLE>.+<PRE><FONT SIZE = 3>/g, ''); // header
 					  data = data.replace(/<\/FONT><\/PRE><\/BODY><\/HTML>/g, ''); // footer
 					  data = data.replace(/<P CLASS=\"page\">&nbsp;<\/P>/g, '\n'); // newlines
-					  data = data.replace(/&gt;/g, '>');
-					  data = data.replace(/&lt;/g, '<');
-					  data = data.replace(/&amp;/g, '&');
+					  data = data.replace(/&gt;/g, '>'); 
+					  data = data.replace(/&lt;/g, '<'); 
+					  data = data.replace(/&amp;/g, '&'); 
 					  // end of EDGAR HTML wrapping removal
                       path = _url; // EDGAR workstation and ops GW
                   } else {
                       data = data.replace(/^\s+|\s+$/g, ''); // leading or trailing whitespace causes problems
                   	  path = "/" + _url.substring(1, _url.lastIndexOf('/')+1);
                   }
-
+                  
                   // code for IE
-                  if (window.ActiveXObject) {
+                  if (window.ActiveXObject) {                  
                      xsl_doc = loadXmlDoc(xsl_url)
-                     var xslt = new ActiveXObject("Msxml2.XSLTemplate.3.0");
+                     var xslt = new ActiveXObject("Msxml2.XSLTemplate.3.0");   
                      xslt.stylesheet = xsl_doc;
                      var xslproc = xslt.createProcessor();
                      var doc = new ActiveXObject("Msxml2.FreeThreadedDOMDocument.3.0");
@@ -308,11 +308,11 @@
                                          .attr('src', function(i, val) {
                                                          return fixSrcAttr(val);
                                                       }).end());
-                  }
+                  }                  
                   // code for other browsers
                   else if (document.implementation && document.implementation.createDocument) {
                      xsltProcessor=new XSLTProcessor();
-                     xsltProcessor.importStylesheet(loadXmlDoc(xsl_url));
+                     xsltProcessor.importStylesheet(loadXmlDoc(xsl_url));                  
                      xsltProcessor.setParameter(null,"source",path);
                      xsltProcessor.setParameter(null,"asPage","true");
                      parser = new DOMParser();
@@ -332,13 +332,13 @@
             });
                }
    }
-
+   
    function clearReportDiv() {
       // code for IE
       if (window.ActiveXObject) {
          document.getElementById("reportDiv").innerHTML='';
       }
-
+      
       // code for Mozilla, Firefox, Opera, etc.
       else if (document.implementation && document.implementation.createDocument) {
          x = document.getElementById("reportDiv").childNodes;
@@ -350,7 +350,7 @@
          }
       }
    }
-
+   
    function loadReport(idx) {
       if (window.XMLHttpRequest || window.ActiveXObject) {
          clearReportDiv();
@@ -358,7 +358,7 @@
          if (reports[idx].indexOf('FilingSummary.xml') > -1) {
             unHighlightAllMenuItems();
             xsl_url = url_path + "RenderingLogs.xslt";
-         }
+         } 
          if (reports[idx] == 'all') {
             highlightAllMenuItems();
             jQuery.ajaxSetup({async:false});
@@ -370,32 +370,32 @@
                }
             }
          }
-         else {
+         else { 
             getReport(reports[idx], xsl_url);
          }
          window.scrollTo(0,0);
       }
-
+      
       else {
          alert('Your browser cannot handle this script');
       }
    }
-
+   
    function highlight(link) {
       var parent = document.getElementById( 'menu' );
       var links = parent.getElementsByTagName( 'a' );
-
+      
       for (var i = 0; i < links.length; i++){
          if (links[i].className == 'xbrlviewer') {
             if (links[i] == link) {
                link.style.background = "#C1CDCD";
             } else {
-               links[i].style.background = "#F5F5EB";
+               links[i].style.background = "#FFFFFF";
             }
          }
       }
    }
-
+   
    //the parameter 'div' represents <div id="reportDiv">
    function FixNotesForGeckoWebkit( div ){
       //textContent is only found in "other" browsers
@@ -419,14 +419,14 @@
                           //this text does resemble HTML, use the textContent as HTML and that will convert the text to HTML content.
                           curCell.innerHTML = curCell.textContent;
                         }
-                     }
+                     }        
                   }
                }
             }
          }
       }
-   }
-
+   } 
+   
    function applyRedline( url ) {
        if (isRedline) {
            return url + "&amp;redline=true";
@@ -434,7 +434,7 @@
            return url;
        }
    }
-
+  
    window.onload = function () {
          if (window.location.href.substring(0,5)=='file:') {
           ableToOpenReportFiles = 0;
@@ -458,9 +458,9 @@
         <div>
           <table>
             <tr>
-              <td colspan="2">
-                <a class="xbrlviewer" style="color: black; font-weight: bold;" href="javascript:window.print();">Print Document</a>
-                <xsl:if test="$mayHaveExcel and $includeExcel = 'true'">&#160;<a class="xbrlviewer" href="{$filingDocUrlPrefix}Financial_Report.xlsx">View Excel Document</a></xsl:if>
+              <td colspan='2' style="font-weight: 500; font-family: 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif">
+                <a class="xbrlviewer" style="color: black;" href="javascript:window.print();">Print Document</a>
+                <xsl:if test="$mayHaveExcel and $includeExcel = 'true'">&#160;<a class="xbrlviewer" style="color:#0071EB" href="{$filingDocUrlPrefix}Financial_Report.xlsx">View Excel Document</a></xsl:if>
               </td>
             </tr>
             <tr>
@@ -522,7 +522,7 @@
         <xsl:if test="$nbooks > 0">
           <li class="accordion">
             <!-- final menu items stand on their own -->
-            <a><xsl:attribute name="href">
+            <a class="all_reports"><xsl:attribute name="href">
                 <xsl:text>javascript:loadReport(</xsl:text>
                 <xsl:value-of select="$nreports"/>
                 <xsl:text>)</xsl:text>
@@ -531,7 +531,7 @@
         </xsl:if>
         <xsl:if test="$nlogs > 0">
           <li class="accordion">
-            <a><xsl:attribute name="href">
+            <a class="rendering_logs"><xsl:attribute name="href">
                 <xsl:text>javascript:loadReport(</xsl:text>
                 <xsl:value-of select="$nreports + $nlogs "/>
                 <xsl:text>)</xsl:text>
@@ -565,9 +565,9 @@
               <li>
                 <xsl:choose>
                   <xsl:when test="$instance_is_inline = 'true'">
-                    <xsl:attribute name="class">accordion octave</xsl:attribute>
+                    <xsl:attribute name="class">accordion octave ix</xsl:attribute>
                     <a href="javascript:window.location=applyRedline('{$ixHtmlPath}?doc={$filingDocUrlPrefixQuoted}{$docAbsPathPrefix}{$original}{$docAbsPathSuffix}&amp;xbrl=true{$metaLinksSuffixQuoted}')">
-                      <xsl:value-of select="$doctype"/>
+                    	<button type="button" class="btn btn-warning"><xsl:value-of select="$doctype"/></button>
                     </a>
                   </xsl:when>
                   <xsl:otherwise>
