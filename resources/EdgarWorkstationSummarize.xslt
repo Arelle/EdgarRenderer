@@ -68,12 +68,7 @@
   <xsl:param name="accessionNumber">PROVIDED-BY-ARELLE-FILE-ARGUMENT-OBJECT</xsl:param>
   <xsl:variable name="includeDir">include</xsl:variable>
   <xsl:variable name="imagesDir">Images</xsl:variable>
-  
-  <!--  For 23.4 testing uncomment ixviewer for production ixviewer -->  
-  <xsl:variable name="ixHtmlPath">AR/ixviewer/ix.html</xsl:variable>
-
-  <!--  For 23.4.1 testing uncomment iyviewer for ixviewer-plus preview -->
-  <!--  <xsl:variable name="ixHtmlPath">/AR/ixyiewer/ix.xhtml</xsl:variable>  -->
+  <xsl:variable name="ixHtmlPath">/AR/ixyiewer/ix.xhtml</xsl:variable>
 
   <xsl:variable name="docAbsPathPrefix"></xsl:variable>
   <xsl:variable name="docAbsPathSuffix"></xsl:variable>

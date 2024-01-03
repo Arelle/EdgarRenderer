@@ -14,12 +14,7 @@
   <xsl:param name="includeExcel">true</xsl:param>
   <xsl:variable name="includeDir">/include</xsl:variable>
   <xsl:variable name="imagesDir">/images</xsl:variable>
-  
-  <!--  For 23.4 testing uncomment ixviewer for production ixviewer -->
-  <xsl:variable name="ixHtmlPath">/ixviewer/ix.html</xsl:variable>
-  
-  <!--  For 23.4.1 testing uncomment for ixviewer-plus preview -->
-  <!--  <xsl:variable name="ixHtmlPath">/ixviewer-plus/ix.xhtml</xsl:variable> -->
+  <xsl:variable name="ixHtmlPath">/ixviewer-plus/ix.xhtml</xsl:variable>
   
   <xsl:variable name="docAbsPathPrefix">' + url_filing_dir +'</xsl:variable>
   <xsl:variable name="docAbsPathSuffix">' + '</xsl:variable>

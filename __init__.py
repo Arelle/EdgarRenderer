@@ -268,6 +268,8 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.labelLangs = ['en-US','en-GB'] # list by WcH 7/14/2017, priority of label langs, en-XX always falls back to en anyway
         if not hasattr(cntlr, "edgarEditedDocs"): # in GUI mode initialized before this class init
             cntlr.edgarEditedDocs = {}
+        # iXBRLViewer plugin is present if there's a generate method
+        self.hasIXBRLViewer = any(True for generate in pluginClassMethods("iXBRLViewer.Generate"))
 
     # wrap controler properties as needed
 
@@ -724,6 +726,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.instanceSummaryList = []
         self.instanceList = []
         self.inlineList = []
+        self.inlineListRemovedIds = []
         self.otherXbrlList = []
         self.supplementList = []
         self.supplementalFileList = []
@@ -798,6 +801,27 @@ class EdgarRenderer(Cntlr.Cntlr):
                     success = False
                     self.logDebug(_("Stripping filing due to {} preceding validation errors.").format(errorCountDuringValidation))
             if success or not self.noRenderingWithError:
+                # add missing IDs to inline documents
+                for ixdsHtmlRootElt in getattr(modelXbrl, "ixdsHtmlElements", ()):
+                    doc = ixdsHtmlRootElt.modelDocument
+                    hasIdAssignedFact = False
+                    for e in ixdsHtmlRootElt.iter(doc.ixNStag + "nonNumeric", doc.ixNStag + "nonFraction", doc.ixNStag + "fraction"):
+                        if getattr(e, "xValid", 0) >= VALID and not e.id: # id is optional on facts but required for ixviewer-plus and arelle inline viewers
+                            id = f"f{e.objectIndex}"
+                            if id in doc.idObjects or id in modelXbrl.ixdsEltById:
+                                for i in range(1000):
+                                    uid = f"{id}_{i}"
+                                    if uid not in doc.idObjects and uid not in modelXbrl.ixdsEltById:
+                                        id = uid
+                                        break
+                            e.set("id", id)
+                            doc.idObjects[id] = e
+                            modelXbrl.ixdsEltById[id] = e
+                            hasIdAssignedFact = True
+                if hasIdAssignedFact and self.reportsFolder:
+                    self.inlineListRemovedIds.append(doc.basename)
+                    filing.writeFile(join(self.reportsFolder, doc.basename), allowableBytesForEdgar(
+                        etree.tostring(doc.xmlRootElement, encoding="ASCII", xml_declaration=True)))
                 Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, reportSummaryList)
         except Utils.RenderingException as ex:
             success = False # error message provided at source where exception was raised
@@ -823,7 +847,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                 filing.reports.remove(report) # remove stripped report from filing (so it won't be in zip)
             else:
                 self.success = False
-        # remove any inline invalid facts
+        # remove any inline invalid facts, assign and note if any missing IDs
         for ixdsHtmlRootElt in getattr(modelXbrl, "ixdsHtmlElements", ()):
             doc = ixdsHtmlRootElt.modelDocument
             _ixHidden = doc.ixNStag + "hidden"
@@ -845,20 +869,6 @@ class EdgarRenderer(Cntlr.Cntlr):
                     else:
                         e.tag = "{http://www.w3.org/1999/xhtml}span"
                     hasEditedFact = True
-                ''' deferred: for arelle inline viewer
-                else:
-                    if not e.id:
-                        id = f"f{e.objectIndex}"
-                        if id in doc.idObjects:
-                            for i in range(1000):
-                                uid = f"{id}_{i}"
-                                if uid not in doc.idObjects:
-                                    id = uid
-                                    break
-                        e.set("id", id)
-                        doc.idObjects[id] = e
-                        hasEditedFact = True
-                '''
             for e in elementsToRemove: # remove ix hidden invalid elements
                 e.getparent().remove(e)
             if hasEditedFact:
@@ -999,7 +1009,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         if self.reportZip:
                             if filename not in self.reportZip.namelist():
                                 self.reportZip.writestr(filename, file.read())
-                        elif self.reportsFolder is not None:
+                        elif self.reportsFolder is not None and filename not in self.inlineListRemovedIds:
                             target = join(self.reportsFolder, filename)
                             if exists(target): remove(target)
                             filing.writeFile(target, file.read())
@@ -1065,10 +1075,21 @@ class EdgarRenderer(Cntlr.Cntlr):
                             IoManager.writeHtmlDoc(filing, result, self.reportZip, _reportsFolder, "FilingSummary.htm")
                         self.logDebug("FilingSummary XSLT transform {:.3f} secs.".format(time.time() - _startedAt))
                         self.renderedFiles.add("FilingSummary.htm")
+                    if self.hasIXBRLViewer:
+                        self.renderedFiles.add("ixbrlviewer.html")
+                        _startedAt = time.time()
+                        for generate in pluginClassMethods("iXBRLViewer.Generate"):
+                            generate(cntlr, _reportsFolder, "/ixviewer-arelle/ixbrlviewer-1.4.11.js", useStubViewer="ixbrlviewer.xhtml", saveStubOnly=True)
+                        self.logDebug("Arelle viewer generated {:.3f} secs.".format(time.time() - _startedAt))
                     if (self.summaryXsltDissem or self.reportXsltDissem) and not self.includeLogsInSummaryDissem and self.summaryHasLogEntries:
                         #print("trace removing summary logs")
                         summary.removeSummaryLogs() # produce filing summary without logs
                         IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml.dissem')
+                        if self.hasIXBRLViewer:
+                            _startedAt = time.time()
+                            for generate in pluginClassMethods("iXBRLViewer.Generate"):
+                                generate(cntlr, dissemReportsFolder, "/arelleViewer-1.4.11/ixbrlviewer.js", useStubViewer="ixbrlviewer.xhtml.dissem", saveStubOnly=True)
+                            self.logDebug("Arelle viewer for dissemination generated {:.3f} secs.".format(time.time() - _startedAt))
                     self.logDebug("Write filing summary complete")
                     if self.auxMetadata or filing.hasInlineReport:
                         summary.writeMetaFiles()
@@ -1597,6 +1618,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
                 if not openingUrl: # open SEC Mustard Menu
                     openingUrl = ("FilingSummary.htm", "Rall.htm")[_combinedReports]
                 webbrowser.open(url="{}/{}{}".format(_localhost, openingUrl, _ixRedline))
+                if filing.edgarRenderer.hasIXBRLViewer:
+                    webbrowser.open(url="{}/ixbrlviewer.xhtml{}".format(_localhost, _ixRedline))
 
 def testcaseVariationExpectedSeverity(modelTestcaseVariation, *args, **kwargs):
     # allow severity to appear on any variation sub-element (such as result)
@@ -1643,6 +1666,9 @@ def edgarRendererRemoveRedlining(modelDocument, *args, **kwargs):
             if not hasattr(cntlr, "edgarEditedDocs"):
                 cntlr.edgarEditedDocs = {}
             cntlr.edgarEditedDocs[modelDocument.basename] = modelDocument
+            
+def iXBRLViewerGenerateOnCall(*args, **kwargs):
+    return True
 
 __pluginInfo__ = {
     'name': 'Edgar Renderer',
@@ -1673,5 +1699,7 @@ __pluginInfo__ = {
     # identify expected severity of test cases for EdgarRenderer testcases processing
     'ModelTestcaseVariation.ExpectedSeverity': testcaseVariationExpectedSeverity,
     # handles IXDS target saving
-    'InlineDocumentSet.SavesTargetInstance': savesTargetInstance
+    'InlineDocumentSet.SavesTargetInstance': savesTargetInstance,
+    # iXBRLViewer should only generate when called, not on loading by cmd line or GUI
+    'iXBRLViewer.GenerateOnCall': iXBRLViewerGenerateOnCall,
 }
