@@ -266,8 +266,9 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.createdFolders = []
         self.success = True
         self.labelLangs = ['en-US','en-GB'] # list by WcH 7/14/2017, priority of label langs, en-XX always falls back to en anyway
-        if not hasattr(cntlr, "edgarEditedDocs"): # in GUI mode initialized before this class init
-            cntlr.edgarEditedDocs = {}
+        if not hasattr(cntlr, "editedIxDocs"): # in GUI mode may be initialized in 'ModelDocument.Discover' before this class init
+            cntlr.editedIxDocs = {}
+            cntlr.redlineIxDocs = {}
         # iXBRLViewer plugin is present if there's a generate method
         self.hasIXBRLViewer = any(True for generate in pluginClassMethods("iXBRLViewer.Generate"))
 
@@ -726,7 +727,6 @@ class EdgarRenderer(Cntlr.Cntlr):
         self.instanceSummaryList = []
         self.instanceList = []
         self.inlineList = []
-        self.inlineListRemovedIds = []
         self.otherXbrlList = []
         self.supplementList = []
         self.supplementalFileList = []
@@ -807,7 +807,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                     hasIdAssignedFact = False
                     for e in ixdsHtmlRootElt.iter(doc.ixNStag + "nonNumeric", doc.ixNStag + "nonFraction", doc.ixNStag + "fraction"):
                         if getattr(e, "xValid", 0) >= VALID and not e.id: # id is optional on facts but required for ixviewer-plus and arelle inline viewers
-                            id = f"f{e.objectIndex}"
+                            id = f"ixv-{e.objectIndex}"
                             if id in doc.idObjects or id in modelXbrl.ixdsEltById:
                                 for i in range(1000):
                                     uid = f"{id}_{i}"
@@ -818,10 +818,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                             doc.idObjects[id] = e
                             modelXbrl.ixdsEltById[id] = e
                             hasIdAssignedFact = True
-                if hasIdAssignedFact and self.reportsFolder:
-                    self.inlineListRemovedIds.append(doc.basename)
-                    filing.writeFile(join(self.reportsFolder, doc.basename), allowableBytesForEdgar(
-                        etree.tostring(doc.xmlRootElement, encoding="ASCII", xml_declaration=True)))
+                    if hasIdAssignedFact and self.reportsFolder:
+                        self.cntlr.editedIxDocs[doc.basename] = doc # causes it to be rewritten out
                 Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, reportSummaryList)
         except Utils.RenderingException as ex:
             success = False # error message provided at source where exception was raised
@@ -872,9 +870,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             for e in elementsToRemove: # remove ix hidden invalid elements
                 e.getparent().remove(e)
             if hasEditedFact:
-                if not hasattr(self, "edgarEditedDocs"):
-                    self.cntlr.edgarEditedDocs = {}
-                self.cntlr.edgarEditedDocs[doc.basename] = doc # causes it to be rewritten out
+                self.cntlr.editedIxDocs[doc.basename] = doc # causes it to be rewritten out
 
         # block closing filesource when modelXbrl closes because it's used by filingEnd (and may be an archive)
         modelXbrl.closeFileSource = False
@@ -992,12 +988,16 @@ class EdgarRenderer(Cntlr.Cntlr):
                     for report in filing.reports:
                         inputsToCopyToOutputList += report.reportedFiles
                 if inputsToCopyToOutputList and filing.entrypointfiles: # filesource will be not None
+                    # any redline containing files will still have the redline markups, as these files are for workstation or GUI viewing
                     _xbrldir = os.path.dirname(filing.entrypointfiles[0]["file"].partition('#')[0])  # strip any # or IXDS suffix
                     # files to copy are in zip archive
                     for filename in set(inputsToCopyToOutputList): # set() to deduplicate if multiple references
                         _filepath = os.path.join(_xbrldir, filename)
-                        if sourceZipStream is not None:
-                            file = FileSource.openFileSource(_filepath, cntlr, sourceZipStream).file(_filepath, binary=True)[0]
+                        if filename in cntlr.editedIxDocs:
+                            serializedDoc = allowableBytesForEdgar(etree.tostring(cntlr.editedIxDocs[filename].xmlRootElement, encoding="ASCII", xml_declaration=True))
+                        elif sourceZipStream is not None:
+                            with FileSource.openFileSource(_filepath, cntlr, sourceZipStream).file(_filepath, binary=True)[0] as fout:
+                                serializedDoc = fout.read()
                         else:
                             if filesource.isArchive and filesource.baseurl == _xbrldir:
                                 # filename may not include parent directories within the zip
@@ -1005,14 +1005,15 @@ class EdgarRenderer(Cntlr.Cntlr):
                                     if f.endswith(filename): # use this dir in the zip
                                         _filepath = os.path.join(_xbrldir, f)
                                         break
-                            file = filesource.file(_filepath, binary=True)[0]  # returned in a tuple
+                            with filesource.file(_filepath, binary=True)[0] as fout:  # returned in a tuple
+                                serializedDoc = fout.read()
                         if self.reportZip:
                             if filename not in self.reportZip.namelist():
-                                self.reportZip.writestr(filename, file.read())
-                        elif self.reportsFolder is not None and filename not in self.inlineListRemovedIds:
-                            target = join(self.reportsFolder, filename)
-                            if exists(target): remove(target)
-                            filing.writeFile(target, file.read())
+                                self.reportZip.writestr(filename, serializedDoc)
+                        elif self.reportsFolder is not None:
+                            reportsFolderFilePath = join(self.reportsFolder, filename)
+                            if exists(reportsFolderFilePath): remove(reportsFolderFilePath)
+                            filing.writeFile(reportsFolderFilePath, serializedDoc)
 
                 self.logDebug("Instance post-processing complete {:.3f} secs.".format(time.time() - _startedAt))
 
@@ -1040,11 +1041,12 @@ class EdgarRenderer(Cntlr.Cntlr):
                     # if there's a dissem directory and no logs, remove summary logs
                     if self.summaryXslt and len(self.summaryXslt) > 0 and (self.summaryXsltDissem or self.reportXsltDissem):
                         dissemReportsFolder = os.path.join(self.reportsFolder, "dissem")
-                        if not os.path.exists(dissemReportsFolder):
-                            os.mkdir(dissemReportsFolder)
+                        os.makedirs(dissemReportsFolder, exist_ok=True)
                     if dissemReportsFolder:
                         # redline-removed docs have self-closed <p> and other elements which must not be self-closed when saved
-                        for doc in cntlr.edgarEditedDocs.values():
+                        for reportedFile, doc in cntlr.redlineIxDocs.items():
+                            edgarRendererRemoveRedlining(doc)
+                            cntlr.editedIxDocs[reportedFile] = doc # add to editedIxDocs for output in dissem zip and dissem folder
                             doc.parser.set_element_class_lookup(None) # modelXbrl class features are already closed now, block class lookup
                             for e in doc.xmlRootElement.iter():
                                 # check if no text, no children and not self-closable element for EDGAR
@@ -1113,8 +1115,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                                 _xbrldir = os.path.dirname(filepath)
                                 for reportedFile in sorted(report.reportedFiles):
                                     if reportedFile not in xbrlZip.namelist():
-                                        if reportedFile in cntlr.edgarEditedDocs:
-                                            doc = cntlr.edgarEditedDocs[reportedFile]
+                                        if reportedFile in cntlr.editedIxDocs:
+                                            doc = cntlr.editedIxDocs[reportedFile]
                                             # redline removed file is not readable in encoded version, create from dom in memory
                                             xbrlZip.writestr(reportedFile, allowableBytesForEdgar(
                                                              etree.tostring(doc.xmlRootElement, encoding="ASCII", xml_declaration=True)).decode('utf-8'))
@@ -1140,10 +1142,9 @@ class EdgarRenderer(Cntlr.Cntlr):
 
                 # save documents with removed redlines (only when saving dissemReportsFolder)
                 if dissemReportsFolder:
-                    for reportedFile, modelDocument in cntlr.edgarEditedDocs.items():
-                        target = join(dissemReportsFolder, reportedFile) + ".dissem"
-                        os.makedirs(self.reportsFolder, exist_ok=True)
-                        filing.writeFile(target, allowableBytesForEdgar(
+                    for reportedFile, modelDocument in cntlr.editedIxDocs.items():
+                        dissemFilePath = join(dissemReportsFolder, reportedFile) + ".dissem"
+                        filing.writeFile(dissemFilePath, allowableBytesForEdgar(
                             etree.tostring(modelDocument.xmlRootElement, encoding="ASCII", xml_declaration=True)))
 
                 if "EdgarRenderer/__init__.py#filingEnd" in filing.arelleUnitTests:
@@ -1171,7 +1172,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                 self.logDebug(_("Exception in filing end processing, traceback: {}").format(traceback.format_exception(*sys.exc_info())))
                 self.success = False # force postprocessingFailure
 
-            cntlr.edgarEditedDocs.clear()
+            cntlr.editedIxDocs.clear()
+            cntlr.redlineIxDocs.clear()
 
         # close filesource (which may have been an archive), regardless of success above
         filesource.close()
@@ -1418,8 +1420,9 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
                 _ixRedline = "?redline=true"
             else:
                 _ixRedline = ""
-        if not hasattr(cntlr, "edgarEditedDocs"):
-            cntlr.edgarEditedDocs = {}
+        if not hasattr(cntlr, "editedIxDocs"):
+            cntlr.editedIxDocs = {}
+            cntlr.redlineIxDocs = {}
         isNonEFMorGFMinline = (not getattr(cntlr.modelManager.disclosureSystem, "EFMplugin", False) and
                                modelXbrl.modelDocument.type in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INLINEXBRLDOCUMENTSET))
         # may use GUI mode to process a single instance or test suite
@@ -1618,7 +1621,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
                 if not openingUrl: # open SEC Mustard Menu
                     openingUrl = ("FilingSummary.htm", "Rall.htm")[_combinedReports]
                 webbrowser.open(url="{}/{}{}".format(_localhost, openingUrl, _ixRedline))
-                if filing.edgarRenderer.hasIXBRLViewer:
+                if filing.edgarRenderer.hasIXBRLViewer and filing.hasInlineReport:
                     webbrowser.open(url="{}/ixbrlviewer.xhtml{}".format(_localhost, _ixRedline))
 
 def testcaseVariationExpectedSeverity(modelTestcaseVariation, *args, **kwargs):
@@ -1632,40 +1635,44 @@ def savesTargetInstance(*args, **kwargs): # EdgarRenderer implements its own tar
     return True
 
 redliningPattern = re.compile(r"(.*;)?\s*-sec-ix-redline\s*:\s*true(?:\s*;)?\s*([\w.-].*)?$")
-def edgarRendererRemoveRedlining(modelDocument, *args, **kwargs):
+def edgarRendererDetectRedlining(modelDocument, *args, **kwargs):
     cntlr = modelDocument.modelXbrl.modelManager.cntlr
     if modelDocument.type == ModelDocument.Type.INLINEXBRL and (not cntlr.hasGui or not cntlr.redlineMode.get()):
-        rlRemoved = False
-        # strip redlining from modelDocument
         for e in modelDocument.xmlRootElement.getroottree().iterfind("//{http://www.w3.org/1999/xhtml}*[@style]"):
-            rlMatch = redliningPattern.match(e.get("style",""))
-            if rlMatch:
-                rlRemoved = True
-                cleanedStyle = (rlMatch.group(1) or "") + (rlMatch.group(2) or "")
-                if cleanedStyle:
-                    e.set("style", cleanedStyle)
-                else:
-                    e.attrib.pop("style")
-                    # if no remaining attributes on <span> remove it
-                    if not e.attrib and e.tag == "{http://www.w3.org/1999/xhtml}span":
-                        e0 = e.getprevious()
+            if redliningPattern.match(e.get("style","")):
+                if not hasattr(cntlr, "editedIxDocs"):
+                    cntlr.editedIxDocs = {}
+                    cntlr.redlineIxDocs = {}
+                cntlr.redlineIxDocs[modelDocument.basename] = modelDocument
+                break
+
+def edgarRendererRemoveRedlining(modelDocument, *args, **kwargs):
+    # strip redlining from modelDocument
+    for e in modelDocument.xmlRootElement.getroottree().iterfind("//{http://www.w3.org/1999/xhtml}*[@style]"):
+        rlMatch = redliningPattern.match(e.get("style",""))
+        if rlMatch:
+            rlRemoved = True
+            cleanedStyle = (rlMatch.group(1) or "") + (rlMatch.group(2) or "")
+            if cleanedStyle:
+                e.set("style", cleanedStyle)
+            else:
+                e.attrib.pop("style")
+                # if no remaining attributes on <span> remove it
+                if not e.attrib and e.tag == "{http://www.w3.org/1999/xhtml}span":
+                    e0 = e.getprevious()
+                    prop = "tail"
+                    if e0 is None:
+                        e0 = e.getparent()
+                        prop = "text"
+                    if e.text:
+                        setattr(e0, prop, (getattr(e0, prop) or "") + e.text)
+                    for eChild in e.getchildren():
+                        e.addprevious(eChild)
+                        e0 = eChild
                         prop = "tail"
-                        if e0 is None:
-                            e0 = e.getparent()
-                            prop = "text"
-                        if e.text:
-                            setattr(e0, prop, (getattr(e0, prop) or "") + e.text)
-                        for eChild in e.getchildren():
-                            e.addprevious(eChild)
-                            e0 = eChild
-                            prop = "tail"
-                        if e.tail:
-                            setattr(e0, prop, (getattr(e0, prop) or "") + e.tail)
-                        e.getparent().remove(e)
-        if rlRemoved:
-            if not hasattr(cntlr, "edgarEditedDocs"):
-                cntlr.edgarEditedDocs = {}
-            cntlr.edgarEditedDocs[modelDocument.basename] = modelDocument
+                    if e.tail:
+                        setattr(e0, prop, (getattr(e0, prop) or "") + e.tail)
+                    e.getparent().remove(e)
             
 def iXBRLViewerGenerateOnCall(*args, **kwargs):
     return True
@@ -1690,8 +1697,8 @@ __pluginInfo__ = {
     'EdgarRenderer.Filing.End': edgarRendererFilingEnd,
     # GUI operation start log buffering
     'ModelDocument.IsPullLoadable': edgarRendererGuiStartLogging,
-    # remove redline markups when appropriate
-    'ModelDocument.Discover': edgarRendererRemoveRedlining,
+    # detect if any redline markups when appropriate
+    'ModelDocument.Discover': edgarRendererDetectRedlining,
     # GUI operation startup (renders all reports of an input instance or test suite)
     'EdgarRenderer.Gui.Run': edgarRendererGuiRun,
     # GUI operation, add View -> EdgarRenderer submenu for GUI options
