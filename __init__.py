@@ -1081,9 +1081,9 @@ class EdgarRenderer(Cntlr.Cntlr):
                         self.renderedFiles.add("ixbrlviewer.html")
                         _startedAt = time.time()
                         for generate in pluginClassMethods("iXBRLViewer.Generate"):
-                            generate(cntlr, _reportsFolder, "/ixviewer-arelle/ixbrlviewer-1.4.11.js", useStubViewer="ixbrlviewer.xhtml", saveStubOnly=True)
+                            generate(cntlr, self.reportsFolder, "/ixviewer-arelle/ixbrlviewer-1.4.11.js", useStubViewer="ixbrlviewer.xhtml", saveStubOnly=True)
                         self.logDebug("Arelle viewer generated {:.3f} secs.".format(time.time() - _startedAt))
-                    if (self.summaryXsltDissem or self.reportXsltDissem) and not self.includeLogsInSummaryDissem and self.summaryHasLogEntries:
+                    if self.summaryXsltDissem or self.reportXsltDissem:
                         #print("trace removing summary logs")
                         summary.removeSummaryLogs() # produce filing summary without logs
                         IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml.dissem')
