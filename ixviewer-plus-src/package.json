@@ -9,12 +9,17 @@
     "prod-serve-analyze": "webpack serve --config ./webpack.config.js --mode production --env copy analyze",
     "prod-serve": "webpack serve --config ./webpack.config.js --mode production --env copy --port 8085",
     "production": "webpack --config ./webpack.config.js --mode production",
-    "sandbox": "webpack --config ./webpack.config.js --mode production --env copy",
-    "sandbox-serve": "webpack serve --config ./webpack.config.js --mode production --env copy",
+    "sandbox": "webpack --config ./webpack.config.js --mode production --devtool source-map",
+    "build-dev": "webpack --config ./webpack.config.js --mode development --devtool source-map --env copy",
+    "build-workstation": "webpack --config ./webpack.config.js --mode production --env domain=workstation --devtool source-map",
+    "build-workstation-dev": "webpack --config ./webpack.config.js --mode development --env domain=workstation --devtool source-map",
+    "workstation-serve": "webpack serve --config ./webpack.config.js --mode development --env domain=workstation --devtool source-map --env copy",
+    "sandbox-serve-dev": "webpack serve --config ./webpack.config.js --mode production --env copy",
     "automated-test": "webpack serve --config ./webpack.config.js --mode production --env copy automate",
     "unit-test": "node ./node_modules/karma/bin/karma start ./karma.config.js",
     "get-filings-menu": "node ./src/get-filings/index.mjs",
-    "get-filings": "node ./src/get-filings/index.mjs --no-prompt"
+    "get-filings": "node ./src/get-filings/index.mjs --no-prompt",
+    "cypress-build-and-run": "node ./cypress/utils/buildAndRunTests.js"
   },
   "author": "",
   "license": "ISC",
@@ -69,6 +74,7 @@
     "sass": "^1.63.6",
     "sass-loader": "^13.3.2",
     "style-loader": "^3.3.3",
+    "terser-webpack-plugin": "^5.3.9",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5",
@@ -117,5 +123,8 @@
         }
       ]
     }
+  },
+  "exports": {
+    "helpers": {}
   }
 }

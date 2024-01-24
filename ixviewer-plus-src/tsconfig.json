@@ -11,7 +11,11 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "downlevelIteration": true,
-    "strict": true
+    "strict": true,
+    "lib": [
+      "ES2021.String",
+      "dom"
+    ]
   },
   "include": ["./src/**/*.ts", "./src/**/*.html"],
   "files": ["typings.d.ts"]

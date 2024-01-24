@@ -75,7 +75,7 @@ export const Facts = {
     const endPerformance = performance.now();
     if (!PRODUCTION) {
       const log: Logger<ILogObj> = new Logger();
-      log.debug(`\nFacts.addEventAttributes() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms`);
+      log.debug(`Facts.addEventAttributes() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms`);
     }
   },
 

@@ -1,6 +1,7 @@
-/* Created by staff of the U.S. Securities and Exchange Commission.
- * Data and content created by government employees within the scope of their employment 
- * are not subject to domestic copyright protection. 17 U.S.C. 105.
+/* 
+ * bignumber.js v8.1.1 A JavaScript library for arbitrary-precision arithmetic.
+ * https://github.com/MikeMcl/bignumber.js Copyright (c) 2019 Michael Mclaughlin
+ * <M8ch88l@gmail.com> MIT Licensed.
  */
 
 /*eslint-disable*/
@@ -9,9 +10,6 @@
   'use strict';
 
 /*
- * bignumber.js v8.1.1 A JavaScript library for arbitrary-precision arithmetic.
- * https://github.com/MikeMcl/bignumber.js Copyright (c) 2019 Michael Mclaughlin
- * <M8ch88l@gmail.com> MIT Licensed.
  * 
  * BigNumber.prototype methods | BigNumber methods | absoluteValue abs | clone
  * comparedTo | config set decimalPlaces dp | DECIMAL_PLACES dividedBy div |
