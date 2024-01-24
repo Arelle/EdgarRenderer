@@ -29,7 +29,7 @@ DEFAULT_INSTANCE_EXT = ".xml"  # the extension on the instance to be saved
 DEFAULT_DISTINGUISHING_SUFFIX = "_htm."  # suffix tacked onto the base name of the source inline document
 USUAL_INSTANCE_EXTS = {"xml", "xbrl"}
 
-def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, reportSummaryList, suffix="_htm.", iext=".xml"):
+def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm.", iext=".xml", altFolder=None, suplSuffix=None):
     if (modelXbrl is None): return
     if modelXbrl.modelDocument.type not in (Type.INLINEXBRL, Type.INLINEXBRLDOCUMENTSET):
         cntlr.logTrace(_("No Inline XBRL document."))
@@ -53,9 +53,11 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, reportSummaryL
         targetSchemaRefs = set(modelDocument.relativeUri(referencedDoc.uri)
                                for referencedDoc in modelDocument.referencesDocument.keys()
                                if referencedDoc.type == Type.SCHEMA)
-    filepath, fileext = os.path.splitext(os.path.join(cntlr.reportsFolder or "", targetBasename))
+    _reportsFolder = altFolder if altFolder else cntlr.reportsFolder
+    filepath, fileext = os.path.splitext(os.path.join(_reportsFolder or "", targetBasename))
     if fileext not in USUAL_INSTANCE_EXTS: fileext = iext
     targetFilename = filepath + fileext
+    if suplSuffix: targetFilename += suplSuffix
 
     filingZip = None
     filingFiles = None

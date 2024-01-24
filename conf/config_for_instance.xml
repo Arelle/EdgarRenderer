@@ -35,4 +35,5 @@
   <includeLogsInSummary>True</includeLogsInSummary>
   <includeLogsInSummaryDissem>False</includeLogsInSummaryDissem>
   <logMessageTextFile>arelleMessagesText.xml</logMessageTextFile>
+  <copyInlineFilesToOutput>True</copyInlineFilesToOutput>
 </configuration>

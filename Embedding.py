@@ -69,6 +69,7 @@ class Embedding(object):
         self.emptyHeadingPattern = "(?!)"
         self.emptyHeadingRegex = None
         self.suppressHeadingUnits = False
+        self.suppressHeadingDates = False
 
     def handleTransposedByModifyingCommandText(self):
         for i in range(len(self.commandTextListOfLists)):
@@ -242,7 +243,7 @@ class Embedding(object):
 
         else:
             if bool(re.search(r"/ffd/(main|424i)/role/",self.cube.linkroleUri)):
-                self.suppressHeadingUnits = True 
+                self.suppressHeadingUnits = True
 
             for ignore, axisQname, ignore in orderedListOfOrderAxisQnameTuples:
                 self.commandTextListOfLists += [['row', axisQname, 'compact', '*']]

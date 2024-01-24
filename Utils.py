@@ -127,6 +127,19 @@ def hasCustomNamespace(thing):
                 return hasCustomNamespace(getattr(thing, a))
     return False
 
+isRoleNotRenderedRegex = re.compile('^https?://xbrl.sec.gov/.*/notRendered$')
+isElementNotRenderedRegex = re.compile('^\{http://xbrl.sec.gov/ffd/.*\}OffsetClmdInd$')
+
+def isNotRendered(factOrRole):
+    if type(factOrRole) == str:
+        return bool(re.match(isRoleNotRenderedRegex,factOrRole))
+    elif type(factOrRole) == arelle.ModelInstanceObject.ModelInlineFact:
+        return bool(re.match(isElementNotRenderedRegex,factOrRole.qname.clarkNotation))
+    return False
+
+ffdDisclaimerStyle = "color:rgb(12,33,58); margin-top: 5pt; font-family:'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;"
+ffdDisclaimerText = "Text of disclaimer goes here."
+
 def xbrlErrors(modelXbrl):
     """Returns the list of messages in modelXbrl whose levelno is at least ERROR, assuming there is a buffer handler present."""
     try:
