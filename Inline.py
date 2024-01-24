@@ -57,7 +57,6 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm."
     filepath, fileext = os.path.splitext(os.path.join(_reportsFolder or "", targetBasename))
     if fileext not in USUAL_INSTANCE_EXTS: fileext = iext
     targetFilename = filepath + fileext
-    if suplSuffix: targetFilename += suplSuffix
 
     filingZip = None
     filingFiles = None
@@ -84,7 +83,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm."
              filingZip = cntlr.reportZip
 
     saveTargetDocument(filing, modelXbrl, targetFilename, targetSchemaRefs,
-                       outputZip=filingZip, filingFiles=filingFiles, suffix=suffix, iext=iext)
+                       outputZip=filingZip, filingFiles=filingFiles, suffix=suffix, iext=iext, suplSuffix=suplSuffix)
 
     if options.saveTargetFiling:
         instDir = os.path.dirname(modelDocument.uri)  # TODO: will this work if the modelDocument was remote?
@@ -103,10 +102,11 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm."
 
 def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocumentSchemaRefs,
                        outputZip=None, filingFiles=None,
-                       suffix=DEFAULT_DISTINGUISHING_SUFFIX, iext=DEFAULT_INSTANCE_EXT):
+                       suffix=DEFAULT_DISTINGUISHING_SUFFIX, iext=DEFAULT_INSTANCE_EXT, suplSuffix=None):
     sourceDir = os.path.dirname(modelXbrl.modelDocument.filepath)
     targetUrlParts = targetDocumentFilename.rpartition(".")
     targetUrl = targetUrlParts[0] + suffix + targetUrlParts[2]
+    if suplSuffix: targetUrl += suplSuffix
     modelXbrl.modelManager.showStatus(_("Extracting instance ") + os.path.basename(targetUrl))
     for pluginXbrlMethod in pluginClassMethods("InlineDocumentSet.CreateTargetInstance"):
         targetInstance = pluginXbrlMethod(modelXbrl, targetUrl, targetDocumentSchemaRefs, filingFiles,
