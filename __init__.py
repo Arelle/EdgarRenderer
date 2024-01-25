@@ -1160,7 +1160,10 @@ class EdgarRenderer(Cntlr.Cntlr):
                         filing.writeFile(dissemFilePath, allowableBytesForEdgar(
                             etree.tostring(modelDocument.xmlRootElement, encoding="ASCII", xml_declaration=True)))
                     for modelXbrl in cntlr.editedModelXbrls:
-                        Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, altFolder=dissemReportsFolder, suplSuffix=".dissem")
+                        if self.isWorkstationFirstPass: # must record in Edgar database in reports folder
+                            Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing)
+                        else:
+                            Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, altFolder=dissemReportsFolder, suplSuffix=".dissem")
 
                 if "EdgarRenderer/__init__.py#filingEnd" in filing.arelleUnitTests:
                     raise arelle.PythonUtil.pyNamedObject(filing.arelleUnitTests["EdgarRenderer/__init__.py#filingEnd"], "EdgarRenderer/__init__.py#filingEnd")
