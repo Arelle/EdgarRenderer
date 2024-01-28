@@ -10,9 +10,11 @@
   <xsl:param name="showFlags"/>
   <xsl:param name="source"/>
   <!-- xquery -qs:'distinct-values(for $x in //Loc[Elements=1]/Prefix/text() return ($x))' -s:../../validate/EFM/resources/edgartaxonomies/edgartaxonomies-22-1.xml -->
-  <xsl:param name="standardPrefixes">dei|cef|country|currency|exch|sic|stpr|naics|us-gaap|srt|vip|rr|ifrs-full|xbrldi|xbrldt</xsl:param>
+  <xsl:param name="standardPrefixes">cef|country|currency|dei|exch|ffd|fnd|ifrs-full|invest|naics|oef|rr|rxp|sbs|shr|sic|snj|stpr|sro|srt|us-gaap|vip|xbrldi|xbrldt</xsl:param>
   <xsl:param name="authMode">0</xsl:param>
   <xsl:param name="infText">&#x221E;</xsl:param>
+  <xsl:param name="disclaimer"/>
+  <xsl:param name="disclaimerStyle"/>
   <xsl:decimal-format name="currency" digit="D"/>
   <xsl:output method="html" omit-xml-declaration="yes"/>
   <xsl:preserve-space elements="label"/>
@@ -81,7 +83,9 @@
     <xsl:if test="$isOuterReport">
       <span style="display: none;">v<xsl:value-of select="Version"/></span>
     </xsl:if>
-
+    <xsl:if test="$disclaimer and $disclaimerStyle">
+        <p style="{$disclaimerStyle}"><xsl:value-of select="$disclaimer"/></p>
+    </xsl:if>
     <xsl:choose>
       <xsl:when test="$isBarChartTable">
         <table class="report" border="0" cellspacing="2">

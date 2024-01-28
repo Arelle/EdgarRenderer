@@ -29,6 +29,8 @@ class _LocalViewer(LocalViewer):
     def getLocalFile(self, file, relpath, request):
         if file == 'favicon.ico':
             return static_file("arelle.ico", root=self.cntlr.imagesDir, mimetype='image/vnd.microsoft.icon')
+        if file == "ix":
+            return static_file(file, root=self.reportsFolders[0])
         _report, _sep, _file = file.partition("/")
         if _report.startswith("DisplayDocument.do"):
             _file = file

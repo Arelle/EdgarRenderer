@@ -5,8 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require(`html-webpack-plugin`);
 const { PurgeCSSPlugin } = require("purgecss-webpack-plugin");
-const BundleAnalyzerPlugin =
-  require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const ESLintPlugin = require("eslint-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
@@ -14,6 +13,8 @@ module.exports = (
   env = { copy: true, analyze: false },
   argv = { mode: `production` }
 ) => {
+  const forProd = argv.mode === `production`;
+  const forWorkstation = argv.env.domain === 'workstation';
   return {
     mode: argv.mode,
 
@@ -56,7 +57,7 @@ module.exports = (
 
       env.analyze ? new BundleAnalyzerPlugin() : false,
 
-      argv.mode === `production` ? false : false,
+      forProd ? false : false,
 
       new webpack.DefinePlugin({
         PRODUCTION: env.copy ? false : true,
@@ -67,10 +68,23 @@ module.exports = (
 
     output: {
       filename:
-        argv.mode === `production`
+        forProd
           ? `[name].bundle.[contenthash].min.js`
           : `[name].bundle.js`,
-      path: path.resolve(__dirname, `./dist`),
+      publicPath: 
+        forWorkstation
+        ? '/AR/ixviewer-plus/' 
+        : forProd 
+          ? '/ixviewer-plus/' : undefined, 
+          // undefined for dev && !ws (served from memory)
+        // forProd
+        //   ? forWorkstation
+        //     ? '/AR/ixviewer-plus/' : '/ixviewer-plus/'
+        //   : forWorkstation
+        //     ? '/AR/ixviewer-plus/' : undefined,
+      path: forWorkstation
+        ? path.resolve(__dirname, `./dist-ws`)
+        : path.resolve(__dirname, `./dist`)
     },
 
     module: {
@@ -88,7 +102,7 @@ module.exports = (
           },
           exclude: [
             path.resolve(__dirname, `../node_modules`),
-            argv.mode === `production`
+            forProd
               ? path.resolve(__dirname, `./src/ts/**/*.development.ts`)
               : null,
           ].filter(Boolean),
@@ -97,9 +111,10 @@ module.exports = (
         {
           test: /\.s[ac]ss$/i,
           use: [
-            argv.mode === `production`
+            forProd
               ? MiniCssExtractPlugin.loader
-              : `style-loader`,
+              : MiniCssExtractPlugin.loader,
+              // : `style-loader`,
             "css-loader",
             `sass-loader`,
           ],
@@ -135,31 +150,39 @@ module.exports = (
       },
     },
 
-    devtool: argv.mode === `production` ? `source-map` : `inline-source-map`,
+    devtool: forProd ? `source-map` : `inline-source-map`,
 
     devServer: {
       compress: true,
       port: 3000,
-      static: path.resolve(__dirname, `./dist`),
+
+      static: forWorkstation // static means stuff "not served from webpack".  Not sure it's even used.
+        ? path.resolve(__dirname, `./dist-ws`)
+        : path.resolve(__dirname, `./dist`),
       hot: true,
-      liveReload: argv.mode === `production` ? false : true,
+      liveReload: forProd ? false : true,
       watchFiles:
-        argv.mode === `production`
+        forProd
           ? []
           : [`./src/**/*.html`, `./src/**/*.scss`, `./src/**/*.ts`],
       client: {
-        overlay: true,
+        overlay: {
+          errors: true,
+          warnings: false,
+          runtimeErrors: true,
+        },
         logging: `none`,
+        progress: true,
       },
     },
 
     optimization: {
-      minimize: true,
+      minimize: forProd ? true : false,
       usedExports: true,
     },
 
     performance: {
-      hints: argv.mode === `production` ? false : false,
+      hints: forProd ? false : false,
     },
   };
 };

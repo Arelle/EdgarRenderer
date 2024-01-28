@@ -1,0 +1,17 @@
+Num of each Form type in filings
+497: 11
+8-K: 157
+8-K/A: 7
+6-K: 4
+S-4/A: 1
+10-K/A: 1
+10-K: 2
+DEF 14A: 2
+POS AM: 1
+424B3: 3
+N-6/A: 1
+N-4: 4
+424B2: 1
+20-F: 1
+10-Q: 3
+POS EX: 1

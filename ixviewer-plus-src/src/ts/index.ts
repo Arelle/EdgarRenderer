@@ -31,7 +31,7 @@ import { Logger, ILogObj } from "tslog";
         const endPerformance = performance.now();
         if (!PRODUCTION) {
             const log: Logger<ILogObj> = new Logger();
-            log.debug(`\nAppInit.init() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms`);
+            log.debug(`AppInit.init() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms`);
         }
     });
 })();

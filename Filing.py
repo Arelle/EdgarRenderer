@@ -543,6 +543,9 @@ class Filing(object):
                 self.usedOrBrokenFactDefDict[fact].add(None)
                 continue
 
+            elif Utils.isNotRendered(fact):
+                self.usedOrBrokenFactDefDict[fact].add(None)
+
             # first see if fact's value is an embedded command, then check if it's a qlabel fact.
             if not fact.isNumeric:
                 if fact.concept.isTextBlock:

@@ -111,7 +111,15 @@ export const FactPages = {
           divElement.append(htmlDoc.querySelector('body') as HTMLElement);
           tdElement.appendChild(divElement);
         } else {
-          divElement.innerHTML = current["value"];
+          //convert fact string to number to add in formatting
+          if(current["label"] === "Fact"){
+            const factStringToNumber = Number(current["value"]);
+            if(!Number.isNaN(factStringToNumber)){
+              current["value"] = factStringToNumber.toLocaleString("en-US", {"maximumFractionDigits": 10});
+            } 
+          }
+          // HF: changed from this -> divElement.innerHTML = current["value"];
+          divElement.textContent = current["value"];
           tdElement.appendChild(divElement);
         }
         trElement.appendChild(thElement);

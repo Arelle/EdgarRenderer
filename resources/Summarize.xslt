@@ -14,13 +14,12 @@
   <xsl:param name="includeExcel">true</xsl:param>
   <xsl:variable name="includeDir">/include</xsl:variable>
   <xsl:variable name="imagesDir">/images</xsl:variable>
-  
-  <!--  For 23.4 testing uncomment ixviewer for production ixviewer -->
-  <xsl:variable name="ixHtmlPath">/ixviewer/ix.html</xsl:variable>
-  
-  <!--  For 23.4.1 testing uncomment for ixviewer-plus preview -->
-  <!--  <xsl:variable name="ixHtmlPath">/ixviewer-plus/ix.xhtml</xsl:variable> -->
-  
+  <!--  future direct opening ixviewer-plus 
+  <xsl:variable name="ixHtmlPath">/ixviewer-plus/ix.xhtml</xsl:variable>
+  -->
+  <!--  open "redirector" script used in 24.0.1 to choose 23.2 viewer unless multi-IXDS, multi-doc or fee exhibit -->
+  <xsl:variable name="ixHtmlPath">/ix</xsl:variable>
+  <!--  end of 24.0.1 temporary changes -->
   <xsl:variable name="docAbsPathPrefix">' + url_filing_dir +'</xsl:variable>
   <xsl:variable name="docAbsPathSuffix">' + '</xsl:variable>
   <xsl:variable name="fetchprefix"></xsl:variable>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="https://www.sec.gov/favicon.ico" />
+    <title>EDGAR Inline XBRL Viewer</title>
+        <script language="JavaScript">
+            /* <![CDATA[ */
+                /* Created by staff of the U.S. Securities and Exchange Commission.
+                 * Data and content created by government employees within the scope of their employment
+                 * are not subject to domestic copyright protection. 17 U.S.C. 105.
+                 *
+                 * This script checks the accession number of the document requested to determine
+                 * the year and sequence of filing.  If filed after the availability of ixviewer-plus
+                 * this script redirects to that viewer, otherwise to a prior ixviewer in effect
+                 * or deemed compatible with the filing.
+                 */
+
+                const url = location.href;
+                // url doc pattern is /Archives/edgar/data/ciknum/{10digits}{YY}{sequence}/{more params}
+                // on SEC.GOV: const urlPattern = /(\?doc=(\/Archives\/edgar\/data\/[0-9]+\/[0-9]{10}([0-9]{8})\/).*$)/;
+                const urlPattern = /(\?doc=(\/[0-9]+\/).*$)/;
+                if (! urlPattern.test(url)) {
+                    alert("Not an EDGAR inline XBRL document viewing request, please check URL");
+                    // this hangs: location.assign("/ixviewer/ix.html" + ixParams);
+                } else {
+                    const match = url.match(urlPattern);
+                    const ixParams = match[1];
+                    const docPath = match[2];
+                    let xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                        if (this.readyState == 4) {
+                            if (this.status == 200) {
+                                const ml = JSON.parse(this.responseText);
+                                if (!(typeof ml === 'object' && "instance" in ml)) {
+                                   // alert("Metalinks does not have instance objects");
+                                   // Unable to read MetaLinks.json, use 23.2 ixviewer
+                                   location.assign("/ixviewer/ix.html" + ixParams);
+                                } else {
+                                   const numInstances = Object.keys(ml["instance"]).length;
+                                   let maxDocsPerInst = 0;
+                                   let hasFeeExhibit = false;
+                                   Object.keys(ml["instance"]).forEach(instanceNames => {
+                                        let docsInInstance = instanceNames.split(" ").length;
+                                        if (docsInInstance > maxDocsPerInst)
+                                            maxDocsPerInst = docsInInstance;
+                                        if ("baseTaxonomies" in ml["instance"][instanceNames]) {
+                                           Object.keys(ml["instance"][instanceNames]["baseTaxonomies"])
+                                           .forEach(baseTaxonomyUrl => {
+                                               if (baseTaxonomyUrl.startsWith("http://xbrl.sec.gov/ffd/"))
+                                                   hasFeeExhibit = true;
+                                           });
+                                        }
+                                       });
+                                   if (numInstances > 1 || maxDocsPerInst > 1 || hasFeeExhibit)
+                                       location.assign("/ixviewer-plus/ix.xhtml" + ixParams);
+                                   else
+                                       location.assign("/ixviewer/ix.html" + ixParams);
+                                }
+                            } else {
+                                    // alert("Unable to read MetaLinks.json for this accession");
+                                    // Unable to read MetaLinks.json, use 23.2 ixviewer
+                                    location.assign("/ixviewer/ix.html" + ixParams);
+                            }
+                        }
+                    };
+                    xhr.ontimeout = function() {
+                        // alert("Timeout reading MetaLinks.json for this accession");
+                        // Unable to read MetaLinks.json, use 23.2 ixviewer
+                        location.assign("/ixviewer/ix.html" + ixParams);
+                    };
+                    xhr.open("GET", docPath + 'MetaLinks.json', true);
+                    xhr.timeout = 2000; // milliseconds
+                    xhr.send();
+
+                    /* alternative select viewer using accession number
+
+                    const acsnYrSeq = match[3];
+                    if (acsnYrSeq > "24905000") {
+                        location.assign(docPath + "ixbrlviewer.xhtml");
+                    } else if (acsnYrSeq > "23905000") {
+                        location.assign("/ixviewer-plus/ix.xhtml" + ixParams);
+                    } else {
+                        location.assign("/ixviewer/ix.html" + ixParams);
+                    }
+
+                    */
+                }
+            /* ]]> */
+        </script>
+</head>
+
+<body>
+        <noscript>
+                Please enable JavaScript to use the EDGAR Inline XBRL Viewer.
+        </noscript>
+</body>
+</html>

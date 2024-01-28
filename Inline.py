@@ -29,7 +29,7 @@ DEFAULT_INSTANCE_EXT = ".xml"  # the extension on the instance to be saved
 DEFAULT_DISTINGUISHING_SUFFIX = "_htm."  # suffix tacked onto the base name of the source inline document
 USUAL_INSTANCE_EXTS = {"xml", "xbrl"}
 
-def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, reportSummaryList, suffix="_htm.", iext=".xml"):
+def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm.", iext=".xml", altFolder=None, suplSuffix=None):
     if (modelXbrl is None): return
     if modelXbrl.modelDocument.type not in (Type.INLINEXBRL, Type.INLINEXBRLDOCUMENTSET):
         cntlr.logTrace(_("No Inline XBRL document."))
@@ -53,7 +53,8 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, reportSummaryL
         targetSchemaRefs = set(modelDocument.relativeUri(referencedDoc.uri)
                                for referencedDoc in modelDocument.referencesDocument.keys()
                                if referencedDoc.type == Type.SCHEMA)
-    filepath, fileext = os.path.splitext(os.path.join(cntlr.reportsFolder or "", targetBasename))
+    _reportsFolder = altFolder if altFolder else cntlr.reportsFolder
+    filepath, fileext = os.path.splitext(os.path.join(_reportsFolder or "", targetBasename))
     if fileext not in USUAL_INSTANCE_EXTS: fileext = iext
     targetFilename = filepath + fileext
 
@@ -82,7 +83,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, reportSummaryL
              filingZip = cntlr.reportZip
 
     saveTargetDocument(filing, modelXbrl, targetFilename, targetSchemaRefs,
-                       outputZip=filingZip, filingFiles=filingFiles, suffix=suffix, iext=iext)
+                       outputZip=filingZip, filingFiles=filingFiles, suffix=suffix, iext=iext, suplSuffix=suplSuffix)
 
     if options.saveTargetFiling:
         instDir = os.path.dirname(modelDocument.uri)  # TODO: will this work if the modelDocument was remote?
@@ -101,10 +102,11 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, reportSummaryL
 
 def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocumentSchemaRefs,
                        outputZip=None, filingFiles=None,
-                       suffix=DEFAULT_DISTINGUISHING_SUFFIX, iext=DEFAULT_INSTANCE_EXT):
+                       suffix=DEFAULT_DISTINGUISHING_SUFFIX, iext=DEFAULT_INSTANCE_EXT, suplSuffix=None):
     sourceDir = os.path.dirname(modelXbrl.modelDocument.filepath)
     targetUrlParts = targetDocumentFilename.rpartition(".")
     targetUrl = targetUrlParts[0] + suffix + targetUrlParts[2]
+    if suplSuffix: targetUrl += suplSuffix
     modelXbrl.modelManager.showStatus(_("Extracting instance ") + os.path.basename(targetUrl))
     for pluginXbrlMethod in pluginClassMethods("InlineDocumentSet.CreateTargetInstance"):
         targetInstance = pluginXbrlMethod(modelXbrl, targetUrl, targetDocumentSchemaRefs, filingFiles,

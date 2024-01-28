@@ -298,7 +298,9 @@ class Summary(object):
                 root['unitCount'] = sum(s.unitCountDict.values())
                 # the term 'base taxonomies' is a legacy name and 'namespace - fact counts' more descriptive
                 # nevertheless use 'base taxonomies' for consistency with filing summary xml file.
-                root['baseTaxonomies'] = {k:v for k,v in s.namespacesFactsCount.items() if v > 0}
+                root['baseTaxonomies'] = OrderedDict()
+                for k,v in sorted(filter(lambda x: x[1] >0,s.namespacesFactsCount.items()),key=lambda x: x[1],reverse=True):
+                    root['baseTaxonomies'][k] = v
                 reportDict = root['report'] = OrderedDict() # preserve creation order
                 isDefault = True
                 if hasattr(s, 'rrSectionFacts'):
@@ -582,7 +584,7 @@ class InstanceSummary(object):
 
         # build a dictionary tree of the eventual JSON output.
         self.tagDict = OrderedDict()
-        for concept in conceptInUseSet:
+        for concept in sorted(conceptInUseSet,key=lambda concept: concept.qname.localName):
             self.tagDict[concept.attrib['id']] = {'xbrltype' : (concept.typeQname).localName
                                                   ,'nsuri': concept.qname.namespaceURI
                                                   ,'localname': concept.qname.localName}
@@ -672,8 +674,8 @@ class InstanceSummary(object):
                                 context = e.context
                                 hash = context.dimsHash
                                 if (hash in rrSectionDimsHashDict):
-                                     if (len(rrSectionDimsHashDict[hash]) == 0):
-                                         rrSectionDimsHashDict[hash] = (e.objectIndex+1,e)
+                                    if (len(rrSectionDimsHashDict[hash]) == 0):
+                                        rrSectionDimsHashDict[hash] = (e.objectIndex+1,e)
             rrSections = sorted(rrSectionDimsHashDict.values())
             rrSections = [pair for pair in rrSections if len(pair) == 2]
             self.rrSectionFacts = []
@@ -845,7 +847,7 @@ class InstanceSummary(object):
         Uncategorized = 'Uncategorized'
         RiskReturn = 'Risk/Return'
         if self.menuStyle in ('RiskReturn'):
-             return RiskReturn
+            return RiskReturn
         elif currentState in ('', Uncategorized):
             if isUncategorized(longName):
                 return Uncategorized

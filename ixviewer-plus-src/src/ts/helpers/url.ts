@@ -1,5 +1,5 @@
 /* Created by staff of the U.S. Securities and Exchange Commission.
- * Data and content created by government employees within the scope of their employment 
+ * Data and content created by government employees within the scope of their employment
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 //WS example url:
@@ -69,8 +69,7 @@ export const HelpersUrl: {
     }
 
     if (attribute && element.getAttribute(attribute).charAt(0) !== '#') {
-      const absoluteLinkOfElementAttribute = decodeURIComponent(HelpersUrl
-        .getAbsoluteUrl(element.getAttribute(attribute)));
+      const absoluteLinkOfElementAttribute = decodeURIComponent(HelpersUrl.getAbsoluteUrl(element.getAttribute(attribute)));
       const url = HelpersUrl.ParsedUrl(absoluteLinkOfElementAttribute);
       if (url.search) {
         const urlParams = HelpersUrl.returnURLParamsAsObject(url.search.substring(1));
@@ -113,42 +112,54 @@ export const HelpersUrl: {
 
   returnURLParamsAsObject: (url) => {
     const urlParams = new URLSearchParams(url);
-    const objToReturn = {};
+    const objToReturn: { [key: string]: string } = {};
     const urlParamsAsObject = Object.fromEntries(urlParams);
-    const isWorkStation = Object.prototype.hasOwnProperty.call(urlParamsAsObject, 'accessionNumber') &&
-      Object.prototype.hasOwnProperty.call(urlParamsAsObject, 'xbrl') &&
-      Object.prototype.hasOwnProperty.call(urlParamsAsObject, 'interpretedFormat');
+    const isWorkStation = urlParamsAsObject.doc.includes('DisplayDocument.do') // confirm this.
+    const isFEPT = urlParamsAsObject.doc.includes('view.html')
+    // const isWorkStation = Object.prototype.hasOwnProperty.call(urlParamsAsObject, 'accessionNumber') &&
+    //   Object.prototype.hasOwnProperty.call(urlParamsAsObject, 'xbrl') &&
+    //   Object.prototype.hasOwnProperty.call(urlParamsAsObject, 'interpretedFormat');
 
-    for (const entry of urlParams.entries()) {
+    for (const urlParam of urlParams.entries()) {
+      let [paramKey, paramVal] = urlParam;
+      /*
+        expected entries: {
+          doc: '{doc path}'
+          xbrl: bool
+          metalinks: '{metalinks path}'
+        }
+      */
       if (isWorkStation) {
-
         const fileUrl = `${urlParamsAsObject['doc']}&accessionNumber=${urlParamsAsObject['accessionNumber']}&interpretedFormat=${urlParamsAsObject['interpretedFormat']}&redline=${urlParamsAsObject['redline']}`;
 
-        if (entry[1].endsWith('.htm') || entry[1].endsWith('.html') || entry[1].endsWith('.xhtml')) {
-          objToReturn['doc'] = `${fileUrl}&filename=${entry[1]}`;
-          objToReturn['doc-file'] = entry[1];
-        } else if (entry[0] === 'metalinks') {
+        if (paramVal.endsWith('.htm') || paramVal.endsWith('.html') || paramVal.endsWith('.xhtml')) {
+          objToReturn['doc'] = `${fileUrl}&filename=${paramVal}`;
+          objToReturn['doc-file'] = paramVal;
+        } else if (paramKey === 'metalinks') {
           objToReturn['metalinks'] = `${fileUrl.replace('interpretedFormat=true', 'interpretedFormat=false')}&filename=MetaLinks.json`;
           objToReturn['metalinks-file'] = 'MetaLinks.json';
           objToReturn['summary'] = `${fileUrl.replace('interpretedFormat=true', 'interpretedFormat=false')}&filename=FilingSummary.xml`;
           objToReturn['summary-file'] = 'FilingSummary.xml';
         } else {
-          objToReturn[entry[0]] = entry[1];
+          objToReturn[paramKey] = paramVal;
         }
-
       } else {
-        if (entry[1].endsWith('.htm') || entry[1].endsWith('.html') || entry[1].endsWith('.xhtml')) {
-          entry[0] = 'doc';
-          entry[1] = decodeURIComponent(entry[1]);
-          const docFile = entry[1].substring(entry[1]
-            .lastIndexOf('/') + 1);
-          objToReturn['doc-file'] = docFile;
-        } else if (entry[1].endsWith('.json')) {
-          entry[1] = decodeURIComponent(entry[1]);
-          entry[1] = entry[1].replace('interpretedFormat=true', 'interpretedFormat=false');
+        if (paramVal.endsWith('.htm') || paramVal.endsWith('.html') || paramVal.endsWith('.xhtml')) {
+          paramKey = 'doc';
+          paramVal = decodeURIComponent(paramVal);
+          if (isFEPT) {
+            const docFile = paramVal.substring(paramVal.lastIndexOf('filename=') + 9);
+            objToReturn['doc-file'] = docFile;
+          } else {
+            const docFile = paramVal.substring(paramVal.lastIndexOf('/') + 1);
+            objToReturn['doc-file'] = docFile;
+          }
+        } else if (paramVal.endsWith('.json')) {
+          paramVal = decodeURIComponent(paramVal);
+          paramVal = paramVal.replace('interpretedFormat=true', 'interpretedFormat=false');
           objToReturn['metalinks-file'] = 'MetaLinks.json';
         }
-        objToReturn[entry[0]] = entry[1];
+        objToReturn[paramKey] = paramVal;
         if (!Object.prototype.hasOwnProperty.call(objToReturn, `metalinks`)) {
           const metalinks = objToReturn['doc'].replace(objToReturn['doc-file'], 'MetaLinks.json');
           objToReturn['metalinks'] = metalinks;
@@ -162,7 +173,6 @@ export const HelpersUrl: {
       }
     }
     return objToReturn;
-
   },
 
   getFormAbsoluteURL: null,
@@ -234,7 +244,6 @@ export const HelpersUrl: {
       }
     }
     if (!HelpersUrl.getExternalFile) {
-
       return false;
     }
 
@@ -242,7 +251,7 @@ export const HelpersUrl: {
     const absoluteURL = formUrl.substr(0, formUrl.lastIndexOf('/') + 1);
 
     HelpersUrl.getFormAbsoluteURL = absoluteURL;
-    
+
     return true;
 
   },
@@ -259,11 +268,9 @@ export const HelpersUrl: {
     const results = regex.exec(url);
 
     if (!results) {
-
       return null;
     }
     if (!results[3]) {
-
       return '';
     }
     return decodeURIComponent(results[3].replace(/\+/g, ' '));

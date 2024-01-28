@@ -160,6 +160,7 @@ export class Development {
                 if (current['sec'].length) {
                     const asec = document.createElement('a');
                     asec.setAttribute('href', `https://www.sec.gov/ix?doc=${current['sec'][0]}`);
+                    // https://www.sec.gov/ix?doc=https://www.sec.gov/Archives/edgar/data/7084/000000708423000037/adm-20231024.htm
                     asec.setAttribute(`target`, `_blank`);
                     const viewerTextsec = document.createTextNode(`Go See`);
                     asec.append(viewerTextsec);
@@ -171,7 +172,10 @@ export class Development {
                 const local = document.createElement('td');
                 if (current['local'].length) {
                     const alocal = document.createElement('a');
-                    alocal.setAttribute('href', `${window.location.href}?doc=${current['local'][0].replace('/src', '')}`);
+                    // alocal.setAttribute('href', `${window.location.href}?doc=${current['local'][0].replace('/src', '')}`);
+                    alocal.setAttribute('href', `${window.location.href}?doc=${current['local'][0].replace('./src/assets/filings/', '/ixdocs/WebContent/documents/')}`);
+                    // https://www-test.sec.gov/ix.xhtml?doc=./assets/filings/0000007084-23-000037/adm-20231024.htm old
+                    // http://172.18.85.157:8082/ix.xhtml?doc=/ixdocs/WebContent/documents/0000014693-23-000155/bfb-20231002.htm new
                     alocal.setAttribute(`target`, `_blank`);
                     const viewerTextlocal = document.createTextNode(`Go See`);
                     alocal.append(viewerTextlocal);

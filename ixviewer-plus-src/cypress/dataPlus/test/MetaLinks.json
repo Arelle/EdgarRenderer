@@ -1,0 +1,3185 @@
+{
+ "version": "2.2",
+ "instance": {
+  "GLM4gd-F-SR20081231.htm": {
+   "nsprefix": "e62201014gd",
+   "nsuri": "http://e62201014gd/20081231",
+   "dts": {
+    "inline": {
+     "local": [
+      "GLM4gd-F-SR20081231.htm"
+     ]
+    },
+    "schema": {
+     "local": [
+      "e62201014gd-20081231.xsd"
+     ],
+     "remote": [
+      "http://www.xbrl.org/2003/xbrl-instance-2003-12-31.xsd",
+      "http://www.xbrl.org/2003/xbrl-linkbase-2003-12-31.xsd",
+      "http://www.xbrl.org/2003/xl-2003-12-31.xsd",
+      "http://www.xbrl.org/2003/xlink-2003-12-31.xsd",
+      "http://www.xbrl.org/2005/xbrldt-2005.xsd",
+      "http://www.xbrl.org/2006/ref-2006-02-27.xsd",
+      "http://www.xbrl.org/lrr/arcrole/esma-arcrole-2018-11-21.xsd",
+      "http://www.xbrl.org/lrr/role/reference-2009-12-16.xsd",
+      "https://www.xbrl.org/2020/extensible-enumerations-2.0.xsd",
+      "https://www.xbrl.org/dtr/type/2020-01-21/types.xsd",
+      "https://xbrl.fasb.org/srt/2022/elts/srt-2022.xsd",
+      "https://xbrl.fasb.org/srt/2022/elts/srt-roles-2022.xsd",
+      "https://xbrl.fasb.org/srt/2022/elts/srt-types-2022.xsd",
+      "https://xbrl.fasb.org/us-gaap/2022/elts/us-gaap-2022.xsd",
+      "https://xbrl.fasb.org/us-gaap/2022/elts/us-roles-2022.xsd",
+      "https://xbrl.fasb.org/us-gaap/2022/elts/us-types-2022.xsd",
+      "https://xbrl.ifrs.org/taxonomy/2022-03-24/full_ifrs/full_ifrs-cor_2022-03-24.xsd",
+      "https://xbrl.sec.gov/country/2022/country-2022.xsd",
+      "https://xbrl.sec.gov/currency/2022/currency-2022.xsd",
+      "https://xbrl.sec.gov/dei/2022/dei-2022.xsd",
+      "https://xbrl.sec.gov/dei/2022/dei-2022_def.xsd",
+      "https://xbrl.sec.gov/dei/2022/dei-2022_lab.xsd",
+      "https://xbrl.sec.gov/dei/2022/dei-2022_pre.xsd",
+      "https://xbrl.sec.gov/exch/2022/exch-2022.xsd",
+      "https://xbrl.sec.gov/naics/2022/naics-2022.xsd",
+      "https://xbrl.sec.gov/sic/2022/sic-2022.xsd",
+      "https://xbrl.sec.gov/stpr/2022/stpr-2022.xsd"
+     ]
+    }
+   },
+   "keyStandard": 9,
+   "keyCustom": 0,
+   "axisStandard": 0,
+   "axisCustom": 0,
+   "memberStandard": 0,
+   "memberCustom": 0,
+   "hidden": {
+    "total": 5,
+    "http://xbrl.sec.gov/dei/2022": 5
+   },
+   "contextCount": 6,
+   "entityCount": 1,
+   "segmentCount": 0,
+   "elementCount": 155,
+   "unitCount": 0,
+   "baseTaxonomies": {
+    "http://xbrl.sec.gov/dei/2022": 8,
+    "https://xbrl.ifrs.org/taxonomy/2022-03-24/ifrs-full": 6
+   },
+   "report": {
+    "R1": {
+     "role": "http://xbrl.sec.gov/dei/role/document/Cover",
+     "longName": "995100 - Document - Cover",
+     "shortName": "Cover",
+     "isDefault": "true",
+     "groupType": "document",
+     "subGroupType": "",
+     "menuCat": "Cover",
+     "order": "1",
+     "firstAnchor": {
+      "contextRef": "FY08",
+      "name": "dei:DocumentPeriodEndDate",
+      "unitRef": null,
+      "xsiNil": "false",
+      "lang": "en-US",
+      "decimals": null,
+      "ancestors": [
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "body",
+       "html"
+      ],
+      "reportCount": 1,
+      "baseRef": "GLM4gd-F-SR20081231.htm",
+      "first": true,
+      "unique": true
+     },
+     "uniqueAnchor": {
+      "contextRef": "FY08",
+      "name": "dei:DocumentPeriodEndDate",
+      "unitRef": null,
+      "xsiNil": "false",
+      "lang": "en-US",
+      "decimals": null,
+      "ancestors": [
+       "td",
+       "tr",
+       "tbody",
+       "table",
+       "div",
+       "body",
+       "html"
+      ],
+      "reportCount": 1,
+      "baseRef": "GLM4gd-F-SR20081231.htm",
+      "first": true,
+      "unique": true
+     }
+    }
+   },
+   "tag": {
+    "dei_NameChangeEventDateAxis": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "NameChangeEventDateAxis",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Name Change Event Date [Axis]",
+        "documentation": "For a sequence of name change event related facts, use this typed dimension to distinguish them.  The axis members are restricted to be a valid for xml schema 'date' or 'datetime' data type."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityVoluntaryFilers": {
+     "xbrltype": "yesNoItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityVoluntaryFilers",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Voluntary Filers",
+        "documentation": "Indicate 'Yes' or 'No' if the registrant is not required to file reports pursuant to Section 13 or Section 15(d) of the Act."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_ExhibitsOnly462d": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "ExhibitsOnly462d",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Exhibits Only, 462(d)"
+       }
+      }
+     },
+     "auth_ref": [
+      "r34"
+     ]
+    },
+    "dei_ExchangeDomain": {
+     "xbrltype": "domainItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "ExchangeDomain",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Exchange [Domain]",
+        "documentation": "The set of all exchanges. MIC exchange codes are drawn from ISO 10383."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityReportingCurrencyISOCode": {
+     "xbrltype": "currencyItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityReportingCurrencyISOCode",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Reporting Currency ISO Code",
+        "documentation": "The three character ISO 4217 code for the currency used for reporting purposes. Example: 'USD'."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_SolicitingMaterial": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "SolicitingMaterial",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Soliciting Material",
+        "documentation": "Boolean flag that is true when the Form 8-K filing is intended to satisfy the filing obligation of the registrant as soliciting material pursuant to Rule 14a-12 under the Exchange Act."
+       }
+      }
+     },
+     "auth_ref": [
+      "r12"
+     ]
+    },
+    "dei_PreEffectiveAmendment": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "PreEffectiveAmendment",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Pre-Effective Amendment"
+       }
+      }
+     },
+     "auth_ref": [
+      "r2"
+     ]
+    },
+    "dei_DocumentShellCompanyReport": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentShellCompanyReport",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Shell Company Report",
+        "documentation": "Boolean flag that is true for a Shell Company Report pursuant to section 13 or 15(d) of the Exchange Act."
+       }
+      }
+     },
+     "auth_ref": [
+      "r16"
+     ]
+    },
+    "dei_EntityIncorporationDateOfIncorporation": {
+     "xbrltype": "dateItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityIncorporationDateOfIncorporation",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Incorporation, Date of Incorporation",
+        "documentation": "Date when an entity was incorporated"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityListingsLineItems": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityListingsLineItems",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Listings [Line Items]",
+        "documentation": "Line items represent financial concepts included in a table. These concepts are used to disclose reportable information associated with domain members defined in one or many axes to the table."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_Security12bTitle": {
+     "xbrltype": "securityTitleItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "Security12bTitle",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Title of 12(b) Security",
+        "documentation": "Title of a 12(b) registered security."
+       }
+      }
+     },
+     "auth_ref": [
+      "r3"
+     ]
+    },
+    "dei_EntityCurrentReportingStatus": {
+     "xbrltype": "yesNoItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityCurrentReportingStatus",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Current Reporting Status",
+        "documentation": "Indicate 'Yes' or 'No' whether registrants (1) have filed all reports required to be filed by Section 13 or 15(d) of the Securities Exchange Act of 1934 during the preceding 12 months (or for such shorter period that registrants were required to file such reports), and (2) have been subject to such filing requirements for the past 90 days. This information should be based on the registrant's current or most recent filing containing the related disclosure."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityAddressesTable": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityAddressesTable",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Addresses [Table]",
+        "documentation": "Container of address information for the entity"
+       }
+      }
+     },
+     "auth_ref": [
+      "r4"
+     ]
+    },
+    "dei_EntityShellCompany": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityShellCompany",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Shell Company",
+        "documentation": "Boolean flag that is true when the registrant is a shell company as defined in Rule 12b-2 of the Exchange Act."
+       }
+      }
+     },
+     "auth_ref": [
+      "r4"
+     ]
+    },
+    "dei_EffectiveOnDate486b": {
+     "xbrltype": "dateItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EffectiveOnDate486b",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Effective on Date, 486(b)"
+       }
+      }
+     },
+     "auth_ref": [
+      "r37"
+     ]
+    },
+    "dei_ApproximateDateOfCommencementOfProposedSaleToThePublic": {
+     "xbrltype": "dateOrAsapItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "ApproximateDateOfCommencementOfProposedSaleToThePublic",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Approximate Date of Commencement of Proposed Sale to Public",
+        "documentation": "The approximate date of a commencement of a proposed sale of securities to the public. This element is disclosed in S-1, S-3, S-4, S-11, F-1, F-3 and F-10 filings."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityAddressesAddressTypeAxis": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityAddressesAddressTypeAxis",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Addresses, Address Type [Axis]",
+        "documentation": "The axis of a table defines the relationship between the domain members or categories in the table and the line items or concepts that complete the table."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_NameChangeEventLineItems": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "NameChangeEventLineItems",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Name Change Event [Line Items]",
+        "documentation": "Line items represent concepts included in a table. Name change event line item concepts are used for information qualified by domain members of axes in the Name Change Event table."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentPeriodStartDate": {
+     "xbrltype": "dateItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentPeriodStartDate",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Period Start Date",
+        "documentation": "The start date of the period covered in the document, in YYYY-MM-DD format."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EffectiveUponFiling462e": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EffectiveUponFiling462e",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Effective Upon Filing, 462(e)"
+       }
+      }
+     },
+     "auth_ref": [
+      "r35"
+     ]
+    },
+    "dei_DocumentsIncorporatedByReferenceTextBlock": {
+     "xbrltype": "textBlockItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentsIncorporatedByReferenceTextBlock",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Documents Incorporated by Reference [Text Block]",
+        "documentation": "Documents incorporated by reference."
+       }
+      }
+     },
+     "auth_ref": [
+      "r5"
+     ]
+    },
+    "dei_AddressTypeDomain": {
+     "xbrltype": "domainItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AddressTypeDomain",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Address Type [Domain]",
+        "documentation": "An entity may have several addresses for different purposes and this domain represents all such types."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_NoTradingSymbolFlag": {
+     "xbrltype": "trueItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "NoTradingSymbolFlag",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "No Trading Symbol Flag",
+        "documentation": "Boolean flag that is true only for a security having no trading symbol."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_RegistrationStatementAmendmentNumber": {
+     "xbrltype": "sequenceNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "RegistrationStatementAmendmentNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Registration Statement Amendment Number",
+        "documentation": "Amendment number to registration statement under the Investment Company Act of 1940."
+       }
+      }
+     },
+     "auth_ref": [
+      "r2"
+     ]
+    },
+    "dei_DividendOrInterestReinvestmentPlanOnly": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DividendOrInterestReinvestmentPlanOnly",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Dividend or Interest Reinvestment Plan Only"
+       }
+      }
+     },
+     "auth_ref": [
+      "r19",
+      "r20",
+      "r24"
+     ]
+    },
+    "dei_EntityFilerCategory": {
+     "xbrltype": "filerCategoryItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityFilerCategory",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Filer Category",
+        "documentation": "Indicate whether the registrant is one of the following: Large Accelerated Filer, Accelerated Filer, Non-accelerated Filer. Definitions of these categories are stated in Rule 12b-2 of the Exchange Act. This information should be based on the registrant's current or most recent filing containing the related disclosure."
+       }
+      }
+     },
+     "auth_ref": [
+      "r4"
+     ]
+    },
+    "dei_TradingSymbol": {
+     "xbrltype": "tradingSymbolItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "TradingSymbol",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Trading Symbol",
+        "documentation": "Trading symbol of an instrument as listed on an exchange."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DelayedOrContinuousOffering": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DelayedOrContinuousOffering",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Delayed or Continuous Offering"
+       }
+      }
+     },
+     "auth_ref": [
+      "r19",
+      "r20",
+      "r24"
+     ]
+    },
+    "dei_DocumentInformationTextBlock": {
+     "xbrltype": "textBlockItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentInformationTextBlock",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Information [Text Block]",
+        "documentation": "Container to support the formal attachment of each official or unofficial, public or private document as part of a submission package."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntitySmallBusiness": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntitySmallBusiness",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Small Business",
+        "documentation": "Indicates that the company is a Smaller Reporting Company (SRC)."
+       }
+      }
+     },
+     "auth_ref": [
+      "r4"
+     ]
+    },
+    "dei_EntityTextBlock": {
+     "xbrltype": "textBlockItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityTextBlock",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity [Text Block]",
+        "documentation": "Container to serve as parent of six Entity related Table concepts."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_BusinessContactMember": {
+     "xbrltype": "domainItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "BusinessContactMember",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Business Contact [Member]",
+        "documentation": "Business contact for the entity"
+       }
+      }
+     },
+     "auth_ref": [
+      "r16",
+      "r17"
+     ]
+    },
+    "dei_SecurityExchangeName": {
+     "xbrltype": "edgarExchangeCodeItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "SecurityExchangeName",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Security Exchange Name",
+        "documentation": "Name of the Exchange on which a security is registered."
+       }
+      }
+     },
+     "auth_ref": [
+      "r6"
+     ]
+    },
+    "dei_EffectiveOnSetDate486b": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EffectiveOnSetDate486b",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Effective on Set Date, 486(b)"
+       }
+      }
+     },
+     "auth_ref": [
+      "r37"
+     ]
+    },
+    "dei_AdditionalSecurities462b": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AdditionalSecurities462b",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Additional Securities. 462(b)"
+       }
+      }
+     },
+     "auth_ref": [
+      "r32"
+     ]
+    },
+    "dei_Security12gTitle": {
+     "xbrltype": "securityTitleItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "Security12gTitle",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Title of 12(g) Security",
+        "documentation": "Title of a 12(g) registered security."
+       }
+      }
+     },
+     "auth_ref": [
+      "r7"
+     ]
+    },
+    "dei_EntityEmergingGrowthCompany": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityEmergingGrowthCompany",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Emerging Growth Company",
+        "documentation": "Indicate if registrant meets the emerging growth company criteria."
+       }
+      }
+     },
+     "auth_ref": [
+      "r4"
+     ]
+    },
+    "dei_FormerAddressMember": {
+     "xbrltype": "domainItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "FormerAddressMember",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Former Address [Member]",
+        "documentation": "Former address for entity"
+       }
+      }
+     },
+     "auth_ref": [
+      "r15",
+      "r18"
+     ]
+    },
+    "dei_NoSubstantiveChanges462cFileNumber": {
+     "xbrltype": "fileNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "NoSubstantiveChanges462cFileNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "No Substantive Changes, 462(c), File Number"
+       }
+      }
+     },
+     "auth_ref": [
+      "r33"
+     ]
+    },
+    "dei_EntityExTransitionPeriod": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityExTransitionPeriod",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Ex Transition Period",
+        "documentation": "Indicate if an emerging growth company has elected not to use the extended transition period for complying with any new or revised financial accounting standards."
+       }
+      }
+     },
+     "auth_ref": [
+      "r38"
+     ]
+    },
+    "dei_OtherAddressMember": {
+     "xbrltype": "domainItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "OtherAddressMember",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Other Address [Member]",
+        "documentation": "Other address for entity"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_SecurityReportingObligation": {
+     "xbrltype": "securityReportingObligationItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "SecurityReportingObligation",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Security Reporting Obligation",
+        "documentation": "15(d), indicating whether the security has a reporting obligation under that section of the Exchange Act."
+       }
+      }
+     },
+     "auth_ref": [
+      "r11"
+     ]
+    },
+    "dei_EffectiveOnDate486a": {
+     "xbrltype": "dateItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EffectiveOnDate486a",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Effective on Date, 486(a)"
+       }
+      }
+     },
+     "auth_ref": [
+      "r36"
+     ]
+    },
+    "dei_DocumentRegistrationStatement": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentRegistrationStatement",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Registration Statement",
+        "documentation": "Boolean flag that is true only for a form used as a registration statement."
+       }
+      }
+     },
+     "auth_ref": [
+      "r2"
+     ]
+    },
+    "dei_DocumentTransitionReport": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentTransitionReport",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Transition Report",
+        "documentation": "Boolean flag that is true only for a form used as a transition report."
+       }
+      }
+     },
+     "auth_ref": [
+      "r25"
+     ]
+    },
+    "dei_PreCommencementTenderOffer": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "PreCommencementTenderOffer",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Pre-commencement Tender Offer",
+        "documentation": "Boolean flag that is true when the Form 8-K filing is intended to satisfy the filing obligation of the registrant as pre-commencement communications pursuant to Rule 14d-2(b) under the Exchange Act."
+       }
+      }
+     },
+     "auth_ref": [
+      "r10"
+     ]
+    },
+    "dei_DocumentAccountingStandard": {
+     "xbrltype": "accountingStandardItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentAccountingStandard",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Accounting Standard",
+        "documentation": "The basis of accounting the registrant has used to prepare the financial statements included in this filing This can either be 'U.S. GAAP', 'International Financial Reporting Standards', or 'Other'."
+       }
+      }
+     },
+     "auth_ref": [
+      "r16"
+     ]
+    },
+    "dei_EntityPublicFloat": {
+     "xbrltype": "monetaryItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityPublicFloat",
+     "crdr": "credit",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Public Float",
+        "documentation": "The aggregate market value of the voting and non-voting common equity held by non-affiliates computed by reference to the price at which the common equity was last sold, or the average bid and asked price of such common equity, as of the last business day of the registrant's most recently completed second fiscal quarter."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityAddressesLineItems": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityAddressesLineItems",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Addresses [Line Items]",
+        "documentation": "Line items represent financial concepts included in a table. These concepts are used to disclose reportable information associated with domain members defined in one or many axes to the table."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityListingParValuePerShare": {
+     "xbrltype": "perShareItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityListingParValuePerShare",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Listing, Par Value Per Share",
+        "documentation": "The par value per share of security quoted in same currency as Trading currency. Example: '0.01'."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityCommonStockSharesOutstanding": {
+     "xbrltype": "sharesItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityCommonStockSharesOutstanding",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Common Stock, Shares Outstanding",
+        "documentation": "Indicate number of shares or other units outstanding of each of registrant's classes of capital or common stock or other ownership interests, if and as stated on cover of related periodic report. Where multiple classes or units exist define each class/interest by adding class of stock items such as Common Class A [Member], Common Class B [Member] or Partnership Interest [Member] onto the Instrument [Domain] of the Entity Listings, Instrument."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EffectiveUponFiling486b": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EffectiveUponFiling486b",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Effective upon Filing, 486(b)"
+       }
+      }
+     },
+     "auth_ref": [
+      "r37"
+     ]
+    },
+    "ifrs-full_CountryOfIncorporation": {
+     "xbrltype": "stringItemType",
+     "nsuri": "https://xbrl.ifrs.org/taxonomy/2022-03-24/ifrs-full",
+     "localname": "CountryOfIncorporation",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Country of Incorporation"
+       }
+      },
+      "en": {
+       "role": {
+        "documentation": "The country in which the entity is incorporated."
+       }
+      }
+     },
+     "auth_ref": [
+      "r0"
+     ]
+    },
+    "dei_EntityInformationFormerLegalOrRegisteredName": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityInformationFormerLegalOrRegisteredName",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Information, Former Legal or Registered Name",
+        "documentation": "Former Legal or Registered Name of an entity"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityInteractiveDataCurrent": {
+     "xbrltype": "yesNoItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityInteractiveDataCurrent",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Interactive Data Current",
+        "documentation": "Boolean flag that is true when the registrant has submitted electronically every Interactive Data File required to be submitted pursuant to Rule 405 of Regulation S-T during the preceding 12 months (or for such shorter period that the registrant was required to submit such files)."
+       }
+      }
+     },
+     "auth_ref": [
+      "r28"
+     ]
+    },
+    "dei_EntityAddressAddressDescription": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityAddressAddressDescription",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Address, Address Description",
+        "documentation": "Description of the kind of address for the entity, if needed to distinguish more finely among mailing, principal, legal, accounting, contact or other addresses."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityListingForeign": {
+     "xbrltype": "yesNoItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityListingForeign",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Listing, Foreign",
+        "documentation": "Yes or No value indicating whether this is a listing that is a foreign listing or depository receipt."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_OtherReportingStandardItemNumber": {
+     "xbrltype": "otherReportingStandardItemNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "OtherReportingStandardItemNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Other Reporting Standard Item Number",
+        "documentation": "\"Item 17\" or \"Item 18\" specified when the basis of accounting is neither US GAAP nor IFRS."
+       }
+      }
+     },
+     "auth_ref": [
+      "r16"
+     ]
+    },
+    "dei_LegalEntityIdentifier": {
+     "xbrltype": "legalEntityIdentifierItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "LegalEntityIdentifier",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Legal Entity Identifier",
+        "documentation": "A globally unique ISO 17442 value to identify entities, commonly abbreviated as LEI."
+       }
+      }
+     },
+     "auth_ref": [
+      "r1"
+     ]
+    },
+    "dei_EffectiveWhenDeclaredSection8c": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EffectiveWhenDeclaredSection8c",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Effective when Declared, Section 8(c)"
+       }
+      }
+     },
+     "auth_ref": [
+      "r39"
+     ]
+    },
+    "dei_EntityContactPersonnelLineItems": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityContactPersonnelLineItems",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Contact Personnel [Line Items]",
+        "documentation": "Line items represent financial concepts included in a table. These concepts are used to disclose reportable information associated with domain members defined in one or many axes to the table."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EffectiveOnSetDate486a": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EffectiveOnSetDate486a",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Effective on Set Date, 486(a)"
+       }
+      }
+     },
+     "auth_ref": [
+      "r36"
+     ]
+    },
+    "dei_EntityListingPrimary": {
+     "xbrltype": "yesNoItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityListingPrimary",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Listing, Primary",
+        "documentation": "Yes or No value indicating whether a listing of an instrument on an exchange is primary for the entity."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentShellCompanyEventDate": {
+     "xbrltype": "dateItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentShellCompanyEventDate",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Shell Company Event Date",
+        "documentation": "Date of event requiring a shell company report."
+       }
+      }
+     },
+     "auth_ref": [
+      "r16"
+     ]
+    },
+    "dei_EntityInvCompanyType": {
+     "xbrltype": "invCompanyType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityInvCompanyType",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Inv Company Type",
+        "documentation": "One of: N-1A (Mutual Fund), N-1 (Open-End Separate Account with No Variable Annuities), N-2 (Closed-End Investment Company), N-3 (Separate Account Registered as Open-End Management Investment Company), N-4 (Variable Annuity UIT Separate Account), N-5 (Small Business Investment Company), N-6 (Variable Life UIT Separate Account), S-1 or S-3 (Face Amount Certificate Company), S-6 (UIT, Non-Insurance Product)."
+       }
+      }
+     },
+     "auth_ref": [
+      "r27"
+     ]
+    },
+    "dei_ContactPersonnelName": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "ContactPersonnelName",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Contact Personnel Name",
+        "documentation": "Name of contact personnel"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_AmendmentDescription": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AmendmentDescription",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Amendment Description",
+        "documentation": "Description of changes contained within amended document."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentQuarterlyReport": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentQuarterlyReport",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Quarterly Report",
+        "documentation": "Boolean flag that is true only for a form used as an quarterly report."
+       }
+      }
+     },
+     "auth_ref": [
+      "r14"
+     ]
+    },
+    "dei_EntityListingDepositoryReceiptRatio": {
+     "xbrltype": "pureItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityListingDepositoryReceiptRatio",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Listing, Depository Receipt Ratio",
+        "documentation": "The number of underlying shares represented by one American Depository Receipt (ADR) or Global Depository Receipt (GDR). A value of '3' means that one ADR represents 3 underlying shares. If one underlying share represents 2 ADR's then the value would be represented as '0.5'."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_AdditionalSecuritiesEffective413b": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AdditionalSecuritiesEffective413b",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Additional Securities Effective, 413(b)"
+       }
+      }
+     },
+     "auth_ref": [
+      "r30"
+     ]
+    },
+    "dei_EntityLegalForm": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityLegalForm",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Legal Form",
+        "documentation": "The details of the entity's legal form. Examples are partnership, limited liability company, trust, etc."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityListingSecurityTradingCurrency": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityListingSecurityTradingCurrency",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Listing, Security Trading Currency",
+        "documentation": "The three character ISO 4217 code for the currency in which the security is quoted. Example: 'USD'"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_ContactPersonnelEmailAddress": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "ContactPersonnelEmailAddress",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Contact Personnel Email Address",
+        "documentation": "Email address of contact personnel."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityHomeCountryISOCode": {
+     "xbrltype": "countryCodeItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityHomeCountryISOCode",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Home Country ISO Code",
+        "documentation": "ISO 3166-1 alpha-2 country code for the Entity's home country. If home country is different from country of legal incorporation, then also provide country of legal incorporation in the 'Entity Incorporation, State Country Code' element."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_ContactPersonnelFaxNumber": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "ContactPersonnelFaxNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Contact Personnel Fax Number",
+        "documentation": "Fax Number of contact personnel."
+       }
+      }
+     },
+     "auth_ref": [
+      "r16"
+     ]
+    },
+    "dei_EntityListingDescription": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityListingDescription",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Listing, Description",
+        "documentation": "Description of the kind of listing the entity has on the exchange, if necessary to further describe different instruments that are already distinguished by Entity, Exchange and Security."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_AuditedAnnualFinancialStatements": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AuditedAnnualFinancialStatements",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Audited Annual Financial Statements",
+        "documentation": "Boolean flag with value true on a form if it is an annual report containing audited financial statements."
+       }
+      }
+     },
+     "auth_ref": [
+      "r17"
+     ]
+    },
+    "dei_ParentEntityLegalName": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "ParentEntityLegalName",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Parent Entity Legal Name",
+        "documentation": "If the entity which the financial information concerns is a subsidiary of another company, then provide to full legal name of the parent entity"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EffectiveAfter60Days486a": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EffectiveAfter60Days486a",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Effective after 60 Days, 486(a)"
+       }
+      }
+     },
+     "auth_ref": [
+      "r36"
+     ]
+    },
+    "dei_NameChangeEventTable": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "NameChangeEventTable",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Name Change Event [Table]",
+        "documentation": "For a set of related facts in a sequence of name change events, use this table when the events occurred within a single reporting period."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityAddressAddressLine1": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityAddressAddressLine1",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Address, Address Line One",
+        "documentation": "Address Line 1 such as Attn, Building Name, Street Name"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_ExhibitsOnly462dFileNumber": {
+     "xbrltype": "fileNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "ExhibitsOnly462dFileNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Exhibits Only, 462(d), File Number"
+       }
+      }
+     },
+     "auth_ref": [
+      "r34"
+     ]
+    },
+    "dei_WrittenCommunications": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "WrittenCommunications",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Written Communications",
+        "documentation": "Boolean flag that is true when the Form 8-K filing is intended to satisfy the filing obligation of the registrant as written communications pursuant to Rule 425 under the Securities Act."
+       }
+      }
+     },
+     "auth_ref": [
+      "r31"
+     ]
+    },
+    "dei_LegalEntityAxis": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "LegalEntityAxis",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/AuditInformation",
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Legal Entity [Axis]",
+        "documentation": "The set of legal entities associated with a report."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_InvestmentCompanyRegistrationAmendment": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "InvestmentCompanyRegistrationAmendment",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Investment Company Registration Amendment"
+       }
+      }
+     },
+     "auth_ref": [
+      "r26"
+     ]
+    },
+    "dei_IcfrAuditorAttestationFlag": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "IcfrAuditorAttestationFlag",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "ICFR Auditor Attestation Flag"
+       }
+      }
+     },
+     "auth_ref": [
+      "r13",
+      "r16",
+      "r17"
+     ]
+    },
+    "dei_EntityRegistrantName": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityRegistrantName",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Registrant Name",
+        "documentation": "The exact name of the entity filing the report as specified in its charter, which is required by forms filed with the SEC."
+       }
+      }
+     },
+     "auth_ref": [
+      "r4"
+     ]
+    },
+    "dei_InvestmentCompanyRegistrationAmendmentNumber": {
+     "xbrltype": "sequenceNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "InvestmentCompanyRegistrationAmendmentNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Investment Company Registration Amendment Number"
+       }
+      }
+     },
+     "auth_ref": [
+      "r26"
+     ]
+    },
+    "dei_EntityAddressAddressLine2": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityAddressAddressLine2",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Address, Address Line Two",
+        "documentation": "Address Line 2 such as Street or Suite number"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentType": {
+     "xbrltype": "submissionTypeItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentType",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Type",
+        "documentation": "The type of document being provided (such as 10-K, 10-Q, 485BPOS, etc). The document type is limited to the same value as the supporting SEC submission type, or the word 'Other'."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityDomain": {
+     "xbrltype": "domainItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityDomain",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/AuditInformation",
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity [Domain]",
+        "documentation": "All the names of the entities being reported upon in a document. Any legal structure used to conduct activities or to hold assets. Some examples of such structures are corporations, partnerships, limited liability companies, grantor trusts, and other trusts. This item does not include business and geographical segments which are included in the geographical or business segments domains."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_AnnualInformationForm": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AnnualInformationForm",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Annual Information Form",
+        "documentation": "Boolean flag with value true on a form if it is an annual report containing an annual information form."
+       }
+      }
+     },
+     "auth_ref": [
+      "r17"
+     ]
+    },
+    "dei_NewEffectiveDateForPreviousFiling": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "NewEffectiveDateForPreviousFiling",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "New Effective Date for Previous Filing"
+       }
+      }
+     },
+     "auth_ref": [
+      "r20",
+      "r21",
+      "r22",
+      "r23"
+     ]
+    },
+    "dei_EntityInformationLineItems": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityInformationLineItems",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Information [Line Items]",
+        "documentation": "Line items represent financial concepts included in a table. These concepts are used to disclose reportable information associated with domain members defined in one or many axes to the table."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentAnnualReport": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentAnnualReport",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Annual Report",
+        "documentation": "Boolean flag that is true only for a form used as an annual report."
+       }
+      }
+     },
+     "auth_ref": [
+      "r13",
+      "r16",
+      "r17"
+     ]
+    },
+    "dei_EntityAddressAddressLine3": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityAddressAddressLine3",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Address, Address Line Three",
+        "documentation": "Address Line 3 such as an Office Park"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_AuditorTable": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AuditorTable",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/AuditInformation"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Auditor [Table]"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_AuditorLineItems": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AuditorLineItems",
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Auditor [Line Items]"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentInformationLineItems": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentInformationLineItems",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Information [Line Items]",
+        "documentation": "Line items represent financial concepts included in a table. These concepts are used to disclose reportable information associated with domain members defined in one or many axes to the table."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_InvestmentCompanyActRegistration": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "InvestmentCompanyActRegistration",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Investment Company Act Registration"
+       }
+      }
+     },
+     "auth_ref": [
+      "r26"
+     ]
+    },
+    "dei_EntityAddressCityOrTown": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityAddressCityOrTown",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Address, City or Town",
+        "documentation": "Name of the City or Town"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentDescription": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentDescription",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Description",
+        "documentation": "The description of the document."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityCentralIndexKey": {
+     "xbrltype": "centralIndexKeyItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityCentralIndexKey",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Central Index Key",
+        "documentation": "A unique 10-digit SEC-issued value to identify entities that have filed disclosures with the SEC. It is commonly abbreviated as CIK."
+       }
+      }
+     },
+     "auth_ref": [
+      "r4"
+     ]
+    },
+    "dei_AuditorLocation": {
+     "xbrltype": "internationalNameItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AuditorLocation",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/AuditInformation"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Auditor Location"
+       }
+      }
+     },
+     "auth_ref": [
+      "r13",
+      "r16",
+      "r17"
+     ]
+    },
+    "dei_AuditorName": {
+     "xbrltype": "internationalNameItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AuditorName",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/AuditInformation"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Auditor Name"
+       }
+      }
+     },
+     "auth_ref": [
+      "r13",
+      "r16",
+      "r17"
+     ]
+    },
+    "dei_PostEffectiveAmendmentNumber": {
+     "xbrltype": "sequenceNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "PostEffectiveAmendmentNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Post-Effective Amendment Number",
+        "documentation": "Amendment number to registration statement under the Securities Act of 1933 after the registration becomes effective."
+       }
+      }
+     },
+     "auth_ref": [
+      "r2"
+     ]
+    },
+    "dei_EntityAddressStateOrProvince": {
+     "xbrltype": "stateOrProvinceItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityAddressStateOrProvince",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Address, State or Province",
+        "documentation": "Name of the state or province."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentCreationDate": {
+     "xbrltype": "dateItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentCreationDate",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Creation Date",
+        "documentation": "The date the document was made available and submitted, in YYYY-MM-DD format. The date of submission, date of acceptance by the recipient, and the document effective date are all potentially different."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityFileNumber": {
+     "xbrltype": "fileNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityFileNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity File Number",
+        "documentation": "Commission file number. The field allows up to 17 characters. The prefix may contain 1-3 digits, the sequence number may contain 1-8 digits, the optional suffix may contain 1-4 characters, and the fields are separated with a hyphen."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityAddressCountry": {
+     "xbrltype": "countryCodeItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityAddressCountry",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Address, Country",
+        "documentation": "ISO 3166-1 alpha-2 country code."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_AuditorFirmId": {
+     "xbrltype": "nonemptySequenceNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AuditorFirmId",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/AuditInformation"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Auditor Firm ID",
+        "documentation": "PCAOB issued Audit Firm Identifier"
+       }
+      }
+     },
+     "auth_ref": [
+      "r13",
+      "r16",
+      "r17"
+     ]
+    },
+    "dei_DocumentEffectiveDate": {
+     "xbrltype": "dateItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentEffectiveDate",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Effective Date",
+        "documentation": "The date when a document, upon receipt and acceptance, becomes officially effective, in YYYY-MM-DD format. Usually it is a system-assigned date time value, but it may be declared by the submitter in some cases."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_InvestmentCompanyActFileNumber": {
+     "xbrltype": "fileNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "InvestmentCompanyActFileNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Investment Company Act File Number"
+       }
+      }
+     },
+     "auth_ref": [
+      "r20",
+      "r21",
+      "r22",
+      "r23"
+     ]
+    },
+    "dei_EntityPrimarySicNumber": {
+     "xbrltype": "sicNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityPrimarySicNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Primary SIC Number",
+        "documentation": "Primary Standard Industrial Classification (SIC) Number for the Entity."
+       }
+      }
+     },
+     "auth_ref": [
+      "r17"
+     ]
+    },
+    "dei_EntityAddressPostalZipCode": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityAddressPostalZipCode",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Address, Postal Zip Code",
+        "documentation": "Code for the postal or zip code"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentDomain": {
+     "xbrltype": "domainItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentDomain",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document [Domain]",
+        "documentation": "Type of the document as assigned by the filer, corresponding to SEC document naming convention standards."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentPeriodEndDate": {
+     "xbrltype": "dateItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentPeriodEndDate",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Period End Date",
+        "documentation": "For the EDGAR submission types of Form 8-K: the date of the report, the date of the earliest event reported; for the EDGAR submission types of Form N-1A: the filing date; for all other submission types: the end of the reporting or transition period.  The format of the date is YYYY-MM-DD."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentInformationDocumentAxis": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentInformationDocumentAxis",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Information, Document [Axis]",
+        "documentation": "The axis of a table defines the relationship between the domain members or categories in the table and the line items or concepts that complete the table."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityPhoneFaxNumbersLineItems": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityPhoneFaxNumbersLineItems",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Phone Fax Numbers [Line Items]",
+        "documentation": "Line items represent financial concepts included in a table. These concepts are used to disclose reportable information associated with domain members defined in one or many axes to the table."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_PhoneFaxNumberDescription": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "PhoneFaxNumberDescription",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Phone Fax Number Description",
+        "documentation": "Description of Phone or Fax Number"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityTaxIdentificationNumber": {
+     "xbrltype": "employerIdItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityTaxIdentificationNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Tax Identification Number",
+        "documentation": "The Tax Identification Number (TIN), also known as an Employer Identification Number (EIN), is a unique 9-digit value assigned by the IRS."
+       }
+      }
+     },
+     "auth_ref": [
+      "r4"
+     ]
+    },
+    "dei_PreCommencementIssuerTenderOffer": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "PreCommencementIssuerTenderOffer",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Pre-commencement Issuer Tender Offer",
+        "documentation": "Boolean flag that is true when the Form 8-K filing is intended to satisfy the filing obligation of the registrant as pre-commencement communications pursuant to Rule 13e-4(c) under the Exchange Act."
+       }
+      }
+     },
+     "auth_ref": [
+      "r9"
+     ]
+    },
+    "dei_DocumentVersion": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentVersion",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Version",
+        "documentation": "The version identifier of the document."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityAccountingStandard": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityAccountingStandard",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Accounting Standard",
+        "documentation": "The standardized abbreviation of the accounting standard used by the entity. This can either be US GAAP as promulgated by the FASB or IFRS as promulgated by the IASB. Example: 'US GAAP', 'IFRS'.  This is distinct from the Document Accounting Standard element."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_AdditionalSecurities462bFileNumber": {
+     "xbrltype": "fileNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AdditionalSecurities462bFileNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Additional Securities, 462(b), File Number"
+       }
+      }
+     },
+     "auth_ref": [
+      "r32"
+     ]
+    },
+    "dei_DocumentFiscalPeriodFocus": {
+     "xbrltype": "fiscalPeriodItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentFiscalPeriodFocus",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Fiscal Period Focus",
+        "documentation": "Fiscal period values are FY, Q1, Q2, and Q3.  1st, 2nd and 3rd quarter 10-Q or 10-QT statements have value Q1, Q2, and Q3 respectively, with 10-K, 10-KT or other fiscal year statements having FY."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentFiscalYearFocus": {
+     "xbrltype": "gYearItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentFiscalYearFocus",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Fiscal Year Focus",
+        "documentation": "This is focus fiscal year of the document report in YYYY format. For a 2006 annual report, which may also provide financial information from prior periods, fiscal 2006 should be given as the fiscal year focus. Example: 2006."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_PostEffectiveAmendment": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "PostEffectiveAmendment",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Post-Effective Amendment"
+       }
+      }
+     },
+     "auth_ref": [
+      "r2"
+     ]
+    },
+    "dei_DocumentCopyrightInformation": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentCopyrightInformation",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Copyright Information",
+        "documentation": "The copyright information for the document."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_NoSubstantiveChanges462c": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "NoSubstantiveChanges462c",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "No Substantive Changes, 462(c)"
+       }
+      }
+     },
+     "auth_ref": [
+      "r33"
+     ]
+    },
+    "dei_DocumentName": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentName",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Name",
+        "documentation": "Name of the document as assigned by the filer, corresponding to SEC document naming convention standards. Examples appear in the &lt;FILENAME> field of EDGAR filings, such as 'htm_25911.htm', 'exhibit1.htm', 'v105727_8k.txt'."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_CountryRegion": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "CountryRegion",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Country Region",
+        "documentation": "Region code of country"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityIncorporationStateCountryCode": {
+     "xbrltype": "edgarStateCountryItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityIncorporationStateCountryCode",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Incorporation, State or Country Code",
+        "documentation": "Two-character EDGAR code representing the state or country of incorporation."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentTitle": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentTitle",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Title",
+        "documentation": "The name or title given to the document resource by the creator or publisher. An example is '2002 Annual Report'."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_AmendmentFlag": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "AmendmentFlag",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Amendment Flag",
+        "documentation": "Boolean flag that is true when the XBRL content amends previously-filed or accepted submission."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_CurrentFiscalYearEndDate": {
+     "xbrltype": "gMonthDayItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "CurrentFiscalYearEndDate",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Current Fiscal Year End Date",
+        "documentation": "End date of current fiscal year in the format --MM-DD."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentInformationTable": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentInformationTable",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Information [Table]",
+        "documentation": "Container to support the formal attachment of each official or unofficial, public or private document as part of a submission package."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_CityAreaCode": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "CityAreaCode",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "City Area Code",
+        "documentation": "Area code of city"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentSynopsis": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentSynopsis",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Synopsis",
+        "documentation": "A synopsis or description of the document provided by the creator or publisher. Examples are 'This is the 2006 annual report for Company. During this period we saw revenue grow by 10% and earnings per share grow by 15% over the prior period'"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_Extension": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "Extension",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Extension",
+        "documentation": "Extension number for local phone number."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityNumberOfEmployees": {
+     "xbrltype": "decimalItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityNumberOfEmployees",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Number of Employees",
+        "documentation": "Number of persons employed by the Entity"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_DocumentSubtitle": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "DocumentSubtitle",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Document Subtitle",
+        "documentation": "The subtitle given to the document resource by the creator or publisher. An example is 'A New Period of Growth'."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_LocalPhoneNumber": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "LocalPhoneNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Local Phone Number",
+        "documentation": "Local phone number for entity."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_CoverAbstract": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "CoverAbstract",
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Cover [Abstract]",
+        "documentation": "Cover page."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityListingsExchangeAxis": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityListingsExchangeAxis",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Listings, Exchange [Axis]",
+        "documentation": "The axis of a table defines the relationship between the domain members or categories in the table and the line items or concepts that complete the table."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_PreEffectiveAmendmentNumber": {
+     "xbrltype": "sequenceNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "PreEffectiveAmendmentNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Pre-Effective Amendment Number",
+        "documentation": "Amendment number to registration statement under the Securities Act of 1933 before the registration becomes effective."
+       }
+      }
+     },
+     "auth_ref": [
+      "r2"
+     ]
+    },
+    "dei_FormerFiscalYearEndDate": {
+     "xbrltype": "gMonthDayItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "FormerFiscalYearEndDate",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Former Fiscal Year End Date",
+        "documentation": "Former end date of previous fiscal years"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityListingsTable": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityListingsTable",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Listings [Table]",
+        "documentation": "Container for exchange listing information for an entity"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_ContainedFileInformationFileName": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "ContainedFileInformationFileName",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Contained File Information, File Name",
+        "documentation": "The name of the contained file."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntitiesTable": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntitiesTable",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entities [Table]",
+        "documentation": "Container to assemble all relevant information about each entity associated with the document instance"
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_ContainedFileInformationFileType": {
+     "xbrltype": "normalizedStringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "ContainedFileInformationFileType",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Contained File Information, File Type",
+        "documentation": "The type or format of the contained file (usually XBRL but may be used for other types such as HTML, Word, PDF, GIF/JPG, etc.)."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_EntityWellKnownSeasonedIssuer": {
+     "xbrltype": "yesNoItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityWellKnownSeasonedIssuer",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Well-known Seasoned Issuer",
+        "documentation": "Indicate 'Yes' or 'No' if the registrant is a well-known seasoned issuer, as defined in Rule 405 of the Securities Act. Is used on Form Type: 10-K, 10-Q, 8-K, 20-F, 6-K, 10-K/A, 10-Q/A, 20-F/A, 6-K/A, N-CSR, N-Q, N-1A."
+       }
+      }
+     },
+     "auth_ref": [
+      "r29"
+     ]
+    },
+    "dei_EntityBankruptcyProceedingsReportingCurrent": {
+     "xbrltype": "booleanItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "EntityBankruptcyProceedingsReportingCurrent",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Entity Bankruptcy Proceedings, Reporting Current",
+        "documentation": "For registrants involved in bankruptcy proceedings during the preceding five years, the value Yes indicates that the registrant has filed all documents and reports required to be filed by Section 12, 13 or 15(d) of the Securities Exchange Act of 1934 subsequent to the distribution of securities under a plan confirmed by a court; the value No indicates the registrant has not.  Registrants not involved in bankruptcy proceedings during the preceding five years should not report this element."
+       }
+      }
+     },
+     "auth_ref": [
+      "r8"
+     ]
+    },
+    "dei_ContainedFileInformationFileDescription": {
+     "xbrltype": "stringItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "ContainedFileInformationFileDescription",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Contained File Information, File Description",
+        "documentation": "The description of the contained file."
+       }
+      }
+     },
+     "auth_ref": []
+    },
+    "dei_ContainedFileInformationFileNumber": {
+     "xbrltype": "fileNumberItemType",
+     "nsuri": "http://xbrl.sec.gov/dei/2022",
+     "localname": "ContainedFileInformationFileNumber",
+     "presentation": [
+      "http://xbrl.sec.gov/dei/role/document/Cover"
+     ],
+     "lang": {
+      "en-us": {
+       "role": {
+        "label": "Contained File Information, File Number",
+        "documentation": "The SEC Document Number of the contained file."
+       }
+      }
+     },
+     "auth_ref": []
+    }
+   }
+  }
+ },
+ "std_ref": {
+  "r0": {
+   "role": "http://www.xbrl.org/2003/role/disclosureRef",
+   "Name": "IAS",
+   "Number": "1",
+   "IssueDate": "2022-03-24",
+   "Paragraph": "138",
+   "Subparagraph": "a",
+   "URI": "https://taxonomy.ifrs.org/xifrs-link?type=IAS&num=1&code=ifrs-tx-2022-en-r&anchor=para_138_a&doctype=Standard",
+   "URIDate": "2022-03-24"
+  },
+  "r1": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "Global LEI Foundation",
+   "URI": "www.leiroc.org",
+   "URIDate": "2013-08-21"
+  },
+  "r2": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Exchange Act",
+   "Number": "240",
+   "Section": "12"
+  },
+  "r3": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Exchange Act",
+   "Number": "240",
+   "Section": "12",
+   "Subsection": "b"
+  },
+  "r4": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Exchange Act",
+   "Number": "240",
+   "Section": "12",
+   "Subsection": "b-2"
+  },
+  "r5": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Exchange Act",
+   "Number": "240",
+   "Section": "12",
+   "Subsection": "b-23"
+  },
+  "r6": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Exchange Act",
+   "Number": "240",
+   "Section": "12",
+   "Subsection": "d1-1"
+  },
+  "r7": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Exchange Act",
+   "Number": "240",
+   "Section": "12",
+   "Subsection": "g"
+  },
+  "r8": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Exchange Act",
+   "Number": "240",
+   "Section": "12, 13, 15d"
+  },
+  "r9": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Exchange Act",
+   "Number": "240",
+   "Section": "13e",
+   "Subsection": "4c"
+  },
+  "r10": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Exchange Act",
+   "Number": "240",
+   "Section": "14d",
+   "Subsection": "2b"
+  },
+  "r11": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Exchange Act",
+   "Number": "240",
+   "Section": "15",
+   "Subsection": "d"
+  },
+  "r12": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Exchange Act",
+   "Section": "14a",
+   "Number": "240",
+   "Subsection": "12"
+  },
+  "r13": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Form 10-K",
+   "Number": "249",
+   "Section": "310"
+  },
+  "r14": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Form 10-Q",
+   "Number": "240",
+   "Section": "308",
+   "Subsection": "a"
+  },
+  "r15": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Form 10-Q",
+   "Number": "249",
+   "Section": "308",
+   "Subsection": "a"
+  },
+  "r16": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Form 20-F",
+   "Number": "249",
+   "Section": "220",
+   "Subsection": "f"
+  },
+  "r17": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Form 40-F",
+   "Number": "249",
+   "Section": "240",
+   "Subsection": "f"
+  },
+  "r18": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Form 8-K",
+   "Number": "249",
+   "Section": "308"
+  },
+  "r19": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Form F-3"
+  },
+  "r20": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Form N-2"
+  },
+  "r21": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Form N-3"
+  },
+  "r22": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Form N-4"
+  },
+  "r23": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Form N-6"
+  },
+  "r24": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Form S-3"
+  },
+  "r25": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Forms 10-K, 10-Q, 20-F",
+   "Number": "240",
+   "Section": "13",
+   "Subsection": "a-1"
+  },
+  "r26": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Investment Company Act",
+   "Number": "270"
+  },
+  "r27": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Regulation S-T",
+   "Number": "232",
+   "Section": "313"
+  },
+  "r28": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Regulation S-T",
+   "Number": "232",
+   "Section": "405"
+  },
+  "r29": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Securities Act",
+   "Number": "230",
+   "Section": "405"
+  },
+  "r30": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Securities Act",
+   "Number": "230",
+   "Section": "413",
+   "Subsection": "b"
+  },
+  "r31": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Securities Act",
+   "Number": "230",
+   "Section": "425"
+  },
+  "r32": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Securities Act",
+   "Number": "230",
+   "Section": "462",
+   "Subsection": "b"
+  },
+  "r33": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Securities Act",
+   "Number": "230",
+   "Section": "462",
+   "Subsection": "c"
+  },
+  "r34": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Securities Act",
+   "Number": "230",
+   "Section": "462",
+   "Subsection": "d"
+  },
+  "r35": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Securities Act",
+   "Number": "230",
+   "Section": "462",
+   "Subsection": "e"
+  },
+  "r36": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Securities Act",
+   "Number": "230",
+   "Section": "486",
+   "Subsection": "a"
+  },
+  "r37": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Securities Act",
+   "Number": "230",
+   "Section": "486",
+   "Subsection": "b"
+  },
+  "r38": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Securities Act",
+   "Number": "7A",
+   "Section": "B",
+   "Subsection": "2"
+  },
+  "r39": {
+   "role": "http://www.xbrl.org/2003/role/presentationRef",
+   "Publisher": "SEC",
+   "Name": "Securities Act",
+   "Section": "8",
+   "Subsection": "c"
+  }
+ }
+}

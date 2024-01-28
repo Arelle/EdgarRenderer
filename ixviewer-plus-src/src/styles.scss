@@ -40,6 +40,10 @@ kbd {
   border-bottom: 0.5rem solid transparent;
 }
 
+.nav-item{
+  cursor: pointer;
+}
+
 .navbar-dark .navbar-nav .nav-link {
   color: #fff;
 }
@@ -57,7 +61,6 @@ kbd {
 }
 
 #dynamic-xbrl-form [inside-table="true"] {
-  display: table-cell !important;
   text-indent: initial;
 }
 
@@ -124,7 +127,6 @@ kbd {
 }
 
 .alert-height {
-  height: 45px;
   --bs-alert-padding-y: 0.5rem;
 }
 

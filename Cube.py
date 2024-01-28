@@ -20,7 +20,7 @@ class Cube(object):
             from . import Filing
         self.filing = filing
         self.controller = filing.controller
-        self.noFactsOrAllFactsSuppressed = False
+        self.noFactsOrAllFactsSuppressed = Utils.isNotRendered(linkroleUri)
         self.excludeFromNumbering = False
         self.linkroleUri = linkroleUri
         self.isBarChart = 'barchart' in linkroleUri.casefold()

@@ -5,6 +5,7 @@
 
 import { Errors } from ".";
 import { HelpersUrl } from "../helpers/url";
+import { Logger, ILogObj } from 'tslog';
 
 export const ErrorsMajor: {
   inactive: () => void,
@@ -23,6 +24,11 @@ export const ErrorsMajor: {
     document.getElementById('error-container')?.appendChild(element);
 
     Errors.updateMainContainerHeight();
+
+    if (!PRODUCTION) {
+      const log: Logger<ILogObj> = new Logger();
+      log.debug(`inactive`);
+    }
   },
 
   formLinksNotFound: () => {
@@ -40,6 +46,11 @@ export const ErrorsMajor: {
 
     // window.location.assign(`${HelpersUrl.getFormAbsoluteURL + HelpersUrl.getHTMLFileName}`);
     Errors.updateMainContainerHeight();
+
+    if (!PRODUCTION) {
+      const log: Logger<ILogObj> = new Logger();
+      log.debug(`formLinksNotFound`);
+    }
   },
 
   urlParams: () => {
@@ -52,6 +63,11 @@ export const ErrorsMajor: {
     document.getElementById('error-container')?.appendChild(element);
 
     Errors.updateMainContainerHeight();
+
+    if (!PRODUCTION) {
+      const log: Logger<ILogObj> = new Logger();
+      log.debug(`urlParams`);
+    }
   },
 
   cors: (doc) => {
@@ -66,6 +82,11 @@ export const ErrorsMajor: {
     document.getElementById('error-container')?.appendChild(element);
 
     Errors.updateMainContainerHeight();
+
+    if (!PRODUCTION) {
+      const log: Logger<ILogObj> = new Logger();
+      log.debug(`cors`);
+    }
   },
 
   message: (input) => {
@@ -78,5 +99,10 @@ export const ErrorsMajor: {
     document.getElementById('error-container')?.appendChild(element);
 
     Errors.updateMainContainerHeight();
+
+    if (!PRODUCTION) {
+      const log: Logger<ILogObj> = new Logger();
+      log.debug(`message`);
+    }
   }
 };

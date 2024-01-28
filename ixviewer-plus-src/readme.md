@@ -27,7 +27,8 @@
 Run these in a terminal from the root of your project
 
 1. Run the project in DEVELOPMENT MODE
-   - `npm run dev-serve`
+   - `npm run dev-serve` 
+   <!-- `npm run dev-build` needs to have been run first because devServer.static is currently pointing to /dist and that folder needs to be populated with the build command -->
 2. Run the project in DEVELOPMENT MODE and include a bundle analyzer
    - `npm run dev-serve-analyze`
 3. Run the project in PRODUCTION MODE with a development server
@@ -56,3 +57,12 @@ Run these in a terminal from the root of your project
   3.  Open a browser and navigate to: `http://localhost:3000/ix.xhtml`
   4.  You will be presented with a table of all filings that you gathered during step 1.
 - If you are developing, the linter runs automatically when you save any files within {{project_root}}/src. These errors / warnings are to be fixed prior to pushing up code for review.
+
+## Cypress Quick Start
+1. Download zip from cypress.io
+2. Install zip with npm: `CYPRESS_INSTALL_BINARY=C:/Users/<you>/Downloads/cypress.zip npm install cypress` (alter to path your path to zip).  Note: this  must be run in a bash shell, not cmd or powershell.
+3. To Run against an xml app you will have to edit a cypress file found on a path similar to: `C:\Users\nelsonro\AppData\Local\Cypress\Cache\13.3.1\Cypress\resources\app\packages\runner\dist\injection.js`.  Add blank lines before an after the single (long) line of code.  On the first blank line add `//<![CDATA[`.  On the last line put `//]]>`
+4. Now you can launch the cypress gui with `npx cypress open`.
+5. to target a particular domain from the command line use --env flag:
+   npx cypress run --env "domain=dev1"
+6. To use particular domain for gui see env var 'domain' in cypress.config.js

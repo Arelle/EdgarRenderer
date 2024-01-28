@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xbrl
+  xmlns="http://www.xbrl.org/2003/instance"
+  xmlns:dei="http://xbrl.sec.gov/dei/2022"
+  xmlns:ifrs-full="https://xbrl.ifrs.org/taxonomy/2022-03-24/ifrs-full"
+  xmlns:link="http://www.xbrl.org/2003/linkbase"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+    <link:schemaRef xlink:href="e62201014gd-20081231.xsd" xlink:type="simple"/>
+    <context id="FY08">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0000350001</identifier>
+        </entity>
+        <period>
+            <startDate>2008-01-01</startDate>
+            <endDate>2008-12-31</endDate>
+        </period>
+    </context>
+    <context id="FY07">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0000350001</identifier>
+        </entity>
+        <period>
+            <startDate>2007-01-01</startDate>
+            <endDate>2007-12-31</endDate>
+        </period>
+    </context>
+    <context id="FY06">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0000350001</identifier>
+        </entity>
+        <period>
+            <startDate>2006-01-01</startDate>
+            <endDate>2006-12-31</endDate>
+        </period>
+    </context>
+    <context id="FY05">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0000350001</identifier>
+        </entity>
+        <period>
+            <startDate>2005-01-01</startDate>
+            <endDate>2005-12-31</endDate>
+        </period>
+    </context>
+    <context id="FY04">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0000350001</identifier>
+        </entity>
+        <period>
+            <startDate>2004-01-01</startDate>
+            <endDate>2004-12-31</endDate>
+        </period>
+    </context>
+    <context id="FY03">
+        <entity>
+            <identifier scheme="http://www.sec.gov/CIK">0000350001</identifier>
+        </entity>
+        <period>
+            <startDate>2003-01-01</startDate>
+            <endDate>2003-12-31</endDate>
+        </period>
+    </context>
+    <dei:AmendmentFlag contextRef="FY08" id="d1e26">false</dei:AmendmentFlag>
+    <dei:EntityCentralIndexKey contextRef="FY08" id="d1e29">0000350001</dei:EntityCentralIndexKey>
+    <dei:DocumentFiscalPeriodFocus contextRef="FY08" id="d1e42">FY</dei:DocumentFiscalPeriodFocus>
+    <dei:DocumentFiscalYearFocus contextRef="FY08" id="d1e45">2008</dei:DocumentFiscalYearFocus>
+    <dei:DocumentType contextRef="FY08" id="d1e23">F-SR</dei:DocumentType>
+    <dei:DocumentPeriodEndDate contextRef="FY08" id="d1e39">2023-09-30</dei:DocumentPeriodEndDate>
+    <dei:CurrentFiscalYearEndDate contextRef="FY08" id="d1e36">--12-31</dei:CurrentFiscalYearEndDate>
+    <dei:EntityRegistrantName contextRef="FY08" id="d1e33">Big Fund Trust inc</dei:EntityRegistrantName>
+    <ifrs-full:CountryOfIncorporation contextRef="FY08">Austro-Hungarian Empire</ifrs-full:CountryOfIncorporation>
+    <ifrs-full:CountryOfIncorporation contextRef="FY07">Austro-Hungarian Empire</ifrs-full:CountryOfIncorporation>
+    <ifrs-full:CountryOfIncorporation contextRef="FY06">Austro-Hungarian Empire</ifrs-full:CountryOfIncorporation>
+    <ifrs-full:CountryOfIncorporation contextRef="FY05">Austro-Hungarian Empire</ifrs-full:CountryOfIncorporation>
+    <ifrs-full:CountryOfIncorporation contextRef="FY04">Austro-Hungarian Empire</ifrs-full:CountryOfIncorporation>
+    <ifrs-full:CountryOfIncorporation contextRef="FY03">Austr&lt;span style="font-style: italic"&gt;o-Hungarian Empire&lt;/span&gt;</ifrs-full:CountryOfIncorporation>
+</xbrl>

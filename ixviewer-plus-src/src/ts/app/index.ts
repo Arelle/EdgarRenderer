@@ -17,6 +17,7 @@ import { Meta } from "../interface/meta";
 
 export const App = {
     init: (loadInstance = false, callback: (arg0: boolean) => void) => {
+        console.log('Version:', Constants.version)
         let xhtmlUrl = ''
         if (loadInstance) {
 
@@ -34,7 +35,7 @@ export const App = {
                 if (window.Worker) {
                     if (!PRODUCTION) {
                         const log: Logger<ILogObj> = new Logger();
-                        log.debug(`\nWorker Init`);
+                        log.debug(`Worker Init`);
                     }
                     const worker = new Worker(
                         new URL('../workers/index.ts', import.meta.url), { name: 'fetch-merge' }
@@ -54,7 +55,7 @@ export const App = {
                 } else {
                     if (!PRODUCTION) {
                         const log: Logger<ILogObj> = new Logger();
-                        log.debug(`\nWorker NOT Init`);
+                        log.debug(`Worker NOT Init`);
                     }
                     // browser does not support web worker
                     const data = {
@@ -183,7 +184,7 @@ export const App = {
             const endPerformance = performance.now();
             if (!PRODUCTION) {
                 const log: Logger<ILogObj> = new Logger();
-                log.debug(`\nAdding XHTML completed in: ${(endPerformance - startPerformance).toFixed(2)}ms`);
+                log.debug(`Adding XHTML completed in: ${(endPerformance - startPerformance).toFixed(2)}ms`);
             }
             ConstantsFunctions.setTitle();
             return true;

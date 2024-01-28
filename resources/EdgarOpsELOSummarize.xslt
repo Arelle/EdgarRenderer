@@ -14,6 +14,8 @@
   <xsl:variable name="imagesDir">/images</xsl:variable>
   <xsl:variable name="ixHtmlPath">/ixviewer/ix.xhtml</xsl:variable>
 
+  <xsl:variable name="docAbsPathPrefix"></xsl:variable>
+  <xsl:variable name="docAbsPathSuffix"></xsl:variable>
   <xsl:variable name="fetchprefix">/ft/viewexhibitft.html?filename=</xsl:variable>
   <xsl:variable name="fetch_ix_prefixquoted"><![CDATA[/ft/viewexhibitft.html?filename=]]></xsl:variable>
   <xsl:variable name="fetchsuffix"></xsl:variable>  

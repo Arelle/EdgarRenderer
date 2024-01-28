@@ -197,9 +197,7 @@ export const ModalsCommon = {
     const id = element.hasAttribute('continued-main-fact-id') ? element.getAttribute('continued-main-fact-id') : element.getAttribute('id');
     const factInfo = FactMap.getByID(id as string);
     if (factInfo) {
-      if (!PRODUCTION) {
-        console.table(factInfo);
-      }
+
       // we now render one slide at a time!
       FactPages.firstPage(factInfo, 'fact-modal-carousel-page-1');
       FactPages.secondPage(factInfo, 'fact-modal-carousel-page-2');

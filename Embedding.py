@@ -66,7 +66,10 @@ class Embedding(object):
         self.columnUnitPosition = None
         self.rowPeriodPosition = None
         self.columnPeriodPosition = None
-
+        self.emptyHeadingPattern = "(?!)"
+        self.emptyHeadingRegex = None
+        self.suppressHeadingUnits = False
+        self.suppressHeadingDates = False
 
     def handleTransposedByModifyingCommandText(self):
         for i in range(len(self.commandTextListOfLists)):
@@ -91,7 +94,7 @@ class Embedding(object):
 
         # here we sort by presentationGroup order, and if they are the same because the axes were all roots, then sort by axis label
         orderedListOfOrderAxisQnameTuples = sorted(orderedListOfOrderAxisQnameTuples, key=lambda thing : (thing[0], thing[2]))
-
+        self.tooManyCells()
         if self.cube.isStatementOfEquity:
             self.localnamesMovedToColumns = []
             self.localnamesMovedToRows = []
@@ -127,6 +130,7 @@ class Embedding(object):
                                        ,'http://xbrl.sec.gov/rxp/role/ByCategory'
                                        ,'http://xbrl.sec.gov/rxp/role/ByProject'
                                        ,'http://xbrl.sec.gov/rxp/role/ByGovernment'):
+            self.emptyHeadingPattern += "|rxp/role/Detail"
             leAxisQname = None
             for ignore, axisQname, ignore in orderedListOfOrderAxisQnameTuples:
                 if axisQname.localName == 'LegalEntityAxis' and self.cube.linkroleUri.endswith('ByCategory'):
@@ -161,7 +165,9 @@ class Embedding(object):
 
             # print(self.commandTextListOfLists) # wch for debug
 
-        elif bool(re.search("/ffd/role/",self.cube.linkroleUri)):
+        elif bool(re.search(r"/ffd/main/role/(feesOffering|feesOffset|feesByCmbdPrspcts)",self.cube.linkroleUri)):
+            self.emptyHeadingPattern += "|ffd/main/role/fees"
+            self.suppressHeadingUnits = True
             self.commandTextListOfLists += [['column', 'primary', 'compact', '*']]
             if len(self.cube.unitAxis) > 0:
                 self.commandTextListOfLists += [['column', 'unit', 'compact', '*']]
@@ -236,6 +242,9 @@ class Embedding(object):
                             break
 
         else:
+            if bool(re.search(r"/ffd/(main|424i)/role/",self.cube.linkroleUri)):
+                self.suppressHeadingUnits = True
+
             for ignore, axisQname, ignore in orderedListOfOrderAxisQnameTuples:
                 self.commandTextListOfLists += [['row', axisQname, 'compact', '*']]
 
@@ -247,8 +256,13 @@ class Embedding(object):
             if len(self.cube.unitAxis) > 0:
                 self.commandTextListOfLists += [['column', 'unit', 'compact', '*']]
 
-
-
+    def getEmptyHeading(self,uri) -> str:
+        heading = "Total"
+        if not bool(self.emptyHeadingRegex):
+            self.emptyHeadingRegex = re.compile(self.emptyHeadingPattern)
+        if bool(re.search(self.emptyHeadingRegex,uri)):
+            heading = ""
+        return heading
 
     def buildAndProcessCommands(self):
         for commandTextList in self.commandTextListOfLists:
@@ -635,6 +649,23 @@ class Embedding(object):
         factAxisMember.axisMemberPositionTuple = axisMemberPositionTupleRowOrColList[unitAxisIndex] = (axisOrderFromTuple, newUnitOrderForUnit)
 
 
+    def tooManyCells(self,threshold=2):
+        axesAndMembers = self.cube.axisAndMemberOrderDict
+        axes = len(axesAndMembers) - 3
+        if axes < threshold:
+            return False
+        n = 1
+        for (domain, ignore) in axesAndMembers.values():
+            n = n * len(domain)
+        if n < 1000000000:
+            return False
+        group = self.cube.linkroleUri
+        cells = int(n/1000000000)
+        self.controller.logError(f"Presentation group {group} with {axes} axes could have more than {cells} billion cells.  "
+                                +"Split up this presentation group and see EFM 6.25.2 to see how to reduce the number of combinations by selecting "
+                                +"fewer members for each axis."
+                                )
+        return True
 
     def printEmbedding(self):
         self.controller.logTrace('\n\n\n****************************************************************')

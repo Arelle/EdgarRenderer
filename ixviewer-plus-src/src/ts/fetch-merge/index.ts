@@ -4,6 +4,7 @@ import { Meta, Xbrltype, reference } from '../interface/meta';
 import { Context, DeiAmendmentFlagAttributes, Instance, LinkFootnote, LinkFootnoteArc, LinkLOC, Units } from '../interface/instance';
 import { Reference, SingleFact } from '../interface/fact';
 import { Logger, ILogObj } from 'tslog';
+import { cleanSubstring } from '../helpers/utils';
 
 /* Created by staff of the U.S. Securities and Exchange Commission.
  * Data and content created by government employees within the scope of their employment
@@ -218,10 +219,35 @@ export class FetchAndMerge {
         }
     }
 
+    decodeWorkstationXmlInHtml(isWorkstation: boolean, html: string, closingXml: string) {
+        if (!isWorkstation) return html; // not running on SEC EDGAR workstation which encodes xml in HTML
+        if (!html.substring(0,100).toLowerCase().includes("<html><head>")) {
+             if (html.includes("<title>EDGAR SEC Workstation Login</title>")) {
+                  console.error("Workstation requires logging in");
+                  window.alert("Workstation requires logging in");
+                  return "";
+             }
+             return html; // it's xml, not html
+        }
+        // snip extraneous html from beginning and end of resopnse which is present in versions of files on workstation
+        // only 5 encodings are used in xml
+        html = html.replaceAll('&lt;', '<');
+        html = html.replaceAll('&gt;', '>');
+        html = html.replaceAll('&quot;', '"');
+        html = html.replaceAll('&apos;', '\'');
+        html = html.replaceAll('&amp;', '&');
+        return html.substring(html.indexOf("<?xml version="), html.indexOf(closingXml) + closingXml.length)
+    }
+
     fetchXHTML() {
         const promises = this.currentInstance?.xhtmls.map((current: { url: string }) => {
-            return new Promise((resolve) =>
-                fetch(current.url, {
+            return new Promise((resolve) => {
+                const isWorkstation = current.url.includes("DisplayDocument.do?");
+                let ixvUrl = current.url;
+                if (isWorkstation) {
+                    ixvUrl = ixvUrl.replace('.htm', '_ixv_sec.htm')
+                }
+                fetch(ixvUrl, {
                     headers: {
                         "Content-Type": "application/xhtml+xml"
                     },
@@ -234,10 +260,13 @@ export class FetchAndMerge {
                         throw Error(`${response.status.toString()}, Could not find "${this.params.doc}"`);
                     }
                 }).then((data) => {
-                    resolve({ xhtml: data });
+                    // on SEC EDGAR workstation xhtml is encoded like this: <HTML><HEAD><TITLE> ... &lt;?xml ...
+                    const xhtmlData = this.decodeWorkstationXmlInHtml(isWorkstation, data, "</html>");
+                    resolve({ xhtml: xhtmlData });
                 }).catch((error) => {
                     resolve({ error: true, message: error });
-                }));
+                })
+            });
         });
         return Promise.all(promises).then((allXHTML: Array<{ xhtml: string, index: number }>) => {
             return allXHTML;
@@ -272,7 +301,10 @@ export class FetchAndMerge {
                 }
             }).then((data) => {
 
-                const XHTMLSlug = this.params.doc.substr(this.params.doc.lastIndexOf('/') + 1);
+                let XHTMLSlug = this.params.doc.substr(this.params.doc.lastIndexOf('/') + 1);
+                if (XHTMLSlug.startsWith("DisplayDocument.do") || XHTMLSlug.startsWith("view.html")) {
+                    XHTMLSlug = this.params.doc.substr(this.params.doc.lastIndexOf('filename=') + 9);
+                }
                 const instanceKeys = Object.keys(data.instance).join().split(/[ ,]+/);
                 let sections = {}
                 if (instanceKeys.includes(XHTMLSlug)) {
@@ -291,6 +323,7 @@ export class FetchAndMerge {
                                 loaded: false
                             };
                         });
+                        // How is this used?
                         const xmlSlugs = xhtmls.map(element => element.slug.replace('.htm', '_htm.xml'));
                         const xmlUrls = xhtmls.map(element => this.params.metalinks.replace('MetaLinks.json', element.slug.replace('.htm', '_htm.xml')));
                         return {
@@ -315,6 +348,7 @@ export class FetchAndMerge {
 
     fetchSummary() {
         return new Promise((resolve) => {
+            const isWorkstation = this.params.summary.includes("DisplayDocument.do?");
             return fetch(this.params.summary, { credentials: 'include' }).then((response) => {
                 if (response.status >= 200 && response.status <= 299) {
                     return response.text();
@@ -322,13 +356,20 @@ export class FetchAndMerge {
                     throw Error(response.status.toString());
                 }
             }).then((data) => {
-                resolve(JSON.parse(convert.xml2json(data as unknown as string, { compact: true })).FilingSummary)
-            }).catch((error) => resolve({ error: true, message: `${error}, Could not find "${this.params.summary}"` }))
+                const xmlData = this.decodeWorkstationXmlInHtml(isWorkstation, data, "</FilingSummary>");
+                resolve(JSON.parse(convert.xml2json(xmlData as unknown as string, { compact: true })).FilingSummary);
+            }).catch((error) => {
+                resolve({ error: true, message: `${error}, Could not find "${this.params.summary}"` })
+            })
         });
     }
 
     fetchInstance() {
         const promises = this.currentInstance.xmlUrls.map((current) => {
+            const isWorkstation = current.includes("DisplayDocument.do?");
+            if (isWorkstation) {
+                current = current.replace('_htm.xml', '_ixv_sec_htm.xml')
+            }
             return new Promise((resolve) =>
                 fetch(current).then((response) => {
                     if (response.status >= 200 && response.status <= 299) {
@@ -341,15 +382,26 @@ export class FetchAndMerge {
                         throw Error(`${response.status.toString()}`);
                     }
                 }, { credentials: 'include' }).then((data) => {
-                    resolve({ instance: data });
+                    const xmlData = this.decodeWorkstationXmlInHtml(isWorkstation, data, "</xbrl>");
+                    resolve({ instance: xmlData });
                 }).catch((error) => {
-                    resolve({ error: true, message: `${error}, Could not find "XML Instance Data"` })
+                    resolve({ error: true, message: `${error}, Could not find "XML Instance Data"` });
                 }));
         });
         return Promise.all(promises).then((xmlInstances) => {
             const instance = xmlInstances.filter(element => element.instance);
             if (instance && instance[0]) {
-                return JSON.parse(convert.xml2json(instance[0].instance as unknown as string, { compact: true }))
+                const fetchedXMlString = instance[0].instance;
+                const instanceXmlAsJsonCompact = JSON.parse(convert.xml2json(fetchedXMlString as unknown as string, { compact: true }));
+                if (instanceXmlAsJsonCompact.xbrl["link:footnoteLink"] && !PRODUCTION) {
+                    const footnotesNode = instanceXmlAsJsonCompact.xbrl["link:footnoteLink"]
+                    // grab xml data as non compact object so element order is preserved.
+                    footnotesNode.expanded = JSON.parse(convert.xml2json(fetchedXMlString as unknown as string, { compact: false }));
+                    footnotesNode.orderedFootnoteDivs = footnotesNode.expanded.elements[0].elements;
+                    footnotesNode.asXmlString = cleanSubstring(fetchedXMlString, '<link:footnoteLink', '</link:footnoteLink>').replaceAll('\n', '');
+                    console.log('instanceXmlAsJsonCompact', instanceXmlAsJsonCompact);
+                }
+                return instanceXmlAsJsonCompact;
             } else {
                 return xmlInstances[0];
             }
@@ -398,7 +450,25 @@ export class FetchAndMerge {
         const map = new Map();
         let factCounter = 0;
         for (const key in instance[xbrlKey]) {
-            if (Array.isArray(instance[xbrlKey][key])) {
+            /* example set of keys on instance.xbrl
+                _attributes
+                link:schemaRef
+                context
+                unit
+                dei:AmendmentFlag
+                dei:DocumentPeriodEndDate
+                dei:DocumentFiscalPeriodFocus
+                dei:EntityCentralIndexKey
+                dei:CurrentFiscalYearEndDate
+                dei:EntityEmergingGrowthCompany
+                dei:DocumentType
+                dei:DocumentFiscalYearFocus
+                dei:EntityRegistrantName
+                dei:EntityCommonStockSharesOutstanding
+                i09203gd:Content4
+                link:footnoteLink
+            */
+            if (Array.isArray(instance[xbrlKey][key])) { // this first block might handle multi instance filings.
                 instance[xbrlKey][key].forEach((current: { _attributes: DeiAmendmentFlagAttributes; _text: string; }) => {
                     const attributes = { ...current._attributes };
                     const id = attributes.id ? attributes.id : `fact-identifier-${factCounter}`;
@@ -669,7 +739,7 @@ export class FetchAndMerge {
         if (!PRODUCTION) {
             const items = foundImagesArray.length;
             const log: Logger<ILogObj> = new Logger();
-            log.debug(`\nFetchAndMerge.fixImages() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
+            log.debug(`FetchAndMerge.fixImages() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
         }
         return $;
     }
@@ -702,7 +772,7 @@ export class FetchAndMerge {
         if (!PRODUCTION) {
             const items = foundLinksArray.length;
             const log: Logger<ILogObj> = new Logger();
-            log.debug(`\nFetchAndMerge.fixLinks() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
+            log.debug(`FetchAndMerge.fixLinks() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
         }
         return $;
     }
@@ -735,17 +805,19 @@ export class FetchAndMerge {
                 //console.log($(cheerioElement).attr('id'));
                 $(current).html($(cheerioElement));
                 if ($(cheerioElement).attr('id') === 'id3VybDovL2RvY3MudjEvZG9jOjU1M2Q3M2I4N2RhYjQ2MzQ5ZjlmNTI3Y2YwNzZjMzlhL3NlYzo1NTNkNzNiODdkYWI0NjM0OWY5ZjUyN2NmMDc2YzM5YV82MS9mcmFnOmI0ZGUyZDM0ZWE4NTRjMTc4NmFjYWIyYzRjZWRiMmQ2L3RleHRyZWdpb246YjRkZTJkMzRlYTg1NGMxNzg2YWNhYjJjNGNlZGIyZDZfNDAwNTE_70ac34fc-cc35-4fb1-ad12-4d0f52202d63') {
-                    console.log($(current).html());
+                    const log: Logger<ILogObj> = new Logger();
+                    log.debug($(current).html());
                 }
             } else {
-                console.log('empty!');
+                const log: Logger<ILogObj> = new Logger();
+                log.debug('empty!');
             }
         });
         const endPerformance = performance.now();
         if (!PRODUCTION) {
             const items = foundElements.length
             const log: Logger<ILogObj> = new Logger();
-            log.debug(`\nFetchAndMerge.hiddenFacts() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
+            log.debug(`FetchAndMerge.hiddenFacts() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
         }
         return $;
     }
@@ -756,7 +828,7 @@ export class FetchAndMerge {
         if (Object.prototype.hasOwnProperty.call(this.params, 'redline') && this.params.redline) {
             if (!PRODUCTION) {
                 const log: Logger<ILogObj> = new Logger();
-                log.debug(`\nRedline Found: ${foundElements.length}`);
+                log.debug(`Redline Found: ${foundElements.length}`);
             }
             foundElements.forEach((current) => {
                 const updatedStyle = Object.values($(current).css(["-sec-ix-redline", "-esef-ix-redline"]) as {}).filter(Boolean)[0];
@@ -769,7 +841,7 @@ export class FetchAndMerge {
         if (!PRODUCTION) {
             const items = foundElements.length;
             const log: Logger<ILogObj> = new Logger();
-            log.debug(`\nFetchAndMerge.redLineFacts() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
+            log.debug(`FetchAndMerge.redLineFacts() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
         }
         return $;
     }
@@ -784,7 +856,7 @@ export class FetchAndMerge {
         if (!PRODUCTION) {
             const items = foundElements.length;
             const log: Logger<ILogObj> = new Logger();
-            log.debug(`\nFetchAndMerge.excludeFacts() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
+            log.debug(`FetchAndMerge.excludeFacts() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
         }
         return $;
     }
@@ -839,7 +911,7 @@ export class FetchAndMerge {
         if (!PRODUCTION) {
             const items = foundElements.length;
             const log: Logger<ILogObj> = new Logger();
-            log.debug(`\nFetchAndMerge.attributeFacts() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
+            log.debug(`FetchAndMerge.attributeFacts() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
         }
 
         return { xhtml: $.html(), map };
@@ -901,8 +973,8 @@ export class FetchAndMerge {
             if (current.period) {
                 if (current.period.instant) {
                     const date = new Date(current.period.instant._text);
-                    current.period._array = [`${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`];
-                    current.period._text = `As of ${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+                    current.period._array = [`${date.getMonth() + 1}/${date.getUTCDate()}/${date.getFullYear()}`];
+                    current.period._text = `As of ${date.getMonth() + 1}/${date.getUTCDate()}/${date.getFullYear()}`;
 
                 } else if (current.period.startDate && current.period.endDate) {
                     const startDate = new Date(current.period.startDate._text);
@@ -911,13 +983,13 @@ export class FetchAndMerge {
                     const yearDiff = endDate.getFullYear() - startDate.getFullYear();
                     const monthDiff = endDate.getMonth() - startDate.getMonth() + (yearDiff * 12);
                     current.period._array = [
-                        `${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}`,
-                        `${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`
+                        `${startDate.getMonth() + 1}/${startDate.getUTCDate()}/${startDate.getFullYear()}`,
+                        `${endDate.getMonth() + 1}/${endDate.getUTCDate()}/${endDate.getFullYear()}`
                     ];
                     if (monthDiff <= 0) {
-                        current.period._text = `${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()} - ${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`;
+                        current.period._text = `${startDate.getMonth() + 1}/${startDate.getUTCDate()}/${startDate.getFullYear()} - ${endDate.getMonth() + 1}/${endDate.getUTCDate()}/${endDate.getFullYear()}`;
                     } else {
-                        current.period._text = `${monthDiff} months ending ${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`;
+                        current.period._text = `${monthDiff} months ending ${endDate.getMonth() + 1}/${endDate.getUTCDate()}/${endDate.getFullYear()}`;
                     }
                 } else {
                     const log: Logger<ILogObj> = new Logger();
@@ -929,7 +1001,7 @@ export class FetchAndMerge {
     }
 
     setPeriodInfo(contextRef: string, context: [Context]) {
-        // we go through and find the 'id' in context that equals contextRef 
+        // we go through and find the 'id' in context that equals contextRef
         context = Array.isArray(context) ? context : [context];
         const factContext = context?.find((element) => {
             return element._attributes.id === contextRef;
@@ -940,7 +1012,7 @@ export class FetchAndMerge {
     }
 
     setPeriodDatesInfo(contextRef: string, context: [Context]) {
-        // we go through and find the 'id' in context that equals contextRef 
+        // we go through and find the 'id' in context that equals contextRef
         context = Array.isArray(context) ? context : [context];
         const factContext = context?.find((element) => {
             return element._attributes.id === contextRef;
@@ -1100,12 +1172,54 @@ export class FetchAndMerge {
         return null;
     }
 
+    /**
+     * Description
+     * @param {any} ftObj:object
+     * @param {any} result?:string|undefined
+     * @returns {any} concatenated text from all footnote nodes, joined by a ' '
+     */
+    accumulateFootnote(ftObj: object, result?: string | undefined) {
+        if (typeof(result) == "undefined") result = "";
+        const truncateFootnoteTo = 100;
+
+        if (result?.length > truncateFootnoteTo) {
+            result = result.substring(0, truncateFootnoteTo).substring(0, result.lastIndexOf(" ") + 1);
+            return result += ' ...';
+        }
+
+        // let text = ''; //accumulate "mixed-content" text to apply after depth first descent
+        Object.keys(ftObj).forEach(node => {
+            if (node == "_text") {
+                result += ftObj[node] + ' ';
+            }
+            else if (Array.isArray(ftObj[node])) {
+                ftObj[node].forEach(childNode => {
+                    result = this.accumulateFootnote(childNode, result);
+                })
+            }
+            else if (node.substring(0,6) == "xhtml:") {
+                result = this.accumulateFootnote(ftObj[node], result);
+            }
+        });
+        return result;
+    }
+
+    /**
+     * Description
+     * @param {any} id:string
+     * @param {any} footnotes:{"link:loc":LinkLOC[]
+     * @param {any} "link:footnote":LinkFootnote[];"link:footnoteArc":LinkFootnoteArc[];}
+     * @returns {any} renderable footnote text to be displayed in fact modal
+     * todo: handle incoming footnotes.asXmlString or footnotes.xmlExpanded to show all content (in order) instead of just text
+     * todo: handle images, tables, ...other html elements (currently just concatenating text content)
+     */
     setFootnoteInfo(id: string, footnotes: {
         "link:loc": LinkLOC[],
         "link:footnote": LinkFootnote[];
         "link:footnoteArc": LinkFootnoteArc[];
     }) {
         if (footnotes && footnotes['link:footnoteArc']) {
+            // if array of footnotes
             const factFootnote = Array.isArray(footnotes['link:footnoteArc']) ? footnotes['link:footnoteArc'].find((element) => {
                 return element._attributes['xlink:from'] === id;
             }) : [footnotes['link:footnoteArc']].find((element) => {
@@ -1114,11 +1228,10 @@ export class FetchAndMerge {
             if (factFootnote) {
                 if (footnotes['link:footnote']) {
                     if (Array.isArray(footnotes['link:footnote'])) {
-
                         const actualFootnote = footnotes['link:footnote']?.find((element) => {
                             return element._attributes.id === factFootnote._attributes['xlink:to'];
                         });
-                        return actualFootnote?._text;
+                        return this.accumulateFootnote(actualFootnote);
                     } else {
                         // TODO we need way more cases
                         if (!Array.isArray(footnotes['link:footnote']._text)) {

@@ -16,7 +16,7 @@ matplotlib_use("Agg")
 import os, datetime, decimal, io, time
 import regex as re
 from collections import defaultdict
-from lxml.etree import Element, SubElement, XSLT, tostring as treeToString
+from lxml.etree import Element, SubElement, XSLT, tostring as treeToString, fromstring
 import arelle.XbrlConst
 from . import Utils
 Filing = None
@@ -60,8 +60,7 @@ class Report(object):
 
         self.logList = []
         self.scalingFactorsQuantaSymbolTupleDict = {}
-        self.repressPeriodHeadings = False
-
+        self.repressPeriodHeadings = embedding.suppressHeadingDates # Usually false, additional analysis can set it true.
 
     def generateCellVector(self, rowOrColStr, index):
         if rowOrColStr == 'col':
@@ -814,6 +813,8 @@ class Report(object):
                 for row in rowSet:
                     row.headingList += [unitHeading]
 
+        if self.embedding.suppressHeadingUnits:
+            return
         sortedList = sorted(rowUnitHeadingDefaultDict.items(), key=lambda thing : len(thing[1])) # sort by number of rows per unit
         addToRows(sortedList[:-1]) # do the first n-1 units, which are the ones with the least rows
         if len(sortedList[len(sortedList) - 1][1]) == len(sortedList[len(sortedList) - 2][1]):
@@ -827,7 +828,7 @@ class Report(object):
         verboseHeadings = self.filing.verboseHeadingsForDebugging
         previousPseudoAxisNames = []
         noDateRepetitionFlag = False
-        substituteForEmptyHeading = 'Total'
+        substituteForEmptyHeading = self.embedding.getEmptyHeading(self.cube.linkroleUri)
         for i, factAxisMember in enumerate(factAxisMemberList):
             pseudoAxisName = factAxisMember.pseudoAxisName
             if      (pseudoAxisName in noHeadingsForTheseAxesSet or
@@ -894,6 +895,9 @@ class Report(object):
 
 
     def generateAndAddUnitHeadings(self, rowOrCol, rowOrColStr):
+        if self.embedding.suppressHeadingUnits:
+            return
+
         # sorting by type, but monetary should always come first
         sortedListOfFactSets = []
         for unitType, factSet in sorted(rowOrCol.unitTypeToFactSetDefaultDict.items()):
@@ -1164,7 +1168,16 @@ class Report(object):
             ((self.filing.transform, self.filing.fileNameBase),) + (
             ((self.filing.transformDissem, self.filing.dissemFileNameBase),) if self.filing.transformDissem else ())):
             _startedAt = time.time()
-            result = _transform(tree, asPage=XSLT.strparam('true'))
+            cell_count = sum(1 for x in tree.iter('Cell'))
+            if cell_count > 50000:
+                self.controller.logWarn(f"There are {cell_count} cells; skipping transformation.")
+                result = fromstring("<HTML><HEAD><TITLE>NOPE</TITLE></HEAD><BODY>NOT TODAY FRIEND</BODY></HTML>")
+            else:
+                keywordArgs= { "asPage" : XSLT.strparam("true") }
+                if getattr(self.embedding, "disclaimer", None) and getattr(self.embedding,"disclaimerStyle",None):
+                    keywordArgs["disclaimer"] = XSLT.strparam(self.embedding.disclaimer)
+                    keywordArgs["disclaimerStyle"] = XSLT.strparam(self.embedding.disclaimerStyle)
+                result = _transform(tree,**keywordArgs)
             self.controller.logDebug("R{} htm XSLT {:.3f} secs.".format(self.cube.fileNumber, time.time() - _startedAt))
             htmlText = treeToString(result,method='html',with_tail=False,pretty_print=True,encoding='us-ascii')
             if self.filing.reportZip:
@@ -1476,7 +1489,7 @@ class Row(object):
         SubElement(rowETree, 'IsEquityPrevioslyReportedAsRow').text = 'false'
         SubElement(rowETree, 'IsEquityAdjustmentRow').text = 'false'
 
-        # TODO: Accomodate cases where startLabel and endLabel are in not-fully-formed rollforward.
+        # TODO: Accommodate cases where startLabel and endLabel are in not-fully-formed rollforward.
         SubElement(rowETree, 'IsBeginningBalance').text = str(Utils.isPeriodStartLabel(self.preferredLabel)).casefold()
         SubElement(rowETree, 'IsEndingBalance').text    = str(Utils.isPeriodEndLabel(self.preferredLabel)).casefold()
         SubElement(rowETree, 'IsReverseSign').text      = str(Utils.isNegatedLabel(self.preferredLabel)).casefold()
