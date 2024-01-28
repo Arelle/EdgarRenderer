@@ -8,6 +8,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="https://www.sec.gov/favicon.ico" />
     <title>EDGAR Inline XBRL Viewer</title>
         <script language="JavaScript">
+            /* <![CDATA[ */
                 /* Created by staff of the U.S. Securities and Exchange Commission.
                  * Data and content created by government employees within the scope of their employment
                  * are not subject to domestic copyright protection. 17 U.S.C. 105.
@@ -20,7 +21,8 @@
 
                 const url = location.href;
                 // url doc pattern is /Archives/edgar/data/ciknum/{10digits}{YY}{sequence}/{more params}
-                const urlPattern = /(\?doc=(\/Archives\/edgar\/data\/[0-9]+\/[0-9]{10}([0-9]{8})\/).*$)/;
+                // on SEC.GOV: const urlPattern = /(\?doc=(\/Archives\/edgar\/data\/[0-9]+\/[0-9]{10}([0-9]{8})\/).*$)/;
+                const urlPattern = /(\?doc=(\/[0-9]+\/).*$)/;
                 if (! urlPattern.test(url)) {
                     alert("Not an EDGAR inline XBRL document viewing request, please check URL");
                     // this hangs: location.assign("/ixviewer/ix.html" + ixParams);
@@ -33,7 +35,7 @@
                         if (this.readyState == 4) {
                             if (this.status == 200) {
                                 const ml = JSON.parse(this.responseText);
-                                if (!(typeof ml === 'object' &amp;&amp; "instance" in ml)) {
+                                if (!(typeof ml === 'object' && "instance" in ml)) {
                                    // alert("Metalinks does not have instance objects");
                                    // Unable to read MetaLinks.json, use 23.2 ixviewer
                                    location.assign("/ixviewer/ix.html" + ixParams);
@@ -87,6 +89,7 @@
 
                     */
                 }
+            /* ]]> */
         </script>
 </head>
 
