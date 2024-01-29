@@ -771,7 +771,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         modelXbrl.profileActivity()
         self.setProcessingFolder(modelXbrl.fileSource, report.filepaths[0]) # use first of possibly multi-doc IXDS files
         # if not reportZip and reportsFolder is relative, make it relative to source file location (on first report)
-        if success and not filing.reportZip and self.initialReportsFolder and len(filing.reports) == 1:
+        if (success or not self.noRenderingWithError) and not filing.reportZip and self.initialReportsFolder and len(filing.reports) == 1:
             if not os.path.isabs(self.initialReportsFolder):
                 # try input file's directory
                 if os.path.exists(self.processingFolder) and os.access(self.processingFolder, os.W_OK | os.X_OK):
