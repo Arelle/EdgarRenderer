@@ -771,7 +771,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         modelXbrl.profileActivity()
         self.setProcessingFolder(modelXbrl.fileSource, report.filepaths[0]) # use first of possibly multi-doc IXDS files
         # if not reportZip and reportsFolder is relative, make it relative to source file location (on first report)
-        if success and not filing.reportZip and self.initialReportsFolder and len(filing.reports) == 1:
+        if (success or not self.noRenderingWithError) and not filing.reportZip and self.initialReportsFolder and len(filing.reports) == 1:
             if not os.path.isabs(self.initialReportsFolder):
                 # try input file's directory
                 if os.path.exists(self.processingFolder) and os.access(self.processingFolder, os.W_OK | os.X_OK):
@@ -1190,8 +1190,9 @@ class EdgarRenderer(Cntlr.Cntlr):
                 self.logDebug(_("Exception in filing end processing, traceback: {}").format(traceback.format_exception(*sys.exc_info())))
                 self.success = False # force postprocessingFailure
 
-            cntlr.editedIxDocs.clear()
-            cntlr.redlineIxDocs.clear()
+        cntlr.editedIxDocs.clear() # deref modelXbrls even if unsuccessful
+        cntlr.redlineIxDocs.clear()
+        cntlr.editedModelXbrls.clear()
 
         # close filesource (which may have been an archive), regardless of success above
         filesource.close()
@@ -1635,7 +1636,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
                     filingSummaryTree = etree.parse(os.path.join(edgarRenderer.reportsFolder, "FilingSummary.xml"))
                     for reportElt in filingSummaryTree.iter(tag="Report"):
                         if reportElt.get("instance"):
-                            openingUrl = "ix.xhtml?doc={}&xbrl=true".format(reportElt.get("instance"))
+                            openingUrl = f"ix?doc=/{_localhost.rpartition('/')[2]}/{reportElt.get('instance')}&xbrl=true"
                             break
                 if not openingUrl: # open SEC Mustard Menu
                     openingUrl = ("FilingSummary.htm", "Rall.htm")[_combinedReports]

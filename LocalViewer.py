@@ -64,6 +64,8 @@ class _LocalViewer(LocalViewer):
                     self.cntlr.addToLog("  ?filename={}".format(_file), messageCode="localViewer:get",level=logging.DEBUG)
                 else:
                     self.cntlr.addToLog("  ?" + ", ".join([f"{k}={v}" for k,v in request.query.items()]),level=logging.DEBUG)
+            elif _file == "ix":
+                return static_file(_file, root=self.reportsFolders[0])
             # check if file is in the current or parent directory (may bve
             _fileDir = self.reportsFolders[int(_report)]
             _fileExists = False
