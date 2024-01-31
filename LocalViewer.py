@@ -17,11 +17,23 @@ extMimeType = {
     ".xhtml": "application/xhtml+xml",
     ".html":  "text/html",
     ".htm":   "text/html",
+    ".xml":   "application/xml",
     ".js":    "text/javascript",
-    ".css":    "text/css",
-    ".gif":    "image/gif",
-    ".jpg":    "image/jpeg",
-    ".json":   "application/json"
+    ".css":   "text/css",
+    ".gif":   "image/gif",
+    ".jpg":   "image/jpeg",
+    ".jpeg":   "image/jpeg",
+    ".bmp":   "image/bmp",
+    ".jpg":   "image/jpeg",
+    ".png":   "image/png",
+    ".svg":   "image/svg+xml",
+    ".tif":   "image/tiff",
+    ".tiff":   "image/tiff",
+    ".csv":   "text/csv",
+    ".txt":   "text/plain",
+    ".json":  "application/json",
+    ".woff": "font/woff",
+    ".woff2": "font/woff2"
     }
 
 class _LocalViewer(LocalViewer):
@@ -40,22 +52,22 @@ class _LocalViewer(LocalViewer):
             if len(refererPathParts) >= 4 and refererPathParts[3].isnumeric():
                 _report = refererPathParts[3]
                 _file = file
+        mimeType = extMimeType.get(os.path.splitext(file or "")[1], None)
         if webRootDirPattern.match(_report):
             return static_file(_file, root=os.path.join(self.reportsFolders[0], _report))
         if ixviewerDirFilesPattern.match(_file): # although in ixviewer, it refers relatively to ixviewer/
-            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'ixviewer'),
-                               mimetype=extMimeType.get(os.path.splitext(file)[1], None))
+            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'ixviewer'), mimetype=mimeType)
         if _file.startswith("/ixviewer"): # ops gateway
-            return static_file(_file, root=self.reportsFolders[0][:-1])
+            return static_file(_file, root=self.reportsFolders[0][:-1], mimetype=mimeType)
         if _file.startswith("include/"): # really in ixviewer subtree (Workstation Images are in distribution include)
-            return static_file(_file[8:], root=os.path.join(self.reportsFolders[0], 'include'))
+            return static_file(_file[8:], root=os.path.join(self.reportsFolders[0], 'include'), mimetype=mimeType)
         if _file.startswith("images/") or  _file.startswith("Images/"): # really in ixviewer subtree (Workstation Images are in distribution include)
-            return static_file(_file[7:], root=os.path.join(self.reportsFolders[0], 'include'))
+            return static_file(_file[7:], root=os.path.join(self.reportsFolders[0], 'include'), mimetype=mimeType)
         if _report == "images": # really in ixviewer subtree (Workstation Images are in distribution include)
-            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'include'))
+            return static_file(_file, root=os.path.join(self.reportsFolders[0], 'include'), mimetype=mimeType)
         if wsRootDirPattern.match(_file): # really in ixviewer subtree
             m = wsRootDirPattern.match(_file)
-            return static_file(m.group(3), root=os.path.join(self.reportsFolders[0], m.group(2)))
+            return static_file(m.group(3), root=os.path.join(self.reportsFolders[0], m.group(2)), mimetype=mimeType)
         if _report.isnumeric(): # in reportsFolder folder
             # is it an EDGAR workstation query parameter
             if _file == "DisplayDocument.do":
@@ -84,7 +96,7 @@ class _LocalViewer(LocalViewer):
                 if queryParams:
                     queryParams = "?" + queryParams
                 self.cntlr.addToLog("http://localhost:{}/{}{}".format(self.port,file,queryParams), messageCode="localViewer:fileNotFound",level=logging.DEBUG)
-            return static_file(_file, root=_fileDir, headers=self.noCacheHeaders) # extra_headers modification to py-bottle
+            return static_file(_file, root=_fileDir, headers=self.noCacheHeaders, mimetype=mimeType) # extra_headers modification to py-bottle
         return static_file(file, root="/") # probably can't get here unless path is wrong
 
 localViewer = _LocalViewer("SEC ix viewer", os.path.dirname(__file__)) # plugin singleton local viewer class
