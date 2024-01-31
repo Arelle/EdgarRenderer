@@ -752,7 +752,9 @@ class EdgarRenderer(Cntlr.Cntlr):
         # errorCountDuringValidation = len(Utils.xbrlErrors(modelXbrl))
         # won't work for all possible logHandlers (some emit immediately)
         attachmentDocumentType = getattr(modelXbrl, "efmAttachmentDocumentType", "(none)")
-        isRunningUnderTestcase = modelXbrl.modelManager.loadedModelXbrls[0].modelDocument.type in ModelDocument.Type.TESTCASETYPES
+        isRunningUnderTestcase = (
+            modelXbrl.modelManager.loadedModelXbrls[0].modelDocument is not None and
+            modelXbrl.modelManager.loadedModelXbrls[0].modelDocument.type in ModelDocument.Type.TESTCASETYPES)
         # strip on error if preceding primary inline instance had no error and exhibitType strips on error
         stripExhibitOnError = self.success and bool(
                               filing.exhibitTypesStrippingOnErrorPattern.match(attachmentDocumentType))
