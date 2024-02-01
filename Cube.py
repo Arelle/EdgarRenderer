@@ -123,7 +123,7 @@ class Cube(object):
 
         # gets rid of the curly brackets if it has transposed, unlabeled or elements inside.
         # there are examples (nils) that have other stuff inside of curly brackets, so we keep those.
-        cubeName = re.sub('\s*\{\s*((?P<t>transposed)|(?P<u>unlabeled)|(?P<e>elements))\s*\}\s*', handleIndex, cubeName, flags=re.IGNORECASE)
+        cubeName = re.sub(r'\s*\{\s*((?P<t>transposed)|(?P<u>unlabeled)|(?P<e>elements))\s*\}\s*', handleIndex, cubeName, flags=re.IGNORECASE)
 
         isTransposed = isUnlabeled = isElements = False
         if indexList[0] < 99999: # if transposed is present, the first one of the three mentioned wins

@@ -74,16 +74,16 @@ def booleanFromString(x):
     else:
         return (x.casefold() == "true")
 
-isImageRegex = re.compile('.*\.(jpg|gif|png)$')
-isXmlRegex = re.compile('.*\.x(ml|sd)')
-isEfmRegex = re.compile('.*[0-9]{8}((_(cal|def|lab|pre))?\.xml|\.xsd)$')
-isInlineRegex = re.compile('.*\.htm$')
-isZipRegex = re.compile('.*\.zip$')
-isHttpRegex = re.compile('^http(s)?://.*')
-isSecNamespaceRegex = re.compile('^http(s)?://xbrl.sec.gov/.*')
+isImageRegex = re.compile(r'.*\.(jpg|gif|png)$')
+isXmlRegex = re.compile(r'.*\.x(ml|sd)')
+isEfmRegex = re.compile(r'.*[0-9]{8}((_(cal|def|lab|pre))?\.xml|\.xsd)$')
+isInlineRegex = re.compile(r'.*\.htm$')
+isZipRegex = re.compile(r'.*\.zip$')
+isHttpRegex = re.compile(r'^http(s)?://.*')
+isSecNamespaceRegex = re.compile(r'^http(s)?://xbrl.sec.gov/.*')
 isEfmStandardNamespaceRegex = re.compile('^http(s)?://.*(' + "|".join(efmStandardAuthorities) + ")/.*")
 isEfmInvestNamespaceRegex = re.compile('^http(s)?://.*(' + "|".join(efmStandardAuthorities) + ")/invest.*")
-isBarChartFactRegex = re.compile('^\{http://xbrl.sec.gov/(?P<family>rr|oef)/.*\}AnnualReturn(?P<year>[0-9]{4})')
+isBarChartFactRegex = re.compile(r'^\{http://xbrl.sec.gov/(?P<family>rr|oef)/.*\}AnnualReturn(?P<year>[0-9]{4})')
 
 def isImageFilename(path):
     return isImageRegex.match(path) and True
@@ -127,8 +127,8 @@ def hasCustomNamespace(thing):
                 return hasCustomNamespace(getattr(thing, a))
     return False
 
-isRoleNotRenderedRegex = re.compile('^https?://xbrl.sec.gov/.*/notRendered$')
-isElementNotRenderedRegex = re.compile('^\{http://xbrl.sec.gov/ffd/.*\}OffsetClmdInd$')
+isRoleNotRenderedRegex = re.compile(r'^https?://xbrl.sec.gov/.*/notRendered$')
+isElementNotRenderedRegex = re.compile(r'^\{http://xbrl.sec.gov/ffd/.*\}OffsetClmdInd$')
 
 def isNotRendered(factOrRole):
     if type(factOrRole) == str:
@@ -231,10 +231,10 @@ def handleDuration(valueStr):
 
     # so lookahead 1 and 2 are basically conditions, and the rest of the regex actually consumes the xs:duration pattern.
 
-    lookAhead1 = '(?=(\d+Y|\d+M|\d+D|T\d+H|T\d+M|T(\d+|\d+\.\d+)S))'
-    lookAhead2 = '(?=(\d+H|\d+M|(\d+|\d+\.\d+)S))'
-    beforeT = '(?P<minus>-?)P' + lookAhead1 + '((?P<y>\d+)Y)?((?P<mon>\d+)M)?((?P<d>\d+)D)?'
-    TAndAfter = '(T' + lookAhead2 + '((?P<h>\d+)H)?((?P<min>\d+)M)?((?P<s>\d+|\d+\.\d+)S)?)?'
+    lookAhead1 = r'(?=(\d+Y|\d+M|\d+D|T\d+H|T\d+M|T(\d+|\d+\.\d+)S))'
+    lookAhead2 = r'(?=(\d+H|\d+M|(\d+|\d+\.\d+)S))'
+    beforeT = r'(?P<minus>-?)P' + lookAhead1 + r'((?P<y>\d+)Y)?((?P<mon>\d+)M)?((?P<d>\d+)D)?'
+    TAndAfter = r'(T' + lookAhead2 + r'((?P<h>\d+)H)?((?P<min>\d+)M)?((?P<s>\d+|\d+\.\d+)S)?)?'
 
     # probably don't need to strip with fact.xValue?
     return re.sub(re.compile(beforeT + TAndAfter), durationPrettyPrint, valueStr.strip())
@@ -286,7 +286,7 @@ def strFactValue(fact, preferredLabel=None, filing=None, report=None):
 
 def prettyPrintQname(localName):
     # \g<1> will match to the char that matched ([a-z]) and similarly for \g<2>.
-    return re.sub('([a-z])([A-Z0-9])', '\g<1> \g<2>', localName)
+    return re.sub(r'([a-z])([A-Z0-9])', r'\g<1> \g<2>', localName)
 
 
 def isTypeQnameDerivedFrom(modelXbrl, typeQname, predicate):
