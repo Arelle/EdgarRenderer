@@ -27,7 +27,7 @@ wordInNumPattern = re.compile(r"\s*([_A-Za-z\xC0-\xD6\xD8-\xF6\xF8-\xFF\u0100-\u
                               r"\s*([$€¥£]\s*)?[(]?\s*[+-]?[0-9,]+([.][0-9]*)?[)-]?\s*$")
 dateTimePattern = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-2][0-9]:[0-6][0-9]:[0-6][0-9]$")
 datePattern = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
-forbiddenChars = re.compile('[\\*?:/\[\]]')
+forbiddenChars = re.compile(r'[\\*?:/\[\]]')
 
 OUTPUT_FILE_NAME = "Financial_Report.xlsx"
 

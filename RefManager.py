@@ -39,7 +39,7 @@ class RefManager(object):
             if doc.targetNamespace in namespacesInFacts:
                 parsedUri = urlparse(fileUri)
                 fileBasename = os.path.basename(parsedUri.path)
-                if re.compile('.*\.xsd$').match(fileBasename): # Assume we only care about urls ending in .xsd
+                if re.compile(r'.*\.xsd$').match(fileBasename): # Assume we only care about urls ending in .xsd
                     xp = "/TaxonomyAddonManager/TaxonomyList/TaxonomyAddon[Taxonomy[.='" + fileBasename + "']]/*/string"
                     moreUrls = self.tree.xpath(xp)
                     for u in moreUrls:

@@ -940,14 +940,14 @@ class InstanceSummary(object):
         else:
             return Uncategorized
 
-matchStatement = re.compile('.* +\- +Statement +\- .*')
-matchDisclosure = re.compile('.* +\- +Disclosure +\- +.*')
-matchDocument = re.compile('.* +\- +Document +\- +.*')
-matchParenthetical = re.compile('.*\-.+-.*Paren.+')
-matchPolicy = re.compile('.*\(.*Polic.*\).*')
-matchTable = re.compile('.*\(Table.*\).*')
-matchDetail = re.compile('.*\(Detail.*\).*')
-matchHttp = re.compile('^http://')
+matchStatement = re.compile(r'.* +\- +Statement +\- .*')
+matchDisclosure = re.compile(r'.* +\- +Disclosure +\- +.*')
+matchDocument = re.compile(r'.* +\- +Document +\- +.*')
+matchParenthetical = re.compile(r'.*\-.+-.*Paren.+')
+matchPolicy = re.compile(r'.*\(.*Polic.*\).*')
+matchTable = re.compile(r'.*\(Table.*\).*')
+matchDetail = re.compile(r'.*\(Detail.*\).*')
+matchHttp = re.compile(r'^http://')
 
 def isStatement(longName):
     return matchStatement.match(longName) is not None
