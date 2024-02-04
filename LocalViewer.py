@@ -54,7 +54,7 @@ class _LocalViewer(LocalViewer):
                 _file = file
         mimeType = extMimeType.get(os.path.splitext(file or "")[1], None)
         if webRootDirPattern.match(_report):
-            return static_file(_file, root=os.path.join(self.reportsFolders[0], _report))
+            return static_file(_file, root=os.path.join(self.reportsFolders[0], _report), mimetype=mimeType)
         if ixviewerDirFilesPattern.match(_file): # although in ixviewer, it refers relatively to ixviewer/
             return static_file(_file, root=os.path.join(self.reportsFolders[0], 'ixviewer'), mimetype=mimeType)
         if _file.startswith("/ixviewer"): # ops gateway
