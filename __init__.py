@@ -983,7 +983,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         except ValueError as err: # error inn { ... } parameters specification
             self.logDebug("Message format string error {} in string {}".format(err, logRec.messageCode))
         return _text
-    
+
     def transformFilingSummary(self, filing, rootETree, xsltFile, reportsFolder, htmFileName, includeLogs, title=None):
         summary_transform = etree.XSLT(etree.parse(xsltFile))
         trargs = {"asPage": etree.XSLT.strparam('true'),
@@ -1222,9 +1222,9 @@ class EdgarRenderer(Cntlr.Cntlr):
                         self.renderedFiles.add("RenderingLogs.htm")
                     if self.summaryXslt and len(self.summaryXslt) > 0 :
                         _startedAt = time.time()
-                        self.transformFilingSummary(filing, rootETree, self.summaryXslt, self.reportsFolder, 
-                                                    "PrivateFilingSummary.htm" if hasPrivateData and self.isWorkstationFirstPass else "FilingSummary.htm", 
-                                                    True, 
+                        self.transformFilingSummary(filing, rootETree, self.summaryXslt, self.reportsFolder,
+                                                    "PrivateFilingSummary.htm" if hasPrivateData and self.isWorkstationFirstPass else "FilingSummary.htm",
+                                                    True,
                                                     "Private Filing Data" if hasPrivateData else None)
                         self.renderedFiles.add("FilingSummary.htm")
                         self.logDebug("FilingSummary XSLT transform {:.3f} secs.".format(time.time() - _startedAt))
@@ -1317,7 +1317,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                             if not isGUIprivateView:
                                 _filepath.replace("_ht2.xml", "_ht1.xml").replace("_ix2.htm", "_ix1.htm")
                             filing.writeFile(join(dissemReportsFolder, filename), serializedDoc)
-                            
+
 
                     # reissue R files and excel after validation
                     if hasPrivateData:
