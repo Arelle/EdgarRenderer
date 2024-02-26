@@ -1825,7 +1825,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
                     for reportElt in filingSummaryTree.iter(tag="Report"):
                         if reportElt.get("instance"):
                             openingUrl = f"ix?doc=/{_localhost.rpartition('/')[2]}/{reportElt.get('instance')}&xbrl=true"
-                            openingUrlDissem = f"ix?doc=/{_localhostDissem.rpartition('/')[2]}{reportElt.get('instance')}&xbrl=true"
+                            if hasRedactElts:
+                                openingUrlDissem = f"ix?doc=/{_localhostDissem.rpartition('/')[2]}{reportElt.get('instance')}&xbrl=true"
                 if not openingUrl: # open SEC Mustard Menu
                     openingUrl = ("FilingSummary.htm", "Rall.htm")[_combinedReports]
                     if hasRedactElts:
