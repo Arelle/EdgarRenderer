@@ -23,11 +23,11 @@ from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
 usGaapOrIfrsPattern = re.compile(".*/fasb[.]org/(us-gaap|srt)/20|.*/xbrl[.]ifrs[.]org/taxonomy/[0-9-]{10}/ifrs-full", re.I)
 deiPattern = re.compile(".*/xbrl[.]sec[.]gov/dei/20", re.I)
 
-def mainFun(controller, modelXbrl, outputFolderName):
+def mainFun(controller, modelXbrl, outputFolderName, transform=None, suplSuffix=None, rFilePrefix=None, altFolder=None, altTransform=None, altSuffix=None):
     if "EdgarRenderer/Filing.py#mainFun" in modelXbrl.arelleUnitTests:
         raise arelle.PythonUtil.pyNamedObject(modelXbrl.arelleUnitTests["EdgarRenderer/Filing.py#mainFun"], "EdgarRenderer/Filing.py#mainFun")
     _funStartedAt = time.time()
-    filing = Filing(controller, modelXbrl, outputFolderName)
+    filing = Filing(controller, modelXbrl, outputFolderName, transform, suplSuffix, rFilePrefix, altFolder, altTransform, altSuffix)
     controller.logDebug("Filing initialized {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
     filing.populateAndLinkClasses()
     controller.logDebug("Filing populateAndLinkClasses {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
@@ -160,8 +160,14 @@ def mainFun(controller, modelXbrl, outputFolderName):
 
 
 class Filing(object):
-    def __init__(self, controller, modelXbrl, outputFolderName):
+    def __init__(self, controller, modelXbrl, outputFolderName, transform, suplSuffix, rFilePrefix, altFolder, altTransform, altSuffix):
         self.modelXbrl = modelXbrl
+        self.transform = transform
+        self.suplSuffix = suplSuffix
+        self.rFilePrefix = rFilePrefix
+        self.altFolder = altFolder
+        self.altTransform = altTransform
+        self.altSuffix = altSuffix
 
         self.cubeDict = {}
         self.axisDict = {}
@@ -209,7 +215,7 @@ class Filing(object):
         self.isShr = 'shr' in self.stdNsTokens
 
         self.edgarDocType = next((f.xValue for f in self.modelXbrl.factsByLocalName["DocumentType"]
-                                      if (f.xValue is not None and f.context is not None and not f.context.hasSegment)),None)
+                                      if (f.xValue is not None and f.context is not None and not f.context.hasSegment and f.xValid >= VALID)),None)
 
         self.isFeeExhibit = self.edgarDocType in ['EX-FILING FEES']
 
@@ -283,37 +289,16 @@ class Filing(object):
         self.fileNamePrefix = 'R'
         if controller.reportZip:
             self.fileNameBase = None
-            self.dissemFileNameBase = None
             self.reportZip = controller.reportZip
         elif outputFolderName is not None:
             # self.fileNameBase = os.path.normpath(os.path.join(os.path.dirname(controller.webCache.normalizeUrl(modelXbrl.fileSource.basefile)) ,outputFolderName))
             self.fileNameBase = outputFolderName
             if not os.path.exists(self.fileNameBase):  # This is usually the Reports subfolder.
                 os.mkdir(self.fileNameBase)
-            if controller.reportXsltDissem:
-                self.dissemFileNameBase = os.path.join(self.fileNameBase, "dissem")
-                if not os.path.exists(self.dissemFileNameBase):
-                    os.mkdir(self.dissemFileNameBase)
-            else:
-                self.dissemFileNameBase = None
             self.reportZip = None
         else:
             self.fileNameBase = self.reportZip = None
 
-        if controller.reportXslt:
-            _xsltStartedAt = time.time()
-            self.transform = lxml.etree.XSLT(lxml.etree.parse(controller.reportXslt))
-            if controller.reportXsltDissem:
-                self.transformDissem = lxml.etree.XSLT(lxml.etree.parse(controller.reportXsltDissem))
-            else:
-                self.transformDissem = None
-            self.controller.logDebug("Excel XSLT transform {:.3f} secs.".format(time.time() - _xsltStartedAt))
-        ''' HF: this is not used ??
-        if controller.summaryXslt:
-            _xsltStartedAt = time.time()
-            self.summary_transform = lxml.etree.XSLT(lxml.etree.parse(controller.summaryXslt))
-            self.controller.logDebug("Summary XSLT transform {:.3f} secs.".format(time.time() - _xsltStartedAt))
-        '''
         self.reportSummaryList = []
 
         self.rowSeparatorStr = ' | '
@@ -386,7 +371,6 @@ class Filing(object):
 
             # initialize elements
             for qname, factSet in self.modelXbrl.factsByQname.items():
-
                 # we are looking to see if we have "duplicate" facts.  a duplicate fact is one with the same qname, context and unit
                 # as another fact.  Also, keep the first fact with an 'en-US' language, or if there is none, keep the first fact.
                 # the others need to be proactively added to the set of unused facts.
@@ -456,7 +440,7 @@ class Filing(object):
                                                     "Element will be ignored."),
                                                    modelObject=fact, fact=qname)
                         break
-                    elif fact.context is None or (not fact.context.isForeverPeriod and fact.context.endDatetime is None):
+                    elif fact.context is None or fact.xValid < VALID or (not fact.context.isForeverPeriod and fact.context.endDatetime is None):
                         continue # don't break, still might be good facts. we print the error if a context is broken later
 
                     self.elementDict[qname] = Element(fact.concept)
@@ -520,7 +504,11 @@ class Filing(object):
                 self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue # fact was rejected in first loop of this function because of problem with the Element
 
-            if fact.unit is None and fact.unitID is not None: # to do a unitref that isn't a unit should be found by arelle, but isn't.
+            if fact.xValid < VALID:
+                self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
+                continue
+
+            elif fact.unit is None and fact.unitID is not None: # to do a unitref that isn't a unit should be found by arelle, but isn't.
                 if not self.validatedForEFM: # use Arelle validation message
                     self.modelXbrl.error("xbrl.4.6.2:numericUnit",
                          _("Fact %(fact)s context %(contextID)s is numeric and must have a unit"),

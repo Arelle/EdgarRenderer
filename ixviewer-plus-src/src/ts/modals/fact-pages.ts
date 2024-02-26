@@ -4,9 +4,17 @@
  */
 
 import { ConstantsFunctions } from "../constants/functions";
+import { xmlToDom } from "../helpers/utils";
 
+// Build the pages for the fact modal
 export const FactPages = {
 
+  /**
+   * Description
+   * @param {any} factInfo
+   * @param {any} idToFill:string
+   * @returns {any} html table containing all fact "attributes"
+   */
   firstPage: (factInfo, idToFill: string) => {
     const possibleLabels = [
       {
@@ -84,12 +92,11 @@ export const FactPages = {
 
     const elementsToReturn = document.createElement("tbody");
 
-
     possibleLabels.forEach((current) => {
+      const debugXmlParsing = false;
+
       if (current["value"]) {
         const trElement = document.createElement("tr");
-
-
         const thElement = document.createElement("th");
         thElement.setAttribute("class", `${current["label"] === 'Fact' ? 'fact-collapse' : ''}`);
 
@@ -97,19 +104,50 @@ export const FactPages = {
         thElement.appendChild(thContent);
 
         const tdElement = document.createElement("td");
+        const tdContentsDiv = document.createElement("div");
+        tdContentsDiv.classList.add("word-break");
 
-        const divElement = document.createElement("div");
-        divElement.classList.add("word-break");
-        if (current["html"]) {
-          divElement.classList.add('fact-value-modal');
+        const useExperimentalFootnoteRenderer = false;
+
+        // footnotes
+        if (useExperimentalFootnoteRenderer && current["label"] == "Footnote") { 
+          const parser = new DOMParser();
+          console.log('current.value', current.value)
+          const xmlDoc = parser.parseFromString(current.value, 'application/xml');
+
+          // Error: Namespace prefix xlink for label on footnote is not defined
+          if (xmlDoc.nodeType === 9) { // document type
+            for (let i = 0; i < xmlDoc.childNodes.length; i++) {
+              const childNode = xmlToDom(xmlDoc.childNodes[i]);
+              if (childNode) {
+                tdContentsDiv.appendChild(childNode)
+              }
+            }
+          }
+          const xmlBody = xmlDoc.querySelector('body') as HTMLElement
+          const xmlDom = xmlToDom(xmlDoc);
+          if (DEBUGJS && debugXmlParsing) {
+            console.log('xmlBody', xmlBody)
+            console.log('xmlDom', xmlDom)
+          }
+          // divElement.append(xmlDom.querySelector('body') as HTMLElement);
+          tdElement.appendChild(tdContentsDiv);
+        }
+
+        else if (current["html"]) {
+          tdContentsDiv.classList.add('fact-value-modal');
           //divElement.setAttribute('id', 'fact-value-modal');
           //divElement.classList.add("h-100");
-          divElement.classList.add("posittion-relative");
+          tdContentsDiv.classList.add("posittion-relative");
           //divElement.classList.add("overflow-auto");
           const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(current.value, 'text/html');
-          divElement.append(htmlDoc.querySelector('body') as HTMLElement);
-          tdElement.appendChild(divElement);
+
+          // Fact values may contain unsafe HTML, so we'll sanitize it before adding to the DOM
+          // const htmlDoc = parser.parseFromString(current.value, 'text/html');
+          const sanitizedHtml = ConstantsFunctions.sanitizeHtml(current.value);
+          const htmlDoc = parser.parseFromString(sanitizedHtml, 'text/html');
+          tdContentsDiv.append(htmlDoc.querySelector('body') as HTMLElement);
+          tdElement.appendChild(tdContentsDiv);
         } else {
           //convert fact string to number to add in formatting
           if(current["label"] === "Fact"){
@@ -119,9 +157,10 @@ export const FactPages = {
             } 
           }
           // HF: changed from this -> divElement.innerHTML = current["value"];
-          divElement.textContent = current["value"];
-          tdElement.appendChild(divElement);
+          tdContentsDiv.textContent = current["value"];
+          tdElement.appendChild(tdContentsDiv);
         }
+
         trElement.appendChild(thElement);
         trElement.appendChild(tdElement);
         elementsToReturn.append(trElement);
@@ -135,18 +174,13 @@ export const FactPages = {
     const elementsToReturn = document.createElement("tbody");
     factInfo.labels.forEach((current) => {
       for (const property in current) {
-
         const trElement = document.createElement("tr");
-
         const thElement = document.createElement("th");
-
         const thContent = document.createTextNode(property);
         thElement.appendChild(thContent);
 
         const tdElement = document.createElement("td");
-
         const divElement = document.createElement("div");
-
         const divContent = document.createTextNode(current[property]);
         divElement.appendChild(divContent);
         tdElement.appendChild(divElement);

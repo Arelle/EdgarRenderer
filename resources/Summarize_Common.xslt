@@ -87,7 +87,7 @@
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <meta http-equiv="Cache-Control" content="no-cache"/>
-        <title>View Filing Data</title>
+        <title><xsl:value-of select="$title"/></title>
         <script type="text/javascript" src="{$includeDir}/jquery-1.4.3.min.js"/>
         <script type="text/javascript" src="{$includeDir}/accordionMenu.js"/>
         <script type="text/javascript" src="{$includeDir}/Show.js"/>

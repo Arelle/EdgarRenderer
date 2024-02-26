@@ -12,6 +12,7 @@
   <xsl:param name="processXsltInBrowser">false</xsl:param>
   <xsl:param name="includeLogs">true</xsl:param>
   <xsl:param name="includeExcel">true</xsl:param>
+  <xsl:param name="title">View Filing Data</xsl:param>
   <xsl:variable name="includeDir">/include</xsl:variable>
   <xsl:variable name="imagesDir">/images</xsl:variable>
   <!--  future direct opening ixviewer-plus 
@@ -25,7 +26,11 @@
   <xsl:variable name="fetchprefix"></xsl:variable>
   <xsl:variable name="filingDocUrlPrefix"></xsl:variable>
   <xsl:variable name="filingDocUrlPrefixQuoted"></xsl:variable>
-  <xsl:variable name="metaLinksSuffixQuoted"></xsl:variable>
+  <xsl:variable name="metaLinksSuffixQuoted">
+  	<xsl:if test="$title != 'View Filing Data'">
+  		<xsl:value-of select="concat('&amp;title=', $title)"/>
+  	</xsl:if>
+  </xsl:variable>
   <xsl:variable name="fetchWrapsXmlInHtml"></xsl:variable>
   <xsl:include href="Summarize_Common.xslt"/>
 </xsl:stylesheet>

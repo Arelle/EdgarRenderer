@@ -1,10 +1,11 @@
 import "../styles.scss";
 import { HelpersUrl } from "./helpers/url";
+import { Errors } from "./errors/errors";
 import { ErrorsMajor } from "./errors/major";
 import { Listeners } from "./listeners";
 import { SetCustomCSS } from "./settings";
 import { FactsGeneral } from "./facts/general";
-import { App } from "./app";
+import { App } from "./app/app";
 import { Logger, ILogObj } from "tslog";
 /* Created by staff of the U.S. Securities and Exchange Commission.
  * Data and content created by government employees within the scope of their employment
@@ -25,13 +26,21 @@ import { Logger, ILogObj } from "tslog";
                     FactsGeneral.goTo(new Event(''), tempDiv);
                 });
             }
+            Errors.updateMainContainerHeight(false)
+            document.getElementById('sections-menu')?.classList.remove('show');
         } else {
             ErrorsMajor.inactive();
         }
         const endPerformance = performance.now();
-        if (!PRODUCTION) {
+        if (DEBUGCSS) {
+            // ErrorsMajor.debug();
+        }
+        if (LOGPERFORMANCE) {
             const log: Logger<ILogObj> = new Logger();
             log.debug(`AppInit.init() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms`);
         }
+        // if (!PRODUCTION) {
+            // console.table({'prod': PRODUCTION, 'DEBUGJS': DEBUGJS, 'DEBUGCSS': DEBUGCSS, 'LOGPERFORMANCE': LOGPERFORMANCE})
+        // }
     });
 })();

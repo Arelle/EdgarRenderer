@@ -6,13 +6,13 @@
 import { FactsChart } from "./facts/chart";
 import { FactsMenu } from "./facts/menu";
 import { FactsTable } from "./facts/table";
-import { FormInformation } from "./form-information";
-import { Modals } from "./modals";
+import { FormInformation } from "./form-information/form-information";
+import { Modals } from "./modals/modals";
 import { ModalsFormInformation } from "./modals/form-information";
 import { ModalsSettings } from "./modals/settings";
-import { Scroll } from "./scroll";
-import { Search } from "./search";
-import { Sections } from "./sections";
+import { Scroll } from "./scroll/scroll";
+import { Search } from "./search/search";
+import { Sections } from "./sections/sections";
 import { SectionsSearch } from "./sections/search";
 import { UserFiltersDataRadios } from "./user-filters/data-radios";
 import { UserFiltersDropdown } from "./user-filters/dropdown";
@@ -175,6 +175,7 @@ export class Listeners {
         });
 
         document.getElementById('scroll-position-select')?.addEventListener("change", (event: Event) => {
+            if (!PRODUCTION) console.log('scroll-position-select')
             ModalsSettings.scrollPosition(event);
         });
 
@@ -196,18 +197,47 @@ export class Listeners {
         // scroll-position-select
         // scrollPosition
 
+        const closeOtherSideBars = (barToOpenId: string) => {
+            const sidebars = document.getElementsByClassName('sidebar');
+            for (const elem in sidebars) {
+                const sidebarElem = sidebars[elem]
+                if (sidebarElem?.id?.length && sidebarElem?.id != barToOpenId) {
+                    if (sidebarElem.classList) {
+                        sidebarElem?.classList?.remove('show')
+                    }
+                }
+            }
+        }
 
-        // offcanvas functions
+        // help menu
+        const helpMenu = document.getElementById('help-menu');
+        helpMenu?.addEventListener('show.bs.collapse', (event: Event) => {
+            closeOtherSideBars(event!.target!.id)
+        })
+        
+        // help sidebar section - prevent propagation
+        const helpSidebarCollapsableSections = document.querySelectorAll('#help-sections .collapse');
+        helpSidebarCollapsableSections?.forEach(helpSection => {
+            helpSection?.addEventListener('show.bs.collapse', (event: Event) => {
+                event.stopPropagation(); // so that the sidebar doesn't close
+            })
+        })
+
+        // sections menu
         const sectionsMenu = document.getElementById('sections-menu');
-        sectionsMenu?.addEventListener('shown.bs.offcanvas', (event: Event) =>
-            Sections.toggle(event as MouseEvent | KeyboardEvent));
+        sectionsMenu?.addEventListener('show.bs.collapse', (event: Event) => {
+            Sections.toggle(event as MouseEvent | KeyboardEvent); // needed to populate sections content for some reason
+            closeOtherSideBars('sections-menu')
+        })
 
         // facts-menu-button
         const factsMenu = document.getElementById('facts-menu');
-        factsMenu?.addEventListener('shown.bs.offcanvas', (event: Event) =>
-            FactsMenu.toggle(event as MouseEvent | KeyboardEvent));
+        factsMenu?.addEventListener('show.bs.collapse', () => {
+            // FactsMenu.toggle(event as MouseEvent | KeyboardEvent); // not needed
+            closeOtherSideBars('facts-menu')
+        })
 
-        // fact-menu-button
+        // fact-table
         const factTableMenu = document.getElementById('fact-table-container');
         factTableMenu?.addEventListener('shown.bs.offcanvas', () => FactsTable.toggle(true));
         factTableMenu?.addEventListener('hidden.bs.offcanvas', () => FactsTable.toggle(false));

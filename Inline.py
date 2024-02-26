@@ -57,6 +57,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm."
     filepath, fileext = os.path.splitext(os.path.join(_reportsFolder or "", targetBasename))
     if fileext not in USUAL_INSTANCE_EXTS: fileext = iext
     targetFilename = filepath + fileext
+    modelXbrl.ixTargetFilename = targetFilename
 
     filingZip = None
     filingFiles = None

@@ -5,8 +5,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
-    <link rel="shortcut icon" type="image/x-icon" href="https://www.sec.gov/favicon.ico" />
-    <title>EDGAR Inline XBRL Viewer</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <title>XBRL Viewer</title>
         <script language="JavaScript">
             /* <![CDATA[ */
                 /* Created by staff of the U.S. Securities and Exchange Commission.
@@ -18,14 +18,21 @@
                  * this script redirects to that viewer, otherwise to a prior ixviewer in effect
                  * or deemed compatible with the filing.
                  */
-
+                function loadViewer(ixvUrl) {
+                   // load viewer in an iframe so the end user's browser URL is not changed
+                   var iFrame = document.getElementById("ixvFrame");
+                   iFrame.src = ixvUrl;
+                }
                 const url = location.href;
                 // url doc pattern is /Archives/edgar/data/ciknum/{10digits}{YY}{sequence}/{more params}
-                // on SEC.GOV: const urlPattern = /(\?doc=(\/Archives\/edgar\/data\/[0-9]+\/[0-9]{10}([0-9]{8})\/).*$)/;
+                // uncomment one of the following urlPatterns depending on usage:
+                // for SEC.GOV: const urlPattern = /(\?doc=(\/Archives\/edgar\/data\/[0-9]+\/[0-9]{10}([0-9]{8})\/).*$)/;
+                // for Arelle GUI: const urlPattern = /(\?doc=(\/[0-9]+\/).*$)/;
                 const urlPattern = /(\?doc=(\/[0-9]+\/).*$)/;
+                var ixvUrl = null;
                 if (! urlPattern.test(url)) {
                     alert("Not an EDGAR inline XBRL document viewing request, please check URL");
-                    // this hangs: location.assign("/ixviewer/ix.html" + ixParams);
+                    // this hangs: loadViewer("/ixviewer/ix.html" + ixParams);
                 } else {
                     const match = url.match(urlPattern);
                     const ixParams = match[1];
@@ -36,9 +43,9 @@
                             if (this.status == 200) {
                                 const ml = JSON.parse(this.responseText);
                                 if (!(typeof ml === 'object' && "instance" in ml)) {
-                                   // alert("Metalinks does not have instance objects");
+                                   console.log("Metalinks does not have instance objects");
                                    // Unable to read MetaLinks.json, use 23.2 ixviewer
-                                   location.assign("/ixviewer/ix.html" + ixParams);
+                                   loadViewer("/ixviewer/ix.html" + ixParams);
                                 } else {
                                    const numInstances = Object.keys(ml["instance"]).length;
                                    let maxDocsPerInst = 0;
@@ -55,36 +62,43 @@
                                            });
                                         }
                                        });
-                                   if (numInstances > 1 || maxDocsPerInst > 1 || hasFeeExhibit)
-                                       location.assign("/ixviewer-plus/ix.xhtml" + ixParams);
+                                   if (numInstances > 1 || maxDocsPerInst > 1 || hasFeeExhibit || url.includes("&redline=true") )
+                                       loadViewer("/ixviewer-plus/ix.xhtml" + ixParams);
                                    else
-                                       location.assign("/ixviewer/ix.html" + ixParams);
+                                       loadViewer("/ixviewer/ix.html" + ixParams);
                                 }
                             } else {
-                                    // alert("Unable to read MetaLinks.json for this accession");
+                                    console.log("Unable to read MetaLinks.json for this accession");
                                     // Unable to read MetaLinks.json, use 23.2 ixviewer
-                                    location.assign("/ixviewer/ix.html" + ixParams);
+                                    loadViewer("/ixviewer/ix.html" + ixParams);
                             }
                         }
                     };
                     xhr.ontimeout = function() {
-                        // alert("Timeout reading MetaLinks.json for this accession");
+                        console.log("Timeout reading MetaLinks.json for this accession");
                         // Unable to read MetaLinks.json, use 23.2 ixviewer
-                        location.assign("/ixviewer/ix.html" + ixParams);
+                        loadViewer("/ixviewer/ix.html" + ixParams);
                     };
                     xhr.open("GET", docPath + 'MetaLinks.json', true);
                     xhr.timeout = 2000; // milliseconds
                     xhr.send();
 
+                    /* Arelle GUI usage: set title for tab in browser for when there are multiple tabs */
+                    const urlTitleParamPattern = /&title=([^&]+),*$/;
+                    if (urlTitleParamPattern.test(url)) {
+                        const match = url.match(urlTitleParamPattern);
+                        document.title = decodeURIComponent(match[1]);
+                    }
+
                     /* alternative select viewer using accession number
 
                     const acsnYrSeq = match[3];
                     if (acsnYrSeq > "24905000") {
-                        location.assign(docPath + "ixbrlviewer.xhtml");
+                        loadViewer(docPath + "ixbrlviewer.xhtml");
                     } else if (acsnYrSeq > "23905000") {
-                        location.assign("/ixviewer-plus/ix.xhtml" + ixParams);
+                        loadViewer("/ixviewer-plus/ix.xhtml" + ixParams);
                     } else {
-                        location.assign("/ixviewer/ix.html" + ixParams);
+                        loadViewer("/ixviewer/ix.html" + ixParams);
                     }
 
                     */
@@ -93,9 +107,13 @@
         </script>
 </head>
 
-<body>
+<body style="margin: 0">
         <noscript>
                 Please enable JavaScript to use the EDGAR Inline XBRL Viewer.
         </noscript>
+        <iframe id="ixvFrame"
+                title="Inline XBRL Viewer"
+                style="position: absolute; height: 100%; width: 100%; border: none"
+        />
 </body>
 </html>

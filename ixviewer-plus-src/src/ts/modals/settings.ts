@@ -3,8 +3,8 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
-import { Modals } from ".";
-import { Constants } from "../constants";
+import { Modals } from "./modals";
+import { Constants } from "../constants/constants";
 
 export const ModalsSettings = {
 

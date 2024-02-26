@@ -58,7 +58,7 @@ class XlWriter(object):
         del self.simplified_transform
 
 
-    def save(self):
+    def save(self, suffix=""):
         if len(self.wb.worksheets)>1:
             self.wb.remove(self.wb.worksheets[0])
         if not (self.controller.reportZip or self.outputFolderName is not None):
@@ -67,13 +67,14 @@ class XlWriter(object):
         file = io.BytesIO()
         self.wb.save(file)
         file.seek(0)
+        outputFileName = OUTPUT_FILE_NAME + suffix
         if self.controller.reportZip:
-            self.controller.reportZip.writestr(OUTPUT_FILE_NAME, file.read())
+            self.controller.reportZip.writestr(outputFileName, file.read())
         else:
-            self.controller.writeFile(os.path.join(self.outputFolderName, OUTPUT_FILE_NAME), file.read())
+            self.controller.writeFile(os.path.join(self.outputFolderName, outputFileName), file.read())
         file.close()
         del file  # dereference
-        self.controller.renderedFiles.add(OUTPUT_FILE_NAME)
+        self.controller.renderedFiles.add(outputFileName)
         self.controller.logDebug('Excel output saved {}'.format(self.controller.entrypoint),file=os.path.basename(__file__))
 
 

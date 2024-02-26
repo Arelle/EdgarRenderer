@@ -10,6 +10,7 @@
   <xsl:param name="processXsltInBrowser">false</xsl:param>
   <xsl:param name="includeLogs">true</xsl:param>
   <xsl:param name="includeExcel">true</xsl:param>
+  <xsl:param name="title">View Filing Data</xsl:param>
   <xsl:variable name="includeDir">/include</xsl:variable>
   <xsl:variable name="imagesDir">/images</xsl:variable>
   <xsl:variable name="ixHtmlPath">/ixviewer-plus/ix.xhtml</xsl:variable>

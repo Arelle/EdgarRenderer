@@ -1,7 +1,7 @@
 import * as bootstrap from "bootstrap";
 import { FactMap } from "../facts/map";
 import { ConstantsFunctions } from "../constants/functions";
-import { Constants } from "../constants";
+import { Constants } from "../constants/constants";
 
 /* Created by staff of the U.S. Securities and Exchange Commission.
  * Data and content created by government employees within the scope of their employment
@@ -259,8 +259,11 @@ export const FactsTable = {
         h5.append(h5Text);
         cardBody.append(h5);
         if (FactMap.getByID(id).isHTML) {
+            // Fact values may contain unsafe HTML, so we'll sanitize it before adding to the DOM
+            const sanitizedHtml = ConstantsFunctions.sanitizeHtml(FactMap.getByID(id).value);
             const parser = new DOMParser();
-            const htmlDoc = parser.parseFromString(FactMap.getByID(id).value, 'text/html');
+            // const htmlDoc = parser.parseFromString(FactMap.getByID(id).value, 'text/html');
+            const htmlDoc = parser.parseFromString(sanitizedHtml, 'text/html');
             const htmlContainer = htmlDoc.querySelector('body *') as HTMLElement;
             htmlContainer.classList.add('card-text');
             cardBody.append(htmlContainer);
@@ -356,8 +359,10 @@ export const FactsTable = {
         // segment
         // sign 
         // if (FactMap.getByID(id).isHTML) {
+        //     // Fact values may contain unsafe HTML, so we'll sanitize it before adding to the DOM
+        //     const sanitizedHtml = ConstantsFunctions.sanitizeHtml(FactMap.getByID(id).value);
         //     const parser = new DOMParser();
-        //     const htmlDoc = parser.parseFromString(FactMap.getByID(id).value, 'text/html');
+        //     const htmlDoc = parser.parseFromString(sanitizedHtml, 'text/html');
         //     const htmlContainer = htmlDoc.querySelector('body *') as HTMLElement;
         //     htmlContainer.classList.add('card-text');
         //     h5.append(h5Text);

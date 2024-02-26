@@ -3,7 +3,7 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
-import { FlexSearch } from "../flex-search";
+import { FlexSearch } from "../flex-search/flex-search";
 import { UserFiltersState } from "./state";
 
 export const UserFiltersDataRadios = {

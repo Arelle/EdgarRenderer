@@ -3,27 +3,19 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
-import { Constants } from "../constants";
+import { Constants } from "../constants/constants";
 import { ErrorsMinor } from "../errors/minor";
 import { SearchFunctions } from "../search/functions";
-import { Facts } from "../facts";
+import { Facts } from "../facts/facts";
 
 export const UserFiltersState = {
-
   getAxes: [],
-
   getMembers: [],
-
   getBalance: [],
-
   getMeasure: [],
-
   getPeriod: [],
-
   getScale: [],
-
   getType: [],
-
   getDataRadios: 0,
 
   setDataRadios: (input: number) => {
