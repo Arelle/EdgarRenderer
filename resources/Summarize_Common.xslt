@@ -429,7 +429,7 @@
    
    function applyRedline( url ) {
        if (isRedline) {
-           return url + "&amp;redline=true";
+           return url + "&redline=true";
        } else {
            return url;
        }
