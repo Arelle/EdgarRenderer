@@ -1005,8 +1005,8 @@ class EdgarRenderer(Cntlr.Cntlr):
         # logMessageText needed for successful and unsuccessful termination
         self.loadLogMessageText()
 
-        # GUI operation with redact present requires dissem outputs without new suffixes
-        hasPrivateData = bool(cntlr.redactTgtElts)
+        # GUI operation with redact or redline present requires dissem outputs without new suffixes
+        hasPrivateData = bool(cntlr.redactTgtElts) or bool(cntlr.redlineIxDocs)
         isGUIprivateView = hasPrivateData and cntlr.hasGui
 
         if self.success or not self.noRenderingWithError:
@@ -1769,7 +1769,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
             edgarRendererXbrlRun(cntlr, options, instanceModelXbrl, filing, report)
         edgarRenderer = filing.edgarRenderer
         reportsFolder = edgarRenderer.reportsFolder
-        hasRedactElts = bool(cntlr.redactTgtElts)
+        hasRedactOrRedlineElts = bool(cntlr.redactTgtElts) or bool(cntlr.redlineIxDocs)
 
         edgarRendererFilingEnd(cntlr, options, modelXbrl.fileSource, filing)
         cntlr.logHandler.endLogBuffering() # block other GUI processes from using log buffer
@@ -1816,7 +1816,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
             if cntlr.showFilingData.get():
                 from . import LocalViewer
                 _localhost = LocalViewer.init(cntlr, reportsFolder)
-                if hasRedactElts:
+                if hasRedactOrRedlineElts:
                     _localhostDissem = LocalViewer.init(cntlr, reportsFolder + "/dissem")
                 import webbrowser
                 openingUrl = openingUrlDissem = None
@@ -1825,15 +1825,15 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
                     for reportElt in filingSummaryTree.iter(tag="Report"):
                         if reportElt.get("instance"):
                             openingUrl = f"ix?doc=/{_localhost.rpartition('/')[2]}/{reportElt.get('instance')}&xbrl=true"
-                            if hasRedactElts:
+                            if hasRedactOrRedlineElts:
                                 openingUrlDissem = f"ix?doc=/{_localhostDissem.rpartition('/')[2]}{reportElt.get('instance')}&xbrl=true"
                 if not openingUrl: # open SEC Mustard Menu
                     openingUrl = ("FilingSummary.htm", "Rall.htm")[_combinedReports]
-                    if hasRedactElts:
+                    if hasRedactOrRedlineElts:
                         openingUrlDissem = ("FilingSummary.htm", "Rall.htm")[_combinedReports]
                 webbrowser.open(url="{}/{}{}".format(_localhost, openingUrl,
-                                                     "?redline=true" if (_ixRedline and hasRedactElts) else ""))
-                if hasRedactElts:
+                                                     "?redline=true" if (_ixRedline and hasRedactOrRedlineElts) else ""))
+                if hasRedactOrRedlineElts:
                     webbrowser.open(url="{}/{}".format(_localhostDissem, openingUrlDissem))
                 if filing.edgarRenderer.hasIXBRLViewer and filing.hasInlineReport:
                     webbrowser.open(url="{}/ixbrlviewer.xhtml{}".format(_localhost, _ixRedline))
