@@ -1167,8 +1167,9 @@ class Report(object):
         _startedAt = time.time()
         cell_count = sum(1 for x in tree.iter('Cell'))
         if cell_count > 50000:
-            self.controller.logWarn(f"There are {cell_count} cells; skipping transformation.")
-            result = fromstring("<HTML><HEAD><TITLE>NOPE</TITLE></HEAD><BODY>NOT TODAY FRIEND</BODY></HTML>")
+            self.controller.logWarn(f"There are {cell_count} cells; skipping transformation.",
+                                    messageCode="EXG.9.7.renderingCellsLimit")
+            result = fromstring("<HTML><HEAD><TITLE>NOPE</TITLE></HEAD><BODY>Not available</BODY></HTML>")
         else:
             keywordArgs= { "asPage" : XSLT.strparam("true") }
             if getattr(self.embedding, "disclaimer", None) and getattr(self.embedding,"disclaimerStyle",None):

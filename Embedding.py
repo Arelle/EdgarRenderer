@@ -662,8 +662,9 @@ class Embedding(object):
         group = self.cube.linkroleUri
         cells = int(n/1000000000)
         self.controller.logWarn(f"Presentation group {group} with {axes} axes could have more than {cells} billion cells.  "
-                                +"Split up this presentation group and see EFM 6.25.2 to see how to reduce the number of combinations by selecting "
-                                +"fewer members for each axis."
+                                +"Split up this presentation group and see EXG 9.7.4 to see how to reduce the number of combinations by selecting "
+                                +"fewer members for each axis.",
+                                messageCode="EXG.9.7.4.tooManyCells"
                                 )
         return True
 

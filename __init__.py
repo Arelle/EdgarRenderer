@@ -1337,10 +1337,10 @@ class EdgarRenderer(Cntlr.Cntlr):
                         summary.removeSummaryLogs() # produce filing summary without logs
                         if self.isWorkstationFirstPass: # workstation needs redacted filing summary
                             IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml' + dissemSuffix)
-                            self.transformFilingSummary(filing, rootETree, self.summaryXslt, self.reportsFolder, "FilingSummary.htm", True, "Redacted Filing Data")
+                            self.transformFilingSummary(filing, rootETree, self.summaryXslt, self.reportsFolder, "FilingSummary.htm", True, "Public Filing Data")
                         else:
                             IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml' + dissemSuffix)
-                            self.transformFilingSummary(filing, rootETree, self.summaryXslt, dissemReportsFolder, "FilingSummary.htm" + dissemSuffix, True, "Redacted Filing Data")
+                            self.transformFilingSummary(filing, rootETree, self.summaryXslt, dissemReportsFolder, "FilingSummary.htm" + dissemSuffix, True, "Public Filing Data")
                         if self.xlWriter and self.hasXlout:
                             _startedAt = time.time()
                             self.xlWriter.save(suffix=dissemSuffix)
@@ -1507,31 +1507,19 @@ class EdgarRenderer(Cntlr.Cntlr):
 
 
     def addToLog(self, message, messageArgs={}, messageCode='error', file=MODULENAME, level=logging.DEBUG):
-        # Master log and error/warning msg handler
-        messageDict = {'fatal':logging.FATAL
-                       , 'error':logging.ERROR
-                       , 'warn':logging.WARN
-                       , 'info':logging.INFO
-                       , 'debug':logging.DEBUG
-                       , 'trace':logging.NOTSET}
-        # find a level that agrees with the code
-        if messageCode not in messageDict: messageLevel = logging.CRITICAL
-        else:  messageLevel = messageDict[messageCode.casefold()]
-        # if both level and code were given, err on the side of more logging:
-        messageLevel = max(level, messageLevel)
         if self.entrypoint is not None and len(self.instanceList + self.inlineList) > 1:
             message += ' --' + (self.entrypoint.url if isinstance(self.entrypoint,FileSource.FileSource) else self.entrypoint)
         message = message.encode('utf-8', 'replace').decode('utf-8')
-        if messageLevel >= logging.INFO:
+        if level >= logging.INFO:
             self.ErrorMsgs.append(Utils.Errmsg(messageCode, message))
 
         # dereference non-string messageArg values
         messageArgs = dict((k,str(v)) for k,v in messageArgs.items())
 
         if (self.modelManager and getattr(self.modelManager, 'modelXbrl', None)):
-            self.modelManager.modelXbrl.log(logging.getLevelName(messageLevel), messageCode, message, *messageArgs)
+            self.modelManager.modelXbrl.log(logging.getLevelName(level), messageCode, message, *messageArgs)
         else:
-            self.cntlr.addToLog(message, messageArgs=messageArgs, messageCode=messageCode, file=file, level=messageLevel)
+            self.cntlr.addToLog(message, messageArgs=messageArgs, messageCode=messageCode, file=file, level=level)
 
     # Lowercase tokens apparently write to standard output??
 
