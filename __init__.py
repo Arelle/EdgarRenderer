@@ -1115,8 +1115,11 @@ class EdgarRenderer(Cntlr.Cntlr):
                 dissemReportsFolder = None
                 if self.reportZip or self.reportsFolder is not None:
                     IoManager.writeXmlDoc(filing, rootETree, self.reportZip, self.reportsFolder, 'FilingSummary.xml')
+                    # generate supplemental AllReports and other such outputs at this time
+                    for supplReport in pluginClassMethods("EdgarRenderer.FilingEnd.SupplementalReport"):
+                        supplReport(cntlr, filing, self.reportsFolder)
                     # if there's a dissem directory and no logs, remove summary logs
-                    if (isGUIprivateView or
+                    if (hasPrivateData or
                         self.summaryXslt and len(self.summaryXslt) > 0 and (self.summaryXsltDissem or self.reportXsltDissem)):
                         dissemReportsFolder = os.path.join(self.reportsFolder, "dissem")
                         os.makedirs(dissemReportsFolder, exist_ok=True)
@@ -1234,8 +1237,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         for generate in pluginClassMethods("iXBRLViewer.Generate"):
                             generate(cntlr, self.reportsFolder, "/ixviewer-arelle/ixbrlviewer-1.4.11.js", useStubViewer="ixbrlviewer.xhtml", saveStubOnly=True)
                         self.logDebug("Arelle viewer generated {:.3f} secs.".format(time.time() - _startedAt))
-                    if self.summaryXsltDissem or self.reportXsltDissem:
-                        if self.hasIXBRLViewer:
+                        if self.isWorkstationFirstPass and not hasPrivateData:
                             _startedAt = time.time()
                             for generate in pluginClassMethods("iXBRLViewer.Generate"):
                                 generate(cntlr, dissemReportsFolder, "/arelleViewer-1.4.11/ixbrlviewer.js", useStubViewer="ixbrlviewer.xhtml.dissem", saveStubOnly=True)
@@ -1289,7 +1291,7 @@ class EdgarRenderer(Cntlr.Cntlr):
 
                 # save documents with removed redlines (only when saving dissemReportsFolder)
                 if dissemReportsFolder:
-                    dissemSuffix = "" if isGUIprivateView else ".dissem"
+                    dissemSuffix = ".dissem" if self.isWorkstationFirstPass else ""
                     inputsToCopyToOutput = set(inputsToCopyToOutputList) - cntlr.editedIxDocs.keys()
                     for reportedFile, modelDocument in cntlr.editedIxDocs.items():
                         ix = serializeXml(modelDocument.xmlRootElement)
@@ -1299,6 +1301,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                             filePath = join(self.reportsFolder, reportedFile).replace(".htm", "_ix1.htm")
                             filing.writeFile(filePath, ix)
                         ix = None # dereference
+                    if not self.isWorkstationFirstPass:
+                        shutil.copyfile(os.path.join(self.resourcesFolder, "report.css"), os.path.join(dissemReportsFolder, "report.css"))
                     for report in filing.reports:
                         modelXbrl = report.modelXbrl
                         if modelXbrl in cntlr.editedModelXbrls:
@@ -1337,16 +1341,28 @@ class EdgarRenderer(Cntlr.Cntlr):
                         summary.removeSummaryLogs() # produce filing summary without logs
                         if self.isWorkstationFirstPass: # workstation needs redacted filing summary
                             IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml' + dissemSuffix)
-                            self.transformFilingSummary(filing, rootETree, self.summaryXslt, self.reportsFolder, "FilingSummary.htm", True, "Public Filing Data")
+                            if self.summaryXslt:
+                                self.transformFilingSummary(filing, rootETree, self.summaryXslt, self.reportsFolder, "FilingSummary.htm", True, "Public Filing Data")
                         else:
                             IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml' + dissemSuffix)
-                            self.transformFilingSummary(filing, rootETree, self.summaryXslt, dissemReportsFolder, "FilingSummary.htm" + dissemSuffix, True, "Public Filing Data")
+                            if self.summaryXslt:
+                                self.transformFilingSummary(filing, rootETree, self.summaryXslt, dissemReportsFolder, "FilingSummary.htm" + dissemSuffix, True, "Public Filing Data")
                         if self.xlWriter and self.hasXlout:
                             _startedAt = time.time()
                             self.xlWriter.save(suffix=dissemSuffix)
                             self.xlWriter.close()
                             self.xlWriter = None
                             self.logDebug("Excel saving complete {:.3f} secs.".format(time.time() - _startedAt))
+                        # generate supplemental AllReports and other such outputs at this time
+                        for supplReport in pluginClassMethods("EdgarRenderer.FilingEnd.SupplementalReport"):
+                            supplReport(cntlr, filing, dissemReportsFolder)
+                        if self.hasIXBRLViewer:
+                            _startedAt = time.time()
+                            for generate in pluginClassMethods("iXBRLViewer.Generate"):
+                                generate(cntlr, dissemReportsFolder, "/arelleViewer-1.4.11/ixbrlviewer.js",
+                                         useStubViewer="ixbrlviewer.xhtml.dissem" if self.isWorkstationFirstPass else "ixbrlviewer.xhtml",
+                                         saveStubOnly=True)
+                            self.logDebug("Arelle viewer for dissemination generated {:.3f} secs.".format(time.time() - _startedAt))
                 if "EdgarRenderer/__init__.py#filingEnd" in filing.arelleUnitTests:
                     raise arelle.PythonUtil.pyNamedObject(filing.arelleUnitTests["EdgarRenderer/__init__.py#filingEnd"], "EdgarRenderer/__init__.py#filingEnd")
 
