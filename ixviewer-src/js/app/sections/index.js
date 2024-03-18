@@ -289,6 +289,7 @@ var Sections = {
     var headerContainer = document.createElement("div");
     headerContainer.classList.add("reboot");
     headerContainer.classList.add("card-header");
+    headerContainer.classList.add("mb-0");
     headerContainer.classList.add("px-0");
     headerContainer.classList.add("py-0");
 

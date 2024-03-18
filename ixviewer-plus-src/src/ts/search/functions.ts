@@ -3,7 +3,7 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 import { ModalsNested } from "../modals/nested";
-import { Facts } from "../facts";
+import { Facts } from "../facts/facts";
 
 export const SearchFunctions = {
 

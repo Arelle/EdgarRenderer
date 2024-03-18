@@ -3,13 +3,13 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 import * as bootstrap from "bootstrap";
-import { Modals } from ".";
+import { Modals } from "./modals";
 import { ModalsCommon } from "./common";
 import { FactPages } from "./fact-pages";
-import { Constants } from "../constants";
+import { Constants } from "../constants/constants";
 import { FactMap } from "../facts/map";
 import { ConstantsFunctions } from "../constants/functions";
-import { Pagination } from "../pagination";
+import { Pagination } from "../pagination/pagination";
 
 export const ModalsNested = {
 

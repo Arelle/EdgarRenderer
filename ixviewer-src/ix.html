@@ -27,13 +27,14 @@
 			}();
 
 			var pathToLibs = './js';
-			var pathToError = '/';
-			/**
+			var pathToError = './';
+			// uncomment following lines only when running ix symlink to ix.xhtml on *.sec.gov
+			/* commented out for running ix redirector script
 			if (hostName === 'www-test.sec.gov' || hostName === 'www.sec.gov') {
 				pathToLibs = './ixviewer/js';
 				pathToError = '/ixviewer/';
 			}
-			**/
+			*/
 			if (browserAccepted) {
 
 				// css
@@ -46,7 +47,7 @@
 
 				// js
 				document
-					.write('<script type="text/javascript" src="' + pathToLibs + '/lib/jquery-3.3.1.slim.min.js"><\/script>');
+					.write('<script type="text/javascript" src="' + pathToLibs + '/lib/jquery-3.7.1.slim.min.js"><\/script>');
 				document
 					.write('<script type="text/javascript" src="' + pathToLibs + '/lib/popper.min.js"><\/script>');
 				document

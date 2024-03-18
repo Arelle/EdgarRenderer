@@ -3,7 +3,7 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
-import { Errors } from ".";
+import { Errors } from "./errors";
 
 export const ErrorsMinor = {
 

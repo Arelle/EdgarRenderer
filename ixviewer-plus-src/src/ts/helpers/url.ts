@@ -4,7 +4,7 @@
  */
 //WS example url:
 // https://secws-edgar-janeway.apps.stg.edg.ix.sec.gov/AR/ixviewer/ix-dev.xhtml?doc=../DisplayDocument.do?step=docOnly&accessionNumber=0001684417-23-800279&interpretedFormat=true&redline=false&filename=e62201020gd-20081231.htm&xbrl=true&metalinks=../DisplayDocument.do?step=docOnly&accessionNumber=0001684417-23-800279&interpretedFormat=true&redline=false&filename=MetaLinks.json
-import { Constants } from "../constants";
+import { Constants } from "../constants/constants";
 import { ErrorsMajor } from "../errors/major";
 
 export const HelpersUrl: {
@@ -12,14 +12,25 @@ export const HelpersUrl: {
   makeAbsoluteUrlUnlessSimpleAnchorTag: (element: HTMLElement) => void,
   fullURL: undefined | string | null,
   addLinkattributes: (element: HTMLElement) => void,
-  returnURLParamsAsObject: (url: string) => void,
+  returnURLParamsAsObject: (url: string) => {
+    doc: string,
+    'doc-file': string,
+    metalinks: string,
+    'metalinks-file': string,
+    redline: boolean,
+    redacted: string,
+    summary: string,
+    'summary-file': string,
+    title: string,
+    fact: string,
+  },
   getFormAbsoluteURL: null,
   getURL: null,
   getExternalFile: null,
   getExternalMeta: null,
   getHTMLFileName: null,
   getAnchorTag: null,
-  getAllParams: null | {
+  getAllParams: {
     doc: string,
     'doc-file': string,
     hostName: string,
@@ -32,7 +43,16 @@ export const HelpersUrl: {
   getAbsoluteUrl: (url: string) => void,
   getParamsFromString: (name: string, url: string) => void,
   updateURLWithoutReload: () => void,
-  ParsedUrl: (url: string) => void,
+  ParsedUrl: (url: string) => {
+    hash: string,
+    hostname:string,
+    host: string,
+    href: string,
+    pathname: string,
+    port: string,
+    protocol: string,
+    search: string,
+  },
 } = {
 
   init: (internalUrl: string, callback: (arg0: boolean) => void) => {
@@ -68,7 +88,7 @@ export const HelpersUrl: {
       }
     }
 
-    if (attribute && element.getAttribute(attribute).charAt(0) !== '#') {
+    if (attribute && element.getAttribute(attribute)!.charAt(0) !== '#') {
       const absoluteLinkOfElementAttribute = decodeURIComponent(HelpersUrl.getAbsoluteUrl(element.getAttribute(attribute)));
       const url = HelpersUrl.ParsedUrl(absoluteLinkOfElementAttribute);
       if (url.search) {
@@ -140,6 +160,8 @@ export const HelpersUrl: {
           objToReturn['metalinks-file'] = 'MetaLinks.json';
           objToReturn['summary'] = `${fileUrl.replace('interpretedFormat=true', 'interpretedFormat=false')}&filename=FilingSummary.xml`;
           objToReturn['summary-file'] = 'FilingSummary.xml';
+        } else if (paramKey === 'redline') {
+          objToReturn[paramKey] = (paramVal == 'true');
         } else {
           objToReturn[paramKey] = paramVal;
         }
@@ -159,7 +181,12 @@ export const HelpersUrl: {
           paramVal = paramVal.replace('interpretedFormat=true', 'interpretedFormat=false');
           objToReturn['metalinks-file'] = 'MetaLinks.json';
         }
-        objToReturn[paramKey] = paramVal;
+        if (paramKey === 'redline') {
+          objToReturn[paramKey] = (paramVal == 'true');
+        } else {
+          objToReturn[paramKey] = paramVal;
+        }
+
         if (!Object.prototype.hasOwnProperty.call(objToReturn, `metalinks`)) {
           const metalinks = objToReturn['doc'].replace(objToReturn['doc-file'], 'MetaLinks.json');
           objToReturn['metalinks'] = metalinks;
@@ -197,7 +224,6 @@ export const HelpersUrl: {
     }
 
     const url = HelpersUrl.ParsedUrl(window.location.href);
-
     // here we check for cors
     const tempUrl = HelpersUrl.ParsedUrl(url.search.substring(1).replace(/doc=|file=/, ''));
     const tempUrlHost = tempUrl.protocol + '//' + tempUrl.host;

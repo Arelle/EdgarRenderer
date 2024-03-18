@@ -1151,7 +1151,7 @@ class Report(object):
         if self.filing.reportHtmlFormat: self.writeHtmlFile(baseNameBeforeExtension, tree, reportSummary)
 
     def writeXmlFile(self, baseNameBeforeExtension, tree, reportSummary):
-        baseName = baseNameBeforeExtension + '.xml'
+        baseName = (self.filing.rFilePrefix or '') + baseNameBeforeExtension + '.xml' + (self.filing.suplSuffix or '')
         reportSummary.xmlFileName = baseName
         xmlText = treeToString(tree, xml_declaration=True, encoding='utf-8', pretty_print=True)
         if self.filing.reportZip:
@@ -1162,31 +1162,36 @@ class Report(object):
             self.controller.renderedFiles.add(baseName)
 
     def writeHtmlFile(self, baseNameBeforeExtension, tree, reportSummary):
-        baseName = baseNameBeforeExtension + '.htm'
+        baseName = (self.filing.rFilePrefix or '') + baseNameBeforeExtension + '.htm' + (self.filing.suplSuffix or '')
         reportSummary.htmlFileName = baseName
-        for _transform, _fileNameBase in (
-            ((self.filing.transform, self.filing.fileNameBase),) + (
-            ((self.filing.transformDissem, self.filing.dissemFileNameBase),) if self.filing.transformDissem else ())):
-            _startedAt = time.time()
-            cell_count = sum(1 for x in tree.iter('Cell'))
-            if cell_count > 50000:
-                self.controller.logWarn(f"There are {cell_count} cells; skipping transformation.")
-                result = fromstring("<HTML><HEAD><TITLE>NOPE</TITLE></HEAD><BODY>NOT TODAY FRIEND</BODY></HTML>")
-            else:
-                keywordArgs= { "asPage" : XSLT.strparam("true") }
-                if getattr(self.embedding, "disclaimer", None) and getattr(self.embedding,"disclaimerStyle",None):
-                    keywordArgs["disclaimer"] = XSLT.strparam(self.embedding.disclaimer)
-                    keywordArgs["disclaimerStyle"] = XSLT.strparam(self.embedding.disclaimerStyle)
-                result = _transform(tree,**keywordArgs)
-            self.controller.logDebug("R{} htm XSLT {:.3f} secs.".format(self.cube.fileNumber, time.time() - _startedAt))
+        _startedAt = time.time()
+        cell_count = sum(1 for x in tree.iter('Cell'))
+        if cell_count > 50000:
+            self.controller.logWarn(f"There are {cell_count} cells; skipping transformation.",
+                                    messageCode="EXG.9.7.renderingCellsLimit")
+            result = fromstring("<HTML><HEAD><TITLE>NOPE</TITLE></HEAD><BODY>Not available</BODY></HTML>")
+        else:
+            keywordArgs= { "asPage" : XSLT.strparam("true") }
+            if getattr(self.embedding, "disclaimer", None) and getattr(self.embedding,"disclaimerStyle",None):
+                keywordArgs["disclaimer"] = XSLT.strparam(self.embedding.disclaimer)
+                keywordArgs["disclaimerStyle"] = XSLT.strparam(self.embedding.disclaimerStyle)
+            result = self.filing.transform(tree,**keywordArgs)
+        htmlText = treeToString(result,method='html',with_tail=False,pretty_print=True,encoding='us-ascii')
+        if self.filing.reportZip:
+            self.filing.reportZip.writestr(baseName, htmlText)
+            self.controller.renderedFiles.add(baseName)
+        elif self.filing.fileNameBase is not None:
+            self.controller.writeFile(os.path.join(self.filing.fileNameBase, baseName), htmlText)
+            self.controller.renderedFiles.add(baseName)
+        if self.filing.altTransform is not None and cell_count <= 50000:
+            # secondary output for workstation
+            baseName = baseNameBeforeExtension + '.htm' + (self.filing.altSuffix or '')
+            reportSummary.htmlFileName = baseName
+            result = self.filing.altTransform(tree,**keywordArgs)
             htmlText = treeToString(result,method='html',with_tail=False,pretty_print=True,encoding='us-ascii')
-            if self.filing.reportZip:
-                self.filing.reportZip.writestr(baseName, htmlText)
-                self.controller.renderedFiles.add(baseName)
-            elif _fileNameBase is not None:
-                self.controller.writeFile(os.path.join(_fileNameBase, baseName), htmlText)
-                if _fileNameBase == self.filing.fileNameBase: # first non-dissem only
-                    self.controller.renderedFiles.add(baseName)
+            self.controller.writeFile(os.path.join(self.filing.altFolder, baseName), htmlText)
+            self.controller.renderedFiles.add(baseName)
+        self.controller.logDebug("R{} htm XSLT {:.3f} secs.".format(self.cube.fileNumber, time.time() - _startedAt))
 
 
     def generateBarChart(self):

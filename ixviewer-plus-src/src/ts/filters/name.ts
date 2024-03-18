@@ -4,7 +4,7 @@
  * employment are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
-import { Constants } from "../constants";
+import { Constants } from "../constants/constants";
 
 export const FiltersName = {
 
