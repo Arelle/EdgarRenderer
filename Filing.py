@@ -15,7 +15,7 @@ import arelle.ModelValue, arelle.XbrlConst
 from arelle.ModelDtsObject import ModelConcept
 from arelle.ModelObject import ModelObject
 from arelle.XmlUtil import collapseWhitespace
-from arelle.XmlValidate import VALID, VALID_NO_CONTENT
+from arelle.XmlValidateConst import VALID, VALID_NO_CONTENT
 from lxml import etree
 
 from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout

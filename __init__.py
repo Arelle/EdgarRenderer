@@ -154,7 +154,8 @@ from arelle.ModelInstanceObject import ModelFact, ModelInlineFootnote
 from arelle.PluginManager import pluginClassMethods
 from arelle.ValidateFilingText import elementsWithNoContent
 from arelle.XhtmlValidate import xhtmlValidate
-from arelle.XmlValidate import VALID, NONE, validate as xmlValidate
+from arelle.XmlValidateConst import VALID, NONE, UNVALIDATED
+from arelle.XmlValidate import validate as xmlValidate
 from . import RefManager, IoManager, Inline, Utils, Filing, Summary
 import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os, io, tempfile
 import regex as re
@@ -1192,6 +1193,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                 for f in modelXbrl.facts:
                                     if f.get("continuedAt") and hasattr(f, "_ixValue") and f.xValid >= VALID:
                                         del f._ixValue # force rebuilding continuation chain value
+                                        f.xValid = UNVALIDATED
                                         xmlValidate(f.modelXbrl, f, ixFacts=True)
                                 for rel in modelXbrl.relationshipSet("XBRL-footnotes").modelRelationships:
                                     f = rel.toModelObject
