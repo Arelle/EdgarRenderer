@@ -424,7 +424,9 @@ class Filing(object):
                                                  linesDiscarded=', '.join(discardedLineNumberList))
 
                 for fact in factSet: # we only want one thing, but we don't want to pop from the set so we "loop" and then break right away
-                    if fact.concept is None:
+                    if getattr(fact,"xValid", 0) < VALID:
+                        continue
+                    elif fact.concept is None:
                         if not self.validatedForEFM:
                             self.modelXbrl.error("xbrl:schemaImportMissing", # use standard Arelle message for this
                                     _("Instance fact missing schema definition: %(elements)s"),
@@ -509,7 +511,7 @@ class Filing(object):
                 self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue # fact was rejected in first loop of this function because of problem with the Element
 
-            if fact.xValid < VALID:
+            if getattr(fact,"xValid", 0) < VALID:
                 self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue
 
