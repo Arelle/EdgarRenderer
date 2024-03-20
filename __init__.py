@@ -175,7 +175,10 @@ def uncloseSelfClosedTags(doc):
     doc.parser.set_element_class_lookup(None) # modelXbrl class features are already closed now, block class lookup
     for e in doc.xmlRootElement.iter():
         # check if no text, no children and not self-closable element for EDGAR
-        if e.text is None and (not e.getchildren()) and e.tag not in tagsWithNoContent:
+        if (e.text is None and (not e.getchildren())
+            and e.tag not in tagsWithNoContent
+            # also skip ix elements which are nil
+            and not (e.get("{http://www.w3.org/2001/XMLSchema-instance}nil") in ("true","1") and e.tag.startswith("{http://www.xbrl.org/2013/inlineXBRL}"))):
             e.text = "" # prevents self-closing tag with etree.tostring for zip and dissem folders
 
 def allowableBytesForEdgar(bytestr):
@@ -266,7 +269,7 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     # always use a buffering log handler (even if file or std out)
     parser.add_option("--logToBuffer", action="store_true", dest="logToBuffer", default=True, help=SUPPRESS_HELP)
     parser.add_option("--noRenderingWithError", action="store_true", dest="noRenderingWithError", help=_("Prevent rendering action when exhibit instance validation encountered error(s), blocking R file and extracted xml instance generation for that exhibit instance."))
-
+    parser.add_option("--keepFilingOpen", dest="keepFilingOpen", action="store_true", help=SUPPRESS_HELP) # block closing filing in filingEnd
 
 
 class EdgarRenderer(Cntlr.Cntlr):
@@ -1013,6 +1016,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         if self.success or not self.noRenderingWithError:
             try:
                 # transform XSLT files
+                reportXslt = None
                 if self.reportXslt:
                     _xsltStartedAt = time.time()
                     reportXslt = etree.XSLT(etree.parse(self.reportXslt))
@@ -1322,7 +1326,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                 serializedDoc = fout.read()
                             if not isGUIprivateView:
                                 _filepath.replace("_ht2.xml", "_ht1.xml").replace("_ix2.htm", "_ix1.htm")
-                            filing.writeFile(join(dissemReportsFolder, filename), serializedDoc)
+                            filing.writeFile(os.path.join(dissemReportsFolder, os.path.basename(_filepath)), serializedDoc)
 
 
                     # reissue R files and excel after validation
@@ -1395,8 +1399,8 @@ class EdgarRenderer(Cntlr.Cntlr):
         cntlr.editedModelXbrls.clear()
         cntlr.redactTgtElts.clear()
 
-        # non-GUI (cmd line) options.keepOpen kept modelXbrls open
-        if not cntlr.hasGui and not self.isRunningUnderTestcase():
+        # non-GUI (cmd line) options.keepOpen kept modelXbrls open, use keepFilingOpen to block closing here
+        if not options.keepFilingOpen and not self.isRunningUnderTestcase():
             for report in filing.reports:
                 report.modelXbrl.close()
 
@@ -1677,7 +1681,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
             excelXslt = ('InstanceReport_XmlWorkbook.xslt', None)[_combinedReports],
             logMessageTextFile = None,
             logFile = None, # from cntlrCmdLine but need to simulate for GUI operation
-            labelLang = cntlr.labelLang # emulate cmd line labelLang
+            labelLang = cntlr.labelLang, # emulate cmd line labelLang
+            keepFilingOpen = True # closed by CntrlWinMain
         )
         if modelXbrl.modelDocument.type in ModelDocument.Type.TESTCASETYPES:
             modelXbrl.efmOptions = options  # save options in testcase's modelXbrl
