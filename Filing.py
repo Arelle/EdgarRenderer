@@ -376,6 +376,8 @@ class Filing(object):
                 # the others need to be proactively added to the set of unused facts.
                 if len(factSet) > 1:
                     def factSortKey (fact):
+                        if getattr(fact,"xValid", 0) < VALID:
+                            return ("", "", "")
                         if fact.isNumeric:
                             if fact.isNil: discriminator = float("INF") # Null values always last
                             elif fact.decimals is None: discriminator = 0 # Can happen with invalid xbrl
@@ -389,12 +391,15 @@ class Filing(object):
                     sortedFactList = sorted(factSet, key = factSortKey)
                     while len(sortedFactList) > 0:
                         firstFact = sortedFactList.pop(0)
+                        if getattr(firstFact,"xValid", 0) < VALID:
+                            continue
                         lineNumOfFactWeAreKeeping = firstFact.sourceline
                         discardedLineNumberList = []
                         discardedCounter = 0
                         discardedFactList = []
                         # finds facts with same qname, context and unit as firstFact
                         while (len(sortedFactList) > 0 and
+                               getattr(sortedFactList[0],"xValid", 0) >= VALID and
                                sortedFactList[0].qname == firstFact.qname and
                                sortedFactList[0].context == firstFact.context and
                                sortedFactList[0].unitID == firstFact.unitID):
