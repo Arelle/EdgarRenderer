@@ -57,7 +57,6 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm."
     filepath, fileext = os.path.splitext(os.path.join(_reportsFolder or "", targetBasename))
     if fileext not in USUAL_INSTANCE_EXTS: fileext = iext
     targetFilename = filepath + fileext
-    modelXbrl.ixTargetFilename = targetFilename
 
     filingZip = None
     filingFiles = None
@@ -124,6 +123,7 @@ def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocument
         if getattr(modelXbrl, "isTestcaseVariation", False):
             modelXbrl.extractedInlineInstance = True # for validation comparison
         modelXbrl.modelManager.showStatus(_("Saved extracted instance"), clearAfter=5000)
+        modelXbrl.ixTargetFilename = targetUrl
         return # there can only be one "InlineDocumentSet.CreateTargetInstance" but just to be sure
     cntlr.logTrace(_("Unable to save extracted document, missing plugin class \"InlineDocumentSet.CreateTargetInstance\"."))
 

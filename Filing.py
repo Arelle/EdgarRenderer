@@ -15,7 +15,7 @@ import arelle.ModelValue, arelle.XbrlConst
 from arelle.ModelDtsObject import ModelConcept
 from arelle.ModelObject import ModelObject
 from arelle.XmlUtil import collapseWhitespace
-from arelle.XmlValidate import VALID, VALID_NO_CONTENT
+from arelle.XmlValidateConst import VALID, VALID_NO_CONTENT
 from lxml import etree
 
 from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
@@ -376,6 +376,8 @@ class Filing(object):
                 # the others need to be proactively added to the set of unused facts.
                 if len(factSet) > 1:
                     def factSortKey (fact):
+                        if getattr(fact,"xValid", 0) < VALID:
+                            return ("", "", "")
                         if fact.isNumeric:
                             if fact.isNil: discriminator = float("INF") # Null values always last
                             elif fact.decimals is None: discriminator = 0 # Can happen with invalid xbrl
@@ -389,12 +391,15 @@ class Filing(object):
                     sortedFactList = sorted(factSet, key = factSortKey)
                     while len(sortedFactList) > 0:
                         firstFact = sortedFactList.pop(0)
+                        if getattr(firstFact,"xValid", 0) < VALID:
+                            continue
                         lineNumOfFactWeAreKeeping = firstFact.sourceline
                         discardedLineNumberList = []
                         discardedCounter = 0
                         discardedFactList = []
                         # finds facts with same qname, context and unit as firstFact
                         while (len(sortedFactList) > 0 and
+                               getattr(sortedFactList[0],"xValid", 0) >= VALID and
                                sortedFactList[0].qname == firstFact.qname and
                                sortedFactList[0].context == firstFact.context and
                                sortedFactList[0].unitID == firstFact.unitID):
@@ -419,7 +424,9 @@ class Filing(object):
                                                  linesDiscarded=', '.join(discardedLineNumberList))
 
                 for fact in factSet: # we only want one thing, but we don't want to pop from the set so we "loop" and then break right away
-                    if fact.concept is None:
+                    if getattr(fact,"xValid", 0) < VALID:
+                        continue
+                    elif fact.concept is None:
                         if not self.validatedForEFM:
                             self.modelXbrl.error("xbrl:schemaImportMissing", # use standard Arelle message for this
                                     _("Instance fact missing schema definition: %(elements)s"),
@@ -504,7 +511,7 @@ class Filing(object):
                 self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue # fact was rejected in first loop of this function because of problem with the Element
 
-            if fact.xValid < VALID:
+            if getattr(fact,"xValid", 0) < VALID:
                 self.usedOrBrokenFactDefDict[fact].add(None) #now bad fact won't come back to bite us when processing isUncategorizedFacts
                 continue
 

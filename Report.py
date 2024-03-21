@@ -1168,7 +1168,7 @@ class Report(object):
         cell_count = sum(1 for x in tree.iter('Cell'))
         if cell_count > 50000:
             self.controller.logWarn(f"There are {cell_count} cells; skipping transformation.",
-                                    messageCode="EXG.9.7.renderingCellsLimit")
+                                    messageCode="EXG.rendering.tooManyCells")
             result = fromstring("<HTML><HEAD><TITLE>NOPE</TITLE></HEAD><BODY>Not available</BODY></HTML>")
         else:
             keywordArgs= { "asPage" : XSLT.strparam("true") }
