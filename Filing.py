@@ -1232,7 +1232,7 @@ class Member(object):
             typedValue = getattr(typedElt, "xValue", None)
             try:
                 self.typedKey.append(typedElt.modelXbrl.qnameConcepts[typedElt.qname].type.facets["enumeration"][typedElt.xValue].objectIndex)
-            except (AttributeError, IndexError, TypeError):
+            except (AttributeError, IndexError, KeyError, TypeError):
                 self.typedKey.append(typedValue)
             if isinstance(typedValue, arelle.ModelValue.IsoDuration):
                 self.typedValue.append(typedValue.viewText()) # duration in words instead of lexical notation
