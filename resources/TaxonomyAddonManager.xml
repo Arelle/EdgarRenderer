@@ -397,9 +397,6 @@
       <DefinitionFiles>
         <string>exch-2024_doc.xsd</string>
       </DefinitionFiles>
-      <ReferenceFiles>
-        <string>exch-2024_ref.xsd</string>
-      </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
       <Taxonomy>ffd-2023.xsd</Taxonomy>
