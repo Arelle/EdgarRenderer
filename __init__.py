@@ -1133,6 +1133,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         removableCntxs = set()
                         removableUnits = set()
                         hasRedactedContinuation = False
+                        revalidateXbrl = False
                         for f in redactTgtElts.values():
                             if isinstance(f, ModelFact):
                                 if f.id in redactTgtElts:
@@ -1140,6 +1141,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                     removableCntxs.add(f.context)
                                     if f.unit is not None:
                                         removableUnits.add(f.unit)
+                                    revalidateXbrl = True
                             elif f.tag == "{http://www.xbrl.org/2013/inlineXBRL}continuation":
                                 hasRedactedContinuation = True
                         for report in filing.reports:
@@ -1192,6 +1194,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                         doc = ixdsHtmlRootElt.modelDocument
                                         cntlr.redlineIxDocs[doc.basename] = doc # causes it to be rewritten out
                                         cntlr.editedModelXbrls.add(report.modelXbrl)
+                                        revalidateXbrl = True
                             # rebuild redacted continuation chains
                             if hasRedactedContinuation:
                                 for f in modelXbrl.facts:
@@ -1204,7 +1207,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                     if isinstance(f, ModelInlineFootnote):
                                         del f._ixValue # force rebuilding continuation chain value
                                         xmlValidate(f.modelXbrl, f, ixFacts=True)
-
+                                revalidateXbrl = True
 
                         # redline-removed docs have self-closed <p> and other elements which must not be self-closed when saved
                         # inform user we are schema- and xbrl- revalidating
@@ -1213,14 +1216,15 @@ class EdgarRenderer(Cntlr.Cntlr):
                             uncloseSelfClosedTags(doc)
                             cntlr.editedIxDocs[reportedFile] = doc # add to editedIxDocs for output in dissem zip and dissem folder
                         if cntlr.redlineIxDocs:
-                            self.logInfo("Revalidating after redline removal or redaction")
+                            self.logInfo(f"Revalidating xhtml{', xbrl and EFM ' if revalidateXbrl else ' '}after redline removal or redaction")
                         for report in filing.reports:
                             for ixdsHtmlRootElt in getattr(report.modelXbrl, "ixdsHtmlElements", ()):
                                 if ixdsHtmlRootElt.modelDocument.basename in cntlr.redlineIxDocs:
                                     # revalidate schema validation
                                     xhtmlValidate(report.modelXbrl, ixdsHtmlRootElt)
-                            # revalidate after redaction
-                            Validate.validate(report.modelXbrl)
+                            if revalidateXbrl:
+                                # revalidate after redaction
+                                Validate.validate(report.modelXbrl)
                     self.renderedFiles.add("FilingSummary.xml")
                     if self.renderingLogsXslt and self.summaryHasLogEntries and not self.processXsltInBrowser:
                         _startedAt = time.time()
