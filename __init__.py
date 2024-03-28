@@ -1406,7 +1406,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # non-GUI (cmd line) options.keepOpen kept modelXbrls open, use keepFilingOpen to block closing here
         if not options.keepFilingOpen and not self.isRunningUnderTestcase():
             for report in filing.reports:
-                report.modelXbrl.close()
+                self.modelManager.close(report.modelXbrl)
 
         # close filesource (which may have been an archive), regardless of success above
         filesource.close()
