@@ -23,11 +23,11 @@ from . import Cube, Embedding, Report, PresentationGroup, Summary, Utils, Xlout
 usGaapOrIfrsPattern = re.compile(".*/fasb[.]org/(us-gaap|srt)/20|.*/xbrl[.]ifrs[.]org/taxonomy/[0-9-]{10}/ifrs-full", re.I)
 deiPattern = re.compile(".*/xbrl[.]sec[.]gov/dei/20", re.I)
 
-def mainFun(controller, modelXbrl, outputFolderName, transform=None, suplSuffix=None, rFilePrefix=None, altFolder=None, altTransform=None, altSuffix=None):
+def mainFun(controller, modelXbrl, outputFolderName, transform=None, suplSuffix=None, rFilePrefix=None, altFolder=None, altTransform=None, altSuffix=None, zipDir=None):
     if "EdgarRenderer/Filing.py#mainFun" in modelXbrl.arelleUnitTests:
         raise arelle.PythonUtil.pyNamedObject(modelXbrl.arelleUnitTests["EdgarRenderer/Filing.py#mainFun"], "EdgarRenderer/Filing.py#mainFun")
     _funStartedAt = time.time()
-    filing = Filing(controller, modelXbrl, outputFolderName, transform, suplSuffix, rFilePrefix, altFolder, altTransform, altSuffix)
+    filing = Filing(controller, modelXbrl, outputFolderName, transform, suplSuffix, rFilePrefix, altFolder, altTransform, altSuffix, zipDir)
     controller.logDebug("Filing initialized {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
     filing.populateAndLinkClasses()
     controller.logDebug("Filing populateAndLinkClasses {:.3f} secs.".format(time.time() - _funStartedAt)); _funStartedAt = time.time()
@@ -160,7 +160,7 @@ def mainFun(controller, modelXbrl, outputFolderName, transform=None, suplSuffix=
 
 
 class Filing(object):
-    def __init__(self, controller, modelXbrl, outputFolderName, transform, suplSuffix, rFilePrefix, altFolder, altTransform, altSuffix):
+    def __init__(self, controller, modelXbrl, outputFolderName, transform, suplSuffix, rFilePrefix, altFolder, altTransform, altSuffix, zipDir):
         self.modelXbrl = modelXbrl
         self.transform = transform
         self.suplSuffix = suplSuffix
@@ -290,6 +290,7 @@ class Filing(object):
         if controller.reportZip:
             self.fileNameBase = None
             self.reportZip = controller.reportZip
+            self.zipDir = zipDir or ""
         elif outputFolderName is not None:
             # self.fileNameBase = os.path.normpath(os.path.join(os.path.dirname(controller.webCache.normalizeUrl(modelXbrl.fileSource.basefile)) ,outputFolderName))
             self.fileNameBase = outputFolderName

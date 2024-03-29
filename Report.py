@@ -1155,7 +1155,7 @@ class Report(object):
         reportSummary.xmlFileName = baseName
         xmlText = treeToString(tree, xml_declaration=True, encoding='utf-8', pretty_print=True)
         if self.filing.reportZip:
-            self.filing.reportZip.writestr(baseName, xmlText)
+            self.filing.reportZip.writestr(self.filing.zipDir + baseName, xmlText)
             self.controller.renderedFiles.add(baseName)
         elif self.filing.fileNameBase is not None:
             self.controller.writeFile(os.path.join(self.filing.fileNameBase, baseName), xmlText)
@@ -1178,7 +1178,7 @@ class Report(object):
             result = self.filing.transform(tree,**keywordArgs)
         htmlText = treeToString(result,method='html',with_tail=False,pretty_print=True,encoding='us-ascii')
         if self.filing.reportZip:
-            self.filing.reportZip.writestr(baseName, htmlText)
+            self.filing.reportZip.writestr(self.filing.zipDir + baseName, htmlText)
             self.controller.renderedFiles.add(baseName)
         elif self.filing.fileNameBase is not None:
             self.controller.writeFile(os.path.join(self.filing.fileNameBase, baseName), htmlText)
@@ -1886,7 +1886,7 @@ class Cell(object):
                     fig.savefig(file, bbox_inches='tight', dpi=150)
                     file.seek(0)
                     if self.filing.reportZip:
-                        self.filing.reportZip.writestr(pngname, file.read())
+                        self.filing.reportZip.writestr(self.filing.zipDir + pngname, file.read())
                     else:
                         self.filing.controller.writeFile(os.path.join(self.filing.fileNameBase, pngname), file.read())
                     file.close()
