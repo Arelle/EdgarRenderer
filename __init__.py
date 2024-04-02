@@ -1148,7 +1148,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                             if redactTgtElts: # if any redacted continued at elements
                                 for ixdsHtmlRootElt in getattr(modelXbrl, "ixdsHtmlElements", ()):
                                     hasEditedCont = False
-                                    for e in ixdsHtmlRootElt.getroottree().iterfind("//{http://www.xbrl.org/2013/inlineXBRL}*[@continuedAt]"):
+                                    for e in ixdsHtmlRootElt.getroottree().iterfind(".//{http://www.xbrl.org/2013/inlineXBRL}*[@continuedAt]"):
                                         contAt = e.get("continuedAt", None)
                                         while contAt in redactTgtElts: # may be multiple continuations in redacted sections
                                             nextContAtElt = redactTgtElts[contAt]
@@ -1864,7 +1864,7 @@ def edgarRendererDetectRedlining(modelDocument, *args, **kwargs):
     cntlr = modelDocument.modelXbrl.modelManager.cntlr
     foundMatchInDoc = False
     if modelDocument.type == ModelDocument.Type.INLINEXBRL and (not cntlr.hasGui or cntlr.redlineMode.get()):
-        for e in modelDocument.xmlRootElement.getroottree().iterfind("//{http://www.w3.org/1999/xhtml}*[@style]"):
+        for e in modelDocument.xmlRootElement.getroottree().iterfind(".//{http://www.w3.org/1999/xhtml}*[@style]"):
             rlMatch = redliningPattern.match(e.get("style",""))
             if rlMatch:
                 if not hasattr(cntlr, "editedIxDocs"):
@@ -1882,7 +1882,7 @@ def edgarRendererDetectRedlining(modelDocument, *args, **kwargs):
 def edgarRendererRemoveRedlining(modelDocument, *args, **kwargs):
     # strip redlining from modelDocument
     matchedElts = []
-    for e in modelDocument.xmlRootElement.getroottree().iterfind("//{http://www.w3.org/1999/xhtml}*[@style]"):
+    for e in modelDocument.xmlRootElement.getroottree().iterfind(".//{http://www.w3.org/1999/xhtml}*[@style]"):
         rlMatch = redliningPattern.match(e.get("style",""))
         if rlMatch:
             matchedElts.append(e) # can't prune tree while iterating through it
