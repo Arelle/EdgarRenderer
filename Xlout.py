@@ -58,7 +58,7 @@ class XlWriter(object):
         del self.simplified_transform
 
 
-    def save(self, suffix=""):
+    def save(self, suffix="", zipDir=""):
         if len(self.wb.worksheets)>1:
             self.wb.remove(self.wb.worksheets[0])
         if not (self.controller.reportZip or self.outputFolderName is not None):
@@ -69,7 +69,7 @@ class XlWriter(object):
         file.seek(0)
         outputFileName = OUTPUT_FILE_NAME + suffix
         if self.controller.reportZip:
-            self.controller.reportZip.writestr(outputFileName, file.read())
+            self.controller.reportZip.writestr(zipDir + outputFileName, file.read())
         else:
             self.controller.writeFile(os.path.join(self.outputFolderName, outputFileName), file.read())
         file.close()

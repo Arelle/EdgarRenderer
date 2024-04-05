@@ -47,17 +47,17 @@ def absPathOnPythonPath(controller, filename):  # if filename is relative, find 
     controller.logDebug("No such location {} found in sys path dirs {}.".format(filename, pathdirs))
     return None
 
-def writeXmlDoc(filing, etree, reportZip, reportFolder, filename):
+def writeXmlDoc(filing, etree, reportZip, reportFolder, filename, zipDir=""):
     xmlText = treeToString(etree.getroottree(), method='xml', with_tail=False, pretty_print=True, encoding='utf-8', xml_declaration=True)
     if reportZip:
-        reportZip.writestr(filename, xmlText)
+        reportZip.writestr(zipDir + filename, xmlText)
     elif reportFolder is not None:
         filing.writeFile(os.path.join(reportFolder, filename), xmlText)
 
-def writeHtmlDoc(filing, root, reportZip, reportFolder, filename):
+def writeHtmlDoc(filing, root, reportZip, reportFolder, filename, zipDir=""):
     htmlText =  treeToString(root, method='html', with_tail=False, pretty_print=True, encoding='utf-8')
     if reportZip:
-        reportZip.writestr(filename, htmlText)
+        reportZip.writestr(zipDir + filename, htmlText)
     elif reportFolder is not None:
         filing.writeFile(os.path.join(reportFolder, filename), htmlText)
 

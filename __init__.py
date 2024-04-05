@@ -143,7 +143,7 @@ Language of labels:
     GUI may use tools->language labels setting to override system language for labels
 
 """
-VERSION = '3.24.1'
+VERSION = '3.24.1.u1'
 
 from collections import defaultdict
 from arelle import PythonUtil
@@ -988,7 +988,7 @@ class EdgarRenderer(Cntlr.Cntlr):
             self.logDebug("Message format string error {} in string {}".format(err, logRec.messageCode))
         return _text
 
-    def transformFilingSummary(self, filing, rootETree, xsltFile, reportsFolder, htmFileName, includeLogs, title=None):
+    def transformFilingSummary(self, filing, rootETree, xsltFile, reportsFolder, htmFileName, includeLogs, title=None, zipDir=""):
         summary_transform = etree.XSLT(etree.parse(xsltFile))
         trargs = {"asPage": etree.XSLT.strparam('true'),
                   "accessionNumber": "'{}'".format(getattr(filing, "accessionNumber", "")),
@@ -999,7 +999,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         if title:
             trargs["title"] = etree.XSLT.strparam(title)
         result = summary_transform(rootETree, **trargs)
-        IoManager.writeHtmlDoc(filing, result, self.reportZip, reportsFolder, htmFileName);
+        IoManager.writeHtmlDoc(filing, result, self.reportZip, reportsFolder, htmFileName, zipDir);
 
     def filingEnd(self, cntlr, options, filesource, filing, sourceZipStream=None, *args, **kwargs):
         # note that filesource is None if there were no instances
@@ -1133,6 +1133,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         removableCntxs = set()
                         removableUnits = set()
                         hasRedactedContinuation = False
+                        revalidateXbrl = False
                         for f in redactTgtElts.values():
                             if isinstance(f, ModelFact):
                                 if f.id in redactTgtElts:
@@ -1140,6 +1141,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                     removableCntxs.add(f.context)
                                     if f.unit is not None:
                                         removableUnits.add(f.unit)
+                                    revalidateXbrl = True
                             elif f.tag == "{http://www.xbrl.org/2013/inlineXBRL}continuation":
                                 hasRedactedContinuation = True
                         for report in filing.reports:
@@ -1192,6 +1194,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                         doc = ixdsHtmlRootElt.modelDocument
                                         cntlr.redlineIxDocs[doc.basename] = doc # causes it to be rewritten out
                                         cntlr.editedModelXbrls.add(report.modelXbrl)
+                                        revalidateXbrl = True
                             # rebuild redacted continuation chains
                             if hasRedactedContinuation:
                                 for f in modelXbrl.facts:
@@ -1204,7 +1207,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                     if isinstance(f, ModelInlineFootnote):
                                         del f._ixValue # force rebuilding continuation chain value
                                         xmlValidate(f.modelXbrl, f, ixFacts=True)
-
+                                revalidateXbrl = True
 
                         # redline-removed docs have self-closed <p> and other elements which must not be self-closed when saved
                         # inform user we are schema- and xbrl- revalidating
@@ -1213,14 +1216,15 @@ class EdgarRenderer(Cntlr.Cntlr):
                             uncloseSelfClosedTags(doc)
                             cntlr.editedIxDocs[reportedFile] = doc # add to editedIxDocs for output in dissem zip and dissem folder
                         if cntlr.redlineIxDocs:
-                            self.logInfo("Revalidating after redline removal or redaction")
+                            self.logInfo(f"Revalidating xhtml{', xbrl and EFM ' if revalidateXbrl else ' '}after redline removal or redaction")
                         for report in filing.reports:
                             for ixdsHtmlRootElt in getattr(report.modelXbrl, "ixdsHtmlElements", ()):
                                 if ixdsHtmlRootElt.modelDocument.basename in cntlr.redlineIxDocs:
                                     # revalidate schema validation
                                     xhtmlValidate(report.modelXbrl, ixdsHtmlRootElt)
-                            # revalidate after redaction
-                            Validate.validate(report.modelXbrl)
+                            if revalidateXbrl:
+                                # revalidate after redaction
+                                Validate.validate(report.modelXbrl)
                     self.renderedFiles.add("FilingSummary.xml")
                     if self.renderingLogsXslt and self.summaryHasLogEntries and not self.processXsltInBrowser:
                         _startedAt = time.time()
@@ -1289,6 +1293,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                         xbrlZip.close()
                         zipStream.seek(0)
                         if self.reportZip:
+                            if dissemReportsFolder:
+                                _fileName = "dissem/" + _fileName
                             self.reportZip.writestr(_fileName, zipStream.read())
                         else:
                             self.writeFile(os.path.join(self.reportsFolder, _fileName), zipStream.read())
@@ -1301,14 +1307,20 @@ class EdgarRenderer(Cntlr.Cntlr):
                     inputsToCopyToOutput = set(inputsToCopyToOutputList) - cntlr.editedIxDocs.keys()
                     for reportedFile, modelDocument in cntlr.editedIxDocs.items():
                         ix = serializeXml(modelDocument.xmlRootElement)
-                        dissemFilePath = join(dissemReportsFolder, reportedFile) + dissemSuffix
-                        filing.writeFile(dissemFilePath, ix)
-                        if self.isWorkstationFirstPass: # save redacted as .ht1 for workstation
-                            filePath = join(self.reportsFolder, reportedFile).replace(".htm", "_ix1.htm")
-                            filing.writeFile(filePath, ix)
+                        if self.reportZip:
+                            self.reportZip.writestr("dissem/" + reportedFile, ix)
+                        else:
+                            dissemFilePath = join(dissemReportsFolder, reportedFile) + dissemSuffix
+                            filing.writeFile(dissemFilePath, ix)
+                            if self.isWorkstationFirstPass: # save redacted as .ht1 for workstation
+                                filePath = join(self.reportsFolder, reportedFile).replace(".htm", "_ix1.htm")
+                                filing.writeFile(filePath, ix)
                         ix = None # dereference
                     if not self.isWorkstationFirstPass:
-                        shutil.copyfile(os.path.join(self.resourcesFolder, "report.css"), os.path.join(dissemReportsFolder, "report.css"))
+                        if self.reportZip:
+                            self.reportZip.write(os.path.join(self.resourcesFolder, "report.css"), "dissem/report.css")
+                        else:
+                            shutil.copyfile(os.path.join(self.resourcesFolder, "report.css"), os.path.join(dissemReportsFolder, "report.css"))
                     for report in filing.reports:
                         modelXbrl = report.modelXbrl
                         if modelXbrl in cntlr.editedModelXbrls:
@@ -1316,7 +1328,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                 Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, suffix="_ht1.")
                                 Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing) # EDGAR dissemination file goes in report folder so it gets into EDGAR database
                             else:
-                                Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, altFolder=dissemReportsFolder, suplSuffix=dissemSuffix)
+                                Inline.saveTargetDocumentIfNeeded(self, options, modelXbrl, filing, altFolder=dissemReportsFolder, suplSuffix=dissemSuffix, zipDir="dissem/")
                         elif hasattr(modelXbrl, "ixTargetFilename"):
                             inputsToCopyToOutput.add(modelXbrl.ixTargetFilename)
                     for filename in inputsToCopyToOutput:
@@ -1326,7 +1338,10 @@ class EdgarRenderer(Cntlr.Cntlr):
                                 serializedDoc = fout.read()
                             if not isGUIprivateView:
                                 _filepath.replace("_ht2.xml", "_ht1.xml").replace("_ix2.htm", "_ix1.htm")
-                            filing.writeFile(os.path.join(dissemReportsFolder, os.path.basename(_filepath)), serializedDoc)
+                            if self.reportZip:
+                                self.reportZip.writestr("dissem/" + filename, serializedDoc)
+                            else:
+                                filing.writeFile(os.path.join(dissemReportsFolder, os.path.basename(_filepath)), serializedDoc)
 
 
                     # reissue R files and excel after validation
@@ -1341,7 +1356,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                 Filing.mainFun(self, report.modelXbrl, dissemReportsFolder, transform=reportXsltDissem, suplSuffix=dissemSuffix, # dissem suffix, Arelle GUI
                                                altFolder=self.reportsFolder, altTransform=reportXslt) # workstation redacted R file
                             else: # Arelle GUI operation
-                                Filing.mainFun(self, report.modelXbrl, dissemReportsFolder, transform=reportXslt) # no suffix, Arelle GUI
+                                Filing.mainFun(self, report.modelXbrl, dissemReportsFolder, transform=reportXslt, zipDir="dissem/") # no suffix, Arelle GUI
                         summary = Summary.Summary(self)
                         rootETree = summary.buildSummaryETree()
                         summary.removeSummaryLogs() # produce filing summary without logs
@@ -1350,18 +1365,18 @@ class EdgarRenderer(Cntlr.Cntlr):
                             if self.summaryXslt:
                                 self.transformFilingSummary(filing, rootETree, self.summaryXslt, self.reportsFolder, "FilingSummary.htm", True, "Public Filing Data")
                         else:
-                            IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml' + dissemSuffix)
+                            IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml' + dissemSuffix, zipDir="dissem/")
                             if self.summaryXslt:
-                                self.transformFilingSummary(filing, rootETree, self.summaryXslt, dissemReportsFolder, "FilingSummary.htm" + dissemSuffix, True, "Public Filing Data")
+                                self.transformFilingSummary(filing, rootETree, self.summaryXslt, dissemReportsFolder, "FilingSummary.htm" + dissemSuffix, True, "Public Filing Data", zipDir="dissem/")
                         if self.xlWriter and self.hasXlout:
                             _startedAt = time.time()
-                            self.xlWriter.save(suffix=dissemSuffix)
+                            self.xlWriter.save(suffix=dissemSuffix, zipDir="dissem/")
                             self.xlWriter.close()
                             self.xlWriter = None
                             self.logDebug("Excel saving complete {:.3f} secs.".format(time.time() - _startedAt))
                         # generate supplemental AllReports and other such outputs at this time
                         for supplReport in pluginClassMethods("EdgarRenderer.FilingEnd.SupplementalReport"):
-                            supplReport(cntlr, filing, dissemReportsFolder)
+                            supplReport(cntlr, filing, dissemReportsFolder, zipDir="dissem/")
                         if self.hasIXBRLViewer:
                             _startedAt = time.time()
                             for generate in pluginClassMethods("iXBRLViewer.Generate"):
@@ -1402,7 +1417,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # non-GUI (cmd line) options.keepOpen kept modelXbrls open, use keepFilingOpen to block closing here
         if not options.keepFilingOpen and not self.isRunningUnderTestcase():
             for report in filing.reports:
-                report.modelXbrl.close()
+                self.modelManager.close(report.modelXbrl)
 
         # close filesource (which may have been an archive), regardless of success above
         filesource.close()
