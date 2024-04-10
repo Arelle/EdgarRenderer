@@ -1078,7 +1078,15 @@ class EdgarRenderer(Cntlr.Cntlr):
                             if self.isWorkstationFirstPass:
                                 filename = filename.replace(".htm", "_ix2.htm" if hasPrivateData else "_ix1.htm")
                         elif sourceZipStream is not None:
-                            with FileSource.openFileSource(_filepath, cntlr, sourceZipStream).file(_filepath, binary=True)[0] as fout:
+                            if filesource.isArchive and _filepath in filesource.dir:
+                                _srcfilepath = os.path.join(filesource.baseurl, _filepath)
+                            else:
+                                _srcfilepath = os.path.join(_xbrldir, _filepath)
+                            if sourceZipStream is not None:
+                                file = FileSource.openFileSource(_srcfilepath, cntlr, sourceZipStream).file(_srcfilepath, binary=True)[0]
+                            else:
+                                file = filesource.file(_srcfilepath, binary=True)[0]  # returned in a tuple
+                            with file as fout:  # returned in a tuple
                                 serializedDoc = fout.read()
                         else:
                             if filesource.isArchive and filesource.baseurl == _xbrldir:
@@ -1133,6 +1141,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         removableCntxs = set()
                         removableUnits = set()
                         hasRedactedContinuation = False
+                        redactedContinuationSources = set()
                         revalidateXbrl = False
                         for f in redactTgtElts.values():
                             if isinstance(f, ModelFact):
@@ -1160,9 +1169,11 @@ class EdgarRenderer(Cntlr.Cntlr):
                                                     e.set("continuedAt", contAt)
                                                 else:
                                                     e.attrib.pop("continuedAt", None)
+                                                    redactedContinuationSources.add(e)
                                                 e._continuationElement = getattr(nextContAtElt, "_continuationElement", None)
                                             else:
                                                 e.attrib.pop("continuedAt", None)
+                                                redactedContinuationSources.add(e)
                                                 e._continuationElement = contAt = None
                                             hasEditedCont = True
                                     for e in ixdsHtmlRootElt.iter("{http://www.xbrl.org/2013/inlineXBRL}relationship"):
@@ -1198,7 +1209,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                             # rebuild redacted continuation chains
                             if hasRedactedContinuation:
                                 for f in modelXbrl.facts:
-                                    if f.get("continuedAt") and hasattr(f, "_ixValue") and f.xValid >= VALID:
+                                    if (f.get("continuedAt") or f in redactedContinuationSources) and hasattr(f, "_ixValue") and f.xValid >= VALID:
                                         del f._ixValue # force rebuilding continuation chain value
                                         f.xValid = UNVALIDATED
                                         xmlValidate(f.modelXbrl, f, ixFacts=True)
@@ -1208,7 +1219,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                         del f._ixValue # force rebuilding continuation chain value
                                         xmlValidate(f.modelXbrl, f, ixFacts=True)
                                 revalidateXbrl = True
-
+                            redactedContinuationSources.clear()
                         # redline-removed docs have self-closed <p> and other elements which must not be self-closed when saved
                         # inform user we are schema- and xbrl- revalidating
                         for reportedFile, doc in cntlr.redlineIxDocs.items():
@@ -1332,16 +1343,29 @@ class EdgarRenderer(Cntlr.Cntlr):
                         elif hasattr(modelXbrl, "ixTargetFilename"):
                             inputsToCopyToOutput.add(modelXbrl.ixTargetFilename)
                     for filename in inputsToCopyToOutput:
-                        if isGUIprivateView or filename.endswith("_ht2.xml") or filename.endswith("_ix2.htm"):
-                            _filepath = os.path.join(self.reportsFolder, filename)
-                            with FileSource.openFileSource(_filepath, cntlr, sourceZipStream).file(_filepath, binary=True)[0] as fout:
-                                serializedDoc = fout.read()
-                            if not isGUIprivateView:
-                                _filepath.replace("_ht2.xml", "_ht1.xml").replace("_ix2.htm", "_ix1.htm")
+                        if not self.isWorkstationFirstPass or filename.endswith("_ht2.xml") or filename.endswith("_ix2.htm"):
+                            basename = os.path.basename(filename)
+                            if self.reportZip and basename in self.reportZip.namelist():
+                                serializedDoc = self.reportZip.read(basename)
+                            else:
+                                if self.reportZip:
+                                    _filepath = os.path.join(_xbrldir, filename)
+                                else:
+                                    _filepath = os.path.join(self.reportsFolder, filename)
+                                if filesource.isArchive and filesource.baseurl == _xbrldir:
+                                    # filename may not include parent directories within the zip
+                                    for f in filesource.dir:
+                                        if f.endswith(filename): # use this dir in the zip
+                                            _filepath = os.path.join(_xbrldir, f)
+                                            break
+                                with filesource.file(_filepath, binary=True)[0] as fout:  # returned in a tuple
+                                    serializedDoc = fout.read()
+                                if self.isWorkstationFirstPass:
+                                    filename.replace("_ht2.xml", "_ht1.xml").replace("_ix2.htm", "_ix1.htm")
                             if self.reportZip:
                                 self.reportZip.writestr("dissem/" + filename, serializedDoc)
                             else:
-                                filing.writeFile(os.path.join(dissemReportsFolder, os.path.basename(_filepath)), serializedDoc)
+                                filing.writeFile(os.path.join(dissemReportsFolder, basename), serializedDoc)
 
 
                     # reissue R files and excel after validation
