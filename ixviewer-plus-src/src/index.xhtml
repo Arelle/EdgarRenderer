@@ -14,7 +14,7 @@
     <title>Inline Viewer</title>
 </head>
 
-<body>
+<body class="overflow-hidden">
     <noscript>
         This application relies heavily on JavaScript, you
         will need to allow JavaScript to use this application.
@@ -52,14 +52,14 @@
                                 HTML</a>
                             <a id="menu-dropdown-settings" data-test="menu-dropdown-settings"
                                 class="dropdown-item click text-body" tabindex="1">Settings</a>
-                            <a id="form-information-help" data-bs-toggle="offcanvas" data-bs-target="#help-menu"
+                            <a id="form-information-help" data-bs-toggle="collapse" data-bs-target="#help-menu"
                                 class="dropdown-item click text-body" tabindex="1">Help</a>
                             <span id="form-information-version" class="dropdown-item-text text-body"
                                 tabindex="1"></span>
                         </div>
                     </li>
                     <li class="nav-item my-auto ml-1">
-                        <a id="sections-dropdown-link" data-bs-toggle="offcanvas" data-bs-target="#sections-menu"
+                        <a id="sections-dropdown-link" data-bs-toggle="collapse" data-bs-target="#sections-menu"
                             class="nav-link click disabled meta-required" tabindex="2" accesskey="2">
                             <i class="fas fa-layer-group" title="Sections"></i>
                             <span class="d-md-none d-lg-inline">Sections</span>
@@ -475,7 +475,7 @@
                 </ul>
                 <ul class="navbar-nav bg-inherit">
                     <li class="nav-item my-auto ml-1">
-                        <a id="facts-menu-button" data-bs-toggle="offcanvas" data-bs-target="#facts-menu" tabindex="13"
+                        <a id="facts-menu-button" data-bs-toggle="collapse" data-bs-target="#facts-menu" tabindex="13"
                             class="nav-link click" accesskey="9">
                             Facts
                             <span class="fact-total-count badge text-bg-light">
@@ -486,545 +486,549 @@
                 </ul>
             </div>
         </nav>
-        <ul id="tabs-container" class="nav nav-pills position-relative nav-underline justify-content-center">
+        <ul id="tabs-container" class="nav nav-pills position-relative nav-underline justify-content-center z-10">
+            <!-- tabs are dynamically loaded by JS.  See src\ts\links\index.ts -->
         </ul>
     </div>
 
-    <div class="main-container">
+    <div class="container-fluid overflow-hidden">
+        <div class="main-container row overflow-hidden">
 
-        <div id="error-container" data-test="error-container" class="px-0">
-            <!-- Below is populated dynamically VIA JS (error messages) -->
-        </div>
+            <div class="col-auto px-0 sidebar-container sidebar-container-left">
+                <div id="sections-menu" class="sidebar sidebar-scrollable show collapse collapse-horizontal hide-during-init" data-bs-scroll="true">
+                    <div class="offcanvas-header">
+                        <h5>Tagged Sections</h5>
+                        <button type="button" class="btn-close" data-bs-target="#sections-menu" data-bs-toggle="collapse" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <form id="sections-menu-search-submit" data-name="sections-menu-search" class="my-2 my-lg-0 input-group" novalidate="true">
+                            <div class="input-group">
+                                <div id="sections-search-additional" class="input-group-prepend d-none">
+                                    <button class="dropdown btn btn-sec" type="button" data-bs-toggle="dropdown" tabindex="2">
+                                        <i class="nav-loading fas fa-cog"></i>
+                                    </button>
+                                    <div class="dropdown-menu px-2">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="sections-search-options"
+                                                    value="1" checked="true" tabindex="2" />
+                                                <span>Search in All Instances.</span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="sections-search-options"
+                                                    value="2" tabindex="2" />
+                                                <span>Search in Current Instance only.</span>
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio" name="sections-search-options"
+                                                    value="3" tabindex="2" />
+                                                <span>Search in Other Instances(s) only.</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" id="sections-search" data-test="sections-search"
+                                    placeholder="Search Sections" aria-label="Search all Sections by their associated label."
+                                    name="search-sections" tabindex="2" required="true" />
 
-        <div id="xbrl-form-loading" data-test="xbrl-form-loading" class="jumbotron h-100">
-            <h2 class="display-4 text-center">
-                <i class="fa fa-regular fa-clock"></i>
-                <span>Loading Inline Form.</span>
-            </h2>
-        </div>
-
-        <div id="sections-menu" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false">
-            <div class="offcanvas-header">
-                <h5>Tagged Sections</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                <button id="section-menu-search-btn-clear" data-name="sections-menu-search-clear"
+                                    class="btn btn-sec" type="reset" tabindex="2">
+                                    <i class="nav-loading fas fa-times-circle" title="Clear Sections Search"></i>
+                                    <span class="sr-only sr-only-focusable">Clear
+                                        Sections Search</span>
+                                </button>
+                                <button class="btn btn-sec" type="submit" tabindex="2">
+                                    <i class="nav-loading fas fa-search" title="Submit Sections Search"></i>
+                                    <span class="sr-only sr-only-focusable">Submit
+                                        Sections Search</span>
+                                </button>
+                            </div>
+                        </form>
+                        <hr />
+                        <div class="accordion" id="tagged-sections">
+                            <!-- Below is populated dynamically VIA JS -->
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="offcanvas-body">
-                <form id="sections-menu-search-submit" data-name="sections-menu-search" class="my-2 my-lg-0 input-group"
-                    novalidate="true">
 
-                    <div class="input-group">
-                        <div id="sections-search-additional" class="input-group-prepend d-none">
-                            <button class="dropdown btn btn-sec" type="button" data-bs-toggle="dropdown" tabindex="2">
-                                <i class="nav-loading fas fa-cog"></i>
-                            </button>
-                            <div class="dropdown-menu px-2">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="radio" name="sections-search-options"
-                                            value="1" checked="true" tabindex="2" />
-                                        <span>Search in All Instances.</span>
-                                    </label>
+            <div class="col-auto px-0 sidebar-container sidebar-container-left">
+                <div id="help-menu" class="sidebar sidebar-scrollable left-sidebar collapse collapse-horizontal">
+                    <div class="offcanvas-header">
+                        <h5>Help</h5>
+                        <button type="button" class="btn-close" data-bs-target="#help-menu" data-bs-toggle="collapse" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <div class="accordion" id="help-sections">
+                            <div class="card">
+                                <div class="card-header px-0 py-0">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                            type="button" data-bs-toggle="collapse" data-bs-target="#help-getting-started">
+                                            <span class="font-size-1">Getting Started</span>
+                                        </button>
+                                    </h5>
                                 </div>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="radio" name="sections-search-options"
-                                            value="2" tabindex="2" />
-                                        <span>Search in Current Instance only.</span>
-                                    </label>
+                                <div id="help-getting-started" class="collapse" data-parent="#help-sections">
+                                    <p class="m-2">The Inline XBRL viewer allows a user
+                                        to quickly and easily review details of the tagged information in
+                                        an Inline document by automatically placing a top and bottom
+                                        highlight border around each tagged numeric fact and left and
+                                        right border for each block tagged fact. Hovering over a tagged
+                                        fact will highlight (shade) all content related to the tagged
+                                        fact, and clicking on a tagged fact will reveal its tagging
+                                        details in the Fact Review Window. Navigation, search and filter
+                                        options are also provided to easily refine and identify specific
+                                        types of tagged information.</p>
                                 </div>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="radio" name="sections-search-options"
-                                            value="3" tabindex="2" />
-                                        <span>Search in Other Instances(s) only.</span>
-                                    </label>
+                            </div>
+                            <div class="card">
+                                <div class="card-header px-0 py-0">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                            type="button" data-bs-toggle="collapse" data-bs-target="#help-fact-review-window">
+                                            <span class="font-size-1">Fact Review Window</span>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="help-fact-review-window" class="collapse" data-parent="#help-sections">
+                                    <p class="m-2">The Fact Review Window shows the tagging
+                                        details for the currently selected fact, which is highlighted
+                                        with a solid blue border. There are four categories of fact detail
+                                        which can be viewed; an "N/A" value indicates there is no
+                                        available information for the item within the given category:</p>
+                                    <ul>
+                                        <li>Attributes - All primary information (as
+                                            applicable) describing the tagged fact including period, sign,
+                                            decimals, dimensional detail (axes and members), scale, measure
+                                            and data type.</li>
+                                        <li>Labels - Detailed documentation
+                                            (definition) for the tag used, and other labels.</li>
+                                        <li>References - Authoritative reference
+                                            information (as applicable) for the selected tag.</li>
+                                        <li>Calculation - Balance and calculation
+                                            hierarchy details (numeric non-dimensioned items only).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header px-0 py-0">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                            type="button" data-bs-toggle="collapse" data-bs-target="#help-search">
+                                            <span class="font-size-1">Searching</span>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="help-search" class="collapse" data-parent="#help-sections">
+                                    <p class="m-2">There are two ways to search the
+                                        document: FACTS AND SECTIONS. To search information, enter a
+                                        keyword in a search box and select the magnifying glass icon to
+                                        return matching results. Search operators "and" (via "AND" or
+                                        "&amp;") and "or" (via "OR" or "|") are available to further refine a
+                                        search.</p>
+                                    <p class="m-2">
+                                        <strong>FACTS</strong>
+                                    </p>
+                                    <p class="m-2">The Search Facts box can be used to find
+                                        tagged facts matching entered keywords. By default, tag name, tag
+                                        labels, and tagged content are included in Search. Tagged facts
+                                        matching the search criteria are shown with a yellow-colored
+                                        (default) shading on the page and appear in the Facts List.
+                                        Select the "X" button to the left of the magnifying glass icon to
+                                        clear the search.</p>
+                                    <p class="m-2">The content included in Search can be increased to
+                                        included tag definitions, dimensions, and authoritative
+                                        references by selecting the cog / wheel icon to the left of the
+                                        search box. See Settings for more information.</p>
+
+                                    <p class="m-2">
+                                        <strong>SECTIONS</strong>
+                                    </p>
+                                    <p class="m-2">The Search Sections box can be used to
+                                        filter the tagged sections of the financial statements.</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header px-0 py-0">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                            type="button" data-bs-toggle="collapse" data-bs-target="#help-filter">
+                                            <span class="font-size-1">Filters</span>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="help-filter" class="collapse" data-parent="#help-sections">
+                                    <p class="m-2">Filters change the number of highlighted
+                                        facts and items in the fact list by providing several ways to
+                                        review and pinpoint certain tagged information. Multiple filters
+                                        can be used at once.</p>
+                                    <p class="m-2">
+                                        <strong>DATA FILTERS</strong>
+                                    </p>
+                                    <p class="m-2">These filter options allow the user to
+                                        refine the highlighted tagged facts by data type:</p>
+                                    <ul>
+                                        <li>All - Displays all tagged data (default)</li>
+                                        <li>Amounts Only - Numeric facts only</li>
+                                        <li>Text Only - Textual facts only</li>
+                                        <li>Calculations Only - Numeric facts
+                                            participating in a calculation only</li>
+                                        <li>Negatives Only - Negative Numeric amounts
+                                            only</li>
+                                        <li>Additional Items Only - Tagged facts
+                                            without a corresponding HTML presentation (i.e., hidden facts)
+                                            only</li>
+                                    </ul>
+                                    <p class="m-2">
+                                        <strong>TAGS FILTER</strong>
+                                    </p>
+                                    <p class="m-2">These filters allow the user to refine
+                                        the highlighted facts by tag type:</p>
+                                    <ul>
+                                        <li>All - Displays all tagged data (default)</li>
+                                        <li>Standard Only- Facts with standard tags
+                                            from a common fact (e.g., US_GAAP, IFRS, DEI).</li>
+                                        <li>Custom Only - Facts with extension
+                                            "custom" tags unique to the entity's document.</li>
+                                    </ul>
+                                    <p class="m-2">
+                                        <strong>MORE FILTERS</strong>
+                                    </p>
+                                    <p class="m-2">Additional filters that allow user to
+                                        further refine the highlighted facts:</p>
+                                    <ul>
+                                        <li>Periods - List of all used context years
+                                            and reporting periods</li>
+                                        <li>Measures - List of all used units of
+                                            measure (e.g., US Dollars); as applicable</li>
+                                        <li>Axis - List of all used axis
+                                            (dimensions); as applicable (dimensions); as applicable</li>
+                                        <li>Scale - List of all used scaled options
+                                            (e.g., thousands, millions); as applicable</li>
+                                        <li>Balance - Debit, credit; as applicable</li>
+                                    </ul>
+                                    <p class="m-2">Multiple filters work in conjunction
+                                        with each other. For example, selecting the "Amounts Only" Data
+                                        filter and "Custom Only" Tags filter will highlight only numeric
+                                        tagged facts using custom tags and list them in the fact list.
+                                        Active filters are displayed in the Filter toolbar as they are
+                                        selected. Active filters can be removed individually by
+                                        unchecking or selecting ALL option for each filter, or all at
+                                        once via the "Reset All Filters" option.</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header px-0 py-0">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                            type="button" data-bs-toggle="collapse" data-bs-target="#help-facts-results-list">
+                                            <span class="font-size-1">Facts List (Results)</span>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="help-facts-results-list" class="collapse" data-parent="#help-sections">
+                                    <p class="m-2">On the toolbar, select the "count" to
+                                        the right of the word Facts (e.g., Facts 234) to reveal the Facts
+                                        List results - a navigable listing of all currently highlighted
+                                        tagged facts. The count represents the current number of facts.</p>
+                                    <p class="m-2">By default, all tagged facts are
+                                        displayed in the Fact List Results. The list content and count
+                                        reflects the currently highlighted facts (i.e., both Filters and
+                                        Search criteria refine the list to match the highlighted tagged
+                                        facts). Navigation controls are available to move through the
+                                        list as well as move the current view to the corresponding
+                                        highlighted fact location automatically. When a fact in the Facts
+                                        Results List is selected, it will reveal the Fact Review Window.</p>
+                                    <p class="m-2">Certain letters may appear to the right
+                                        of an item in the Fact Result list to indicate a certain
+                                        property. If the letter "A" appears for a fact, it indicates the
+                                        fact is additional data (i.e., hidden with potentially no
+                                        corresponding HTML presentation). If the letter "C" appears, the
+                                        fact is tagged with a custom tag. If the letter "D" appears, the
+                                        fact is tagged with dimensional information.</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header px-0 py-0">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                            type="button" data-bs-toggle="collapse" data-bs-target="#help-tagged-sections">
+                                            <span class="font-size-1">Sections</span>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="help-tagged-sections" class="collapse" data-parent="#help-sections">
+                                    <p class="m-2">The SECTIONS toolbar item provides a
+                                        listing of the tagged sections of the Inline document. Sections
+                                        are divided into three groups:</p>
+                                    <ul>
+                                        <li>Document &amp; Entity Information</li>
+                                        <li>Financial Statements</li>
+                                        <li>Notes to the Financial Statements</li>
+                                    </ul>
+                                    <p class="m-2">By expanding a group and selecting a
+                                        section item in the listing, Inline XBRL viewer will navigate to that section.
+                                        When the Tagged Sections feature is open, the Search Sections box
+                                        will additionally filter the list of sections to only those
+                                        sections that match the entered criteria.</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header px-0 py-0">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
+                                            type="button" data-bs-toggle="collapse" data-bs-target="#help-tagged-menu">
+                                            <span class="font-size-1">Menu</span>
+                                        </button>
+                                    </h5>
+                                </div>
+                                <div id="help-tagged-menu" class="collapse" data-parent="#help-sections">
+                                    <p class="m-2">
+                                        <strong>Information</strong>
+                                    </p>
+                                    <p class="m-2">The Information menu item provides
+                                        additional detail about the current Inline document and
+                                        customizable viewer settings.</p>
+                                    <ul>
+                                        <li>Company and Document - Basic company and document
+                                            information</li>
+                                        <li>Tags - Fact and tag (standard and custom)
+                                            information</li>
+                                        <li>Files - Files used</li>
+                                        <li>Additional Items - Additional hidden data
+                                            that's been tagged but potentially does not have a corresponding
+                                            location in the HTML</li>
+                                    </ul>
+                                    <p class="m-2">
+                                        <strong>Save XBRL Instance</strong>
+                                    </p>
+                                    <p class="m-2">The Save XBRL Instance menu item allows
+                                        an XBRL instance document (*.xml) that is extracted from the
+                                        Inline document to be saved locally for use by software
+                                        supporting the XBRL format.</p>
+                                    <p class="m-2">
+                                        <strong>Save XBRL Zip</strong>
+                                    </p>
+                                    <p class="m-2">The Save XBRL Zip menu item allows a zip
+                                        file (*.zip) that contains the as-provided XBRL instance document
+                                        and related custom fact files to be saved locally.</p>
+                                    <p class="m-2">
+                                        <strong>Settings</strong>
+                                    </p>
+                                    <p class="m-2">The Settings menu item provides the
+                                        ability to customize Viewer features.</p>
+                                    <p class="m-2">
+                                        <strong>Tagged Fact Hover</strong>
+                                    </p>
+                                    <ul>
+                                        <li>On - Displays the hover fact review
+                                            window for any tagged fact*</li>
+                                        <li>Off - Hides the hover fact review window
+                                            for any tagged fact (default)</li>
+                                    </ul>
+                                    <p class="m-2">* May impact performance with certain
+                                        web browsers.</p>
+                                    <p class="m-2">
+                                        <strong>Auto Scrolling Position </strong>(This setting will have
+                                        no effect on IE 10 or Safari)
+                                    </p>
+                                    <ul>
+                                        <li>Top - Selecting a fact from the Sections
+                                            Menu or the Fact Menu will automatically scroll that element to
+                                            the Top of the Inline XBRL viewer window (default)</li>
+                                        <li>Center - Selecting a fact from the
+                                            Sections Menu or the Fact Menu will automatically scroll that
+                                            element to the middle of the Inline XBRL viewer window</li>
+                                    </ul>
+                                    <p class="m-2">
+                                        <strong>Highlight Colors</strong> (Use the save and reset buttons
+                                        to save the selected setting or reset to default)
+                                    </p>
+                                    <ul>
+                                        <li>Tagged Data - Change the highlight color
+                                            of the tagged fact border</li>
+                                        <li>Search Results - Change the background
+                                            color of tagged items matching the Search results</li>
+                                        <li>Selected Fact - Change the color of
+                                            highlight border used to identify the currently selected fact</li>
+                                        <li>Tag Shading (hover) - Change the color of
+                                            the shading applied to tagged data on hover</li>
+                                    </ul>
+                                    <p class="m-2">
+                                        <strong>Search Options</strong>
+                                    </p>
+                                    <ul>
+                                        <!-- <li >Match Case - Matches the specific case of
+                                            the entered Search keyword</li> -->
+                                        <li>Include Labels - Extends Search to
+                                            include tag labels</li>
+                                        <li>Include Definitions - Extends Search to
+                                            include tag definitions</li>
+                                        <li>Include Dimensions - Extends Search to
+                                            include dimensional detail</li>
+                                        <li>Include References - Extends Search to
+                                            include authoritative reference information. Optionally specify
+                                            the reference parts to include in the search (e.g., topic,
+                                            subtopic, section)</li>
+                                    </ul>
+                                    <p class="m-2">
+                                        <strong>Help</strong>(this content)
+                                    </p>
+                                    <p class="m-2">
+                                        <strong>Version</strong>
+                                    </p>
+                                    <p class="m-2">Indicates the current build of the Inline XBRL viewer
+                                        application.</p>
                                 </div>
                             </div>
                         </div>
-                        <input type="text" class="form-control" id="sections-search" data-test="sections-search"
-                            placeholder="Search Sections" aria-label="Search all Sections by their associated label."
-                            name="search-sections" tabindex="2" required="true" />
-
-                        <button id="section-menu-search-btn-clear" data-name="sections-menu-search-clear"
-                            class="btn btn-sec" type="reset" tabindex="2">
-                            <i class="nav-loading fas fa-times-circle" title="Clear Sections Search"></i>
-                            <span class="sr-only sr-only-focusable">Clear
-                                Sections Search</span>
-                        </button>
-                        <button class="btn btn-sec" type="submit" tabindex="2">
-                            <i class="nav-loading fas fa-search" title="Submit Sections Search"></i>
-                            <span class="sr-only sr-only-focusable">Submit
-                                Sections Search</span>
-                        </button>
-                    </div>
-                </form>
-                <hr />
-                <div class="accordion" id="tagged-sections">
-                    <!-- Below is populated dynamically VIA JS -->
-                </div>
-            </div>
-        </div>
-
-        <div id="help-menu" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false">
-            <div class="offcanvas-header">
-                <h5>Help</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
-                <div class="accordion" id="help-sections">
-                    <div class="card">
-                        <div class="card-header px-0 py-0">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
-                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-getting-started">
-                                    <span class="font-size-1">Getting Started</span>
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="help-getting-started" class="collapse" data-parent="#help-sections">
-                            <p class="m-2">The Inline XBRL viewer allows a user
-                                to quickly and easily review details of the tagged information in
-                                an Inline document by automatically placing a top and bottom
-                                highlight border around each tagged numeric fact and left and
-                                right border for each block tagged fact. Hovering over a tagged
-                                fact will highlight (shade) all content related to the tagged
-                                fact, and clicking on a tagged fact will reveal its tagging
-                                details in the Fact Review Window. Navigation, search and filter
-                                options are also provided to easily refine and identify specific
-                                types of tagged information.</p>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header px-0 py-0">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
-                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-fact-review-window">
-                                    <span class="font-size-1">Fact Review Window</span>
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="help-fact-review-window" class="collapse" data-parent="#help-sections">
-                            <p class="m-2">The Fact Review Window shows the tagging
-                                details for the currently selected fact, which is highlighted
-                                with a solid blue border. There are four categories of fact detail
-                                which can be viewed; an "N/A" value indicates there is no
-                                available information for the item within the given category:</p>
-                            <ul>
-                                <li>Attributes - All primary information (as
-                                    applicable) describing the tagged fact including period, sign,
-                                    decimals, dimensional detail (axes and members), scale, measure
-                                    and data type.</li>
-                                <li>Labels - Detailed documentation
-                                    (definition) for the tag used, and other labels.</li>
-                                <li>References - Authoritative reference
-                                    information (as applicable) for the selected tag.</li>
-                                <li>Calculation - Balance and calculation
-                                    hierarchy details (numeric non-dimensioned items only).</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header px-0 py-0">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
-                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-search">
-                                    <span class="font-size-1">Searching</span>
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="help-search" class="collapse" data-parent="#help-sections">
-                            <p class="m-2">There are two ways to search the
-                                document: FACTS AND SECTIONS. To search information, enter a
-                                keyword in a search box and select the magnifying glass icon to
-                                return matching results. Search operators "and" (via "AND" or
-                                "&amp;") and "or" (via "OR" or "|") are available to further refine a
-                                search.</p>
-                            <p class="m-2">
-                                <strong>FACTS</strong>
-                            </p>
-                            <p class="m-2">The Search Facts box can be used to find
-                                tagged facts matching entered keywords. By default, tag name, tag
-                                labels, and tagged content are included in Search. Tagged facts
-                                matching the search criteria are shown with a yellow-colored
-                                (default) shading on the page and appear in the Facts List.
-                                Select the "X" button to the left of the magnifying glass icon to
-                                clear the search.</p>
-                            <p class="m-2">The content included in Search can be increased to
-                                included tag definitions, dimensions, and authoritative
-                                references by selecting the cog / wheel icon to the left of the
-                                search box. See Settings for more information.</p>
-
-                            <p class="m-2">
-                                <strong>SECTIONS</strong>
-                            </p>
-                            <p class="m-2">The Search Sections box can be used to
-                                filter the tagged sections of the financial statements.</p>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header px-0 py-0">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
-                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-filter">
-                                    <span class="font-size-1">Filters</span>
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="help-filter" class="collapse" data-parent="#help-sections">
-                            <p class="m-2">Filters change the number of highlighted
-                                facts and items in the fact list by providing several ways to
-                                review and pinpoint certain tagged information. Multiple filters
-                                can be used at once.</p>
-                            <p class="m-2">
-                                <strong>DATA FILTERS</strong>
-                            </p>
-                            <p class="m-2">These filter options allow the user to
-                                refine the highlighted tagged facts by data type:</p>
-                            <ul>
-                                <li>All - Displays all tagged data (default)</li>
-                                <li>Amounts Only - Numeric facts only</li>
-                                <li>Text Only - Textual facts only</li>
-                                <li>Calculations Only - Numeric facts
-                                    participating in a calculation only</li>
-                                <li>Negatives Only - Negative Numeric amounts
-                                    only</li>
-                                <li>Additional Items Only - Tagged facts
-                                    without a corresponding HTML presentation (i.e., hidden facts)
-                                    only</li>
-                            </ul>
-                            <p class="m-2">
-                                <strong>TAGS FILTER</strong>
-                            </p>
-                            <p class="m-2">These filters allow the user to refine
-                                the highlighted facts by tag type:</p>
-                            <ul>
-                                <li>All - Displays all tagged data (default)</li>
-                                <li>Standard Only- Facts with standard tags
-                                    from a common fact (e.g., US_GAAP, IFRS, DEI).</li>
-                                <li>Custom Only - Facts with extension
-                                    "custom" tags unique to the entity's document.</li>
-                            </ul>
-                            <p class="m-2">
-                                <strong>MORE FILTERS</strong>
-                            </p>
-                            <p class="m-2">Additional filters that allow user to
-                                further refine the highlighted facts:</p>
-                            <ul>
-                                <li>Periods - List of all used context years
-                                    and reporting periods</li>
-                                <li>Measures - List of all used units of
-                                    measure (e.g., US Dollars); as applicable</li>
-                                <li>Axis - List of all used axis
-                                    (dimensions); as applicable (dimensions); as applicable</li>
-                                <li>Scale - List of all used scaled options
-                                    (e.g., thousands, millions); as applicable</li>
-                                <li>Balance - Debit, credit; as applicable</li>
-                            </ul>
-                            <p class="m-2">Multiple filters work in conjunction
-                                with each other. For example, selecting the "Amounts Only" Data
-                                filter and "Custom Only" Tags filter will highlight only numeric
-                                tagged facts using custom tags and list them in the fact list.
-                                Active filters are displayed in the Filter toolbar as they are
-                                selected. Active filters can be removed individually by
-                                unchecking or selecting ALL option for each filter, or all at
-                                once via the "Reset All Filters" option.</p>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header px-0 py-0">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
-                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-facts-results-list">
-                                    <span class="font-size-1">Facts List (Results)</span>
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="help-facts-results-list" class="collapse" data-parent="#help-sections">
-                            <p class="m-2">On the toolbar, select the "count" to
-                                the right of the word Facts (e.g., Facts 234) to reveal the Facts
-                                List results - a navigable listing of all currently highlighted
-                                tagged facts. The count represents the current number of facts.</p>
-                            <p class="m-2">By default, all tagged facts are
-                                displayed in the Fact List Results. The list content and count
-                                reflects the currently highlighted facts (i.e., both Filters and
-                                Search criteria refine the list to match the highlighted tagged
-                                facts). Navigation controls are available to move through the
-                                list as well as move the current view to the corresponding
-                                highlighted fact location automatically. When a fact in the Facts
-                                Results List is selected, it will reveal the Fact Review Window.</p>
-                            <p class="m-2">Certain letters may appear to the right
-                                of an item in the Fact Result list to indicate a certain
-                                property. If the letter "A" appears for a fact, it indicates the
-                                fact is additional data (i.e., hidden with potentially no
-                                corresponding HTML presentation). If the letter "C" appears, the
-                                fact is tagged with a custom tag. If the letter "D" appears, the
-                                fact is tagged with dimensional information.</p>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header px-0 py-0">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
-                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-tagged-sections">
-                                    <span class="font-size-1">Sections</span>
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="help-tagged-sections" class="collapse" data-parent="#help-sections">
-                            <p class="m-2">The SECTIONS toolbar item provides a
-                                listing of the tagged sections of the Inline document. Sections
-                                are divided into three groups:</p>
-                            <ul>
-                                <li>Document &amp; Entity Information</li>
-                                <li>Financial Statements</li>
-                                <li>Notes to the Financial Statements</li>
-                            </ul>
-                            <p class="m-2">By expanding a group and selecting a
-                                section item in the listing, Inline XBRL viewer will navigate to that section.
-                                When the Tagged Sections feature is open, the Search Sections box
-                                will additionally filter the list of sections to only those
-                                sections that match the entered criteria.</p>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header px-0 py-0">
-                            <h5 class="mb-0">
-                                <button class="btn btn-link d-flex justify-content-between align-items-center w-100"
-                                    type="button" data-bs-toggle="collapse" data-bs-target="#help-tagged-menu">
-                                    <span class="font-size-1">Menu</span>
-                                </button>
-                            </h5>
-                        </div>
-                        <div id="help-tagged-menu" class="collapse" data-parent="#help-sections">
-                            <p class="m-2">
-                                <strong>Information</strong>
-                            </p>
-                            <p class="m-2">The Information menu item provides
-                                additional detail about the current Inline document and
-                                customizable viewer settings.</p>
-                            <ul>
-                                <li>Company and Document - Basic company and document
-                                    information</li>
-                                <li>Tags - Fact and tag (standard and custom)
-                                    information</li>
-                                <li>Files - Files used</li>
-                                <li>Additional Items - Additional hidden data
-                                    that's been tagged but potentially does not have a corresponding
-                                    location in the HTML</li>
-                            </ul>
-                            <p class="m-2">
-                                <strong>Save XBRL Instance</strong>
-                            </p>
-                            <p class="m-2">The Save XBRL Instance menu item allows
-                                an XBRL instance document (*.xml) that is extracted from the
-                                Inline document to be saved locally for use by software
-                                supporting the XBRL format.</p>
-                            <p class="m-2">
-                                <strong>Save XBRL Zip</strong>
-                            </p>
-                            <p class="m-2">The Save XBRL Zip menu item allows a zip
-                                file (*.zip) that contains the as-provided XBRL instance document
-                                and related custom fact files to be saved locally.</p>
-                            <p class="m-2">
-                                <strong>Settings</strong>
-                            </p>
-                            <p class="m-2">The Settings menu item provides the
-                                ability to customize Viewer features.</p>
-                            <p class="m-2">
-                                <strong>Tagged Fact Hover</strong>
-                            </p>
-                            <ul>
-                                <li>On - Displays the hover fact review
-                                    window for any tagged fact*</li>
-                                <li>Off - Hides the hover fact review window
-                                    for any tagged fact (default)</li>
-                            </ul>
-                            <p class="m-2">* May impact performance with certain
-                                web browsers.</p>
-                            <p class="m-2">
-                                <strong>Auto Scrolling Position </strong>(This setting will have
-                                no effect on IE 10 or Safari)
-                            </p>
-                            <ul>
-                                <li>Top - Selecting a fact from the Sections
-                                    Menu or the Fact Menu will automatically scroll that element to
-                                    the Top of the Inline XBRL viewer window (default)</li>
-                                <li>Center - Selecting a fact from the
-                                    Sections Menu or the Fact Menu will automatically scroll that
-                                    element to the middle of the Inline XBRL viewer window</li>
-                            </ul>
-                            <p class="m-2">
-                                <strong>Highlight Colors</strong> (Use the save and reset buttons
-                                to save the selected setting or reset to default)
-                            </p>
-                            <ul>
-                                <li>Tagged Data - Change the highlight color
-                                    of the tagged fact border</li>
-                                <li>Search Results - Change the background
-                                    color of tagged items matching the Search results</li>
-                                <li>Selected Fact - Change the color of
-                                    highlight border used to identify the currently selected fact</li>
-                                <li>Tag Shading (hover) - Change the color of
-                                    the shading applied to tagged data on hover</li>
-                            </ul>
-                            <p class="m-2">
-                                <strong>Search Options</strong>
-                            </p>
-                            <ul>
-                                <!-- <li >Match Case - Matches the specific case of
-                                    the entered Search keyword</li> -->
-                                <li>Include Labels - Extends Search to
-                                    include tag labels</li>
-                                <li>Include Definitions - Extends Search to
-                                    include tag definitions</li>
-                                <li>Include Dimensions - Extends Search to
-                                    include dimensional detail</li>
-                                <li>Include References - Extends Search to
-                                    include authoritative reference information. Optionally specify
-                                    the reference parts to include in the search (e.g., topic,
-                                    subtopic, section)</li>
-                            </ul>
-                            <p class="m-2">
-                                <strong>Help</strong>(this content)
-                            </p>
-                            <p class="m-2">
-                                <strong>Version</strong>
-                            </p>
-                            <p class="m-2">Indicates the current build of the Inline XBRL viewer
-                                application.</p>
-                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="facts-menu" class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false">
-            <div class="offcanvas-header">
+            <div class="col px-0 middle-pane-container overflow-hidden">
+            
+                <div id="error-container" data-test="error-container" class="px-0">
+                    <!-- Below is populated dynamically VIA JS (error messages) -->
+                </div>
 
-                <h5>Facts</h5>
+                <div id="xbrl-form-loading" data-test="xbrl-form-loading" class="jumbotron h-100">
+                    <h2 class="display-4 text-center">
+                        <i class="fa fa-regular fa-clock"></i>
+                        <span>Loading Inline Form.</span>
+                    </h2>
+                </div>
 
-                <span class="fact-total-count badge bg-sec">
-                    <i class="fa fa-regular fa-clock"></i>
-                </span>
+                <div id="dynamic-xbrl-form" class="col position-relative">
+                    <!-- Main Doucment view - populated dynamically VIA JS-->
+                </div>
 
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-
-            <div class="offcanvas-body py-0">
-                <div id="facts-menu-list-pagination" class="d-flex flex-column flex-fill h-100 w-100">
-                    <div class="pagination"></div>
-                    <div class="form-group">
-                        <select id="facts-menu-page-select" class="form-select"
-                            aria-label="Quickly jump to a page in the Fact Menu." tabindex="13">
-                            <option>Select Page</option>
-                        </select>
+                <div id="fact-table-container" class="offcanvas offcanvas-bottom" data-bs-scroll="true" data-bs-backdrop="false">
+                    <div class="offcanvas-header d-flex justify-content-between">
+                        <h5 class="offcanvas-title">Fact Table</h5>
+                        <span>
+                            <nav aria-label="Facts Table Navigation">
+                                <ul class="pagination pagination-sm">
+                                    <li class="page-item">
+                                        <a id="fact-table-pagination-first" class="page-link text-body" href="#" tabindex="13">
+                                            <i class="fas fa-lg fa-angle-double-left"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a id="fact-table-pagination-prev" class="page-link text-body" href="#" tabindex="13">
+                                            <i class="fas fa-lg fa-angle-left"></i>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a id="fact-table-pagination-next" class="page-link text-body" href="#" tabindex="13">
+                                            <i class="fas fa-lg fa-angle-right"></i>
+                                        </a>
+                                    </li>
+                                    <li id="fact-table-pagination-last" class="page-item">
+                                        <a class="page-link text-body" href="#" tabindex="13">
+                                            <i class="fas fa-lg fa-angle-double-right"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </span>
+                        <span id="fact-table-pagination-info">
+                            <span></span>
+                        </span>
+                        <span>
+                            <select id="fact-table-pagination-size" class="form-select form-select-sm"
+                                aria-label="Fact Table Size Selection">
+                                <option value="10">10 Facts per page</option>
+                                <option value="25">25 Facts per page</option>
+                                <option value="50">50 Facts per page</option>
+                            </select>
+                        </span>
                     </div>
-                    <div class="list-group list-group-flush overflow-x-auto w-100"></div>
+                    <div class="offcanvas-body">
+                        <div>
+                            <table id="fact-table" class="table"></table>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <nav>
-            <ul id="html-pagination" class="pagination pagination-sm mb-0 form-pages d-none">
-                <li class="page-item">
-                    <a class="page-link text-body" href="#" tabindex="13" id="to-top-btn">
-                        <i class="fas fa-lg fa-angle-double-left"></i>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link text-body" href="#" tabindex="13" id="to-prev-btn">
-                        <i class="fas fa-lg fa-angle-left"></i>
-                    </a>
-                </li>
-                <li class="page-item ">
-                    <a class="page-link text-body" href="#" tabindex="13" id="to-next-btn">
-                        <i class="fas fa-lg fa-angle-right"></i>
-                    </a>
-                </li>
-                <li class="page-item ">
-                    <a class="page-link text-body" href="#" tabindex="13" id="to-bottom-btn">
-                        <i class="fas fa-lg fa-angle-double-right"></i>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <div id="fact-table-container" class="offcanvas offcanvas-bottom" data-bs-scroll="true"
-            data-bs-backdrop="false">
-            <div class="offcanvas-header d-flex justify-content-between">
-                <h5 class="offcanvas-title">Fact Table</h5>
-                <span>
-                    <nav aria-label="Facts Table Navigation">
-                        <ul class="pagination pagination-sm">
-                            <li class="page-item">
-                                <a id="fact-table-pagination-first" class="page-link text-body" href="#" tabindex="13">
-                                    <i class="fas fa-lg fa-angle-double-left"></i>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a id="fact-table-pagination-prev" class="page-link text-body" href="#" tabindex="13">
-                                    <i class="fas fa-lg fa-angle-left"></i>
-                                </a>
-                            </li>
-                            <li class="page-item">
-                                <a id="fact-table-pagination-next" class="page-link text-body" href="#" tabindex="13">
-                                    <i class="fas fa-lg fa-angle-right"></i>
-                                </a>
-                            </li>
-                            <li id="fact-table-pagination-last" class="page-item">
-                                <a class="page-link text-body" href="#" tabindex="13">
-                                    <i class="fas fa-lg fa-angle-double-right"></i>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </span>
-                <span id="fact-table-pagination-info">
-                    <span></span>
-                </span>
-                <span>
-                    <select id="fact-table-pagination-size" class="form-select form-select-sm"
-                        aria-label="Fact Table Size Selection">
-                        <option value="10">10 Facts per page</option>
-                        <option value="25">25 Facts per page</option>
-                        <option value="50">50 Facts per page</option>
-                    </select>
-                </span>
-            </div>
-            <div class="offcanvas-body">
-                <div>
-                    <table id="fact-table" class="table"></table>
-                </div>
-            </div>
-        </div>
-
-        <div id="facts-breakdown-container" class="offcanvas offcanvas-bottom" data-bs-scroll="true"
-            data-bs-backdrop="false">
-            <div class="offcanvas-header d-flex justify-content-between">
-                <h5 class="offcanvas-title">Facts Chart</h5>
-
-            </div>
-            <div class="offcanvas-body">
-                <div id="facts-breakdown" class="h-100">
-                    <div class="row h-100">
-                        <div class="h-100 card">
-                            <div class="card-body h-25">
-                                <h5 class="card-title" id="chart-title-1"></h5>
-                                <h6 class="card-subtitle my-2" id="chart-subtitle-1"></h6>
-                                <div id="chart-select-1"></div>
+        
+                <div id="facts-breakdown-container" class="offcanvas offcanvas-bottom" data-bs-scroll="true" data-bs-backdrop="false">
+                    <div class="offcanvas-header d-flex justify-content-between">
+                        <h5 class="offcanvas-title">Facts Chart</h5>
+                    </div>
+                    <div class="offcanvas-body">
+                        <div id="facts-breakdown" class="h-100">
+                            <div class="row h-100">
+                                <div class="h-100 card">
+                                    <div class="card-body h-25">
+                                        <h5 class="card-title" id="chart-title-1"></h5>
+                                        <h6 class="card-subtitle my-2" id="chart-subtitle-1"></h6>
+                                        <div id="chart-select-1"></div>
+                                    </div>
+                                    <div id="chart-1" class="h-75">Not enough data to form graph.</div>
+                                </div>
                             </div>
-                            <div id="chart-1" class="h-75">Not enough data to form graph.</div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="dynamic-xbrl-form" class="position-relative"></div>
+            <div class="col-auto px-0 sidebar-container sidebar-container-right">
+                <div id="facts-menu" class="sidebar collapse collapse-horizontal show hide-during-init">
+                    <div class="offcanvas-header">
+                        <h5>Facts</h5>
+                        <span class="fact-total-count badge bg-sec"><i class="fa fa-regular fa-clock"></i></span>
+                        <button type="button" class="btn-close" data-bs-target="#facts-menu" data-bs-toggle="collapse"  aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body py-0">
+                        <div id="facts-menu-list-pagination" class="d-flex flex-column flex-fill h-100 w-100">
+                            <div class="pagination"></div>
+                            <div class="form-group">
+                                <select id="facts-menu-page-select" class="form-select"
+                                    aria-label="Quickly jump to a page in the Fact Menu." tabindex="13">
+                                    <option>Select Page</option>
+                                </select>
+                            </div>
+                            <!-- auto-scroll-y-facts -->
+                            <div class="list-group list-group-flush overflow-x-auto overflow-auto w-100 facts-scrollable"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <div id="form-information-modal" data-test="form-information-modal"
-        class="dialog-box fixed-dialog-box d-none bg-white">
+    <nav>
+        <ul id="html-pagination" class="pagination pagination-sm mb-0 form-pages d-none">
+            <li class="page-item">
+                <a class="page-link text-body" href="#" tabindex="13" id="to-top-btn">
+                    <i class="fas fa-lg fa-angle-double-left"></i>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link text-body" href="#" tabindex="13" id="to-prev-btn">
+                    <i class="fas fa-lg fa-angle-left"></i>
+                </a>
+            </li>
+            <li class="page-item ">
+                <a class="page-link text-body" href="#" tabindex="13" id="to-next-btn">
+                    <i class="fas fa-lg fa-angle-right"></i>
+                </a>
+            </li>
+            <li class="page-item ">
+                <a class="page-link text-body" href="#" tabindex="13" id="to-bottom-btn">
+                    <i class="fas fa-lg fa-angle-double-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="form-information-modal" data-test="form-information-modal" class="dialog-box fixed-dialog-box d-none bg-white">
         <div class="dialog-header bg-sec text-white px-1 d-flex justify-content-between">
             <p id="form-information-modal-title" data-test="form-information-modal-title" class="lead mb-0">
                 <span></span>

@@ -3,17 +3,31 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
-import { Errors } from ".";
+import { Errors } from "./errors";
 import { HelpersUrl } from "../helpers/url";
 import { Logger, ILogObj } from 'tslog';
 
 export const ErrorsMajor: {
+  debug: (msg?: string) => void,
   inactive: () => void,
   formLinksNotFound: () => void,
   urlParams: () => void,
   cors: (doc: { host: string; }) => void,
   message: (input: string) => void,
 } = {
+
+  debug: (msg?: string) => {
+    if (!PRODUCTION && DEBUGCSS) {
+      const content = document.createTextNode(msg || 'Showing major errors container for debugging');
+
+      const element = document.createElement('div');
+      element.setAttribute('class', 'alert-height alert alert-danger show mb-0');
+      element.appendChild(content);
+      document.getElementById('error-container')?.appendChild(element);
+
+      Errors.updateMainContainerHeight();
+    }
+  },
 
   inactive: () => {
     const content = document.createTextNode('Inline XBRL is not usable in this state.');

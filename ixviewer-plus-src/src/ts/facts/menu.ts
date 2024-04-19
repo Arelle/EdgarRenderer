@@ -4,7 +4,7 @@
  */
 
 import { FactMap } from "../facts/map";
-import { Pagination } from "../pagination";
+import { Pagination } from "../pagination/pagination";
 import { UserFiltersState } from "../user-filters/state";
 import { FactsGeneral } from "./general";
 

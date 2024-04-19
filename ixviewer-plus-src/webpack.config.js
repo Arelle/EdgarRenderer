@@ -11,10 +11,12 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 module.exports = (
   env = { copy: true, analyze: false },
-  argv = { mode: `production` }
+  argv = { mode: `production` },
 ) => {
   const forProd = argv.mode === `production`;
   const forWorkstation = argv.env.domain === 'workstation';
+  const distPath = argv.env.distPath; // call like this: npm run build-dev --env distPath=./foobar
+  const publicPath = argv.env.publicPath; // call like this: npm run build-dev --env publicPath=/my-branch-name/
   return {
     mode: argv.mode,
 
@@ -60,7 +62,11 @@ module.exports = (
       forProd ? false : false,
 
       new webpack.DefinePlugin({
-        PRODUCTION: env.copy ? false : true,
+        // vars below must be defined in ./typings.d.ts
+        PRODUCTION: forProd ? true : false,
+        DEBUGJS: env.debugJs || env.debug ? true : false,
+        DEBUGCSS: env.debugCss || env.debug ? true : false,
+        LOGPERFORMANCE: env.logPerformance ? true : false,
       }),
 
       new CleanWebpackPlugin(),
@@ -73,18 +79,13 @@ module.exports = (
           : `[name].bundle.js`,
       publicPath: 
         forWorkstation
-        ? '/AR/ixviewer-plus/' 
+        ? publicPath || '/AR/ixviewer-plus/' 
         : forProd 
-          ? '/ixviewer-plus/' : undefined, 
+          ? ('/ixviewer-plus/') : publicPath || undefined, // For prod webpack seems to fail with dynamically passed in publicPath
           // undefined for dev && !ws (served from memory)
-        // forProd
-        //   ? forWorkstation
-        //     ? '/AR/ixviewer-plus/' : '/ixviewer-plus/'
-        //   : forWorkstation
-        //     ? '/AR/ixviewer-plus/' : undefined,
       path: forWorkstation
-        ? path.resolve(__dirname, `./dist-ws`)
-        : path.resolve(__dirname, `./dist`)
+        ? path.resolve(__dirname, distPath || `./dist-ws`)
+        : path.resolve(__dirname, distPath || `./dist`)
     },
 
     module: {
@@ -157,14 +158,14 @@ module.exports = (
       port: 3000,
 
       static: forWorkstation // static means stuff "not served from webpack".  Not sure it's even used.
-        ? path.resolve(__dirname, `./dist-ws`)
-        : path.resolve(__dirname, `./dist`),
+        ? path.resolve(__dirname, distPath || `./dist-ws`)
+        : path.resolve(__dirname, distPath || `./dist`),
       hot: true,
       liveReload: forProd ? false : true,
       watchFiles:
         forProd
           ? []
-          : [`./src/**/*.html`, `./src/**/*.scss`, `./src/**/*.ts`],
+          : [`./src/**/*.html`, `./src/**/*.xhtml`, `./src/**/*.scss`, `./src/**/*.ts`],
       client: {
         overlay: {
           errors: true,

@@ -3,8 +3,32 @@
   <DefinitionPath>Taxonomy\Documentation</DefinitionPath>
   <ReferencesPath>Taxonomy\Reference</ReferencesPath>
   <TaxonomyList>
+    <!-- PLEASE KEEP TAXONOMIES IN ALPHABETICAL ORDER by SEC, FASB, IASB -->
+    <!-- All years are required so that old filings can be viewed. -->
+    <!-- SEC -->
     <TaxonomyAddon>
-      <Taxonomy>shr-2023.xsd<!-- No add-ons --></Taxonomy>
+      <Taxonomy>cef-2021q4.xsd</Taxonomy>
+      <ReferenceFiles>
+        <string>cef-2021q4_ref.xsd</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>cef-2022.xsd</Taxonomy>
+      <ReferenceFiles>
+        <string>cef-2022_ref.xsd</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>cef-2023.xsd</Taxonomy>
+      <ReferenceFiles>
+        <string>cef-2023_ref.xsd</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>cef-2024.xsd</Taxonomy>
+      <ReferenceFiles>
+        <string>cef-2024_ref.xsd</string>
+      </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
       <Taxonomy>country-2009-01-31.xsd</Taxonomy>
@@ -73,6 +97,13 @@
       <Taxonomy>country-2023.xsd</Taxonomy>
       <DefinitionFiles>
         <string>country-2023_doc.xsd</string>
+      </DefinitionFiles>
+      <ReferenceFiles/>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>country-2024.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>country-2024_doc.xsd</string>
       </DefinitionFiles>
       <ReferenceFiles/>
     </TaxonomyAddon>
@@ -236,27 +267,12 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
-      <Taxonomy>cef-2021q4.xsd</Taxonomy>
+      <Taxonomy>dei-2024.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>dei-2024_doc.xsd</string>
+      </DefinitionFiles>
       <ReferenceFiles>
-        <string>cef-2021q4_ref.xsd</string>
-      </ReferenceFiles>
-    </TaxonomyAddon>
-    <TaxonomyAddon>
-      <Taxonomy>cef-2022.xsd</Taxonomy>
-      <ReferenceFiles>
-        <string>cef-2022_ref.xsd</string>
-      </ReferenceFiles>
-    </TaxonomyAddon>
-    <TaxonomyAddon>
-      <Taxonomy>cef-2023.xsd</Taxonomy>
-      <ReferenceFiles>
-        <string>cef-2023_ref.xsd</string>
-      </ReferenceFiles>
-    </TaxonomyAddon>
-    <TaxonomyAddon>
-      <Taxonomy>vip-2022.xsd</Taxonomy>
-      <ReferenceFiles>
-        <string>vip-2022_ref.xsd</string>
+        <string>dei-2024_ref.xsd</string>
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
@@ -377,12 +393,27 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
+      <Taxonomy>exch-2024.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>exch-2024_doc.xsd</string>
+      </DefinitionFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>ffd-2023.xsd</Taxonomy>
       <DefinitionFiles>
         <string>ffd-2023_doc.xsd</string>
       </DefinitionFiles>
       <ReferenceFiles>
         <string>ffd-2023_ref.xsd</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>ffd-2024.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>ffd-2024_doc.xsd</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>ffd-2024_ref.xsd</string>
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
@@ -455,6 +486,13 @@
       <ReferenceFiles/>
     </TaxonomyAddon>
     <TaxonomyAddon>
+      <Taxonomy>naics-2024.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>naics-2024_doc.xsd</string>
+      </DefinitionFiles>
+      <ReferenceFiles/>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>oef-2023.xsd</Taxonomy>
       <DefinitionFiles/>
       <ReferenceFiles/>
@@ -520,22 +558,10 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
-      <Taxonomy>snj-2023.xsd</Taxonomy>
-      <DefinitionFiles>
-        <string>snj-2023_doc.xsd</string>
-      </DefinitionFiles>
-    </TaxonomyAddon>
-    <TaxonomyAddon>
       <Taxonomy>rxp-2024.xsd</Taxonomy>
       <ReferenceFiles>
         <string>rxp-2024_ref.xsd</string>
       </ReferenceFiles>
-    </TaxonomyAddon>
-    <TaxonomyAddon>
-      <Taxonomy>snj-2024.xsd</Taxonomy>
-      <DefinitionFiles>
-        <string>snj-2024_doc.xsd</string>
-      </DefinitionFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
       <Taxonomy>sic-2009-01-31.xsd</Taxonomy>
@@ -574,6 +600,25 @@
         <string>sic-2023_doc.xsd</string>
       </DefinitionFiles>
       <ReferenceFiles/>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>sic-2024.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>sic-2024_doc.xsd</string>
+      </DefinitionFiles>
+      <ReferenceFiles/>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>snj-2023.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>snj-2023_doc.xsd</string>
+      </DefinitionFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>snj-2024.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>snj-2024_doc.xsd</string>
+      </DefinitionFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
       <Taxonomy>stpr-2009-01-31.xsd</Taxonomy>
@@ -713,6 +758,13 @@
   			<string>srt-ref-2020-01-31.xml</string>
   		</ReferenceFiles>
   	</TaxonomyAddon>
+    <TaxonomyAddon>
+      <Taxonomy>vip-2022.xsd</Taxonomy>
+      <ReferenceFiles>
+        <string>vip-2022_ref.xsd</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <!-- FASB -->
   	<TaxonomyAddon>
   		<Taxonomy>us-gaap-2021-01-31.xsd</Taxonomy>
   		<DefinitionFiles>
@@ -738,6 +790,15 @@
   		</DefinitionFiles>
   		<ReferenceFiles>
   			<string>us-gaap-ref-2023.xml</string>
+  		</ReferenceFiles>
+  	</TaxonomyAddon>
+  	<TaxonomyAddon>
+  		<Taxonomy>us-gaap-2024.xsd</Taxonomy>
+  		<DefinitionFiles>
+  			<string>us-gaap-doc-2024.xml</string>
+  		</DefinitionFiles>
+  		<ReferenceFiles>
+  			<string>us-gaap-ref-2024.xml</string>
   		</ReferenceFiles>
   	</TaxonomyAddon>
   	<TaxonomyAddon>
@@ -767,6 +828,16 @@
   			<string>srt-ref-2023.xml</string>
   		</ReferenceFiles>
   	</TaxonomyAddon>
+  	<TaxonomyAddon>
+  		<Taxonomy>srt-2024.xsd</Taxonomy>
+  		<DefinitionFiles>
+  			<string>srt-doc-2024.xml</string>
+  		</DefinitionFiles>
+  		<ReferenceFiles>
+  			<string>srt-ref-2024.xml</string>
+  		</ReferenceFiles>
+  	</TaxonomyAddon>
+  	<!-- IASB -->
   	<TaxonomyAddon>
       <Taxonomy>full_ifrs-cor_2017-03-09.xsd</Taxonomy>
       <DefinitionFiles>

@@ -4,10 +4,10 @@
  */
 
 import * as bootstrap from "bootstrap";
-import { Modals } from ".";
+import { Modals } from "./modals";
 import { ModalsContinuedAt } from "./continued-at";
 import { FactPages } from "./fact-pages";
-import { Pagination } from "../pagination";
+import { Pagination } from "../pagination/pagination";
 import { FactMap } from "../facts/map";
 import { ConstantsFunctions } from "../constants/functions";
 

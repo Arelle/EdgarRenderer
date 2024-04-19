@@ -29,7 +29,7 @@ DEFAULT_INSTANCE_EXT = ".xml"  # the extension on the instance to be saved
 DEFAULT_DISTINGUISHING_SUFFIX = "_htm."  # suffix tacked onto the base name of the source inline document
 USUAL_INSTANCE_EXTS = {"xml", "xbrl"}
 
-def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm.", iext=".xml", altFolder=None, suplSuffix=None):
+def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm.", iext=".xml", altFolder=None, suplSuffix=None, zipDir=None):
     if (modelXbrl is None): return
     if modelXbrl.modelDocument.type not in (Type.INLINEXBRL, Type.INLINEXBRLDOCUMENTSET):
         cntlr.logTrace(_("No Inline XBRL document."))
@@ -60,6 +60,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm."
 
     filingZip = None
     filingFiles = None
+    _zipDir = None
     if options.saveTargetFiling:
         targetFilename = os.path.basename(targetFilename)
         if cntlr.reportZip:
@@ -81,9 +82,10 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm."
     else:
          if cntlr.reportZip:
              filingZip = cntlr.reportZip
+             _zipDir = zipDir # use zipDir for rest API returned redline/redact extracted instance
 
     saveTargetDocument(filing, modelXbrl, targetFilename, targetSchemaRefs,
-                       outputZip=filingZip, filingFiles=filingFiles, suffix=suffix, iext=iext, suplSuffix=suplSuffix)
+                       outputZip=filingZip, filingFiles=filingFiles, suffix=suffix, iext=iext, suplSuffix=suplSuffix, zipDir=_zipDir)
 
     if options.saveTargetFiling:
         instDir = os.path.dirname(modelDocument.uri)  # TODO: will this work if the modelDocument was remote?
@@ -102,7 +104,7 @@ def saveTargetDocumentIfNeeded(cntlr, options, modelXbrl, filing, suffix="_htm."
 
 def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocumentSchemaRefs,
                        outputZip=None, filingFiles=None,
-                       suffix=DEFAULT_DISTINGUISHING_SUFFIX, iext=DEFAULT_INSTANCE_EXT, suplSuffix=None):
+                       suffix=DEFAULT_DISTINGUISHING_SUFFIX, iext=DEFAULT_INSTANCE_EXT, suplSuffix=None, zipDir=None):
     sourceDir = os.path.dirname(modelXbrl.modelDocument.filepath)
     targetUrlParts = targetDocumentFilename.rpartition(".")
     targetUrl = targetUrlParts[0] + suffix + targetUrlParts[2]
@@ -113,7 +115,7 @@ def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocument
                                           # no lang on xbrl:xbrl, specific xml:lang on elements which aren't en-US
                                           baseXmlLang=None, defaultXmlLang="en-US", skipInvalid=True)
         if outputZip:
-            targetInstance.saveInstance(overrideFilepath=targetUrl, outputZip=outputZip, updateFileHistory=False, xmlcharrefreplace=True, edgarcharrefreplace=True)
+            targetInstance.saveInstance(overrideFilepath=targetUrl, outputZip=outputZip, updateFileHistory=False, xmlcharrefreplace=True, edgarcharrefreplace=True, zipDir=zipDir)
         else:
             fh = io.StringIO();
             targetInstance.saveInstance(overrideFilepath=targetUrl, outputFile=fh, updateFileHistory=False, xmlcharrefreplace=True, edgarcharrefreplace=True, skipInvalid=True)
@@ -123,6 +125,7 @@ def saveTargetDocument(filing, modelXbrl, targetDocumentFilename, targetDocument
         if getattr(modelXbrl, "isTestcaseVariation", False):
             modelXbrl.extractedInlineInstance = True # for validation comparison
         modelXbrl.modelManager.showStatus(_("Saved extracted instance"), clearAfter=5000)
+        modelXbrl.ixTargetFilename = targetUrl
         return # there can only be one "InlineDocumentSet.CreateTargetInstance" but just to be sure
     cntlr.logTrace(_("Unable to save extracted document, missing plugin class \"InlineDocumentSet.CreateTargetInstance\"."))
 

@@ -4,8 +4,8 @@
  */
 
 import * as bootstrap from "bootstrap";
-import { Modals } from ".";
-import { Constants } from "../constants";
+import { Modals } from "./modals";
+import { Constants } from "../constants/constants";
 import { FactMap } from "../facts/map";
 import { ConstantsFunctions } from "../constants/functions";
 

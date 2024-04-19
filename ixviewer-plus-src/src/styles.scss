@@ -5,6 +5,118 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts/";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "~@fortawesome/fontawesome-free/scss/solid.scss";
 
+// legacy
+// .main-container {
+//   height: calc(100vh - 85px);
+//   display: flex;
+//   // margin-top: 85px;
+// }
+
+// #dynamic-xbrl-form {
+//   content-visibility: auto;
+//   height: 100%;
+//   overflow: auto;
+//   padding: 0 15px !important;
+// }
+
+// #fact-table-container {
+//   height: calc(100vh - 85px);
+//   z-index: 100;
+// }
+
+// #facts-breakdown-container {
+//   height: calc(100vh - 85px);
+//   z-index: 100;
+// }
+
+body {
+  overflow: hidden;
+}
+
+.main-container {
+  height: calc(100vh - 85px);
+  overflow: hidden; // needed to prevent scrollIntoView from pushing nav out of viewport
+}
+
+#dynamic-xbrl-form {
+  content-visibility: auto;
+  // content-visibility: visible;
+  height: 100%;
+  overflow: auto;
+  padding: 0 15px !important;
+}
+
+#fact-table-container {
+  height: calc(100vh - 85px);
+  z-index: 100;
+}
+
+#facts-breakdown-container {
+  height: calc(100vh - 85px);
+  z-index: 100;
+}
+
+.sidebar-container {
+  height: 100vw;
+  box-shadow: 0 0 8px -1px rgba(0, 0, 0, 0.2);
+}
+.sidebar-container-left {
+  border-right-width: var(--bs-border-width);
+  border-right-style: var(--bs-border-style);
+  border-right-color: var(--bs-border-color);
+}
+.sidebar-container-right {
+  // border-left: var(--bs-border-width), var(--bs-border-style), var(--bs-border-color);
+  border-left-width: var(--bs-border-width);
+  border-left-style: var(--bs-border-style);
+  border-left-color: var(--bs-border-color);
+}
+
+.z-10 {
+  z-index: 10;
+  background-color: white;
+}
+
+// deprecated but might use to scroll facts list instead of whole side bar
+.auto-scroll-y-facts {
+  overflow-y: auto !important;
+  height: calc(100vh - 217px) !important;
+}
+
+div.hide-during-init {
+  width: 0 !important;
+}
+.sidebar {
+  min-width: 300px;
+  width: 22vw;
+  max-width: 350px;
+  // transition causes jerky animation
+  // transition: all 0.6s cubic-bezier(0.1, 0.29, 0, 0.99) 0s;
+}
+.sidebar-scrollable {
+  height: calc(100vh - 85px);
+  overflow-y: auto;
+}
+.facts-scrollable {
+  height: calc(100vh - 85px - 37.6px - 47px - 44px);
+  overflow-y: auto;
+}
+
+.sidebar > * {
+  padding-right: .75rem;
+  padding-left: .75rem;
+}
+.sidebar > :first-child {
+  padding-top: .75rem;
+}
+.sidebar > :last-child {
+  padding-bottom: .75rem;
+}
+
+.main-viewer-pane {
+
+}
+
 #dynamic-xbrl-form section {
   all: initial;
   * {
@@ -44,6 +156,10 @@ kbd {
   cursor: pointer;
 }
 
+.overflow-hidden {
+  overflow: hidden; // required on anceestors of scrollIntoView scrollbar elements
+}
+
 .navbar-dark .navbar-nav .nav-link {
   color: #fff;
 }
@@ -66,6 +182,11 @@ kbd {
 
 #dynamic-xbrl-form [redline="true"] {
   color: #ff0099;
+  text-decoration: underline;
+}
+
+#dynamic-xbrl-form [redact="true"] {
+  color: #c0c0c0;
   text-decoration: underline;
 }
 
@@ -98,13 +219,6 @@ kbd {
 
 #dynamic-xbrl-form [contextref]:hover {
   cursor: pointer;
-}
-
-#dynamic-xbrl-form {
-  content-visibility: auto;
-  height: 100%;
-  overflow: auto;
-  padding: 0 15px !important;
 }
 
 #back-to-top {
@@ -153,25 +267,6 @@ kbd {
 
 .overflow-y-auto {
   overflow-y: auto;
-}
-
-.main-container {
-  height: calc(100vh - 85px);
-  // margin-top: 85px;
-}
-
-#fact-table-container {
-  height: calc(100vh - 85px);
-  z-index: 100;
-}
-
-#facts-breakdown-container {
-  height: calc(100vh - 85px);
-  z-index: 100;
-}
-
-body {
-  overflow: hidden;
 }
 
 .carousel-indicators [data-bs-target] {
@@ -273,10 +368,10 @@ body {
 
 @media (min-width: 576px) {
   .dialog-box {
-    top: 25%;
-    left: 35vw;
-    width: 30vw;
-    height: 50vh;
+    top: 18%;
+    left: 30vw;
+    width: 40vw;
+    height: 60vh;
     background-color: white;
     z-index: 9999;
     color: #666;

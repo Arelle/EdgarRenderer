@@ -3,15 +3,14 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
-import { Constants } from ".";
+import { Constants } from "./constants";
 import { FactsTable } from "../facts/table";
 import { FactMap } from "../facts/map";
 import * as bootstrap from "bootstrap";
-import { App } from "../app";
+import { App } from "../app/app";
 import { HelpersUrl } from "../helpers/url";
-import { Modals } from "../modals";
-
-
+import { Modals } from "../modals/modals";
+import * as DOMPurify from "dompurify";
 
 export const ConstantsFunctions = {
 
@@ -19,7 +18,15 @@ export const ConstantsFunctions = {
     const name = FactMap.getByName('dei:EntityRegistrantName') || '';
     const form = FactMap.getByName('dei:DocumentType') || '';
     const date = FactMap.getByName('dei:DocumentPeriodEndDate') || '';
-    document.title = `Inline Viewer: ${name} ${form} ${date}`;
+    let viewType = 'Inline Viewer';
+    const searchParams = HelpersUrl.returnURLParamsAsObject(window.location.search);
+    // need to test on arelle local gui...
+    const iframes = document.querySelectorAll('iframe').length
+    const appIsInIframe = (window.parent.document == document) && iframes;
+    if (appIsInIframe && searchParams.title) {
+      viewType = searchParams.title;
+    }
+    window.parent.document.title = `${viewType}: ${name} ${form} ${date}`;
   },
 
   emptyHTMLByID: (id: string) => {
@@ -139,6 +146,10 @@ export const ConstantsFunctions = {
         // throw error, something super strnage has occured
       }
     });
+  },
+
+  sanitizeHtml: (unsafeHtml: string) => {
+    return DOMPurify.sanitize(unsafeHtml);
   },
 
 }

@@ -3,9 +3,9 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
-import { App } from "./";
+import { App } from "./app";
 
-describe('/src/ts/app/index.ts', () => {
+describe('/src/ts/app/app.ts', () => {
 
     // init()
     describe('basic checks for init()', () => {
