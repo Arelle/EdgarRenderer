@@ -143,7 +143,7 @@ Language of labels:
     GUI may use tools->language labels setting to override system language for labels
 
 """
-VERSION = '3.24.1.u1'
+VERSION = '3.24.1.1.u2'
 
 from collections import defaultdict
 from arelle import PythonUtil
@@ -899,7 +899,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                     e.set("title", f"Removed invalid ix:{e.tag.rpartition('}')[2]} element, fact {e.qname} contextId {e.contextID}")
                     for attr in e.keys():
                         if attr not in ("id", "title"):
-                            etree.strip_attributes(e, attr)
+                            e.attrib.pop(attr, None)
                     if e.getparent().tag == _ixHidden:
                         e.addprevious(etree.Comment(f"Removed invalid ix:{e.tag.rpartition('}')[2]} element, fact {e.qname} contextId {e.contextID}: \"{(e.text or '').replace('--','- -')}\""))
                         elementsToRemove.append(e)
@@ -1133,6 +1133,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                         removableCntxs = set()
                         removableUnits = set()
                         hasRedactedContinuation = False
+                        redactedContinuationSources = set()
                         revalidateXbrl = False
                         for f in redactTgtElts.values():
                             if isinstance(f, ModelFact):
@@ -1160,9 +1161,11 @@ class EdgarRenderer(Cntlr.Cntlr):
                                                     e.set("continuedAt", contAt)
                                                 else:
                                                     e.attrib.pop("continuedAt", None)
+                                                    redactedContinuationSources.add(e)
                                                 e._continuationElement = getattr(nextContAtElt, "_continuationElement", None)
                                             else:
                                                 e.attrib.pop("continuedAt", None)
+                                                redactedContinuationSources.add(e)
                                                 e._continuationElement = contAt = None
                                             hasEditedCont = True
                                     for e in ixdsHtmlRootElt.iter("{http://www.xbrl.org/2013/inlineXBRL}relationship"):
@@ -1198,7 +1201,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                             # rebuild redacted continuation chains
                             if hasRedactedContinuation:
                                 for f in modelXbrl.facts:
-                                    if f.get("continuedAt") and hasattr(f, "_ixValue") and f.xValid >= VALID:
+                                    if (f.get("continuedAt") or f in redactedContinuationSources) and hasattr(f, "_ixValue") and f.xValid >= VALID:
                                         del f._ixValue # force rebuilding continuation chain value
                                         f.xValid = UNVALIDATED
                                         xmlValidate(f.modelXbrl, f, ixFacts=True)
@@ -1208,7 +1211,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                         del f._ixValue # force rebuilding continuation chain value
                                         xmlValidate(f.modelXbrl, f, ixFacts=True)
                                 revalidateXbrl = True
-
+                            redactedContinuationSources.clear()
                         # redline-removed docs have self-closed <p> and other elements which must not be self-closed when saved
                         # inform user we are schema- and xbrl- revalidating
                         for reportedFile, doc in cntlr.redlineIxDocs.items():
