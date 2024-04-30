@@ -1082,10 +1082,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                 _srcfilepath = os.path.join(filesource.baseurl, _filepath)
                             else:
                                 _srcfilepath = os.path.join(_xbrldir, _filepath)
-                            if sourceZipStream is not None:
-                                file = FileSource.openFileSource(_srcfilepath, cntlr, sourceZipStream).file(_srcfilepath, binary=True)[0]
-                            else:
-                                file = filesource.file(_srcfilepath, binary=True)[0]  # returned in a tuple
+                            file = FileSource.openFileSource(_srcfilepath, cntlr, sourceZipStream).file(_srcfilepath, binary=True)[0]
                             with file as fout:  # returned in a tuple
                                 serializedDoc = fout.read()
                         else:
