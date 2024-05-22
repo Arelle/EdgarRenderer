@@ -334,8 +334,8 @@ class Cube(object):
             self.controller.logDebug("Special sort of {} {} needed".format(axisQname,giveMemGetPositionDict))
             prefix = axis.prefix
             nsuri = axis.namespaceURI
-            ordering = [arelle.ModelObject.QName(prefix,nsuri,name) for name in members]
-            overrideordering = [arelle.ModelObject.QName(prefix,nsuri,name) for name in lastmembers]
+            ordering = [arelle.ModelValue.QName(prefix,nsuri,name) for name in members]
+            overrideordering = [arelle.ModelValue.QName(prefix,nsuri,name) for name in lastmembers]
             memberList = Utils.heapsort(memberList,(lambda x,y: Utils.compareInOrdering(x,y,ordering,overrideordering)))
             giveMemGetPositionDict = dict([(x,i) for i,x in enumerate(memberList)])
             self.controller.logDebug("Resulted in {}".format(giveMemGetPositionDict))
