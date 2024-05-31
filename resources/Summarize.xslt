@@ -15,10 +15,6 @@
   <xsl:param name="title">View Filing Data</xsl:param>
   <xsl:variable name="includeDir">/include</xsl:variable>
   <xsl:variable name="imagesDir">/images</xsl:variable>
-  <!--  future direct opening ixviewer-plus 
-  <xsl:variable name="ixHtmlPath">/ixviewer-plus/ix.xhtml</xsl:variable>
-  -->
-  <!--  open "redirector" script used in 24.0.1 to choose 23.2 viewer unless multi-IXDS, multi-doc or fee exhibit -->
   <xsl:variable name="ixHtmlPath">/ix</xsl:variable>
   <!--  end of 24.0.1 temporary changes -->
   <xsl:variable name="docAbsPathPrefix">' + url_filing_dir +'</xsl:variable>

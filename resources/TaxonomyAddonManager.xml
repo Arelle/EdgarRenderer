@@ -837,6 +837,15 @@
   			<string>srt-ref-2024.xml</string>
   		</ReferenceFiles>
   	</TaxonomyAddon>
+  	<TaxonomyAddon>
+  		<Taxonomy>us-gaap-ebp-2024.xsd</Taxonomy>
+  		<DefinitionFiles>
+  			<string>us-gaap-ebp-doc-2024.xml</string>
+  		</DefinitionFiles>
+  		<ReferenceFiles>
+  			<string>us-gaap-ebp-ref-2024.xml</string>
+  		</ReferenceFiles>
+  	</TaxonomyAddon>
   	<!-- IASB -->
   	<TaxonomyAddon>
       <Taxonomy>full_ifrs-cor_2017-03-09.xsd</Taxonomy>
