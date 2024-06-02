@@ -1,16 +1,24 @@
 import * as cheerio from 'cheerio';
 import * as convert from 'xml-js';
 import { Meta, Xbrltype, reference } from '../interface/meta';
+import { FetchedInstance } from '../interface/instance';
 import { Context, DeiAmendmentFlagAttributes, Instance, LinkFootnote, LinkFootnoteArc, LinkLOC, Units } from '../interface/instance';
+import { Section } from '../interface/meta';
 import { Reference, SingleFact } from '../interface/fact';
 import { Logger, ILogObj } from 'tslog';
 import { cleanSubstring } from '../helpers/utils';
+import { buildSectionsArrayFlatter } from './merge-data-utils';
 
 /* Created by staff of the U.S. Securities and Exchange Commission.
  * Data and content created by government employees within the scope of their employment
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
-export class FetchAndMerge {
+
+console.warn("BUILD/DEPLOYMENT TEST: verified to be working");
+
+
+export class FetchAndMerge
+{
     private absolute: string;
     private params: {
         doc: string,
@@ -57,9 +65,9 @@ export class FetchAndMerge {
         xmlUrls: Array<string>;
     }> | undefined;
     private std_ref;
-    private sections;
+    private sections: Array<Section>;
     private metaVersion: string | undefined;
-    private instance;
+    private instances;
     constructor(input: {
         absolute: string,
         params: {
@@ -79,16 +87,26 @@ export class FetchAndMerge {
         this.map = input.map;
         this.params = input.params;
         this.customPrefix = input.customPrefix;
-        this.instance = input.instance;
+        this.instances = input.instance;
         this.std_ref = input.std_ref;
     }
 
     init() {
 
-        const XHTMLandInstance = (instance, addInstance = false) => {
+        /**
+         * Description
+         * @param {any} instances
+         * @param {any} initialLoad=false
+         * @returns {
+         *  instance: {},
+         *  sections: {},
+         *  std_ref: string
+         * }
+         */
+        const XHTMLandInstance = (instances, initialLoad = false) => {
             return Promise.all([
-                this.fetchXHTML(),
-                this.fetchInstance(),
+                this.fetchXHTML(), // .htm
+                this.fetchInstancesXmls(), // .xml(s)
             ]).then((allResponses) => {
                 const errors = allResponses.filter(element => element ? Object.prototype.hasOwnProperty.call(element, 'error') : false);
                 if (errors.length) {
@@ -102,9 +120,19 @@ export class FetchAndMerge {
                     this.currentInstance.xhtmls[index].xhtml = current.xhtml;
                 });
                 this.currentInstance.xml = (allResponses[1] as Instance);
-                this.mergeAllResponses(addInstance);
+                this.mergeAllResponses(initialLoad);
+
+                const all = {
+                    instance: (initialLoad ? instances.instance : instances),
+                    // sections: this.sections,
+                    std_ref: this.std_ref
+                }
+                if (this.sections) {
+                    all.sections = this.sections;
+                }
+
                 return {
-                    all: { instance: (addInstance ? instance.instance : instance), sections: this.sections, std_ref: this.std_ref }
+                    all
                 }
             })
         };
@@ -114,107 +142,36 @@ export class FetchAndMerge {
                 this.fetchMeta(),
                 this.fetchSummary(),
             ]).then((allResponses) => {
-                this.metaVersion = allResponses[0].version;
-                this.std_ref = allResponses[0].std_ref;
+                const metalinks = allResponses[0];
+                const filingSummary = allResponses[1];
+
+                this.metaVersion = metalinks.version;
+                this.std_ref = metalinks.std_ref;
                 if (allResponses.some((element) => element.error)) {
                     const messageIndex = allResponses.find((element) => element.error);
                     return {
                         all: { error: true, message: [messageIndex.message] }
                     }
                 } else {
-                    this.currentInstance = allResponses[0].instance?.filter(element => element.current)[0];
+                    this.currentInstance = metalinks.instance?.filter(element => element.current)[0];
+                    const metaLinksSections = Object.values(metalinks.sections); // ingoring keys R1, R2, ...
 
-                    const mapCategoryName = (input: string) => {
-                        const options = {
-                            "Cover": "Cover",
-                            "document": "Document & Entity Information",
-                            "statement": "Financial Statements",
-                            "Statements": "Financial Statements",
-                            "disclosure": "Notes to the Financial Statements",
-                            "Notes": "Notes to Financial Statements",
-                            "Policies": "Accounting Policies",
-                            "Tables": "Notes Tables",
-                            "Details": "Notes Details",
-                            "Prospectus": "Prospectus",
-                            "RR_Summaries": "RR Summaries",
-                            "Fee_Exhibit": "RR Summaries",
-                            "Risk/Return": "RR Summaries"
-                        };
-                        if (options[input]) {
-                            return options[input];
-                        }
-                        return 'INCOMPLETE SECTIONS DATA!';
-                    };
-                    const metaLinksSections = Object.values(allResponses[0].sections);
-                    this.sections = allResponses[1].MyReports.Report.reduce((accumulator, current) => {
-                        if (current && current.MenuCategory && current.Position && current.ShortName && current._attributes) {
-                            let fact = { name: '', contextRef: '', instance: null };
-                            const additional = metaLinksSections.find(element => element.shortName === current.ShortName._text);
-                            if (additional) {
-                                fact.instance = additional.instance;
-                                if (additional.uniqueAnchor) {
-                                    fact.name = additional.uniqueAnchor.name;
-                                    fact.contextRef = additional.uniqueAnchor.contextRef;
-                                    fact.file = additional.uniqueAnchor.baseRef;
-                                } else if (additional.firstAnchor) {
-                                    fact.name = additional.firstAnchor.name;
-                                    fact.contextRef = additional.firstAnchor.contextRef;
-                                    fact.file = additional.firstAnchor.baseRef;
-                                } else {
-                                    // MetaLinks.json does NOT have sufficient information for this section category
-                                    // we remove it from being used.
-                                    fact = null;
-                                }
-                            }
-                            const index = accumulator.findIndex(element => element.name === mapCategoryName(current.MenuCategory._text))
-                            if (index !== -1 && fact) {
-                                accumulator[index].children.push(
-                                    {
-                                        sort: +current.Position._text,
-                                        name: current.ShortName._text,
-                                        fact: fact,
-                                    }
-
-                                );
-                                accumulator[index].children.sort((first, second) => {
-                                    if (first.sort < second.sort) {
-                                        return -1;
-                                    }
-                                    if (first.sort > second.sort) {
-                                        return 1;
-                                    }
-                                    return 0;
-                                });
-                            } else if (fact) {
-                                accumulator.push({
-                                    name: mapCategoryName(current.MenuCategory._text),
-                                    children: [
-                                        {
-                                            sort: +current.Position._text,
-                                            name: current.ShortName._text,
-                                            file: current._attributes.instance,
-                                            fact: fact,
-                                        }
-                                    ]
-                                });
-
-                            }
-                        }
-                        return accumulator;
-                    }, []);
+                    // iterate over FilingSummary.xml Reports to build sections, adding data from metalinks
+                    this.sections = buildSectionsArrayFlatter(filingSummary, metaLinksSections, this.metaVersion);
                 }
                 return Promise.all([
-                    XHTMLandInstance(allResponses[0], true)
+                    XHTMLandInstance(metalinks, true)
                 ]).then(data => {
                     return data[0];
                 })
             });
         };
-
-        if (this.instance !== null) {
-            this.currentInstance = this.instance.filter(element => element.current)[0];
-            return XHTMLandInstance(this.instance);
+        if (this.instances !== null) {
+            // switching instance
+            this.currentInstance = this.instances.filter(element => element.current)[0];
+            return XHTMLandInstance(this.instances);
         } else {
+            // initial load
             return MetaandSummary();
         }
     }
@@ -239,6 +196,10 @@ export class FetchAndMerge {
         return html.substring(html.indexOf("<?xml version="), html.indexOf(closingXml) + closingXml.length)
     }
 
+    /**
+     * Description
+     * @returns {any} => current .htm file (xhtml file)
+     */
     fetchXHTML() {
         const promises = this.currentInstance?.xhtmls.map((current: { url: string }) => {
             return new Promise((resolve) => {
@@ -297,7 +258,14 @@ export class FetchAndMerge {
         inlineFiles?: Array<{ slug: string, current: boolean, loaded: boolean }>
     }> {
         return new Promise((resolve) => {
-            return fetch(this.params.metalinks, { credentials: 'include' }).then((response) => {
+            let jsonUrl = this.params.metalinks;
+            const isWorkstation = jsonUrl.includes("DisplayDocument.do?");
+            if (isWorkstation) {
+                if (Object.prototype.hasOwnProperty.call(this.params, 'redline') && this.params.redline) {
+                    jsonUrl = jsonUrl.replace('MetaLinks.json', 'PrivateMetaLinks.json')
+                }
+            }
+            return fetch(jsonUrl, { credentials: 'include' }).then((response) => {
                 if (response.status >= 200 && response.status <= 299) {
                     return response.json();
                 } else {
@@ -305,44 +273,58 @@ export class FetchAndMerge {
                 }
             }).then((data) => {
 
-                let XHTMLSlug = this.params.doc.substr(this.params.doc.lastIndexOf('/') + 1);
+                let XHTMLSlug = this.params.doc.substring(this.params.doc.lastIndexOf('/') + 1);
                 if (XHTMLSlug.startsWith("DisplayDocument.do") || XHTMLSlug.startsWith("view.html")) {
-                    XHTMLSlug = this.params.doc.substr(this.params.doc.lastIndexOf('filename=') + 9);
+                    XHTMLSlug = this.params.doc.substring(this.params.doc.lastIndexOf('filename=') + 9);
                 }
-                const instanceKeys = Object.keys(data.instance).join().split(/[ ,]+/);
+                const instanceFileNames = Object.keys(data.instance).join().split(/[ ,]+/);
                 let sections = {}
-                if (instanceKeys.includes(XHTMLSlug)) {
-                    const instanceObjects = Object.keys(data.instance).map((current, index) => {
+                if (instanceFileNames.includes(XHTMLSlug)) {
+                    const instanceObjects = Object.keys(data.instance).map((currentInstance, instanceIndex) => {
 
-                        Object.keys(data.instance[current].report).forEach((report) => {
-                            data.instance[current].report[report].instance = index;
+                        // Sections
+                        Object.keys(data.instance[currentInstance].report).forEach((report) => {
+                            data.instance[currentInstance].report[report].instanceIndex = instanceIndex; // why?
                         });
+                        Object.values(data.instance[currentInstance].report).forEach(report => {
+                            report.instanceHtm = currentInstance;
+                        });
+                        sections = Object.assign(sections, data.instance[currentInstance].report);
 
-                        sections = Object.assign(sections, data.instance[current].report);
-                        const xhtmls = current.split(' ').map((element) => {
+                        /* 
+                            if instance key has space, e.g. 
+                                "doc1.htm doc2.htm": {...}, 
+                            it is known as multi doc.
+                        */
+                        const xhtmls = currentInstance.split(' ').map((element) => {
                             return {
                                 slug: element,
                                 url: this.params.doc.replace(this.params['doc-file'], element),
-                                current: current.split(' ').includes(XHTMLSlug) && element === this.params['doc-file'],
+                                current: currentInstance.split(' ').includes(XHTMLSlug) && element === this.params['doc-file'],
                                 loaded: false
                             };
                         });
-                        // How is this used?
+
                         const xmlSlugs = xhtmls.map(element => element.slug.replace('.htm', '_htm.xml'));
                         const xmlUrls = xhtmls.map(element => this.params.metalinks.replace('MetaLinks.json', element.slug.replace('.htm', '_htm.xml')));
                         return {
-                            instance: index,
+                            instanceHtm: currentInstance,
+                            instance: instanceIndex, // Why?
                             xhtmls: xhtmls,
-                            current: current.split(' ').includes(XHTMLSlug),
+                            current: currentInstance.split(' ').includes(XHTMLSlug),
                             xmlSlug: xmlSlugs,
                             xmlUrls: xmlUrls,
-                            metaInstance: Object.assign(data.instance[current]),
+                            metaInstance: Object.assign(data.instance[currentInstance]),
                             map: new Map()
                         }
                     });
                     delete data.instance;
                     resolve({ instance: instanceObjects, ...data, sections, version: data.version });
                 } else {
+                    // this may occur when transferring a filing from one domain to another.  Not sure how to fix..
+                    if (!PRODUCTION) {
+                        console.log('instanceFileNames does not include XHTMLSlug. fetch-merge > fetchMeta())')
+                    }
                     throw Error('Incorrect MetaLinks.json Instance');
                 }
                 resolve(data);
@@ -352,8 +334,14 @@ export class FetchAndMerge {
 
     fetchSummary() {
         return new Promise((resolve) => {
-            const isWorkstation = this.params.summary.includes("DisplayDocument.do?");
-            return fetch(this.params.summary, { credentials: 'include' }).then((response) => {
+            let xmlUrl = this.params.summary;
+            const isWorkstation = xmlUrl.includes("DisplayDocument.do?");
+            if (isWorkstation) {
+                if (Object.prototype.hasOwnProperty.call(this.params, 'redline') && this.params.redline) {
+                    xmlUrl = xmlUrl.replace('FilingSummary.xml', 'PrivateFilingSummary.xml')
+                }
+            }
+            return fetch(xmlUrl, { credentials: 'include' }).then((response) => {
                 if (response.status >= 200 && response.status <= 299) {
                     return response.text();
                 } else {
@@ -368,23 +356,24 @@ export class FetchAndMerge {
         });
     }
 
-    fetchInstance() {
-        const promises = this.currentInstance.xmlUrls.map((current) => {
-            const isWorkstation = current.includes("DisplayDocument.do?");
+    fetchInstancesXmls() {
+        const promises = this.currentInstance?.xmlUrls.map((xmlUrl: string) => {
+            let _xmlUrl = xmlUrl;
+            const isWorkstation = _xmlUrl.includes("DisplayDocument.do?");
             if (isWorkstation) {
                 // If methods from HelpersUrl are used here some very strange bugs occur, such as window and localStorage undefined.
                 if (Object.prototype.hasOwnProperty.call(this.params, 'redline') && this.params.redline) {
-                    current = current.replace('_htm.xml', '_ht2.xml')
+                    _xmlUrl = _xmlUrl.replace('_htm.xml', '_ht2.xml')
                 } else {
-                    current = current.replace('_htm.xml', '_ht1.xml')
+                    _xmlUrl = _xmlUrl.replace('_htm.xml', '_ht1.xml')
                 }
             }
             return new Promise((resolve) =>
-                fetch(current).then((response) => {
+                fetch(_xmlUrl).then((response) => {
                     if (response.status >= 200 && response.status <= 299) {
                         return response.text();
                     } else {
-                        const indexOf = this.currentInstance.xmlUrls.indexOf(current);
+                        const indexOf = this.currentInstance.xmlUrls.indexOf(xmlUrl);
                         if (indexOf >= 0) {
                             this.currentInstance.xmlUrls.splice(indexOf, 1);
                         }
@@ -398,7 +387,7 @@ export class FetchAndMerge {
                 }
             ));
         });
-        return Promise.all(promises).then((xmlInstances) => {
+        return Promise.all(promises).then((xmlInstances: Array<FetchedInstance>) => {
             const instance = xmlInstances.filter(element => element.instance);
             if (instance && instance[0]) {
                 const fetchedXMlString = instance[0].instance;
@@ -411,7 +400,6 @@ export class FetchAndMerge {
                     instanceXmlAsJsonCompact.xbrl["link:footnoteLink"].asXmlString = cleanSubstring(fetchedXMlString, '<link:footnoteLink', '</link:footnoteLink>');
                     // footnotesNode.asXmlString = cleanSubstring(fetchedXMlString, '<link:footnoteLink', '</link:footnoteLink>').replaceAll('\n', '');
                     // footnotesNode.renderableXml = this.xmlToDom(fetchedXMlString);
-                    console.log('instanceXmlAsJsonCompact', instanceXmlAsJsonCompact);
                 }
                 // return instanceXmlAsJsonCompact.xbrl["link:footnoteLink"].asXmlString
                 return instanceXmlAsJsonCompact;
@@ -422,47 +410,46 @@ export class FetchAndMerge {
     }
 
     mergeAllResponses(
-        includeSections: boolean
+        initialLoad: boolean
     ) {
-        this.currentInstance.map = this.buildInitialMap(this.currentInstance.xml);
-        if (includeSections) {
-            this.sections = this.extractSections();
+        this.currentInstance.map = this.buildInitialFactMap(this.currentInstance.xml, this.currentInstance.xhtmls[0].slug);
+        if (initialLoad) {
+            this.sections = this.extractSections(); // not sure what this was for, except maybe adding .groupType
         }
         this.currentInstance.formInformation = this.extractFormInformation(this.currentInstance.metaInstance);
-        this.mergeMapandMeta();
+        this.enrichFactMapWithMetalinksData();
         this.customPrefix = this.currentInstance.metaInstance.nsprefix;
-        this.prepareXHTML();
+        this.prepareXHTMLForCurrentInstance();
         return;
-
     }
 
-    buildInitialMap(instance: Instance) {
+    buildInitialFactMap(instanceXml: Instance, fileSlug: string) {
 
         const getInstancePrefix = (instance) => {
             const options = Object.keys(instance).filter(element => element.endsWith(':xbrl'))[0];
             return options ? options.split(':')[0] : false;
         };
-        const prefix = getInstancePrefix(instance);
+        const prefix = getInstancePrefix(instanceXml);
 
         const xbrlKey = prefix ? `${(prefix as string)}:xbrl` : 'xbrl';
         const contextKey = prefix ? `${(prefix as string)}:context` : 'context';
         const unitKey = prefix ? `${(prefix as string)}:unit` : 'unit';
 
-        const context = instance[xbrlKey][contextKey];
-        const unit = instance[xbrlKey][unitKey];
-        const footnote = instance[xbrlKey]['link:footnoteLink'];
+        const context = instanceXml[xbrlKey][contextKey];
+        const unit = instanceXml[xbrlKey][unitKey];
+        const footnote = instanceXml[xbrlKey]['link:footnoteLink'];
 
-        delete instance[xbrlKey][contextKey];
-        delete instance[xbrlKey][unitKey];
-        delete instance[xbrlKey]._attributes;
-        delete instance[xbrlKey]['link:schemaRef'];
-        delete instance[xbrlKey]['link:footnoteLink'];
+        delete instanceXml[xbrlKey][contextKey];
+        delete instanceXml[xbrlKey][unitKey];
+        delete instanceXml[xbrlKey]._attributes;
+        delete instanceXml[xbrlKey]['link:schemaRef'];
+        delete instanceXml[xbrlKey]['link:footnoteLink'];
         this.setPeriodText(context);
         this.setSegmentData(context);
         this.setMeasureText(unit);
         const map = new Map();
         let factCounter = 0;
-        for (const key in instance[xbrlKey]) {
+        for (const key in instanceXml[xbrlKey]) {
             /* example set of keys on instance.xbrl
                 _attributes
                 link:schemaRef
@@ -481,8 +468,8 @@ export class FetchAndMerge {
                 i09203gd:Content4
                 link:footnoteLink
             */
-            if (Array.isArray(instance[xbrlKey][key])) { // this first block might handle multi instance filings.
-                instance[xbrlKey][key].forEach((current: { _attributes: DeiAmendmentFlagAttributes; _text: string; }) => {
+            if (Array.isArray(instanceXml[xbrlKey][key])) { // this first block might handle multi instance filings.
+                instanceXml[xbrlKey][key].forEach((current: { _attributes: DeiAmendmentFlagAttributes; _text: string; }) => {
                     const attributes = { ...current._attributes };
                     const id = attributes.id ? attributes.id : `fact-identifier-${factCounter}`;
                     delete attributes.id;
@@ -510,10 +497,11 @@ export class FetchAndMerge {
                         filter: {
                             content: this.getTextFromHTML(current._text),
                         },
+                        file: fileSlug
                     });
                 });
             } else {
-                const attributes = { ...instance[xbrlKey][key]._attributes };
+                const attributes = { ...instanceXml[xbrlKey][key]._attributes };
                 const id = attributes.id ? attributes.id : `fact-identifier-${factCounter}`;
                 delete attributes.id;
 
@@ -522,11 +510,11 @@ export class FetchAndMerge {
                     name: key,
                     ix: id,
                     id: `fact-identifier-${factCounter++}`,
-                    value: this.isFactHTML(instance[xbrlKey][key]._text) ? this.updateValueToRemoveIDs(instance[xbrlKey][key]._text) : instance[xbrlKey][key]._text,
-                    isAmountsOnly: this.isFactAmountsOnly(instance[xbrlKey][key]._text),
-                    isTextOnly: !this.isFactAmountsOnly(instance[xbrlKey][key]._text),
-                    isNegativeOnly: this.isFactNegativeOnly(instance[xbrlKey][key]._text),
-                    isHTML: this.isFactHTML(instance[xbrlKey][key]._text),
+                    value: this.isFactHTML(instanceXml[xbrlKey][key]._text) ? this.updateValueToRemoveIDs(instanceXml[xbrlKey][key]._text) : instanceXml[xbrlKey][key]._text,
+                    isAmountsOnly: this.isFactAmountsOnly(instanceXml[xbrlKey][key]._text),
+                    isTextOnly: !this.isFactAmountsOnly(instanceXml[xbrlKey][key]._text),
+                    isNegativeOnly: this.isFactNegativeOnly(instanceXml[xbrlKey][key]._text),
+                    isHTML: this.isFactHTML(instanceXml[xbrlKey][key]._text),
                     period: this.setPeriodInfo(attributes.contextRef, context),
                     period_dates: this.setPeriodDatesInfo(attributes.contextRef, context),
                     segment: this.setSegmentInfo(attributes.contextRef, context),
@@ -539,23 +527,29 @@ export class FetchAndMerge {
                     isHighlight: false,
                     isSelected: false,
                     filter: {
-                        content: this.getTextFromHTML(instance[xbrlKey][key]._text),
+                        content: this.getTextFromHTML(instanceXml[xbrlKey][key]._text),
                     },
+                    file: fileSlug
                 });
             }
+            // console.log('instanceXml[xbrlKey][key]', key, instanceXml[xbrlKey][key])
         }
         return map;
     }
 
     extractSections() {
-        return Object.keys(this.sections).map((current) => {
-            if (this.metaVersion >= '2.2') {
-                if (this.sections[current].menuCat) {
-                    this.sections[current].groupType = this.sections[current].menuCat;
-                }
-                return this.sections[current];
-            }
-            return this.sections[current];
+        return this.sections.map((section) => {
+
+            // groupType is used in Metalinks v2.1 (and presumably earlier) and was replaced by menuCat in 2.2
+            if (Number(this.metaVersion) >= 2.2) {
+                if (section.menuCat) {
+                    section.groupType = section.menuCat;
+                } 
+            } 
+            // else {
+            //     section.menuCat = section.subGroupType;
+            // }
+            return section;
         });
     }
 
@@ -566,13 +560,16 @@ export class FetchAndMerge {
         return metaCopy;
     }
 
-    mergeMapandMeta() {
-
-        this.currentInstance.map.forEach((currentValue: {
+    /**
+     * Description
+     * @returns {any} => updates instance fact map (this.currentInstance.map) with data from meta (this.currentInstance.metaInstance)
+     */
+    enrichFactMapWithMetalinksData() {
+        this.currentInstance?.map.forEach((currentFact: {
             name: string;
             segment: [{ dimension: string, axis: string }];
             references: reference[];
-            calculations: [{ label: string, value: string }];
+            calculations: [{ label: string, value: string }] | [];
             labels: string[];
             filter: { labels: string; definitions: string; };
             balance: string;
@@ -581,25 +578,38 @@ export class FetchAndMerge {
             nsuri: string | null;
             presentation: string[] | null | undefined;
         }) => {
-            if (this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')]) {
-                // add references (if any) to each individual fact
-                // including references via any dimension [name]
-                // including references via any member [name]
-                if (this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].auth_ref) {
+            /* 
+                @Doc: Fact 'tags' in metalinks.json vs fact 'names' in instance and xhtmls files
+                facts are stored in metalinks.json under instance[<instanceName>].tags
+                Not sure why they are called 'tags'
+                Tags in xbrl speak are 'concepts', which are also qNames.
+                Some tag names looke like: 
+                    dei_AmendmentDescription
+                They have an underscore, but in the instance and xhtml files they have colons. 
+                    dei:AmendmentDescription
+            */
+            const factNameTag = currentFact.name.replace(':', '_');
+            const factObjectMl = this.currentInstance.metaInstance.tag[factNameTag]; // Ml being metalinks
 
-                    let references = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].auth_ref.map((current) => {
-                        return current;
+            if (factObjectMl) {
+
+                /* add references (if any) to each individual fact
+                including references via any dimension [name]
+                including references via any member [name] */
+                if (factObjectMl.auth_ref) {
+
+                    let references = factObjectMl.auth_ref.map((authRef) => {
+                        return authRef;
                     });
 
-                    if (currentValue.segment) {
-
-                        const dimensions = currentValue.segment.map((element: { dimension: string; }) => {
+                    if (currentFact.segment) {
+                        const dimensions = currentFact.segment.map((element: { dimension: string; }) => {
                             if (element.dimension && this.currentInstance.metaInstance.tag[element.dimension.replace(':', '_')]) {
                                 return this.currentInstance.metaInstance.tag[element.dimension.replace(':', '_')].auth_ref ? this.currentInstance.metaInstance.tag[element.dimension.replace(':', '_')].auth_ref : null;
                             }
                         }).filter(Boolean)[0];
 
-                        const axis = currentValue.segment.map((element: { dimension: string; axis: string; }) => {
+                        const axis = currentFact.segment.map((element: { dimension: string; axis: string; }) => {
                             if (element.dimension && this.currentInstance.metaInstance.tag[element.axis.replace(':', '_')]) {
                                 return this.currentInstance.metaInstance.tag[element.axis.replace(':', '_')].auth_ref ? this.currentInstance.metaInstance.tag[element.axis.replace(':', '_')].auth_ref : null;
                             }
@@ -608,7 +618,7 @@ export class FetchAndMerge {
                         references = references.concat(dimensions).concat(axis);
                     }
 
-                    currentValue.references = [...new Set(references)].map((current) => {
+                    currentFact.references = [...new Set(references)].map((current) => {
                         return this.std_ref[current];
                     }).filter(Boolean);
                     // this order specifically for Fact References
@@ -619,7 +629,9 @@ export class FetchAndMerge {
                         `Number`,
                         `Chapter`,
                         `Article`,
-                        `Number Exhibit Section`,
+                        `Number`,
+                        `Exhibit`,
+                        `Section`,
                         `Subsection`,
                         `Paragraph`,
                         `Subparagraph`,
@@ -631,8 +643,7 @@ export class FetchAndMerge {
                         `URI`,
                         `URIDate`,
                     ];
-
-                    currentValue.references = currentValue.references.map((singleReference) => {
+                    currentFact.references = currentFact.references.map((singleReference) => {
                         return Object.keys(singleReference).reduce((accumulator, current) => {
                             const index = requiredOrder.findIndex(element => element === current);
                             if (index !== -1) {
@@ -646,38 +657,44 @@ export class FetchAndMerge {
                 }
 
                 // add calculations (if any) to each individual fact
-                if (this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].calculation) {
-                    const tempCalculation = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].calculation;
-                    currentValue.calculations = [];
-                    for (const property in tempCalculation) {
-                        const result = this.sections.map(element => {
-                            if (element.role === property) {
+                if (factObjectMl.calculation) {
+                    // console.log('this.currentInstance.metaInstance', this.currentInstance.metaInstance)
+                    const tempFactCalculation = factObjectMl.calculation;
+                    currentFact.calculations = [];
+                    for (const factCalculationProp in tempFactCalculation) {
+                        const result = this.sections?.map(sectionElement => {
+                            if (sectionElement.role === factCalculationProp) {
+                                /*
+                                    Walter comment: "Although I traced the root cause to a problem in entry point sbsef-fex, still, 
+                                    user actions can cause this.sections to be unbound when switching from one instance to another via the “instance” menu.  
+                                    So, this section should probably make sure that this.sections is at least an empty list:"
+                                */
                                 return [
                                     {
                                         label: 'Section',
-                                        value: element.longName
+                                        value: sectionElement.longName
                                     },
                                     {
                                         label: 'Weight',
-                                        value: this.getCalculationWeight(tempCalculation[property].weight)
+                                        value: this.getCalculationWeight(tempFactCalculation[factCalculationProp].weight)
                                     },
                                     {
                                         'label': 'Parent',
-                                        value: this.getCalculationParent(tempCalculation[property].parentTag)
+                                        value: this.getCalculationParent(tempFactCalculation[factCalculationProp].parentTag)
                                     }
                                 ];
                             }
                         }).filter(Boolean);
-                        currentValue.calculations = currentValue.calculations.concat(result);
+                        currentFact.calculations = currentFact.calculations.concat(result);
                     }
                 } else {
-                    currentValue.calculations = [];
+                    currentFact.calculations = [];
                 }
 
                 // add labels (if any) to each individual fact
-                if (this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].lang) {
-                    currentValue.labels = Object.keys(this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].lang).map((current) => {
-                        const oldObject = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].lang[current].role;
+                if (factObjectMl.lang) {
+                    currentFact.labels = Object.keys(factObjectMl.lang).map((current) => {
+                        const oldObject = factObjectMl.lang[current].role;
                         const newObject = {};
                         for (const property in oldObject) {
 
@@ -688,40 +705,39 @@ export class FetchAndMerge {
                         return newObject
                     });
 
-                    currentValue.filter.labels = currentValue.labels.reduce((accumulator: string, current) => {
+                    currentFact.filter.labels = currentFact.labels.reduce((accumulator: string, current) => {
                         const tempCurrent = { ...current };
                         delete tempCurrent.documentation;
                         return `${accumulator} ${Object.values(tempCurrent).join(' ')}`;
 
                     }, '');
 
-                    currentValue.filter.definitions = currentValue.labels.reduce((accumulator, current: { Documentation: string; }) => {
+                    currentFact.filter.definitions = currentFact.labels.reduce((accumulator, current: { Documentation: string; }) => {
                         return `${accumulator} ${current.Documentation}`;
                     }, '');
                 }
 
                 // add credit / debit
-                if (this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].crdr) {
-                    const balance = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].crdr;
-                    currentValue.balance = `${balance.charAt(0).toUpperCase()}${balance.slice(1)}`;
+                if (factObjectMl.crdr) {
+                    const balance = factObjectMl.crdr;
+                    currentFact.balance = `${balance.charAt(0).toUpperCase()}${balance.slice(1)}`;
                 }
 
                 // add xbrltype
-                if (this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].xbrltype) {
-                    currentValue.xbrltype = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].xbrltype;
+                if (factObjectMl.xbrltype) {
+                    currentFact.xbrltype = factObjectMl.xbrltype;
                 }
 
                 // add additional info to each individual fact
-                currentValue.localname = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].localname ? this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].localname : null;
-                currentValue.nsuri = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].nsuri ? this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].nsuri : null;
-                currentValue.presentation = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].presentation ? this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].presentation : null;
-                currentValue.xbrltype = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].xbrltype ? this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].xbrltype : null;
+                currentFact.localname = factObjectMl.localname ? factObjectMl.localname : null;
+                currentFact.nsuri = factObjectMl.nsuri ? factObjectMl.nsuri : null;
+                currentFact.presentation = factObjectMl.presentation ? factObjectMl.presentation : null;
+                currentFact.xbrltype = factObjectMl.xbrltype ? factObjectMl.xbrltype : null;
             }
         });
-        // return map;
     }
 
-    prepareXHTML() {
+    prepareXHTMLForCurrentInstance() {
         this.currentInstance.xhtmls.forEach((current) => {
             if (current.xhtml) {
                 let $ = cheerio.load(current.xhtml, {});
@@ -735,7 +751,6 @@ export class FetchAndMerge {
                 current.xhtml = updates.xhtml;
             }
         });
-
     }
 
     fixImages($: cheerio.CheerioAPI) {
@@ -767,8 +782,12 @@ export class FetchAndMerge {
                     current.attribs.href.startsWith('#')) {
                     // already an absolute url, just add tabindex=18
                     $(current).attr('tabindex', '18');
+
                     // this anchor tag does not exsist in the current XHTML file
-                    if (current.attribs.href.startsWith('#') && current.attribs.href.slice(1) && $(`#${current.attribs.href.slice(1)}`).length === 0) {
+                    if (current.attribs.href.startsWith('#') 
+                        && current.attribs.href.slice(1) 
+                        && $(`[id='${current.attribs.href.slice(1)}']`).length === 0
+                    ) {
                         $(current).attr('xhtml-change', 'true');
                     }
                 } else {
@@ -842,9 +861,10 @@ export class FetchAndMerge {
      */
     redLineFacts($: cheerio.CheerioAPI) {
         const startPerformance = performance.now();
+        let foundElements = [];
         
         ['redline', 'redact'].forEach((r) => {
-            const foundElements = Array.from($('[style*="-ix-' + r + '"]'));
+            foundElements = Array.from($('[style*="-ix-' + r + '"]'));
             
             if (Object.prototype.hasOwnProperty.call(this.params, 'redline') && this.params.redline) {
                 if (!PRODUCTION) {
@@ -861,7 +881,7 @@ export class FetchAndMerge {
         });
         const endPerformance = performance.now();
         if (LOGPERFORMANCE) {
-            const items = foundElements.length;
+            const items = foundElements?.length;
             const log: Logger<ILogObj> = new Logger();
             log.debug(`FetchAndMerge.redLineFacts() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
         }

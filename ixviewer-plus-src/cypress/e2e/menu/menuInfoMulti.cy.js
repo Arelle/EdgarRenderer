@@ -2,7 +2,7 @@
 import { filings } from '../../dataPlus/enrichedFilingsPlus'
 
 /*
-npx cypress run --spec 'cypress/e2e/factCountMulti.cy.js'
+npx cypress run --spec 'cypress/e2e/menuInfoMulti.cy.js'
 */
 
 const filingsSample = filings.slice(0, Cypress.env('limitOfFilingsToTest'))

@@ -12,6 +12,7 @@ describe(`Search for ${filingsSample.length} filings`, () => {
         let newFactCount = 0
         let expandedFactCount = 0
         
+        // just checking for smaller or equal fact count
         it(`[${index + 1}] Search text 'cash' should filter facts ${filing.formType}`, () => {
             cy.visitHost(filing)
             

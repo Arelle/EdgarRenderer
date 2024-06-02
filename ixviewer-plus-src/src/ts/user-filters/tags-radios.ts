@@ -8,15 +8,15 @@ import { UserFiltersState } from "./state";
 
 export const UserFiltersTagsRadios = {
 
-  clickEvent: (event: Event) => {
+    clickEvent: (event: Event) => {
 
-    // 0 = All
-    // 1 = Standard Only
-    // 2 = Custom Only
+        // 0 = All
+        // 1 = Standard Only
+        // 2 = Custom Only
 
-    const radioValue = parseInt((event.target as HTMLInputElement).value);
-    UserFiltersState.getTagsRadios = radioValue;
-    FlexSearch.filterFacts();
-  }
+        const radioValue = parseInt((event.target as HTMLInputElement).value);
+        UserFiltersState.getTagsRadios = radioValue;
+        FlexSearch.filterFacts();
+    }
 
 };

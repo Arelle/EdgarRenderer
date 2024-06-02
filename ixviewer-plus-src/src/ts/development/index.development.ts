@@ -1,6 +1,11 @@
 import * as bootstrap from "bootstrap";
 import * as devJSON from "./input.json";
 import * as nomnoml from 'nomnoml';
+
+/**
+ * Description
+ * @returns {any} -> generates table of filings at http://localhost:3000/ix.xhtml
+ */
 export class Development {
     constructor() {
         if (!PRODUCTION) {
@@ -173,8 +178,8 @@ export class Development {
                 if (current['local'].length) {
                     const alocal = document.createElement('a');
                     // alocal.setAttribute('href', `${window.location.href}?doc=${current['local'][0].replace('/src', '')}`);
-                    alocal.setAttribute('href', `${window.location.href}?doc=${current['local'][0].replace('./src/assets/filings/', '/ixdocs/WebContent/documents/')}`);
-                    // https://www-test.sec.gov/ix.xhtml?doc=./assets/filings/0000007084-23-000037/adm-20231024.htm old
+                    alocal.setAttribute('href', `${window.location.href}?doc=${current['local'][0].replace('/Archives/edgar/data/', '/ixdocs/WebContent/documents/')}`);
+                    // https://www-test.sec.gov/ix.xhtml?doc=/Archives/edgar/data/0000007084-23-000037/adm-20231024.htm old
                     // http://172.18.85.157:8082/ix.xhtml?doc=/ixdocs/WebContent/documents/0000014693-23-000155/bfb-20231002.htm new
                     alocal.setAttribute(`target`, `_blank`);
                     const viewerTextlocal = document.createTextNode(`Go See`);

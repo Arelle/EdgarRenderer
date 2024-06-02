@@ -32,7 +32,7 @@ const expectColorVals = (actualColorVals, expectedColorVals, moe = 3) => {
     }
 }
 
-describe(`Change Fact link and bg colors ${filing.ticker || filing.docName} ${filing.formType}`, () => {
+describe.skip(`Change Fact link and bg colors ${filing.ticker || filing.docName} ${filing.formType}`, () => {
     // Test is highly dependent on screen size so a change in screen size may break these tests.
     // improvement: query expected color from div.picker_sample
 

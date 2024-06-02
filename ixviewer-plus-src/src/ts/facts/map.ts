@@ -15,7 +15,7 @@ export const FactMap: {
     getFactCountForFile: (input: string, returnAsString: boolean) => string | number,
     getFactCount: () => string,
     getFullFacts: () => Array<SingleFact>,
-    getByNameContextRef: () => SingleFact | null,
+    getByNameContextRef: (name: string, contextRef: string) => SingleFact | null,
     getByName: () => string,
     getAllScales: () => Array<string>,
     getAllMembers: () => Array<string>,
@@ -187,6 +187,8 @@ export const FactMap: {
     },
 
     getByNameContextRef: (name: string, contextRef: string) => {
+        // console.log('getByNameContextRef', name, contextRef)
+        // console.log('FactMap.map', FactMap.map)
         const fact = Array.from(new Map([...FactMap.map]), (entry) => {
             if (entry[1].name === name && entry[1].contextRef === contextRef) {
                 return entry[1];

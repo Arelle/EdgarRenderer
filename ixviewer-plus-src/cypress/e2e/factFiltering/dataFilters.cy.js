@@ -6,7 +6,7 @@ if (Cypress.env('limitNumOfFilingsForTestRun')) {
     filingsSample = filings.slice(0, Cypress.env('limitOfFilingsToTest'))
 }
 
-describe(`Search text for filings`, () => {
+describe(`Filter - Amounts Only`, () => {
     for(let f=0; f<filingsSample.length; f++) {
         let filing = filingsSample[f]
         let initialFactCount = 0
@@ -29,6 +29,8 @@ describe(`Search text for filings`, () => {
                     newFactCount = Number(newfactBadge.text().replace(',', ''))
                     cy.expect(newFactCount).to.be.lte(initialFactCount)
                 })
+
+                // TODO click () All again to see fact count revert
             })
         })
     }

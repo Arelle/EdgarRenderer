@@ -3,6 +3,22 @@ export interface Instance {
     xbrl: Xbrl;
 }
 
+export interface FetchedInstance {
+    instanceHtm: string,
+    instance: 0,
+    xhtmls: Array<{
+            slug: string,
+            url: string,
+            current: boolean,
+            loaded: boolean
+        }>,
+    current: true,
+    xmlSlug: Array<string>,
+    xmlUrls: Array<string>,
+    metaInstance: object;
+    map: object;
+}
+
 export interface Declaration {
     _attributes: DeclarationAttributes;
 }

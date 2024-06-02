@@ -8,18 +8,18 @@ import { UserFiltersState } from "./state";
 
 export const UserFiltersDataRadios = {
 
-  clickEvent: (event: Event) => {
+    clickEvent: (event: Event) => {
 
-    // 0 = All
-    // 1 = Amounts Only
-    // 2 = Text Only
-    // 3 = Calculations Only
-    // 4 = Negatives Only
-    // 5 = Additional Items Only
+        // 0 = All
+        // 1 = Amounts Only
+        // 2 = Text Only
+        // 3 = Calculations Only
+        // 4 = Negatives Only
+        // 5 = Additional Items Only
 
-    const radioValue = parseInt((event.target as HTMLInputElement).value);
-    UserFiltersState.getDataRadios = radioValue;
-    FlexSearch.filterFacts();
-  }
+        const radioValue = parseInt((event.target as HTMLInputElement).value);
+        UserFiltersState.getDataRadios = radioValue;
+        FlexSearch.filterFacts();
+    }
 
 };

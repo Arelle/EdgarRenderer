@@ -31,26 +31,71 @@ Cypress.Commands.add('openSettings', () => {
     cy.get(selectors.settings).click({force: true})
 })
 
-Cypress.Commands.add('visitHost', (filing, timeout=5000) => {
-    timeout=15000
+Cypress.Commands.add('visitFiling', (cik, filingId, htmlFile) =>
+{
+    const HAS_CIK = !!cik;
+    cik = cik || "no-cik";
+
+    const localUrl = `http://localhost:3000/ix.xhtml?doc=/Archives/edgar/data/${cik}/${filingId}/${htmlFile}`;
+    const dev1Url = `http://172.18.85.157:8082/ixviewer-ix-dev/ix.xhtml?doc=/Archives/edgar/data/${cik}/${filingId}/${htmlFile}`;
+    const dev2Url = dev1Url;    //proceed as if dev2 no longer exists
+    const secUrl = HAS_CIK ? `https://www.sec.gov/ix?doc=/Archives/edgar/data/${cik}/${filingId}/${htmlFile}` : dev1Url;
+    const testSecUrl = secUrl;
+
+    return cy.visitHost({ localUrl, dev1Url, dev2Url, secUrl, testSecUrl });
+});
+
+Cypress.Commands.add('visitHost', (filing, host, timeout=15000) =>
+{
+    switch(host || Cypress.env('domain'))
+    {
+        case 'local':
+            return cy.visit(filing.localUrl, { timeout });
+        case 'sec':
+            return cy.visit(filing.secUrl, { timeout });
+        case 'dev1':
+            return cy.visit(filing.dev1Url, { timeout });
+        case 'dev2':
+            return cy.visit(filing.dev2Url, { timeout });
+        case 'testSec':
+            return cy.visit(filing.testSecUrl, { timeout });
+        default:
+            return cy.visit(filing.localUrl, { timeout });
+    }
+});
+
+Cypress.Commands.add('requestFilingSummaryPerHost', (filing) => {
+    let FilingSummaryUrl
     switch (Cypress.env('domain')) {
         case 'local':
-            cy.visit(filing.localUrl, {timeout: timeout})
+            FilingSummaryUrl = filing.localUrl.replace(filing.docName + '.htm', 'FilingSummary.xml')
+            FilingSummaryUrl = FilingSummaryUrl.replace('ix.xhtml?doc=./', '')
+            cy.request(FilingSummaryUrl)
             break
         case 'sec':
-            cy.visit(filing.secUrl, {timeout: timeout})
-            break
-        case 'dev1':
-            cy.visit(filing.dev1Url, {timeout: timeout})
-            break
-        case 'dev2':
-            cy.visit(filing.dev2Url, {timeout: timeout})
+            FilingSummaryUrl = filing.secUrl.replace(filing.docName + '.htm', 'FilingSummary.xml')
+            FilingSummaryUrl = FilingSummaryUrl.replace('ix?doc=/', '')
+            cy.request(FilingSummaryUrl)
             break
         case 'testSec':
-            cy.visit(filing.testSecUrl, {timeout: timeout})
+            FilingSummaryUrl = filing.testSecUrl.replace(filing.docName + '.htm', 'FilingSummary.xml')
+            FilingSummaryUrl = FilingSummaryUrl.replace('iy?doc=', '')
+            cy.request(FilingSummaryUrl)
+            break
+        case 'dev1':
+            FilingSummaryUrl = filing.dev1Url.replace(filing.docName + '.htm', 'FilingSummary.xml')
+            FilingSummaryUrl = FilingSummaryUrl.replace('ix3/ixviewer3/ix.xhtml?doc=../../', '')
+            cy.request(FilingSummaryUrl)
+            break
+        case 'dev2':
+            FilingSummaryUrl = filing.dev2Url.replace(filing.docName + '.htm', 'FilingSummary.xml')
+            FilingSummaryUrl = FilingSummaryUrl.replace('ix3/ixviewer3/ix.xhtml?doc=../../', '')
+            cy.request(FilingSummaryUrl)
             break
         default:
-            cy.visit(filing.localUrl, {timeout: timeout})
+            FilingSummaryUrl = filing.localUrl.replace(filing.docName + '.htm', 'FilingSummary.xml')
+            FilingSummaryUrl = FilingSummaryUrl.replace('ix.xhtml?doc=./', '')
+            cy.request(FilingSummaryUrl)
     }
 })
 
@@ -60,7 +105,7 @@ Cypress.Commands.add('requestMetaLinksPerHost', (filing) => {
         case 'local':
             metalinksUrl = filing.localUrl.replace(filing.docName + '.htm', 'MetaLinks.json')
             metalinksUrl = metalinksUrl.replace('ix.xhtml?doc=./', '')
-            cy.request(metalinksUrl)
+            return cy.request(metalinksUrl);
             break
         case 'sec':
             metalinksUrl = filing.secUrl.replace(filing.docName + '.htm', 'MetaLinks.json')
@@ -87,4 +132,89 @@ Cypress.Commands.add('requestMetaLinksPerHost', (filing) => {
             metalinksUrl = metalinksUrl.replace('ix.xhtml?doc=./', '')
             cy.request(metalinksUrl)
     }
+})
+
+Cypress.Commands.add('checkAttr', (selector, attrName, attrVal) => {
+    cy.get(selector)
+        .invoke('attr', attrName)
+        .should('eq', attrVal)
+})
+
+/* things to try
+[x] retry
+[x] recursion
+[x] flatter
+[x] lots of waits
+*/
+Cypress.Commands.add('onClickShouldScrollDown', ($clickTarget) => {
+    // find scroll pos in viewer elem
+    let prevScrollPos = 0;
+    cy.log('onClickShouldScrollDown')
+    cy.get('div[id="dynamic-xbrl-form"]', {timeout: 2000}).then($viewerElem => {
+        prevScrollPos = $viewerElem.scrollTop();
+        cy.log('scrollTop')
+
+        cy.get($clickTarget).click().then(() => {
+            cy.log('expect')
+
+            cy.expect($viewerElem.scrollTop()).to.be.gt(prevScrollPos)
+            prevScrollPos = $viewerElem.scrollTop()
+        })
+    })
+})
+
+Cypress.Commands.add('onClickShouldScrollUp', ($clickTarget) => {
+    // find scroll pos in viewer elem
+    let prevScrollPos = 0;
+    cy.log('onClickShouldScrollUp')
+    cy.get('div[id="dynamic-xbrl-form"]', {timeout: 2000}).then($inlineDocElem => {
+        prevScrollPos = $inlineDocElem.scrollTop();
+        cy.get($clickTarget).click().then(() => {
+            cy.expect($inlineDocElem.scrollTop()).to.be.lt(prevScrollPos)
+            prevScrollPos = $inlineDocElem.scrollTop()
+        })
+    })
+})
+
+// fails after 5 or so breaks
+Cypress.Commands.add('onClickShouldScrollDownRecursive', ($targetCollection, clickSelector) => {
+    // find scroll pos in viewer elem
+    // let prevScrollPos = 0;
+    cy.log('2 onClickShouldScrollDown')
+    cy.get('div[id="dynamic-xbrl-form"]', {timeout: 2000}).then($viewerElem => {
+        let prevScrollPos = $viewerElem.scrollTop();
+        cy.log('3 scrollTop')
+        cy.wait(2000)
+        // cy.screenshot()
+        cy.get(clickSelector).then(($clickTarget) => {
+            cy.wait(2000)
+            cy.log('$clickTarget', $clickTarget)
+            cy.wrap($clickTarget).click().then(() => {
+                cy.wait(2000)
+                
+                cy.log('4 expect')
+                
+                cy.expect($viewerElem.scrollTop()).to.be.gt(prevScrollPos)
+                // prevScrollPos = $viewerElem.scrollTop()
+                if ($targetCollection.length > 1) {
+                    cy.wait(2000)
+                    cy.log('5 recursive!')
+                    cy.onClickShouldScrollDownRecursive($targetCollection.slice(1), clickSelector)
+                }
+            })
+        })
+    })
+})
+
+// fails the same way
+Cypress.Commands.add('onClickShouldScrollDownFlat', ($clickTarget, clickSelector) => {
+    // find scroll pos in viewer elem
+    let prevScrollPos = 0;
+    cy.get('div[id="dynamic-xbrl-form"]', {timeout: 2000}).then($viewerElem => {
+        prevScrollPos = $viewerElem.scrollTop();
+        cy.get(clickSelector).click().then(() => {
+            cy.expect($viewerElem.scrollTop()).to.be.gt(prevScrollPos)
+            // prevScrollPos = $viewerElem.scrollTop()
+        })
+    })
 })

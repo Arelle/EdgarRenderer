@@ -9,7 +9,7 @@ import fs from 'fs'
 // node cypress/utils/buildAndRunTests
 
 /*
-    If no filigs (src/assets/filings) Get filings by running `npm run get-filings-menu` first
+    If no filigs (dist/Archives/edgar/data) Get filings by running `npm run get-filings-menu` first
 
     1. elaborate on filings with info in urls
     2. scrape filings via cypress for more data

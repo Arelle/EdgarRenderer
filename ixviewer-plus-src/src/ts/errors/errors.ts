@@ -4,25 +4,36 @@
  */
 
 export const Errors: {
-  updateMainContainerHeight: (removingWarning?: boolean | undefined) => void
+	updateMainContainerHeight: (removingWarning?: boolean | undefined) => void,
+	createBsCloseBtn: () => HTMLElement
 } = {
 
-  updateMainContainerHeight: (removingWarning = false) => {
-    const errorElems = document.getElementById('error-container')?.children;
+	updateMainContainerHeight: (removingWarning = false) => {
+		const errorElems = document.getElementById('error-container')?.children;
 
-    const actualErrorsArr = Array.from(errorElems)
-    let numOfErrors = actualErrorsArr.length || 0;
-    if (removingWarning) numOfErrors--;
-    // removingWarning ? numOfErrors-- : numOfErrors++;
+		const actualErrorsArr = Array.from(errorElems)
+		let numOfErrors = actualErrorsArr.length || 0;
+		if (removingWarning) numOfErrors--;
+		// removingWarning ? numOfErrors-- : numOfErrors++;
 
-    if (numOfErrors < 0) {
-      numOfErrors = 0;
-    }
-    const dynamicXbrlForm: HTMLElement | null = document.querySelector('#dynamic-xbrl-form');
+		if (numOfErrors < 0) {
+			numOfErrors = 0;
+		}
+		const dynamicXbrlForm: HTMLElement | null = document.querySelector('#dynamic-xbrl-form');
 
-    if (dynamicXbrlForm) {
-      dynamicXbrlForm.style.height = 'calc(100vh - ' + ((numOfErrors * 41.6) + 86) + 'px)';
-      // container.style.height = '100vh';
-    }
-  }
+		if (dynamicXbrlForm) {
+			dynamicXbrlForm.style.height = 'calc(100vh - ' + ((numOfErrors * 41.6) + 86) + 'px)';
+			// container.style.height = '100vh';
+		}
+	},
+
+	createBsCloseBtn: () => {
+		const button = document.createElement('button');
+		button.setAttribute('type', 'button');
+		button.setAttribute('class', 'btn-close float-end');
+		button.setAttribute('data-bs-dismiss', 'alert');
+		button.setAttribute('aria-label', 'Close');
+		button.addEventListener('click', () => { Errors.updateMainContainerHeight(true); });
+		return button;
+	}
 };

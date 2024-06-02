@@ -80,7 +80,7 @@ describe('/src/ts/constants/indeex.ts', () => {
     //getMetaReports
     describe('basic checks for getMetaReports', () => {
         it('is a array', () => {
-            expect(typeof Constants.getMetaReports).toEqual('object');
+            expect(typeof Constants.sections).toEqual('object');
         });
     });
 

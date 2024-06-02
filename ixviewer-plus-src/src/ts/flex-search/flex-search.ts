@@ -12,6 +12,8 @@ export class FlexSearch {
         field: undefined
     }
 
+    // TODO: look into https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
+
     static indexCount: number;
 
 
