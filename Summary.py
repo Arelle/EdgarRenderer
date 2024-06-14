@@ -843,7 +843,7 @@ class InstanceSummary(object):
         index = childReportShortName.find(' (')
         if index != -1:
             childReportShortName = childReportShortName[:index]
-
+        if len(childReportShortName) == 0: return 0
         return Utils.commonPrefix(parentReportShortName, childReportShortName) * 100 / (len(childReportShortName))
 
     def classifyReportFiniteStateMachine(self, currentState, longName):

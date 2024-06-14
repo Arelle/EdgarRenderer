@@ -1373,14 +1373,11 @@ class EdgarRenderer(Cntlr.Cntlr):
                             else:
                                 filing.writeFile(join(dissemReportsFolder, reportedFile) + ".delete", b"")
                         for attachmentDocumentType, _strippedFiles in filing.strippedFiles.items():
-                            modelXbrl.log("INFO-RESULT",
-                                          "EFM.stripExhibit",
-                                          _("Attachment %(exhibitType)s has errors requiring stripping its files %(files)s").format(
-                                              attachmentDocumentType,
-                                              ", ".join(os.path.basename(f) for f in _strippedFiles)),
-                                          modelXbrl=modelXbrl,
-                                          exhibitType=attachmentDocumentType,
-                                          files=", ".join(sorted(os.path.basename(f) for f in _strippedFiles)))
+                            self.addToLog(_("Attachment %(exhibitType)s has errors requiring stripping its files %(files)s"),
+                                          {"exhibitType": attachmentDocumentType,
+                                           "files": ", ".join(sorted(os.path.basename(f) for f in _strippedFiles))},
+                                          messageCode="EFM.stripExhibit",
+                                          level=logging._checkLevel("INFO-RESULT"))
 
                     if not self.isWorkstationFirstPass:
                         if self.reportZip:
@@ -1452,6 +1449,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                                 IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml' + dissemSuffix, zipDir="dissem/")
                                 if self.summaryXslt:
                                     self.transformFilingSummary(filing, rootETree, self.summaryXslt, dissemReportsFolder, "FilingSummary.htm" + dissemSuffix, True, "Public Filing Data", zipDir="dissem/")
+                        elif self.isWorkstationFirstPass: # redact filing summary
+                            filing.writeFile(join(dissemReportsFolder, "FilingSummary.xml.delete"), b"")
                         if self.xlWriter and self.hasXlout:
                             if numDisseminatedReports > 0:
                                 _startedAt = time.time()
@@ -1477,6 +1476,13 @@ class EdgarRenderer(Cntlr.Cntlr):
                             else:
                                 summary.writeMetaFiles(dissemReportsFolder, zipDir="dissem/", suplSuffix=dissemSuffix)
                             self.logDebug("Write meta files for dissemination complete")
+                    elif self.isWorkstationFirstPass:
+                        if len(filing.reports) >= 1:
+                            summary.removeSummaryLogs() # produce filing summary without logs
+                            IoManager.writeXmlDoc(filing, rootETree, self.reportZip, dissemReportsFolder, 'FilingSummary.xml' + dissemSuffix, zipDir="dissem/")
+                        else:
+                            # remove filing summary
+                            filing.writeFile(join(dissemReportsFolder, "FilingSummary.xml.delete"), b"")
                 if "EdgarRenderer/__init__.py#filingEnd" in filing.arelleUnitTests:
                     raise arelle.PythonUtil.pyNamedObject(filing.arelleUnitTests["EdgarRenderer/__init__.py#filingEnd"], "EdgarRenderer/__init__.py#filingEnd")
 
