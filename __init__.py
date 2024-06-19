@@ -782,7 +782,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # skip rendering if major errors and abortOnMajorError
         # errorCountDuringValidation = len(Utils.xbrlErrors(modelXbrl))
         # won't work for all possible logHandlers (some emit immediately)
-        attachmentDocumentType = getattr(modelXbrl, "efmAttachmentDocumentType", "(none)")
+        attachmentDocumentType = getattr(modelXbrl, "efmIxdsType", "(none)")
         # strip on error if preceding primary inline instance had no error and exhibitType strips on error
         stripExhibitOnError = self.success and bool(
                               filing.exhibitTypesStrippingOnErrorPattern.match(attachmentDocumentType))
@@ -1007,8 +1007,8 @@ class EdgarRenderer(Cntlr.Cntlr):
         publicRefDocs = set()
         privateRefDocs = set()
         for report in filing.reports:
-            # note that there is no efmAttachmentDocumentType if EFM validation is not enabled
-            if (filing.exhibitTypesPrivateNotDisseminated.match(getattr(report.modelXbrl, "efmAttachmentDocumentType", "")) or
+            # note that there is no efmIxdsType if EFM validation is not enabled
+            if (filing.exhibitTypesPrivateNotDisseminated.match(getattr(report.modelXbrl, "efmIxdsType", "")) or
                 getattr(report, "securityClassification", None) == "confidential"):
                 report.isNotDisseminated = True
                 privateFilesNotDisseminated.update(report.basenames)
@@ -1979,7 +1979,7 @@ def testcaseVariationExpectedSeverity(modelTestcaseVariation, *args, **kwargs):
 def savesTargetInstance(*args, **kwargs): # EdgarRenderer implements its own target instance saver
     return True
 
-redliningPattern = re.compile(r"(.*;)?\s*-sec-ix-(redline|redact)\s*:\s*true(?:\s*;)?\s*([\w.-].*)?$")
+redliningPattern = re.compile(r"(.*;)?\s*-sec-ix-(redline|redact)\s*:\s*true(?:\s*;)?[\s;]*([\w.-].*)?$")
 def edgarRendererDetectRedlining(modelDocument, *args, **kwargs):
     cntlr = modelDocument.modelXbrl.modelManager.cntlr
     foundMatchInDoc = False

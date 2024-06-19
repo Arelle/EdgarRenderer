@@ -825,7 +825,7 @@ Invalid entity identifier {entityIdentifierName}: {entityIdentifer}
          level="error"
          module="ValidateFiling.py" line="292"
          args="elementName value filerIdentifier">
-[cp-0523-Non-Matching-Cik] The submission CIK, {filerIdentifier} does not match the EntityCentralIndexKey.  Please include a correct matching EntityCentralIndexKey in the filing.
+[cp-0523-Non-Matching-Cik] The submission CIK, {filerIdentifier} does not match the EntityCentralIndexKey.  Please include a correct matching EntityCentralIndexKey in the filing. {refSources}
 </message>
 
 <message code="EFM.6.05.23.cikValue"

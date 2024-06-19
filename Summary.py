@@ -431,7 +431,7 @@ class InstanceSummary(object):
         self.hasStdNamespace = set()
         self.hasRRorOEF = self.hasOef = self.hasRR = self.hasVip = self.hasFeeExhibit = False
 
-        self.edgarDocType = getattr(modelXbrl,'efmAttachmentDocumentType',
+        self.edgarDocType = getattr(modelXbrl,'efmIxdsType',
                                     next((f.xValue for f in modelXbrl.factsByLocalName["DocumentType"]
                                          if (f.xValue is not None and f.context is not None and not f.context.hasSegment))
                                           ,None))

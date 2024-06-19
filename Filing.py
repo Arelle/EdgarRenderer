@@ -1019,7 +1019,7 @@ class Filing(object):
 
 
     def RemoveStuntedCashFlowColumns(self,report):
-        visibleColumns = [col for col in report.colList if not col.isHidden]
+        visibleColumns = [col for col in report.colList if (not col.isHidden and col.startEndContext is not None)]
         didWeHideAnyCols = False
         remainingVisibleColumns = visibleColumns.copy()
         maxMonths = max(col.startEndContext.numMonths for col in visibleColumns)
