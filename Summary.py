@@ -418,6 +418,7 @@ class InstanceSummary(object):
         # even though they all go into the same list in the filing summary
         self.instanceFiles = []
         self.inlineFiles = []
+        self.targetDocumentFile = None
         self.otherXbrlFiles = []
 
         self.customPrefix = None
@@ -438,6 +439,9 @@ class InstanceSummary(object):
 
         for uri,doc in sorted(modelXbrl.urlDocs.items(), key=lambda i: i[0]): # change to url from discovery order. i[1].objectIndex
             if doc.type == arelle.ModelDocument.Type.INLINEXBRLDOCUMENTSET:
+                targetDocumentPreferredFilename = getattr(doc, "targetDocumentPreferredFilename", None)
+                if targetDocumentPreferredFilename:
+                    self.targetDocumentFile = os.path.splitext(os.path.basename(targetDocumentPreferredFilename))[0]
                 continue # ignore ixds manifest
             if not doc.inDTS:
                 continue # ignore non-DTS documents (e.g., reference and documentation labels imported by rendering
@@ -770,7 +774,16 @@ class InstanceSummary(object):
                 state = self.classifyReportFiniteStateMachine(state, reportSummary.longName)
                 parentRole = self.getReportParentIfExists(reportSummary, state)
             reportETree = SubElement(myReportsEtree, 'Report')
-            reportETree.set('instance',os.path.basename((self.instanceFiles+self.inlineFiles)[0]))
+            instanceFile = None
+            if self.targetDocumentFile:
+                # find matching inline file for primary document
+                for f in self.inlineFiles:
+                    if os.path.splitext(os.path.basename(f))[0] == self.targetDocumentFile:
+                        instanceFile = f
+                        break
+            if not instanceFile:
+                instanceFile = (self.instanceFiles+self.inlineFiles)[0]
+            reportETree.set('instance',os.path.basename(instanceFile))
             SubElement(reportETree, 'IsDefault').text = str(isFirstInstance and i == 1).casefold()
             SubElement(reportETree, 'HasEmbeddedReports').text = str(reportSummary.hasEmbeddedReports).casefold()
             if reportSummary.htmlFileName is not None:

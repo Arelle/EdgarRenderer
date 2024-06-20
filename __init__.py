@@ -1303,52 +1303,62 @@ class EdgarRenderer(Cntlr.Cntlr):
                         summary.writeMetaFiles(self.reportsFolder, prefix=rFilePrefix)
                         self.logDebug("Write meta files complete")
                     if self.zipXbrlFilesToOutput and (hasattr(filing, "accessionNumber") or filing.entrypointfiles):
+                        _fileName = None
                         if hasattr(filing, "accessionNumber"):
                             _fileName = filing.accessionNumber + "-xbrl.zip"
-                        elif filing.reports and filing.reports[0].basenames: # handles inline document set contents
-                            _fileName = os.path.splitext(filing.reports[0].basenames[0])[0] + ".zip"
                         else:
-                            _entrypoint = filing.entrypointfiles[0]
-                            if "ixds" in _entrypoint:
-                                _fileName = _entrypoint["ixds"][0]["file"]
+                            # check for first report with a targetDocument or reportFile
+                            for report in filing.reports:
+                                if not getattr(report, "isNotDisseminated", False):
+                                    _fileName = getattr(report.modelXbrl.modelDocument, "targetDocumentPreferredFilename", None)
+                                    if not _fileName and report.basenames:
+                                        _fileName = report.basenames[0]
+                                    break
+                            if not _fileName:
+                                _entrypoint = filing.entrypointfiles[0]
+                                if "ixds" in _entrypoint:
+                                    _fileName = _entrypoint["ixds"][0]["file"]
+                                else:
+                                    _fileName = _entrypoint["file"]
+                            if _fileName:
+                                _fileName = os.path.splitext(os.path.basename(_fileName.partition('#')[0]))[0] + ".zip"
+                        if _fileName and sum(not getattr(report, "isNotDisseminated", False) for report in filing.reports) > 0:
+                            # don't provide zip if no disseminated reports
+                            zipStream = io.BytesIO()
+                            xbrlZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
+                            for report in filing.reports:
+                                if not getattr(report, "isNotDisseminated", False):
+                                    for filepath in report.filepaths: # may be multi-document IXDS (even in different directories)
+                                        _xbrldir = os.path.dirname(filepath)
+                                        for reportedFile in sorted(report.reportedFiles):
+                                            if reportedFile not in xbrlZip.namelist():
+                                                if reportedFile in cntlr.editedIxDocs:
+                                                    doc = cntlr.editedIxDocs[reportedFile]
+                                                    # redline removed file is not readable in encoded version, create from dom in memory
+                                                    xbrlZip.writestr(reportedFile, serializeXml(doc.xmlRootElement).decode('utf-8'))
+                                                else:
+                                                    if filesource.isArchive and reportedFile in filesource.dir:
+                                                        _filepath = os.path.join(filesource.baseurl, reportedFile)
+                                                    else:
+                                                        _filepath = os.path.join(_xbrldir, reportedFile)
+                                                    if sourceZipStream is not None:
+                                                        file = FileSource.openFileSource(_filepath, cntlr, sourceZipStream).file(_filepath, binary=True)[0]
+                                                    else:
+                                                        file = filesource.file(_filepath, binary=True)[0]  # returned in a tuple
+                                                    xbrlZip.writestr(reportedFile, file.read())
+                                                    file.close()
+                            xbrlZip.close()
+                            zipStream.seek(0)
+                            if self.reportZip:
+                                if dissemReportsFolder:
+                                    _fileName = "dissem/" + _fileName
+                                self.reportZip.writestr(_fileName, zipStream.read())
+                            elif dissemReportsFolder and not self.isWorkstationFirstPass:
+                                self.writeFile(os.path.join(dissemReportsFolder, _fileName), zipStream.read())
                             else:
-                                _fileName = _entrypoint["file"]
-                            _fileName = os.path.splitext(os.path.basename(_fileName.partition('#')[0]))[0] + ".zip"
-                        zipStream = io.BytesIO()
-                        xbrlZip = zipfile.ZipFile(zipStream, 'w', zipfile.ZIP_DEFLATED, True)
-                        for report in filing.reports:
-                            if not getattr(report, "isNotDisseminated", False):
-                                for filepath in report.filepaths: # may be multi-document IXDS (even in different directories)
-                                    _xbrldir = os.path.dirname(filepath)
-                                    for reportedFile in sorted(report.reportedFiles):
-                                        if reportedFile not in xbrlZip.namelist():
-                                            if reportedFile in cntlr.editedIxDocs:
-                                                doc = cntlr.editedIxDocs[reportedFile]
-                                                # redline removed file is not readable in encoded version, create from dom in memory
-                                                xbrlZip.writestr(reportedFile, serializeXml(doc.xmlRootElement).decode('utf-8'))
-                                            else:
-                                                if filesource.isArchive and reportedFile in filesource.dir:
-                                                    _filepath = os.path.join(filesource.baseurl, reportedFile)
-                                                else:
-                                                    _filepath = os.path.join(_xbrldir, reportedFile)
-                                                if sourceZipStream is not None:
-                                                    file = FileSource.openFileSource(_filepath, cntlr, sourceZipStream).file(_filepath, binary=True)[0]
-                                                else:
-                                                    file = filesource.file(_filepath, binary=True)[0]  # returned in a tuple
-                                                xbrlZip.writestr(reportedFile, file.read())
-                                                file.close()
-                        xbrlZip.close()
-                        zipStream.seek(0)
-                        if self.reportZip:
-                            if dissemReportsFolder:
-                                _fileName = "dissem/" + _fileName
-                            self.reportZip.writestr(_fileName, zipStream.read())
-                        elif dissemReportsFolder and not self.isWorkstationFirstPass:
-                            self.writeFile(os.path.join(dissemReportsFolder, _fileName), zipStream.read())
-                        else:
-                            self.writeFile(os.path.join(self.reportsFolder, _fileName), zipStream.read())
-                        zipStream.close()
-                        self.logDebug("Write {} complete".format(_fileName))
+                                self.writeFile(os.path.join(self.reportsFolder, _fileName), zipStream.read())
+                            zipStream.close()
+                            self.logDebug("Write {} complete".format(_fileName))
 
                 # save documents with removed redlines (only when saving dissemReportsFolder)
                 if dissemReportsFolder:
