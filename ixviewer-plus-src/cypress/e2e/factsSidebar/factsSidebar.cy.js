@@ -1,4 +1,3 @@
-import { get } from 'http';
 import { filings } from '../../dataPlus/enrichedFilingsPlus'
 import { selectors } from "../../utils/selectors"
 let filing = filings[0]
@@ -21,25 +20,22 @@ describe(`Fact sidebar features`, () => {
         cy.get('div[id="facts-menu"] a[data-id="fact-identifier-6"]').click()
         cy.get('div[id="facts-menu"] a[data-id="fact-identifier-6"]')
             .should('have.attr', 'selected-fact', 'true')
-        // cy.get(selectors.factModalSubtitle).should('contain.text', 'Document Type')
 
         cy.get(selectors.nextFact).click()
         // first fact should not longer be foucsed
         cy.get('div[id="facts-menu"] a[data-id="fact-identifier-6"]')
             .should('have.attr', 'selected-fact', 'false')
         cy.get('div[id="facts-menu"] a[data-id="fact-identifier-7"]').click()
-        // cy.get(selectors.factModalSubtitle).should('contain.text', 'Document Annual Report')
         cy.get('div[id="facts-menu"] a[data-id="fact-identifier-7"]')
             .should('have.attr', 'selected-fact', 'true')
 
         cy.get(selectors.prevFact).click()
-        // first fact should be foucsed again
+        // first fact should be focused again
         cy.wait(300)
         cy.get('div[id="facts-menu"] a[data-id="fact-identifier-6"]')
             .should('have.attr', 'selected-fact', 'true')
         cy.get('div[id="facts-menu"] a[data-id="fact-identifier-7"]')
             .should('have.attr', 'selected-fact', 'false')
-        // cy.get(selectors.factModalSubtitle).should('contain.text', 'Document Type')
 
         cy.get(selectors.factSideBarClose).click()
         cy.get(selectors.factSidebar).should('not.be.visible')
@@ -95,29 +91,26 @@ describe(`Fact sidebar features`, () => {
             for(let i=1; i<=max; i++)
             {
                 //Iterate over each fact on the current page
-                cy.get(".facts-scrollable a.sidebar-fact").then((facts) =>
+                cy.get(".facts-scrollable a.sidebar-fact").each((fact) =>
                 {
-                    for(let fact of facts)
+                    cy.get(fact).click();
+                    cy.get(fact).should("exist");
+
+                    cy.get(selectors.factModal).should("satisfy", Cypress.dom.isVisible);
+
+                    //TODO: check that the titles of the fact and the modal are the same??
+
+                    //Close the modal
+                    cy.get(selectors.factModalClose).click();
+
+                    cy.get(fact).invoke("attr", "data-id").then((id) =>
                     {
-                        cy.get(fact).click();
-                        cy.get(fact).should("exist");
-
-                        cy.get(selectors.factModal).should("satisfy", Cypress.dom.isVisible);
-
-                        //TODO: check that the titles of the fact and the modal are the same??
-
-                        //Close the modal
-                        cy.get(selectors.factModalClose).click();
-
-                        cy.get(fact).invoke("attr", "data-id").then((id) =>
+                        //The fact should be highlighted unless it's in an ix:hidden element
+                        if(Cypress.$(`ix\\:hidden #${id}`).length == 0)
                         {
-                            //The fact should be highlighted unless it's in an ix:hidden element
-                            if(Cypress.$(`ix\\:hidden #${id}`).length == 0)
-                            {
-                                cy.get(`#${id}`).should("satisfy", Cypress.dom.isVisible);
-                            }
-                        });
-                    }
+                            cy.get(`#${id}`).should("satisfy", Cypress.dom.isVisible);
+                        }
+                    });
                 });
 
                 if(i != max)

@@ -65,8 +65,6 @@ export const Modals = {
 
 			current.classList.add('d-none');
 		});
-
-		FactMap.setIsSelected();
 	},
 
 	copyContent: (event: MouseEvent | KeyboardEvent, elementIdToCopy: string, copyPasteElement: string) => {
@@ -115,6 +113,7 @@ export const Modals = {
 				});
 			});
 			const text = document.createTextNode(textToCopy.trim());
+			document.querySelector(sectionToPopulate + ' textarea')!.innerHTML = '';
 			document.querySelector(sectionToPopulate + ' textarea')!.append(text);
 		}
 	},
@@ -159,31 +158,41 @@ export const Modals = {
 
 	initDrag: (element: HTMLElement) => {
 
-		let selected: { offsetLeft: number; clientWidth: number; offsetTop: number; clientHeight: number; style: { left: string; top: string; }; offsetWidth: number; offsetHeight: number; } | null = null;
-		let xPosition = 0;
-		let yPosition = 0;
+		let factModal: { 
+				offsetLeft: number;
+				clientWidth: number;
+				offsetTop: number;
+				clientHeight: number;
+				style: { left: string; top: string; };
+				offsetWidth: number;
+				offsetHeight: number; 
+			} | null = null;
+		let mouseXPos = 0;
+		let mouseYPos = 0;
 		let xElement = 0;
 		let yElement = 0;
 
-		const drag = (element: HTMLElement) => {
-			selected = element;
-			xElement = (xPosition - selected.offsetLeft) + (selected.clientWidth / 2);
-			yElement = (yPosition - selected.offsetTop) + (selected.clientHeight / 2);
+		const setStartDragState = (element: HTMLElement) => {
+			factModal = element;
+			xElement = (mouseXPos - factModal.offsetLeft) + (factModal.clientWidth / 2);
+			yElement = (mouseYPos - factModal.offsetTop) + (factModal.clientHeight / 2);
 		}
 
 		// Will be called when user dragging an element
 		const dragElement = (event: MouseEvent) => {
-			xPosition = document.all ? window.event?.clientX : event.pageX;
-			yPosition = document.all ? window.event?.clientY : event.pageY;
-			if (selected !== null) {
-				selected.style.left = ((xPosition - xElement) + selected.offsetWidth / 2) + 'px';
-				selected.style.top = ((yPosition - yElement) + selected.offsetHeight / 2) + 'px';
+			mouseXPos = document.all ? window.event?.clientX : event.pageX;
+			mouseYPos = document.all ? window.event?.clientY : event.pageY;
+
+			if (factModal != null) {
+				// drag freely while keeping drag button in the client window
+				factModal.style.left = (mouseXPos >= 10 && mouseXPos <= window.innerWidth-14) ? ((mouseXPos - xElement) + factModal.offsetWidth / 2) + 'px' : xElement;
+				factModal.style.top = (mouseYPos >= 10 && mouseYPos <= window.innerHeight-14) ? ((mouseYPos - yElement) + factModal.offsetHeight / 2) + 'px' : yElement;
 			}
 		}
 
 		// Destroy the object when we are done
 		const destroyDrag = () => {
-			selected = null;
+			factModal = null;
 		}
 
 		document.onmousemove = dragElement;
@@ -191,7 +200,7 @@ export const Modals = {
 
 		element.onmousedown = function () {
 			// not a fan of having all these .parentNode
-			drag(this.parentNode.parentNode.parentNode);
+			setStartDragState(this.parentNode.parentNode.parentNode);
 			return false;
 		};
 

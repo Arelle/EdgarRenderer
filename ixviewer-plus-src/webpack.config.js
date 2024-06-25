@@ -41,7 +41,7 @@ module.exports = (env = { copy: true, analyze: false }, argv = { mode: `producti
         paths: glob.sync(path.join(__dirname, "./src/**/*"), { nodir: true }),
       }),
 
-      new ESLintPlugin({ extensions: ["ts"] }),
+      new ESLintPlugin({ extensions: ["ts"], overrideConfigFile: ".eslintrc" }),
 
       env.analyze ? new BundleAnalyzerPlugin() : false,
 

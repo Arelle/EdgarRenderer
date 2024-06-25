@@ -17,7 +17,7 @@ export const FormInformation = {
 
     xbrlInstance: () => {
         const currentInstance = Constants.getInstanceFiles.find(element => element.current);
-        document.getElementById('form-information-instance')?.setAttribute('href', currentInstance?.xmlUrls[0] || "#");
+        document.getElementById('form-information-instance')?.setAttribute('href', currentInstance?.xmlUrl || "#");
     },
 
     xbrlZip: () =>
@@ -25,13 +25,18 @@ export const FormInformation = {
         //Handle Workstation case
         if(HelpersUrl.isWorkstation())
         {
-            const url = window.location.href;
-            const params = new URLSearchParams(window.location.search);
+            const url = window.parent.location.href;
+            const params = new URLSearchParams(window.parent.location.search);
             const zip = `${params.get("accessionNumber")}-xbrl.zip`;
             params.set("filename", zip);
-            
+            params.set("step", "docOnly");
+            params.set("interpretedFormat", "false");
+            params.delete("status");
+            params.delete("sequenceNumber");
+
             const zipUrl = url.substring(0, url.indexOf("?")+1) + params.toString();
             document.getElementById("form-information-zip")?.setAttribute("href", zipUrl);
+            document.getElementById("form-information-zip")?.setAttribute("target", "_blank");
             return;
         }
 

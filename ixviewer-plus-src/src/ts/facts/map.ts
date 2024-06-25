@@ -16,12 +16,12 @@ export const FactMap: {
     getFactCount: () => string,
     getFullFacts: () => Array<SingleFact>,
     getByNameContextRef: (name: string, contextRef: string) => SingleFact | null,
-    getByName: () => string,
+    getByName: (name: string) => string,
     getAllScales: () => Array<string>,
     getAllMembers: () => Array<string>,
     getAllPeriods: () => { [key: string]: [] },
     getTagLine: () => [],
-    setIsSelected: (input: string | null) => void
+    setIsSelected: (input: string | null) => void,
 } = {
 
     map: new Map(),
@@ -141,8 +141,8 @@ export const FactMap: {
             "Hundred Millions",
             "Ten Millions",
             "Millions",
-            "Hundred thousands",
-            "Ten thousands",
+            "Hundred Thousands",
+            "Ten Thousands",
             "Thousands",
             "Hundreds",
             "Tens",
@@ -278,6 +278,7 @@ export const FactMap: {
                 }
             }
         }).filter(Boolean).length;
+
         if (returnAsString) {
             return toReturn.toString()
                 .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -287,10 +288,13 @@ export const FactMap: {
 
     setIsSelected: (input: string | null) => {
         FactMap.map.forEach((currentValue) => {
+            const inlineFactElem = document.getElementById(currentValue.id);
             if (input === currentValue.id) {
                 currentValue.isSelected = true;
+                inlineFactElem?.setAttribute('selected-fact', 'true')
             } else {
                 currentValue.isSelected = false;
+                inlineFactElem?.setAttribute('selected-fact', 'false')
             }
         });
     },

@@ -3,13 +3,13 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 import * as bootstrap from "bootstrap";
-import { Modals } from "./modals";
+import { ConstantsFunctions } from "../constants/functions";
+import { FactMap } from "../facts/map";
+import { ixScrollTo } from "../helpers/utils";
+import { Pagination } from "../pagination/sideBarPagination";
 import { ModalsCommon } from "./common";
 import { FactPages } from "./fact-pages";
-import { Constants } from "../constants/constants";
-import { FactMap } from "../facts/map";
-import { ConstantsFunctions } from "../constants/functions";
-import { Pagination } from "../pagination/sideBarPagination";
+import { Modals } from "./modals";
 
 export const ModalsNested = {
 
@@ -142,7 +142,6 @@ export const ModalsNested = {
 		const thisContentCarousel = document.getElementById('modal-fact-nested-content-carousel');
 
 		thisLabelCarousel?.addEventListener('slide.bs.carousel', (event) => {
-
 			const span = document.createElement('span');
 			const dialogTitle = document.createTextNode(event['to'] + 1);
 			span.appendChild(dialogTitle);
@@ -162,9 +161,7 @@ export const ModalsNested = {
 				selectedElement = selectedElement[0];
 			}
 
-			selectedElement.scrollIntoView({
-				'block': Constants.scrollPosition
-			});
+			ixScrollTo(selectedElement);
 
 			ModalsNested.createContentCarousel(event['to']);
 

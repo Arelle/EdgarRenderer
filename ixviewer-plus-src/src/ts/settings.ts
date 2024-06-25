@@ -16,31 +16,23 @@ export class SetCustomCSS {
 		const tagShading = localStorage.getItem("tagShading") || "rgba(255,0,0,0.3)";
 		const textBlock = localStorage.getItem("textBlock") || "#003768";
 		const cssObject = {
-			'#dynamic-xbrl-form [enabled-fact="true"][continued-fact="false"]':
-			{
+			'#dynamic-xbrl-form [enabled-fact="true"][continued-fact="false"], #settings-modal .enabled-example': {
 				"box-shadow": `inset 0px 2px #${taggedData}, inset 0px -2px #${taggedData}`,
 				display: "inline",
 			},
-			'#dynamic-xbrl-form [enabled-fact="true"][continued-fact="false"]:hover':
-			{
-				'background-color': `${tagShading}`,
-			},
-			'#dynamic-xbrl-form [enabled-fact="true"][continued-main-fact="true"]':
-			{
+			'#dynamic-xbrl-form [enabled-fact="true"][continued-main-fact="true"]': {
 				"box-shadow": `
 					-2px 0px white, 2px 0px white,
 					-4px 0px #${taggedData}, 4px 0px #${taggedData}`,
 				display: "inline-block",
 			},
-			'#dynamic-xbrl-form [enabled-fact="true"][continued-main-fact="true"][text-block-fact="true"]':
-			{
+			'#dynamic-xbrl-form [enabled-fact="true"][continued-main-fact="true"][text-block-fact="true"]': {
 				"box-shadow": `
 					-2px 0px white, 2px 0px white,
 					-4px 0px #${taggedData}, 4px 0px #${taggedData}`, 
 				display: "block",
 			},
-			'#dynamic-xbrl-form [enabled-fact="true"][text-block-fact="true"]':
-			{
+			'#dynamic-xbrl-form [enabled-fact="true"][text-block-fact="true"]': {
 				"box-shadow": `
 					-2px 0px white, 2px 0px white,
 					-4px 0px #${taggedData}, 4px 0px #${taggedData}`, 
@@ -49,66 +41,46 @@ export class SetCustomCSS {
 				"border-bottom": "none",
 			},
 
-			'#dynamic-xbrl-form [highlight-fact="true"]': {
+			'#dynamic-xbrl-form [highlight-fact="true"], #settings-modal .highlighted-example': {
 				"background-color": `#${searchResults} !important`
 			},
-
 			'#dynamic-xbrl-form [highlight-fact="true"] > *': {
 				"background-color": `#${searchResults} !important`
 			},
 
-			'#dynamic-xbrl-form [selected-fact="true"]':
-			{
+			'#dynamic-xbrl-form [selected-fact="true"], #settings-modal .selected-fact-example': {
 				border: `3px solid #${selectedFact} !important`,
 				display: "inline"
 			},
-
-			'#dynamic-xbrl-form [selected-fact="true"][continued-main-fact="true"]':
-			{
+			'#dynamic-xbrl-form [selected-fact="true"][continued-main-fact="true"]': {
 				"box-shadow":
-					`-2px 0px 0px 0px #${searchResults}, 2px 0px 0px 0px #"${searchResults}`
+					`-2px 0px 0px 0px #${searchResults}, 2px 0px 0px 0px #${searchResults}`
 			},
-
-			'#dynamic-xbrl-form [selected-fact="true"][text-block-fact="true"]':
-			{
+			'#dynamic-xbrl-form [selected-fact="true"][text-block-fact="true"]': {
 				"box-shadow":
 					`-2px 0px 0px 0px #${selectedFact}, 2px 0px 0px 0px #${selectedFact}`
 			},
-
-			'#dynamic-xbrl-form [selected-fact="true"][continued-fact="false"]':
-			{
+			'#dynamic-xbrl-form [selected-fact="true"][continued-fact="false"]': {
 				border: `3px solid #${selectedFact} !important`,
 				display: "inline"
 			},
 
+			'#dynamic-xbrl-form [enabled-fact="true"][continued-fact="false"]:hover, #settings-modal span.tag-shading-example': {
+				'background-color': `${tagShading} !important`,
+			},
+			// '#settings-modal span.tag-shading-example': {
+			// 	'background-color': `${tagShading} !important`,
+			// },
 			'#dynamic-xbrl-form [hover-fact="true"] *, #dynamic-xbrl-form [hover-fact="true"]': {
-				"background-color": tagShading
+				"background-color": `${tagShading} !important`,
 			},
 
-			"#dynamic-xbrl-form .text-block-indicator-left": {
-				"border-left": `.75rem solid #${textBlock}`
+			"#dynamic-xbrl-form .text-block-indicator-left, .text-block-indicator-left": {
+				"border-left-color": `#${textBlock}`
 			},
-
-			"#dynamic-xbrl-form .text-block-indicator-right": {
-				"border-right": `.75rem solid #${textBlock}`
+			"#dynamic-xbrl-form .text-block-indicator-right, .text-block-indicator-right": {
+				"border-right-color": `#${textBlock}`
 			},
-
-			".tagged-data-example-1": {
-				"border-top": `2px solid #${taggedData}`,
-				"border-bottom": `2px solid #${taggedData}`
-			},
-
-			".search-results-example-1": {
-				"background-color": `#${searchResults}`
-			},
-
-			".tag-shading-exmple-1:hover": {
-				"background-color": tagShading
-			},
-
-			".selected-fact-example-1": {
-				border: `3px solid #${selectedFact} !important`
-			}
 		};
 
 		let cssString = "";
@@ -118,13 +90,11 @@ export class SetCustomCSS {
 			for (const nestedKey in cssObject[key]) {
 				cssString += nestedKey + ":" + cssObject[key][nestedKey] + ";";
 			}
-			cssString += "}";
+			cssString += "}\n";
 		}
 		const head = document.head || document.getElementsByTagName("head")[0];
-		const style =
-			(document.getElementById("customized-styles") ||
-				document.createElement("style")) as HTMLStyleElement;
-
+		const style = ( document.getElementById("customized-styles") || document.createElement("style") ) as HTMLStyleElement;
+		style.innerHTML = '';
 		head.appendChild(style);
 
 		style.type = "text/css";
@@ -206,6 +176,7 @@ export class SetCustomCSS {
 
 			colorPicker.value = index === 3 ? colorPicker.value = `#${rgbToHex(current.default)}` : `#${current.default}`;
 			colorPicker.addEventListener('change', event => {
+				console.log('change')
 				if (index === 3) {
 					//we save this as rgba();
 					const colorRange = document.querySelector('#tag-shading-color-picker-range') as HTMLInputElement;

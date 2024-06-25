@@ -19,10 +19,13 @@ import { Section } from "../interface/meta";
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
+
+/* eslint-disable @typescript-eslint/ban-types */
+
 export const App = {
-    init: (loadInstance = true, callback: (arg0: boolean) => void) => {
+    init: (changeInstance = true, callback: (arg0: boolean) => void) => {
         let xhtmlUrl = ''
-        if (loadInstance) {
+        if (changeInstance) {
             ConstantsFunctions.emptyHTMLByID('dynamic-xbrl-form');
             document.getElementById('html-pagination')?.classList.toggle('d-none');
             document.getElementById('xbrl-form-loading')!.classList.remove('d-none');
@@ -38,7 +41,7 @@ export const App = {
                 const fetchAndMergeArgs = {
                     params: HelpersUrl.getAllParams,
                     absolute: HelpersUrl.getFormAbsoluteURL,
-                    instance: loadInstance ? Constants.getInstanceFiles : null,
+                    instance: changeInstance ? Constants.getInstanceFiles : null,
                     std_ref: Constants.getStdRef
                 };
                 if (typeof window !== 'undefined' && window.Worker) {
@@ -49,7 +52,7 @@ export const App = {
                     worker.onmessage = (event) => {
                         if (event && event.data) {
                             worker.terminate();
-                            callback(App.handleFetchAndMerge(event.data.all, loadInstance));
+                            callback(App.handleFetchAndMerge(event.data.all, changeInstance));
                         }
                     }
                 } else {
@@ -59,8 +62,8 @@ export const App = {
                         log.debug(`Worker NOT Init`);
                     }
                     const fetchAndMerge = new FetchAndMerge(fetchAndMergeArgs);
-                    fetchAndMerge.init().then(data => {
-                        callback(App.handleFetchAndMerge(data.all, loadInstance));
+                    fetchAndMerge.init().then((data) => {
+                        callback(App.handleFetchAndMerge(data.all, changeInstance));
                     });
                 }
             } else {
@@ -83,7 +86,7 @@ export const App = {
         Tabs.init();
         Sections.init();
         App.unDisableNavsEtc();
-        Facts.updateFactCount(true);
+        Facts.updateFactCount();
     },
 
     unDisableNavsEtc: () => {
@@ -149,7 +152,7 @@ export const App = {
 
             const currentInstance = filingData.instance?.filter(element => element.current)[0];
 
-            if (filingData.sections) {
+            if (filingData.sections?.length) {
                 // probably only on initial load
                 // const sectionsSorted = filingData.sections.sort((a, b) => {
                 //     return Number(a.order) - Number(b.order);

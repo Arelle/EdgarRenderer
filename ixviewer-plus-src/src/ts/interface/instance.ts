@@ -14,7 +14,7 @@ export interface FetchedInstance {
         }>,
     current: true,
     xmlSlug: Array<string>,
-    xmlUrls: Array<string>,
+    xmlUrl: Array<string>,
     metaInstance: object;
     map: object;
 }
@@ -28,22 +28,22 @@ export interface DeclarationAttributes {
     encoding: string;
 }
 
-export interface Xbrl {
+export type Xbrl = { [key: string]: Fact[] | Fact } &
+{
     _attributes?: XbrlAttributes;
-    "link:schemaRef"?: LinkSchemaRef;
     context?: Context;
     unit?: Units[];
-    ['link:footnoteLink']?: {
+    "link:schemaRef"?: LinkSchemaRef;
+    "link:footnoteLink"?: {
         "link:loc": LinkLOC[];
         "link:footnote": LinkFootnote[];
         "link:footnoteArc": LinkFootnoteArc[];
     };
-    [key: string]: Fact[] | Fact
-}
+};
 
 export interface XbrlAttributes {
-    "xml:lang": string;
     xmlns: string;
+    "xml:lang": string;
     "xmlns:dei": string;
     "xmlns:link": string;
     "xmlns:xlink": string;
@@ -54,11 +54,24 @@ export interface Context {
     entity: Entity;
     period: Period;
 }
-export interface Units {
+
+export interface Measure
+{
+    measure: { _text: string };
+}
+
+export interface Units extends Measure {
     _attributes: ContextAttributes;
-    measure: {
-        _text: string
-    }
+}
+
+export interface UnitsAdditional extends Units
+{
+    _text: string;
+    divide:
+    {
+        unitNumerator: Measure;
+        unitDenominator: Measure;
+    };
 }
 
 export interface ContextAttributes {
@@ -71,6 +84,7 @@ export enum ID {
 
 export interface Entity {
     identifier: Identifier;
+    segment?: { data: unknown };
 }
 
 export interface Identifier {
@@ -85,6 +99,9 @@ export interface IdentifierAttributes {
 export interface Period {
     startDate: EndDateClass;
     endDate: EndDateClass;
+    instant: { _text: string };
+    _array: string[];
+    _text: string;
 }
 
 export interface EndDateClass {
@@ -99,6 +116,10 @@ export interface Fact {
 export interface DeiAmendmentFlagAttributes {
     contextRef: ID;
     id?: string;
+    unitRef?: string;
+    scale?: number;
+    decimals?: string;
+    sign?: string;
 }
 
 export interface LinkSchemaRef {

@@ -289,13 +289,16 @@ export const Facts = {
 		if (fact) {
 			element.parentElement?.setAttribute("data-bs-toggle", "popover");
 			element.parentElement?.setAttribute("data-bs-placement", "auto");
-			element.parentElement?.setAttribute("data-bs-title", ConstantsFunctions.getFactLabel(fact.labels) as string);
+			// element.parentElement?.setAttribute("data-bs-title", ConstantsFunctions.getFactLabel(fact.labels) as string);
 			element.parentElement?.setAttribute("data-bs-content", fact.isHTML ? `Click to see Fact.\n${fact.period}` : ` ${fact.value}\n${fact.period}`);
 			element.parentElement?.setAttribute("data-bs-trigger", "focus");
+			element.classList.add('elevated');
 			const popoverHTML = document.createElement('div');
+			popoverHTML.classList.add('m-1');
 			popoverHTML.classList.add('text-center');
 			const value = document.createElement('div');
-			const valueText = document.createTextNode(fact.isHTML ? 'Click to see Fact.' : (fact.value as unknown as string));
+			const labelAndValue = `${ConstantsFunctions.getFactLabel(fact.labels) as string}: ${(fact.value as unknown as string)}`;
+			const valueText = document.createTextNode(fact.isHTML ? 'Click to see Fact.' : labelAndValue);
 			value.append(valueText);
 			popoverHTML.append(value);
 			const period = document.createElement('div');

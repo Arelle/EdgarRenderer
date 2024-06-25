@@ -482,8 +482,7 @@ export const Pagination = {
 			}
 		}
 		if (index >= 0) {
-			(index === 0) ? (index = 1) : null;
-			const pageToGoTo = Math.ceil(index / Constants.getPaginationPerPage);
+			const pageToGoTo = Math.ceil((index + 1) / Constants.getPaginationPerPage);
 			Pagination.getCurrentPage = pageToGoTo;
 			Pagination.getPaginationTemplate(pageToGoTo);
 			Pagination.scrollToSelectedFactInSidebar(index);
@@ -513,7 +512,6 @@ export const Pagination = {
 			'[selected-fact="true"]');
 		if (elementToScrollTo) {
 			elementToScrollTo.scrollIntoView({
-				behavior: 'smooth',
 				// block: "nearest" is needed to prevent content from shifting out of viewport.
 				block: "nearest", // if item is above viewport resolves to start or top, if below resolves to end or bottom
 				inline: "start"

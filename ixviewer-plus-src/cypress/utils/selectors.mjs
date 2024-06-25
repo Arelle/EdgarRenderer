@@ -106,6 +106,7 @@ export const selectors = {
     factModalToggleCopyContent: 'i[id="fact-modal-copy-content"]',
     factModalExpand: 'i#fact-modal-expand',
     factModalCopyableContent: 'div#fact-copy-content',
+    factModalCopyableContentEXP: 'textarea#fact-copy-content-textarea',
     factCloseCopyableContent: 'a#fact-copy-content-close',
     factModalClose: 'i#fact-modal-close',
 

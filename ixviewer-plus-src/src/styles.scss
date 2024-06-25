@@ -283,25 +283,31 @@ kbd {
   background-color: inherit;
 }
 
+.elevated, .popover {
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 4px;
+}
+
 .xbrl-loading-text, .xbrl-loading-text * {
   font-size: 2.5rem;
   margin-top: 30px;
   font-weight: 200;
 }
 
-#dynamic-xbrl-form .text-block-indicator-left {
+#dynamic-xbrl-form .text-block-indicator-left, #settings-modal .text-block-indicator-left {
   left: 0px;
   width: 5px;
   border-top: 0.5rem solid transparent;
-  border-left: 0.75rem solid #003768;
+  border-left-style: solid;
+  border-left-width: 0.75rem;
   border-bottom: 0.5rem solid transparent;
 }
 
-#dynamic-xbrl-form .text-block-indicator-right {
+#dynamic-xbrl-form .text-block-indicator-right, #settings-modal .text-block-indicator-right {
   right: 0px;
   width: 5px;
   border-top: 0.5rem solid transparent;
-  border-right: 0.75rem solid #003768;
+  border-right-style: solid;
+  border-right-width: 0.75rem;
   border-bottom: 0.5rem solid transparent;
 }
 

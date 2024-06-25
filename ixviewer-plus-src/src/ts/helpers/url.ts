@@ -8,79 +8,49 @@
 import { Constants } from "../constants/constants";
 import { ErrorsMajor } from "../errors/major";
 
-export const HelpersUrl: {
-    init: (internalUrl: string, callback: (arg0: boolean | void) => void) => void,
-    makeAbsoluteUrlUnlessSimpleAnchorTag: (element: HTMLElement) => void,
-    fullURL: undefined | string | null,
-    addLinkattributes: (element: HTMLElement) => void,
-    returnURLParamsAsObject: (url: string) => Record<string, string>,
-    getFormAbsoluteURL: null,
-    getURL: null,
-    getExternalFile: string | null,
-    getExternalMeta: null,
-    getHTMLFileName: string | null,
-    getAnchorTag: null,
-    getAllParams: {
-        doc: string,
-        'doc-file': string,
-        hostName: string,
-        redline: boolean,
-        metalinks: string,
-        'metalinks-file': string,
-        fact: string,
-    },
-    isWorkstation: () => boolean,
-    setParams: (internalUrl: string | boolean) => void,
-    getAbsoluteUrl: (url: string) => void,
-    getParamsFromString: (name: string, url: string) => void,
-    updateURLWithoutReload: () => void,
-    ParsedUrl: (url: string) => {
-        hash: string,
-        hostname: string,
-        host: string,
-        href: string,
-        pathname: string,
-        port: string,
-        protocol: string,
-        search: string,
-    },
-} = {
-    init: (internalUrl: string, callback: (arg0: boolean | void) => void) => {
+export const HelpersUrl = {
+    init: (internalUrl: string, callback: (arg0: boolean | void) => void): void => {
         callback(HelpersUrl.setParams(internalUrl));
     },
 
-    makeAbsoluteUrlUnlessSimpleAnchorTag: (element) => {
+    makeAbsoluteUrlUnlessSimpleAnchorTag: (element: HTMLElement): void => {
         if (element.getAttribute('href')?.indexOf('http://') === 0
             || element.getAttribute('href')?.indexOf('https://') === 0) {
             // already absolute URL
             element.setAttribute('tabindex', '18');
         } else {
-            if (element.getAttribute('href')?.startsWith('#')) {
+            if(element.getAttribute('href')?.startsWith('#'))
+            {
                 element.setAttribute('tabindex', '18');
-                // already simple anchortag
-
-            } else {
+                // already simple anchor tag
+            }
+            else if(HelpersUrl.getFormAbsoluteURL && element.getAttribute('href'))
+            {
                 element.setAttribute('tabindex', '18');
                 element.setAttribute('href', HelpersUrl.getFormAbsoluteURL + element.getAttribute('href'));
+            }
+            else
+            {
+                console.warn("Unable to set `href` for element:", element);
             }
         }
     },
 
-    fullURL: null,
+    fullURL: null as string | null,
 
-    addLinkattributes: (element) => {
-        let attribute = null;
-        if (element) {
-            if (element.getAttribute('data-link')) {
-                attribute = 'data-link';
-            } else if (element.getAttribute('href')) {
-                attribute = 'href';
-            }
+    addLinkattributes: (element: HTMLElement): void => {
+        let attribute = "";
+        if (element?.getAttribute('data-link')) {
+            attribute = 'data-link';
+        } else if (element?.getAttribute('href')) {
+            attribute = 'href';
         }
 
-        if (attribute && element.getAttribute(attribute)!.charAt(0) !== '#') {
-            const absoluteLinkOfElementAttribute = decodeURIComponent(HelpersUrl.getAbsoluteUrl(element.getAttribute(attribute)));
+        if (attribute && element.getAttribute(attribute)?.charAt(0) !== '#') {
+            const attributeValue = element.getAttribute(attribute)!;  //won't be null because of check above
+            const absoluteLinkOfElementAttribute = decodeURIComponent(HelpersUrl.getAbsoluteUrl(attributeValue));
             const url = HelpersUrl.ParsedUrl(absoluteLinkOfElementAttribute);
+
             if (url.search) {
                 const urlParams = HelpersUrl.returnURLParamsAsObject(url.search.substring(1));
                 if (Object.prototype.hasOwnProperty.call(urlParams, `doc-file`)
@@ -93,17 +63,17 @@ export const HelpersUrl: {
                 }
             } else {
                 if (url.hash) {
-                    const urlParams = element.getAttribute(attribute).split('#')[0];
+                    const urlParams = attributeValue.split('#')[0];
                     if (urlParams && Constants.getMetaSourceDocuments.indexOf(urlParams) >= 0) {
-                        element.setAttribute('data-link', element.getAttribute(attribute));
-                        element.setAttribute('href', element.getAttribute(attribute));
+                        element.setAttribute('data-link', attributeValue);
+                        element.setAttribute('href', attributeValue);
                         element.setAttribute('onclick', 'Links.clickEventInternal(event, this)');
                     }
                     else {
                         HelpersUrl.makeAbsoluteUrlUnlessSimpleAnchorTag(element);
                     }
                 } else {
-                    const index = Constants.getMetaSourceDocuments.indexOf(element.getAttribute(attribute));
+                    const index = Constants.getMetaSourceDocuments.indexOf(attributeValue);
                     if (index >= 0) {
                         // here we add the necessary attributes for multi-form
                         element.setAttribute('data-link', Constants.getMetaSourceDocuments[index]);
@@ -119,10 +89,10 @@ export const HelpersUrl: {
         }
     },
 
-    isWorkstation: () =>
+    isWorkstation: (): boolean =>
     {
         const url = window.location.href;
-        let isWorkstation = url.includes("DisplayDocument.do");  //confirm this.
+        let isWorkstation = url.includes("DisplayDocument.do?");
         isWorkstation ||= window.location.host.indexOf("edgar.sec.gov") > 0; //originally used in form-information
 
         //an old implementation:
@@ -133,9 +103,9 @@ export const HelpersUrl: {
         return isWorkstation;
     },
 
-    returnURLParamsAsObject: (url) => {
+    returnURLParamsAsObject: (url: string): Record<string, string | boolean> => {
         const urlParams = new URLSearchParams(url);
-        const objToReturn: { [key: string]: string } = {};
+        const objToReturn: { [key: string]: string | boolean } = {};
         const urlParamsAsObject = Object.fromEntries(urlParams);
         const isWorkStation = HelpersUrl.isWorkstation();
         const isFEPT = urlParamsAsObject.doc.includes('view.html');
@@ -161,7 +131,7 @@ export const HelpersUrl: {
                     objToReturn['summary'] = `${fileUrl.replace('interpretedFormat=true', 'interpretedFormat=false')}&filename=FilingSummary.xml`;
                     objToReturn['summary-file'] = 'FilingSummary.xml';
                 } else if (paramKey === 'redline') {
-                    objToReturn[paramKey] = (paramVal == 'true');
+                    objToReturn[paramKey] = paramVal == 'true';
                 } else {
                     objToReturn[paramKey] = paramVal;
                 }
@@ -182,18 +152,18 @@ export const HelpersUrl: {
                     objToReturn['metalinks-file'] = 'MetaLinks.json';
                 }
                 if (paramKey === 'redline') {
-                    objToReturn[paramKey] = (paramVal == 'true');
+                    objToReturn[paramKey] = paramVal == 'true';
                 } else {
                     objToReturn[paramKey] = paramVal;
                 }
 
                 if (!Object.prototype.hasOwnProperty.call(objToReturn, `metalinks`)) {
-                    const metalinks = objToReturn['doc'].replace(objToReturn['doc-file'], 'MetaLinks.json');
+                    const metalinks = String(objToReturn['doc']).replace(objToReturn['doc-file'].toString(), 'MetaLinks.json');
                     objToReturn['metalinks'] = metalinks;
                     objToReturn['metalinks-file'] = 'MetaLinks.json';
                 }
                 if (!Object.prototype.hasOwnProperty.call(objToReturn, `summary`)) {
-                    const summary = objToReturn['doc'].replace(objToReturn['doc-file'], 'FilingSummary.xml');
+                    const summary = String(objToReturn['doc']).replace(objToReturn['doc-file'].toString(), 'FilingSummary.xml');
                     objToReturn['summary'] = summary;
                     objToReturn['summary-file'] = 'FilingSummary.xml';
                 }
@@ -202,23 +172,23 @@ export const HelpersUrl: {
         return objToReturn;
     },
 
-    getFormAbsoluteURL: null,
+    getFormAbsoluteURL: null as string | null,
 
-    getURL: null,
+    getURL: null as string | null,
 
-    getExternalFile: null,
+    getExternalFile: null as string | null,
 
-    getExternalMeta: null,
+    getExternalMeta: null as string | null,
 
-    getHTMLFileName: null,
+    getHTMLFileName: null as string | null,
 
-    getAnchorTag: null,
+    getAnchorTag: null as string | null,
 
-    getAllParams: null,
+    getAllParams: null as Record<string, string> | null,
 
-    setParams: (internalUrl) => {
+    setParams: (internalUrl: string | boolean): boolean => {
         if ((internalUrl && typeof internalUrl === 'string') && (internalUrl !== HelpersUrl.getHTMLFileName)) {
-            HelpersUrl.fullURL = HelpersUrl.fullURL?.replace(HelpersUrl.getHTMLFileName, internalUrl);
+            HelpersUrl.fullURL = HelpersUrl.fullURL?.replace(HelpersUrl.getHTMLFileName || "", internalUrl) || null;
             HelpersUrl.updateURLWithoutReload();
             HelpersUrl.getHTMLFileName = null;
         }
@@ -256,15 +226,16 @@ export const HelpersUrl: {
                 }
                 HelpersUrl.getAnchorTag = url['hash'];
             }
-            HelpersUrl.getExternalFile = HelpersUrl.getAllParams['doc'];
+            HelpersUrl.getExternalFile = HelpersUrl.getAllParams?.doc || null;
             if (!HelpersUrl.getHTMLFileName && HelpersUrl.getExternalFile) {
                 const splitFormURL = HelpersUrl.getExternalFile.split('/');
                 HelpersUrl.getHTMLFileName = splitFormURL[splitFormURL.length - 1];
             }
 
             if (!HelpersUrl.getExternalMeta && HelpersUrl.getExternalFile) {
-
-                const tempMetaLink = HelpersUrl.getExternalFile.replace(HelpersUrl.getHTMLFileName, 'MetaLinks.json');
+                const tempMetaLink = !!HelpersUrl.getHTMLFileName ? 
+                    HelpersUrl.getExternalFile.replace(HelpersUrl.getHTMLFileName, 'MetaLinks.json') :
+                    HelpersUrl.getExternalFile;
 
                 HelpersUrl.getExternalMeta = tempMetaLink;
             }
@@ -279,7 +250,6 @@ export const HelpersUrl: {
         HelpersUrl.getFormAbsoluteURL = absoluteURL;
 
         return true;
-
     },
 
     getAbsoluteUrl: (url: string) => {
@@ -306,15 +276,14 @@ export const HelpersUrl: {
         window.history.pushState('Next Link', 'Inline XBRL Viewer', HelpersUrl.fullURL);
     },
 
+    //TODO: this is not valid camelCase
     ParsedUrl: (url: string) => {
         const parser = document.createElement("a");
         parser.href = url;
 
-        // IE 8 and 9 dont load the attributes "protocol" and "host" in case the
-        // source URL
-        // is just a pathname, that is, "/example" and not
+        // IE 8 and 9 don't load the attributes "protocol" and "host" in case the
+        // source URL is just a pathname; that is, "/example" and not
         // "http://domain.com/example".
-        //parser.href = parser.href;
 
         // IE 7 and 6 wont load "protocol" and "host" even with the above workaround,
         // so we take the protocol/host from window.location and place them manually
@@ -326,24 +295,16 @@ export const HelpersUrl: {
             else {
                 // the regex gets everything up to the last "/"
                 // /path/takesEverythingUpToAndIncludingTheLastForwardSlash/thisIsIgnored
-                // "/" is inserted before because IE takes it of from pathname
-                const currentFolder = ("/" + parser.pathname).match(/.*\//)[0];
+                // "/" is inserted before because IE takes it of from pathname (???)
+                const currentFolder = ("/" + (parser.pathname || "")).match(/.*\//)?.shift() || "";
                 parser.href = newProtocolAndHost + currentFolder + url;
             }
         }
 
         // copies all the properties to this object
-        const properties = ['host', 'hostname', 'hash', 'href', 'port', 'protocol', 'search'];
-        const urlInfo: {
-            host: string;
-            hostname: string;
-            hash: string;
-            href: string;
-            port: string;
-            protocol: string;
-            search: string;
-            pathname: string;
-        } = {
+        // wouldn't `Object.assign`, or spread operator, be a simpler implementation?
+        const urlInfo =
+        {
             host: "",
             hostname: "",
             hash: "",
@@ -351,12 +312,16 @@ export const HelpersUrl: {
             port: "",
             protocol: "",
             search: "",
-            pathname: ""
+            pathname: "",
         };
-        for (let i = 0, n = properties.length; i < n; i++) {
-            urlInfo[properties[i]] = parser[properties[i]];
 
+        const properties: Array<keyof typeof urlInfo> = ['host', 'hostname', 'hash', 'href', 'port', 'protocol', 'search'];
+
+        for(let prop of properties)
+        {
+            urlInfo[prop] = parser[prop];
         }
+
         urlInfo['pathname'] = (parser.pathname.charAt(0) !== "/" ? "/" : "") + parser.pathname;
         return urlInfo;
     }

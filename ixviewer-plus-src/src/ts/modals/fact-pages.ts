@@ -5,6 +5,7 @@
 
 import { ConstantsFunctions } from "../constants/functions";
 import { xmlToDom } from "../helpers/utils";
+import { Facts } from "../interface/fact";
 
 // Build the pages for the fact modal
 export const FactPages = {
@@ -15,7 +16,7 @@ export const FactPages = {
 	 * @param {any} idToFill:string
 	 * @returns {any} html table containing all fact "attributes"
 	 */
-	firstPage: (factInfo, idToFill: string) => {
+	firstPage: (factInfo: Facts, idToFill: string) => {
 		const possibleLabels = [
 			{
 				label: "Tag",
@@ -176,7 +177,7 @@ export const FactPages = {
 		FactPages.fillCarousel(idToFill, elementsToReturn.firstElementChild ? elementsToReturn : FactPages.noDataCarousel());
 	},
 
-	secondPage: (factInfo, idToFill: string) => {
+	secondPage: (factInfo: Facts, idToFill: string) => {
 		const elementsToReturn = document.createElement("tbody");
 		factInfo.labels.forEach((current) => {
 			for (const property in current) {
@@ -199,7 +200,7 @@ export const FactPages = {
 		FactPages.fillCarousel(idToFill, elementsToReturn.firstElementChild ? elementsToReturn : FactPages.noDataCarousel());
 	},
 
-	thirdPage: (factInfo, idToFill: string) => {
+	thirdPage: (factInfo: Facts, idToFill: string) => {
 
 		const elementsToReturn = document.createElement("tbody");
 		factInfo.references.forEach((current, index, array) => {
@@ -262,7 +263,7 @@ export const FactPages = {
 		FactPages.fillCarousel(idToFill, elementsToReturn.firstElementChild ? elementsToReturn : FactPages.noDataCarousel());
 	},
 
-	fourthPage: (factInfo, idToFill: string) => {
+	fourthPage: (factInfo: Facts, idToFill: string) => {
 
 		const calculations = [...factInfo.calculations];
 

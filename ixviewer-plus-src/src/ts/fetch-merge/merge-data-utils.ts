@@ -1,5 +1,6 @@
 import { Report, Section, SectionFact } from '../interface/meta';
 import { convertToSelector } from "../helpers/utils";
+import { ErrorsMajor } from "../errors/major";
 
 /**
  * Description
@@ -12,7 +13,7 @@ export const buildSectionsArrayFlatter = (filingSummary, metaLinksReports, metaV
     const filingSummaryReports = filingSummary.MyReports.Report;
     let filingSummaryInputFiles = filingSummary.InputFiles.File;
     if (!Array.isArray(filingSummaryInputFiles)) filingSummaryInputFiles = [filingSummaryInputFiles];
-
+    
     const reportsContainStatements = filingSummaryReports
         .filter(r => r.MenuCategory)
         .map(r => r.MenuCategory && r.MenuCategory._text.toLowerCase())
@@ -26,7 +27,8 @@ export const buildSectionsArrayFlatter = (filingSummary, metaLinksReports, metaV
             return fileName.includes('.htm') || fileName.includes('.html') || fileName.includes('.xhtml');
         }
         const reportFileInfo = filingSummaryInputFiles.filter(file => {
-            if (file._attributes && file._attributes?.original && file._text && isHtmIsh(file._text)) {
+            // if (file._attributes && file._attributes?.original && file._text && isHtmIsh(file._text)) {
+            if (file._attributes && file._attributes?.original && isHtmIsh(file._text)) {
                 return section.instanceHtm.includes(file._attributes.original)
             }
         });

@@ -2,6 +2,7 @@ export interface Meta {
     instance: InstanceClass;
     std_ref: StdRef;
     version: string;
+    // tag?: Record<string, unknown>;
 }
 
 export interface Section {

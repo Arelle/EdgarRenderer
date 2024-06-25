@@ -1,0 +1,34 @@
+/node_modules
+/WebContent/ixviewer/gulp/node_modules/
+
+/coverage
+
+/dist
+/dist-ix
+dist.zip
+/dist-ws
+dist-ws.zip
+/ixviewer
+/wp-builds
+
+# These paths will no longer exist after a clean `clone`
+# but leaving them here for legacy users
+/src/assets/filings/
+/src/assets/important-filings/
+/src/Archives/edgar/data/
+
+.classpath
+
+.project
+
+.settings/
+
+.env
+
+/releases
+
+/v15.14.0
+/v16.20.0
+v18.18.2/
+/v14.16.1
+.vscode

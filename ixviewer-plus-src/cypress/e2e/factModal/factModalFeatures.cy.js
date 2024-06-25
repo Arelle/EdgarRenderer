@@ -43,7 +43,7 @@ describe(`Fact Modal`, () => {
 
         // cy.get(selectors.search).type('10-k')
         // cy.get(selectors.submitSearchButton).click()
-        cy.wait(2000)
+        //cy.wait(2000)
         cy.get(selectors.factsHeader).click()
 
         // cy.get(selectors.factInFactBrowser).click()
@@ -63,6 +63,21 @@ describe(`Fact Modal`, () => {
         cy.get(selectors.factModalCopyableContent).should('have.css', 'display', 'block')
         cy.get(selectors.factModalToggleCopyContent).click()
         cy.get(selectors.factModalCopyableContent).should('have.css', 'display', 'none')
+    })
+
+    it('Fact modal box copy contents should not change if you click the copy button multiple times', () => {
+        cy.visitHost(filing)
+        cy.get('#fact-identifier-4').click()
+        cy.get(selectors.factModalToggleCopyContent).click()
+        cy.get(selectors.factModalCopyableContentEXP).then(($copyBox) => {
+            const copyText = $copyBox.text()
+            for(let n = 0; n < 6; n ++){
+                cy.get(selectors.factModalToggleCopyContent).click()
+            }
+            cy.get(selectors.factModalCopyableContentEXP).should(($newCopy) => {
+                expect($newCopy.text()).to.equal(copyText)
+            })
+        })
     })
 
     it('should be able to expand in size with corners icon', () => {

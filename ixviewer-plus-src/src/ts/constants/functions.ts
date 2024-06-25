@@ -3,15 +3,17 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
-import { Constants } from "./constants";
-import { FactsTable } from "../facts/table";
-import { FactMap } from "../facts/map";
 import * as bootstrap from "bootstrap";
+import * as DOMPurify from "dompurify";
+
 import { App } from "../app/app";
+import { FactMap } from "../facts/map";
+import { FactsTable } from "../facts/table";
 import { HelpersUrl } from "../helpers/url";
 import { Modals } from "../modals/modals";
-import * as DOMPurify from "dompurify";
 import { Tabs } from "../tabs/tabs"
+import { Constants } from "./constants";
+
 
 export const ConstantsFunctions = {
 

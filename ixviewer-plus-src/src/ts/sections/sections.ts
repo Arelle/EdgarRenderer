@@ -9,23 +9,28 @@ import { ErrorsMinor } from "../errors/minor";
 import { ErrorsMajor } from "../errors/major";
 import { FactMap } from "../facts/map";
 import { HelpersUrl } from "../helpers/url";
+import { FactInput } from "../interface/fact-input";
 import { Section } from "../interface/meta";
-import { convertToSelector, elemWithinOneVHofBtm } from "../helpers/utils";
+import { convertToSelector, ixScrollTo } from "../helpers/utils";
 import { toBottomOfInlineDoc } from "../pagination/inlineDocPagination";
 
 export const Sections = {
 
     init: () => {
+        let fakeOrder = Constants.sections.length;
         const sections = Constants.sections.sort((a, b) => {
-            if (a.order) {
+            if (a.order && b.order) {
                 return Number(a.order) - Number(b.order);
             } else {
                 // metalinks version 2.1 doesn't have order prop
                 // TODO: group section menucats together at least
                 // read first, splice others that match it behind it.
-                return 0;
+                a.order = a.order || fakeOrder++;
+                b.order = b.order || fakeOrder++;
+                return Number(a.order) - Number(b.order);
             }
         });
+
         Sections.buildSectionsDom(sections);
 
         // hide search
@@ -43,45 +48,35 @@ export const Sections = {
                 console.error(`Could not find the chosen Section: ${sectionData.inlineFactSelector}`);
                 return;
             }
-            if (elemWithinOneVHofBtm(sectionElem)) {
-                toBottomOfInlineDoc();
-            } else {
-                sectionElem?.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
-            }
+
+            ixScrollTo(sectionElem);
         } else {
             console.error('no inline section selector');
         }
     },
 
-    highlightActiveInSidebar: () => {
+    highlightInstanceInSidebar: () => {
         const sectionElems = Array.from(document.querySelectorAll('#tagged-sections .accordion-item'));
         sectionElems.forEach(sectionElem => {
             if (sectionElem.getAttribute('data-instance') === HelpersUrl.getHTMLFileName) {
-                sectionElem.classList.add('section-active')
-                sectionElem.classList.remove('section-not-active')
+                sectionElem.classList.add('section-active');
+                sectionElem.classList.remove('section-not-active');
                 const expandablesOfCurrent = Array.from(sectionElem.querySelectorAll('.collapse'));
-                expandablesOfCurrent.forEach(expandable => {
-                    expandable.classList.add('show');
-                })
+                expandablesOfCurrent.forEach(expandable => expandable.classList.add('show'));
             } else {
                 sectionElem.classList.remove('section-active');
                 sectionElem.classList.add('section-not-active');
             }
-        })
+        });
     },
 
     handleSectionLinkClick: (event: MouseEvent | KeyboardEvent) => {
-        const changeInstanceThenScrollToSection = (section: Section) => {
-            ConstantsFunctions.changeInstance(
-                +(event.target as HTMLElement).getAttribute('fact-instance-index') as number,
-                (event.target as HTMLElement).getAttribute('fact-file'),
-                () => {
-                    Sections.scrollToSection(section);
-                    Sections.highlightActiveInSidebar();
-                    Sections.hightlightInlineSection(targetSectionData);
-                }
-            );
-        };
+        const eventTarget = event.target instanceof Element ? event.target : null;
+        if(!eventTarget)
+        {
+            console.error(`Not a valid Section Link: ${event.target}`);
+            return;
+        }
 
         const keyButNotSpaceOrEnter = Object.prototype.hasOwnProperty.call(event, 'key')
             && !((event as KeyboardEvent).key === 'Enter' || (event as KeyboardEvent).key === 'Space');
@@ -89,51 +84,51 @@ export const Sections = {
 
         const sections = Constants.getSectionsFromSessionStorage();
 
-        let targetSectionData: Section;
-
-        if (sections[0].order) {
-            [targetSectionData] = sections.filter((sect: Section) => {
-                const elemSectOrder = (event.target as HTMLElement)?.getAttribute('order');
-                return sect.order == Number(elemSectOrder);
-            });
-        } else {
-            // metalinks version 2.1 lacks order data
-            [targetSectionData] = sections.filter((sect: Section) => {
-                const selectorForInlineFact = (event.target as HTMLElement)?.getAttribute('inline-fact-selector');
-                return sect.inlineFactSelector == selectorForInlineFact;
-            });
+        let targetSectionData: Section | null = null;
+        for(let sect of sections)
+        {
+            const selectorForInlineFact = eventTarget?.getAttribute('inline-fact-selector');
+            if(sect.inlineFactSelector == selectorForInlineFact)
+            {
+                targetSectionData = sect;
+                break;
+            }
         }
 
-        const sectionInCurrentInstance = (event.target as HTMLElement).getAttribute('fact-file') === HelpersUrl.getHTMLFileName;
-        if (sectionInCurrentInstance) {
-            if (targetSectionData) {
-                Sections.scrollToSection(targetSectionData);
-                Sections.hightlightInlineSection(targetSectionData);
-            } else {
-                Sections.scrollToSectionOld({
-                    id: (event.target as HTMLElement)?.getAttribute('fact-id') as string,
-                });
-            }
-        } else {
-            if (targetSectionData) {
-                changeInstanceThenScrollToSection(targetSectionData);
-            } else {
-                ConstantsFunctions.changeInstance(
-                    +(event.target as HTMLElement).getAttribute('fact-instance-index') as number,
-                    (event.target as HTMLElement).getAttribute("fact-file") as string,
-                    () => {
-                        setTimeout(() => {
-                            // Sections.formChange();
-                            Sections.scrollToSectionOld({
-                                name: (event.target as HTMLElement)?.getAttribute('fact-name') as string,
-                                contextRef: (event.target as HTMLElement)?.getAttribute('fact-contextRef') as string,
-                            });
-                            Sections.setSelectedAttributes(event.target as HTMLElement);
-                            Sections.highlightActiveInSidebar();
-                        });
-                    }
-                );
-            }
+        
+        const scrollToSection = (section: Section) =>
+        {
+            Sections.scrollToSection(section);
+            Sections.highlightInstanceInSidebar();
+            Sections.hightlightInlineSection(section);
+        };
+        const scrollToFact = (fact: FactInput) =>
+        {
+            Sections.scrollToSectionOld(fact);
+            Sections.setSelectedAttributes(eventTarget);
+            Sections.highlightInstanceInSidebar();
+        };
+
+
+        const currentInstance = HelpersUrl.getHTMLFileName || "BAD FILE NAME!";
+        const sectionInCurrentInstance = eventTarget.getAttribute('fact-file') === currentInstance;        
+        
+        const id = eventTarget?.getAttribute('fact-id') || "";
+        const name = eventTarget?.getAttribute('fact-name') || "";
+        const contextRef = eventTarget?.getAttribute('fact-contextRef') || "";
+
+        const section = sectionInCurrentInstance ? { id } : { name, contextRef };
+        const action = targetSectionData ? () => scrollToSection(targetSectionData) : () => scrollToFact(section);
+        if(sectionInCurrentInstance)
+        {
+            action();
+        }
+        else
+        {
+            const instanceIndex = Number(eventTarget?.getAttribute('fact-instance-index'));
+            const targetInstanceFile = eventTarget?.getAttribute('fact-file') || null;
+
+            ConstantsFunctions.changeInstance(instanceIndex, targetInstanceFile, action);
         }
     },
 
@@ -177,22 +172,20 @@ export const Sections = {
     },
 
     // maybe deprecated
-    setSelectedAttributes: (element: HTMLElement) => {
-        const selected = document.getElementById("tagged-sections")?.querySelectorAll("[selected-fact]");
-        const selectedArray = Array.prototype.slice.call(selected);
-        selectedArray.forEach((current) => {
+    setSelectedAttributes: (element: Element) =>
+    {
+        const selected = document.querySelectorAll("#tagged-sections [selected-fact]");
+        for(let current of Array.from(selected))
+        {
             current.setAttribute("selected-fact", 'false');
-        });
+        }
+
         element.setAttribute("selected-fact", 'true');
     },
 
-    scrollToSectionOld: (factInput: {
-        id?: string,
-        name?: string;
-        contextRef?: string;
-    }) => {
+    scrollToSectionOld: (factInput: FactInput) => {
         let factFromMap = null;
-        if (factInput.id) {
+        if ("id" in factInput) {
             factFromMap = FactMap.getByID(factInput.id);
         } else if (factInput.name && factInput.contextRef) {
             factFromMap = FactMap.getByNameContextRef(factInput.name, factInput.contextRef);
@@ -202,7 +195,7 @@ export const Sections = {
             const factElement = document.querySelector(`#dynamic-xbrl-form #${factFromMap.id}`);
             factElement?.scrollIntoView({
                 // block: Constants.scrollPosition as ScrollLogicalPosition
-                block: 'nearest', // fixes content shift ouf of viewport.
+                block: 'nearest', // fixes content shift out of viewport.
             });
         } else {
             ErrorsMinor.factNotFound();
@@ -225,7 +218,7 @@ export const Sections = {
      */
     applyFilterRadios: () => {
         const allSectionAccordionItems = Array.from(document.querySelectorAll('#tagged-sections > div.accordion-item'));
-        const filter = document.querySelector('[name="sections-filter"]:checked')?.value;
+        const filter: string = (document.querySelector('[name="sections-filter"]:checked') as any)?.value;
 
         if (filter === 'all') {
             allSectionAccordionItems.forEach(sectElem => {
@@ -233,7 +226,10 @@ export const Sections = {
             })
         } else if (filter === 'current') {
             allSectionAccordionItems.forEach(sectElem => {
-                if (HelpersUrl.getHTMLFileName && sectElem.getAttribute('data-instance') === (HelpersUrl.getHTMLFileName)) {
+                const instanceMatches = sectElem.getAttribute('data-instance')?.trim()
+                    .split(' ').includes(HelpersUrl.getHTMLFileName || "");
+
+                if (HelpersUrl.getHTMLFileName && instanceMatches) {
                     sectElem.classList.remove('d-none');
                 } else {
                     sectElem.classList.add('d-none');
@@ -275,8 +271,8 @@ export const Sections = {
             section.instanceSectionHeaderId = (`instance-header-${sectionSelector}`);
             section.instanceSectionBodyId = (`instance-body-${sectionSelector}`);
             section.menuCatClean = (`${section.instanceSectionId}--${convertToSelector(section.menuCatMapped)}`)
-            section.menuCatHeaderId = (`cat-header-${convertToSelector(section.menuCat)}-${sectionSelector}`);
-            section.menuCatBodyId = (`cat-body-${convertToSelector(section.menuCat)}-${sectionSelector}`);
+            section.menuCatHeaderId = (`cat-header-${convertToSelector(section.menuCatMapped)}-${sectionSelector}`);
+            section.menuCatBodyId = (`cat-body-${convertToSelector(section.menuCatMapped)}-${sectionSelector}`);
 
             const newDoc = section.instanceDocName !== prevDocName;
 
@@ -291,7 +287,7 @@ export const Sections = {
             const menuCatElem = document.querySelector(`div[id="${section.menuCatClean}"]`);
             if (!menuCatElem) {
                 const linksInMenuCatCount = sections.filter(sect => {
-                    return sect.menuCat === section.menuCat && sect.instanceDocName === section.instanceDocName
+                    return sect.menuCatMapped === section.menuCatMapped && sect.instanceDocName === section.instanceDocName
                 }).length;
                 Sections.createMenuCatCollapsable(section, index, linksInMenuCatCount);
             }
@@ -304,7 +300,7 @@ export const Sections = {
     },
 
     createInstanceAccordionHeader: (sectionItem: Section, instInd: number, sectionsInInstanceCount: number) => {
-        const isCurrent = sectionItem.instanceHtm.includes(HelpersUrl.getHTMLFileName);
+        const isCurrent = sectionItem.instanceHtm.includes(HelpersUrl.getHTMLFileName || "BAD FILE NAME!");
         const instanceCollapseString =
             `<div 
                 id="${sectionItem.instanceSectionId}"
@@ -409,11 +405,11 @@ export const Sections = {
         const doc = parser.parseFromString(instanceCollapseString, 'text/html')
         const sectionFactLink = doc.querySelector('li') as HTMLElement
 
-        ['click', 'keyup'].forEach((eType) => {
-            sectionFactLink.addEventListener(eType, (eventElem) => {
-                Sections.handleSectionLinkClick(eventElem);
-            });
-        });
+        for(let eType of ["click", "keyup"] as const)
+        {
+            sectionFactLink.addEventListener(eType, (eventElem) =>
+                Sections.handleSectionLinkClick(eventElem))
+        }
 
         document.getElementById(sectionItem.menuCatBodyId)?.appendChild(sectionFactLink);
     },

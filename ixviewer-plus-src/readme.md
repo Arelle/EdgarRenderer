@@ -105,3 +105,8 @@ npm run build-prod
 ## Deploy Prod
 zip the /dist/ folder and re-name to something that matches releae version => e.g. release_24.2.01
 copy to sharepoint folder and update the release notes table in confluence.
+
+## git
+dev branches
+plus: ix-dev
+legacy: v23-dev

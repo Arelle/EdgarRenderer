@@ -101,7 +101,7 @@ export const Tabs = {
       factCountSpan.classList.add('ms-1');
       currentInlineDoc.table ? null : factCountSpan.setAttribute('filing-slug', currentInlineDoc.slug);
 
-      const factText = document.createTextNode(FactMap.getFactCountForFile(currentInlineDoc.slug, true) as string);
+      const factText = document.createTextNode(FactMap.getFactCountForFile(currentInlineDoc.slug, true).toString());
 
       factCountSpan.setAttribute('data-bs-toggle', 'tooltip');
       factCountSpan.setAttribute('title', 'Filtered Fact Count');
@@ -204,7 +204,7 @@ export const Tabs = {
   clickEventInstance: (event: MouseEvent | KeyboardEvent, instance: number) => {
     event.preventDefault();
     ConstantsFunctions.changeInstance(+instance as number, null, () => {
-      Sections.highlightActiveInSidebar();
+      Sections.highlightInstanceInSidebar();
       Sections.applyFilterRadios();
     });
   },

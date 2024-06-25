@@ -37,17 +37,13 @@
                                 class="dropdown-item click text-body" tabindex="1">Information</a>
                             <a id="form-information-instance" data-test="form-information-instance"
                                 class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer"
-                                tabindex="1">Save
-                                XBRL
-                                Instance</a>
+                                tabindex="1">Save XBRL Instance</a>
                             <a id="form-information-zip" data-test="form-information-zip"
                                 class="dropdown-item click text-body" rel="noopener noreferrer"
-                                tabindex="1">Save XBRL Zip
-                                File</a>
+                                tabindex="1">Save XBRL Zip File</a>
                             <a id="form-information-html" data-test="form-information-html"
                                 class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer"
-                                tabindex="1">Open as
-                                HTML</a>
+                                tabindex="1">Open as HTML</a>
                             <a id="menu-dropdown-settings" data-test="menu-dropdown-settings"
                                 class="dropdown-item click text-body" tabindex="1">Settings</a>
                             <a id="form-information-help" data-bs-toggle="collapse" data-bs-target="#help-menu"
@@ -72,8 +68,7 @@
                                     class="dropdown btn btn-outline-light disabled" type="button"
                                     data-bs-toggle="dropdown" tabindex="3">
                                     <i class="nav-loading fas fa-cog" title="Additional Search Options">
-                                        <span class="sr-only sr-only-focusable">Additional
-                                            Search Options</span>
+                                        <span class="sr-only sr-only-focusable">Additional Search Options</span>
                                     </i>
                                 </button>
                                 <div class="dropdown-menu px-2">
@@ -1112,33 +1107,42 @@
             </div>
         </div>
         <div class="dialog-content">
-            <form>
+            <form class="mx-3">
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="hover-option-select">
                         Hover over Fact for quick information.
                     </label>
-                    <select id="hover-option-select" class="col-sm-8 form-select" tabindex="15">
-                        <option value="true">On</option>
-                        <option value="false">Off</option>
-                    </select>
+                    <div class="col-sm-4">
+                            <select id="hover-option-select" class="form-select" tabindex="15">
+                                <option value="true">On</option>
+                                <option value="false">Off</option>
+                            </select>
+                    </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="scroll-position-select">
                         Auto Scrolling Position
                     </label>
-                    <select id="scroll-position-select" class="col-sm-8 form-select" tabindex="15">
-                        <option value="start">Top</option>
-                        <option value="center">Center</option>
-                    </select>
-                    <small class="form-text text-muted col-sm-12" tabindex="15">Selecting
-                        a fact from the Sections Menu or the Fact Menu will automatically
-                        scroll that element to the (Top, or Middle) of the viewer window.
-                        This setting will have no use on IE 10, or Safari.</small>
+                    <div class="col-sm-4">
+                        <select id="scroll-position-select" class="form-select" tabindex="15">
+                            <option value="start">Top</option>
+                            <option value="center">Center</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <small class="form-text text-muted col-sm-12" tabindex="15">Selecting
+                            a fact from the Sections Menu or the Fact Menu will automatically
+                            scroll that element to the (Top, or Middle) of the viewer window.
+                            This setting will have no use on IE 10, or Safari.
+                        </small>
+                    </div>
                 </div>
                 <hr />
+
+                <!-- tagged data / enabled -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="tagged-data-color-picker">
-                        <span class="tagged-data-example-1">Tagged Data</span>
+                        <span class="enabled-example">Tagged Data</span>
                     </label>
                     <div class="col-sm-4">
                         <span>
@@ -1152,9 +1156,11 @@
                     </div>
                 </div>
                 <hr />
+
+                <!-- Search / highlighted -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="search-results-color-picker">
-                        <span class="search-results-example-1">
+                        <span class="highlighted-example">
                             Search Results
                         </span>
                     </label>
@@ -1170,9 +1176,11 @@
                     </div>
                 </div>
                 <hr />
+
+                <!-- selected -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="selected-fact-color-picker">
-                        <span class="selected-fact-example-1">Selected Fact</span>
+                        <span class="selected-fact-example">Selected Fact</span>
                     </label>
                     <div class="col-sm-4">
                         <span>
@@ -1186,10 +1194,12 @@
                     </div>
                 </div>
                 <hr />
+
+                <!-- hover / tag shading -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="tag-shading-color-picker">
-                        <span class="tag-shading-exmple-1">
-                            Tag Shading (hover)</span>
+                        <span class="tag-shading-example" enabled-fact="true" hover-fact="true">Tag Shading (hover)</span>
+                        <div>Opacity:</div>
                     </label>
                     <div class="col-sm-4">
                         <span>
@@ -1205,8 +1215,12 @@
                     </div>
                 </div>
                 <hr />
+
+                <!-- text block indicators -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="text-block-color-picker">
+                        <span class="float-left text-block-indicator-left position-absolute"></span>
+                        <span class="float-right text-block-indicator-right position-absolute"></span>
                         <span class="text-block-exmple-1">Text Block Indicators</span>
                     </label>
                     <div class="col-sm-4">
