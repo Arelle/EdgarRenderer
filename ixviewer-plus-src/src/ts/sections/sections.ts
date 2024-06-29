@@ -6,410 +6,428 @@
 import { Constants } from "../constants/constants";
 import { ConstantsFunctions } from "../constants/functions";
 import { ErrorsMinor } from "../errors/minor";
+import { ErrorsMajor } from "../errors/major";
 import { FactMap } from "../facts/map";
-import { FiltersReports } from "../filters/reports";
 import { HelpersUrl } from "../helpers/url";
+import { FactInput } from "../interface/fact-input";
+import { Section } from "../interface/meta";
+import { convertToSelector, ixScrollTo } from "../helpers/utils";
+import { toBottomOfInlineDoc } from "../pagination/inlineDocPagination";
 
 export const Sections = {
 
-  currentlyOpenChildMenu: {},
-
-  searchObject: {},
-
-  populatedSections: false,
-
-  clickEvent: (event: MouseEvent | KeyboardEvent) => {
-    if (
-      Object.prototype.hasOwnProperty.call(event, 'key') &&
-      !((event as KeyboardEvent).key === 'Enter' || (event as KeyboardEvent).key === 'Space')
-    ) {
-      return;
-    }
-
-    if ((event.target as HTMLElement).getAttribute('fact-id')) {
-      // fact exists in this instance
-      if ((event.target as HTMLElement).getAttribute('fact-file') === HelpersUrl.getHTMLFileName) {
-        Sections.scrollToSection({
-          id: (event.target as HTMLElement)?.getAttribute('fact-id') as string,
-        });
-        Sections.setSelectedAttributes(event.target as HTMLElement);
-      } else {
-        ConstantsFunctions.changeInlineFiles((event.target as HTMLElement).getAttribute('fact-file') as string);
-
-        setTimeout(() => {
-          Sections.formChange();
-          Sections.scrollToSection({
-            id: (event.target as HTMLElement)?.getAttribute('fact-id') as string,
-          });
-          Sections.setSelectedAttributes(event.target as HTMLElement);
-        });
-      }
-
-    } else {
-      // gotta change instances?
-      ConstantsFunctions.changeInstance(+(event.target as HTMLElement).getAttribute('fact-instance') as number, (event.target as HTMLElement).getAttribute("fact-file") as string, () => {
-        setTimeout(() => {
-          Sections.formChange();
-          Sections.scrollToSection({
-            name: (event.target as HTMLElement)?.getAttribute('fact-name') as string,
-            contextRef: (event.target as HTMLElement)?.getAttribute('fact-contextRef') as string,
-          });
-          Sections.setSelectedAttributes(event.target as HTMLElement);
-        });
-      });
-    }
-  },
-
-  scrollToSection: (options: { id?: string, name?: string; contextRef?: string }) => {
-    console.log( 'scrollToSection')
-    let fact = null;
-    if (options.id) {
-      fact = FactMap.getByID(options.id);
-    } else if (options.name && options.contextRef) {
-      fact = FactMap.getByNameContextRef(options.name, options.contextRef);
-    }
-
-    if (fact) {
-      const factElement = document.querySelector(`#dynamic-xbrl-form #${fact.id}`);
-      factElement?.scrollIntoView({
-        // block: Constants.scrollPosition as ScrollLogicalPosition
-        block: 'nearest', // fixes content shift ouf of viewport.
-      });
-    } else {
-      ErrorsMinor.factNotFound();
-    }
-  },
-
-  fallbackElementScroll: (element: HTMLElement) => {
-    console.log( 'fallbackElementScroll')
-
-    Sections.setSelectedAttributes(element);
-    const fact = FactMap.getByID(element.getAttribute("fact-id") as string);
-    if (fact) {
-      const factElement = document.getElementById(element.getAttribute("fact-id") as string);
-      factElement?.scrollIntoView({
-        block: Constants.scrollPosition as ScrollLogicalPosition
-      });
-    } else {
-      ErrorsMinor.factNotFound();
-    }
-  },
-
-  toggle: (event: MouseEvent | KeyboardEvent) => {
-    if (
-      Object.prototype.hasOwnProperty.call(event, 'key') &&
-      !((event as KeyboardEvent).key === 'Enter' || (event as KeyboardEvent).key === 'Space')
-    ) {
-      return;
-    }
-
-    if (event.target && (event.target as HTMLElement).classList && (event.target as HTMLElement).classList.contains('disabled')) {
-      return;
-    }
-    if (!Sections.populatedSections) {
-      if (Constants.getInstanceFiles.length > 1) {
-        document.getElementById("sections-search-additional")?.classList.remove("d-none");
-      }
-      Sections.populate({}, null);
-      Sections.populatedSections = true;
-    }
-  },
-
-  formChange: () => {
-    if (document.getElementById("sections-menu")?.classList.contains('show')) {
-      if (
-        Object.prototype.hasOwnProperty.call(Sections.currentlyOpenChildMenu, `id`) &&
-        Object.prototype.hasOwnProperty.call(Sections.currentlyOpenChildMenu, `group`)
-      ) {
-        ConstantsFunctions.emptyHTMLByID("tagged-sections");
-        // we now want to re-paint all sections, keeping Sections.currentlyOpenChildMenu open
-        Sections.populatedSections = false;
-        Sections.populate(
-          Sections.searchObject,
-          Sections.currentlyOpenChildMenu['id']
-        );
-      }
-    }
-  },
-
-  populate: (searchObject: object, idToKeepOpen: string | null) => {
-    Sections.searchObject = searchObject;
-    Constants.getMetaReports.forEach((current, index) => {
-      const additionalInfo = {
-        parentId: `tagged-sections-${index}`,
-        badgeId: `tagged-sections-badge-${index}`,
-        containerId: `tagged-sections-container-${index}`,
-        open: `tagged-sections-container-${index}` === idToKeepOpen,
-      };
-      if (!Sections.populatedSections) {
-        Sections.populateParentCollapse({ ...current, ...additionalInfo });
-      }
-
-      Sections.filterParentCollapse(Sections.searchObject, [{ ...current, ...additionalInfo }]);
-      Sections.updateBadgeCount([{ ...current, ...additionalInfo }]);
-    });
-    Sections.populatedSections = true;
-  },
-
-  filterParentCollapse: (searchObject: { type: number, value: string } | {} = {}, setupArray: Array<{
-    badgeId: string, containerId: string, groupType: string, label: string, open: boolean, parentId: string
-  }>) => {
-    setupArray.forEach((current: { containerId: string; }) => {
-
-      const liElementsArray = Array.from(document.querySelectorAll(
-        "#" + current.containerId + " li"
-      ));
-
-      if (Object.prototype.hasOwnProperty.call(searchObject, `value`)) {
-        if (document.getElementById(current.containerId)) {
-          liElementsArray.forEach((li) => {
-            if (searchObject['type'] === 1) {
-              // search all sections
-              if (
-                Sections.searchObject['value'] &&
-                !Sections.searchObject['value'].test(li.textContent)
-              ) {
-                li.classList.remove("d-flex");
-                li.classList.add("d-none");
-              } else {
-                li.classList.add("d-flex");
-                li.classList.remove("d-none");
-              }
-            } else if (searchObject['type'] === 2 && !li.hasAttribute("fact-instance")) {
-              // search internal sections ONLY
-              if (
-                !li.hasAttribute("baseref") &&
-                li.textContent &&
-                Sections.searchObject['value'] &&
-                !Sections.searchObject['value'].test(li.textContent)
-              ) {
-                li.classList.remove("d-flex");
-                li.classList.add("d-none");
-              } else {
-                li.classList.add("d-flex");
-                li.classList.remove("d-none");
-              }
-            } else if (searchObject['type'] === 3 && li.hasAttribute("fact-instance")) {
-              // search external sections ONLY
-              if (
-                li.textContent &&
-                Sections.searchObject['value'] &&
-                !Sections.searchObject['value'].test(li.textContent)
-              ) {
-                li.classList.remove("d-flex");
-                li.classList.add("d-none");
-              } else {
-                li.classList.add("d-flex");
-                li.classList.remove("d-none");
-              }
+    init: () => {
+        let fakeOrder = Constants.sections.length;
+        const sections = Constants.sections.sort((a, b) => {
+            if (a.order && b.order) {
+                return Number(a.order) - Number(b.order);
             } else {
-              li.classList.remove("d-flex");
-              li.classList.add("d-none");
+                // metalinks version 2.1 doesn't have order prop
+                // TODO: group section menucats together at least
+                // read first, splice others that match it behind it.
+                a.order = a.order || fakeOrder++;
+                b.order = b.order || fakeOrder++;
+                return Number(a.order) - Number(b.order);
             }
-          });
-        }
-      }
-
-      if (
-        !Object.prototype.hasOwnProperty.call(searchObject, `type`) &&
-        !Object.prototype.hasOwnProperty.call(searchObject, `value`)
-      ) {
-        liElementsArray.forEach((li) => {
-          li.classList.add("d-flex");
-          li.classList.remove("d-none");
         });
-      }
-    });
-  },
 
-  updateBadgeCount: (setupArray: Array<{ containerId: string; badgeId: string; parentId: string; }>) => {
-    setupArray.forEach((current) => {
-      let badgeCount = 0;
-      const liElements = document.querySelectorAll(
-        "#" + current.containerId + " li"
-      );
-      const liElementsArray = Array.prototype.slice.call(liElements);
-      liElementsArray.forEach((li) => {
-        if (li.classList.contains("d-flex")) {
-          badgeCount++;
-        }
-      });
-      const badge = document.getElementById(current.badgeId);
-      if (badge) {
-        if (badgeCount > 0) {
-          document.getElementById(current.parentId)?.classList.remove("d-none");
-          badge.innerHTML = badgeCount.toString();
+        Sections.buildSectionsDom(sections);
+
+        // hide search
+        const sectionSearch = document.querySelector('#sections-menu-search-submit');
+        sectionSearch?.classList.add('d-none');
+
+        return sections;
+    },
+
+    scrollToSection: (sectionData: Section) => {
+        if (sectionData?.inlineFactSelector) {
+            const sectionElem = (document.querySelector(sectionData.inlineFactSelector) as HTMLElement);
+            if (!sectionElem) {
+                ErrorsMajor.message("Could not find inline section.");
+                console.error(`Could not find the chosen Section: ${sectionData.inlineFactSelector}`);
+                return;
+            }
+
+            ixScrollTo(sectionElem);
         } else {
-          document.getElementById(current.parentId)?.classList.add("d-none");
+            console.error('no inline section selector');
         }
-      }
-    });
-  },
+    },
 
-  populateParentCollapse: (input: {
-    parentId: string; containerId: string; label: string; badgeId: string; groupType: string;
-    open: boolean; children: Array<{}>
-  }) => {
-    //const discoveredGroupType = Sections.filterGroupType(input.groupType);
-    // if (discoveredGroupType.length > 0) {
-    // we generate the HTML for this section
-    Sections.generateParentCollapseHTML(input);
-    Sections.generateChildCollapseHTML(input);
-    // }
-  },
+    highlightInstanceInSidebar: () => {
+        const sectionElems = Array.from(document.querySelectorAll('#tagged-sections .accordion-item'));
+        sectionElems.forEach(sectionElem => {
+            if (sectionElem.getAttribute('data-instance') === HelpersUrl.getHTMLFileName) {
+                sectionElem.classList.add('section-active');
+                sectionElem.classList.remove('section-not-active');
+                const expandablesOfCurrent = Array.from(sectionElem.querySelectorAll('.collapse'));
+                expandablesOfCurrent.forEach(expandable => expandable.classList.add('show'));
+            } else {
+                sectionElem.classList.remove('section-active');
+                sectionElem.classList.add('section-not-active');
+            }
+        });
+    },
 
-  generateParentCollapseHTML: (input: {
-    parentId: string; containerId: string; name: string;
-    badgeId: string; open: boolean
-  }) => {
-    const card = document.createElement("div");
-    card.classList.add("card");
-    card.setAttribute("id", input.parentId);
-    card.setAttribute("data-test", input.parentId);
+    handleSectionLinkClick: (event: MouseEvent | KeyboardEvent) => {
+        const eventTarget = event.target instanceof Element ? event.target : null;
+        if(!eventTarget)
+        {
+            console.error(`Not a valid Section Link: ${event.target}`);
+            return;
+        }
 
-    const headerContainer = document.createElement("div");
-    headerContainer.classList.add("card-header");
-    headerContainer.classList.add("px-0");
-    headerContainer.classList.add("py-0");
+        const keyButNotSpaceOrEnter = Object.prototype.hasOwnProperty.call(event, 'key')
+            && !((event as KeyboardEvent).key === 'Enter' || (event as KeyboardEvent).key === 'Space');
+        if (keyButNotSpaceOrEnter) return;
 
-    const header = document.createElement("h5");
-    header.classList.add("mb-0");
+        const sections = Constants.getSectionsFromSessionStorage();
 
-    const button = document.createElement("button");
-    button.classList.add("btn");
-    button.classList.add("d-flex");
-    button.classList.add("justify-content-between");
-    button.classList.add("align-items-center");
-    button.classList.add("align-items-center");
-    button.classList.add("w-100");
-    button.setAttribute("type", "button");
-    button.setAttribute("data-bs-target", `#${input.containerId}`);
-    button.setAttribute("tabindex", "2");
-    button.setAttribute("data-bs-toggle", "collapse");
-    button.addEventListener("click", (event: MouseEvent) => {
-      Sections.captureChildCollapse(event, `#${input.parentId}`);
-    });
-    button.addEventListener("keyup", (event: KeyboardEvent) => {
-      Sections.captureChildCollapse(event, `#${input.parentId}`);
-    });
-    const span = document.createElement("span");
-    span.classList.add("font-size-1");
+        let targetSectionData: Section | null = null;
+        for(let sect of sections)
+        {
+            const selectorForInlineFact = eventTarget?.getAttribute('inline-fact-selector');
+            if(sect.inlineFactSelector == selectorForInlineFact)
+            {
+                targetSectionData = sect;
+                break;
+            }
+        }
 
-    const text = document.createTextNode(input.name);
+        
+        const scrollToSection = (section: Section) =>
+        {
+            Sections.scrollToSection(section);
+            Sections.highlightInstanceInSidebar();
+            Sections.hightlightInlineSection(section);
+        };
+        const scrollToFact = (fact: FactInput) =>
+        {
+            Sections.scrollToSectionOld(fact);
+            Sections.setSelectedAttributes(eventTarget);
+            Sections.highlightInstanceInSidebar();
+        };
 
-    const span2 = document.createElement("span");
-    span2.classList.add("badge");
-    span2.classList.add("text-bg-secondary");
-    span2.setAttribute("id", input.badgeId);
-    const text2 = document.createTextNode(input.children.length);
 
-    span.appendChild(text);
-    button.appendChild(span);
+        const currentInstance = HelpersUrl.getHTMLFileName || "BAD FILE NAME!";
+        const sectionInCurrentInstance = eventTarget.getAttribute('fact-file') === currentInstance;        
+        
+        const id = eventTarget?.getAttribute('fact-id') || "";
+        const name = eventTarget?.getAttribute('fact-name') || "";
+        const contextRef = eventTarget?.getAttribute('fact-contextRef') || "";
 
-    span2.appendChild(text2);
-    button.appendChild(span2);
-    header.appendChild(button);
+        const section = sectionInCurrentInstance ? { id } : { name, contextRef };
+        const action = targetSectionData ? () => scrollToSection(targetSectionData) : () => scrollToFact(section);
+        if(sectionInCurrentInstance)
+        {
+            action();
+        }
+        else
+        {
+            const instanceIndex = Number(eventTarget?.getAttribute('fact-instance-index'));
+            const targetInstanceFile = eventTarget?.getAttribute('fact-file') || null;
 
-    headerContainer.appendChild(header);
-    card.appendChild(headerContainer);
-    document.getElementById("tagged-sections")?.appendChild(card);
-  },
+            ConstantsFunctions.changeInstance(instanceIndex, targetInstanceFile, action);
+        }
+    },
 
-  generateChildCollapseHTML: (input: {
-    parentId: string; containerId: string; label: string; badgeId: string; open: boolean;
-  }) => {
-    const card = document.getElementById(input.parentId);
-    const collapseContainer = document.createElement("div");
-    collapseContainer.classList.add("collapse");
-    if (input.open) {
-      collapseContainer.classList.add("show");
-    }
-    collapseContainer.setAttribute("data-parent", "#tagged-sections");
-    collapseContainer.setAttribute("id", input.containerId);
+    hightlightInlineSection: (section: Section) => {
+        const inlineSectionElem = document.querySelector(section.inlineFactSelector);
+        const defFactColor = localStorage.getItem("taggedData") || "FF6600";
 
-    const listGroup = document.createElement("div");
-    listGroup.classList.add("list-group");
-    listGroup.classList.add("list-group-flush");
-    input.children.forEach((current) => {
-      const fact = FactMap.getByNameContextRef(current.fact.name, current.fact.contextRef);
-      const list = document.createElement("li");
-      fact ? list.setAttribute("fact-id", fact.id) : list.setAttribute("fact-name", current.fact.name);
-      fact ? list.setAttribute("fact-file", fact.file) : list.setAttribute("fact-contextRef", current.fact.contextRef);
-      if (fact ? fact.file !== HelpersUrl.getHTMLFileName : false) {
-        const icon = document.createElement("i");
-        icon.classList.add("fas");
-        icon.classList.add("fa-link");
-        icon.classList.add("me-3");
-        list.appendChild(icon);
-      }
-      if (!fact) {
-        list.setAttribute("fact-file", current.fact.file);
-        list.setAttribute("fact-instance", current.fact.instance);
-        const icon = document.createElement("i");
-        icon.classList.add("fas");
-        icon.classList.add("fa-external-link-alt");
-        icon.classList.add("me-3");
-        list.appendChild(icon);
-      }
+        const highlightKeyframesDefault = [
+            {
+                // from            h    v
+                boxShadow: `inset  0px  2px #7dcee2,
+                            inset  3px  0px #7dcee2, 
+                            inset  0px -2px #7dcee2,
+                            inset -3px  0px #7dcee2`,
+                backgroundColor: '#9ed8e6'
+            },
+            {
+                boxShadow: `inset  0px  2px #${defFactColor},
+                            inset  3px  0px transparent, 
+                            inset  0px -2px #${defFactColor},
+                            inset -3px  0px transparent`,
+                backgroundColor: 'transparent'
+            },
+        ];
+        const highlightKeyframesBg = [
+            { backgroundColor: '#9ed8e6' },
+            { backgroundColor: 'transparent' },
+        ];
 
-      list.classList.add("click");
-      list.classList.add("list-group-item");
-      list.classList.add("list-group-item-action");
-      list.classList.add("d-flex");
-      list.classList.add("align-items-center");
-      list.setAttribute('selected-fact', 'false');
-      list.addEventListener("click", (event) => {
-        Sections.clickEvent(event);
-      });
-      list.addEventListener("keyup", (event) => {
-        Sections.clickEvent(event);
-      });
-      list.setAttribute("tabindex", "2");
-      const text = document.createTextNode(current.name);
-      list.appendChild(text);
-      listGroup.appendChild(list);
-    });
-    collapseContainer.appendChild(listGroup);
-    card?.appendChild(collapseContainer);
-  },
+        if (inlineSectionElem?.children.length === 1) {
+            inlineSectionElem?.animate(highlightKeyframesBg, 2000);
+            inlineSectionElem.children[0]?.animate(highlightKeyframesBg, 2000);
+        } else if (inlineSectionElem && inlineSectionElem?.children.length > 1) {
+            Array.from(inlineSectionElem?.children).forEach(childElem => {
+                childElem?.animate(highlightKeyframesBg, 2000);
+            });
+        } else {
+            // simple fact elem, no children
+            inlineSectionElem?.animate(highlightKeyframesDefault, 2000);
+        }
+    },
 
-  filterGroupType: (groupType: string) => {
-    const discoveredGroupType = FiltersReports.getReportsByGroupType(groupType);
+    // maybe deprecated
+    setSelectedAttributes: (element: Element) =>
+    {
+        const selected = document.querySelectorAll("#tagged-sections [selected-fact]");
+        for(let current of Array.from(selected))
+        {
+            current.setAttribute("selected-fact", 'false');
+        }
 
-    const discoveredGroupTypeArray =
-      Array.prototype.slice.call(discoveredGroupType);
-    // we sort by Long Name to put it in the correct order.
-    discoveredGroupTypeArray.sort((first, second) => {
-      return first["longName"].localeCompare(second["longName"]);
-    });
+        element.setAttribute("selected-fact", 'true');
+    },
 
-    return discoveredGroupTypeArray;
-  },
+    scrollToSectionOld: (factInput: FactInput) => {
+        let factFromMap = null;
+        if ("id" in factInput) {
+            factFromMap = FactMap.getByID(factInput.id);
+        } else if (factInput.name && factInput.contextRef) {
+            factFromMap = FactMap.getByNameContextRef(factInput.name, factInput.contextRef);
+        }
 
-  captureChildCollapse: (event: MouseEvent | KeyboardEvent, groupType: string) => {
-    if (
-      Object.prototype.hasOwnProperty.call(event, 'key') &&
-      !((event as KeyboardEvent).key === 'Enter' || (event as KeyboardEvent).key === 'Space')
-    ) {
-      return;
-    }
-    const idToPopulate = (event.target as HTMLElement).getAttribute("data-bs-target")?.substring(1);
-    if (document.getElementById(idToPopulate!)?.classList.contains("show")) {
-      Sections.currentlyOpenChildMenu = {};
-    } else {
-      Sections.currentlyOpenChildMenu = {
-        id: idToPopulate,
-        group: groupType
-      };
-    }
-  },
+        if (factFromMap) {
+            const factElement = document.querySelector(`#dynamic-xbrl-form #${factFromMap.id}`);
+            factElement?.scrollIntoView({
+                // block: Constants.scrollPosition as ScrollLogicalPosition
+                block: 'nearest', // fixes content shift out of viewport.
+            });
+        } else {
+            ErrorsMinor.factNotFound();
+        }
+    },
 
-  setSelectedAttributes: (element: HTMLElement) => {
-    const selected = document.getElementById("tagged-sections")?.querySelectorAll("[selected-fact]");
-    const selectedArray = Array.prototype.slice.call(selected);
-    selectedArray.forEach((current) => {
-      current.setAttribute("selected-fact", 'false');
-    });
-    element.setAttribute("selected-fact", 'true');
-  }
+    addRadioListeners: () => {
+        const sectionsSearchRadios = document.querySelectorAll('[name="sections-filter"]')
+        sectionsSearchRadios.forEach(searchRadioOption => {
+            searchRadioOption?.addEventListener('click', () => {
+                Sections.applyFilterRadios();
+            })
+        })
+    },
+
+    /**
+     * Description
+     * @param {any} filter:string ('all', 'current', 'other')
+     * @returns {any}
+     */
+    applyFilterRadios: () => {
+        const allSectionAccordionItems = Array.from(document.querySelectorAll('#tagged-sections > div.accordion-item'));
+        const filter: string = (document.querySelector('[name="sections-filter"]:checked') as any)?.value;
+
+        if (filter === 'all') {
+            allSectionAccordionItems.forEach(sectElem => {
+                sectElem.classList.remove('d-none');
+            })
+        } else if (filter === 'current') {
+            allSectionAccordionItems.forEach(sectElem => {
+                const instanceMatches = sectElem.getAttribute('data-instance')?.trim()
+                    .split(' ').includes(HelpersUrl.getHTMLFileName || "");
+
+                if (HelpersUrl.getHTMLFileName && instanceMatches) {
+                    sectElem.classList.remove('d-none');
+                } else {
+                    sectElem.classList.add('d-none');
+                }
+            })
+        } else if (filter === 'other') {
+            allSectionAccordionItems.forEach(sectElem => {
+                if (HelpersUrl.getHTMLFileName && sectElem.getAttribute('data-instance') !== (HelpersUrl.getHTMLFileName)) {
+                    sectElem.classList.remove('d-none');
+                } else {
+                    sectElem.classList.add('d-none');
+                }
+            })
+        }
+    },
+
+    /**
+     * Description
+     * @param {any} sections:Array<Section>
+     * @description iterates over each 'report' in metalinksFlat, buildings headers for instance and menuCats as needed.
+     * @returns {any} => builds sections dom
+     */
+    buildSectionsDom: (sections: Array<Section>) => {
+        let prevDocName = '';
+
+        if (sections.length === 0) {
+            const htmlString = `<div style="text-align: center; width: 100%;">No Reports Data</div>`;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html')
+            const elem = doc.querySelector('body > div') as HTMLElement
+            document.getElementById("tagged-sections")?.appendChild(elem);
+        }
+
+        sections.forEach((section: Section, index: number) => {
+            // dom ids
+            const sectionSelector = convertToSelector(section.domId);
+
+            section.instanceSectionId = sectionSelector;
+            section.instanceSectionHeaderId = (`instance-header-${sectionSelector}`);
+            section.instanceSectionBodyId = (`instance-body-${sectionSelector}`);
+            section.menuCatClean = (`${section.instanceSectionId}--${convertToSelector(section.menuCatMapped)}`)
+            section.menuCatHeaderId = (`cat-header-${convertToSelector(section.menuCatMapped)}-${sectionSelector}`);
+            section.menuCatBodyId = (`cat-body-${convertToSelector(section.menuCatMapped)}-${sectionSelector}`);
+
+            const newDoc = section.instanceDocName !== prevDocName;
+
+            if (newDoc) {
+                const sectionsInInstanceCount = sections.filter(sect => {
+                    return sect.instanceDocName === section.instanceDocName
+                }).length;
+                Sections.createInstanceAccordionHeader(section, index, sectionsInInstanceCount);
+            }
+            prevDocName = section.instanceDocName;
+
+            const menuCatElem = document.querySelector(`div[id="${section.menuCatClean}"]`);
+            if (!menuCatElem) {
+                const linksInMenuCatCount = sections.filter(sect => {
+                    return sect.menuCatMapped === section.menuCatMapped && sect.instanceDocName === section.instanceDocName
+                }).length;
+                Sections.createMenuCatCollapsable(section, index, linksInMenuCatCount);
+            }
+
+            Sections.createSectionItemLink(section);
+        });
+
+        Sections.addRadioListeners();
+        Sections.addMenuCatCollapseListeners();
+    },
+
+    createInstanceAccordionHeader: (sectionItem: Section, instInd: number, sectionsInInstanceCount: number) => {
+        const isCurrent = sectionItem.instanceHtm.includes(HelpersUrl.getHTMLFileName || "BAD FILE NAME!");
+        const instanceCollapseString =
+            `<div 
+                id="${sectionItem.instanceSectionId}"
+                data-instance="${sectionItem.instanceHtm}"
+                class="accordion-item mb-2 ${isCurrent ? 'section-active' : 'section-not-active'}"
+            >
+
+                <!-- header -->
+                <div class="accordion-header px-0 py-0">
+                    <h5 class="mb-0">
+                        <button 
+                            id="${sectionItem.instanceSectionHeaderId}"
+                            data-cy="${sectionItem.instanceSectionHeaderId}"
+                            class="section-instance-header accordion-button btn d-flex justify-content-between align-items-center w-100"
+                            type="button"
+                            tabindex="2"
+                            data-bs-toggle="collapse"
+                            aria-expanded="true"
+                            data-bs-target="#${sectionItem.instanceSectionBodyId}"
+                        >
+                            <span class="font-size-1">${sectionItem.instanceDocName}</span>
+                            <span id="sectionLinkCount" data-cy="sectionLinkCount" class="badge">
+                                [${sectionsInInstanceCount}]
+                            </span>
+                        </button>
+                    </h5>
+                </div>
+
+                <!-- body -->
+                <div 
+                    id="${sectionItem.instanceSectionBodyId}"
+                    class="section-doc-body accordion-collapse collapse ${isCurrent ? 'show' : ''}" 
+                    aria-labelledby="menu category"
+                >
+                    <div class="accordion-body">
+                        <!-- Cat Headers and emtpy mentCat body dynamically populated by createMenuCatCollapsable -->
+                    </div>
+                </div>
+            </div>`;
+        const headerParser = new DOMParser();
+        const headerDoc = headerParser.parseFromString(instanceCollapseString, 'text/html')
+        const instanceHeader = headerDoc.querySelector('body > div') as HTMLElement
+
+        document.getElementById("tagged-sections")?.classList.add('accordion');
+        document.getElementById("tagged-sections")?.appendChild(instanceHeader);
+    },
+
+    createMenuCatCollapsable: (sectionItem: Section, index: number, linksInMenuCatCount: number) => {
+        // const menuCatClean = DOMPurify.sanitize(sectionItem.menuCatMapped)
+        const expandMenuCat = sectionItem.instanceHtm === HelpersUrl.getHTMLFileName || linksInMenuCatCount < 7;
+
+        const cardHeaderString =
+            `<div id="${sectionItem.menuCatClean}" class="menu-cat px-0 py-0">
+                <div class="menu-cat-header ">
+                    <h6 class="mb-0">
+                        <button 
+                            id="section-header-${sectionItem.menuCatMapped}"
+                            class="btn d-flex justify-content-between align-items-center"
+                            type="button"
+                            tabindex="2"
+                            data-bs-toggle="collapse"
+                            aria-expanded="true"
+                            data-bs-target="#${sectionItem.menuCatBodyId}"
+                        >
+                            <span class="font-size-1 menu-cat-name">${sectionItem.menuCatMapped}</span>
+                            <span class="fa-solid open-indicator fa-chevron-${expandMenuCat ? 'down' : 'right'}"></span>
+                        </button>
+                    </h6>
+                </div>
+                <div 
+                    id="${sectionItem.menuCatBodyId}"
+                    class="menu-cat-body collapse ${expandMenuCat ? 'show' : ''}" 
+                    aria-labelledby="menu category"
+                >
+                    <!-- Section Links dynamically populated by createSectionItemLink -->
+                </div>
+            </div>`;
+        const domParser = new DOMParser();
+        const menuCatDoc = domParser.parseFromString(cardHeaderString, 'text/html')
+        const menuCatElem = menuCatDoc.querySelector('body > div') as HTMLElement
+
+        document.querySelector(`#${sectionItem.instanceSectionBodyId} div.accordion-body`)?.appendChild(menuCatElem);
+    },
+
+    createSectionItemLink: (sectionItem: Section) => {
+        const instanceCollapseString =
+            `<li 
+                xmlns="http://www.w3.org/1999/xhtml"
+                order="${sectionItem.order}"
+                inline-fact-selector='${sectionItem.inlineFactSelector}'
+                fact-file="${sectionItem.fact?.file}"
+                fact-name="${sectionItem.fact?.name}"
+                class="click section-link list-group-item list-group-item-action d-flex align-items-center" 
+                selected-fact="false"
+                tabindex="2"
+                contextRef="${sectionItem.fact?.contextRef}"
+                fact-instance-index="${sectionItem.instanceIndex}"
+            >
+                ${sectionItem.shortName}
+            </li>`;
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(instanceCollapseString, 'text/html')
+        const sectionFactLink = doc.querySelector('li') as HTMLElement
+
+        for(let eType of ["click", "keyup"] as const)
+        {
+            sectionFactLink.addEventListener(eType, (eventElem) =>
+                Sections.handleSectionLinkClick(eventElem))
+        }
+
+        document.getElementById(sectionItem.menuCatBodyId)?.appendChild(sectionFactLink);
+    },
+
+    addMenuCatCollapseListeners: () => {
+        const menuCats = Array.from(document.querySelectorAll('.menu-cat'));
+        menuCats.forEach(menuCat => {
+            const chevron = menuCat.querySelector(`span.open-indicator`);
+            const collapsibleBody = menuCat.querySelector('.collapse');
+
+            collapsibleBody?.addEventListener('show.bs.collapse', () => {
+                chevron?.classList.add('fa-chevron-down')
+                chevron?.classList.remove('fa-chevron-right')
+            });
+            collapsibleBody?.addEventListener('hide.bs.collapse', () => {
+                chevron?.classList.add('fa-chevron-right');
+                chevron?.classList.remove('fa-chevron-down');
+            });
+        })
+    },
 };

@@ -8,115 +8,130 @@ import { HelpersUrl } from "../helpers/url";
 import { Logger, ILogObj } from 'tslog';
 
 export const ErrorsMajor: {
-  debug: (msg?: string) => void,
-  inactive: () => void,
-  formLinksNotFound: () => void,
-  urlParams: () => void,
-  cors: (doc: { host: string; }) => void,
-  message: (input: string) => void,
+	debug: (msg?: string) => void,
+	formNotLoaded: () => void,
+	formLinksNotFound: () => void,
+	urlParams: () => void,
+	cors: (doc: { host: string; }) => void,
+	message: (input: string) => void,
 } = {
 
-  debug: (msg?: string) => {
-    if (!PRODUCTION && DEBUGCSS) {
-      const content = document.createTextNode(msg || 'Showing major errors container for debugging');
+	debug: (msg?: string) => {
+		if (!PRODUCTION && DEBUGCSS) {
+			const content = document.createTextNode(msg || 'Showing major errors container for debugging');
 
-      const element = document.createElement('div');
-      element.setAttribute('class', 'alert-height alert alert-danger show mb-0');
-      element.appendChild(content);
-      document.getElementById('error-container')?.appendChild(element);
+			const errorDiv = document.createElement('div');
+			errorDiv.setAttribute('class', 'alert-height alert alert-danger show mb-0');
+			errorDiv.appendChild(content);
+			const closeBtn = Errors.createBsCloseBtn();
+			errorDiv.appendChild(closeBtn);
+			document.getElementById('error-container')?.appendChild(errorDiv);
 
-      Errors.updateMainContainerHeight();
-    }
-  },
+			Errors.updateMainContainerHeight();
+		}
+	},
 
-  inactive: () => {
-    const content = document.createTextNode('Inline XBRL is not usable in this state.');
+	formNotLoaded: () => {
+		const content = document.createTextNode('Inline XBRL is not usable in this state.');
 
-    const element = document.createElement('div');
-    element.setAttribute('class', 'alert-height alert alert-danger show mb-0');
-    element.appendChild(content);
-    document.getElementById('error-container')?.appendChild(element);
+		const errorDiv = document.createElement('div');
+		errorDiv.setAttribute('class', 'alert-height alert alert-danger show mb-0');
+		errorDiv.appendChild(content);
+		const closeBtn = Errors.createBsCloseBtn();
+		errorDiv.appendChild(closeBtn);
+		document.getElementById('error-container')?.appendChild(errorDiv);
 
-    Errors.updateMainContainerHeight();
+		Errors.updateMainContainerHeight();
 
-    if (!PRODUCTION) {
-      const log: Logger<ILogObj> = new Logger();
-      log.debug(`inactive`);
-    }
-  },
+		if (!PRODUCTION) {
+			const log: Logger<ILogObj> = new Logger();
+			log.debug(`inactive`);
+		}
+	},
 
-  formLinksNotFound: () => {
-    const content = document.createTextNode(`${HelpersUrl.getFormAbsoluteURL + HelpersUrl.getHTMLFileName}`);
+	formLinksNotFound: () => {
+		const content = document.createTextNode(`${HelpersUrl.getFormAbsoluteURL + HelpersUrl.getHTMLFileName}`);
 
-    const element = document.createElement('div');
-    element.setAttribute('class', 'alert-height alert alert-danger show mb-0');
+		const errorDiv = document.createElement('div');
+		errorDiv.setAttribute('class', 'alert-height alert alert-danger show mb-0');
 
-    const link = document.createElement('a');
-    link.setAttribute('href', `${HelpersUrl.getFormAbsoluteURL}`);
+		const link = document.createElement('a');
+		link.setAttribute('href', `${HelpersUrl.getFormAbsoluteURL}`);
 
-    link.appendChild(content);
-    element.appendChild(link);
-    document.getElementById('error-container')?.appendChild(element);
+		link.appendChild(content);
+		errorDiv.appendChild(link);
+		const closeBtn = Errors.createBsCloseBtn();
+		errorDiv.appendChild(closeBtn);
+		document.getElementById('error-container')?.appendChild(errorDiv);
 
-    // window.location.assign(`${HelpersUrl.getFormAbsoluteURL + HelpersUrl.getHTMLFileName}`);
-    Errors.updateMainContainerHeight();
+		// window.location.assign(`${HelpersUrl.getFormAbsoluteURL + HelpersUrl.getHTMLFileName}`);
+		Errors.updateMainContainerHeight();
 
-    if (!PRODUCTION) {
-      const log: Logger<ILogObj> = new Logger();
-      log.debug(`formLinksNotFound`);
-    }
-  },
+		if (!PRODUCTION) {
+			const log: Logger<ILogObj> = new Logger();
+			log.debug(`formLinksNotFound`);
+		}
+	},
 
-  urlParams: () => {
-    const content = document
-      .createTextNode('Inline XBRL requires a URL param (doc | file) that correlates to a Financial Report.');
+	urlParams: () => {
+		const content = document
+			.createTextNode('Inline XBRL requires a URL param (doc | file) that correlates to a Financial Report.');
 
-    const element = document.createElement('div');
-    element.setAttribute('class', 'alert-height alert alert-danger show mb-0');
-    element.appendChild(content);
-    document.getElementById('error-container')?.appendChild(element);
+		const errorDiv = document.createElement('div');
+		errorDiv.setAttribute('class', 'alert-height alert alert-danger show mb-0');
+		errorDiv.appendChild(content);
+		const closeBtn = Errors.createBsCloseBtn();
+		errorDiv.appendChild(closeBtn);
+		document.getElementById('error-container')?.appendChild(errorDiv);
 
-    Errors.updateMainContainerHeight();
+		Errors.updateMainContainerHeight();
 
-    if (!PRODUCTION) {
-      const log: Logger<ILogObj> = new Logger();
-      log.debug(`urlParams`);
-    }
-  },
+		if (!PRODUCTION) {
+			const log: Logger<ILogObj> = new Logger();
+			log.debug(`urlParams`);
+		}
+	},
 
-  cors: (doc) => {
-    const host = window.location.protocol + '//' + window.location.host;
+	cors: (doc) => {
+		const host = window.location.protocol + '//' + window.location.host;
 
-    const content = document.createTextNode('The protocol, host name and port number of the "doc" field (' + doc.host
-      + '), if provided, must be identical to that of the Inline XBRL viewer(' + host + ')');
+		const content = document.createTextNode('The protocol, host name and port number of the "doc" field (' + doc.host
+			+ '), if provided, must be identical to that of the Inline XBRL viewer(' + host + ')');
 
-    const element = document.createElement('div');
-    element.setAttribute('class', 'alert-height alert alert-danger show mb-0');
-    element.appendChild(content);
-    document.getElementById('error-container')?.appendChild(element);
+		const errorDiv = document.createElement('div');
+		errorDiv.setAttribute('class', 'alert-height alert alert-danger show mb-0');
+		errorDiv.appendChild(content);
 
-    Errors.updateMainContainerHeight();
+		const closeBtn = Errors.createBsCloseBtn();
+		errorDiv.appendChild(closeBtn);
 
-    if (!PRODUCTION) {
-      const log: Logger<ILogObj> = new Logger();
-      log.debug(`cors`);
-    }
-  },
+		document.getElementById('error-container')?.appendChild(errorDiv);
 
-  message: (input) => {
-    const content = document
-      .createTextNode(input);
+		Errors.updateMainContainerHeight();
 
-    const element = document.createElement('div');
-    element.setAttribute('class', 'alert-height alert alert-danger show mb-0');
-    element.appendChild(content);
-    document.getElementById('error-container')?.appendChild(element);
+		if (!PRODUCTION) {
+			const log: Logger<ILogObj> = new Logger();
+			log.debug(`cors`);
+		}
+	},
 
-    Errors.updateMainContainerHeight();
+	message: (input) => {
+		const content = document.createTextNode(input);
 
-    if (!PRODUCTION) {
-      const log: Logger<ILogObj> = new Logger();
-      log.debug(`message`);
-    }
-  }
+		const errorDiv = document.createElement('div');
+		errorDiv.setAttribute('class', 'alert-height alert alert-danger show mb-0');
+		errorDiv.appendChild(content);
+		
+		const closeBtn = Errors.createBsCloseBtn();
+		errorDiv.appendChild(closeBtn);
+
+		document.getElementById('error-container')?.appendChild(errorDiv);
+
+		Errors.updateMainContainerHeight();
+
+		if (!PRODUCTION) {
+			const log: Logger<ILogObj> = new Logger();
+			log.debug(`message`);
+		}
+	}
 };

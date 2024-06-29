@@ -32,11 +32,11 @@ describe('/src/ts/constants/functions.ts', () => {
     //setMetaReports()
     describe('basic checks for setMetaReports()', () => {
         it('is a function', () => {
-            expect(typeof ConstantsFunctions.setMetaReports).toEqual('function');
+            expect(typeof ConstantsFunctions.setSections).toEqual('function');
         });
 
         it('returns void', () => {
-            expect(ConstantsFunctions.setMetaReports([])).toEqual(undefined);
+            expect(ConstantsFunctions.setSections([])).toEqual(undefined);
         });
     });
 

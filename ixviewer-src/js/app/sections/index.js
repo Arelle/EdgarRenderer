@@ -150,6 +150,10 @@ var Sections = {
         label: "RR Summaries"
       },
       {
+        groupType: "Risk/Return",
+        label: "RR Summaries"
+      },
+      {
         groupType: "Prospectus",
         label: "Prospectus"
       },

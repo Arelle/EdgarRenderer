@@ -15,6 +15,7 @@ var Errors = {
         var performanceConcernArray = Array.prototype.slice.call(performanceConcern);
         performanceConcernArray.forEach(function( current ) {
           current.classList.remove('d-none');
+          current.classList.remove('fa-clock');
         });
       }
       return;

@@ -1,18 +1,14 @@
-const path = require(`path`);
+const path = require("path");
 const glob = require("glob");
-const webpack = require(`webpack`);
+const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const HtmlWebpackPlugin = require(`html-webpack-plugin`);
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { PurgeCSSPlugin } = require("purgecss-webpack-plugin");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const ESLintPlugin = require("eslint-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-module.exports = (
-  env = { copy: true, analyze: false },
-  argv = { mode: `production` },
-) => {
+module.exports = (env = { copy: true, analyze: false }, argv = { mode: `production` }) =>
+{
   const forProd = argv.mode === `production`;
   const forWorkstation = argv.env.domain === 'workstation';
   const distPath = argv.env.distPath; // call like this: npm run build-dev --env distPath=./foobar
@@ -21,6 +17,8 @@ module.exports = (
     mode: argv.mode,
 
     entry: { "ix-viewer": "./src/ts/index.ts" },
+
+    devServer: { devMiddleware: { writeToDisk: true } },
 
     plugins: [
       new HtmlWebpackPlugin({
@@ -37,25 +35,13 @@ module.exports = (
         banner: `Created by staff of the U.S. Securities and Exchange Commission.\nData and content created by government employees within the scope of their employment\nare not subject to domestic copyright protection. 17 U.S.C. 105.`,
       }),
 
-      new MiniCssExtractPlugin({
-        filename: `styles.[contenthash].min.css`,
-      }),
-
-      env.copy
-        ? new CopyPlugin({
-            patterns: [{ from: "src/assets", to: "assets" }],
-          })
-        : false,
+      new MiniCssExtractPlugin({ filename: `styles.[contenthash].min.css` }),
 
       new PurgeCSSPlugin({
-        paths: glob.sync(`${path.join(__dirname, "./src")}/**/*`, {
-          nodir: true,
-        }),
+        paths: glob.sync(path.join(__dirname, "./src/**/*"), { nodir: true }),
       }),
 
-      new ESLintPlugin({
-        extensions: ["ts"],
-      }),
+      new ESLintPlugin({ extensions: ["ts"], overrideConfigFile: ".eslintrc" }),
 
       env.analyze ? new BundleAnalyzerPlugin() : false,
 
@@ -69,10 +55,10 @@ module.exports = (
         LOGPERFORMANCE: env.logPerformance ? true : false,
       }),
 
-      new CleanWebpackPlugin(),
     ].filter(Boolean),
 
     output: {
+      clean: forProd,
       filename:
         forProd
           ? `[name].bundle.[contenthash].min.js`
@@ -83,7 +69,7 @@ module.exports = (
         : forProd 
           ? ('/ixviewer-plus/') : publicPath || undefined, // For prod webpack seems to fail with dynamically passed in publicPath
           // undefined for dev && !ws (served from memory)
-      path: forWorkstation
+      path: forWorkstation // maybe figure out how to integrate version from constants.ts in to dist name
         ? path.resolve(__dirname, distPath || `./dist-ws`)
         : path.resolve(__dirname, distPath || `./dist`)
     },
@@ -151,10 +137,10 @@ module.exports = (
       },
     },
 
-    devtool: forProd ? `source-map` : `inline-source-map`,
+    devtool: forProd ? `source-map` : `eval-source-map`,
 
     devServer: {
-      compress: true,
+      compress: false, // false helps with breakpoints
       port: 3000,
 
       static: forWorkstation // static means stuff "not served from webpack".  Not sure it's even used.

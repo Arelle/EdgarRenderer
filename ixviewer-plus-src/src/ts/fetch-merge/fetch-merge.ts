@@ -1,220 +1,175 @@
 import * as cheerio from 'cheerio';
 import * as convert from 'xml-js';
 import { Meta, Xbrltype, reference } from '../interface/meta';
+import { FetchedInstance, UnitsAdditional } from '../interface/instance';
 import { Context, DeiAmendmentFlagAttributes, Instance, LinkFootnote, LinkFootnoteArc, LinkLOC, Units } from '../interface/instance';
+import { Section } from '../interface/meta';
 import { Reference, SingleFact } from '../interface/fact';
 import { Logger, ILogObj } from 'tslog';
 import { cleanSubstring } from '../helpers/utils';
+import { buildSectionsArrayFlatter } from './merge-data-utils';
+import { InstanceFile, MetaLinks, MetaLinksResponse } from '../interface/instance-file';
+import { FilingSummary, Report } from '../interface/filing-summary';
+import { UrlParams } from '../interface/url-params';
 
 /* Created by staff of the U.S. Securities and Exchange Commission.
  * Data and content created by government employees within the scope of their employment
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
+
+/* eslint-disable @typescript-eslint/ban-types */
+
+type ErrorResponse = { error: true, message: string };
+
 export class FetchAndMerge {
     private absolute: string;
-    private params: {
-        doc: string,
-        'doc-file': string,
-        hostName: string,
-        redline: boolean,
-        metalinks: string,
-        'metalinks-file': string,
-        fact: string,
-        summary: string,
-    };
+    private params: UrlParams;
     private customPrefix: undefined | string;
-    private currentInstance: Array<{
-        current: boolean;
-        formInformation: {
-            axisCustom: number;
-            axisStandard: number;
-            baseTaxonomies: { [key: string]: number; };
-            contextCount: number;
-            dts: { [key: string]: { [key: string]: Array<string>; }; };
-            elementCount: number;
-            entityCount: 1;
-            hidden: { [key: string]: number; };
-            keyCustom: number;
-            keyStandard: number;
-            memberCustom: number;
-            memberStandard: number;
-            nsprefix: string;
-            nsuri: string;
-            segmentCount: number;
-            unitcount: number;
-        };
-        instance: number;
-        map: Map<string, SingleFact>;
-        metaInstance: Meta;
-        xhtmls: Array<{
-            current: boolean;
-            loaded: boolean;
-            slug: string;
-            url: string;
-            xhtml: string;
-        }>;
-        xmlSlug: Array<string>;
-        xmlUrls: Array<string>;
-    }> | undefined;
+    private activeInstance: InstanceFile = {} as any;
     private std_ref;
-    private sections;
-    private metaVersion: string | undefined;
-    private instance;
+    private sections: Array<Section> = [];
+    private metaVersion: string | null = null;
+    private instances;
+    // private partial: unknown | null;
+    // private map: unknown | null;
+
+
     constructor(input: {
         absolute: string,
-        params: {
-            doc: string,
-            'doc-file': string,
-            hostName: string,
-            redline: boolean,
-            metalinks: string,
-            'metalinks-file': string,
-        },
+        params: UrlParams,
         instance: number | null,
-        std_ref: { [key: string]: Reference }
-
+        // partial?: unknown,
+        // map?: unknown,
+        customPrefix?: string,
+        std_ref: { [key: string]: Reference },
     }) {
         this.absolute = input.absolute;
-        this.partial = input.partial;
-        this.map = input.map;
+        // this.partial = input.partial || null;
+        // this.map = input.map || null;
         this.params = input.params;
         this.customPrefix = input.customPrefix;
-        this.instance = input.instance;
+        this.instances = input.instance;
         this.std_ref = input.std_ref;
     }
 
     init() {
-
-        const XHTMLandInstance = (instance, addInstance = false) => {
+        /**
+         * Description
+         * @param {any} instances
+         * @param Boolean initialLoad=false
+         * @returns {
+         *  instance: {},
+         *  sections: {},
+         *  std_ref: string
+         * }
+         */
+        const XHTMLandInstance = (instances: { instance: unknown }, initialLoad = false) => {
             return Promise.all([
                 this.fetchXHTML(),
-                this.fetchInstance(),
-            ]).then((allResponses) => {
-                const errors = allResponses.filter(element => element ? Object.prototype.hasOwnProperty.call(element, 'error') : false);
+                this.fetchInstancesXml()
+            ]).then(([xhtml, instXml]) => {
+                const errors = [...xhtml, instXml].filter((element): element is ErrorResponse =>
+                    element ? Object.prototype.hasOwnProperty.call(element, 'error') : false);
+
                 if (errors.length) {
                     const errorMessages = errors.map(current => current.message);
-                    return {
-                        all: { error: true, message: errorMessages }
-                    };
+                    return { all: { error: true, message: errorMessages } };
                 }
-                allResponses[0].forEach((current, index) => {
-                    this.currentInstance.xhtmls[index].loaded = true;
-                    this.currentInstance.xhtmls[index].xhtml = current.xhtml;
+
+                //At this point, neither of the responses had errors, so we can safely cast them
+                xhtml = xhtml as Array<{ xhtml: string }>;
+                instXml = instXml as Instance;
+
+                xhtml.forEach((current: { xhtml: string }, index) => {
+                    this.activeInstance.xhtmls[index].loaded = true;
+                    this.activeInstance.xhtmls[index].xhtml = current.xhtml;
                 });
-                this.currentInstance.xml = (allResponses[1] as Instance);
-                this.mergeAllResponses(addInstance);
-                return {
-                    all: { instance: (addInstance ? instance.instance : instance), sections: this.sections, std_ref: this.std_ref }
+                this.activeInstance.xml = instXml;
+                this.mergeAllResponses(initialLoad);
+                const all = {
+                    instance: (initialLoad ? instances.instance : instances),
+                    sections: this.sections || [],
+                    std_ref: this.std_ref
                 }
-            })
-        };
 
-        const MetaandSummary = () => {
-            return Promise.all([
-                this.fetchMeta(),
-                this.fetchSummary(),
-            ]).then((allResponses) => {
-                this.metaVersion = allResponses[0].version;
-                this.std_ref = allResponses[0].std_ref;
-                if (allResponses.some((element) => element.error)) {
-                    const messageIndex = allResponses.find((element) => element.error);
-                    return {
-                        all: { error: true, message: [messageIndex.message] }
-                    }
-                } else {
-                    this.currentInstance = allResponses[0].instance?.filter(element => element.current)[0];
-
-                    const mapCategoryName = (input: string) => {
-                        const options = {
-                            "Cover": "Cover",
-                            "document": "Document & Entity Information",
-                            "statement": "Financial Statements",
-                            "Statements": "Financial Statements",
-                            "disclosure": "Notes to the Financial Statements",
-                            "Notes": "Notes to Financial Statements",
-                            "Policies": "Accounting Policies",
-                            "Tables": "Notes Tables",
-                            "Details": "Notes Details",
-                            "Prospectus": "Prospectus",
-                            "RR_Summaries": "RR Summaries",
-                            "Fee_Exhibit": "RR Summaries",
-                            "Risk/Return": "RR Summaries"
-                        };
-                        if (options[input]) {
-                            return options[input];
-                        }
-                        return 'INCOMPLETE SECTIONS DATA!';
-                    };
-                    const metaLinksSections = Object.values(allResponses[0].sections);
-                    this.sections = allResponses[1].MyReports.Report.reduce((accumulator, current) => {
-                        if (current && current.MenuCategory && current.Position && current.ShortName && current._attributes) {
-                            let fact = { name: '', contextRef: '', instance: null };
-                            const additional = metaLinksSections.find(element => element.shortName === current.ShortName._text);
-                            if (additional) {
-                                fact.instance = additional.instance;
-                                if (additional.uniqueAnchor) {
-                                    fact.name = additional.uniqueAnchor.name;
-                                    fact.contextRef = additional.uniqueAnchor.contextRef;
-                                    fact.file = additional.uniqueAnchor.baseRef;
-                                } else if (additional.firstAnchor) {
-                                    fact.name = additional.firstAnchor.name;
-                                    fact.contextRef = additional.firstAnchor.contextRef;
-                                    fact.file = additional.firstAnchor.baseRef;
-                                } else {
-                                    // MetaLinks.json does NOT have sufficient information for this section category
-                                    // we remove it from being used.
-                                    fact = null;
-                                }
-                            }
-                            const index = accumulator.findIndex(element => element.name === mapCategoryName(current.MenuCategory._text))
-                            if (index !== -1 && fact) {
-                                accumulator[index].children.push(
-                                    {
-                                        sort: +current.Position._text,
-                                        name: current.ShortName._text,
-                                        fact: fact,
-                                    }
-
-                                );
-                                accumulator[index].children.sort((first, second) => {
-                                    if (first.sort < second.sort) {
-                                        return -1;
-                                    }
-                                    if (first.sort > second.sort) {
-                                        return 1;
-                                    }
-                                    return 0;
-                                });
-                            } else if (fact) {
-                                accumulator.push({
-                                    name: mapCategoryName(current.MenuCategory._text),
-                                    children: [
-                                        {
-                                            sort: +current.Position._text,
-                                            name: current.ShortName._text,
-                                            file: current._attributes.instance,
-                                            fact: fact,
-                                        }
-                                    ]
-                                });
-
-                            }
-                        }
-                        return accumulator;
-                    }, []);
-                }
-                return Promise.all([
-                    XHTMLandInstance(allResponses[0], true)
-                ]).then(data => {
-                    return data[0];
-                })
+                return { all };
             });
         };
 
-        if (this.instance !== null) {
-            this.currentInstance = this.instance.filter(element => element.current)[0];
-            return XHTMLandInstance(this.instance);
+        //TODO: Make this camelCase?
+        const MetaandSummary = () => {
+            return Promise.all([this.fetchMeta(), this.fetchSummary()])
+                .then(([metalinks, filingSummary]) => {
+                    // const metalinks = allResponses[0];
+                    // const filingSummary = allResponses[1];
+                    
+                    // if (allResponses.some((element) => element.error)) {
+                    //     const messageIndex = allResponses.find((element) => element.error);
+                    //     return {
+                    //         all: { error: true, message: [messageIndex.message] }
+                    //     }
+                    // }
+
+                    let error = false;
+                    let message = [];
+                    for(let response of [metalinks, filingSummary])
+                    {
+                        if("error" in response && response.error)
+                        {
+                            message.push(response.message);
+                            error = true;
+                        }
+                    }
+                    if(error)
+                    {
+                        return { all: { error, message } };
+                    }
+
+                    //At this point, neither of the responses had errors, so we can safely cast them
+                    metalinks = metalinks as MetaLinks;
+                    filingSummary = filingSummary as FilingSummary;
+                    
+                    this.metaVersion = metalinks.version || null;
+                    this.std_ref = metalinks.std_ref || {} as any;
+                    
+                    this.activeInstance = metalinks.instance?.filter(element => element.current)[0];
+
+                    const metaLinksSections = Object.values(metalinks.sections); // ignoring keys R1, R2, ...
+
+                    const getInstancesInfoFromFilingSummary = (filingSummary: FilingSummary) => {
+                        const filingSummaryReports = filingSummary.MyReports.Report;
+                        const instanceHtmSlugs: string[] = []; // stored in filing summ as foo.htm
+                        filingSummaryReports.map((r) => {
+                            if (r._attributes && r._attributes.instance) {
+                                const reportInstanceHtmSlug = r._attributes.instance;
+                                if (!instanceHtmSlugs.includes(reportInstanceHtmSlug)) {
+                                    instanceHtmSlugs.push(reportInstanceHtmSlug);
+
+                                    // add xmlUrls to instances
+                                    const metaInstanceModel = metalinks.instance?.filter(inst => inst.instanceHtm.includes(reportInstanceHtmSlug))[0];
+                                    metaInstanceModel.xmlUrl = this.params.metalinks.replace('MetaLinks.json', reportInstanceHtmSlug.replace('.htm', '_htm.xml'));
+                                }
+                            }
+                        });
+                        if (!this.activeInstance?.xmlUrl) {
+                            console.error('Could not determine instance url of active instance.');
+                        }
+                    }
+                    getInstancesInfoFromFilingSummary(filingSummary);
+                    
+                    // iterate over FilingSummary.xml Reports to build sections, adding data from metalinks
+                    this.sections = buildSectionsArrayFlatter(filingSummary, metaLinksSections, this.metaVersion || "");
+
+                    return XHTMLandInstance(metalinks, true);
+                });
+        };
+
+        if (this.instances !== null) {
+            // switching instance
+            this.activeInstance = this.instances.filter(element => element.current)[0];
+            return XHTMLandInstance(this.instances);
         } else {
+            // initial load
             return MetaandSummary();
         }
     }
@@ -239,9 +194,14 @@ export class FetchAndMerge {
         return html.substring(html.indexOf("<?xml version="), html.indexOf(closingXml) + closingXml.length)
     }
 
-    fetchXHTML() {
-        const promises = this.currentInstance?.xhtmls.map((current: { url: string }) => {
-            return new Promise((resolve) => {
+    /**
+     * Description
+     * @returns {any} => current .htm file (xhtml file)
+     */
+    fetchXHTML(): Promise<Array<{ xhtml: string } | ErrorResponse>> {
+        const promises = this.activeInstance?.xhtmls.map((current: { url: string }) => {
+            return new Promise<{ xhtml: string } | ErrorResponse>((resolve) => {
+                //TODO: use `HelpersUrl.isWorkstation` instead
                 const isWorkstation = current.url.includes("DisplayDocument.do?");
                 let ixvUrl = current.url;
                 if (isWorkstation) {
@@ -252,16 +212,14 @@ export class FetchAndMerge {
                     }
                 }
                 fetch(ixvUrl, {
-                    headers: {
-                        "Content-Type": "application/xhtml+xml"
-                    },
+                    headers: { "Content-Type": "application/xhtml+xml" },
                     mode: 'no-cors',
-                    credentials: 'include'
+                    credentials: 'include',
                 }).then((response) => {
                     if (response.status >= 200 && response.status <= 299) {
                         return response.text();
                     } else {
-                        throw Error(`${response.status.toString()}, Could not find "${this.params.doc}"`);
+                        throw Error(`${response.status.toString()}; could not find "${this.params.doc}"`);
                     }
                 }).then((data) => {
                     // on SEC EDGAR workstation xhtml is encoded like this: <HTML><HEAD><TITLE> ... &lt;?xml ...
@@ -271,89 +229,105 @@ export class FetchAndMerge {
                     resolve({ error: true, message: error });
                 })
             });
-        });
-        return Promise.all(promises).then((allXHTML: Array<{ xhtml: string, index: number }>) => {
-            return allXHTML;
-        });
+        }) || [];
+
+        return Promise.all(promises);
     }
 
-    fetchMeta(): Promise<{
-        error?: boolean,
-        message?: string,
-        instance?: Array<{
-            current: boolean,
-            instance: number,
-            xhtmls: Array<{
-                slug: string,
-                url: string,
-                current: boolean,
-                loaded: boolean
-            }>,
-            xmlSlug: Array<string>,
-            xmlUrls: Array<string>,
-            metaInstance: Array<Instance>
-        }>,
-        meta?: Meta,
-        inlineFiles?: Array<{ slug: string, current: boolean, loaded: boolean }>
-    }> {
-        return new Promise((resolve) => {
-            return fetch(this.params.metalinks, { credentials: 'include' }).then((response) => {
+    fetchMeta(): Promise<ErrorResponse | MetaLinks>
+    {
+        //TODO: use async/await to simplify this logic
+        return new Promise<MetaLinks | ErrorResponse>((resolve) => {
+            let jsonUrl = this.params.metalinks;
+            //TODO: use `HelpersUrl.isWorkstation` instead
+            const isWorkstation = jsonUrl.includes("DisplayDocument.do?");
+            if (isWorkstation) {
+                if (Object.prototype.hasOwnProperty.call(this.params, 'redline') && this.params.redline) {
+                    jsonUrl = jsonUrl.replace('MetaLinks.json', 'PrivateMetaLinks.json');
+                }
+            }
+
+            return fetch(jsonUrl, { credentials: 'include' }).then((response) => {
                 if (response.status >= 200 && response.status <= 299) {
                     return response.json();
                 } else {
                     throw Error(response.status.toString());
                 }
-            }).then((data) => {
-
-                let XHTMLSlug = this.params.doc.substr(this.params.doc.lastIndexOf('/') + 1);
+            }).then((data: MetaLinksResponse) => {
+                let XHTMLSlug = this.params.doc.substring(this.params.doc.lastIndexOf('/') + 1);
                 if (XHTMLSlug.startsWith("DisplayDocument.do") || XHTMLSlug.startsWith("view.html")) {
-                    XHTMLSlug = this.params.doc.substr(this.params.doc.lastIndexOf('filename=') + 9);
+                    XHTMLSlug = this.params.doc.substring(this.params.doc.lastIndexOf('filename=') + 9);
                 }
-                const instanceKeys = Object.keys(data.instance).join().split(/[ ,]+/);
-                let sections = {}
-                if (instanceKeys.includes(XHTMLSlug)) {
-                    const instanceObjects = Object.keys(data.instance).map((current, index) => {
-
-                        Object.keys(data.instance[current].report).forEach((report) => {
-                            data.instance[current].report[report].instance = index;
+                const instanceFileNames = Object.keys(data.instance).join().split(/[ ,]+/);
+                let sections = {};
+                if (instanceFileNames.includes(XHTMLSlug)) {
+                    const instanceObjects: InstanceFile[] = Object.entries(data.instance).map(([currentInstance, instData], instanceIndex) => {
+                        // Sections
+                        //TODO: combine these using `Object.entries`
+                        Object.keys(instData.report).forEach((report) => {
+                            instData.report[report].instanceIndex = instanceIndex; // why?
+                        });
+                        Object.values(instData.report).forEach(report => {
+                            report.instanceHtm = currentInstance;
                         });
 
-                        sections = Object.assign(sections, data.instance[current].report);
-                        const xhtmls = current.split(' ').map((element) => {
+                        //NOTE: `sections` get reassigned at every step of this loop, is unused in the rest of the logic
+                        //  per loop step, and gets returned (the last value to which it's assigned) once the loop ends
+                        sections = Object.assign(sections, instData.report);
+
+                        /* 
+                            if instance key has space, e.g. 
+                                "doc1.htm doc2.htm": {...}, 
+                            it is known as multi doc.
+                        */
+                        const xhtmls = currentInstance.split(' ').map((element) => {
                             return {
                                 slug: element,
                                 url: this.params.doc.replace(this.params['doc-file'], element),
-                                current: current.split(' ').includes(XHTMLSlug) && element === this.params['doc-file'],
+                                current: currentInstance.split(' ').includes(XHTMLSlug) && element === this.params['doc-file'],
                                 loaded: false
                             };
                         });
-                        // How is this used?
-                        const xmlSlugs = xhtmls.map(element => element.slug.replace('.htm', '_htm.xml'));
-                        const xmlUrls = xhtmls.map(element => this.params.metalinks.replace('MetaLinks.json', element.slug.replace('.htm', '_htm.xml')));
+
                         return {
-                            instance: index,
+                            current: currentInstance.split(' ').includes(XHTMLSlug),
+                            instance: instanceIndex, // Why?
+                            map: new Map<string, SingleFact>(),
+                            metaInstance: Object.assign(instData),
+                            instanceHtm: currentInstance,
                             xhtmls: xhtmls,
-                            current: current.split(' ').includes(XHTMLSlug),
-                            xmlSlug: xmlSlugs,
-                            xmlUrls: xmlUrls,
-                            metaInstance: Object.assign(data.instance[current]),
-                            map: new Map()
-                        }
+                        };
                     });
-                    delete data.instance;
-                    resolve({ instance: instanceObjects, ...data, sections, version: data.version });
+
+                    resolve({ ...data, instance: instanceObjects, sections, version: data.version });
                 } else {
+                    // this may occur when transferring a filing from one domain to another.  Not sure how to fix...
+                    if (!PRODUCTION) {
+                        console.log('instanceFileNames does not include XHTMLSlug. fetch-merge > fetchMeta())')
+                    }
                     throw Error('Incorrect MetaLinks.json Instance');
                 }
+
+                //I'm not sure what resolving a Promise twice does...  this probably belongs in the `else` block above
+                //  but, in that case, an error is thrown so the Promise gets an error state instead of a resolution...
                 resolve(data);
-            }).catch((error) => resolve({ error: true, message: `${error}, Could not find "${this.params.metalinks}"` }))
+            }).catch((error) => resolve({ error: true, message: `${error}; could not find "${this.params.metalinks}"` }))
         });
     }
 
-    fetchSummary() {
+    fetchSummary(): Promise<FilingSummary | { error: true, message: string }> {
         return new Promise((resolve) => {
-            const isWorkstation = this.params.summary.includes("DisplayDocument.do?");
-            return fetch(this.params.summary, { credentials: 'include' }).then((response) => {
+            let filingSummXmlUrl = this.params.summary;
+
+            //TODO: use the new `isWorkstation` func in HelpersUrl instead
+            const isWorkstation = filingSummXmlUrl.includes("DisplayDocument.do?");
+            if (isWorkstation) {
+                if (Object.prototype.hasOwnProperty.call(this.params, 'redline') && this.params.redline) {
+                    filingSummXmlUrl = filingSummXmlUrl.replace('FilingSummary.xml', 'PrivateFilingSummary.xml')
+                }
+            }
+
+            return fetch(filingSummXmlUrl, { credentials: 'include' }).then((response) => {
                 if (response.status >= 200 && response.status <= 299) {
                     return response.text();
                 } else {
@@ -361,48 +335,48 @@ export class FetchAndMerge {
                 }
             }).then((data) => {
                 const xmlData = this.decodeWorkstationXmlInHtml(isWorkstation, data, "</FilingSummary>");
-                resolve(JSON.parse(convert.xml2json(xmlData as unknown as string, { compact: true })).FilingSummary);
+                const convertedXml = convert.xml2json(xmlData, { compact: true });
+                resolve(JSON.parse(convertedXml).FilingSummary as FilingSummary);
             }).catch((error) => {
-                resolve({ error: true, message: `${error}, Could not find "${this.params.summary}"` })
-            })
+                resolve({ error: true, message: `${error}; could not find "${this.params.summary}"` })
+            });
         });
     }
 
-    fetchInstance() {
-        const promises = this.currentInstance.xmlUrls.map((current) => {
-            const isWorkstation = current.includes("DisplayDocument.do?");
-            if (isWorkstation) {
-                // If methods from HelpersUrl are used here some very strange bugs occur, such as window and localStorage undefined.
-                if (Object.prototype.hasOwnProperty.call(this.params, 'redline') && this.params.redline) {
-                    current = current.replace('_htm.xml', '_ht2.xml')
-                } else {
-                    current = current.replace('_htm.xml', '_ht1.xml')
-                }
+    fetchInstancesXml(): Promise<Instance | ErrorResponse> {
+        let _xmlUrl = this.activeInstance?.xmlUrl;
+        const isWorkstation = _xmlUrl.includes("DisplayDocument.do?");
+        if (isWorkstation) {
+            // If methods from HelpersUrl are used here some very strange bugs occur, such as window and localStorage undefined.
+            if (Object.prototype.hasOwnProperty.call(this.params, 'redline') && this.params.redline) {
+                _xmlUrl = _xmlUrl.replace('_htm.xml', '_ht2.xml')
+            } else {
+                _xmlUrl = _xmlUrl.replace('_htm.xml', '_ht1.xml')
             }
-            return new Promise((resolve) =>
-                fetch(current).then((response) => {
-                    if (response.status >= 200 && response.status <= 299) {
-                        return response.text();
-                    } else {
-                        const indexOf = this.currentInstance.xmlUrls.indexOf(current);
-                        if (indexOf >= 0) {
-                            this.currentInstance.xmlUrls.splice(indexOf, 1);
-                        }
-                        throw Error(`${response.status.toString()}`);
-                    }
-                }, { credentials: 'include' }).then((data) => {
-                    const xmlData = this.decodeWorkstationXmlInHtml(isWorkstation, data, "</xbrl>");
-                    resolve({ instance: xmlData });
-                }).catch((error) => {
-                    resolve({ error: true, message: `${error}, Could not find "XML Instance Data"` });
+        }
+
+        const xmlFetchPromise = new Promise<{ instance: string } | ErrorResponse>((resolve) =>
+            //TODO: we used to pass `{ credentials: 'include' }` to `.then()` (which is wrong);
+            //  should we be passing it to `fetch`??
+            fetch(_xmlUrl).then((response) => {
+                if (response.status >= 200 && response.status <= 299) {
+                    return response.text();
+                } else {
+                    throw Error(`${response.status.toString()}`);
                 }
-            ));
-        });
-        return Promise.all(promises).then((xmlInstances) => {
-            const instance = xmlInstances.filter(element => element.instance);
-            if (instance && instance[0]) {
-                const fetchedXMlString = instance[0].instance;
-                const instanceXmlAsJsonCompact = JSON.parse(convert.xml2json(fetchedXMlString as unknown as string, { compact: true }));
+            }).then((data) => {
+                const xmlData = this.decodeWorkstationXmlInHtml(isWorkstation, data, "</xbrl>");
+                resolve({ instance: xmlData });
+            }).catch((error) => {
+                resolve({ error: true, message: `${error}; could not find "XML Instance Data"` });
+            }
+        ));
+
+        return xmlFetchPromise.then((xmlInstance) => {
+            const instance = xmlInstance;
+            if (instance) {
+                const fetchedXMlString = instance.instance;
+                const instanceXmlAsJsonCompact: Instance = JSON.parse(convert.xml2json(fetchedXMlString, { compact: true }));
                 if (instanceXmlAsJsonCompact.xbrl["link:footnoteLink"] && DEBUGJS) {
                     const footnotesNode = instanceXmlAsJsonCompact.xbrl["link:footnoteLink"]
                     // grab xml data as non compact object so element order is preserved.
@@ -411,42 +385,39 @@ export class FetchAndMerge {
                     instanceXmlAsJsonCompact.xbrl["link:footnoteLink"].asXmlString = cleanSubstring(fetchedXMlString, '<link:footnoteLink', '</link:footnoteLink>');
                     // footnotesNode.asXmlString = cleanSubstring(fetchedXMlString, '<link:footnoteLink', '</link:footnoteLink>').replaceAll('\n', '');
                     // footnotesNode.renderableXml = this.xmlToDom(fetchedXMlString);
-                    console.log('instanceXmlAsJsonCompact', instanceXmlAsJsonCompact);
                 }
                 // return instanceXmlAsJsonCompact.xbrl["link:footnoteLink"].asXmlString
                 return instanceXmlAsJsonCompact;
             } else {
-                return xmlInstances[0];
+                return xmlInstance;
             }
         });
     }
 
-    mergeAllResponses(
-        includeSections: boolean
-    ) {
-        this.currentInstance.map = this.buildInitialMap(this.currentInstance.xml);
-        if (includeSections) {
-            this.sections = this.extractSections();
+    mergeAllResponses(initialLoad: boolean) {
+        this.activeInstance.map = this.buildInitialFactMap(this.activeInstance.xml, this.activeInstance.xhtmls[0].slug);
+        if (initialLoad) {
+            this.sections = this.extractSections(); // not sure what this was for, except maybe adding .groupType
         }
-        this.currentInstance.formInformation = this.extractFormInformation(this.currentInstance.metaInstance);
-        this.mergeMapandMeta();
-        this.customPrefix = this.currentInstance.metaInstance.nsprefix;
-        this.prepareXHTML();
+        this.activeInstance.formInformation = this.extractFormInformation(this.activeInstance.metaInstance);
+        this.enrichFactMapWithMetalinksData();
+        this.customPrefix = this.activeInstance.metaInstance.nsprefix;
+        this.prepareXHTMLForCurrentInstance();
         return;
-
     }
 
-    buildInitialMap(instance: Instance) {
-
-        const getInstancePrefix = (instance) => {
+    buildInitialFactMap(instanceXml: Instance, fileSlug: string) {
+        const getInstancePrefix = (instance: Instance) => {
             const options = Object.keys(instance).filter(element => element.endsWith(':xbrl'))[0];
             return options ? options.split(':')[0] : false;
         };
-        const prefix = getInstancePrefix(instance);
 
-        const xbrlKey = prefix ? `${(prefix as string)}:xbrl` : 'xbrl';
-        const contextKey = prefix ? `${(prefix as string)}:context` : 'context';
-        const unitKey = prefix ? `${(prefix as string)}:unit` : 'unit';
+        const prefix = getInstancePrefix(instanceXml);
+        let instance: Record<string, any> = instanceXml;
+
+        const xbrlKey = prefix ? `${prefix}:xbrl` : 'xbrl';
+        const contextKey = prefix ? `${prefix}:context` : 'context';
+        const unitKey = prefix ? `${prefix}:unit` : 'unit';
 
         const context = instance[xbrlKey][contextKey];
         const unit = instance[xbrlKey][unitKey];
@@ -457,12 +428,15 @@ export class FetchAndMerge {
         delete instance[xbrlKey]._attributes;
         delete instance[xbrlKey]['link:schemaRef'];
         delete instance[xbrlKey]['link:footnoteLink'];
+
         this.setPeriodText(context);
         this.setSegmentData(context);
         this.setMeasureText(unit);
+
         const map = new Map();
+
         let factCounter = 0;
-        for (const key in instance[xbrlKey]) {
+        for (let key in instance[xbrlKey]) {
             /* example set of keys on instance.xbrl
                 _attributes
                 link:schemaRef
@@ -499,10 +473,10 @@ export class FetchAndMerge {
                         period: this.setPeriodInfo(attributes.contextRef, context),
                         period_dates: this.setPeriodDatesInfo(attributes.contextRef, context),
                         segment: this.setSegmentInfo(attributes.contextRef, context),
-                        measure: this.setMeasureInfo(attributes.unitRef, unit),
-                        scale: this.setScaleInfo(attributes.scale),
-                        decimals: this.setDecimalsInfo(attributes.decimals),
-                        sign: this.setSignInfo(attributes.sign),
+                        measure: this.setMeasureInfo(attributes.unitRef || "", unit),
+                        scale: this.setScaleInfo(attributes.scale || 0),
+                        decimals: this.setDecimalsInfo(attributes.decimals || ""),
+                        sign: this.setSignInfo(attributes.sign || ""),
                         footnote: this.setFootnoteInfo(id, footnote),
                         isEnabled: true,
                         isHighlight: false,
@@ -510,6 +484,7 @@ export class FetchAndMerge {
                         filter: {
                             content: this.getTextFromHTML(current._text),
                         },
+                        file: fileSlug
                     });
                 });
             } else {
@@ -541,21 +516,27 @@ export class FetchAndMerge {
                     filter: {
                         content: this.getTextFromHTML(instance[xbrlKey][key]._text),
                     },
+                    file: fileSlug
                 });
             }
+            // console.log('instanceXml[xbrlKey][key]', key, instanceXml[xbrlKey][key])
         }
         return map;
     }
 
     extractSections() {
-        return Object.keys(this.sections).map((current) => {
-            if (this.metaVersion >= '2.2') {
-                if (this.sections[current].menuCat) {
-                    this.sections[current].groupType = this.sections[current].menuCat;
-                }
-                return this.sections[current];
-            }
-            return this.sections[current];
+        return this.sections.map((section) => {
+
+            // groupType is used in Metalinks v2.1 (and presumably earlier) and was replaced by menuCat in 2.2
+            if (Number(this.metaVersion) >= 2.2) {
+                if (section.menuCat) {
+                    section.groupType = section.menuCat;
+                } 
+            } 
+            // else {
+            //     section.menuCat = section.subGroupType;
+            // }
+            return section;
         });
     }
 
@@ -566,49 +547,53 @@ export class FetchAndMerge {
         return metaCopy;
     }
 
-    mergeMapandMeta() {
+    /**
+     * Description
+     * @returns {any} => updates instance fact map (this.activeInstance.map) with data from meta (this.activeInstance.metaInstance)
+     */
+    enrichFactMapWithMetalinksData() {
+        this.activeInstance?.map.forEach((currentFact: SingleFact) => {
+            /* 
+                @Doc: Fact 'tags' in metalinks.json vs fact 'names' in instance and xhtmls files
+                facts are stored in metalinks.json under instance[<instanceName>].tags
+                Not sure why they are called 'tags'
+                Tags in xbrl speak are 'concepts', which are also qNames.
+                Some tag names looke like: 
+                    dei_AmendmentDescription
+                They have an underscore, but in the instance and xhtml files they have colons. 
+                    dei:AmendmentDescription
+            */
+            const factNameTag = currentFact.name.replace(':', '_');
+            const factObjectMl = this.activeInstance.metaInstance.tag[factNameTag]; // Ml being metalinks
 
-        this.currentInstance.map.forEach((currentValue: {
-            name: string;
-            segment: [{ dimension: string, axis: string }];
-            references: reference[];
-            calculations: [{ label: string, value: string }];
-            labels: string[];
-            filter: { labels: string; definitions: string; };
-            balance: string;
-            xbrltype: Xbrltype | null;
-            localname: string | null;
-            nsuri: string | null;
-            presentation: string[] | null | undefined;
-        }) => {
-            if (this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')]) {
-                // add references (if any) to each individual fact
-                // including references via any dimension [name]
-                // including references via any member [name]
-                if (this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].auth_ref) {
+            if (factObjectMl) {
 
-                    let references = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].auth_ref.map((current) => {
-                        return current;
+                /* add references (if any) to each individual fact
+                including references via any dimension [name]
+                including references via any member [name] */
+                if (factObjectMl.auth_ref) {
+
+                    let references = factObjectMl.auth_ref.map((authRef) => {
+                        return authRef;
                     });
 
-                    if (currentValue.segment) {
-
-                        const dimensions = currentValue.segment.map((element: { dimension: string; }) => {
-                            if (element.dimension && this.currentInstance.metaInstance.tag[element.dimension.replace(':', '_')]) {
-                                return this.currentInstance.metaInstance.tag[element.dimension.replace(':', '_')].auth_ref ? this.currentInstance.metaInstance.tag[element.dimension.replace(':', '_')].auth_ref : null;
+                    if (currentFact.segment) {
+                        const dimensions = currentFact.segment.map((element: { dimension: string; }) => {
+                            if (element.dimension && this.activeInstance.metaInstance.tag[element.dimension.replace(':', '_')]) {
+                                return this.activeInstance.metaInstance.tag[element.dimension.replace(':', '_')].auth_ref ? this.activeInstance.metaInstance.tag[element.dimension.replace(':', '_')].auth_ref : null;
                             }
                         }).filter(Boolean)[0];
 
-                        const axis = currentValue.segment.map((element: { dimension: string; axis: string; }) => {
-                            if (element.dimension && this.currentInstance.metaInstance.tag[element.axis.replace(':', '_')]) {
-                                return this.currentInstance.metaInstance.tag[element.axis.replace(':', '_')].auth_ref ? this.currentInstance.metaInstance.tag[element.axis.replace(':', '_')].auth_ref : null;
+                        const axis = currentFact.segment.map((element: { dimension: string; axis: string; }) => {
+                            if (element.dimension && this.activeInstance.metaInstance.tag[element.axis.replace(':', '_')]) {
+                                return this.activeInstance.metaInstance.tag[element.axis.replace(':', '_')].auth_ref ? this.activeInstance.metaInstance.tag[element.axis.replace(':', '_')].auth_ref : null;
                             }
                         }).filter(Boolean)[0];
 
                         references = references.concat(dimensions).concat(axis);
                     }
 
-                    currentValue.references = [...new Set(references)].map((current) => {
+                    currentFact.references = [...new Set(references)].map((current) => {
                         return this.std_ref[current];
                     }).filter(Boolean);
                     // this order specifically for Fact References
@@ -619,7 +604,9 @@ export class FetchAndMerge {
                         `Number`,
                         `Chapter`,
                         `Article`,
-                        `Number Exhibit Section`,
+                        `Number`,
+                        `Exhibit`,
+                        `Section`,
                         `Subsection`,
                         `Paragraph`,
                         `Subparagraph`,
@@ -632,52 +619,60 @@ export class FetchAndMerge {
                         `URIDate`,
                     ];
 
-                    currentValue.references = currentValue.references.map((singleReference) => {
-                        return Object.keys(singleReference).reduce((accumulator, current) => {
-                            const index = requiredOrder.findIndex(element => element === current);
-                            if (index !== -1) {
-                                const returnObject = {};
-                                returnObject[current] = singleReference[current];
-                                accumulator[index] = returnObject;
-                            }
-                            return accumulator;
-                        }, new Array(Object.keys(singleReference).length).fill(null)).filter(Boolean);
+                    currentFact.references = currentFact.references.map((singleReference) => {
+                        return Object.keys(singleReference)
+                            .reduce((accumulator, current) => {
+                                const index = requiredOrder.findIndex(element => element === current);
+                                if (index !== -1) {
+                                    const returnObject = {};
+                                    returnObject[current] = singleReference[current];
+                                    accumulator[index] = returnObject;
+                                }
+                                return accumulator;
+                            }, new Array(Object.keys(singleReference).length).fill(null))
+                            .filter(Boolean);
                     });
                 }
 
                 // add calculations (if any) to each individual fact
-                if (this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].calculation) {
-                    const tempCalculation = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].calculation;
-                    currentValue.calculations = [];
-                    for (const property in tempCalculation) {
-                        const result = this.sections.map(element => {
-                            if (element.role === property) {
+                if (factObjectMl.calculation) {
+                    // console.log('this.activeInstance.metaInstance', this.activeInstance.metaInstance)
+                    const tempFactCalculation = factObjectMl.calculation;
+                    currentFact.calculations = [];
+                    for (const factCalculationProp in tempFactCalculation) {
+                        const result = this.sections?.map(sectionElement => {
+                            if (sectionElement.role === factCalculationProp) {
+                                /*
+                                    Walter comment: "Although I traced the root cause to a problem in entry point sbsef-fex, still, 
+                                    user actions can cause this.sections to be unbound when switching from one instance to another via the “instance” menu.  
+                                    So, this section should probably make sure that this.sections is at least an empty list:"
+                                */
                                 return [
                                     {
                                         label: 'Section',
-                                        value: element.longName
+                                        value: sectionElement.longName
                                     },
                                     {
                                         label: 'Weight',
-                                        value: this.getCalculationWeight(tempCalculation[property].weight)
+                                        value: this.getCalculationWeight(tempFactCalculation[factCalculationProp].weight)
                                     },
                                     {
                                         'label': 'Parent',
-                                        value: this.getCalculationParent(tempCalculation[property].parentTag)
+                                        value: this.getCalculationParent(tempFactCalculation[factCalculationProp].parentTag)
                                     }
                                 ];
                             }
                         }).filter(Boolean);
-                        currentValue.calculations = currentValue.calculations.concat(result);
+                        currentFact.calculations = currentFact.calculations.concat(result);
                     }
                 } else {
-                    currentValue.calculations = [];
+                    currentFact.calculations = [];
                 }
 
                 // add labels (if any) to each individual fact
-                if (this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].lang) {
-                    currentValue.labels = Object.keys(this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].lang).map((current) => {
-                        const oldObject = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].lang[current].role;
+                if (factObjectMl.lang) {
+                    currentFact.labels = Object.keys(factObjectMl.lang).map((current) => {
+                        const oldObject = factObjectMl.lang[current].role;
                         const newObject = {};
                         for (const property in oldObject) {
 
@@ -688,66 +683,99 @@ export class FetchAndMerge {
                         return newObject
                     });
 
-                    currentValue.filter.labels = currentValue.labels.reduce((accumulator: string, current) => {
+                    currentFact.filter.labels = currentFact.labels.reduce((accumulator: string, current) => {
                         const tempCurrent = { ...current };
                         delete tempCurrent.documentation;
                         return `${accumulator} ${Object.values(tempCurrent).join(' ')}`;
 
                     }, '');
 
-                    currentValue.filter.definitions = currentValue.labels.reduce((accumulator, current: { Documentation: string; }) => {
+                    currentFact.filter.definitions = currentFact.labels.reduce((accumulator, current: { Documentation: string; }) => {
                         return `${accumulator} ${current.Documentation}`;
                     }, '');
                 }
 
                 // add credit / debit
-                if (this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].crdr) {
-                    const balance = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].crdr;
-                    currentValue.balance = `${balance.charAt(0).toUpperCase()}${balance.slice(1)}`;
+                if (factObjectMl.crdr) {
+                    const balance = factObjectMl.crdr;
+                    currentFact.balance = `${balance.charAt(0).toUpperCase()}${balance.slice(1)}`;
                 }
 
                 // add xbrltype
-                if (this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].xbrltype) {
-                    currentValue.xbrltype = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].xbrltype;
+                if (factObjectMl.xbrltype) {
+                    currentFact.xbrltype = factObjectMl.xbrltype;
                 }
 
                 // add additional info to each individual fact
-                currentValue.localname = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].localname ? this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].localname : null;
-                currentValue.nsuri = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].nsuri ? this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].nsuri : null;
-                currentValue.presentation = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].presentation ? this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].presentation : null;
-                currentValue.xbrltype = this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].xbrltype ? this.currentInstance.metaInstance.tag[currentValue.name.replace(':', '_')].xbrltype : null;
+                currentFact.localname = factObjectMl.localname ? factObjectMl.localname : null;
+                currentFact.nsuri = factObjectMl.nsuri ? factObjectMl.nsuri : null;
+                currentFact.presentation = factObjectMl.presentation ? factObjectMl.presentation : null;
+                currentFact.xbrltype = factObjectMl.xbrltype ? factObjectMl.xbrltype : null;
             }
         });
-        // return map;
     }
 
-    prepareXHTML() {
-        this.currentInstance.xhtmls.forEach((current) => {
+    prepareXHTMLForCurrentInstance() {
+        const isWorkstation = this.params.doc.includes("DisplayDocument.do?");
+        this.activeInstance.xhtmls.forEach((current) => {
             if (current.xhtml) {
                 let $ = cheerio.load(current.xhtml, {});
                 $ = this.hiddenFacts($);
-                $ = this.fixImages($);
+                $ = this.fixImages($, isWorkstation);
                 $ = this.fixLinks($);
-                // $ = this.hiddenFacts($);
                 $ = this.redLineFacts($);
                 $ = this.excludeFacts($);
-                const updates = this.attributeFacts($, this.currentInstance.map, current.slug);
+                const updates = this.attributeFacts($, this.activeInstance.map, current.slug);
                 current.xhtml = updates.xhtml;
             }
         });
-
     }
 
-    fixImages($: cheerio.CheerioAPI) {
+    fixImages($: cheerio.CheerioAPI, isWorkstation: boolean) {
         const startPerformance = performance.now();
         const foundImagesArray = Array.from($('img'));
-        foundImagesArray.forEach((current) => {
-            if (!$(current).attr('src')?.startsWith('data:')) {
-                const imageSlug = $(current).attr('src')?.substr($(current).attr('src')!.lastIndexOf('/') + 1);
-                $(current).attr('src', `${this.absolute}${imageSlug}`);
-                $(current).attr('loading', 'lazy');
-            }
-        });
+        if (isWorkstation) {
+            // uncomment next 3 lines and force isWorkstation to true to test on local
+            // const exampleMlPath = '../DisplayDocument.do?step=docOnly&accessionNumber=0001314610-24-800735&interpretedFormat=false&redline=true&filename=MetaLinks.json'
+            
+            const [docName, searchParams] = this.params.doc.split('?');
+            let imgParams = new URLSearchParams(searchParams);
+
+            imgParams.set("step", "docOnly");
+            imgParams.set("interpretedFormat", "false");
+            imgParams.delete("redline");
+            imgParams.delete("status");
+            imgParams.delete("sequenceNumber");
+
+            foundImagesArray.forEach((imgElem) => {
+                // Not sure how to handle Herm's suggestion: 'And if src is a local file (foo.jpg, not /include or http://archives.sec.xxx)'
+                // const imgIsLocal = !$(imgElem).attr('src')?.startsWith('/include');
+                // const imgIsFileNameOnly = $(imgElem).attr('src') && (!$(imgElem).attr('src')?.startsWith('/') || !$(imgElem).attr('src')?.includes('/', 1));
+                           
+                const imgSrc = $(imgElem).attr('src');
+                if(!imgSrc) return;
+
+                const imgFileName = imgSrc.includes('/') ? imgSrc.substring(imgSrc.lastIndexOf('/') + 1) : imgSrc;
+                imgParams.set("filename", imgFileName);
+
+                console.log('params', imgParams.toString());
+
+                $(imgElem).attr('src', `${docName}?${imgParams.toString()}`);
+                $(imgElem).attr('loading', 'lazy');
+            });
+        }
+        else 
+        {
+            foundImagesArray.forEach((imgElem) => {
+                const imgSrc = $(imgElem).attr('src');
+                if (!imgSrc?.startsWith('data:')) {
+                    const imageSlug = imgSrc?.substring(imgSrc!.lastIndexOf('/') + 1);
+                    $(imgElem).attr('src', `${this.absolute}${imageSlug}`);
+                    $(imgElem).attr('loading', 'lazy');
+                }
+            })
+        }
+
         const endPerformance = performance.now();
         if (LOGPERFORMANCE) {
             const items = foundImagesArray.length;
@@ -767,8 +795,12 @@ export class FetchAndMerge {
                     current.attribs.href.startsWith('#')) {
                     // already an absolute url, just add tabindex=18
                     $(current).attr('tabindex', '18');
+
                     // this anchor tag does not exsist in the current XHTML file
-                    if (current.attribs.href.startsWith('#') && current.attribs.href.slice(1) && $(`#${current.attribs.href.slice(1)}`).length === 0) {
+                    if (current.attribs.href.startsWith('#') 
+                        && current.attribs.href.slice(1) 
+                        && $(`[id='${current.attribs.href.slice(1)}']`).length === 0
+                    ) {
                         $(current).attr('xhtml-change', 'true');
                     }
                 } else {
@@ -842,9 +874,10 @@ export class FetchAndMerge {
      */
     redLineFacts($: cheerio.CheerioAPI) {
         const startPerformance = performance.now();
+        let foundElements = [];
         
         ['redline', 'redact'].forEach((r) => {
-            const foundElements = Array.from($('[style*="-ix-' + r + '"]'));
+            foundElements = Array.from($('[style*="-ix-' + r + '"]'));
             
             if (Object.prototype.hasOwnProperty.call(this.params, 'redline') && this.params.redline) {
                 if (!PRODUCTION) {
@@ -861,7 +894,7 @@ export class FetchAndMerge {
         });
         const endPerformance = performance.now();
         if (LOGPERFORMANCE) {
-            const items = foundElements.length;
+            const items = foundElements?.length;
             const log: Logger<ILogObj> = new Logger();
             log.debug(`FetchAndMerge.redLineFacts() completed in: ${(endPerformance - startPerformance).toFixed(2)}ms - ${items} items`);
         }
@@ -908,7 +941,7 @@ export class FetchAndMerge {
             if ($(current).attr('contextref') && !$(current).attr('id')) {
                 // for the facts in the html that have no ids...
                 const getByNameAndContextRef = (searchContextref: string | undefined, searchName: string | undefined) => {
-                    for (const [key, value] of this.currentInstance.map.entries()) {
+                    for (const [key, value] of map.entries()) {
                         if (value.contextRef === searchContextref && value.name === searchName) {
                             return key;
                         }
@@ -939,24 +972,31 @@ export class FetchAndMerge {
         return { xhtml: $.html(), map };
     }
 
-    updateMap(ix: string, element: cheerio.Cheerio<cheerio.Element>, currentSlug: string) {
-        this.currentInstance.map.set(
+    //WTF is `ix`??  Should this be `id`?
+    updateMap(ix: string, element: cheerio.Cheerio<cheerio.Element>, currentSlug: string): string {
+        if(!this.activeInstance.map.has(ix))
+        {
+            console.error("Cannot update map -- missing key:", ix);
+            return "";
+        }
+
+        this.activeInstance.map.set(
             ix,
             {
-                ...this.currentInstance.map.get(ix),
+                ...this.activeInstance.map.get(ix) as SingleFact,
                 raw: element.text(),
                 format: element.attr('format') ? element.attr('format') : null,
                 isAdditional: element.parents().prop('tagName').toLowerCase().endsWith(':hidden'),
-                isCustom: (element.attr('name')?.split(':')[0].toLowerCase() === this.customPrefix),
+                isCustom: element.attr('name')?.split(':')[0].toLowerCase() === this.customPrefix,
                 isAmountsOnly: element.prop('tagName')?.split(':')[1].toLowerCase() === 'nonfraction',
                 isTextOnly: element.prop('tagName')?.split(':')[1].toLowerCase() === 'nonnumeric',
                 isNegativeOnly: element.attr('sign') === '-',
                 file: currentSlug,
-                scale: element.attr('scale') ? this.setScaleInfo(element.attr('scale') as unknown as number) : null,
-                continuedIDs: []
+                scale: (element.attr('scale') ? this.setScaleInfo(element.attr('scale') as unknown as number) : null) || "",
+                continuedIDs: [],
             });
 
-        return this.currentInstance.map.get(ix).id;
+        return this.activeInstance.map.get(ix)!.id;
     }
 
     updateValueToRemoveIDs(input: string) {
@@ -995,29 +1035,28 @@ export class FetchAndMerge {
             if (current.period) {
                 if (current.period.instant) {
                     const date = new Date(current.period.instant._text);
-                    current.period._array = [`${date.getMonth() + 1}/${date.getUTCDate()}/${date.getFullYear()}`];
-                    current.period._text = `As of ${date.getMonth() + 1}/${date.getUTCDate()}/${date.getFullYear()}`;
+                    current.period._array = [`${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear()}`];
+                    current.period._text = `As of ${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear()}`;
 
                 } else if (current.period.startDate && current.period.endDate) {
                     const startDate = new Date(current.period.startDate._text);
                     const endDate = new Date(current.period.endDate._text);
 
-                    const yearDiff = endDate.getFullYear() - startDate.getFullYear();
-                    const monthDiff = endDate.getMonth() - startDate.getMonth() + (yearDiff * 12);
+                    const yearDiff = endDate.getUTCFullYear() - startDate.getUTCFullYear();
+                    const monthDiff = endDate.getUTCMonth() - startDate.getUTCMonth() + (yearDiff * 12);
                     current.period._array = [
-                        `${startDate.getMonth() + 1}/${startDate.getUTCDate()}/${startDate.getFullYear()}`,
-                        `${endDate.getMonth() + 1}/${endDate.getUTCDate()}/${endDate.getFullYear()}`
+                        `${startDate.getUTCMonth() + 1}/${startDate.getUTCDate()}/${startDate.getUTCFullYear()}`,
+                        `${endDate.getUTCMonth() + 1}/${endDate.getUTCDate()}/${endDate.getUTCFullYear()}`
                     ];
                     if (monthDiff <= 0) {
-                        current.period._text = `${startDate.getMonth() + 1}/${startDate.getUTCDate()}/${startDate.getFullYear()} - ${endDate.getMonth() + 1}/${endDate.getUTCDate()}/${endDate.getFullYear()}`;
+                        current.period._text = `${startDate.getUTCMonth() + 1}/${startDate.getUTCDate()}/${startDate.getUTCFullYear()} - ${endDate.getUTCMonth() + 1}/${endDate.getUTCDate()}/${endDate.getUTCFullYear()}`;
                     } else {
-                        current.period._text = `${monthDiff} months ending ${endDate.getMonth() + 1}/${endDate.getUTCDate()}/${endDate.getFullYear()}`;
+                        current.period._text = `${monthDiff} months ending ${endDate.getUTCMonth() + 1}/${endDate.getUTCDate()}/${endDate.getUTCFullYear()}`;
                     }
                 } else {
                     const log: Logger<ILogObj> = new Logger();
-                    log.error(`\nFact Period is NEITHER Instant or Start / End`);
+                    log.error(`\nFact Period is NEITHER Instant nor Start / End`);
                 }
-
             }
         });
     }
@@ -1045,8 +1084,8 @@ export class FetchAndMerge {
     }
 
     setSegmentData(context: Context | undefined) {
-        context = Array.isArray(context) ? context : [context];
-        context.forEach((current) => {
+        let context2 = Array.isArray(context) ? context : [context];
+        context2.forEach((current) => {
             if (current.entity && current.entity.segment) {
                 current.entity.segment.data = Object.keys(current.entity.segment).map((key) => {
                     if (Array.isArray(current.entity.segment[key])) {
@@ -1073,7 +1112,6 @@ export class FetchAndMerge {
                     }
                 });
             }
-
         });
     }
 
@@ -1082,33 +1120,37 @@ export class FetchAndMerge {
         const factContext = context?.find((element) => {
             return element._attributes.id === contextRef;
         });
-        if (factContext && factContext.entity && factContext.entity.segment) {
+        if (factContext?.entity?.segment) {
             return factContext.entity.segment.data;
         }
     }
 
-    setMeasureText(unit: Units[] | undefined) {
-        unit = Array.isArray(unit) ? unit : [unit];
-        unit.forEach((current: { measure: { _text: string; }; _text: string; divide: { unitNumerator: { measure: { _text: string; }; }; unitDenominator: { measure: { _text: string; }; }; }; }) => {
-            if (current && current.measure) {
-                const measure = current.measure._text.includes(':') ?
-                    current.measure._text.split(':')[1].toUpperCase() :
-                    current.measure._text.toUpperCase();
-                current._text = measure;
+    setMeasureText(unit: Units[] = []) {
+        if (!Array.isArray(unit)) {
+            unit = [unit]
+        }
 
-            } else if (current && current.divide) {
-                const numerator = current.divide.unitNumerator.measure._text.includes(':') ?
-                    current.divide.unitNumerator.measure._text.split(':')[1].toUpperCase() :
-                    current.divide.unitNumerator.measure._text.toUpperCase();
+        //Note: we need to first trick TS into believing a Units is really a UnitsAdditional
+        //TODO: have `setMeasureText` take UnitsAdditional instead
+        unit.map(u => u as UnitsAdditional)
+            .forEach((current: UnitsAdditional) => {
+                if (current && current.measure) {
+                    const measure = current.measure._text.includes(':') ?
+                        current.measure._text.split(':')[1].toUpperCase() :
+                        current.measure._text.toUpperCase();
+                    current._text = measure;
+                } else if (current && current.divide) {
+                    const numerator = current.divide.unitNumerator.measure._text.includes(':') ?
+                        current.divide.unitNumerator.measure._text.split(':')[1].toUpperCase() :
+                        current.divide.unitNumerator.measure._text.toUpperCase();
 
-                const denominator = current.divide.unitDenominator.measure._text.includes(':') ?
-                    current.divide.unitDenominator.measure._text.split(':')[1].toUpperCase() :
-                    current.divide.unitDenominator.measure._text.toUpperCase();
+                    const denominator = current.divide.unitDenominator.measure._text.includes(':') ?
+                        current.divide.unitDenominator.measure._text.split(':')[1].toUpperCase() :
+                        current.divide.unitDenominator.measure._text.toUpperCase();
 
-                current._text = `${numerator} / ${denominator}`;
-            }
-
-        });
+                    current._text = `${numerator} / ${denominator}`;
+                }
+            });
     }
 
     setMeasureInfo(unitRef: string, unit: Units) {
@@ -1129,69 +1171,63 @@ export class FetchAndMerge {
     }
 
     setScaleInfo(scale: number) {
-        if (scale) {
-            const scaleOptions = {
-                0: "Zero",
-                1: "Tens",
-                2: "Hundreds",
-                3: "Thousands",
-                4: "Ten thousands",
-                5: "Hundred thousands",
-                6: "Millions",
-                7: "Ten Millions",
-                8: "Hundred Millions",
-                9: "Billions",
-                10: "Ten Billions",
-                11: "Hundred Billions",
-                12: "Trillions",
-                "-1": "Tenths",
-                "-2": "Hundredths",
-                "-3": "Thousandths",
-                "-4": "Ten Thousandths",
-                "-5": "Hundred Thousandths",
-                "-6": "Millionths"
-            };
-            return scaleOptions[scale];
-        }
-        return null;
+        const scaleOptions: Record<string, string> = {
+            0: "Zero",
+            1: "Tens",
+            2: "Hundreds",
+            3: "Thousands",
+            4: "Ten thousands",
+            5: "Hundred thousands",
+            6: "Millions",
+            7: "Ten Millions",
+            8: "Hundred Millions",
+            9: "Billions",
+            10: "Ten Billions",
+            11: "Hundred Billions",
+            12: "Trillions",
+            "-1": "Tenths",
+            "-2": "Hundredths",
+            "-3": "Thousandths",
+            "-4": "Ten Thousandths",
+            "-5": "Hundred Thousandths",
+            "-6": "Millionths"
+        };
+        
+        return scaleOptions[scale] || null;
     }
 
-    setDecimalsInfo(decimals: string) {
-        if (decimals) {
-            const decimalsOptions = {
-                "-1": "Tens",
-                "-2": "Hundreds",
-                "-3": "Thousands",
-                "-4": "Ten thousands",
-                "-5": "Hundred thousands",
-                "-6": "Millions",
-                "-7": "Ten Millions",
-                "-8": "Hundred Millions",
-                "-9": "Billions",
-                "-10": "Ten Billions",
-                "-11": "Hundred Billions",
-                "-12": "Trillions",
-                1: "Tenths",
-                2: "Hundredths",
-                3: "Thousandths",
-                4: "Ten Thousandths",
-                5: "Hundred Thousandths",
-                6: "Millionths"
-            };
-            return decimalsOptions[decimals];
-        }
-        return null;
+    setDecimalsInfo(decimals: string): string | null {
+        const decimalsOptions: Record<string, string> = {
+            "-1": "Tens",
+            "-2": "Hundreds",
+            "-3": "Thousands",
+            "-4": "Ten thousands",
+            "-5": "Hundred thousands",
+            "-6": "Millions",
+            "-7": "Ten Millions",
+            "-8": "Hundred Millions",
+            "-9": "Billions",
+            "-10": "Ten Billions",
+            "-11": "Hundred Billions",
+            "-12": "Trillions",
+            1: "Tenths",
+            2: "Hundredths",
+            3: "Thousandths",
+            4: "Ten Thousandths",
+            5: "Hundred Thousandths",
+            6: "Millionths",
+        };
+
+        return decimalsOptions[decimals] || null;
     }
 
-    setSignInfo(sign: string) {
-        if (sign) {
-            const signOptions = {
-                '-': 'Negative',
-                '+': 'Positive'
-            };
-            return signOptions[sign];
-        }
-        return null;
+    setSignInfo(sign: string): string | null {
+        const signOptions: Record<string, string> = {
+            '-': 'Negative',
+            '+': 'Positive',
+        };
+        
+        return signOptions[sign];
     }
 
     /**
@@ -1200,8 +1236,7 @@ export class FetchAndMerge {
      * @param {any} result?:string|undefined
      * @returns {any} concatenated text from all footnote nodes, joined by a ' '
      */
-    accumulateFootnote(ftObj: object, result?: string | undefined) {
-        if (typeof(result) == "undefined") result = "";
+    accumulateFootnote(ftObj: LinkFootnote | Record<string, unknown>, result = "") {
         const truncateFootnoteTo = 100;
 
         if (result?.length > truncateFootnoteTo) {
@@ -1210,19 +1245,22 @@ export class FetchAndMerge {
         }
 
         // let text = ''; //accumulate "mixed-content" text to apply after depth first descent
-        Object.keys(ftObj).forEach(node => {
-            if (node == "_text") {
-                result += ftObj[node] + ' ';
+        // Object.keys(ftObj).forEach(node => {
+        Object.entries(ftObj).forEach(([key, value]) =>
+        {
+            if (key == "_text") {
+                result += String(value);
             }
-            else if (Array.isArray(ftObj[node])) {
-                ftObj[node].forEach(childNode => {
+            else if (Array.isArray(value)) {
+                value.forEach(childNode => {
                     result = this.accumulateFootnote(childNode, result);
                 })
             }
-            else if (node.substring(0,6) == "xhtml:") {
-                result = this.accumulateFootnote(ftObj[node], result);
+            else if(key.substring(0,6) == "xhtml:") {
+                result = this.accumulateFootnote(value, result);
             }
         });
+
         return result;
     }
 
@@ -1258,7 +1296,7 @@ export class FetchAndMerge {
                         const useParsedFootnote = !useFetchedFootnoteXmlStrings;
 
                         if (useParsedFootnote) {
-                            return this.accumulateFootnote(actualFootnote);
+                            return this.accumulateFootnote(actualFootnote || {} as Record<string, unknown>);
                         }
 
                         // Rest of this if block is WIP for rendering all div types in footnote cell
@@ -1270,20 +1308,20 @@ export class FetchAndMerge {
                         // then find the one that matches the xlink:to value with its id
 
                         const startTagRegex = /<link:footnote /gi; 
-                        let startTagResults = '';
+                        let startTagResults: RegExpExecArray | null = null;
                         const footnoteStartIndices:number[] = [];
-                        while ( (startTagResults = startTagRegex.exec(footnotes.asXmlString)) ) {
+                        while(!!(startTagResults = startTagRegex.exec(footnotes.asXmlString))) {
                             footnoteStartIndices.push(startTagResults.index);
                         }
 
                         const endTagRegex = /<\/link:footnote>/gi; 
-                        let endTagResults = '';
+                        let endTagResults: RegExpExecArray | null = null;
                         const footnoteEndIndices:number[] = [];
-                        while ( (endTagResults = endTagRegex.exec(footnotes.asXmlString)) ) {
+                        while(!!(endTagResults = endTagRegex.exec(footnotes.asXmlString))) {
                             footnoteEndIndices.push(endTagResults.index + ('</link:footnote>').length);
                         }
 
-                        const footnotesAsXmlStrings:string[] = [];
+                        const footnotesAsXmlStrings: string[] = [];
 
                         footnoteStartIndices.forEach((start, indexInArrayOfStarts) => {
                             const pluckedFootnote = footnotes.asXmlString.substring(start, footnoteEndIndices[indexInArrayOfStarts]);
@@ -1297,6 +1335,7 @@ export class FetchAndMerge {
                         return relevantFootnoteAsXmlString;
                     } else {
                         // TODO we need way more cases
+                        //uhh, no we don't, because the first 2 cases cover EVERYTHING
                         if (!Array.isArray(footnotes['link:footnote']._text)) {
                             return footnotes;
                             // return footnotes['link:footnote']._text;

@@ -8,35 +8,35 @@ import { UserFiltersState } from "./state";
 
 export const UserFiltersMoreFiltersMembers = {
 
-  clickEvent: (input: string) => {
-    const tempSet = new Set(UserFiltersState.getMembers);
-    if (tempSet.has(input)) {
-      (document.getElementById('user-filters-members')?.querySelector(`[name='${input}']`) as HTMLInputElement).checked = false;
-      tempSet.delete(input)
-    } else {
-      (document.getElementById('user-filters-members')?.querySelector(`[name='${input}']`) as HTMLInputElement).checked = true;
-      tempSet.add(input);
-    }
-    UserFiltersState.getMembers = [...tempSet];
+    clickEvent: (input: string) => {
+        const tempSet = new Set(UserFiltersState.getMembers);
+        if (tempSet.has(input)) {
+            (document.getElementById('user-filters-members')?.querySelector(`[name='${input}']`) as HTMLInputElement).checked = false;
+            tempSet.delete(input)
+        } else {
+            (document.getElementById('user-filters-members')?.querySelector(`[name='${input}']`) as HTMLInputElement).checked = true;
+            tempSet.add(input);
+        }
+        UserFiltersState.getMembers = [...tempSet];
 
-    FlexSearch.filterFacts();
-  },
+        FlexSearch.filterFacts();
+    },
 
-  parentClick: (input: Array<{ type: string, value: string }>, element: HTMLInputElement) => {
-    const addIfTrue = element.checked;
-    const tempSet = new Set(UserFiltersState.getMembers);
-    input.forEach((current) => {
-      if (addIfTrue) {
-        tempSet.add(current.value);
-        (document.getElementById('user-filters-members')?.querySelector(`[name='${current.value}']`) as HTMLInputElement).checked = true;
-      } else {
-        tempSet.delete(current.value);
-        (document.getElementById('user-filters-members')?.querySelector(`[name='${current.value}']`) as HTMLInputElement).checked = false;
-      }
-    });
+    parentClick: (input: Array<{ type: string, value: string }>, element: HTMLInputElement) => {
+        const addIfTrue = element.checked;
+        const tempSet = new Set(UserFiltersState.getMembers);
+        input.forEach((current) => {
+            if (addIfTrue) {
+                tempSet.add(current.value);
+                (document.getElementById('user-filters-members')?.querySelector(`[name='${current.value}']`) as HTMLInputElement).checked = true;
+            } else {
+                tempSet.delete(current.value);
+                (document.getElementById('user-filters-members')?.querySelector(`[name='${current.value}']`) as HTMLInputElement).checked = false;
+            }
+        });
 
-    UserFiltersState.getMembers = [...tempSet];
+        UserFiltersState.getMembers = [...tempSet];
 
-    FlexSearch.filterFacts();
-  },
+        FlexSearch.filterFacts();
+    },
 };

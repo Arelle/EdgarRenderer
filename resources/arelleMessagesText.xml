@@ -825,7 +825,7 @@ Invalid entity identifier {entityIdentifierName}: {entityIdentifer}
          level="error"
          module="ValidateFiling.py" line="292"
          args="elementName value filerIdentifier">
-[cp-0523-Non-Matching-Cik] The submission CIK, {filerIdentifier} does not match the EntityCentralIndexKey.  Please include a correct matching EntityCentralIndexKey in the filing.
+[cp-0523-Non-Matching-Cik] The submission CIK, {filerIdentifier} does not match the EntityCentralIndexKey.  Please include a correct matching EntityCentralIndexKey in the filing. {refSources}
 </message>
 
 <message code="EFM.6.05.23.cikValue"
@@ -1171,7 +1171,7 @@ FootnoteLink {footnoteLinkNumber} has disallowed role {linkrole}</message>
          level="error"
          module="plugin/validate/EFM/Filing.py" line="2338"
          args="edgarCode">
-[rxp-055805-Amount-For-Required-12-Months-Period] Amount rxp:A missing for reporting currency and matching 12 months preceeding dei:DocumentPeriodEndDate.
+[rxp-055805-Amount-For-Required-12-Months-Period] Amount rxp:A missing for reporting currency and matching 12 months preceding dei:DocumentPeriodEndDate.
 </message>
 
 <message code="EFM.6.05.58.07"
@@ -1247,7 +1247,7 @@ FootnoteLink {footnoteLinkNumber} has disallowed role {linkrole}</message>
          level="error"
          module="plugin/validate/EFM/Filing.py" line="2338"
          args="edgarCode">
-Amount rxp:A missing for reporting currency and matching 12 months preceeding dei:DocumentPeriodEndDate.
+Amount rxp:A missing for reporting currency and matching 12 months preceding dei:DocumentPeriodEndDate.
 </message>
 
 <message code="EFM.6.05.58.07"

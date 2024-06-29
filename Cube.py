@@ -167,7 +167,7 @@ class Cube(object):
         # will side effect cube.periodStartEndLabelDict if there is a duration fact with period start/end label.
         # will generally side effect self.factMemberships by appending to it.
 
-        initialDurationSet = set([x[1]['period'] for x in self.factMemberships if x[1]['period'].periodTypeStr=='duration'])
+        initialDurationSet = set([x[1]['period'] for x in self.factMemberships if ('period' in x[1] and x[1]['period'].periodTypeStr=='duration')])
 
         def matchingDurationSet(iFxm,preferredLabel):
             # iFxm = instant Fact - axis - membership tuple.

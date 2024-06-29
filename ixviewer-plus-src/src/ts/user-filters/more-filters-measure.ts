@@ -8,15 +8,15 @@ import { UserFiltersState } from "./state";
 
 export const UserFiltersMoreFiltersMeasure = {
 
-  clickEvent: (input: string) => {
-    const tempSet = new Set(UserFiltersState.getMeasure);
-    if (tempSet.has(input)) {
-      tempSet.delete(input)
-    } else {
-      tempSet.add(input);
-    }
-    UserFiltersState.getMeasure = [...tempSet];
-    FlexSearch.filterFacts();
-  },
+    clickEvent: (input: string) => {
+        const tempSet = new Set(UserFiltersState.getMeasure);
+        if (tempSet.has(input)) {
+            tempSet.delete(input)
+        } else {
+            tempSet.add(input);
+        }
+        UserFiltersState.getMeasure = [...tempSet];
+        FlexSearch.filterFacts();
+    },
 
 };

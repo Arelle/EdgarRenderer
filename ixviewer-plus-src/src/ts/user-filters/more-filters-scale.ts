@@ -8,15 +8,15 @@ import { UserFiltersState } from "./state";
 
 export const UserFiltersMoreFiltersScale = {
 
-  clickEvent: (input: string) => {
-    const tempSet = new Set(UserFiltersState.getScale);
-    if (tempSet.has(input)) {
-      tempSet.delete(input)
-    } else {
-      tempSet.add(input);
-    }
-    UserFiltersState.getScale = [...tempSet];
-    FlexSearch.filterFacts();
-  },
+    clickEvent: (input: string) => {
+        const tempSet = new Set(UserFiltersState.getScale);
+        if (tempSet.has(input)) {
+            tempSet.delete(input)
+        } else {
+            tempSet.add(input);
+        }
+        UserFiltersState.getScale = [...tempSet];
+        FlexSearch.filterFacts();
+    },
 
 };

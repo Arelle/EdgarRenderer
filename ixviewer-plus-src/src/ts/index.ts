@@ -1,5 +1,6 @@
 import "../styles.scss";
 import { HelpersUrl } from "./helpers/url";
+import { Constants } from "./constants/constants";
 import { Errors } from "./errors/errors";
 import { ErrorsMajor } from "./errors/major";
 import { Listeners } from "./listeners";
@@ -17,19 +18,22 @@ import { Logger, ILogObj } from "tslog";
     new SetCustomCSS();
     const startPerformance = performance.now();
     App.init(false, (formLoaded: boolean) => {
+        console.log(`Version: ${Constants.version} (${Constants.featureSet})`)
+        console.log(`CSS Mode: ${(document.compatMode=="CSS1Compat"?"Standards 🎉":"Quirks 😢")}`)
+
         if (formLoaded) {
             App.initialSetup();
             if (Object.prototype.hasOwnProperty.call(HelpersUrl.getAllParams, `fact`)) {
                 setTimeout(() => {
                     const tempDiv = document.createElement('div');
                     tempDiv.setAttribute('data-id', HelpersUrl.getAllParams?.fact as string);
-                    FactsGeneral.goTo(new Event(''), tempDiv);
+                    FactsGeneral.goToInlineFact(new Event(''), tempDiv);
                 });
             }
             Errors.updateMainContainerHeight(false)
-            document.getElementById('sections-menu')?.classList.remove('show');
+            removeHideClassFromSidebars();
         } else {
-            ErrorsMajor.inactive();
+            ErrorsMajor.formNotLoaded();
         }
         const endPerformance = performance.now();
         if (DEBUGCSS) {
@@ -43,4 +47,13 @@ import { Logger, ILogObj } from "tslog";
             // console.table({'prod': PRODUCTION, 'DEBUGJS': DEBUGJS, 'DEBUGCSS': DEBUGCSS, 'LOGPERFORMANCE': LOGPERFORMANCE})
         // }
     });
+
+    const removeHideClassFromSidebars = () => {
+        // fact and sections sidebars must in dom to be populated, but we want visibility none during load.
+        document.querySelector('.sidebar-container-right')?.classList.remove('hide'); // Facts Sidebar
+        document.querySelector('.help-sidebar')?.classList.remove('hide');
+        document.querySelector('.sections-sidebar')?.classList.remove('hide');
+        document.getElementById('sections-menu')?.classList.remove('show');
+        document.getElementById('facts-menu')?.classList.remove('show');
+    }
 })();

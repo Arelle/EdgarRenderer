@@ -29,6 +29,7 @@
                 // for SEC.GOV: const urlPattern = /(\?doc=(\/Archives\/edgar\/data\/[0-9]+\/[0-9]{10}([0-9]{8})\/).*$)/;
                 // for Arelle GUI: const urlPattern = /(\?doc=(\/[0-9]+\/).*$)/;
                 const urlPattern = /(\?doc=(\/[0-9]+\/).*$)/;
+                const ixvPlusNsPattern = /http:\/\/xbrl.sec.gov\/(ffd|sbs)\/.*$/;
                 var ixvUrl = null;
                 if (! urlPattern.test(url)) {
                     alert("Not an EDGAR inline XBRL document viewing request, please check URL");
@@ -49,7 +50,7 @@
                                 } else {
                                    const numInstances = Object.keys(ml["instance"]).length;
                                    let maxDocsPerInst = 0;
-                                   let hasFeeExhibit = false;
+                                   let hasIxvPlusExhibit = false;
                                    Object.keys(ml["instance"]).forEach(instanceNames => {
                                         let docsInInstance = instanceNames.split(" ").length;
                                         if (docsInInstance > maxDocsPerInst)
@@ -57,12 +58,12 @@
                                         if ("baseTaxonomies" in ml["instance"][instanceNames]) {
                                            Object.keys(ml["instance"][instanceNames]["baseTaxonomies"])
                                            .forEach(baseTaxonomyUrl => {
-                                               if (baseTaxonomyUrl.startsWith("http://xbrl.sec.gov/ffd/"))
-                                                   hasFeeExhibit = true;
+                                               if (ixvPlusNsPattern.test(baseTaxonomyUrl))
+                                                   hasIxvPlusExhibit = true;
                                            });
                                         }
                                        });
-                                   if (numInstances > 1 || maxDocsPerInst > 1 || hasFeeExhibit || url.includes("&redline=true") )
+                                   if (numInstances > 1 || maxDocsPerInst > 1 || hasIxvPlusExhibit || url.includes("&redline=true") )
                                        loadViewer("/ixviewer-plus/ix.xhtml" + ixParams);
                                    else
                                        loadViewer("/ixviewer/ix.html" + ixParams);

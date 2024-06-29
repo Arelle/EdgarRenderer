@@ -1,0 +1,8 @@
+Testing todo
+
+[ ] Refine filing set.  Using 200 random filings isn't the best.
+[ ] Scrape data from filings and add to filings objects
+    [ ] section count
+    [ ] populate cases for:
+        [ ] multiDoc
+        [ ] multiInstance

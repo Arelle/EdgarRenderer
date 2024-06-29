@@ -7,6 +7,9 @@
 
 var AppInit = {
   init: function (internalUrl, callback) {
+    console.log('Version: '+Constants.version+' ('+Constants.featureSet+')');
+    console.log("CSS Mode: " + (document.compatMode==="CSS1Compat"?"Standards 🎉":"Quirks 😢"));
+
     // we figure out what browser the user is using, and store it
     ConstantsFunctions.setBrowserType();
     AppInit.emptySidebars();
@@ -125,13 +128,33 @@ var AppInit = {
   // the user has just loaded up the application
   var startPerformance = performance.now();
   AppInit.init("", function (formLoaded) {
+    // alert("init complete!");
     if (formLoaded) {
       AppInit.initialSetup();
     } else {
       ErrorsMajor.inactive();
     }
-    var endPerformance = performance.now();
 
+    setTimeout(function()
+    {
+      function cancelClick(e)
+      {
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        // e.preventDefault();
+        return false;
+      }
+
+      var arr1 = Array.from(document.querySelectorAll("ix\\:exclude"));
+      var arr2 = Array.from(document.querySelectorAll("#dynamic-xbrl-form a"));
+      var arr = arr1.concat(arr2);
+      for (var i=0; i<arr.length; i++)
+      {
+        arr[i].addEventListener("click", cancelClick, true);
+      }
+    }, 1000);
+
+    var endPerformance = performance.now();
     console.debug(
       "AppInit.init() completed in: " +
         (endPerformance - startPerformance).toFixed(2) +

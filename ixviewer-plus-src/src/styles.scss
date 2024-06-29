@@ -5,6 +5,7 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts/";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
 @import "~@fortawesome/fontawesome-free/scss/solid.scss";
 
+
 // legacy
 // .main-container {
 //   height: calc(100vh - 85px);
@@ -28,6 +29,146 @@ $fa-font-path: "~@fortawesome/fontawesome-free/webfonts/";
 //   height: calc(100vh - 85px);
 //   z-index: 100;
 // }
+
+@media (prefers-reduced-motion: reduce) {
+  .collapsing {
+      transition-property: height, visibility;
+      transition-duration: .6s;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .collapsing {
+      transition-property: height, visibility;
+      transition-duration: .6s;
+  }
+}
+
+#sections-menu * {
+  font-size: .9rem;
+}
+#sections-menu .sections-header-label {
+  font-size: 1.2rem;
+}
+h5.sections-header-label {
+  margin: .5rem 0;
+}
+.sections-settings-btn {
+  padding: 4px 10px;
+  margin-left: 10px;
+}
+.sections-settings-btn.show {
+  padding: 4px 10px;
+  margin-left: 10px;
+  border-color: rgba(0, 0, 0, 0.176)
+}
+.sections-header {
+  padding-bottom: 0.5rem;
+}
+.menu-cat-header * {
+  border: none !important;
+}
+.menu-cat {
+  position: relative;
+}
+.menu-cat:not(:last-child) > .menu-cat-header:before {
+  content: "";
+  position: absolute;
+  left: 2.5%;
+  top: 36px;
+  height: 1px;
+  width: 95%;
+  border-bottom: 1px solid #d8dac8;
+}
+.menu-cat:last-child > .menu-cat-body:before {
+  content: "";
+  position: absolute;
+  left: 2.5%;
+  top: 36px;
+  height: 1px;
+  width: 95%;
+  border-bottom: 1px solid #d8dac8;
+}
+.menu-cat:hover {
+  background-color: #f6f9e8;
+}
+.menu-cat-name {
+  font-weight: bold;
+}
+.menu-cat, .menu-cat-header button {
+  width: 100%;
+  text-align: left;
+}
+span.open-indicator {
+  color: #979797;
+  margin-right: 10px;
+}
+.menu-cat-header:hover span.open-indicator {
+  color: #777;
+}
+.menu-cat-body {
+  padding: 4px 24px;
+  width: 100%;
+  text-align: left;
+}
+.section-active {
+  box-shadow: rgba(0,0,0,.3) 2px 2px 4px;
+  transition: all .5s;
+  border: 1px solid #2e88d9;
+  border-top: 1px solid #2e88d9 !important;
+}
+.section-not-active {
+  box-shadow: rgba(0,0,0,.3) 0px 0px 0px;
+  transition: all .5s;
+}
+.section-link {
+  margin-bottom: 10px;
+}
+.section-link:hover {
+  // background-color: #eee;
+  text-decoration: underline;
+}
+.section-instance-header .badge {
+  color: #427ab1;
+  font-size: 14px;
+  font-weight: 400;
+}
+div#tagged-sections button.section-instance-header {
+  background-color: #cef3ff;
+}
+div#tagged-sections .section-active button.section-instance-header {
+  background-color: #cef3ff;
+  font-weight: 700;
+}
+
+.sections-hr, #sections-menu > div.offcanvas-body > hr {
+  width: 89%;
+  margin: 3px auto 16px;
+}
+.accordion-body {
+  padding: 0;
+}
+.accordion-button, .menu-cat-header > h6 > button {
+  padding: 4px 12px;
+}
+// hide the rotating chevron on accordions like in sections
+.accordion-button::after {
+  display: none;
+}
+
+.accordion-button, .accordion-button:not(.collapsed), .accordion-button:focus {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.dropdown-menu, 
+.sidebar-fact,
+.dialog-box {
+  font-size: .9rem;
+}
+.lead {
+  font-size: 1.1rem;
+}
 
 body {
   overflow: hidden;
@@ -72,6 +213,11 @@ body {
   border-left-color: var(--bs-border-color);
 }
 
+
+.tabs-container {
+  height: 41.8px;
+}
+
 .z-10 {
   z-index: 10;
   background-color: white;
@@ -83,13 +229,10 @@ body {
   height: calc(100vh - 217px) !important;
 }
 
-div.hide-during-init {
-  width: 0 !important;
-}
 .sidebar {
   min-width: 300px;
-  width: 22vw;
-  max-width: 350px;
+  width: 23vw;
+  max-width: 600px;
   // transition causes jerky animation
   // transition: all 0.6s cubic-bezier(0.1, 0.29, 0, 0.99) 0s;
 }
@@ -111,6 +254,10 @@ div.hide-during-init {
 }
 .sidebar > :last-child {
   padding-bottom: .75rem;
+}
+
+.hide {
+  visibility: hidden;
 }
 
 .main-viewer-pane {
@@ -136,28 +283,55 @@ kbd {
   background-color: inherit;
 }
 
-#dynamic-xbrl-form .text-block-indicator-left {
+.elevated, .popover {
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 2px 4px;
+}
+
+.xbrl-loading-text, .xbrl-loading-text * {
+  font-size: 2.5rem;
+  margin-top: 30px;
+  font-weight: 200;
+}
+
+#dynamic-xbrl-form .text-block-indicator-left, #settings-modal .text-block-indicator-left {
   left: 0px;
   width: 5px;
   border-top: 0.5rem solid transparent;
-  border-left: 0.75rem solid #003768;
+  border-left-style: solid;
+  border-left-width: 0.75rem;
   border-bottom: 0.5rem solid transparent;
 }
 
-#dynamic-xbrl-form .text-block-indicator-right {
+#dynamic-xbrl-form .text-block-indicator-right, #settings-modal .text-block-indicator-right {
   right: 0px;
   width: 5px;
   border-top: 0.5rem solid transparent;
-  border-right: 0.75rem solid #003768;
+  border-right-style: solid;
+  border-right-width: 0.75rem;
   border-bottom: 0.5rem solid transparent;
 }
 
-.nav-item{
+.main-navbar {
+  z-index: 11; // at smaller screen widths nav dropdown is under inline doc
+}
+.nav-item {
   cursor: pointer;
+}
+
+.space-between {
+  justify-content: space-between;
 }
 
 .overflow-hidden {
   overflow: hidden; // required on anceestors of scrollIntoView scrollbar elements
+}
+
+.doc-pagination {
+  display: flex;
+  position: sticky;
+  bottom: 18px;
+  align-self: end;
+  justify-content: end;
 }
 
 .navbar-dark .navbar-nav .nav-link {
@@ -256,6 +430,9 @@ kbd {
 .click {
   cursor: pointer;
 }
+.not-click {
+  cursor: default !important;
+}
 
 .height-200 {
   max-height: 200px;
@@ -291,6 +468,10 @@ kbd {
 
 .color-inherit {
   color: inherit;
+}
+
+.lighter-text {
+  color: #777777;
 }
 
 .d-inherit {

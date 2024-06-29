@@ -2,6 +2,51 @@ export interface Meta {
     instance: InstanceClass;
     std_ref: StdRef;
     version: string;
+    // tag?: Record<string, unknown>;
+}
+
+export interface Section {
+    role: string,
+    longName: string,
+    shortName: string,
+    isDefault: boolean,
+    groupType: string,
+    subGroupType: string,
+    menuCat: string,
+    menuCatClean: string,
+    order: number,
+    inlineFactSelector: string,
+    firstAnchor: {
+        contextRef: string,
+        name: string,
+        baseRef: string,
+        ancestors: string[],
+    },
+    uniqueAnchor: {
+        contextRef: string,
+        name: string,
+        baseRef: string,
+        ancestors: string[],
+    },
+    instanceHtm: string,
+    instanceDocName: string,
+    instanceIndex: number,
+    menuCatMapped: string,
+    fact?: SectionFact,
+    domId: string,
+    instanceSectionId: string,
+    instanceSectionHeaderId: string,
+    instanceSectionBodyId: string,
+    menuCatHeaderId: string,
+    menuCatBodyId: string,
+}
+
+export interface SectionFact {
+    instance?: string;
+    name?: string,
+    contextRef?: string,
+    file?: string,
+    ancestors?: Array<string>,
 }
 
 export interface InstanceClass {
@@ -47,6 +92,8 @@ export interface Schema {
 }
 
 export interface Report {
+    menuCat: string;
+    order: number;
     firstAnchor: Anchor | null;
     groupType: GroupType;
     isDefault: string;

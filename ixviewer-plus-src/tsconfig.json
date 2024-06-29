@@ -14,7 +14,8 @@
     "strict": true,
     "lib": [
       "ES2021.String",
-      "dom"
+      "dom",
+      "dom.iterable",
     ]
   },
   "include": ["./src/**/*.ts", "./src/**/*.html"],

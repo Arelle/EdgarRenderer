@@ -1,8 +1,6 @@
-export interface Facts {
-    [x: string]: string;
-    key: string;
-    value: SingleFact;
-}
+import { Xbrltype, reference } from "./meta";
+
+export type Facts = { key: string, value: SingleFact } & Record<string, string>;
 
 export interface SingleFact {
     contextRef: string;
@@ -16,7 +14,7 @@ export interface SingleFact {
     isHTML: boolean;
     isSelected: boolean;
     period: string;
-    scale: null;
+    scale: string | null;
     decimals?: Decimals | null;
     sign: null;
     footnote: null | string;
@@ -40,6 +38,22 @@ export interface SingleFact {
     segment?: Array<SegmentClass[] | SegmentClass>;
     continuedIDs: Array<string>;
     "xsi:nil"?: string;
+}
+
+/** somehow, an object in fetch-merge metamorphosizes from SingleFact into this */
+export interface SingleFact2
+{
+    name: string;
+    segment: [{ dimension: string, axis: string }];
+    references: reference[];
+    calculations: [{ label: string, value: string }] | [];
+    labels: string[];
+    filter: { labels: string; definitions: string; };
+    balance: string;
+    xbrltype: Xbrltype | null;
+    localname: string | null;
+    nsuri: string | null;
+    presentation: string[] | null | undefined;
 }
 
 export enum Balance {

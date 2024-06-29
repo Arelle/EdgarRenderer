@@ -16,19 +16,28 @@
 
 2. Go to the root of this project in your terminal (this is where **package.json** lives)
 
-3. Run `npm install` in your terminal
-
+3. Run `npm install` in your terminal.  
    - This could take a few minutes
 
-4. Once finished, you can now use the **SEC IXViewer - Plus**
+4. Fix cypress (if you're going to run cypress yourself)
+   `bash fix-cypress.sh`
+   Cypress doesn't play well with xhtml so we have to run this script.
+   
+5. Create filings repo (in group2 (parent to ixviewer-2)), and link /Archives/edgar/data to the filing in that repo.
+   localhost only / dev machines; NOT dev1.
+   `bash copy-test-files.sh`
+   This step takes a while...
 
 ## NPM Commands
+note: these instructions may be out of date. Best to just go read package.json
 
 Run these in a terminal from the root of your project
 
 1. Run the project in DEVELOPMENT MODE
-   - `npm run dev-serve` 
-   <!-- `npm run dev-build` needs to have been run first because devServer.static is currently pointing to /dist and that folder needs to be populated with the build command -->
+   - `npm run dev-serve`
+   - webpack looks for static assets on ./dist  Symlink ./dist to sibling filings repo with 
+   - `cmd //c "mklink /J .\dist\Archives ..\ix-test-documents\Archives"`
+   - \ix-test-documents repo (branch: test-filings-ix-viewer) will need to be sibling to ix-viewer2
 2. Run the project in DEVELOPMENT MODE and include a bundle analyzer
    - `npm run dev-serve-analyze`
 3. Run the project in PRODUCTION MODE with a development server
@@ -37,16 +46,18 @@ Run these in a terminal from the root of your project
    - `npm run prod-serve-analyze`
 5. Run the unit tests
    - `npm run unit-test`
-6. Get Filings from RSS Feed(s) **follow the prompt in the terminal**
-   - `npm run get-filings-menu`
-7. Get Filings from RSS Feed(s) **newest 200 inline filings**
-   - `npm run get-filings`
-8. Run the project in Sandbox mode (for our local testing server)
+6. Run the project in Sandbox mode (for our local testing server)
    - `npm run sandbox`
-9. Build the PRODUCTION application (to go to SEC.gov, WorkStation, Etc...) all necessary files will be placed in {{project_root}}/dist/\*\*
-   - `npm run production`
-10. Build the project in Automated Testing Mode (with Cypress which has serious issues with XHTML)
-    - `npm run automated-test`
+7. Build the PRODUCTION application
+   Default prod build (sec or dev1, etc) will be built in ./dist
+   - `npm run build-prod`
+8. Build the WORKSTATION version of application
+   will be built in ./dist-ws
+   - `npm run build-workstation`
+9. Open Cypress Gui
+   - `npx cypress open`
+10. Run cypress command line
+   - `npx cypress run`
 
 ## NOTES
 
@@ -86,3 +97,16 @@ link of interest: https://artifactory.edgar.sec.gov/ui/packages/npm:%2F%2Fcypres
 - instructions for reinstall
    - delete old cypress installs from local and roaming
    - follow stesp above
+
+
+## Build Prod
+npm run build-prod
+
+## Deploy Prod
+zip the /dist/ folder and re-name to something that matches releae version => e.g. release_24.2.01
+copy to sharepoint folder and update the release notes table in confluence.
+
+## git
+dev branches
+plus: ix-dev
+legacy: v23-dev

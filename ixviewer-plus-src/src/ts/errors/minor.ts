@@ -7,47 +7,35 @@ import { Errors } from "./errors";
 
 export const ErrorsMinor = {
 
-  unknownError: () => {
+	unknownError: () => {
 
-    const content = document.createTextNode('An Error has occured within the Inline XBRL Viewer.');
+		const content = document.createTextNode('An Error has occured within the Inline XBRL Viewer.');
 
-    const element = document.createElement('div');
-    element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
-    element.appendChild(content);
+		const element = document.createElement('div');
+		element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
+		element.appendChild(content);
 
-    const button = document.createElement('button');
-    button.setAttribute('type', 'button');
-    button.setAttribute('class', 'btn-close float-end');
-    button.setAttribute('data-bs-dismiss', 'alert');
-    button.setAttribute('aria-label', 'Close');
-    button.addEventListener('click', () => { Errors.updateMainContainerHeight(true); });
+		const closeBtn = Errors.createBsCloseBtn();
+		element.appendChild(closeBtn);
 
-    element.appendChild(button);
+		document.getElementById('error-container')?.appendChild(element);
 
-    document.getElementById('error-container')?.appendChild(element);
+		Errors.updateMainContainerHeight();
+	},
 
-    Errors.updateMainContainerHeight();
-  },
+	factNotFound: () => {
+		const content = document.createTextNode('Inline XBRL can not locate the requested fact.');
 
-  factNotFound: () => {
-    const content = document.createTextNode('Inline XBRL can not locate the requested fact.');
+		const element = document.createElement('div');
+		element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
+		element.appendChild(content);
+		
+		const closeBtn = Errors.createBsCloseBtn();
+		element.appendChild(closeBtn);
 
-    const element = document.createElement('div');
-    element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
-    element.appendChild(content);
+		document.getElementById('error-container')?.appendChild(element);
 
-    const button = document.createElement('button');
-    button.setAttribute('type', 'button');
-    button.setAttribute('class', 'btn-close float-end');
-    button.setAttribute('data-bs-dismiss', 'alert');
-    button.setAttribute('aria-label', 'Close');
-    button.addEventListener('click', () => { Errors.updateMainContainerHeight(true); });
-
-    element.appendChild(button);
-
-    document.getElementById('error-container')?.appendChild(element);
-
-    Errors.updateMainContainerHeight();
-  },
+		Errors.updateMainContainerHeight();
+	},
 
 };

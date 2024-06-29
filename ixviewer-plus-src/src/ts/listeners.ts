@@ -10,10 +10,8 @@ import { FormInformation } from "./form-information/form-information";
 import { Modals } from "./modals/modals";
 import { ModalsFormInformation } from "./modals/form-information";
 import { ModalsSettings } from "./modals/settings";
-import { Scroll } from "./scroll/scroll";
 import { Search } from "./search/search";
-import { Sections } from "./sections/sections";
-import { SectionsSearch } from "./sections/search";
+import { SectionsSearch } from "./sections/sectionSearch";
 import { UserFiltersDataRadios } from "./user-filters/data-radios";
 import { UserFiltersDropdown } from "./user-filters/dropdown";
 import { UserFiltersGeneral } from "./user-filters/general";
@@ -45,13 +43,6 @@ export class Listeners {
         });
         document.getElementById('menu-dropdown-settings')?.addEventListener('keyup', (event: KeyboardEvent) => {
             ModalsSettings.clickEvent(event);
-        });
-
-        document.getElementById('sections-menu-toggle')?.addEventListener('click', (event: MouseEvent) => {
-            Sections.toggle(event);
-        });
-        document.getElementById('sections-menu-toggle')?.addEventListener('keyup', (event: KeyboardEvent) => {
-            Sections.toggle(event);
         });
 
         document.getElementById('nav-filter-more')?.addEventListener('click', () => {
@@ -137,39 +128,6 @@ export class Listeners {
             Search.clear();
         });
 
-
-        document.getElementById('to-top-btn')?.addEventListener("click", () => {
-            Scroll.toTop();
-        });
-
-        document.getElementById('to-top-btn')?.addEventListener("keyup", () => {
-            Scroll.toTop();
-        });
-
-        document.getElementById('to-prev-btn')?.addEventListener("click", () => {
-            Scroll.toPrev();
-        });
-
-        document.getElementById('to-prev-btn')?.addEventListener("keyup", () => {
-            Scroll.toPrev();
-        });
-
-        document.getElementById('to-next-btn')?.addEventListener("click", () => {
-            Scroll.toNext();
-        });
-
-        document.getElementById('to-next-btn')?.addEventListener("keyup", () => {
-            Scroll.toNext();
-        });
-
-        document.getElementById('to-bottom-btn')?.addEventListener("click", () => {
-            Scroll.toBottom();
-        });
-
-        document.getElementById('to-bottom-btn')?.addEventListener("keyup", () => {
-            Scroll.toBottom();
-        });
-
         document.getElementById('hover-option-select')?.addEventListener("change", (event: Event) => {
             ModalsSettings.hoverOption(event);
         });
@@ -223,18 +181,19 @@ export class Listeners {
             })
         })
 
-        // sections menu
-        const sectionsMenu = document.getElementById('sections-menu');
-        sectionsMenu?.addEventListener('show.bs.collapse', (event: Event) => {
-            Sections.toggle(event as MouseEvent | KeyboardEvent); // needed to populate sections content for some reason
-            closeOtherSideBars('sections-menu')
-        })
-
-        // facts-menu-button
+        // #facts-menu-button
         const factsMenu = document.getElementById('facts-menu');
         factsMenu?.addEventListener('show.bs.collapse', () => {
             // FactsMenu.toggle(event as MouseEvent | KeyboardEvent); // not needed
-            closeOtherSideBars('facts-menu')
+            closeOtherSideBars('facts-menu');
+            FactsMenu.prepareForPagination();
+        })
+
+        // #sections-dropdown-link
+        const sectionsSidebar = document.getElementById('sections-menu');
+        sectionsSidebar?.addEventListener('show.bs.collapse', () => {
+            // FactsMenu.toggle(event as MouseEvent | KeyboardEvent); // not needed
+            closeOtherSideBars('sections-menu')
         })
 
         // fact-table

@@ -4,51 +4,68 @@
  */
 
 import { Constants } from "../constants/constants";
-import { ConstantsFunctions } from "../constants/functions";
 import { HelpersUrl } from "../helpers/url";
 
+
 export const FormInformation = {
+    init: () => {
+        FormInformation.xbrlInstance();
+        FormInformation.xbrlZip();
+        FormInformation.xbrlHtml();
+        FormInformation.version();
+    },
 
-  init: () => {
-    FormInformation.xbrlInstance();
-    FormInformation.xbrlZip();
-    FormInformation.xbrlHtml();
-    FormInformation.version();
-  },
+    xbrlInstance: () => {
+        const currentInstance = Constants.getInstanceFiles.find(element => element.current);
+        document.getElementById('form-information-instance')?.setAttribute('href', currentInstance?.xmlUrl || "#");
+    },
 
-  xbrlInstance: () => {
-    const currentInstance = Constants.getInstanceFiles.find(element => element.current);
-    document.getElementById('form-information-instance')?.setAttribute('href', currentInstance.xmlUrls[0]);
-  },
+    xbrlZip: () =>
+    {
+        //Handle Workstation case
+        if(HelpersUrl.isWorkstation())
+        {
+            const url = window.parent.location.href;
+            const params = new URLSearchParams(window.parent.location.search);
+            const zip = `${params.get("accessionNumber")}-xbrl.zip`;
+            params.set("filename", zip);
+            params.set("step", "docOnly");
+            params.set("interpretedFormat", "false");
+            params.delete("status");
+            params.delete("sequenceNumber");
 
-  xbrlZip: () => {
-    let zip = "";
-    let zipFileName: string;
-    let adsh: string;
-    const url = HelpersUrl.getExternalFile as unknown as string;
-    if (HelpersUrl.getAllParams!.hostName.indexOf("edgar.sec.gov") !== -1) {
-      adsh = ConstantsFunctions.getUrlconsts(url)["accessionNumber"];
-      zipFileName = adsh + '-xbrl.zip';
-      const lastIndexOfEqual = url.lastIndexOf("=");
-      zip = url.substring(0, lastIndexOfEqual) + "=" + zipFileName;
-    } else {
-      const index = url.lastIndexOf("/");
-      const tempHold = url.substring(index, index - 18);
-      adsh = tempHold.substring(0, 10) + "-" + tempHold.substring(10, 12) + "-" + tempHold.substring(12, 18);
-      zipFileName = adsh + '-xbrl.zip';
-      zip = url.substring(0, index) + "/" + zipFileName;
-    }
-    document.getElementById('form-information-zip')?.setAttribute('href', zip);
+            const zipUrl = url.substring(0, url.indexOf("?")+1) + params.toString();
+            document.getElementById("form-information-zip")?.setAttribute("href", zipUrl);
+            document.getElementById("form-information-zip")?.setAttribute("target", "_blank");
+            return;
+        }
 
-  },
+        const url = HelpersUrl.getExternalFile || "";
+        const [_, beginning, CIK, filingID] = [...url.matchAll(/(.*Archives\/edgar\/data)\/([0-9]+|no-cik)\/([0-9-]+)\//g)].shift() || [];
 
-  xbrlHtml: () => {
-    const currentXHTML = Constants.getInstanceFiles.find(element => element.current).xhtmls.find(element => element.current);
-    document.getElementById('form-information-html')?.setAttribute('href', currentXHTML.url);
-  },
+        if(!filingID)
+        {
+            console.error("Invalid filing path - cannot create zip link");
+            document.getElementById('form-information-zip')?.classList.add('disabled');
+            return;
+        }
 
-  version: () => {
-    document.getElementById('form-information-version')!.innerText = 'Version: ' + Constants.version;
-  }
+        let zipFileName = filingID;
+        if(zipFileName?.indexOf('-') < 0)
+            zipFileName = filingID.substring(0, 10) + "-" + filingID.substring(10, 12) + "-" + filingID.substring(12, 18);
 
+        zipFileName += "-xbrl.zip";
+        const zip = `${beginning}/${CIK}/${filingID}/${zipFileName}`;
+
+        document.getElementById("form-information-zip")?.setAttribute("href", zip);
+    },
+
+    xbrlHtml: () => {
+        const currentXHTML = Constants.getInstanceFiles.find(element => element.current)?.xhtmls.find(element => element.current);
+        document.getElementById('form-information-html')?.setAttribute('href', currentXHTML?.url || "#");
+    },
+
+    version: () => {
+        document.getElementById('form-information-version')!.innerText = `Version: ${Constants.version} (${Constants.featureSet})`;
+    },
 };

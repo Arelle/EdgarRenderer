@@ -21,6 +21,8 @@ SFile = 'FilingSummary' + ".xml"
 INSTANCE = arelle.ModelDocument.Type.INSTANCE
 INLINEXBRL = arelle.ModelDocument.Type.INLINEXBRL
 
+FilingSummaryCompletionMessage = "Write filing summary complete" # Marker for the end of previous rendering.
+
 def mergeCountDicts(iterable, dictAttribute=None, key=None):
     'Return a dictionary merged from a collection of dictionaries, with values summed.'
     newdict = defaultdict(int)
@@ -190,10 +192,17 @@ class Summary(object):
                     break
                 SubElement(logs, 'Log', type=errmsg.msgCode.title()).text = errmsg.msg
             '''
-            logHandler = self.controller.cntlr.logHandler
             numShownMessages = 0
-            for logRec in getattr(logHandler, "logRecordBuffer") or (): # non buffered handlers don't keep log records (e.g., log to print handler)
-                if logRec.levelno > logging.INFO:
+            _lastSummaryWritten = -1 # find the end of the last filing summary write operation.
+            _buffer = getattr(self.controller.cntlr.logHandler,"logRecordBuffer",[])
+            for i, logRec in enumerate(_buffer):
+                m = getattr(logRec, 'message', getattr(logRec, 'msg', ''))
+#                if len(m) == 0 or bool(re.match('.*complete.*',m)):
+#                    print("WHY not '"+m+"'")
+                if m == FilingSummaryCompletionMessage:
+                    _lastSummaryWritten = i
+            for i, logRec in enumerate(_buffer): # non buffered handlers don't keep log records (e.g., log to print handler)
+                if i > _lastSummaryWritten and logRec.levelno > logging.INFO:
                     if numShownMessages == 0:
                         logs = SubElement(self.rootETree, 'Logs')
                         self.controller.summaryHasLogEntries = True
@@ -266,8 +275,8 @@ class Summary(object):
             self.rootETree.remove(self.eTreeLogsElement)
             self.eTreeLogsElement = None # dereference
 
-    def writeMetaFiles(self):
-        def innerWriteMetaFiles():
+    def writeMetaFiles(self, reportsFolder, zipDir="", suplSuffix="", prefix=""):
+        def innerWriteMetaFiles(reportsFolder, zipDir="", suplSuffix="", prefix=""):
             roots = OrderedDict()
             roots['version'] = metaversion
             instance = roots['instance'] = OrderedDict() # preserve instances order
@@ -357,12 +366,12 @@ class Summary(object):
             if file is not None:
                 file.seek(0)
                 if self.controller.reportZip:
-                    self.controller.reportZip.writestr(EJson, file.read().encode("utf-8"))
+                    self.controller.reportZip.writestr(zipDir + EJson, file.read().encode("utf-8"))
                 else:
-                    self.controller.writeFile(os.path.join(self.controller.reportsFolder, EJson), file.read())
+                    self.controller.writeFile(os.path.join(reportsFolder, prefix + EJson + suplSuffix), file.read())
                 file.close()
                 del file  # dereference
-        innerWriteMetaFiles() # if exception is raised, must be caught by caller in EdgarRenderer.filingEnd()
+        innerWriteMetaFiles(reportsFolder, zipDir, suplSuffix, prefix or "") # if exception is raised, must be caught by caller in EdgarRenderer.filingEnd()
 
 class InstanceSummary(object):
     """The InstanceSummary object represents the summary information from one instance.
@@ -409,6 +418,7 @@ class InstanceSummary(object):
         # even though they all go into the same list in the filing summary
         self.instanceFiles = []
         self.inlineFiles = []
+        self.targetDocumentFile = None
         self.otherXbrlFiles = []
 
         self.customPrefix = None
@@ -422,13 +432,16 @@ class InstanceSummary(object):
         self.hasStdNamespace = set()
         self.hasRRorOEF = self.hasOef = self.hasRR = self.hasVip = self.hasFeeExhibit = False
 
-        self.edgarDocType = getattr(modelXbrl,'efmAttachmentDocumentType',
+        self.edgarDocType = getattr(modelXbrl,'efmIxdsType',
                                     next((f.xValue for f in modelXbrl.factsByLocalName["DocumentType"]
                                          if (f.xValue is not None and f.context is not None and not f.context.hasSegment))
                                           ,None))
 
         for uri,doc in sorted(modelXbrl.urlDocs.items(), key=lambda i: i[0]): # change to url from discovery order. i[1].objectIndex
             if doc.type == arelle.ModelDocument.Type.INLINEXBRLDOCUMENTSET:
+                targetDocumentPreferredFilename = getattr(doc, "targetDocumentPreferredFilename", None)
+                if targetDocumentPreferredFilename:
+                    self.targetDocumentFile = os.path.splitext(os.path.basename(targetDocumentPreferredFilename))[0]
                 continue # ignore ixds manifest
             if not doc.inDTS:
                 continue # ignore non-DTS documents (e.g., reference and documentation labels imported by rendering
@@ -761,7 +774,16 @@ class InstanceSummary(object):
                 state = self.classifyReportFiniteStateMachine(state, reportSummary.longName)
                 parentRole = self.getReportParentIfExists(reportSummary, state)
             reportETree = SubElement(myReportsEtree, 'Report')
-            reportETree.set('instance',os.path.basename((self.instanceFiles+self.inlineFiles)[0]))
+            instanceFile = None
+            if self.targetDocumentFile:
+                # find matching inline file for primary document
+                for f in self.inlineFiles:
+                    if os.path.splitext(os.path.basename(f))[0] == self.targetDocumentFile:
+                        instanceFile = f
+                        break
+            if not instanceFile:
+                instanceFile = (self.instanceFiles+self.inlineFiles)[0]
+            reportETree.set('instance',os.path.basename(instanceFile))
             SubElement(reportETree, 'IsDefault').text = str(isFirstInstance and i == 1).casefold()
             SubElement(reportETree, 'HasEmbeddedReports').text = str(reportSummary.hasEmbeddedReports).casefold()
             if reportSummary.htmlFileName is not None:
@@ -834,7 +856,7 @@ class InstanceSummary(object):
         index = childReportShortName.find(' (')
         if index != -1:
             childReportShortName = childReportShortName[:index]
-
+        if len(childReportShortName) == 0: return 0
         return Utils.commonPrefix(parentReportShortName, childReportShortName) * 100 / (len(childReportShortName))
 
     def classifyReportFiniteStateMachine(self, currentState, longName):

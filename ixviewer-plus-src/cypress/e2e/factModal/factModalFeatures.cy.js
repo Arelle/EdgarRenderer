@@ -1,6 +1,6 @@
 import { filings } from '../../dataPlus/enrichedFilingsPlus'
 import { selectors } from "../../utils/selectors"
-const filing = filings[1]
+const filing = filings[0]
 
 // describe(`Fact Modal ${filing.ticker || filing.docName} ${filing.formType}`, () => {
 describe(`Fact Modal`, () => {
@@ -12,10 +12,12 @@ describe(`Fact Modal`, () => {
 
         // cy.get(selectors.search).type('10-k')
         // cy.get(selectors.submitSearchButton).click()
+        // cy.get(selectors.factSidebarHeaderNumberBadge).click()
+        // cy.get(selectors.factsHeader).then($el => cy.wrap($el).click())
+        cy.wait(2000)
         cy.get(selectors.factsHeader).click()
 
-        // cy.get(selectors.factInFactBrowser).click()
-        cy.get('a[data-id="fact-identifier-6"]').click()
+        cy.get('a[data-id="fact-identifier-2"]', {timeout: 10000}).then($el => cy.wrap($el).click())
         cy.get(selectors.factModal).then(($modal) => {
             originalPos = $modal.position()
         })
@@ -41,10 +43,11 @@ describe(`Fact Modal`, () => {
 
         // cy.get(selectors.search).type('10-k')
         // cy.get(selectors.submitSearchButton).click()
+        //cy.wait(2000)
         cy.get(selectors.factsHeader).click()
 
         // cy.get(selectors.factInFactBrowser).click()
-        cy.get('a[data-id="fact-identifier-6"]').click()
+        cy.get('a[data-id="fact-identifier-2"]').click()
 
         // cy.get(selectors.factModalToggleCopyContent).click()
         cy.get(selectors.factModalCopyableContent).should('have.css', 'display', 'none')
@@ -62,6 +65,21 @@ describe(`Fact Modal`, () => {
         cy.get(selectors.factModalCopyableContent).should('have.css', 'display', 'none')
     })
 
+    it('Fact modal box copy contents should not change if you click the copy button multiple times', () => {
+        cy.visitHost(filing)
+        cy.get('#fact-identifier-4').click()
+        cy.get(selectors.factModalToggleCopyContent).click()
+        cy.get(selectors.factModalCopyableContentEXP).then(($copyBox) => {
+            const copyText = $copyBox.text()
+            for(let n = 0; n < 6; n ++){
+                cy.get(selectors.factModalToggleCopyContent).click()
+            }
+            cy.get(selectors.factModalCopyableContentEXP).should(($newCopy) => {
+                expect($newCopy.text()).to.equal(copyText)
+            })
+        })
+    })
+
     it('should be able to expand in size with corners icon', () => {
         cy.visitHost(filing)
 
@@ -72,10 +90,11 @@ describe(`Fact Modal`, () => {
 
         // cy.get(selectors.search).type('10-k')
         // cy.get(selectors.submitSearchButton).click()
+        cy.wait(2000)
         cy.get(selectors.factsHeader).click()
 
         // cy.get(selectors.factInFactBrowser).click()
-        cy.get('a[data-id="fact-identifier-6"]').click()
+        cy.get('a[data-id="fact-identifier-2"]').click()
 
         cy.get(selectors.factModal)
             .then(($modal) => {
@@ -99,11 +118,12 @@ describe(`Fact Modal`, () => {
 
         // cy.get(selectors.search).type('10-k')
         // cy.get(selectors.submitSearchButton).click()
+        cy.wait(2000)
         cy.get(selectors.factsHeader).click()
 
         cy.get(selectors.factModal).should('have.css', 'display', 'none')
         // cy.get(selectors.factInFactBrowser).click()
-        cy.get('a[data-id="fact-identifier-6"]').click()
+        cy.get('a[data-id="fact-identifier-2"]').click()
         
         cy.get(selectors.factModal).should('have.css', 'display', 'block')
         cy.get(selectors.factModalClose).click()
@@ -114,9 +134,10 @@ describe(`Fact Modal`, () => {
         cy.visitHost(filing)
         // cy.get(selectors.search).type('10-k')
         // cy.get(selectors.submitSearchButton).click()
+        cy.wait(2000)
         cy.get(selectors.factsHeader).click()
         // cy.get(selectors.factInFactBrowser).click()
-        cy.get('a[data-id="fact-identifier-6"]').click()
+        cy.get('a[data-id="fact-identifier-2"]').click()
 
         let x = [1, 2, 3, 4]
 
@@ -141,9 +162,10 @@ describe(`Fact Modal`, () => {
         cy.visitHost(filing)
         // cy.get(selectors.search).type('10-k')
         // cy.get(selectors.submitSearchButton).click()
+        cy.wait(2000)
         cy.get(selectors.factsHeader).click()
         // cy.get(selectors.factInFactBrowser).click()
-        cy.get('a[data-id="fact-identifier-6"]').click()
+        cy.get('a[data-id="fact-identifier-2"]').click()
 
         let x = [1, 2, 3, 4]
 
@@ -166,18 +188,18 @@ describe(`Fact Modal`, () => {
         cy.visitHost(filing)
 
         // fact 1
-        cy.get('#fact-identifier-6').click()
+        cy.get('#fact-identifier-2').click()
         cy.get(selectors.factModalJump).click()
         
-        cy.get('div[id="facts-menu"] a[data-id="fact-identifier-6"]')
+        cy.get('div[id="facts-menu"] a[data-id="fact-identifier-2"]')
             .should('be.visible')
             .should('have.attr', 'selected-fact', 'true')
         cy.get(selectors.factModalClose).click()
 
         // fact 2
-        cy.get('#fact-identifier-7').click()
+        cy.get('#fact-identifier-3').click()
         cy.get(selectors.factModalJump).click()
-        cy.get('div[id="facts-menu"] a[data-id="fact-identifier-7"]')
+        cy.get('div[id="facts-menu"] a[data-id="fact-identifier-3"]')
             .should('be.visible')
             .should('have.attr', 'selected-fact', 'true')
         cy.get(selectors.factModalClose).click()

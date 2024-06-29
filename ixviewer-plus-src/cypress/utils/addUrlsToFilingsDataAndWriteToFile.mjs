@@ -4,8 +4,10 @@ import fs from 'fs'
 // node cypress/utils/addUrlsToFilingsDataAndWriteToFile.mjs
 
 // FUNCTIONS:
-// - transfers filings objects found in src/assets/filings/.. to single array then to file)
+// - transfers filings objects found in dist/Archives/edgar/data.. to single array then to file)
 // - adds host urls and docName
+
+const FILING_PATH = "dist/Archives/edgar/data";
 
 const getFilingDotJsonFiles = (dir) => {
     var filings = [];
@@ -56,7 +58,7 @@ const getFolderedDocPath = (filing) => {
 }
 
 const getLocalUrl = (filing) => {
-    const urlbeginning = 'http://localhost:3000/ix.xhtml?doc=./assets/filings/'
+    const urlbeginning = 'http://localhost:3000/ix.xhtml?doc=/Archives/edgar/data/'
     const localUrl = urlbeginning + filing.folderedDocPath
     return localUrl
 }
@@ -89,7 +91,6 @@ const getTestSecUrl = (filing) => {
 
 const getSecTestUrl = (filing) => {
     // e.g. https://www-test.sec.gov/ix.xhtml?doc=/Archives/edgar/data/350001/000035000123902881/eixbrl042gd-20081231.htm
-    
 }
 
 const getDev1Url = (filing) => {
@@ -107,7 +108,7 @@ const getDev2Url = (filing) => {
 }
 
 export const parseFilingsAndWriteToFile = () => {
-    const filingsFilePathNames = getFilingDotJsonFiles('src/assets/filings')
+    const filingsFilePathNames = getFilingDotJsonFiles(FILING_PATH)
 
     // read files and write all filings object to one array 
     let filingsArray = filingsFilePathNames.map(filePath => JSON.parse(fs.readFileSync(filePath, "utf8")))
@@ -130,6 +131,4 @@ export const parseFilingsAndWriteToFile = () => {
     fs.writeFileSync('cypress/dataPlus/filingsWithUrls.js', filingsArrayString)
 }
 
-parseFilingsAndWriteToFile()
-
-// module.exports = { parseFilingsAndWriteToFile }
+parseFilingsAndWriteToFile();

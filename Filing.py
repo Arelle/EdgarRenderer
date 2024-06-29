@@ -249,7 +249,8 @@ class Filing(object):
                                      ('us-gaap',self.usgaapNamespace,'PartnerCapitalComponentsAxis'),
                                      ('us-gaap',self.usgaapNamespace,'StatementClassOfStockAxis')
                                      ]
-        self.builtinEquityRowAxes = [('us-gaap',self.usgaapNamespace,'CreationDateAxis'),
+        self.builtinEquityRowAxes = [('us-gaap',self.usgaapNamespace,'CreationDateAxis'), # us-gaap deprecated 2019 absent after 2021.
+                                     ('ifrs-full',self.ifrsNamespace,'CreationDateAxis'),
                                      ('us-gaap',self.usgaapNamespace,'StatementScenarioAxis'),
                                      ('us-gaap',self.usgaapNamespace,'AdjustmentsForNewAccountingPronouncementsAxis'),
                                      ('us-gaap',self.usgaapNamespace,'AdjustmentsForChangeInAccountingPrincipleAxis'),
@@ -260,7 +261,7 @@ class Filing(object):
                                    ['ScenarioPreviouslyReportedMember',
                                     'RestatementAdjustmentMember',
                                     'ChangeInAccountingPrincipleMember'],
-                                   ['ScenarioUnspecifiedDomain'])
+                                   ['ScenarioUnspecifiedDomain']) # never deprecated, moved to srt in 2019
                                   ,(arelle.ModelValue.QName('ifrs-full',self.ifrsNamespace,'RetrospectiveApplicationAndRetrospectiveRestatementAxis')
                                    ,['PreviouslyStatedMember'
                                      ,'IncreaseDecreaseDueToChangesInAccountingPolicyAndCorrectionsOfPriorPeriodErrorsMember'
@@ -1018,7 +1019,7 @@ class Filing(object):
 
 
     def RemoveStuntedCashFlowColumns(self,report):
-        visibleColumns = [col for col in report.colList if not col.isHidden]
+        visibleColumns = [col for col in report.colList if (not col.isHidden and col.startEndContext is not None)]
         didWeHideAnyCols = False
         remainingVisibleColumns = visibleColumns.copy()
         maxMonths = max(col.startEndContext.numMonths for col in visibleColumns)

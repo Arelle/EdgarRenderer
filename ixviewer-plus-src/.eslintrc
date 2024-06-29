@@ -1,0 +1,20 @@
+{
+    "root": true,
+    "plugins": ["@typescript-eslint"],
+    "extends":
+    [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "env":
+    {
+        "browser": true,
+        "es2021": true
+    },
+    "rules":
+    {
+        "no-extra-boolean-cast": "warn",
+        "prefer-const": "warn",
+        "@typescript-eslint/no-non-null-assertion": "off"
+    }
+}

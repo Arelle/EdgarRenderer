@@ -417,6 +417,15 @@
       </ReferenceFiles>
     </TaxonomyAddon>
     <TaxonomyAddon>
+      <Taxonomy>ffd-2024q2.xsd</Taxonomy>
+      <DefinitionFiles>
+        <string>ffd-2024q2_doc.xsd</string>
+      </DefinitionFiles>
+      <ReferenceFiles>
+        <string>ffd-2024q2_ref.xsd</string>
+      </ReferenceFiles>
+    </TaxonomyAddon>
+    <TaxonomyAddon>
       <Taxonomy>invest-2011-01-31.xsd</Taxonomy>
       <DefinitionFiles>
         <string>invest-doc-2011-01-31.xml</string>
@@ -835,6 +844,15 @@
   		</DefinitionFiles>
   		<ReferenceFiles>
   			<string>srt-ref-2024.xml</string>
+  		</ReferenceFiles>
+  	</TaxonomyAddon>
+  	<TaxonomyAddon>
+  		<Taxonomy>us-gaap-ebp-2024.xsd</Taxonomy>
+  		<DefinitionFiles>
+  			<string>us-gaap-ebp-doc-2024.xml</string>
+  		</DefinitionFiles>
+  		<ReferenceFiles>
+  			<string>us-gaap-ebp-ref-2024.xml</string>
   		</ReferenceFiles>
   	</TaxonomyAddon>
   	<!-- IASB -->

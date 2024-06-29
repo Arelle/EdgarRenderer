@@ -2,8 +2,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 
-
-
 <head>
     <!-- Required meta tags -->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -16,15 +14,15 @@
 
 <body class="overflow-hidden">
     <noscript>
-        This application relies heavily on JavaScript, you
+        This application relies heavily on JavaScript -- you
         will need to allow JavaScript to use this application.
     </noscript>
-    <div class="w-100 border-bottom">
+    <div id="topNavs" class="w-100 border-bottom">
         <nav class="navbar navbar-expand-md navbar-dark navbar-height bg-sec pl-0">
             <button class="navbar-toggler ml-1" type="button" data-test="" data-bs-toggle="collapse"
                 data-bs-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false"
                 aria-label="Toggle navigation">Inline Viewer</button>
-            <div class="navbar-height collapse navbar-collapse bg-sec w-100" data-test="main-navbar" id="main-navbar">
+            <div class="navbar-height main-navbar collapse navbar-collapse bg-sec w-100" data-test="main-navbar" id="main-navbar">
                 <ul class="navbar-nav mr-auto bg-inherit">
                     <li class="nav-item dropdown my-auto ml-1">
                         <a id="menu-dropdown-link" data-test="menu-dropdown-link"
@@ -39,22 +37,18 @@
                                 class="dropdown-item click text-body" tabindex="1">Information</a>
                             <a id="form-information-instance" data-test="form-information-instance"
                                 class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer"
-                                tabindex="1">Save
-                                XBRL
-                                Instance</a>
+                                tabindex="1">Save XBRL Instance</a>
                             <a id="form-information-zip" data-test="form-information-zip"
-                                class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer"
-                                tabindex="1">Save XBRL Zip
-                                File</a>
+                                class="dropdown-item click text-body" rel="noopener noreferrer"
+                                tabindex="1">Save XBRL Zip File</a>
                             <a id="form-information-html" data-test="form-information-html"
                                 class="dropdown-item click text-body" target="_blank" rel="noopener noreferrer"
-                                tabindex="1">Open as
-                                HTML</a>
+                                tabindex="1">Open as HTML</a>
                             <a id="menu-dropdown-settings" data-test="menu-dropdown-settings"
                                 class="dropdown-item click text-body" tabindex="1">Settings</a>
                             <a id="form-information-help" data-bs-toggle="collapse" data-bs-target="#help-menu"
                                 class="dropdown-item click text-body" tabindex="1">Help</a>
-                            <span id="form-information-version" class="dropdown-item-text text-body"
+                            <span id="form-information-version" class="dropdown-item-text text-body not-click"
                                 tabindex="1"></span>
                         </div>
                     </li>
@@ -74,8 +68,7 @@
                                     class="dropdown btn btn-outline-light disabled" type="button"
                                     data-bs-toggle="dropdown" tabindex="3">
                                     <i class="nav-loading fas fa-cog" title="Additional Search Options">
-                                        <span class="sr-only sr-only-focusable">Additional
-                                            Search Options</span>
+                                        <span class="sr-only sr-only-focusable">Additional Search Options</span>
                                     </i>
                                 </button>
                                 <div class="dropdown-menu px-2">
@@ -476,7 +469,7 @@
                 <ul class="navbar-nav bg-inherit">
                     <li class="nav-item my-auto ml-1">
                         <a id="facts-menu-button" data-bs-toggle="collapse" data-bs-target="#facts-menu" tabindex="13"
-                            class="nav-link click" accesskey="9">
+                            class="nav-link click disabled" accesskey="9">
                             Facts
                             <span class="fact-total-count badge text-bg-light">
                                 <i class="fa fa-regular fa-clock"></i>
@@ -486,7 +479,7 @@
                 </ul>
             </div>
         </nav>
-        <ul id="tabs-container" class="nav nav-pills position-relative nav-underline justify-content-center z-10">
+        <ul id="tabs-container" class="nav nav-pills tabs-container position-relative nav-underline justify-content-center z-10">
             <!-- tabs are dynamically loaded by JS.  See src\ts\links\index.ts -->
         </ul>
     </div>
@@ -494,43 +487,39 @@
     <div class="container-fluid overflow-hidden">
         <div class="main-container row overflow-hidden">
 
-            <div class="col-auto px-0 sidebar-container sidebar-container-left">
-                <div id="sections-menu" class="sidebar sidebar-scrollable show collapse collapse-horizontal hide-during-init" data-bs-scroll="true">
-                    <div class="offcanvas-header">
-                        <h5>Tagged Sections</h5>
+            <!-- Sections Sidebar -->
+            <div class="col-auto px-0 sidebar-container sidebar-container-left sections-sidebar hide">
+                <div id="sections-menu" class="sidebar sidebar-scrollable show collapse collapse-horizontal" data-bs-scroll="true">
+                    <div class="offcanvas-header sections-header space-between">
+                        <div class="d-flex align-items-center">
+                            <h5 class="sections-header-label">Tagged Sections</h5>
+                            <span id="sections-search-additional" class="input-group-prepend">
+                                <button class="dropdown btn sections-settings-btn" type="button" data-bs-toggle="dropdown" tabindex="2" data-cy="sections-filter-btn">
+                                    <i class="nav-loading fas fa-filter"></i>
+                                </button>
+                                <div class="dropdown-menu px-2" id="sections-filters" data-cy="sections-filters">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" name="sections-filter"
+                                                value="all" checked="true" tabindex="2" data-cy="all-instances" />
+                                            <span>Show All Instances.</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input class="form-check-input" type="radio" name="sections-filter"
+                                                value="current" tabindex="2" data-cy="current-instance-only" />
+                                            <span>Show Current Instance only.</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </span>
+                        </div>
                         <button type="button" class="btn-close" data-bs-target="#sections-menu" data-bs-toggle="collapse" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body">
                         <form id="sections-menu-search-submit" data-name="sections-menu-search" class="my-2 my-lg-0 input-group" novalidate="true">
                             <div class="input-group">
-                                <div id="sections-search-additional" class="input-group-prepend d-none">
-                                    <button class="dropdown btn btn-sec" type="button" data-bs-toggle="dropdown" tabindex="2">
-                                        <i class="nav-loading fas fa-cog"></i>
-                                    </button>
-                                    <div class="dropdown-menu px-2">
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="radio" name="sections-search-options"
-                                                    value="1" checked="true" tabindex="2" />
-                                                <span>Search in All Instances.</span>
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="radio" name="sections-search-options"
-                                                    value="2" tabindex="2" />
-                                                <span>Search in Current Instance only.</span>
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="radio" name="sections-search-options"
-                                                    value="3" tabindex="2" />
-                                                <span>Search in Other Instances(s) only.</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
                                 <input type="text" class="form-control" id="sections-search" data-test="sections-search"
                                     placeholder="Search Sections" aria-label="Search all Sections by their associated label."
                                     name="search-sections" tabindex="2" required="true" />
@@ -548,7 +537,7 @@
                                 </button>
                             </div>
                         </form>
-                        <hr />
+                        <hr class="sections-hr" />
                         <div class="accordion" id="tagged-sections">
                             <!-- Below is populated dynamically VIA JS -->
                         </div>
@@ -556,9 +545,10 @@
                 </div>
             </div>
 
-            <div class="col-auto px-0 sidebar-container sidebar-container-left">
+            <!-- help sidebar -->
+            <div class="col-auto px-0 sidebar-container sidebar-container-left help-sidebar hide">
                 <div id="help-menu" class="sidebar sidebar-scrollable left-sidebar collapse collapse-horizontal">
-                    <div class="offcanvas-header">
+                    <div class="offcanvas-header space-between">
                         <h5>Help</h5>
                         <button type="button" class="btn-close" data-bs-target="#help-menu" data-bs-toggle="collapse" aria-label="Close"></button>
                     </div>
@@ -891,6 +881,7 @@
                 </div>
             </div>
 
+            <!-- middle pane: Main inline viewer pane for htm doc -->
             <div class="col px-0 middle-pane-container overflow-hidden">
             
                 <div id="error-container" data-test="error-container" class="px-0">
@@ -898,14 +889,16 @@
                 </div>
 
                 <div id="xbrl-form-loading" data-test="xbrl-form-loading" class="jumbotron h-100">
-                    <h2 class="display-4 text-center">
+                    <h2 class="text-center xbrl-loading-text">
                         <i class="fa fa-regular fa-clock"></i>
                         <span>Loading Inline Form.</span>
                     </h2>
                 </div>
 
                 <div id="dynamic-xbrl-form" class="col position-relative">
+
                     <!-- Main Doucment view - populated dynamically VIA JS-->
+
                 </div>
 
                 <div id="fact-table-container" class="offcanvas offcanvas-bottom" data-bs-scroll="true" data-bs-backdrop="false">
@@ -975,14 +968,17 @@
                         </div>
                     </div>
                 </div>
+                
             </div>
 
-            <div class="col-auto px-0 sidebar-container sidebar-container-right">
-                <div id="facts-menu" class="sidebar collapse collapse-horizontal show hide-during-init">
-                    <div class="offcanvas-header">
+            <div class="col-auto px-0 sidebar-container sidebar-container-right hide">
+                <div id="facts-menu" class="sidebar collapse collapse-horizontal show">
+                    <div class="offcanvas-header space-between">
                         <h5>Facts</h5>
                         <span class="fact-total-count badge bg-sec"><i class="fa fa-regular fa-clock"></i></span>
-                        <button type="button" class="btn-close" data-bs-target="#facts-menu" data-bs-toggle="collapse"  aria-label="Close"></button>
+                        <button type="button" class="btn-close" 
+                            data-bs-target="#facts-menu" data-bs-toggle="collapse" aria-label="Close"
+                        ></button>
                     </div>
                     <div class="offcanvas-body py-0">
                         <div id="facts-menu-list-pagination" class="d-flex flex-column flex-fill h-100 w-100">
@@ -1003,31 +999,6 @@
         </div>
     </div>
 
-    <nav>
-        <ul id="html-pagination" class="pagination pagination-sm mb-0 form-pages d-none">
-            <li class="page-item">
-                <a class="page-link text-body" href="#" tabindex="13" id="to-top-btn">
-                    <i class="fas fa-lg fa-angle-double-left"></i>
-                </a>
-            </li>
-            <li class="page-item">
-                <a class="page-link text-body" href="#" tabindex="13" id="to-prev-btn">
-                    <i class="fas fa-lg fa-angle-left"></i>
-                </a>
-            </li>
-            <li class="page-item ">
-                <a class="page-link text-body" href="#" tabindex="13" id="to-next-btn">
-                    <i class="fas fa-lg fa-angle-right"></i>
-                </a>
-            </li>
-            <li class="page-item ">
-                <a class="page-link text-body" href="#" tabindex="13" id="to-bottom-btn">
-                    <i class="fas fa-lg fa-angle-double-right"></i>
-                </a>
-            </li>
-        </ul>
-    </nav>
-
     <div id="form-information-modal" data-test="form-information-modal" class="dialog-box fixed-dialog-box d-none bg-white">
         <div class="dialog-header bg-sec text-white px-1 d-flex justify-content-between">
             <p id="form-information-modal-title" data-test="form-information-modal-title" class="lead mb-0">
@@ -1037,9 +1008,9 @@
                 <i id="form-information-modal-drag" title="Click and drag to move this Dialog Box."
                     class="fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="14"></i>
 
-                <i id="dialog-box-copy-content" title="Click to Copy all Dialog Box Content."
-                    class="fas fa-copy m-1 click" tabindex="14"></i>
-
+                <i id="dialog-box-copy-content"
+                    class="fas fa-copy m-1 click" tabindex="14"
+                    title="Click to Copy all Dialog Box Content."></i>
                 <i id="dialog-box-close" data-name="Form Information Modal" title="Click to Close this Dialog Box."
                     class="fas fa-times m-1 click" tabindex="14"></i>
 
@@ -1136,33 +1107,42 @@
             </div>
         </div>
         <div class="dialog-content">
-            <form>
+            <form class="mx-3">
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="hover-option-select">
                         Hover over Fact for quick information.
                     </label>
-                    <select id="hover-option-select" class="col-sm-8 form-select" tabindex="15">
-                        <option value="true">On</option>
-                        <option value="false">Off</option>
-                    </select>
+                    <div class="col-sm-4">
+                            <select id="hover-option-select" class="form-select" tabindex="15">
+                                <option value="true">On</option>
+                                <option value="false">Off</option>
+                            </select>
+                    </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="scroll-position-select">
                         Auto Scrolling Position
                     </label>
-                    <select id="scroll-position-select" class="col-sm-8 form-select" tabindex="15">
-                        <option value="start">Top</option>
-                        <option value="center">Center</option>
-                    </select>
-                    <small class="form-text text-muted col-sm-12" tabindex="15">Selecting
-                        a fact from the Sections Menu or the Fact Menu will automatically
-                        scroll that element to the (Top, or Middle) of the viewer window.
-                        This setting will have no use on IE 10, or Safari.</small>
+                    <div class="col-sm-4">
+                        <select id="scroll-position-select" class="form-select" tabindex="15">
+                            <option value="start">Top</option>
+                            <option value="center">Center</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <small class="form-text text-muted col-sm-12" tabindex="15">Selecting
+                            a fact from the Sections Menu or the Fact Menu will automatically
+                            scroll that element to the (Top, or Middle) of the viewer window.
+                            This setting will have no use on IE 10, or Safari.
+                        </small>
+                    </div>
                 </div>
                 <hr />
+
+                <!-- tagged data / enabled -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="tagged-data-color-picker">
-                        <span class="tagged-data-example-1">Tagged Data</span>
+                        <span class="enabled-example">Tagged Data</span>
                     </label>
                     <div class="col-sm-4">
                         <span>
@@ -1176,9 +1156,11 @@
                     </div>
                 </div>
                 <hr />
+
+                <!-- Search / highlighted -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="search-results-color-picker">
-                        <span class="search-results-example-1">
+                        <span class="highlighted-example">
                             Search Results
                         </span>
                     </label>
@@ -1194,9 +1176,11 @@
                     </div>
                 </div>
                 <hr />
+
+                <!-- selected -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="selected-fact-color-picker">
-                        <span class="selected-fact-example-1">Selected Fact</span>
+                        <span class="selected-fact-example">Selected Fact</span>
                     </label>
                     <div class="col-sm-4">
                         <span>
@@ -1210,10 +1194,12 @@
                     </div>
                 </div>
                 <hr />
+
+                <!-- hover / tag shading -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="tag-shading-color-picker">
-                        <span class="tag-shading-exmple-1">
-                            Tag Shading (hover)</span>
+                        <span class="tag-shading-example" enabled-fact="true" hover-fact="true">Tag Shading (hover)</span>
+                        <div>Opacity:</div>
                     </label>
                     <div class="col-sm-4">
                         <span>
@@ -1229,8 +1215,12 @@
                     </div>
                 </div>
                 <hr />
+
+                <!-- text block indicators -->
                 <div class="form-group row">
                     <label class="col-sm-4 col-form-label" tabindex="15" for="text-block-color-picker">
+                        <span class="float-left text-block-indicator-left position-absolute"></span>
+                        <span class="float-right text-block-indicator-right position-absolute"></span>
                         <span class="text-block-exmple-1">Text Block Indicators</span>
                     </label>
                     <div class="col-sm-4">
@@ -1253,17 +1243,17 @@
         <div class="dialog-header bg-sec text-white px-1 d-flex justify-content-between">
             <p id="fact-modal-title" class="lead mb-0"><span></span></p>
             <div class="dialog-header-actions">
-
                 <i id="fact-modal-drag" title="Click and drag to move this Dialog Box."
                     class="fas fa-arrows-alt m-1 drag-icon d-none d-sm-inline-block" tabindex="16"></i>
-
-                <i id="fact-modal-jump" title="Click to see this in the Facts sidebar."
+                <i id="fact-modal-jump" title="View in Facts Sidebar."
                     class="fas fa-directions m-1 click" tabindex="16"></i>
-                <i id="fact-modal-copy-content" class="fas fa-copy m-1 click" tabindex="16"></i>
+                <i id="fact-modal-copy-content" class="fas fa-copy m-1 click" tabindex="16" 
+                    title="Show Copy-able Fact Text"></i>
 
-                <i id="fact-modal-compress" class="fas fa-compress m-1 click d-none" tabindex="16"></i>
-
-                <i id="fact-modal-expand" class="fas fa-expand m-1 click" tabindex="16"></i>
+                <i id="fact-modal-compress" class="fas fa-compress m-1 click d-none" tabindex="16"
+                    title="Contract Size"></i>
+                <i id="fact-modal-expand" class="fas fa-expand m-1 click" tabindex="16"
+                    title="Expand Size"></i>
 
                 <i id="fact-modal-close" class="fas fa-times m-1 click" tabindex="16"></i>
             </div>
