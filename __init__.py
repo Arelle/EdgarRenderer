@@ -782,10 +782,10 @@ class EdgarRenderer(Cntlr.Cntlr):
         # skip rendering if major errors and abortOnMajorError
         # errorCountDuringValidation = len(Utils.xbrlErrors(modelXbrl))
         # won't work for all possible logHandlers (some emit immediately)
-        attachmentDocumentType = getattr(modelXbrl, "efmIxdsType", "(none)")
+        attachmentDocumentType = getattr(modelXbrl, "efmIxdsType")
         # strip on error if preceding primary inline instance had no error and exhibitType strips on error
         stripExhibitOnError = self.success and bool(
-                              filing.exhibitTypesStrippingOnErrorPattern.match(attachmentDocumentType))
+                              filing.exhibitTypesStrippingOnErrorPattern.match(attachmentDocumentType or ""))
         errorCountDuringValidation = sum(1 for e in modelXbrl.errors if isinstance(e, str) and not e.startswith("DQC.")) # don't count assertion results dict if formulas ran
         success = True
         if errorCountDuringValidation > 0:
@@ -1008,7 +1008,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         privateRefDocs = set()
         for report in filing.reports:
             # note that there is no efmIxdsType if EFM validation is not enabled
-            if (filing.exhibitTypesPrivateNotDisseminated.match(getattr(report.modelXbrl, "efmIxdsType", "")) or
+            if (filing.exhibitTypesPrivateNotDisseminated.match(getattr(report.modelXbrl, "efmIxdsType") or "") or
                 getattr(report, "securityClassification", None) == "confidential"):
                 report.isNotDisseminated = True
                 privateFilesNotDisseminated.update(report.basenames)
@@ -1383,8 +1383,8 @@ class EdgarRenderer(Cntlr.Cntlr):
                             else:
                                 filing.writeFile(join(dissemReportsFolder, reportedFile) + ".delete", b"")
                         for attachmentDocumentType, _strippedFiles in filing.strippedFiles.items():
-                            self.addToLog(_("Attachment %(exhibitType)s has errors requiring stripping its files %(files)s"),
-                                          {"exhibitType": attachmentDocumentType,
+                            self.addToLog(_("Attachment document type %(attachmentDocumentType)s has errors requiring stripping its files %(files)s"),
+                                          {"attachmentDocumentType": attachmentDocumentType or "(none)",
                                            "files": ", ".join(sorted(os.path.basename(f) for f in _strippedFiles))},
                                           messageCode="EFM.stripExhibit",
                                           level=logging._checkLevel("INFO-RESULT"))
