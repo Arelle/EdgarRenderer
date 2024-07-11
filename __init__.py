@@ -782,7 +782,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         # skip rendering if major errors and abortOnMajorError
         # errorCountDuringValidation = len(Utils.xbrlErrors(modelXbrl))
         # won't work for all possible logHandlers (some emit immediately)
-        attachmentDocumentType = getattr(modelXbrl, "efmIxdsType")
+        attachmentDocumentType = getattr(modelXbrl, "efmIxdsType", None)
         # strip on error if preceding primary inline instance had no error and exhibitType strips on error
         stripExhibitOnError = self.success and bool(
                               filing.exhibitTypesStrippingOnErrorPattern.match(attachmentDocumentType or ""))
@@ -1008,7 +1008,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         privateRefDocs = set()
         for report in filing.reports:
             # note that there is no efmIxdsType if EFM validation is not enabled
-            if (filing.exhibitTypesPrivateNotDisseminated.match(getattr(report.modelXbrl, "efmIxdsType") or "") or
+            if (filing.exhibitTypesPrivateNotDisseminated.match(getattr(report.modelXbrl, "efmIxdsType", None) or "") or
                 getattr(report, "securityClassification", None) == "confidential"):
                 report.isNotDisseminated = True
                 privateFilesNotDisseminated.update(report.basenames)
