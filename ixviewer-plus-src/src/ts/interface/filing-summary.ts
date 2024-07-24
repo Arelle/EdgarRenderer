@@ -8,9 +8,9 @@ export interface FilingSummary
     FootnotesReported: TextValue;
     HasCalculationLinkbase: TextValue;
     HasPresentationLinkbase: TextValue;
-    InputFiles: TextValue;
+    InputFiles: TextValue & { File: { _attributes?: { original?: string }}[] };
     Logs: TextValue;
-    MyReports: TextValue;
+    MyReports: TextValue & { Report: Report[] };
     ProcessingTime: TextValue;
     ReportFormat: TextValue;
     ScenarioCount: TextValue;
@@ -23,9 +23,8 @@ export interface FilingSummary
 
 export interface Report
 {
-    _attributes: {
-        instance: string
-    }
+    _attributes: { instance: string };
+    MenuCategory: TextValue;
 }
 
 

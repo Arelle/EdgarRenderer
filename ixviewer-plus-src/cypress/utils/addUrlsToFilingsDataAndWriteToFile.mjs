@@ -89,10 +89,6 @@ const getTestSecUrl = (filing) => {
     return secUrl
 }
 
-const getSecTestUrl = (filing) => {
-    // e.g. https://www-test.sec.gov/ix.xhtml?doc=/Archives/edgar/data/350001/000035000123902881/eixbrl042gd-20081231.htm
-}
-
 const getDev1Url = (filing) => {
     // html: 'https://www.sec.gov/Archives/edgar/data/1967680/000196768023000005/vlto-20230927.htm'
     // dev1: 'http://172.18.85.157:8082/ix3/ixviewer3/ix.xhtml?doc=../../ixdocs/WebContent/documents/0001967680-23-000005/vlto-20230927.htm'

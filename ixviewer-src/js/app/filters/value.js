@@ -694,17 +694,17 @@ var FiltersValue = {
       if ( showCollapseIfApplicable ) {
         // we show accordion
         var newElement = document.createElement('div');
-        newElement.setAttribute('class', 'reboot collapse d-block collapse-modal-partial');
+        newElement.setAttribute('class', 'collapse d-block collapse-modal-partial');
         newElement.setAttribute('id', 'collapse-taxonomy');
         
         newElement.innerHTML = elementToFormat.innerHTML;
         containerElement.appendChild(newElement);
         
         var button = document.createElement('button');
-        button.setAttribute('class', 'reboot btn btn-primary btn-sm mt-1');
+        button.setAttribute('class', 'btn btn-primary btn-sm mt-1');
         button.setAttribute('type', 'button');
-        button.setAttribute('data-toggle', 'collapse');
-        button.setAttribute('data-target', '#collapse-taxonomy');
+        button.setAttribute('data-bs-toggle', 'collapse');
+        button.setAttribute('data-bs-target', '#collapse-taxonomy');
         var content = document.createTextNode('Contract / Expand');
         
         button.appendChild(content);
@@ -722,7 +722,7 @@ var FiltersValue = {
      
     var containerElement = document.createElement('div');
     var newElement = document.createElement('div');
-    newElement.setAttribute('class', 'reboot collapse d-block collapse-modal-partial text-break');
+    newElement.setAttribute('class', 'collapse d-block collapse-modal-partial text-break');
     newElement.setAttribute('id', 'collapse-modal');
     
     element.forEach(function( current ) {
@@ -738,10 +738,10 @@ var FiltersValue = {
         return FiltersValue.getCorrectFormatBasedOnNamespace(newElement);
     }
     var button = document.createElement('button');
-    button.setAttribute('class', 'reboot btn btn-primary btn-sm mt-1');
+    button.setAttribute('class', 'btn btn-primary btn-sm mt-1');
     button.setAttribute('type', 'button');
-    button.setAttribute('data-toggle', 'collapse');
-    button.setAttribute('data-target', '#collapse-modal');
+    button.setAttribute('data-bs-toggle', 'collapse');
+    button.setAttribute('data-bs-target', '#collapse-modal');
     
     var content = document.createTextNode('Contract / Expand');
     button.appendChild(content);
@@ -760,7 +760,7 @@ var FiltersValue = {
     
     var containerElement = document.createElement('div');
     var newElement = document.createElement('div');
-    newElement.setAttribute('class', 'reboot collapse d-block collapse-modal-partial');
+    newElement.setAttribute('class', 'collapse d-block collapse-modal-partial');
     newElement.setAttribute('id', 'collapse-modal');
     var elementChildren = [ ];
     if ( element.childNodes.length ) {
@@ -785,10 +785,10 @@ var FiltersValue = {
       newElement.appendChild(duplicateNode);
     });
     var button = document.createElement('button');
-    button.setAttribute('class', 'reboot btn btn-primary btn-sm mt-1');
+    button.setAttribute('class', 'btn btn-primary btn-sm mt-1');
     button.setAttribute('type', 'button');
-    button.setAttribute('data-toggle', 'collapse');
-    button.setAttribute('data-target', '#collapse-modal');
+    button.setAttribute('data-bs-toggle', 'collapse');
+    button.setAttribute('data-bs-target', '#collapse-modal');
     
     var content = document.createTextNode('Contract / Expand');
     button.appendChild(content);

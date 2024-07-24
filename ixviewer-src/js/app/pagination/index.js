@@ -65,7 +65,7 @@ var Pagination = {
     var divElement = document.createElement("div");
     divElement.setAttribute(
       "class",
-      "reboot w-100 d-flex justify-content-between py-2 px-1"
+      "w-100 d-flex justify-content-between py-2 px-1"
     );
     divElement.appendChild(Pagination.getPrevNextControls());
     divElement.appendChild(Pagination.getPaginationInfo());
@@ -97,7 +97,7 @@ var Pagination = {
 
     document
       .querySelector(Pagination.getPaginationSelector)
-      .setAttribute("style", "height: calc(100vh - 200px);");
+      .setAttribute("style", "height: calc(100vh - 190px);");
 
     document
       .querySelector(Pagination.getPaginationSelector)
@@ -209,21 +209,21 @@ var Pagination = {
     var elementToReturn = document.createDocumentFragment();
 
     var divElement = document.createElement("div");
-    divElement.setAttribute("class", "reboot");
+
 
     var ulElement = document.createElement("ul");
     ulElement.setAttribute(
       "class",
-      "reboot pagination pagination-sm mb-0 mt-0"
+      "pagination pagination-sm mb-0 mt-0"
     );
 
     var previousTaxonomyLiElement = document.createElement("li");
-    previousTaxonomyLiElement.setAttribute("class", "reboot page-item");
+    previousTaxonomyLiElement.setAttribute("class", "page-item");
 
     var previousTaxonomyAElement = document.createElement("a");
     previousTaxonomyAElement.setAttribute(
       "class",
-      "reboot page-link text-body"
+      "page-link no-trans text-body"
     );
     previousTaxonomyAElement.setAttribute("href", "#");
     previousTaxonomyAElement.setAttribute("tabindex", 13);
@@ -238,10 +238,10 @@ var Pagination = {
     ulElement.appendChild(previousTaxonomyLiElement);
 
     var nextTaxonomyLiElement = document.createElement("li");
-    nextTaxonomyLiElement.setAttribute("class", "reboot page-item");
+    nextTaxonomyLiElement.setAttribute("class", "page-item");
 
     var nextTaxonomyAElement = document.createElement("a");
-    nextTaxonomyAElement.setAttribute("class", "reboot page-link text-body");
+    nextTaxonomyAElement.setAttribute("class", "page-link no-trans text-body");
     nextTaxonomyAElement.setAttribute("href", "#");
     nextTaxonomyAElement.setAttribute("tabindex", 13);
     nextTaxonomyAElement.addEventListener("click", function (e) {
@@ -260,14 +260,12 @@ var Pagination = {
     return elementToReturn;
   },
 
+  // Page x of y
   getPaginationInfo: function () {
     var elementToReturn = document.createDocumentFragment();
 
     var paginationInfoDivElement = document.createElement("div");
-    paginationInfoDivElement.setAttribute(
-      "class",
-      "reboot pagination-info text-body"
-    );
+    paginationInfoDivElement.setAttribute("class", "pagination-info text-body");
 
     var paginationInfoDivContent = document.createTextNode(
       Pagination.getCurrentPage + " of " + Pagination.getTotalPages
@@ -292,19 +290,19 @@ var Pagination = {
     var elementToReturn = document.createDocumentFragment();
 
     var navElement = document.createElement("nav");
-    navElement.setAttribute("class", "reboot");
+
 
     var ulElement = document.createElement("ul");
     ulElement.setAttribute(
       "class",
-      "reboot pagination pagination-sm mb-0 mt-0"
+      "pagination pagination-sm mb-0 mt-0"
     );
 
     var firstPageLiElement = document.createElement("li");
-    firstPageLiElement.setAttribute("class", "reboot page-item " + firstPage);
+    firstPageLiElement.setAttribute("class", "page-item " + firstPage);
 
     var firstPageAElement = document.createElement("a");
-    firstPageAElement.setAttribute("class", "reboot page-link text-body");
+    firstPageAElement.setAttribute("class", "page-link no-trans text-body");
     firstPageAElement.setAttribute("href", "#");
     firstPageAElement.setAttribute("tabindex", 13);
     firstPageAElement.addEventListener("click", function () {
@@ -312,10 +310,7 @@ var Pagination = {
     });
 
     var firstPageContent = document.createElement("i");
-    firstPageContent.setAttribute(
-      "class",
-      "reboot fas fa-lg fa-angle-double-left"
-    );
+    firstPageContent.setAttribute("class", "fas fa-lg fa-angle-double-left");
 
     firstPageAElement.appendChild(firstPageContent);
     firstPageLiElement.appendChild(firstPageAElement);
@@ -324,11 +319,11 @@ var Pagination = {
     var previousPageLiElement = document.createElement("li");
     previousPageLiElement.setAttribute(
       "class",
-      "reboot page-item " + previousPage
+      "page-item " + previousPage
     );
 
     var previousPageAElement = document.createElement("a");
-    previousPageAElement.setAttribute("class", "reboot page-link text-body");
+    previousPageAElement.setAttribute("class", "page-link no-trans text-body");
     previousPageAElement.setAttribute("href", "#");
     previousPageAElement.setAttribute("tabindex", 13);
     previousPageAElement.addEventListener("click", function () {
@@ -336,17 +331,17 @@ var Pagination = {
     });
 
     var previousPageContent = document.createElement("i");
-    previousPageContent.setAttribute("class", "reboot fas fa-lg fa-angle-left");
+    previousPageContent.setAttribute("class", "fas fa-lg fa-angle-left");
 
     previousPageAElement.appendChild(previousPageContent);
     previousPageLiElement.appendChild(previousPageAElement);
     ulElement.appendChild(previousPageLiElement);
 
     var nextPageLiElement = document.createElement("li");
-    nextPageLiElement.setAttribute("class", "reboot page-item " + nextPage);
+    nextPageLiElement.setAttribute("class", "page-item " + nextPage);
 
     var nextPageAElement = document.createElement("a");
-    nextPageAElement.setAttribute("class", "reboot page-link text-body");
+    nextPageAElement.setAttribute("class", "page-link no-trans text-body");
     nextPageAElement.setAttribute("href", "#");
     nextPageAElement.setAttribute("tabindex", 13);
     nextPageAElement.addEventListener("click", function () {
@@ -354,17 +349,17 @@ var Pagination = {
     });
 
     var nextPageContent = document.createElement("i");
-    nextPageContent.setAttribute("class", "reboot fas fa-lg fa-angle-right");
+    nextPageContent.setAttribute("class", "fas fa-lg fa-angle-right");
 
     nextPageAElement.appendChild(nextPageContent);
     nextPageLiElement.appendChild(nextPageAElement);
     ulElement.appendChild(nextPageLiElement);
 
     var lastPageLiElement = document.createElement("li");
-    lastPageLiElement.setAttribute("class", "reboot page-item " + lastPage);
+    lastPageLiElement.setAttribute("class", "page-item " + lastPage);
 
     var lastPageAElement = document.createElement("a");
-    lastPageAElement.setAttribute("class", "reboot page-link text-body");
+    lastPageAElement.setAttribute("class", "page-link no-trans text-body");
     lastPageAElement.setAttribute("href", "#");
     lastPageAElement.setAttribute("tabindex", 13);
     lastPageAElement.addEventListener("click", function () {
@@ -374,7 +369,7 @@ var Pagination = {
     var lastPageContent = document.createElement("i");
     lastPageContent.setAttribute(
       "class",
-      "reboot fas fa-lg fa-angle-double-right"
+      "fas fa-lg fa-angle-double-right"
     );
 
     lastPageAElement.appendChild(lastPageContent);
@@ -403,26 +398,26 @@ var Pagination = {
     var divElement = document.createElement("div");
     divElement.setAttribute(
       "class",
-      "reboot w-100 d-flex justify-content-between py-2 px-1"
+      "w-100 d-flex justify-content-between py-2 px-1"
     );
 
     var divNestedElement = document.createElement("div");
-    divNestedElement.setAttribute("class", "reboot");
+
 
     var divNestedElement = document.createElement("div");
-    divNestedElement.setAttribute("class", "reboot");
+
 
     var navElement = document.createElement("nav");
-    navElement.setAttribute("class", "reboot");
+
 
     var ulElement = document.createElement("ul");
-    ulElement.setAttribute("class", "reboot pagination pagination-sm mb-0");
+    ulElement.setAttribute("class", "pagination pagination-sm mb-0");
 
     var firstPageLiElement = document.createElement("li");
-    firstPageLiElement.setAttribute("class", "reboot page-item " + firstPage);
+    firstPageLiElement.setAttribute("class", "page-item " + firstPage);
 
     var firstPageAElement = document.createElement("a");
-    firstPageAElement.setAttribute("class", "reboot page-link text-body");
+    firstPageAElement.setAttribute("class", "page-link no-trans text-body");
     firstPageAElement.setAttribute("href", "#");
     firstPageAElement.setAttribute("tabindex", 13);
     firstPageAElement.addEventListener("click", function () {
@@ -432,7 +427,7 @@ var Pagination = {
     var firstPageContent = document.createElement("i");
     firstPageContent.setAttribute(
       "class",
-      "reboot fas fa-lg fa-angle-double-left"
+      "fas fa-lg fa-angle-double-left"
     );
 
     firstPageAElement.appendChild(firstPageContent);
@@ -442,11 +437,11 @@ var Pagination = {
     var previousPageLiElement = document.createElement("li");
     previousPageLiElement.setAttribute(
       "class",
-      "reboot page-item " + previousPage
+      "page-item " + previousPage
     );
 
     var previousPageAElement = document.createElement("a");
-    previousPageAElement.setAttribute("class", "reboot page-link text-body");
+    previousPageAElement.setAttribute("class", "page-link no-trans text-body");
     previousPageAElement.setAttribute("href", "#");
     previousPageAElement.setAttribute("tabindex", 13);
     previousPageAElement.addEventListener("click", function () {
@@ -454,17 +449,17 @@ var Pagination = {
     });
 
     var previousPageContent = document.createElement("i");
-    previousPageContent.setAttribute("class", "reboot fas fa-lg fa-angle-left");
+    previousPageContent.setAttribute("class", "fas fa-lg fa-angle-left");
 
     previousPageAElement.appendChild(previousPageContent);
     previousPageLiElement.appendChild(previousPageAElement);
     ulElement.appendChild(previousPageLiElement);
 
     var nextPageLiElement = document.createElement("li");
-    nextPageLiElement.setAttribute("class", "reboot page-item " + nextPage);
+    nextPageLiElement.setAttribute("class", "page-item " + nextPage);
 
     var nextPageAElement = document.createElement("a");
-    nextPageAElement.setAttribute("class", "reboot page-link text-body");
+    nextPageAElement.setAttribute("class", "page-link no-trans text-body");
     nextPageAElement.setAttribute("href", "#");
     nextPageAElement.setAttribute("tabindex", 13);
     nextPageAElement.addEventListener("click", function () {
@@ -472,17 +467,17 @@ var Pagination = {
     });
 
     var nextPageContent = document.createElement("i");
-    nextPageContent.setAttribute("class", "reboot fas fa-lg fa-angle-right");
+    nextPageContent.setAttribute("class", "fas fa-lg fa-angle-right");
 
     nextPageAElement.appendChild(nextPageContent);
     nextPageLiElement.appendChild(nextPageAElement);
     ulElement.appendChild(nextPageLiElement);
 
     var lastPageLiElement = document.createElement("li");
-    lastPageLiElement.setAttribute("class", "reboot page-item " + lastPage);
+    lastPageLiElement.setAttribute("class", "page-item " + lastPage);
 
     var lastPageAElement = document.createElement("a");
-    lastPageAElement.setAttribute("class", "reboot page-link text-body");
+    lastPageAElement.setAttribute("class", "page-link no-trans text-body");
     lastPageAElement.setAttribute("href", "#");
     lastPageAElement.setAttribute("tabindex", 13);
     lastPageAElement.addEventListener("click", function () {
@@ -492,7 +487,7 @@ var Pagination = {
     var lastPageContent = document.createElement("i");
     lastPageContent.setAttribute(
       "class",
-      "reboot fas fa-lg fa-angle-double-right"
+      "fas fa-lg fa-angle-double-right"
     );
 
     lastPageAElement.appendChild(lastPageContent);
@@ -507,20 +502,21 @@ var Pagination = {
     return elementToReturn;
   },
 
+  // page select dropdown
   setPageSelect: function () {
     var pageSelectHTML = '<option value="null">Select a Page</option>';
 
     for (var i = 0; i < Pagination.getTotalPages; i++) {
       if (i + 1 === Pagination.getCurrentPage) {
         pageSelectHTML +=
-          '<option class="reboot" selected value="' +
+          '<option selected value="' +
           (i + 1) +
           '">Page ' +
           (i + 1) +
           "</option>";
       } else {
         pageSelectHTML +=
-          '<option class="reboot" value="' +
+          '<option value="' +
           (i + 1) +
           '">Page ' +
           (i + 1) +
@@ -582,8 +578,7 @@ var Pagination = {
       }
     }
     if (index >= 0) {
-      index === 0 ? (index = 1) : (index = index);
-      var pageToGoTo = Math.ceil(index / Constants.getPaginationPerPage);
+      var pageToGoTo = Math.ceil((index + 1) / Constants.getPaginationPerPage);
       Pagination.getCurrentPage = pageToGoTo;
       Pagination.getPaginationTemplate(pageToGoTo);
       Pagination.scrollToSelectedTaxonomy(index);

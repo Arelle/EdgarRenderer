@@ -17,16 +17,6 @@ export default defineConfig({
     skipScrapers: true,
     limitNumOfFilingsForTestRun: true, // Good for doing a health check of all tests
     limitOfFilingsToTest: 3,
-    docBaseForCurrentDomain: function() {
-      switch(this.host) {
-        case domains.dev1:
-          return urls.dev1DocRoot
-        case domains.local:
-          return urls.localDocRoot
-        default:
-          return urls.dev1DocRoot
-      }
-    }
   },
   e2e: {
     setupNodeEvents(on, config) {

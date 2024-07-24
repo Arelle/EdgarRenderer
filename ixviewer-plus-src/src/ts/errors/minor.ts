@@ -24,7 +24,7 @@ export const ErrorsMinor = {
 	},
 
 	factNotFound: () => {
-		const content = document.createTextNode('Inline XBRL can not locate the requested fact.');
+		const content = document.createTextNode('Inline XBRL cannot locate the requested fact.');
 
 		const element = document.createElement('div');
 		element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');

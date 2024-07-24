@@ -102,6 +102,10 @@ var UserFiltersDropdown = {
     UserFiltersState.getMeasure = [ ];
     var foundMeasures = document.querySelectorAll('#user-filters-measures input');
     var foundMeasuresArray = Array.prototype.slice.call(foundMeasures);
+    if (foundMeasuresArray.length === 0) {
+      var measuresCollapse = document.querySelector('#user-filters-measures');
+      measuresCollapse.addClass('ix-disabled');
+    }
     foundMeasuresArray.forEach(function( current ) {
       current.checked = false;
     });

@@ -12,10 +12,10 @@ import { HelpersUrl } from "../helpers/url";
 import { FactInput } from "../interface/fact-input";
 import { Section } from "../interface/meta";
 import { convertToSelector, ixScrollTo } from "../helpers/utils";
-import { toBottomOfInlineDoc } from "../pagination/inlineDocPagination";
 
-export const Sections = {
 
+export const Sections =
+{
     init: () => {
         let fakeOrder = Constants.sections.length;
         const sections = Constants.sections.sort((a, b) => {

@@ -13,6 +13,9 @@ import { HelpersUrl } from "../helpers/url";
 import { Modals } from "../modals/modals";
 import { Tabs } from "../tabs/tabs"
 import { Constants } from "./constants";
+import { InstanceFile } from "../interface/instance-file";
+import { Reference } from "../interface/fact";
+import { FormInformation } from "../interface/form-information";
 
 
 export const ConstantsFunctions = {
@@ -34,16 +37,15 @@ export const ConstantsFunctions = {
 
 	emptyHTMLByID: (id: string) => {
 		if (id && document.getElementById(id)) {
-			while (
-				document.getElementById(id)?.firstChild
-			) {
+			while (document.getElementById(id)?.firstChild)
+			{
 				document.getElementById(id)?.firstChild?.remove();
 			}
 		}
 
 	},
 
-	setInstanceFiles: (input) => {
+	setInstanceFiles: (input: InstanceFile[]) => {
 		Constants.getInstanceFiles = input;
 	},
 
@@ -51,17 +53,17 @@ export const ConstantsFunctions = {
 		Constants.getInlineFiles = input;
 	},
 
-	setStdRef: (input) => {
+	setStdRef: (input: Record<string, Reference>) => {
 		Constants.getStdRef = input;
 	},
 
-	setFormInformation: (input) => {
+	setFormInformation: (input: FormInformation) => {
 		Constants.getFormInformation = input
 	},
 
-	getFactLabel: (labels): string => {
-		const label = labels.find(element => element.Label);
-		return label ? label.Label : 'Not Available.'
+	getFactLabel: (labels: Array<{ Label?: string | null}>): string => {
+		const label = labels.find((e): e is { Label: string } => !!e.Label);
+		return label ? label.Label : 'Not Available.';
 	},
 
 	getCollapseToFactValue: () => {
@@ -81,8 +83,7 @@ export const ConstantsFunctions = {
 				current.parentNode?.parentNode?.querySelector('.fact-collapse')?.append(a);
 				current?.classList.add('collapse');
 			}
-
-		})
+		});
 	},
 
 	changeInstance: (

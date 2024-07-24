@@ -143,7 +143,7 @@ Language of labels:
     GUI may use tools->language labels setting to override system language for labels
 
 """
-VERSION = '3.24.2'
+VERSION = '3.24.2.u1'
 
 from collections import defaultdict
 from arelle import PythonUtil
@@ -1209,7 +1209,7 @@ class EdgarRenderer(Cntlr.Cntlr):
                                                 hasEditedCont = True
                                     if removableUnits: # check for orphaned units
                                         for e in ixdsHtmlRootElt.iter("{http://www.xbrl.org/2003/instance}unit"):
-                                            if e in removableUnits and not any((f.id not in redactTgtElts) for f in modelXbrl.facts and f.id not in redactTgtElts and isinstance(f, ModelFact) and f.unit == e):
+                                            if e in removableUnits and not any((f.id not in redactTgtElts) for f in modelXbrl.facts if f.id not in redactTgtElts and isinstance(f, ModelFact) and f.unit == e):
                                                 e.getparent().remove(e) # remove this context
                                                 e.modelXbrl.units.pop(e.id, None)
                                                 hasEditedCont = True

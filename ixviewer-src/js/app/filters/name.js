@@ -14,16 +14,16 @@ var FiltersName = {
         
         name = name.split(':');
         var element = document.createElement('p');
-        element.setAttribute('class', 'reboot mb-0');
+        element.setAttribute('class', 'mb-0');
         
         var contentBegin = document.createTextNode(name[0].toUpperCase());
         var elementBegin = document.createElement('span');
-        elementBegin.setAttribute('class', 'reboot font-weight-bold');
+        elementBegin.setAttribute('class', 'fw-bold');
         elementBegin.appendChild(contentBegin);
         
         var contentEnd = document.createTextNode(name[1].replace(/([A-Z])/g, ' $1').trim());
         var elementEnd = document.createElement('span');
-        elementEnd.setAttribute('class', 'reboot ml-1');
+        elementEnd.setAttribute('class', 'ms-1');
         elementEnd.appendChild(contentEnd);
         
         element.appendChild(elementBegin);
@@ -175,7 +175,7 @@ var FiltersName = {
                   
                   var contentBegin = document.createTextNode(current.toUpperCase());
                   var elementBegin = document.createElement('span');
-                  elementBegin.setAttribute('class', 'reboot font-weight-bold');
+                  elementBegin.setAttribute('class', 'fw-bold');
                   elementBegin.appendChild(contentBegin);
                   
                   var contentEnd = document.createTextNode(': '

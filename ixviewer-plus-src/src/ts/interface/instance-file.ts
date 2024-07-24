@@ -71,7 +71,7 @@ export interface InstanceData
 // }
 
 
-interface XhtmlFileMeta
+export interface XhtmlFileMeta
 {
     current: boolean;
     loaded: boolean;

@@ -96,11 +96,11 @@ var ModalsContinuedAt = {
         var newActiveIndicator = event["to"];
         document
           .getElementById("taxonomy-modal-carousel-indicators")
-          .querySelector('[data-slide-to="' + previousActiveIndicator + '"]')
+          .querySelector('[data-bs-slide-to="' + previousActiveIndicator + '"]')
           .classList.remove("active");
         document
           .getElementById("taxonomy-modal-carousel-indicators")
-          .querySelector('[data-slide-to="' + newActiveIndicator + '"]')
+          .querySelector('[data-bs-slide-to="' + newActiveIndicator + '"]')
           .classList.add("active");
         document.getElementById("taxonomy-modal-title").innerText =
           ModalsContinuedAt.carouselInformation[event["to"]]["dialog-title"];
@@ -131,13 +131,13 @@ var ModalsContinuedAt = {
           var divElement = document.createElement("div");
           divElement.setAttribute(
             "class",
-            "reboot carousel-item table-responsive active"
+            "carousel-item table-responsive active"
           );
 
           var tableElement = document.createElement("table");
           tableElement.setAttribute(
             "class",
-            "reboot table table-striped table-sm"
+            "table table-striped table-sm"
           );
 
           tableElement.appendChild(page1Html);
@@ -164,13 +164,13 @@ var ModalsContinuedAt = {
               var divElement = document.createElement("div");
               divElement.setAttribute(
                 "class",
-                "reboot carousel-item table-responsive"
+                "carousel-item table-responsive"
               );
 
               var tableElement = document.createElement("table");
               tableElement.setAttribute(
                 "class",
-                "reboot table table-striped table-sm"
+                "table table-striped table-sm"
               );
 
               tableElement.appendChild(page2Html);
@@ -198,13 +198,13 @@ var ModalsContinuedAt = {
                   var divElement = document.createElement("div");
                   divElement.setAttribute(
                     "class",
-                    "reboot carousel-item table-responsive"
+                    "carousel-item table-responsive"
                   );
 
                   var tableElement = document.createElement("table");
                   tableElement.setAttribute(
                     "class",
-                    "reboot table table-striped table-sm"
+                    "table table-striped table-sm"
                   );
 
                   tableElement.appendChild(page3Html);
@@ -232,13 +232,13 @@ var ModalsContinuedAt = {
                       var divElement = document.createElement("div");
                       divElement.setAttribute(
                         "class",
-                        "reboot carousel-item table-responsive"
+                        "carousel-item table-responsive"
                       );
 
                       var tableElement = document.createElement("table");
                       tableElement.setAttribute(
                         "class",
-                        "reboot table table-striped table-sm"
+                        "table table-striped table-sm"
                       );
 
                       tableElement.appendChild(page4Html);

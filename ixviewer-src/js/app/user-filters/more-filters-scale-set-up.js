@@ -31,11 +31,11 @@ var UserFiltersMoreFiltersScaleSetUp = {
 
     var innerHtml = '';
     UserFiltersMoreFiltersScaleSetUp.scaleOptions.forEach(function (current, index) {
-      innerHtml += '<div class="reboot d-flex justify-content-between align-items-center w-100 px-2">';
-      innerHtml += '<div class="reboot form-check">';
+      innerHtml += '<div class="d-flex justify-content-between align-items-center w-100 px-2">';
+      innerHtml += '<div class="form-check">';
       innerHtml += '<input onclick="UserFiltersMoreFiltersScale.clickEvent(event, this, ' + index
-        + ')" title="Select/Deselect this option." class="reboot form-check-input" type="checkbox">';
-      innerHtml += '<label class="reboot form-check-label mb-0">' + FiltersScale.getScale(current) + '</label>';
+        + ')" title="Select/Deselect this option." class="form-check-input" type="checkbox">';
+      innerHtml += '<label class="form-check-label mb-0">' + FiltersScale.getScale(current) + '</label>';
       innerHtml += '</div></div>';
     });
     document.getElementById('user-filters-scales').innerHTML = innerHtml;

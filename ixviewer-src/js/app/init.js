@@ -14,6 +14,7 @@ var AppInit = {
     ConstantsFunctions.setBrowserType();
     AppInit.emptySidebars();
 
+
     internalUrl = internalUrl || false;
 
     HelpersUrl.init(internalUrl, function (result) {

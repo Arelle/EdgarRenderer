@@ -15,9 +15,9 @@ var Modals = {
       var activeSlide = (index === 0) ? 'active' : '';
       
       var liElement = document.createElement('li');
-      liElement.setAttribute('class', 'reboot ' + activeSlide);
-      liElement.setAttribute('data-target', '#' + carouselId);
-      liElement.setAttribute('data-slide-to', index);
+      liElement.setAttribute('class', '' + activeSlide);
+      liElement.setAttribute('data-bs-target', '#' + carouselId);
+      liElement.setAttribute('data-bs-slide-to', index);
       liElement.setAttribute('title', current['dialog-title']);
       liElement.setAttribute('href', '#');
       liElement.setAttribute('tabindex', '16');

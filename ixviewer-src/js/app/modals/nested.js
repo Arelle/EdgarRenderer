@@ -159,13 +159,13 @@ var ModalsNested = {
         
       }
       var divTitleElement = document.createElement('div');
-      divTitleElement.setAttribute('class', 'reboot carousel-item');
+      divTitleElement.setAttribute('class', 'carousel-item');
       
       var divTitleNestedElement = document.createElement('div');
-      divTitleNestedElement.setAttribute('class', 'reboot carousel-content');
+      divTitleNestedElement.setAttribute('class', 'carousel-content');
       
       var pTitleElement = document.createElement('p');
-      pTitleElement.setAttribute('class', 'reboot text-center font-weight-bold');
+      pTitleElement.setAttribute('class', 'text-center fw-bold');
       var pTitleContent = document.createTextNode(nestedTaxonomyName);
       
       pTitleElement.appendChild(pTitleContent);
@@ -262,9 +262,9 @@ var ModalsNested = {
           var previousActiveIndicator = event['from'];
           var newActiveIndicator = event['to'];
           document.getElementById('taxonomy-nested-modal-carousel-indicators').querySelector(
-              '[data-slide-to="' + previousActiveIndicator + '"]').classList.remove('active');
+              '[data-bs-slide-to="' + previousActiveIndicator + '"]').classList.remove('active');
           document.getElementById('taxonomy-nested-modal-carousel-indicators').querySelector(
-              '[data-slide-to="' + newActiveIndicator + '"]').classList.add('active');
+              '[data-bs-slide-to="' + newActiveIndicator + '"]').classList.add('active');
           ModalsCommon.currentDetailTab = newActiveIndicator;
         });
      $('#modal-taxonomy-nested-content-carousel').carousel(0);
@@ -278,13 +278,13 @@ var ModalsNested = {
     
     var divElement = document.createElement('div');
     divElement.setAttribute('id', 'taxonomy-nested-modal-carousel-' + index);
-    divElement.setAttribute('class', 'reboot carousel');
-    divElement.setAttribute('data-interval', false);
+    divElement.setAttribute('class', 'carousel');
+    divElement.setAttribute('data-bs-interval', false);
     divElement.setAttribute('data-keyboard', true);
     
     var divNestedElement = document.createElement('div');
-    divNestedElement.setAttribute('class', 'reboot carousel-inner');
-    divNestedElement.setAttribute('data-interval', false);
+    divNestedElement.setAttribute('class', 'carousel-inner');
+    divNestedElement.setAttribute('data-bs-interval', false);
     divNestedElement.setAttribute('data-keyboard', true);
     
     if ( isContinued ) {

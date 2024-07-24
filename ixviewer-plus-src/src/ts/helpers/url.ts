@@ -7,6 +7,7 @@
 
 import { Constants } from "../constants/constants";
 import { ErrorsMajor } from "../errors/major";
+import { UrlParams } from "../interface/url-params";
 
 export const HelpersUrl = {
     init: (internalUrl: string, callback: (arg0: boolean | void) => void): void => {
@@ -54,7 +55,8 @@ export const HelpersUrl = {
             if (url.search) {
                 const urlParams = HelpersUrl.returnURLParamsAsObject(url.search.substring(1));
                 if (Object.prototype.hasOwnProperty.call(urlParams, `doc-file`)
-                    && Constants.getMetaSourceDocuments.indexOf(urlParams['doc-file']) >= 0) {
+                    && Constants.getMetaSourceDocuments.indexOf(urlParams['doc-file']) >= 0)
+                {
                     element.setAttribute('data-link', urlParams['doc-file']);
                     element.setAttribute('href', urlParams['doc-file']);
                     element.setAttribute('onclick', 'Links.clickEventInternal(event, this)');
@@ -103,9 +105,9 @@ export const HelpersUrl = {
         return isWorkstation;
     },
 
-    returnURLParamsAsObject: (url: string): Record<string, string | boolean> => {
+    returnURLParamsAsObject: (url: string): UrlParams => {
         const urlParams = new URLSearchParams(url);
-        const objToReturn: { [key: string]: string | boolean } = {};
+        const objToReturn = {} as UrlParams;
         const urlParamsAsObject = Object.fromEntries(urlParams);
         const isWorkStation = HelpersUrl.isWorkstation();
         const isFEPT = urlParamsAsObject.doc.includes('view.html');
@@ -184,7 +186,7 @@ export const HelpersUrl = {
 
     getAnchorTag: null as string | null,
 
-    getAllParams: null as Record<string, string> | null,
+    getAllParams: null as UrlParams | null,
 
     setParams: (internalUrl: string | boolean): boolean => {
         if ((internalUrl && typeof internalUrl === 'string') && (internalUrl !== HelpersUrl.getHTMLFileName)) {

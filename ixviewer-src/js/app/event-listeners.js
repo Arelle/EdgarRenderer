@@ -67,6 +67,9 @@ $(document).ready(function() {
     $('#taxonomy-nested-modal-expand')
         .on('click', function(e) { Modals.expandToggle(e.originalEvent, e.delegateTarget, 'taxonomy-nested-modal', 'taxonomy-nested-modal-expand', 'taxonomy-nested-modal-compress'); })
         .on('keyup', function(e) { Modals.expandToggle(e.originalEvent, e.delegateTarget, 'taxonomy-nested-modal', 'taxonomy-nested-modal-expand', 'taxonomy-nested-modal-compress'); });
+    $('#more-filters-accordion')
+        .on('click', function(e) { e.stopPropagation(); })
+        .on('keyup', function(e) { e.stopPropagation(); });
 
     // onClick functions
     $('#back-to-top-btn')

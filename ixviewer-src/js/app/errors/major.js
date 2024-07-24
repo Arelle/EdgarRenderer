@@ -12,7 +12,7 @@ var ErrorsMajor = {
     var content = document.createTextNode('Inline XBRL is not usable in this state.');
     
     var element = document.createElement('div');
-    element.setAttribute('class', 'reboot alert-height alert alert-danger show mb-0');
+    element.setAttribute('class', 'alert-height alert alert-danger show mb-0');
     element.appendChild(content);
     document.getElementById('error-container').appendChild(element);
     
@@ -23,10 +23,10 @@ var ErrorsMajor = {
     var content = document.createTextNode(HelpersUrl.getFormAbsoluteURL + HelpersUrl.getHTMLFileName);
     
     var element = document.createElement('div');
-    element.setAttribute('class', 'reboot alert-height alert alert-danger show mb-0');
+    element.setAttribute('class', 'alert-height alert alert-danger show mb-0');
     
     var link = document.createElement('a');
-    link.setAttribute('class', 'reboot');
+    
     link.setAttribute('href', HelpersUrl.getFormAbsoluteURL);
     
     link.appendChild(content);
@@ -42,7 +42,7 @@ var ErrorsMajor = {
         .createTextNode('Inline XBRL requires a URL param (doc | file) that correlates to a Financial Report.');
     
     var element = document.createElement('div');
-    element.setAttribute('class', 'reboot alert-height alert alert-danger show mb-0');
+    element.setAttribute('class', 'alert-height alert alert-danger show mb-0');
     element.appendChild(content);
     document.getElementById('error-container').appendChild(element);
     
@@ -56,7 +56,7 @@ var ErrorsMajor = {
         + '), if provided, must be identical to that of the Inline XBRL viewer(' + host + ')');
     
     var element = document.createElement('div');
-    element.setAttribute('class', 'reboot alert-height alert alert-danger show mb-0');
+    element.setAttribute('class', 'alert-height alert alert-danger show mb-0');
     element.appendChild(content);
     document.getElementById('error-container').appendChild(element);
     

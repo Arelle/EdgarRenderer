@@ -61,7 +61,7 @@ var Taxonomies = {
     );
     document.getElementById("facts-menu").setAttribute("disabled", true);
     taxonomyTotalElementsArray.forEach(function (current) {
-      current.innerHTML = '<i class="reboot fas fa-spinner fa-spin"></i>';
+      current.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
     });
     setTimeout(function () {
       callback();
@@ -413,24 +413,24 @@ var Taxonomies = {
       ? FiltersName.getLabelForTitle(element.getAttribute("name"))
       : "Not Available.";
 
-    element.setAttribute("data-toggle", "popover");
+    element.setAttribute("data-bs-toggle", "popover");
     element.setAttribute("data-title", terseLabelOnly);
 
     var popoverHtml = "";
-    popoverHtml += '<div class="reboot popover" role="tooltip">';
-    popoverHtml += '<div class="reboot arrow"></div>';
+    popoverHtml += '<div class="popover" role="tooltip">';
+    popoverHtml += '<div class="arrow"></div>';
     popoverHtml +=
-      '<h3 class="reboot popover-header text-center text-popover-clamp-1 py-0"></h3>';
+      '<h3 class="popover-header text-center text-popover-clamp-1 py-0"></h3>';
     popoverHtml +=
-      '<div class="reboot text-center text-popover-clamp-2 py-1">' +
+      '<div class="text-center text-popover-clamp-2 py-1">' +
       FiltersValue.getFormattedValue(element, true) +
       "</div>";
     popoverHtml +=
-      '<div class="reboot text-center p-2">' +
+      '<div class="text-center p-2">' +
       FiltersContextref.getPeriod(element.getAttribute("contextref")) +
       "</div>";
     popoverHtml +=
-      '<p class="reboot text-center p-2">Click for additional information.</p>';
+      '<p class="text-center p-2">Click for additional information.</p>';
     popoverHtml += "</div>";
 
     $(element).popover({

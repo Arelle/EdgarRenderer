@@ -5,6 +5,7 @@
 
 'use strict';
 
+// fact sidebar
 var TaxonomiesMenu = {
   
   getCurrentPage : null,
@@ -34,7 +35,7 @@ var TaxonomiesMenu = {
     setTimeout(function( ) {
       TaxonomiesMenu.prepareForPagination();
       document.getElementById('taxonomies-menu').removeEventListener('transitionend', Sections.transitionEvent);
-    });
+    }, 300);
   },
   
   formChange : function( ) {

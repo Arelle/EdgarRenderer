@@ -12,19 +12,14 @@ var ErrorsMinor = {
     var content = document.createTextNode('An Error has occured within the Inline XBRL Viewer.');
     
     var element = document.createElement('div');
-    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
     element.appendChild(content);
-    
-    var buttonClose = document.createElement('i');
-    buttonClose.setAttribute('class', 'reboot fas fa-times');
     
     var button = document.createElement('button');
     button.setAttribute('type', 'button');
-    button.setAttribute('class', 'reboot close');
-    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('class', 'btn-close float-right');
+    button.setAttribute('data-bs-dismiss', 'alert');
     button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
-    
-    button.appendChild(buttonClose);
     element.appendChild(button);
     
     document.getElementById('error-container').appendChild(element);
@@ -37,12 +32,12 @@ var ErrorsMinor = {
       var contentStart = document.createTextNode('Using ');
       
       var element = document.createElement('div');
-      element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+      element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
       element.appendChild(contentStart);
       
       var linkContent = document.createTextNode('Google Chrome');
       var link = document.createElement('a');
-      link.setAttribute('class', 'reboot');
+      
       link.setAttribute('target', '_blank');
       link.setAttribute('href', 'https://www.google.com/chrome/');
       link.appendChild(linkContent);
@@ -51,14 +46,11 @@ var ErrorsMinor = {
       var contentEnd = document.createTextNode(' can help alleviate some of these performance issues.');
       element.appendChild(contentEnd);
       
-      var buttonClose = document.createElement('i');
-      buttonClose.setAttribute('class', 'reboot fas fa-times');
       var button = document.createElement('button');
       button.setAttribute('type', 'button');
-      button.setAttribute('class', 'reboot close');
-      button.setAttribute('data-dismiss', 'alert');
+      button.setAttribute('class', 'btn-close float-right');
+      button.setAttribute('data-bs-dismiss', 'alert');
       button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
-      button.appendChild(buttonClose);
       
       element.appendChild(button);
       
@@ -72,19 +64,15 @@ var ErrorsMinor = {
     var content = document.createTextNode('Inline XBRL can not locate the requested fact.');
     
     var element = document.createElement('div');
-    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
     element.appendChild(content);
-    
-    var buttonClose = document.createElement('i');
-    buttonClose.setAttribute('class', 'reboot fas fa-times');
     
     var button = document.createElement('button');
     button.setAttribute('type', 'button');
-    button.setAttribute('class', 'reboot close');
-    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('class', 'btn-close float-right');
+    button.setAttribute('data-bs-dismiss', 'alert');
     button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
-    button.appendChild(buttonClose);
     element.appendChild(button);
     
     document.getElementById('error-container').appendChild(element);
@@ -97,19 +85,15 @@ var ErrorsMinor = {
         .createTextNode('Inline XBRL HTML Form is missing data to complete this action. This functionality has been removed.');
     
     var element = document.createElement('div');
-    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
     element.appendChild(content);
-    
-    var buttonClose = document.createElement('i');
-    buttonClose.setAttribute('class', 'reboot fas fa-times');
     
     var button = document.createElement('button');
     button.setAttribute('type', 'button');
-    button.setAttribute('class', 'reboot close');
-    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('class', 'btn-close float-right');
+    button.setAttribute('data-bs-dismiss', 'alert');
     button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
-    button.appendChild(buttonClose);
     element.appendChild(button);
     
     document.getElementById('error-container').appendChild(element);
@@ -123,26 +107,22 @@ var ErrorsMinor = {
         + ', performance may be affected.');
     
     var element = document.createElement('div');
-    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
     element.appendChild(content);
-    
-    var buttonClose = document.createElement('i');
-    buttonClose.setAttribute('class', 'reboot fas fa-times');
     
     var button = document.createElement('button');
     button.setAttribute('type', 'button');
-    button.setAttribute('class', 'reboot close');
-    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('class', 'btn-close float-right');
+    button.setAttribute('data-bs-dismiss', 'alert');
     button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
-    button.appendChild(buttonClose);
     element.appendChild(button);
     
     document.getElementById('error-container').appendChild(element);
     
     Errors.updateMainContainerHeight();
     
-    ErrorsMinor.browserSuggestion();
+    // ErrorsMinor.browserSuggestion();
   },
   
   metaLinksNotFound : function( fileName ) {
@@ -150,19 +130,15 @@ var ErrorsMinor = {
         .createTextNode('Inline XBRL viewing features are minimal because no supporting file was found.');
     
     var element = document.createElement('div');
-    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
     element.appendChild(content);
-    
-    var buttonClose = document.createElement('i');
-    buttonClose.setAttribute('class', 'reboot fas fa-times');
     
     var button = document.createElement('button');
     button.setAttribute('type', 'button');
-    button.setAttribute('class', 'reboot close');
-    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('class', 'btn-close float-right');
+    button.setAttribute('data-bs-dismiss', 'alert');
     button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
-    button.appendChild(buttonClose);
     element.appendChild(button);
     
     document.getElementById('error-container').appendChild(element);
@@ -176,19 +152,15 @@ var ErrorsMinor = {
         .createTextNode('Inline XBRL viewing features are minimal because supporting file is not correct.');
     
     var element = document.createElement('div');
-    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
     element.appendChild(content);
-    
-    var buttonClose = document.createElement('i');
-    buttonClose.setAttribute('class', 'reboot fas fa-times');
     
     var button = document.createElement('button');
     button.setAttribute('type', 'button');
-    button.setAttribute('class', 'reboot close');
-    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('class', 'btn-close float-right');
+    button.setAttribute('data-bs-dismiss', 'alert');
     button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
-    
-    button.appendChild(buttonClose);
+
     element.appendChild(button);
     
     document.getElementById('error-container').appendChild(element);
@@ -201,19 +173,15 @@ var ErrorsMinor = {
     var content = document.createTextNode('File found was not a MetaLinks version 2.0 file or higher.');
     
     var element = document.createElement('div');
-    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
     element.appendChild(content);
-    
-    var buttonClose = document.createElement('i');
-    buttonClose.setAttribute('class', 'reboot fas fa-times');
     
     var button = document.createElement('button');
     button.setAttribute('type', 'button');
-    button.setAttribute('class', 'reboot close');
-    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('class', 'btn-close float-right');
+    button.setAttribute('data-bs-dismiss', 'alert');
     button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
-    button.appendChild(buttonClose);
     element.appendChild(button);
     
     document.getElementById('error-container').appendChild(element);
@@ -227,19 +195,15 @@ var ErrorsMinor = {
         .createTextNode('This fact is not apart of your active filter(s) and is not present in the Fact Menu.');
     
     var element = document.createElement('div');
-    element.setAttribute('class', 'reboot alert-height alert alert-warning alert-dismissable show mb-0');
+    element.setAttribute('class', 'alert-height alert alert-warning alert-dismissable show mb-0');
     element.appendChild(content);
-    
-    var buttonClose = document.createElement('i');
-    buttonClose.setAttribute('class', 'reboot fas fa-times');
     
     var button = document.createElement('button');
     button.setAttribute('type', 'button');
-    button.setAttribute('class', 'reboot close');
-    button.setAttribute('data-dismiss', 'alert');
+    button.setAttribute('class', 'btn-close float-right');
+    button.setAttribute('data-bs-dismiss', 'alert');
     button.addEventListener('click', function() { Errors.updateMainContainerHeight(true); });
     
-    button.appendChild(buttonClose);
     element.appendChild(button);
     
     document.getElementById('error-container').appendChild(element);

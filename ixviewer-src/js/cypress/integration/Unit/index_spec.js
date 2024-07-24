@@ -1717,7 +1717,7 @@ describe('Unit Test Application Code', function() {
           expect(win.FiltersName.getFormattedName('test')).to.equal('');
 
           expect(win.FiltersName.getFormattedName('this:testSomething')).to
-            .equal('<span class="font-weight-bold">THIS</span><span class="ml-1">test Something</span>');
+            .equal('<span class="font-weight-bold">THIS</span><span class="ms-1">test Something</span>');
 
         });
     });

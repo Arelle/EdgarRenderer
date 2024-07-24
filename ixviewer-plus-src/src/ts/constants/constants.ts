@@ -3,10 +3,9 @@
  * are not subject to domestic copyright protection. 17 U.S.C. 105.
  */
 
-import { Reference, SingleFact } from "../interface/fact";
+import { Reference } from "../interface/fact";
 import { FormInformation } from "../interface/form-information";
 import { InlineFileMeta, InstanceFile } from "../interface/instance-file";
-import { Meta } from "../interface/meta";
 import { Section } from "../interface/meta";
 
 
@@ -17,7 +16,7 @@ type MetaDocument = any;
 
 export const Constants =
 {
-	version: "24.2",
+	version: "24.2.u1",
 	featureSet: "plus",
 
 	scrollPosition: typeof window !== 'undefined' && window.localStorage.getItem("scrollPosition") || "start",
