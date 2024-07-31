@@ -39,18 +39,12 @@ var Errors = {
   },
   
   updateMainContainerHeight : function( removingWarning ) {
-    
     removingWarning = removingWarning || false;
     
     var numberOfChildrenInErrorContainer = document.getElementById('error-container').children.length;
-    
-    if ( !removingWarning ) {
-      numberOfChildrenInErrorContainer++;
-    }
+    numberOfChildrenInErrorContainer++;
     
     var container = document.querySelector('.main-container');
-    
     container.style.height = 'calc(100vh - ' + (numberOfChildrenInErrorContainer * 45) + 'px)';
-    
   }
 };

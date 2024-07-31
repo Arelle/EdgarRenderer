@@ -31,7 +31,7 @@ var TaxonomiesGeneral = {
     var terseLabelOnly = FiltersName.getTerseLabelOnlyLabel(element.getAttribute('name')) ? FiltersName
         .getLabel(element.getAttribute('name')) : 'Not Available.';
     
-    element.setAttribute('data-toggle', 'popover');
+    element.setAttribute('data-bs-toggle', 'popover');
     element.setAttribute('data-title', terseLabelOnly);
     
     var popoverHtml = '';
@@ -134,11 +134,15 @@ var TaxonomiesGeneral = {
       
       menuElementToScrollTo = document.querySelector('[data-id="' + element.getAttribute('data-id') + '"]');
       
+      document.getElementById("taxonomy-modal-jump").setAttribute("data-id", element.getAttribute('data-id'));
+      
     } else if ( element.getAttribute('id') ) {
       
       elementToScrollTo = document.getElementById('dynamic-xbrl-form').querySelector('#' + element.getAttribute('id'));
       
       menuElementToScrollTo = document.querySelector('[data-id="' + element.getAttribute('id') + '"]');
+
+      document.getElementById("taxonomy-modal-jump").setAttribute("data-id", element.getAttribute('data-id'));
       
     } else {
       
@@ -191,8 +195,8 @@ var TaxonomiesGeneral = {
     
     var aElement = document.createElement('a');
     aElement
-        .setAttribute('class',
-            'reboot text-body border-bottom click text-decoration-none click list-group-item list-group-item-action px-0 py-0');
+      .setAttribute('class',
+        'text-body border-bottom click text-decoration-none click list-group-item list-group-item-action bg-light px-0 py-0 ');
     aElement.setAttribute('selected-taxonomy', element.getAttribute('selected-taxonomy'));
     aElement.setAttribute('contextref', element.getAttribute('contextref'));
     aElement.setAttribute('name', element.getAttribute('name'));
@@ -207,7 +211,7 @@ var TaxonomiesGeneral = {
     divElement.setAttribute('class', 'd-flex w-100 justify-content-between');
     
     var pElement = document.createElement('p');
-    pElement.setAttribute('class', 'mb-1 font-weight-bold');
+    pElement.setAttribute('class', 'mb-1 fw-bold');
     
     var pElementContent = document.createTextNode((FiltersName.getLabel(element.getAttribute('name')) || ''));
     pElement.appendChild(pElementContent);
@@ -294,7 +298,7 @@ var TaxonomiesGeneral = {
       var spanElement = document.createElement('span');
       var spanNestedElement = document.createElement('span');
       spanNestedElement.setAttribute('title', title);
-      spanNestedElement.setAttribute('class', 'm-1 badge badge-dark');
+      spanNestedElement.setAttribute('class', 'm-1 badge bg-dark');
       
       var spanNestedElementContent = document.createTextNode(label);
       

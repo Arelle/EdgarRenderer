@@ -44,7 +44,7 @@ export const Tabs = {
           a2.classList.add('dropdown-item');
           instanceFile.current ? a2.classList.add('active') : null;
           const aText = document.createTextNode(labels.join(', '));
-          a2.addEventListener('click', (event: KeyboardEvent) => {
+          a2.addEventListener('click', (event: MouseEvent) => {
             Tabs.clickEventInstance(event, instanceFile.instance);
           });
           a2.addEventListener('keyup', (event: KeyboardEvent) => {

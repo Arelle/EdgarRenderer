@@ -284,7 +284,7 @@
 						<i id="loading-more-filters" class="reboot nav-loading fas fa-filter" title="More Filters"></i>
 						<span class="reboot d-md-none d-lg-inline">More Filters</span>
 						<span class="reboot sr-only sr-only-focusable">More Filters</span>
-						<span title="Total active filters." class="reboot badge badge-warning"></span>
+						<span title="Total active filters." class="reboot badge bg-warning"></span>
 					</a>
 					<div class="reboot dropdown-menu dropdown-menu-width">
 						<label class="reboot dropdown-item-text d-none performance-concern">
@@ -299,13 +299,13 @@
 											tabindex="9">
 											<span class="reboot">Periods</span>
 											<span data-test="Period-count" id="filters-periods-count"
-												class="reboot badge badge-secondary">
+												class="reboot badge bg-secondary">
 												<i class="reboot fas fa-spinner fa-spin"></i>
 											</span>
 										</a>
 									</div>
 									<div id="user-filters-periods" class="reboot collapse height-200 overflow-y-auto"
-										data-parent="#more-filters-accordion">
+										data-bs-parent="#more-filters-accordion">
 										<!-- Below is populated dynamically VIA JS -->
 										<div class="reboot list-group list-group-flush"></div>
 									</div>
@@ -320,13 +320,13 @@
 											tabindex="9">
 											<span class="reboot">Measures</span>
 											<span data-test="Measures-count" id="filters-measures-count"
-												class="reboot badge badge-secondary">
+												class="reboot badge bg-secondary">
 												<i class="reboot fas fa-spinner fa-spin"></i>
 											</span>
 										</a>
 									</div>
 									<div id="user-filters-measures" class="reboot collapse height-200 overflow-y-auto"
-										data-parent="#more-filters-accordion">
+										data-bs-parent="#more-filters-accordion">
 										<!-- Below is populated dynamically VIA JS -->
 										<div class="reboot list-group list-group-flush"></div>
 									</div>
@@ -341,13 +341,13 @@
 											tabindex="9">
 											<span class="reboot">Axis</span>
 											<span data-test="Axis-count" id="filters-axis-count"
-												class="reboot badge badge-secondary">
+												class="reboot badge bg-secondary">
 												<i class="fas fa-spinner fa-spin"></i>
 											</span>
 										</a>
 									</div>
 									<div id="user-filters-axis" class="reboot collapse height-200 overflow-y-auto"
-										data-parent="#more-filters-accordion">
+										data-bs-parent="#more-filters-accordion">
 										<div class="reboot list-group list-group-flush d-none">
 											<div
 												class="reboot d-flex justify-content-between align-items-center w-100 px-1">
@@ -359,7 +359,7 @@
 															data-toggle="collapse" tabindex="9">Explicit</a>
 													</label>
 												</div>
-												<span class="reboot badge badge-secondary"
+												<span class="reboot badge bg-secondary"
 													id="axis-explicit-count"></span>
 											</div>
 										</div>
@@ -375,7 +375,7 @@
 															data-toggle="collapse" tabindex="9">Typed</a>
 													</label>
 												</div>
-												<span class="reboot badge badge-secondary" id="axis-typed-count"></span>
+												<span class="reboot badge bg-secondary" id="axis-typed-count"></span>
 											</div>
 										</div>
 									</div>
@@ -390,13 +390,13 @@
 											tabindex="9">
 											<span class="reboot">Members</span>
 											<span data-test="Members-count" id="filters-members-count"
-												class="reboot badge badge-secondary">
+												class="reboot badge bg-secondary">
 												<i class="reboot fas fa-spinner fa-spin"></i>
 											</span>
 										</a>
 									</div>
 									<div id="user-filters-members" class="reboot collapse height-200 overflow-y-auto"
-										data-parent="#more-filters-accordion">
+										data-bs-parent="#more-filters-accordion">
 										<div class="reboot list-group list-group-flush d-none">
 											<div
 												class="reboot d-flex justify-content-between align-items-center w-100 px-1">
@@ -408,7 +408,7 @@
 															data-toggle="collapse" tabindex="9">Explicit</a>
 													</label>
 												</div>
-												<span class="reboot badge badge-secondary"
+												<span class="reboot badge bg-secondary"
 													id="members-explicit-count"></span>
 											</div>
 										</div>
@@ -424,7 +424,7 @@
 															data-toggle="collapse" tabindex="9">Typed</a>
 													</label>
 												</div>
-												<span class="reboot badge badge-secondary"
+												<span class="reboot badge bg-secondary"
 													id="members-typed-count"></span>
 											</div>
 										</div>
@@ -440,13 +440,13 @@
 											tabindex="9">
 											<span class="reboot">Scale</span>
 											<span data-test="Scale-count" id="filters-scales-count"
-												class="reboot badge badge-secondary">
+												class="reboot badge bg-secondary">
 												<i class="reboot fas fa-spinner fa-spin"></i>
 											</span>
 										</a>
 									</div>
 									<div id="user-filters-scales" class="reboot collapse height-200 overflow-y-auto"
-										data-parent="#more-filters-accordion">
+										data-bs-parent="#more-filters-accordion">
 										<!-- Below is populated dynamically VIA JS -->
 										<div class="reboot list-group list-group-flush"></div>
 									</div>
@@ -461,11 +461,11 @@
 											tabindex="9">
 											<span class="reboot">Balance</span>
 											<span data-test="Balance-count" id="filters-balances-count"
-												class="reboot badge badge-secondary">2</span>
+												class="reboot badge bg-secondary">2</span>
 										</a>
 									</div>
 									<div id="user-filters-balances" class="reboot collapse height-200 overflow-y-auto"
-										data-parent="#more-filters-accordion">
+										data-bs-parent="#more-filters-accordion">
 										<div
 											class="reboot d-flex justify-content-between align-items-center w-100 px-2">
 											<div class="reboot form-check">
@@ -513,7 +513,7 @@
 				<li class="reboot nav-item my-auto ml-1">
 					<a id="facts-menu" data-test="facts-menu" class="reboot nav-link click" tabindex="13" accesskey="9">
 						Facts
-						<span class="reboot taxonomy-total-count badge badge-light">
+						<span class="reboot taxonomy-total-count badge sec-primary bg-light">
 							<i class="reboot fas fa-spinner fa-spin"></i>
 						</span>
 					</a>
@@ -607,7 +607,7 @@
 							</button>
 						</h5>
 					</div>
-					<div id="help-getting-started" class="reboot collapse" data-parent="#help-sections">
+					<div id="help-getting-started" class="reboot collapse" data-bs-parent="#help-sections">
 						<p class="reboot m-2">The Inline XBRL viewer allows a user
 							to quickly and easily review details of the tagged information in
 							an Inline document by automatically placing a top and bottom
@@ -629,7 +629,7 @@
 							</button>
 						</h5>
 					</div>
-					<div id="help-fact-review-window" class="reboot collapse" data-parent="#help-sections">
+					<div id="help-fact-review-window" class="reboot collapse" data-bs-parent="#help-sections">
 						<p class="reboot m-2">The Fact Review Window shows the tagging
 							details for the currently selected fact, which is highlighted
 							with a solid blue border. There are four categories of fact detail
@@ -658,7 +658,7 @@
 							</button>
 						</h5>
 					</div>
-					<div id="help-search" class="reboot collapse" data-parent="#help-sections">
+					<div id="help-search" class="reboot collapse" data-bs-parent="#help-sections">
 						<p class="reboot m-2">There are two ways to search the
 							document: FACTS AND SECTIONS. To search information, enter a
 							keyword in a search box and select the magnifying glass icon to
@@ -696,7 +696,7 @@
 							</button>
 						</h5>
 					</div>
-					<div id="help-filter" class="reboot collapse" data-parent="#help-sections">
+					<div id="help-filter" class="reboot collapse" data-bs-parent="#help-sections">
 						<p class="reboot m-2">Filters change the number of highlighted
 							facts and items in the fact list by providing several ways to
 							review and pinpoint certain tagged information. Multiple filters
@@ -765,7 +765,7 @@
 							</button>
 						</h5>
 					</div>
-					<div id="help-facts-results-list" class="reboot collapse" data-parent="#help-sections">
+					<div id="help-facts-results-list" class="reboot collapse" data-bs-parent="#help-sections">
 						<p class="reboot m-2">On the toolbar, select the "count" to
 							the right of the word Facts (e.g., Facts 234) to reveal the Facts
 							List results - a navigable listing of all currently highlighted
@@ -796,7 +796,7 @@
 							</button>
 						</h5>
 					</div>
-					<div id="help-tagged-sections" class="reboot collapse" data-parent="#help-sections">
+					<div id="help-tagged-sections" class="reboot collapse" data-bs-parent="#help-sections">
 						<p class="reboot m-2">The SECTIONS toolbar item provides a
 							listing of the tagged sections of the Inline document. Sections
 							are divided into three groups:</p>
@@ -822,7 +822,7 @@
 							</button>
 						</h5>
 					</div>
-					<div id="help-tagged-menu" class="reboot collapse" data-parent="#help-sections">
+					<div id="help-tagged-menu" class="reboot collapse" data-bs-parent="#help-sections">
 						<p class="reboot m-2">
 							<strong>Information</strong>
 						</p>
@@ -983,8 +983,8 @@
 				</a>
 				<textarea class="reboot form-control" rows="5" tabindex="14"></textarea>
 			</div>
-			<div id="form-information-modal-carousel" class="reboot carousel" data-interval="false"
-				data-ride="carousel">
+			<div id="form-information-modal-carousel" class="reboot carousel" data-bs-interval="false"
+				data-bs-ride="carousel">
 				<div class="reboot carousel-inner">
 					<div class="reboot carousel-item table-responsive active">
 						<table class="reboot table table-striped table-sm">
@@ -1039,14 +1039,14 @@
 		</div>
 		<div class="reboot dialog-footer d-flex justify-content-around">
 			<button id="form-information-prev" class="reboot btn btn-link text-dark"
-				href="#form-information-modal-carousel" role="button" data-slide="prev" tabindex="14">
+				href="#form-information-modal-carousel" role="button" data-bs-slide="prev" tabindex="14">
 				<i class="reboot fas fa-chevron-left" title="Previous"></i>
 				<span class="reboot sr-only">Previous</span>
 			</button>
 			<ol id="form-information-carousel-indicators" class="reboot carousel-indicators mx-0 my-3 p-initial">
 			</ol>
 			<button id="form-information-next" data-test="form-information-next" class="reboot btn btn-link text-dark"
-				href="#form-information-modal-carousel" role="button" data-slide="next" tabindex="14">
+				href="#form-information-modal-carousel" role="button" data-bs-slide="next" tabindex="14">
 				<i class="reboot fas fa-chevron-right" title="Next"></i>
 				<span class="reboot sr-only">Next</span>
 			</button>
@@ -1166,7 +1166,7 @@
 				</a>
 				<textarea class="reboot form-control" rows="5" tabindex="16"></textarea>
 			</div>
-			<div id="taxonomy-modal-carousel" class="reboot carousel" data-interval="false" data-keyboard="false">
+			<div id="taxonomy-modal-carousel" class="reboot carousel" data-bs-interval="false" data-keyboard="false">
 				<div class="reboot carousel-inner">
 					<div class="reboot carousel-item table-responsive active">
 						<table class="reboot table table-striped table-sm" id="taxonomy-modal-carousel-page-1"
@@ -1225,14 +1225,14 @@
 		</div>
 		<div class="reboot dialog-footer d-flex justify-content-around">
 			<button data-test="modal-taxonomy-prev" class="reboot btn btn-link text-dark"
-				href="#taxonomy-modal-carousel" role="button" data-slide="prev" tabindex="16">
+				href="#taxonomy-modal-carousel" role="button" data-bs-slide="prev" tabindex="16">
 				<i class="reboot fas fa-chevron-left" title="Previous"></i>
 				<span class="reboot sr-only">Previous</span>
 			</button>
 			<ol id="taxonomy-modal-carousel-indicators" class="reboot carousel-indicators mx-0 my-3 p-initial">
 			</ol>
 			<button data-test="modal-taxonomy-next" class="reboot btn btn-link text-dark"
-				href="#taxonomy-modal-carousel" role="button" data-slide="next" tabindex="16">
+				href="#taxonomy-modal-carousel" role="button" data-bs-slide="next" tabindex="16">
 				<i class="reboot fas fa-chevron-right" title="Next"></i>
 				<span class="reboot sr-only">Next</span>
 			</button>
@@ -1265,10 +1265,10 @@
 			</div>
 		</div>
 		<div class="reboot dialog-content pt-0">
-			<div id="modal-nested-fact-labels" class="reboot carousel" data-interval="false" data-keyboard="false">
+			<div id="modal-nested-fact-labels" class="reboot carousel" data-bs-interval="false" data-keyboard="false">
 				<div class="reboot d-flex">
 					<button data-test="modal-taxonomy-nested-prev" class="reboot btn btn-link text-dark"
-						href="#modal-nested-fact-labels" role="button" data-slide="prev" tabindex="17">
+						href="#modal-nested-fact-labels" role="button" data-bs-slide="prev" tabindex="17">
 						<i class="reboot fas fa-chevron-left" title="Previous"></i>
 						<span class="reboot sr-only">Previous</span>
 					</button>
@@ -1276,7 +1276,7 @@
 						<!-- Below is populated dynamically VIA JS -->
 					</div>
 					<button data-test="modal-taxonomy-nested-next" class="reboot btn btn-link text-dark"
-						href="#modal-nested-fact-labels" role="button" data-slide="next" tabindex="17">
+						href="#modal-nested-fact-labels" role="button" data-bs-slide="next" tabindex="17">
 						<i class="reboot fas fa-chevron-right" title="Next"></i>
 						<span class="reboot sr-only">Next</span>
 					</button>
@@ -1289,7 +1289,7 @@
 				</a>
 				<textarea class="reboot form-control" rows="5" tabindex="17"></textarea>
 			</div>
-			<div id="modal-taxonomy-nested-content-carousel" class="reboot carousel" data-interval="false"
+			<div id="modal-taxonomy-nested-content-carousel" class="reboot carousel" data-bs-interval="false"
 				data-keyboard="false">
 				<div class="reboot carousel-inner">
 					<div class="reboot carousel-item table-responsive active">
@@ -1345,7 +1345,7 @@
 		</div>
 		<div id="taxonomy-nested-nav-controls" class="reboot dialog-footer d-flex justify-content-around">
 			<button data-test="modal-taxonomy-prev" class="reboot btn btn-link text-dark"
-				href="#modal-taxonomy-nested-content-carousel" role="button" data-slide="prev" tabindex="17">
+				href="#modal-taxonomy-nested-content-carousel" role="button" data-bs-slide="prev" tabindex="17">
 				<i class="reboot fas fa-chevron-left" title="Previous"></i>
 				<span class="reboot sr-only">Previous</span>
 			</button>
@@ -1353,7 +1353,7 @@
 				<!-- Below is populated dynamically VIA JS -->
 			</ol>
 			<button data-test="modal-taxonomy-next" class="reboot btn btn-link text-dark"
-				href="#modal-taxonomy-nested-content-carousel" role="button" data-slide="next" tabindex="17">
+				href="#modal-taxonomy-nested-content-carousel" role="button" data-bs-slide="next" tabindex="17">
 				<i class="reboot fas fa-chevron-right" title="Next"></i>
 				<span class="reboot sr-only">Next</span>
 			</button>

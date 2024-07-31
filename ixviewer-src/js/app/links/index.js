@@ -18,7 +18,7 @@ var Links = {
   
   updateLinks : function( ) {
     
-    document.getElementById('sections-search-additional').classList.remove('d-none');
+    // document.getElementById('sections-search-additional').classList.remove('d-none');
     document.getElementById('links-dropdown').classList.remove('d-none');
     
     Links.populate();
@@ -30,9 +30,7 @@ var Links = {
     var foundLinksArray = Array.prototype.slice.call(foundLinks);
     
     foundLinksArray.forEach(function( current ) {
-      // console.log(current);
       HelpersUrl.addLinkattributes(current);
-      
     });
     
   },
@@ -59,7 +57,7 @@ var Links = {
     
     Constants.getMetaSourceDocuments.forEach(function( current ) {
       var link = document.createElement('a');
-      link.setAttribute('class', 'reboot dropdown-item');
+      link.setAttribute('class', 'dropdown-item');
       if ( current !== HelpersUrl.getHTMLFileName ) {
         
         link.addEventListener('click', function(e) { Links.clickEventInternal(e, link); });
@@ -72,7 +70,7 @@ var Links = {
         
         var icon = document.createElement('i');
         icon.setAttribute('title', 'Current Form');
-        icon.setAttribute('class', 'reboot fa fa-bookmark mr-1');
+        icon.setAttribute('class', 'fa fa-bookmark me-1');
         link.prepend(icon);
       }
       link.appendChild(document.createTextNode(current));

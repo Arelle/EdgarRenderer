@@ -6,12 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node ./node_modules/gulp/bin/gulp.js",
-    "start": "node ./node_modules/gulp/bin/gulp.js"
+    "watch": "node ./node_modules/gulp/bin/gulp.js && node ./node_modules/gulp/bin/gulp.js watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bootstrap": "^4.3.1",
+    "@popperjs/core": "^2.9.2",
+    "bootstrap": "5.0.2",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.2.0",
     "gulp-concat": "^2.6.1",

@@ -51,9 +51,9 @@ var ModalsFormInformation = {
               var previousActiveIndicator = event['from'];
               var newActiveIndicator = event['to'];
               document.getElementById('form-information-carousel-indicators').querySelector(
-                  '[data-slide-to="' + previousActiveIndicator + '"]').classList.remove('active');
+                  '[data-bs-slide-to="' + previousActiveIndicator + '"]').classList.remove('active');
               document.getElementById('form-information-carousel-indicators').querySelector(
-                  '[data-slide-to="' + newActiveIndicator + '"]').classList.add('active');
+                  '[data-bs-slide-to="' + newActiveIndicator + '"]').classList.add('active');
               document.getElementById('form-information-modal-title').innerText = ModalsFormInformation.carouselInformation[event['to']]['dialog-title'];
             });
   },
@@ -404,11 +404,11 @@ var ModalsFormInformation = {
     possibleLabels.forEach(function( current, index, array ) {
       if ( current['values'] ) {
         var tr = document.createElement('tr');
-        tr.className = "reboot";
+        
         table.appendChild(tr);
         
         var th = document.createElement('th');
-        th.className = "reboot";
+        
         th.textContent = current['label'];
         tr.appendChild(th);
         
@@ -422,11 +422,11 @@ var ModalsFormInformation = {
           } else {
             
             tr = document.createElement('tr');
-            tr.className = "reboot";
+            
             table.appendChild(tr);
             tr.appendChild(document.createElement('td'));
             var td = document.createElement('td');
-            td.className = "reboot";
+
             td.setAttribute('data-name', current['label'] + '-' + nestedIndex);
             td.textContent = nestedCurrent;
             tr.appendChild(td);
@@ -435,9 +435,9 @@ var ModalsFormInformation = {
         });
       } else {
         var tr = document.createElement('tr');
-        tr.className = "reboot";
+        
         var th = document.createElement('th');
-        th.className = "reboot";
+        
         th.textContent = current['label'];
         table.appendChild(tr);
       }
@@ -466,17 +466,17 @@ var ModalsFormInformation = {
       var table = document.createElement('table');
       possibleLabels.forEach(function( current, index, array ) {
         var tr = document.createElement('tr');
-        tr.className = "reboot";
+        
         table.appendChild(tr);
         if ( current['bold'] ) {
           var th1 = document.createElement('th');
           th1.textContent = current['label'];
-          th1.className = "reboot";
+
           tr.appendChild(th1);
           
           var th2 = document.createElement('th');
           th2.textContent = current['value'];
-          th2.className = "reboot";
+
           tr.appendChild(th2);
           
         } else if ( current['value'] ) {

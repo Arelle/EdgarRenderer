@@ -8,7 +8,6 @@
 var UserFiltersGeneral = {
   
   moreFiltersClickEvent : function( event, element ) {
-    
     if ( !UserFiltersMoreFiltersPeriodSetUp.filtersSet ) {
       document.getElementById('loading-more-filters').classList.remove('fa-filter');
       document.getElementById('loading-more-filters').classList.add('fa-spinner');
@@ -54,7 +53,6 @@ var UserFiltersGeneral = {
   },
   
   setEnabledTaxonomies : function( ) {
-    
     var foundTaxonomies = document.getElementById('dynamic-xbrl-form').querySelectorAll('[contextref]');
     var foundTaxonomiesArray = Array.prototype.slice.call(foundTaxonomies);
     foundTaxonomies.forEach(function( current ) {
@@ -76,7 +74,6 @@ var UserFiltersGeneral = {
   },
   
   setAllFilteredData : function( input, dataFilter, tagsFilter ) {
-    
     UserFiltersGeneral.getAllFilteredData = input;
     
     UserFiltersGeneral.updateTaxonomyCounts(input.length);
@@ -91,9 +88,7 @@ var UserFiltersGeneral = {
   getAllFilteredData : null,
   
   updateTaxonomyCounts : function( input ) {
-    
     var taxonomyTotalElements = document.querySelectorAll('.taxonomy-total-count');
-    
     var taxonomyTotalElementsArray = Array.prototype.slice.call(taxonomyTotalElements);
     
     taxonomyTotalElementsArray.forEach(function( current ) {
@@ -103,37 +98,31 @@ var UserFiltersGeneral = {
   },
   
   updateCurrentFiltersDropdown : function( ) {
-    
     if ( UserFiltersGeneral.getCurrentTagsFilter ) {
-      
       document.getElementById('current-filters-dropdown').classList.remove('d-none');
       var dropdownHtml = '<a onclick="UserFiltersGeneral.resetTagsFilter();" class="dropdown-item click">';
-      dropdownHtml += '<label><i class="fas fa-times mr-1"></i>';
+      dropdownHtml += '<label><i class="fas fa-times me-1"></i>';
       dropdownHtml += UserFiltersGeneral.getCurrentTagsFilter;
       dropdownHtml += '</label></a>';
       document.getElementById('current-filters-tags').innerHTML = dropdownHtml;
     }
     if ( !UserFiltersGeneral.getCurrentTagsFilter ) {
-      
       document.getElementById('current-filters-tags').innerHTML = '';
     }
     
     if ( UserFiltersGeneral.getCurrentDataFilter ) {
-      
       document.getElementById('current-filters-dropdown').classList.remove('d-none');
       var dropdownHtml = '<a onclick="UserFiltersGeneral.resetDataFilter();" class="dropdown-item click">';
-      dropdownHtml += '<label><i class="fas fa-times mr-1"></i>';
+      dropdownHtml += '<label><i class="fas fa-times me-1"></i>';
       dropdownHtml += UserFiltersGeneral.getCurrentDataFilter;
       dropdownHtml += '</label></a>';
       document.getElementById('current-filters-data').innerHTML = dropdownHtml;
     }
     if ( !UserFiltersGeneral.getCurrentDataFilter ) {
-      
       document.getElementById('current-filters-data').innerHTML = '';
     }
     
     if ( !UserFiltersGeneral.getCurrentTagsFilter && !UserFiltersGeneral.getCurrentDataFilter ) {
-      
       document.getElementById('current-filters-dropdown').classList.add('d-none');
     }
   },

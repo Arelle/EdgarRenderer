@@ -16,7 +16,8 @@
       "ES2021.String",
       "dom",
       "dom.iterable",
-    ]
+      "WebWorker",
+    ],
   },
   "include": ["./src/**/*.ts", "./src/**/*.html"],
   "files": ["typings.d.ts"]

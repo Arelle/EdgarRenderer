@@ -6,7 +6,7 @@
 # see https://confluence.edgar.sec.gov/display/ED/Cypress+Quick+Start for more info
 
 START=$(pwd);
-CYPRESS_VERSION=12;
+CYPRESS_VERSION=13.12;
 CYPRESS_FOLDER=$(find $LOCALAPPDATA/Cypress/Cache/ -type d -name "$CYPRESS_VERSION*");
 cd $CYPRESS_FOLDER/Cypress/resources/app/packages/runner/dist || exit;
 

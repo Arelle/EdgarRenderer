@@ -105,24 +105,24 @@ var TaxonomyPages = {
     // please note we are not using document.createDocumentFragment()
     // here because of an odd issue with IE
     var elementsToReturn = document.createElement("tbody");
-    elementsToReturn.setAttribute("class", "reboot");
+
 
     possibleLabels.forEach(function (current, index, array) {
       if (current["value"]) {
         var trElement = document.createElement("tr");
-        trElement.setAttribute("class", "reboot");
+
 
         var thElement = document.createElement("th");
-        thElement.setAttribute("class", "reboot");
+
 
         var thContent = document.createTextNode(current["label"]);
         thElement.appendChild(thContent);
 
         var tdElement = document.createElement("td");
-        tdElement.setAttribute("class", "reboot");
+
 
         var divElement = document.createElement("div");
-        divElement.setAttribute("class", "reboot w-100 word-break");
+        divElement.setAttribute("class", "w-100 word-break");
         if (current["html"]) {
           if (current["value"] instanceof Array) {
             current.value.forEach(function (currentHTML) {
@@ -171,24 +171,24 @@ var TaxonomyPages = {
 
     // please note we are not using document.createDocumentFragment()
     // here because of an odd issue with IE
-    var elementsToReturn = document.createElement("div");
+    var elementsToReturn = document.createElement("tbody");
 
     possibleLabels.forEach(function (current, index, array) {
       if (current["value"]) {
         var trElement = document.createElement("tr");
-        trElement.setAttribute("class", "reboot");
+
 
         var thElement = document.createElement("th");
-        thElement.setAttribute("class", "reboot");
+
 
         var thContent = document.createTextNode(current["label"]);
         thElement.appendChild(thContent);
 
         var tdElement = document.createElement("td");
-        tdElement.setAttribute("class", "reboot");
+
 
         var divElement = document.createElement("div");
-        divElement.setAttribute("class", "reboot");
+
 
         var divContent = document.createTextNode(current["value"]);
         divElement.appendChild(divContent);
@@ -275,10 +275,10 @@ var TaxonomyPages = {
           possibleLabels.forEach(function (current, index, array) {
             if (current["value"]) {
               var trElement = document.createElement("tr");
-              trElement.setAttribute("class", "reboot");
+
 
               var thElement = document.createElement("th");
-              thElement.setAttribute("class", "reboot");
+
               var thContent = document.createTextNode(current["label"]);
               thElement.appendChild(thContent);
 
@@ -292,11 +292,11 @@ var TaxonomyPages = {
               }
 
               var tdElement = document.createElement("td");
-              tdElement.setAttribute("class", "reboot");
+
 
               if (current["type"] === "link") {
                 var aElement = document.createElement("a");
-                aElement.setAttribute("class", "reboot");
+
                 aElement.setAttribute("href", current["value"]);
                 aElement.setAttribute("target", "_blank");
 
@@ -314,10 +314,10 @@ var TaxonomyPages = {
             }
             if (index === possibleLabels.length - 1) {
               var trElement = document.createElement("tr");
-              trElement.setAttribute("class", "reboot");
+
 
               var tdElement = document.createElement("td");
-              tdElement.setAttribute("class", "reboot blank-table-row");
+              tdElement.setAttribute("class", "blank-table-row");
               tdElement.setAttribute("colspan", "3");
               trElement.appendChild(tdElement);
               elementsToReturn.appendChild(trElement);
@@ -349,15 +349,15 @@ var TaxonomyPages = {
 
     // please note we are not using document.createDocumentFragment()
     // here because of an odd issue with IE
-    var elementsToReturn = document.createElement("div");
+    var elementsToReturn = document.createElement("tbody");
 
     possibleLabels.forEach(function (current, index, array) {
       var trElement = document.createElement("tr");
-      trElement.setAttribute("class", "reboot");
+
 
       if (current.hasOwnProperty("blank")) {
         var tdElement = document.createElement("td");
-        tdElement.setAttribute("class", "reboot blank-table-row");
+        tdElement.setAttribute("class", "blank-table-row");
         tdElement.setAttribute("colspan", "3");
 
         trElement.appendChild(tdElement);
@@ -365,13 +365,13 @@ var TaxonomyPages = {
 
       if (current.hasOwnProperty("value")) {
         var thElement = document.createElement("th");
-        thElement.setAttribute("class", "reboot");
+
 
         var thContent = document.createTextNode(current["label"]);
         thElement.appendChild(thContent);
 
         var tdElement = document.createElement("td");
-        tdElement.setAttribute("class", "reboot");
+
         if (current["html"]) {
           tdElement.appendChild(current["value"]);
         } else {
@@ -394,10 +394,10 @@ var TaxonomyPages = {
 
   noDataCarousel: function () {
     var trElement = document.createElement("tr");
-    trElement.setAttribute("class", "reboot");
+
 
     var tdElement = document.createElement("td");
-    tdElement.setAttribute("class", "reboot");
+
 
     var tdContent = document.createTextNode("No Data.");
     tdElement.appendChild(tdContent);

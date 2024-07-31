@@ -284,50 +284,49 @@ var Sections = {
   },
 
   generateParentCollapseHTML: function (input, badgeCount) {
-    var card = document.createElement("div");
-    card.classList.add("reboot");
-    card.classList.add("card");
-    card.setAttribute("id", input.parentId);
-    card.setAttribute("data-test", input.parentId);
+    var accordion = document.createElement("div");
+
+    accordion.classList.add("accordion-item");
+    accordion.setAttribute("id", input.parentId);
+    accordion.setAttribute("data-test", input.parentId);
 
     var headerContainer = document.createElement("div");
-    headerContainer.classList.add("reboot");
-    headerContainer.classList.add("card-header");
+
+    headerContainer.classList.add("accordion-header");
     headerContainer.classList.add("mb-0");
     headerContainer.classList.add("px-0");
     headerContainer.classList.add("py-0");
 
     var header = document.createElement("h5");
-    header.classList.add("reboot");
+
     header.classList.add("mb-0");
 
     var button = document.createElement("button");
-    button.classList.add("reboot");
+
     button.classList.add("btn");
     button.classList.add("d-flex");
     button.classList.add("justify-content-between");
     button.classList.add("align-items-center");
-    button.classList.add("align-items-center");
     button.classList.add("w-100");
     button.setAttribute("type", "button");
-    button.setAttribute("data-target", "#" + input.containerId);
+    button.setAttribute("data-bs-target", "#" + input.containerId);
     button.setAttribute("tabindex", "2");
-    button.setAttribute("data-toggle", "collapse");
+    button.setAttribute("data-bs-toggle", "collapse");
     button.addEventListener("click", function () {
       // eslint-disable-next-line no-invalid-this
       Sections.captureChildCollapse(this, "#" + input.parentId);
     });
 
     var span = document.createElement("span");
-    span.classList.add("reboot");
+
     span.classList.add("font-size-1");
 
     var text = document.createTextNode(input.label);
 
     var span2 = document.createElement("span");
-    span2.classList.add("reboot");
+
     span2.classList.add("badge");
-    span2.classList.add("badge-secondary");
+    span2.classList.add("bg-secondary");
     span2.setAttribute("id", input.badgeId);
     var text2 = document.createTextNode(badgeCount);
 
@@ -339,23 +338,25 @@ var Sections = {
     header.appendChild(button);
 
     headerContainer.appendChild(header);
-    card.appendChild(headerContainer);
-    document.getElementById("tagged-sections").appendChild(card);
+    accordion.appendChild(headerContainer);
+    document.getElementById("tagged-sections").appendChild(accordion);
   },
 
   generateChildCollapseHTML: function (input, objectOfInfo) {
-    var card = document.getElementById(input.parentId);
+    var accordion = document.getElementById(input.parentId);
     var collapseContainer = document.createElement("div");
-    collapseContainer.classList.add("reboot");
+
     collapseContainer.classList.add("collapse");
+    collapseContainer.classList.add("accordion-collapse");
     if (input.open) {
       collapseContainer.classList.add("show");
     }
-    collapseContainer.setAttribute("data-parent", "#tagged-sections");
     collapseContainer.setAttribute("id", input.containerId);
 
     var listGroup = document.createElement("div");
-    listGroup.classList.add("reboot");
+
+    listGroup.classList.add("accordion-body");
+    listGroup.classList.add("p-0");
     listGroup.classList.add("list-group");
     listGroup.classList.add("list-group-flush");
     objectOfInfo.forEach(function (current) {
@@ -384,17 +385,17 @@ var Sections = {
       var list = document.createElement("li");
       list.setAttribute("name", name);
       list.setAttribute("contextref", contextref);
-      list.classList.add("reboot");
+
       list.classList.add("click");
       list.classList.add("list-group-item");
       list.classList.add("list-group-item-action");
       list.classList.add("d-flex");
       list.classList.add("align-items-center");
-      list.addEventListener("click", function () {
+      list.addEventListener("click", function (event) {
         // eslint-disable-next-line no-invalid-this
         Sections.clickEvent(event, this);
       });
-      list.addEventListener("onkeyup", function () {
+      list.addEventListener("onkeyup", function (event) {
         // eslint-disable-next-line no-invalid-this
         Sections.clickEvent(event, this);
       });
@@ -407,7 +408,7 @@ var Sections = {
         var icon = document.createElement("i");
         icon.classList.add("fas");
         icon.classList.add("fa-external-link-alt");
-        icon.classList.add("mr-3");
+        icon.classList.add("me-3");
         list.appendChild(icon);
       }
       list.appendChild(text);
@@ -415,7 +416,7 @@ var Sections = {
       listGroup.appendChild(list);
     });
     collapseContainer.appendChild(listGroup);
-    card.appendChild(collapseContainer);
+    accordion.appendChild(collapseContainer);
   },
 
   filterGroupType: function (groupType) {
@@ -432,7 +433,7 @@ var Sections = {
   },
 
   captureChildCollapse: function (event, groupType) {
-    var idToPopulate = event.getAttribute("data-target").substring(1);
+    var idToPopulate = event.getAttribute("data-bs-target").substring(1);
     if (document.getElementById(idToPopulate).classList.contains("show")) {
       Sections.currentlyOpenChildMenu = {};
     } else {

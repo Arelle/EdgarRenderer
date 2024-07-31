@@ -1,6 +1,6 @@
 import { Report, Section, SectionFact } from '../interface/meta';
 import { convertToSelector } from "../helpers/utils";
-import { ErrorsMajor } from "../errors/major";
+import { FilingSummary } from '../interface/filing-summary';
 
 /**
  * Description
@@ -8,13 +8,13 @@ import { ErrorsMajor } from "../errors/major";
  * @param {any} metaLinksReports:any
  * @returns {any} => Flatter array of metalinks reports (section items).
  */
-export const buildSectionsArrayFlatter = (filingSummary, metaLinksReports, metaVersion: string) => {
+export const buildSectionsArrayFlatter = (filingSummary: FilingSummary, metaLinksReports: Report[], metaVersion: string) => {
     // 'sections' and 'reports' are synonymous here
     const filingSummaryReports = filingSummary.MyReports.Report;
     let filingSummaryInputFiles = filingSummary.InputFiles.File;
     if (!Array.isArray(filingSummaryInputFiles)) filingSummaryInputFiles = [filingSummaryInputFiles];
     
-    const reportsContainStatements = filingSummaryReports
+    const reportsContainStatements: boolean = filingSummaryReports
         .filter(r => r.MenuCategory)
         .map(r => r.MenuCategory && r.MenuCategory._text.toLowerCase())
         .some((menuCategory: string) => {
@@ -27,13 +27,12 @@ export const buildSectionsArrayFlatter = (filingSummary, metaLinksReports, metaV
             return fileName.includes('.htm') || fileName.includes('.html') || fileName.includes('.xhtml');
         }
         const reportFileInfo = filingSummaryInputFiles.filter(file => {
-            // if (file._attributes && file._attributes?.original && file._text && isHtmIsh(file._text)) {
             if (file._attributes && file._attributes?.original && isHtmIsh(file._text)) {
                 return section.instanceHtm.includes(file._attributes.original)
             }
         });
         if (reportFileInfo.length) {
-            section.instanceDocName = reportFileInfo[0]._attributes.doctype;
+            section.instanceDocName = reportFileInfo[0]?._attributes?.doctype;
         } else {
             console.error(`Cannot find instance file in FilingsSummary inputfiles`);
         }
@@ -41,7 +40,7 @@ export const buildSectionsArrayFlatter = (filingSummary, metaLinksReports, metaV
     }
 
     const addFactProps = (section: Section) => {
-        section.fact = getFactAttrsFromAnchorProps(section);
+        section.fact = getFactAttrsFromAnchorProps(section) || undefined;
         const mrFact = section.fact;
         if (mrFact?.file  && mrFact?.ancestors && mrFact?.name) {
             // if an ancestor is a fact name eg "sbs:SbsefOrglStrDescTextBlock", need to dress as name attribute
@@ -60,7 +59,7 @@ export const buildSectionsArrayFlatter = (filingSummary, metaLinksReports, metaV
     }
 
     const sectionsArray = metaLinksReports.map((metaReport: Report) => {
-        let section: Section = metaReport;
+        let section: Section = metaReport as unknown as Section;
         if (Number(metaVersion) <= 2.1 || !section.menuCat) {
             section.menuCat = section.subGroupType || section.groupType;
         }
@@ -72,15 +71,16 @@ export const buildSectionsArrayFlatter = (filingSummary, metaLinksReports, metaV
 
             return section;
         } else {
-            console.error('cannot determine section menuCat');
+            console.error('Cannot determine Section menuCat');
         }
-    }).filter((section: Section) => section?.fact && section.menuCatMapped);
+    })
+    .filter((section): section is Section => !!(section?.fact && section.menuCatMapped));
 
-    return sectionsArray;
+    return sectionsArray || [];
 }
 
 const getFactAttrsFromAnchorProps = (section: Section) => {
-    let fact: SectionFact = {};
+    let fact: SectionFact | null = {};
     fact.instance = section.instance; // number
     // fact.menuCat = metaReport.menuCat;
     if (section.uniqueAnchor) {
@@ -149,16 +149,68 @@ const mapCategoryName = (input: string, isStandard: boolean) => {
         "risk/return": "RR Summaries"
     };
     if (isStandard) {
-        if (Object.prototype.hasOwnProperty.call(standardCatNameMap, lowerCaseKey)) {
-            return standardCatNameMap[lowerCaseKey];
+        if (lowerCaseKey in standardCatNameMap) {
+            return standardCatNameMap[lowerCaseKey as keyof typeof standardCatNameMap];
         } else {
             console.info(`standardCatNameMap doesn't contain key: %c${lowerCaseKey}`, "color: deepskyblue")
         }
-        } else {
-        if (Object.prototype.hasOwnProperty.call(noStatementCatNameMap, lowerCaseKey)) {
-            return noStatementCatNameMap[lowerCaseKey];
+    } else {
+        if (lowerCaseKey in noStatementCatNameMap) {
+            return noStatementCatNameMap[lowerCaseKey as keyof typeof noStatementCatNameMap];
         } else {
             console.info(`noStatementCatNameMap doesn't contain key: %c${lowerCaseKey}`, "color: deepskyblue")
         }
     }
 };
+
+
+export function fetchText(url: string, init?: RequestInit): Promise<string | never>
+{
+    return fetch(url, init).then((response) =>
+    {
+        if(response.status >= 200 && response.status <= 299)
+            return response.text();
+        else
+            throw new Error(response.status.toString());
+    });
+}
+export function fetchJson<T = any>(url: string, init?: RequestInit): Promise<T | never>
+{
+    return fetch(url, init).then((response) =>
+    {
+        if(response.status >= 200 && response.status <= 299)
+            return response.json();
+        else
+            throw new Error(response.status.toString());
+    });
+}
+
+
+
+export function setScaleInfo(scale: string | number | undefined): string | null
+{
+    const scaleOptions: Record<string, string> =
+    {
+        0: "Zero",
+        1: "Tens",
+        2: "Hundreds",
+        3: "Thousands",
+        4: "Ten thousands",
+        5: "Hundred thousands",
+        6: "Millions",
+        7: "Ten Millions",
+        8: "Hundred Millions",
+        9: "Billions",
+        10: "Ten Billions",
+        11: "Hundred Billions",
+        12: "Trillions",
+        "-1": "Tenths",
+        "-2": "Hundredths",
+        "-3": "Thousandths",
+        "-4": "Ten Thousandths",
+        "-5": "Hundred Thousandths",
+        "-6": "Millionths"
+    };
+    
+    return scaleOptions[scale || ""] || null;
+}

@@ -45,15 +45,6 @@ gulp.task('lint', () => {
 			if (error) {
 				console.log('\x1b[36m%s\x1b[0m', '*****************************************************');
 				console.log('\x1b[36m%s\x1b[0m', '* You must fix the above Lint error(s) to continue. *');
-				console.log('\x1b[36m%s\x1b[0m', '* You must fix the above Lint error(s) to continue. *');
-				console.log('\x1b[36m%s\x1b[0m', '* You must fix the above Lint error(s) to continue. *');
-				console.log('\x1b[36m%s\x1b[0m', '* You must fix the above Lint error(s) to continue. *');
-				console.log('\x1b[36m%s\x1b[0m', '* You must fix the above Lint error(s) to continue. *');
-				console.log('\x1b[36m%s\x1b[0m', '* You must fix the above Lint error(s) to continue. *');
-				console.log('\x1b[36m%s\x1b[0m', '* You must fix the above Lint error(s) to continue. *');
-				console.log('\x1b[36m%s\x1b[0m', '* You must fix the above Lint error(s) to continue. *');
-				console.log('\x1b[36m%s\x1b[0m', '* You must fix the above Lint error(s) to continue. *');
-				console.log('\x1b[36m%s\x1b[0m', '* You must fix the above Lint error(s) to continue. *');
 				console.log('\x1b[36m%s\x1b[0m', '*****************************************************');
 			}
 		})
@@ -92,7 +83,36 @@ gulp.task('production', () => {
 		.pipe(uglify({ compress: { drop_console: false } }))
 		.pipe(header(comment))
 		.pipe(gulp.dest(distJsDir))
-		.pipe(gulp.dest(devDir));
+		.pipe(gulp.dest(devDir))
+});
+
+gulp.task('development', () => {
+	return gulp.src(jsFiles)
+		.pipe(order([
+			'ajax/*.js',
+			'constants/*.js',
+			'errors/*.js',
+			'filters/*.js',
+			'form-information/*.js',
+			'help/*.js',
+			'helpers/*.js',
+			'images/*.js',
+			'links/*.js',
+			'menus/*.js',
+			'modals/*.js',
+			'pagination/*.js',
+			'polyfills/*.js',
+			'scroll/*.js',
+			'search/*.js',
+			'sections/*.js',
+			'taxonomies/*.js',
+			'user-filters/*.js',
+			'*.js',
+			'init.js',
+			'event-listeners.js'
+		]))
+		.pipe(concat('production.min.js'))
+		.pipe(gulp.dest(devDir))
 });
 
 gulp.task('copyLibsToDist', () => {
@@ -126,25 +146,23 @@ gulp.task('clean', (callback) => {
 	callback();
 });
 
-gulp.task('default', gulp.series(
-	'sass', 
-	'lint',
-	'production', 
-	'copyLibsToDist', 
-	'copyHtmlToDist', 
-	'copyCssToDist', 
-	'copyFontAwesomeCssToDist', 
-	'copyFontAwesomeFontsToDist', 
-	'clean'
-), (done) => {
-	console.log("continue");
+gulp.task('watch', () => {
+	gulp.watch(jsFiles, gulp.series(['development']));
+	gulp.watch('../js/scss/custom-bootstrap.scss', gulp.series(['sass']));
 });
 
-
-
-
-
-
-
-
-
+gulp.task('default', 
+	gulp.series(
+		'sass', 
+		'lint',
+		'production',
+		'copyLibsToDist',
+		'copyHtmlToDist',
+		'copyCssToDist', 
+		'copyFontAwesomeCssToDist', 
+		'copyFontAwesomeFontsToDist', 
+		'clean',
+	), (done) => {
+		console.log("continue");
+	}
+);

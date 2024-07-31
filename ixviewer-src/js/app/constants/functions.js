@@ -33,9 +33,9 @@ var ConstantsFunctions = {
         ),
       ie: false || !!document.documentMode,
       edge: !(false || !!document.documentMode) && !!window.StyleMedia,
-      chrome:
-        !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)
+      chrome: window.navigator.userAgent.includes("Google") || window.navigator.userAgent.includes("Chrom")
     };
+    
   },
 
   setParentContainerStyles: function (input) {

@@ -70,10 +70,10 @@ var UserFiltersMoreFiltersAxesSetUp = {
       current.type === "explicit" ? explicitCount++ : typedCount++;
       if (!isContainerBuild[indexType]) {
         var div = document.createElement("div");
-        div.setAttribute("data-parent", "#user-filters-axis");
+        div.setAttribute("data-bs-parent", "#user-filters-axis");
         div.setAttribute("id", "axes-filters-accordion-" + indexType);
         div.classList.add("collapse");
-        div.classList.add("reboot");
+
         isContainerBuild[indexType] = true;
 
         document
@@ -87,18 +87,18 @@ var UserFiltersMoreFiltersAxesSetUp = {
       div.classList.add("align-items-center");
       div.classList.add("w-100");
       div.classList.add("px-2");
-      div.classList.add("reboot");
+
 
       var div2 = document.createElement("div");
       div2.classList.add("form-check");
-      div2.classList.add("reboot");
+
 
       var input = document.createElement("input");
       input.setAttribute("title", "Select/Deselect this option.");
       input.setAttribute("type", "checkbox");
       input.setAttribute("tabindex", "9");
       input.classList.add("form-check-input");
-      input.classList.add("reboot");
+
 
       input.addEventListener("click", function (event) {
         UserFiltersMoreFiltersAxes.clickEvent(event, index);
@@ -107,7 +107,7 @@ var UserFiltersMoreFiltersAxesSetUp = {
       var label = document.createElement("label");
       label.classList.add("form-check-label");
       label.classList.add("mb-0");
-      label.classList.add("reboot");
+
 
       var text = document.createTextNode(current.label);
       label.append(text);

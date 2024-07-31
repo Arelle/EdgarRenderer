@@ -99,35 +99,33 @@ var UserFiltersMoreFiltersPeriodSetUp = {
     var parentDiv = document.querySelector('#' + parentId + ' .list-group');
     parentDiv.innerHTML = '';
     arrayOfInfo.forEach(function (current, index) {
-
       var innerHtml = '';
-      innerHtml += '<div class="reboot d-flex justify-content-between align-items-center w-100 px-1">';
-      innerHtml += '<div class="reboot form-check">';
+      innerHtml += '<div class="d-flex justify-content-between align-items-center w-100 px-1">';
+      innerHtml += '<div class="form-check">';
 
       innerHtml += '<input onclick="UserFiltersMoreFiltersPeriod.parentClick(event, this, ' + index
-        + ')" title="Select/Deselect all options below." class="reboot form-check-input" type="checkbox" tabindex="9">';
-      innerHtml += '<label class="reboot form-check-label mb-0">';
-      innerHtml += '<a class="reboot" href="#period-filters-accordion-' + index + '" data-toggle="collapse" tabindex="9">'
+        + ')" title="Select/Deselect all options below." class="form-check-input" type="checkbox" tabindex="9">';
+      innerHtml += '<label class="form-check-label mb-0">';
+      innerHtml += '<a href="#period-filters-accordion-' + index + '" data-bs-toggle="collapse" tabindex="9">'
         + current['year'] + '</a>';
       innerHtml += '</label>';
       innerHtml += '</div>';
-      innerHtml += '<span class="reboot badge badge-secondary">';
+      innerHtml += '<span class="badge bg-secondary">';
       innerHtml += current['options'].length;
       innerHtml += '</span>';
       innerHtml += '</button>';
       innerHtml += '</div>';
-      innerHtml += '<div data-parent="#user-filters-periods" id="period-filters-accordion-' + index
-        + '" class="collapse reboot">';
+      innerHtml += '<div data-bs-parent="#user-filters-periods" id="period-filters-accordion-' + index + '"';
 
       // we add all the individual 'options'
       current['options'].forEach(function (nestedCurrent, nestedIndex) {
-        innerHtml += '<div class="reboot d-flex justify-content-between align-items-center w-100 px-2">';
-        innerHtml += '<div class="reboot form-check">';
+        innerHtml += '<div class="d-flex justify-content-between align-items-center w-100 px-2">';
+        innerHtml += '<div class="form-check">';
 
         innerHtml += '<input onclick="UserFiltersMoreFiltersPeriod.childClick(event, this, ' + index + ', '
           + nestedIndex
-          + ')" title="Select/Deselect this option." class="reboot form-check-input" type="checkbox" tabindex="9">';
-        innerHtml += '<label class="reboot form-check-label mb-0">';
+          + ')" title="Select/Deselect this option." class="form-check-input" type="checkbox" tabindex="9">';
+        innerHtml += '<label class="form-check-label mb-0">';
         innerHtml += nestedCurrent['instanceDate'];
         innerHtml += '</label>';
         innerHtml += '</div>';
