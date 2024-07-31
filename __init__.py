@@ -156,7 +156,7 @@ from arelle.ValidateFilingText import elementsWithNoContent
 from arelle.XhtmlValidate import xhtmlValidate
 from arelle.XmlValidateConst import VALID, NONE, UNVALIDATED
 from arelle.XmlValidate import validate as xmlValidate
-from . import RefManager, IoManager, Inline, Utils, Filing, Summary
+from . import RefManager, IoManager, Inline, Utils, Filing, Summary, iXBRLViewerInterface
 import datetime, zipfile, logging, shutil, gettext, time, shlex, sys, traceback, linecache, os, io, tempfile
 import regex as re
 from lxml import etree
@@ -270,7 +270,7 @@ def edgarRendererCmdLineOptionExtender(parser, *args, **kwargs):
     parser.add_option("--logToBuffer", action="store_true", dest="logToBuffer", default=True, help=SUPPRESS_HELP)
     parser.add_option("--noRenderingWithError", action="store_true", dest="noRenderingWithError", help=_("Prevent rendering action when exhibit instance validation encountered error(s), blocking R file and extracted xml instance generation for that exhibit instance."))
     parser.add_option("--keepFilingOpen", dest="keepFilingOpen", action="store_true", help=SUPPRESS_HELP) # block closing filing in filingEnd
-
+    parser.add_option("--iXBRLViewerStub", dest="iXBRLViewerStub", action="store_true", help=SUPPRESS_HELP) # generate iXBRL Viewer Stub if plugin is present
 
 class EdgarRenderer(Cntlr.Cntlr):
     """
@@ -301,8 +301,6 @@ class EdgarRenderer(Cntlr.Cntlr):
             cntlr.redlineIxDocs = {}
             cntlr.redactTgtElts = set()
             cntlr.redactTgtEltContent = set()
-        # iXBRLViewer plugin is present if there's a generate method
-        self.hasIXBRLViewer = any(True for generate in pluginClassMethods("iXBRLViewer.Generate"))
 
     # wrap controler properties as needed
 
@@ -1002,6 +1000,10 @@ class EdgarRenderer(Cntlr.Cntlr):
         # logMessageText needed for successful and unsuccessful termination
         self.loadLogMessageText()
 
+        # iXBRLViewer plugin is present if there's a generate method
+        generateiXBRLViewerStub = iXBRLViewerInterface.hasIXBRLViewerPlugin(cntlr) and options.iXBRLViewerStub
+
+
         # GUI operation with redact or redline present requires dissem outputs without new suffixes
         privateFilesNotDisseminated = set()
         publicRefDocs = set()
@@ -1287,17 +1289,11 @@ class EdgarRenderer(Cntlr.Cntlr):
                                                     "Private Filing Data" if hasPrivateData else None)
                         self.renderedFiles.add("FilingSummary.htm")
                         self.logDebug("FilingSummary XSLT transform {:.3f} secs.".format(time.time() - _startedAt))
-                    if self.hasIXBRLViewer:
+                    if generateiXBRLViewerStub:
                         self.renderedFiles.add("ixbrlviewer.html")
                         _startedAt = time.time()
-                        for generate in pluginClassMethods("iXBRLViewer.Generate"):
-                            generate(cntlr, self.reportsFolder, "/ixviewer-arelle/ixbrlviewer-1.4.11.js", useStubViewer="ixbrlviewer.xhtml", saveStubOnly=True)
+                        iXBRLViewerInterface.generateViewer(cntlr, self.reportsFolder, filing.reports[0].modelXbrl)
                         self.logDebug("Arelle viewer generated {:.3f} secs.".format(time.time() - _startedAt))
-                        if self.isWorkstationFirstPass and not hasPrivateData:
-                            _startedAt = time.time()
-                            for generate in pluginClassMethods("iXBRLViewer.Generate"):
-                                generate(cntlr, dissemReportsFolder, "/arelleViewer-1.4.11/ixbrlviewer.js", useStubViewer="ixbrlviewer.xhtml.dissem", saveStubOnly=True)
-                            self.logDebug("Arelle viewer for dissemination generated {:.3f} secs.".format(time.time() - _startedAt))
                     self.logDebug(Summary.FilingSummaryCompletionMessage)
                     if self.auxMetadata or filing.hasInlineReport:
                         summary.writeMetaFiles(self.reportsFolder, prefix=rFilePrefix)
@@ -1473,12 +1469,9 @@ class EdgarRenderer(Cntlr.Cntlr):
                         # generate supplemental AllReports and other such outputs at this time
                         for supplReport in pluginClassMethods("EdgarRenderer.FilingEnd.SupplementalReport"):
                             supplReport(cntlr, filing, dissemReportsFolder, zipDir="dissem/")
-                        if self.hasIXBRLViewer:
+                        if generateiXBRLViewerStub:
                             _startedAt = time.time()
-                            for generate in pluginClassMethods("iXBRLViewer.Generate"):
-                                generate(cntlr, dissemReportsFolder, "/arelleViewer-1.4.11/ixbrlviewer.js",
-                                         useStubViewer="ixbrlviewer.xhtml.dissem" if self.isWorkstationFirstPass else "ixbrlviewer.xhtml",
-                                         saveStubOnly=True)
+                            iXBRLViewerInterface.generateViewer(cntlr, dissemReportsFolder, filing.reports[0].modelXbrl)
                             self.logDebug("Arelle viewer for dissemination generated {:.3f} secs.".format(time.time() - _startedAt))
                         if (self.auxMetadata or filing.hasInlineReport) and numDisseminatedReports > 0:
                             if self.isWorkstationFirstPass:
@@ -1691,6 +1684,7 @@ class EdgarRenderer(Cntlr.Cntlr):
 def edgarRendererCheckIfDaemonStartup(cntlr, options, sourceZipStream=None, *args, **kwargs):
     """ starts up EdgarRenderer when run as a Deamon (no input files selected) """
     EdgarRenderer(cntlr).checkIfDaemonStartup(options)
+    iXBRLViewerInterface.hasIXBRLViewerPlugin(cntlr) # block iXBRLViewerPlugin actions if the plugin is utilized
 
 def edgarRendererFilingStart(cntlr, options, entrypointFiles, filing, *args, **kwargs):
     """ prepares EdgarRenderer for a series of muiltple instances """
@@ -1722,6 +1716,9 @@ def edgarRendererGuiViewMenuExtender(cntlr, viewMenu, *args, **kwargs):
     def setValidateBeforeRendering(self, *args):
         cntlr.config["edgarRendererValidateBeforeRendering"] = cntlr.showTablesMenu.get()
         cntlr.saveConfig()
+    def setShowiXBRLViewer(self, *args):
+        cntlr.config["edgarRendererShowiXBRLViewer"] = cntlr.showiXBRLViewer.get()
+        cntlr.saveConfig()
     cntlr.showFilingData = BooleanVar(value=cntlr.config.get("edgarRendererShowFilingData", True))
     cntlr.showFilingData.trace("w", setShowFilingData)
     erViewMenu.add_checkbutton(label=_("Show Filing Data"), underline=0, variable=cntlr.showFilingData, onvalue=True, offvalue=False)
@@ -1735,6 +1732,12 @@ def edgarRendererGuiViewMenuExtender(cntlr, viewMenu, *args, **kwargs):
     cntlr.validateBeforeRendering = BooleanVar(value=cntlr.config.get("edgarRendererValidateBeforeRendering", True))
     cntlr.validateBeforeRendering.trace("w", setShowTablesMenu)
     erViewMenu.add_checkbutton(label=_("Validate Before Rendering"), underline=0, variable=cntlr.validateBeforeRendering, onvalue=True, offvalue=False)
+    if iXBRLViewerInterface.hasIXBRLViewerPlugin(cntlr):
+        cntlr.showiXBRLViewer = BooleanVar(value=cntlr.config.get("edgarRendererShowiXBRLViewer", True))
+        cntlr.showiXBRLViewer.trace("w", setShowiXBRLViewer)
+        erViewMenu.add_checkbutton(label=_("Show iXBRL Viewer"), underline=0, variable=cntlr.showiXBRLViewer, onvalue=True, offvalue=False)
+    else:
+        cntlr.showiXBRLViewer = BooleanVar(value=False)
 
 def edgarRendererGuiStartLogging(modelXbrl, mappedUri, normalizedUri, filepath, isEntry=False, namespace=None, **kwargs):
     """ start logging for EdgarRenderer when using GUI """
@@ -1764,6 +1767,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
             cntlr.redactTgtEltContent = set()
         isNonEFMorGFMinline = (not getattr(cntlr.modelManager.disclosureSystem, "EFMplugin", False) and
                                modelXbrl.modelDocument.type in (ModelDocument.Type.INLINEXBRL, ModelDocument.Type.INLINEXBRLDOCUMENTSET))
+        showViewer = cntlr.showFilingData.get() or cntlr.showiXBRLViewer.get()
         # may use GUI mode to process a single instance or test suite
         options = PythonUtil.attrdict(# simulate options that CntlrCmdLine provides
             configFile = os.path.join(os.path.dirname(__file__), 'conf', 'config_for_instance.xml'),
@@ -1795,8 +1799,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
             noRenderingWithError = False,
             processingFolder = None,
             processInZip = None,
-            reportsFolder = "out" if cntlr.showFilingData.get() else None, # default to reports subdirectory of source input
-            noReportOutput = None if cntlr.showFilingData.get() else True,
+            reportsFolder = "out" if showViewer else None, # default to reports subdirectory of source input
+            noReportOutput = None if showViewer else True,
             reportInZip = None,
             resourcesFolder = None,
             reportXslt = _reportXslt,
@@ -1808,7 +1812,8 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
             logMessageTextFile = None,
             logFile = None, # from cntlrCmdLine but need to simulate for GUI operation
             labelLang = cntlr.labelLang, # emulate cmd line labelLang
-            keepFilingOpen = True # closed by CntrlWinMain
+            keepFilingOpen = True, # closed by CntrlWinMain
+            iXBRLViewerStub = cntlr.showiXBRLViewer.get(), # generates iXBRLViewerStub
         )
         if modelXbrl.modelDocument.type in ModelDocument.Type.TESTCASETYPES:
             modelXbrl.efmOptions = options  # save options in testcase's modelXbrl
@@ -1954,7 +1959,7 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
                 shutil.copyfile(os.path.join(edgarRenderer.resourcesFolder, "report.css"), os.path.join(edgarRenderer.reportsFolder, "report.css"))
                 edgarRenderer.logDebug("Write {} complete".format("Rall.htm"))
             # display on web browser
-            if cntlr.showFilingData.get():
+            if showViewer:
                 from . import LocalViewer
                 _localhost = LocalViewer.init(cntlr, reportsFolder)
                 if hasRedactOrRedlineElts:
@@ -1972,13 +1977,14 @@ def edgarRendererGuiRun(cntlr, modelXbrl, *args, **kwargs):
                     openingUrl = ("FilingSummary.htm", "Rall.htm")[_combinedReports]
                     if hasRedactOrRedlineElts:
                         openingUrlDissem = ("FilingSummary.htm", "Rall.htm")[_combinedReports]
-                webbrowser.open(url="{}/{}{}".format(_localhost, openingUrl,
-                                                     "?redline=true" if (_ixRedline and hasRedactOrRedlineElts) else ""))
-                if hasRedactOrRedlineElts:
-                    webbrowser.open(url="{}/{}".format(_localhostDissem, openingUrlDissem))
-                if filing.edgarRenderer.hasIXBRLViewer and filing.hasInlineReport:
-                    webbrowser.open(url="{}/ixbrlviewer.xhtml{}".format(_localhost, _ixRedline))
-
+                if cntlr.showFilingData.get():
+                    webbrowser.open(url="{}/{}{}".format(_localhost, openingUrl,
+                                "?redline=true" if (_ixRedline and hasRedactOrRedlineElts) else ""))
+                    if hasRedactOrRedlineElts:
+                        webbrowser.open(url="{}/{}".format(_localhostDissem, openingUrlDissem))
+                if cntlr.showiXBRLViewer.get() and filing.hasInlineReport:
+                    webbrowser.open(url="{}/ixbrlviewer.xhtml{}".format(_localhost,
+                            "?redline=true" if (_ixRedline and hasRedactOrRedlineElts) else ""))
 def testcaseVariationExpectedSeverity(modelTestcaseVariation, *args, **kwargs):
     # allow severity to appear on any variation sub-element (such as result)
     _severity = XmlUtil.descendantAttr(modelTestcaseVariation, None, "error", "severity")
@@ -2046,9 +2052,6 @@ def edgarRendererRemoveRedlining(modelDocument, *args, **kwargs):
                         setattr(e0, prop, (getattr(e0, prop) or "") + e.tail)
                     e.getparent().remove(e)
 
-def iXBRLViewerGenerateOnCall(*args, **kwargs):
-    return True
-
 __pluginInfo__ = {
     'name': 'Edgar Renderer',
     'version': VERSION,
@@ -2079,6 +2082,4 @@ __pluginInfo__ = {
     'ModelTestcaseVariation.ExpectedSeverity': testcaseVariationExpectedSeverity,
     # handles IXDS target saving
     'InlineDocumentSet.SavesTargetInstance': savesTargetInstance,
-    # iXBRLViewer should only generate when called, not on loading by cmd line or GUI
-    'iXBRLViewer.GenerateOnCall': iXBRLViewerGenerateOnCall,
 }
