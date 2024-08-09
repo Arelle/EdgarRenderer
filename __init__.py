@@ -755,7 +755,7 @@ class EdgarRenderer(Cntlr.Cntlr):
         else: # options previously initialized
             self.copyReAttrOptions(options)
         # Transfer daemonCreatedFilders to this EdgarRenderer to deal with at filingEnd
-        if hasattr(options, "daemonCreatedFolders"):
+        if hasattr(options, "daemonCreatedFolders") and options.daemonCreatedFolders: # not None or empty list
             self.createdFolders.extend(options.daemonCreatedFolders)
             del options.daemonCreatedFolders # don't pass to any subsequent independent filing if any
         mdlMgr = cntlr.modelManager
