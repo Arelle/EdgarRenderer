@@ -1,4 +1,9 @@
 # EdgarRenderer
+
+## Deprecation Notice
+
+**Notice:** The Arelle/EdgarRenderer repository has been deprecated and will no longer receive updates. Please use the [Arelle/EDGAR](https://github.com/Arelle/EDGAR) repository instead for the latest SEC plugins.
+
 EDGAR Renderer enables investors to view the interactive data filings submitted under the US Security and Exchange Commission
 (SEC) rules that require the use of XBRL via the SEC website.
 
