@@ -76,17 +76,15 @@ Run these in a terminal from the root of your project
 `CYPRESS_INSTALL_BINARY=C:/Users/<you>/Downloads/cypress.zip npm install --save-dev cypress`
 (alter the path your path to zip).
 <!-- robin (for ez copy pasta) -->
-`CYPRESS_INSTALL_BINARY=C:/Users/nelsonro/Downloads/cypress.zip npm install --save-dev cypress`
+`CYPRESS_INSTALL_BINARY=C:/Users/<you>/Downloads/cypress.zip npm install --save-dev cypress`
 Note: this  must be run in a bash shell, not cmd or powershell.
-3. To Run against an xml app you will have to edit a cypress file found on a path similar to: `C:\Users\nelsonro\AppData\Local\Cypress\Cache\13.3.1\Cypress\resources\app\packages\runner\dist\injection.js`.  Add blank lines before an after the single (long) line of code.  On the first blank line add `//<![CDATA[`.  On the last line put `//]]>`
+3. To Run against an xml app you will have to edit a cypress file found on a path similar to: `C:\Users\<you>\AppData\Local\Cypress\Cache\13.3.1\Cypress\resources\app\packages\runner\dist\injection.js`.  Add blank lines before an after the single (long) line of code.  On the first blank line add `//<![CDATA[`.  On the last line put `//]]>`
 4. Now you can launch the cypress gui with `npx cypress open`.
 5. to target a particular domain from the command line use --env flag:
    npx cypress run --env "domain=dev1"
 6. To use particular domain for gui see env var 'domain' in cypress.config.js
 
 ## Troubleshooing
-Cannot unzip
-link of interest: https://artifactory.edgar.sec.gov/ui/packages/npm:%2F%2Fcypress?name=cypress&type=packages
 
 
 ## (WIP) Install Cypress Binary using Scripts (TODO: write script to do step 3 above and delete cypress from package.json (so it doesn't throw errors on dev1 where cypress is not installed))
